@@ -1,0 +1,125 @@
+#! /bin/bash
+
+lib=${POLICY_HOME}/lib
+opt=${lib}/opt
+
+# change to the options directory
+cd ${opt}
+
+# default field lengths
+nameLength=20
+versionLength=15
+
+# update field lengths, if needed
+for jar in $(ls) ; do
+	# get file name without 'jar' suffix
+	tmp="${jar%\.jar}"
+
+	# get feature name by removing the version portion
+	name="${tmp%%-[0-9]*}"
+
+	# extract version portion of name
+	version="${tmp#${name}-}"
+
+	# grow the size of the name/version field, if needed
+	if (( "${#name}" > nameLength )) ; then
+		nameLength="${#name}"
+	fi
+	if (( "${#version}" > versionLength )) ; then
+		versionLength="${#version}"
+	fi
+done
+
+# dump out status information
+function status
+{
+	local tmp name version status
+	local format="%-${nameLength}s %-${versionLength}s %s\n"
+
+	printf "${format}" "name" "version" "status"
+	printf "${format}" "----" "-------" "------"
+	for jar in $(ls) ; do
+		# get file name without 'jar' suffix
+		tmp="${jar%\.jar}"
+
+		# get feature name by removing the version portion
+		name="${tmp%%-[0-9]*}"
+
+		# extract version portion of name
+		version="${tmp#${name}-}"
+
+		# determine status
+		status=disabled
+		if [[ -e "${lib}/${jar}" ]] ; then
+			status=enabled
+		fi
+		printf "${format}" "${name}" "${version}" "${status}"
+	done
+}
+
+case "$1" in
+	status)
+	{
+		# dump out status information
+		status
+	};;
+
+	enable)
+	{
+		# enable the specified options
+		shift
+		match=
+		for name in "$@" ; do
+			# look for matches - 'file' has the full path name
+			file=$(ls ${opt}/"${name}"-[0-9]* 2>/dev/null)
+			if [[ "$?" != 0 ]] ; then
+				# no matching file
+				echo "${name}:  no such option"
+			else
+				# found a match (handle multiple matches, just in case)
+				match=true
+				ln -s -f ${file} "${lib}/"
+			fi
+		done
+		if [[ "${match}" ]] ; then
+			echo
+			status
+		fi
+	};;
+
+	disable)
+	{
+		# disable the specified options
+		shift
+		match=
+		for name in "$@" ; do
+			# look for matches -- 'file' has the last segment of the path name
+			file=$(ls "${name}"-[0-9]* 2>/dev/null)
+			if [[ "$?" != 0 ]] ; then
+				echo "${name}:  no such option"
+			else
+				# found a match (handle multiple matches, just in case)
+				match=true
+				(cd ${lib} ; rm -f ${file})
+			fi
+		done
+		if [[ "${match}" ]] ; then
+			echo
+			status
+		fi
+	};;
+
+	*)
+	{
+		# print out usage information
+		cat >&2 <<-'EOF'
+		Usage:  options status
+		            Get enabled/disabled status on all options
+		        options enable <option> ...
+		            Enable the specified options
+		        options disable <option> ...
+		            Disable the specified options
+		EOF
+	};;
+esac
+exit

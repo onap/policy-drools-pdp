@@ -1,0 +1,1451 @@
+/*-
+ * ============LICENSE_START=======================================================
+ * policy-management
+ * ================================================================================
+ * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * ================================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=========================================================
+ */
+
+package org.openecomp.policy.drools.protocol.coders;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.openecomp.policy.common.logging.eelf.MessageCodes;
+import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
+import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.openecomp.policy.drools.controller.DroolsController;
+import org.openecomp.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
+import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
+import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
+import org.openecomp.policy.drools.utils.Pair;
+
+/**
+ * Coder (Encoder/Decoder) of Events.
+ */
+public interface EventProtocolCoder {
+	
+	public static class CoderFilters {
+
+		/**
+		 * coder class 
+		 */
+		protected String factClass;
+		
+		/**
+		 * filters to apply to the selection of the decodedClass;
+		 */
+		protected JsonProtocolFilter filter;
+
+		/**
+		 * classloader hash
+		 */
+		protected int modelClassLoaderHash;
+
+		
+		/**
+		 * constructor
+		 * 
+		 * @param codedClass coder class
+		 * @param filter filters to apply
+		 */
+		public CoderFilters(String codedClass, JsonProtocolFilter filter, int modelClassLoaderHash) {
+			this.factClass = codedClass;
+			this.filter = filter;
+			this.modelClassLoaderHash = modelClassLoaderHash;
+		}
+
+		/**
+		 * @return the codedClass
+		 */
+		public String getCodedClass() {
+			return factClass;
+		}
+
+		/**
+		 * @param codedClass the decodedClass to set
+		 */
+		public void setCodedClass(String codedClass) {
+			this.factClass = codedClass;
+		}
+		
+		/**
+		 * @return the filter
+		 */
+		public synchronized JsonProtocolFilter getFilter() {
+			return filter;
+		}
+
+		/**
+		 * @param filter the filter to set
+		 */
+		public synchronized void setFilter(JsonProtocolFilter filter) {
+			this.filter = filter;
+		}
+
+		public int getModelClassLoaderHash() {
+			return modelClassLoaderHash;
+		}
+
+		public void setFromClassLoaderHash(int fromClassLoaderHash) {
+			this.modelClassLoaderHash = fromClassLoaderHash;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("CoderFilters [factClass=").append(factClass).append(", filter=").append(filter)
+					.append(", modelClassLoaderHash=").append(modelClassLoaderHash).append("]");
+			return builder.toString();
+		}
+
+	}
+	
+	/**
+	 * Adds a Decoder class to decode the protocol over this topic
+	 *  
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic 
+	 * @param eventClass the event class
+	 * @param protocolFilter filters to selectively choose a particular decoder
+	 * when there are multiples
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public void addDecoder(String groupId, String artifactId, 
+			               String topic, 
+			               String eventClass, 
+			               JsonProtocolFilter protocolFilter, 
+			               CustomGsonCoder customGsonCoder,
+			               CustomJacksonCoder customJacksonCoder,
+			               int modelClassLoaderHash)
+		throws IllegalArgumentException;
+
+	/**
+	 * removes all decoders associated with the controller id
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic of the controller
+	 * 
+	 * @throws IllegalArgumentException if invalid arguments have been provided
+	 */
+	void removeEncoders(String groupId, String artifactId, String topic) throws IllegalArgumentException;
+	
+	/**
+	 * removes decoders associated with the controller id and topic
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic
+	 * 
+	 * @throws IllegalArgumentException if invalid arguments have been provided
+	 */
+	public void removeDecoders(String groupId, String artifactId, String topic) throws IllegalArgumentException;
+	
+	/**
+	 * Given a controller id and a topic, it gives back its filters
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic
+	 * 
+	 * return list of decoders
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public List<CoderFilters> getDecoderFilters(String groupId, String artifactId, String topic)
+		throws IllegalArgumentException;	
+	
+
+	/**
+	 * Given a controller id and a topic, it gives back the decoding configuration
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic
+	 * 
+	 * return decoding toolset
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public ProtocolCoderToolset getDecoders(String groupId, String artifactId, String topic) 
+		   throws IllegalArgumentException;
+	
+	/**
+	 * Given a controller id and a topic, it gives back all the decoding configurations
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic
+	 * 
+	 * return decoding toolset
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public List<ProtocolCoderToolset> getDecoders(String groupId, String artifactId)
+		   throws IllegalArgumentException;
+	
+	
+	/**
+	 * gets all decoders associated with the group and artifact ids
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * 
+	 * @throws IllegalArgumentException if invalid arguments have been provided
+	 */
+	public List<CoderFilters> getDecoderFilters(String groupId, String artifactId) throws IllegalArgumentException;
+	
+
+	/**
+	 * Given a controller id and a topic, it gives back the classes that implements the encoding
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic
+	 * 
+	 * return list of decoders
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public List<CoderFilters> getEncoderFilters(String groupId, String artifactId, String topic) 
+			throws IllegalArgumentException;
+	
+	/**
+	 * gets all encoders associated with the group and artifact ids
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * 
+	 * @throws IllegalArgumentException if invalid arguments have been provided
+	 */
+	public List<CoderFilters> getEncoderFilters(String groupId, String artifactId) throws IllegalArgumentException;
+	
+	/**
+	 * Given a controller id, a topic, and a classname, it gives back the classes that implements the decoding
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic
+	 * @param classname classname
+	 * 
+	 * return list of decoders
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */	
+	public CoderFilters getDecoderFilters(String groupId, String artifactId, String topic, String classname)
+		throws IllegalArgumentException;	
+	
+	/**
+	 * is there a decoder supported for the controller id and topic
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic protocol
+	 * @return true if supported
+	 */
+	public boolean isDecodingSupported(String groupId, String artifactId, String topic);
+	
+	/**
+	 * Adds a Encoder class to encode the protocol over this topic
+	 *  
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic 
+	 * @param eventClass the event class
+	 * @param protocolFilter filters to selectively choose a particular decoder
+	 * when there are multiples
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public void addEncoder(String groupId, String artifactId, String topic, 
+						   String eventClass, 
+			               JsonProtocolFilter protocolFilter,
+			               CustomGsonCoder customGsonCoder,
+			               CustomJacksonCoder customJacksonCoder,
+			               int modelClassLoaderHash)
+		throws IllegalArgumentException;
+	
+	/**
+	 * is there an encoder supported for the controller id and topic
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic protocol
+	 * @return true if supported
+	 */
+	public boolean isEncodingSupported(String groupId, String artifactId, String topic);
+	
+	/**
+	 * get encoder based on coordinates and classname
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic protocol
+	 * @param json event string
+	 * @return
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 */
+	public CoderFilters getEncoderFilters(String groupId, String artifactId, String topic, String classname)
+			throws IllegalArgumentException;
+	
+	/**
+	 * get encoder based on topic and encoded class
+	 * 
+	 * @param topic topic
+	 * @param encodedClass encoded class
+	 * @return
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 */
+	public List<CoderFilters> getReverseEncoderFilters(String topic, String encodedClass)
+			throws IllegalArgumentException;
+	
+	/**
+	 * gets the identifier of the creator of the encoder
+	 * 
+	 * @param topic topic
+	 * @param encodedClass encoded class
+	 * @return a drools controller
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 */
+	public DroolsController getDroolsController(String topic, Object encodedClass)
+			throws IllegalArgumentException;
+	
+	/**
+	 * gets the identifier of the creator of the encoder
+	 * 
+	 * @param topic topic
+	 * @param encodedClass encoded class
+	 * @return list of drools controllers
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 */
+	public List<DroolsController> getDroolsControllers(String topic, Object encodedClass)
+			throws IllegalArgumentException;
+	
+	/**
+	 * decode topic's stringified event (json) to corresponding Event Object.
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic protocol
+	 * @param json event string
+	 * @return
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 * @throws UnsupportedOperationException if the operation is not supported
+	 * @throws IllegalStateException if the system is in an illegal state
+	 */
+	public Object decode(String groupId, String artifactId, String topic, String json) 
+			throws IllegalArgumentException, UnsupportedOperationException, IllegalStateException;
+
+	/**
+	 * encodes topic's stringified event (json) to corresponding Event Object.
+	 * 
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic protocol
+	 * @param event Object
+	 * 
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 */
+	public String encode(String groupId, String artifactId, String topic, Object event) 
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException;
+	
+	/**
+	 * encodes topic's stringified event (json) to corresponding Event Object.
+	 * 
+	 * @param topic topic
+	 * @param event event object
+	 * 
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 * @throws UnsupportedOperationException operation cannot be performed
+	 */
+	public String encode(String topic, Object event) 
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException;
+	
+	/**
+	 * encodes topic's stringified event (json) to corresponding Event Object.
+	 * 
+	 * @param topic topic
+	 * @param event event object
+	 * @param droolsController 
+	 * 
+	 * @throws IllegalArgumentException invalid arguments passed in
+	 * @throws UnsupportedOperationException operation cannot be performed
+	 */
+	public String encode(String topic, Object event, DroolsController droolsController) 
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException;
+	
+	/**
+	 * singleton reference to the global event protocol coder
+	 */
+	public static EventProtocolCoder manager = new MultiplexorEventProtocolCoder();
+}
+
+/**
+ * Protocol Coder that does its best attempt to decode/encode, selecting the best
+ * class and best fitted json parsing tools.
+ */
+class MultiplexorEventProtocolCoder implements EventProtocolCoder {
+	// get an instance of logger 
+	private static Logger  logger = FlexLogger.getLogger(MultiplexorEventProtocolCoder.class);	
+	/**
+	 * Decoders
+	 */
+	protected EventProtocolDecoder decoders = new EventProtocolDecoder();
+	
+	/**
+	 * Encoders
+	 */
+	protected EventProtocolEncoder encoders = new EventProtocolEncoder();
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addDecoder(String groupId, String artifactId, String topic, 
+			               String eventClass, 
+			               JsonProtocolFilter protocolFilter,
+			               CustomGsonCoder customGsonCoder,
+			               CustomJacksonCoder customJacksonCoder,
+			               int modelClassLoaderHash) 
+		   throws IllegalArgumentException {
+		logger.info("ADD-DECODER: " + groupId + ":" + artifactId + ":" + 
+		                  topic + ":" + eventClass + ":" + 
+				          protocolFilter + ":" + customGsonCoder + 
+				          ":" + customJacksonCoder + ":" + modelClassLoaderHash + 
+				          " INTO " + this);
+		this.decoders.add(groupId, artifactId, topic, eventClass, protocolFilter, 
+				         customGsonCoder, customJacksonCoder, modelClassLoaderHash);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addEncoder(String groupId, String artifactId, String topic, 
+			               String eventClass, 
+			               JsonProtocolFilter protocolFilter,
+			               CustomGsonCoder customGsonCoder,
+			               CustomJacksonCoder customJacksonCoder,
+			               int modelClassLoaderHash) 
+		   throws IllegalArgumentException {
+		logger.info("ADD-ENCODER: " + groupId + ":" + artifactId + ":" + 
+                		   topic + ":" + eventClass + ":" + 
+                		   protocolFilter + ":" + customGsonCoder + 
+                		   ":" + customJacksonCoder + ":" + modelClassLoaderHash +
+                		   " INTO " + this);
+		this.encoders.add(groupId, artifactId, topic, eventClass, protocolFilter, 
+		                  customGsonCoder, customJacksonCoder, modelClassLoaderHash);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void removeDecoders(String groupId, String artifactId, String topic) 
+		   throws IllegalArgumentException {
+		logger.info("REMOVE-DECODER: " + groupId + ":" + artifactId + ":" + 
+                          topic + " FROM " + this);		
+		this.decoders.remove(groupId, artifactId, topic);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void removeEncoders(String groupId, String artifactId, String topic) 
+		   throws IllegalArgumentException {
+		logger.info("REMOVE-ENCODER: " + groupId + ":" + artifactId + ":" + 
+                          topic + " FROM " + this);	
+		this.encoders.remove(groupId, artifactId, topic);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isDecodingSupported(String groupId, String artifactId, String topic) {	
+		return this.decoders.isCodingSupported(groupId, artifactId, topic);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isEncodingSupported(String groupId, String artifactId, String topic) {
+		return this.encoders.isCodingSupported(groupId, artifactId, topic);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Object decode(String groupId, String artifactId, String topic, String json) 
+			throws IllegalArgumentException, UnsupportedOperationException, IllegalStateException {
+		logger.info("DECODE: " + groupId + ":" + artifactId + ":" + 
+                          topic + ":" + json + " WITH " + this);
+		return this.decoders.decode(groupId, artifactId, topic, json);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encode(String groupId, String artifactId, String topic, Object event) 
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+		logger.info("ENCODE: " + groupId + ":" + artifactId + ":" + 
+                           topic + ":" + event + " WITH " + this);
+		return this.encoders.encode(groupId, artifactId, topic, event);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encode(String topic, Object event) 
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+		logger.info("ENCODE: " + topic + ":" + event + " WITH " + this);
+		return this.encoders.encode(topic, event);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String encode(String topic, Object event, DroolsController droolsController) 
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+		logger.info("ENCODE: " + topic + ":" + event + ":" + droolsController + " WITH " + this);
+		return this.encoders.encode(topic, event, droolsController);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<CoderFilters> getDecoderFilters(String groupId, String artifactId, String topic) 
+			throws IllegalArgumentException {
+		
+		return this.decoders.getFilters(groupId, artifactId, topic);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ProtocolCoderToolset getDecoders(String groupId, String artifactId, String topic) 
+			throws IllegalArgumentException {
+		
+		Pair<ProtocolCoderToolset,ProtocolCoderToolset> decoderToolsets = this.decoders.getCoders(groupId, artifactId, topic);
+		if (decoderToolsets == null)
+			throw new IllegalArgumentException("Decoders not found for " + groupId + ":" + artifactId + ":" + topic);
+		
+		return decoderToolsets.first();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<CoderFilters> getEncoderFilters(String groupId, String artifactId, String topic) 
+			throws IllegalArgumentException {
+		
+		return this.encoders.getFilters(groupId, artifactId, topic);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CoderFilters getDecoderFilters(String groupId, String artifactId, String topic, String classname)
+			throws IllegalArgumentException {
+		
+		return this.decoders.getFilters(groupId, artifactId, topic, classname);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CoderFilters getEncoderFilters(String groupId, String artifactId, String topic, String classname)
+			throws IllegalArgumentException {
+		
+		return this.encoders.getFilters(groupId, artifactId, topic, classname);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<CoderFilters> getReverseEncoderFilters(String topic, String encodedClass) throws IllegalArgumentException {
+		return this.encoders.getReverseFilters(topic, encodedClass);
+	}
+
+	/**
+	 * get all deocders by maven coordinates and topic
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * 
+	 * @return list of decoders
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	@Override
+	public List<ProtocolCoderToolset> getDecoders(String groupId, String artifactId) 
+			throws IllegalArgumentException {
+
+		List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> decoderToolsets = this.decoders.getCoders(groupId, artifactId);
+		if (decoderToolsets == null)
+			throw new IllegalArgumentException("Decoders not found for " + groupId + ":" + artifactId);
+		
+		List<ProtocolCoderToolset> parser1CoderToolset = new ArrayList<>();
+		for (Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderToolsetPair : decoderToolsets) {
+			parser1CoderToolset.add(coderToolsetPair.first());
+		}
+		
+		return parser1CoderToolset;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<CoderFilters> getDecoderFilters(String groupId, String artifactId) throws IllegalArgumentException {
+		return this.decoders.getFilters(groupId, artifactId);
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<CoderFilters> getEncoderFilters(String groupId, String artifactId) throws IllegalArgumentException {
+		return this.encoders.getFilters(groupId, artifactId);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public DroolsController getDroolsController(String topic, Object encodedClass) throws IllegalArgumentException {
+		return this.encoders.getDroolsController(topic, encodedClass);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<DroolsController> getDroolsControllers(String topic, Object encodedClass) throws IllegalArgumentException {
+		return this.encoders.getDroolsControllers(topic, encodedClass);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("MultiplexorEventProtocolCoder [decoders=").append(decoders).append(", encoders=")
+				.append(encoders).append("]");
+		return builder.toString();
+	}
+}
+
+/**
+ * This protocol Coder that does its best attempt to decode/encode, selecting the best
+ * class and best fitted json parsing tools.
+ */
+abstract class GenericEventProtocolCoder  {
+	private static Logger  logger = FlexLogger.getLogger(GenericEventProtocolCoder.class);	
+	
+	/**
+	 * Mapping topic:controller-id -> <protocol-decoder-toolset-pair> 
+	 * where protocol-coder-toolset-pair contains both a jackson-protocol-coder-toolset
+	 * and a gson-protocol-coder-toolset.   The first value of the pair will the 
+	 * protocol coder toolset most likely to be successful with the encoding or decoding,
+	 * and consequently the second value will be the less likely.
+	 */
+	protected final HashMap<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>> coders = 
+			new HashMap<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+	
+	/**
+	 * Mapping topic + classname -> Protocol Set 
+	 */
+	protected final HashMap<String, List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>> reverseCoders = 
+			new HashMap<String, List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>>();
+	
+	protected boolean multipleToolsetRetries = false;
+	
+	GenericEventProtocolCoder(boolean multipleToolsetRetries) {
+		this.multipleToolsetRetries = multipleToolsetRetries;
+	}
+	
+	/**
+	 * Index a new coder
+	 *  
+	 * @param groupId of the controller
+	 * @param artifactId of the controller
+	 * @param topic the topic 
+	 * @param eventClass the event class
+	 * @param protocolFilter filters to selectively choose a particular decoder
+	 * when there are multiples
+	 * 
+	 * @throw IllegalArgumentException if an invalid parameter is passed
+	 */
+	public void add(String groupId, String artifactId, 
+			        String topic, 
+			        String eventClass, 
+			        JsonProtocolFilter protocolFilter, 
+			        CustomGsonCoder customGsonCoder, 
+			        CustomJacksonCoder customJacksonCoder,
+			        int modelClassLoaderHash)
+		   throws IllegalArgumentException {
+		if (groupId == null || groupId.isEmpty()) {			
+			throw new IllegalArgumentException("Invalid group id");
+		}
+		
+		if (artifactId == null || artifactId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid artifact id");
+		}
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Invalid Topic");
+		}
+		
+		if (eventClass == null) {
+			throw new IllegalArgumentException("Invalid Event Class");
+		}
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		String reverseKey = this.reverseCodersKey(topic, eventClass);
+		
+		synchronized(this) {
+			if (coders.containsKey(key)) {				
+				Pair<ProtocolCoderToolset, ProtocolCoderToolset> toolsets = coders.get(key);
+				
+				if (logger.isInfoEnabled())
+					logger.info("ADDING CODER TO EXISTING: " + toolsets + " for " + key);
+				
+				toolsets.first().addCoder(eventClass, protocolFilter, modelClassLoaderHash);
+				toolsets.second().addCoder(eventClass, protocolFilter, modelClassLoaderHash);
+				
+				if (!reverseCoders.containsKey(reverseKey)) {
+					if (logger.isInfoEnabled())
+						logger.info("Multiple coder classes case: " + toolsets.first() + 
+								           " for " + reverseKey + " - " + key);
+					
+					List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> reverseMappings =
+							new ArrayList<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+					reverseMappings.add(toolsets);
+					reverseCoders.put(reverseKey, reverseMappings);
+				}
+				return;
+			}
+		
+			GsonProtocolCoderToolset gsonCoderTools = 
+										new GsonProtocolCoderToolset
+														(topic, key, 
+														 groupId, artifactId, 
+														 eventClass, protocolFilter,
+														 customGsonCoder,
+														 modelClassLoaderHash);
+			
+			JacksonProtocolCoderToolset jacksonCoderTools = 
+										new JacksonProtocolCoderToolset
+														(topic, key, 
+														 groupId, artifactId, 
+														 eventClass, protocolFilter,
+														 customJacksonCoder,
+														 modelClassLoaderHash);
+			
+			// Use Gson as the first priority encoding/decoding toolset, and Jackson
+			// as second.  This is because it has been observed that they can diverge
+			// somewhat in the encoding/decoding data types, which can produce json
+			// that may result incompatible with what some network elements are 
+			// expecting.   As decoding takes place, this element will reconfigure
+			// itself to set the jackson one as the favoured one first, if errors
+			// are detected in the gson encoding
+			
+			Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = 
+					new Pair<ProtocolCoderToolset,ProtocolCoderToolset>(gsonCoderTools, 
+							                                            jacksonCoderTools);
+			
+			logger.info("ADDED TOOLSET: " + key + " : " + 
+			                  coderTools + ":" + this);
+			
+			coders.put(key, coderTools);
+			
+			if (reverseCoders.containsKey(reverseKey)) {
+				// There is another controller (different group id/artifact id/topic)
+				// that shares the class and the topic.
+				
+				List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> toolsets = 
+															reverseCoders.get(reverseKey);
+				boolean present = false;
+				for (Pair<ProtocolCoderToolset,ProtocolCoderToolset> parserSet: toolsets) {
+					// just doublecheck
+					present = parserSet.first().getControllerId().equals(key);
+					if (present) {
+						/* anomaly */
+						logger.error("UNEXPECTED TOOLSET REVERSE MAPPING FOUND: " + parserSet.first() + 
+								           " for " + reverseKey + " - " + key);
+					}
+				}
+				
+				if (present) {
+					return;
+				} else {
+					logger.info("ADDING TOOLSET REVERSE MAPPING: " + reverseKey + " : " + 
+				                      toolsets + ":" + coderTools + ":" + this);
+					toolsets.add(coderTools);
+				}
+			} else {
+				List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> toolsets =
+					new ArrayList<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+				logger.info("ADDING TOOLSET REVERSE MAPPING: " + reverseKey + " : " + 
+					              toolsets + ":" + coderTools + ":" +  this);
+				toolsets.add(coderTools);
+				reverseCoders.put(reverseKey, toolsets);
+			}
+			
+		}
+	}
+
+	/**
+	 * produces key for indexing toolset entries
+	 * 
+	 * @param group group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @return index key
+	 */
+	protected String codersKey(String groupId, String artifactId, String topic) {
+		return groupId + ":" + artifactId + ":" + topic;
+	}
+	
+	/**
+	 * produces a key for the reverse index
+	 * 
+	 * @param topic topic 
+	 * @param eventClass coded class
+	 * @return reverse index key
+	 */
+	protected String reverseCodersKey(String topic, String eventClass) {
+		return topic + ":" + eventClass;
+	}
+	
+	/**
+	 * remove coder 
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	public void remove(String groupId, String artifactId, String topic) 
+		   throws IllegalArgumentException {
+		
+		if (groupId == null || groupId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid group id");
+		}
+		
+		if (artifactId == null || artifactId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid artifact id");
+		}
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Invalid Topic");
+		}
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		
+		synchronized(this) {
+			if (coders.containsKey(key)) {
+				Pair<ProtocolCoderToolset, ProtocolCoderToolset> p = coders.remove(key);
+				logger.info("REMOVED TOOLSET: " + key + " : " + p + " FROM " + 
+				                  coders + " : " +  this);
+				
+				for (CoderFilters codeFilter : p.first().getCoders()) {
+					String className = codeFilter.getCodedClass();
+					String reverseKey = this.reverseCodersKey(topic, className);
+					if (this.reverseCoders.containsKey(reverseKey) ) {
+						List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets = 
+																this.reverseCoders.get(reverseKey);
+						Iterator<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsetsIter = 
+																				toolsets.iterator();
+						while (toolsetsIter.hasNext()) {
+							Pair<ProtocolCoderToolset, ProtocolCoderToolset> toolset = toolsetsIter.next();
+							if (toolset.first().getControllerId().equals(key)) {
+								logger.info("REMOVED CODER FROM REVERSE MAPPING of TOOLSET: " + reverseKey + " : " + toolset + " FROM " + 
+										          reverseCoders);
+								toolsetsIter.remove();
+							}
+						}
+						
+						if (this.reverseCoders.get(reverseKey).isEmpty()) {
+							logger.info("REMOVE FULL REVERSE MAPPING of TOOLSET: " + reverseKey + " FROM " + 
+							                  reverseCoders);							
+							this.reverseCoders.remove(reverseKey);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * does it support coding?
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @return true if its is codable
+	 */
+	public boolean isCodingSupported(String groupId, String artifactId, String topic) {
+		
+		if (groupId == null || groupId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid group id");
+		}
+		
+		if (artifactId == null || artifactId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid artifact id");
+		}
+		
+		if (topic == null || topic.isEmpty())
+			return false;
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		synchronized(this) {
+			return (coders.containsKey(key));
+		}
+	}
+	
+	/**
+	 * decode a json string into an Object
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @param json json string to convert to object
+	 * @return the decoded object
+	 * @throws IllegalArgumentException if invalid argument is provided
+	 * @throws UnsupportedOperationException if the operation cannot be performed
+	 */
+	public Object decode(String groupId, String artifactId, String topic, String json) 
+			throws IllegalArgumentException, UnsupportedOperationException, IllegalStateException {
+		
+		if (!isCodingSupported(groupId, artifactId, topic)) {
+			throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic) + " for encoding");
+		}
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = coders.get(key);
+		try {
+			Object event = coderTools.first().decode(json);
+			if (event != null)
+				return event;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.warn("Can't decode @ " + this);
+		}
+		
+		if (multipleToolsetRetries) {
+			// try the less favored toolset
+			try {
+				Object event = coderTools.second().decode(json);
+				if (event != null) {
+					// change the priority of the toolset
+					synchronized(this) {
+						ProtocolCoderToolset first = coderTools.first();
+						ProtocolCoderToolset second = coderTools.second();
+						coderTools.first(second);
+						coderTools.second(first);
+					}
+					
+					return event;
+				}
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+				throw new UnsupportedOperationException(e2);
+			}
+		} 
+		
+		throw new UnsupportedOperationException("Cannot decode neither with gson or jackson");
+	}
+
+	/**
+	 * encode an object into a json string
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @param event object to convert to string
+	 * @return the json string
+	 * @throws IllegalArgumentException if invalid argument is provided
+	 * @throws UnsupportedOperationException if the operation cannot be performed
+	 */
+	public String encode(String groupId, String artifactId, String topic, Object event) 
+			throws IllegalArgumentException, UnsupportedOperationException {
+		
+		if (!isCodingSupported(groupId, artifactId, topic)) {
+			throw new IllegalArgumentException
+				("Unsupported:" + codersKey(groupId, artifactId, topic));
+		}
+		
+		if (event == null) {
+			throw new IllegalArgumentException("Unsupported topic:" + topic);
+		}
+		
+		// reuse the decoder set, since there must be affinity in the model
+		String key = this.codersKey(groupId, artifactId, topic);
+		return this.encodeInternal(key, event);
+	}
+	
+	/**
+	 * encode an object into a json string
+	 * 
+	 * @param key identifier
+	 * @param event object to convert to string
+	 * @return the json string
+	 * @throws IllegalArgumentException if invalid argument is provided
+	 * @throws UnsupportedOperationException if the operation cannot be performed
+	 */
+	protected String encodeInternal(String key, Object event) 
+			throws IllegalArgumentException, UnsupportedOperationException {
+		
+		logger.debug("ENCODE: " + key + ":" + event + this);
+		
+		Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = coders.get(key);
+		try {
+			String json = coderTools.first().encode(event);
+			if (json != null && !json.isEmpty())
+				return json;
+		} catch (Exception e) {
+			logger.error(MessageCodes.EXCEPTION_ERROR, e, "FIRST-ENCODE-INTERNAL: " + 
+		                       key + ":" + event, this.toString());
+		}
+		
+		if (multipleToolsetRetries) {
+			// try the less favored toolset
+			try {
+				String json = coderTools.second().encode(event);
+				if (json != null) {
+					// change the priority of the toolset
+					synchronized(this) {
+						ProtocolCoderToolset first = coderTools.first();
+						ProtocolCoderToolset second = coderTools.second();
+						coderTools.first(second);
+						coderTools.second(first);
+					}
+					
+					return json;
+				}
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				logger.error(MessageCodes.EXCEPTION_ERROR, e2, "SECOND-ENCODE-INTERNAL: " + 
+	                               key + ":" + event, this.toString());
+				throw new UnsupportedOperationException(e2);
+			}
+		}
+		
+		throw new UnsupportedOperationException("Cannot decode neither with gson or jackson");
+	}
+	
+	/**
+	 * encode an object into a json string
+	 * 
+	 * @param topic topic
+	 * @param encodedClass object to convert to string
+	 * @return the json string
+	 * @throws IllegalArgumentException if invalid argument is provided
+	 * @throws UnsupportedOperationException if the operation cannot be performed
+	 */
+	public String encode(String topic, Object encodedClass) 
+			throws IllegalArgumentException, IllegalArgumentException, UnsupportedOperationException {
+		
+		if (encodedClass == null) {
+			throw new IllegalArgumentException("Invalid encoded class");
+		}
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Invalid topic");
+		}
+		
+		logger.info("ENCODE: " + topic + ":" + 
+		                  encodedClass.getClass().getCanonicalName() + ":" + 
+				          encodedClass);
+		
+		List<DroolsController> droolsControllers = droolsCreators(topic, encodedClass);
+		if (droolsControllers.size() > 1) {
+			// unexpected
+			logger.warn("MULTIPLE DROOLS CONTROLLERS FOUND for: " + topic + ":" + 
+                              encodedClass.getClass().getCanonicalName() + ":" + 
+                              droolsControllers + " IN " + this);		
+			// continue
+		}
+		
+		String key = codersKey(droolsControllers.get(0).getGroupId(), droolsControllers.get(0).getArtifactId(), topic);
+		return this.encodeInternal(key, encodedClass);
+	}
+	
+	/**
+	 * encode an object into a json string
+	 * 
+	 * @param topic topic
+	 * @param encodedClass object to convert to string
+	 * @return the json string
+	 * @throws IllegalArgumentException if invalid argument is provided
+	 * @throws UnsupportedOperationException if the operation cannot be performed
+	 */
+	public String encode(String topic, Object encodedClass, DroolsController droolsController) 
+			throws IllegalArgumentException, IllegalArgumentException, UnsupportedOperationException {
+		
+		if (encodedClass == null) {
+			throw new IllegalArgumentException("Invalid encoded class");
+		}
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Invalid topic");
+		}
+		
+		logger.info("ENCODE: " + topic + ":" + 
+		                  encodedClass.getClass().getCanonicalName() + ":" + 
+				          encodedClass + ":" + droolsController);
+		
+		String key = codersKey(droolsController.getGroupId(), droolsController.getArtifactId(), topic);
+		return this.encodeInternal(key, encodedClass);
+	}
+
+	/**
+	 * @param topic
+	 * @param encodedClass
+	 * @param reverseKey
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws IllegalArgumentException
+	 */
+	protected List<DroolsController> droolsCreators(String topic, Object encodedClass)
+			throws IllegalStateException, IllegalArgumentException {
+		
+		List<DroolsController> droolsControllers = new ArrayList<DroolsController>();
+		
+		String reverseKey = this.reverseCodersKey(topic, encodedClass.getClass().getCanonicalName());
+		if (!this.reverseCoders.containsKey(reverseKey)) {
+			logger.warn("NO MAPPING for REVERSE KEY: " + topic + ":" + 
+                    encodedClass.getClass().getCanonicalName() + ":" + 
+                    encodedClass + ":" + reverseKey + " : " + this);
+			return droolsControllers;
+		}
+		
+		List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> 
+					toolsets = this.reverseCoders.get(reverseKey);
+		
+		// There must be multiple toolset pairs associated with <topic,classname> reverseKey
+		// case 2 different controllers use the same models and register the same encoder for
+		// the same topic.  This is assumed not to occur often but for the purpose of encoding
+		// but there should be no side-effects.  Ownership is crosscheck against classname and 
+		// classloader reference.
+		
+		if (toolsets == null || toolsets.isEmpty()) {
+			logger.warn("ENCODE: " + topic + ":" + 
+		                      encodedClass.getClass().getCanonicalName() + ":" + 
+			                  encodedClass + " ENCODER NOT FOUND");
+			throw new IllegalStateException("No Encoders toolsets available for topic "+ topic +
+					                        " encoder " + encodedClass.getClass().getCanonicalName());
+		}
+		
+		for (Pair<ProtocolCoderToolset, ProtocolCoderToolset> encoderSet : toolsets) {
+			// figure out the right toolset
+			String groupId = encoderSet.first().getGroupId();
+			String artifactId = encoderSet.first().getArtifactId();
+			List<CoderFilters> coders = encoderSet.first().getCoders();
+			for (CoderFilters coder : coders) {
+				if (coder.getCodedClass().equals(encodedClass.getClass().getCanonicalName())) {
+					DroolsController droolsController = 
+							DroolsController.factory.get(groupId, artifactId, "");
+					if (droolsController.ownsCoder(encodedClass.getClass(), coder.getModelClassLoaderHash())) {
+						droolsControllers.add(droolsController);
+					}
+				}
+			}
+		}
+		
+		if (droolsControllers.isEmpty()) {
+			throw new IllegalStateException("No Encoders toolsets available for topic "+ topic +
+		            " : encoder " + encodedClass.getClass().getCanonicalName());				
+		}
+		return droolsControllers;
+	}
+
+
+	/**
+	 * get all filters by maven coordinates and topic
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @return list of coders
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	public List<CoderFilters> getFilters(String groupId, String artifactId, String topic) 
+			throws IllegalArgumentException {
+		
+		if (!isCodingSupported(groupId, artifactId, topic)) {
+			throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+		}
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = coders.get(key);
+		return coderTools.first().getCoders();
+	}
+	
+	/**
+	 * get all coders by maven coordinates and topic
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @return list of coders
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	public Pair<ProtocolCoderToolset,ProtocolCoderToolset> getCoders(String groupId, String artifactId, String topic) 
+			throws IllegalArgumentException {
+		
+		if (!isCodingSupported(groupId, artifactId, topic)) {
+			throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+		}
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = coders.get(key);
+		return coderTools;
+	}
+	
+	/**
+	 * get all coders by maven coordinates and topic
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @return list of coders
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	public List<CoderFilters> getFilters(String groupId, String artifactId) 
+			throws IllegalArgumentException {
+		
+		if (groupId == null || groupId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid group id");
+		}
+		
+		if (artifactId == null || artifactId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid artifact id");
+		}
+		
+		String key = this.codersKey(groupId, artifactId, "");
+		
+		List<CoderFilters> codersFilters = new ArrayList<CoderFilters>();
+		for (Map.Entry<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>> entry : coders.entrySet()) {
+			if (entry.getKey().startsWith(key)) {
+				codersFilters.addAll(entry.getValue().first().getCoders());
+			}
+		}
+		
+		return codersFilters;
+	}
+	
+	/**
+	 * get all coders by maven coordinates and topic
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @return list of coders
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	public List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> getCoders(String groupId, String artifactId) 
+			throws IllegalArgumentException {
+		
+		if (groupId == null || groupId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid group id");
+		}
+		
+		if (artifactId == null || artifactId.isEmpty()) {
+			throw new IllegalArgumentException("Invalid artifact id");
+		}
+		
+		String key = this.codersKey(groupId, artifactId, "");
+		
+		List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> coderToolset = new ArrayList<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+		for (Map.Entry<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>> entry : coders.entrySet()) {
+			if (entry.getKey().startsWith(key)) {
+				coderToolset.add(entry.getValue());
+			}
+		}
+		
+		return coderToolset;
+	}
+
+
+	/**
+	 * get all filters by maven coordinates, topic, and classname
+	 * 
+	 * @param groupId group id
+	 * @param artifactId artifact id
+	 * @param topic topic
+	 * @param classname
+	 * @return list of coders
+	 * @throws IllegalArgumentException if invalid input
+	 */
+	public CoderFilters getFilters(String groupId, String artifactId, String topic, String classname)
+			throws IllegalArgumentException {
+		
+		if (!isCodingSupported(groupId, artifactId, topic)) {
+			throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+		}
+		
+		if (classname == null || classname.isEmpty()) {
+			throw new IllegalArgumentException("classname must be provided");
+		}
+		
+		String key = this.codersKey(groupId, artifactId, topic);
+		Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = coders.get(key);
+		return coderTools.first().getCoder(classname);
+	}
+	
+	/**
+	 * get coded based on class and topic
+	 * 
+	 * @param topic
+	 * @param codedClass
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public List<CoderFilters> getReverseFilters(String topic, String codedClass)
+			throws IllegalArgumentException {
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Unsupported");
+		}
+		
+		if (codedClass == null) {
+			throw new IllegalArgumentException("class must be provided");
+		}
+		
+		String key = this.reverseCodersKey(topic, codedClass);
+		List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> toolsets = this.reverseCoders.get(key);
+		if (toolsets == null)
+			throw new IllegalArgumentException("No Coder found for " + key);
+		
+		
+		List<CoderFilters> coders = new ArrayList<CoderFilters>();
+		for (Pair<ProtocolCoderToolset,ProtocolCoderToolset> toolset: toolsets) {
+			coders.addAll(toolset.first().getCoders());
+		}
+		
+		return coders;
+	}
+	
+	/**
+	 * returns group and artifact id of the creator of the encoder
+	 * 
+	 * @param topic
+	 * @param fact
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	DroolsController getDroolsController(String topic, Object fact)
+			throws IllegalArgumentException {
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Unsupported");
+		}
+		
+		if (fact == null) {
+			throw new IllegalArgumentException("class must be provided");
+		}
+		
+		List<DroolsController> droolsControllers = droolsCreators(topic, fact);
+		if (droolsControllers.size() > 1) {
+			// unexpected
+			logger.warn("MULTIPLE DROOLS CONTROLLERS FOUND for: " + topic + ":" + 
+                              fact.getClass().getCanonicalName() + ":" + 
+                              droolsControllers + " IN " + this);		
+			// continue
+		}
+		return droolsControllers.get(0);
+	}
+	
+	/**
+	 * returns group and artifact id of the creator of the encoder
+	 * 
+	 * @param topic
+	 * @param fact
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	List<DroolsController> getDroolsControllers(String topic, Object fact)
+			throws IllegalArgumentException {
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("Unsupported");
+		}
+		
+		if (fact == null) {
+			throw new IllegalArgumentException("class must be provided");
+		}
+		
+		List<DroolsController> droolsControllers = droolsCreators(topic, fact);
+		if (droolsControllers.size() > 1) {
+			// unexpected
+			logger.warn("MULTIPLE DROOLS CONTROLLERS FOUND for: " + topic + ":" + 
+                              fact.getClass().getCanonicalName() + ":" + 
+                              droolsControllers + " IN " + this);		
+			// continue
+		}
+		return droolsControllers;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("GenericEventProtocolCoder [coders=").append(coders.keySet()).append(", reverseCoders=")
+				.append(reverseCoders.keySet()).append("]");
+		return builder.toString();
+	}
+}
+
+class EventProtocolDecoder extends GenericEventProtocolCoder {
+
+	public EventProtocolDecoder(){super(false);}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("EventProtocolDecoder [toString()=").append(super.toString()).append("]");
+		return builder.toString();
+	}
+	
+}
+	
+class EventProtocolEncoder extends GenericEventProtocolCoder {
+	
+	public EventProtocolEncoder(){super(false);}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("EventProtocolEncoder [toString()=").append(super.toString()).append("]");
+		return builder.toString();
+	}
+}

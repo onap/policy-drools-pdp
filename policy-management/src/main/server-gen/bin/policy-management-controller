@@ -1,0 +1,191 @@
+#!/bin/bash
+
+SNAME="Policy Management"
+PNAME=policy-management
+CLASS=org.openecomp.policy.drools.system.Main
+
+
+function start() {
+	um_start
+	if [[ ${RETVAL} != 0 ]]; then
+		update_monitor off
+	else
+		update_monitor on
+	fi	
+}
+
+# unmonitored start, does not change monitor status (immutable)
+function um_start() {
+    status
+    if [ "$_RUNNING" = "1" ]; then
+      echo $_STATUS
+      RETVAL=0
+      return
+    fi
+    mkdir -p $_DIR/logs
+    if [ -e $_DIR/logs/$PNAME.out.1 ]; then mv $_DIR/logs/$PNAME.out.1 $_DIR/logs/$PNAME.out.2; fi
+    if [ -e $_DIR/logs/$PNAME.err.1 ]; then mv $_DIR/logs/$PNAME.err.1 $_DIR/logs/$PNAME.err.2; fi
+    if [ -e $_DIR/logs/$PNAME.out ]; then mv $_DIR/logs/$PNAME.out $_DIR/logs/$PNAME.out.1; fi
+    if [ -e $_DIR/logs/$PNAME.err ]; then mv $_DIR/logs/$PNAME.err $_DIR/logs/$PNAME.err.1; fi
+    CP=$(ls $_DIR/lib/*.jar | xargs -I X printf ":%s" X)
+
+    # If 'system.properties' exists, convert it into JVM arguments.
+    # Note that the following also handles property values with spaces.
+    IFS=$'\n'
+    systemProperties=($(
+        if [[ -f $_DIR/config/system.properties ]] ; then
+            sed -n -e 's/^[ \t]*\([^ \t#]*\)[ \t]*=[ \t]*\(.*\)$/-D\1=\2/p' \
+                $_DIR/config/system.properties
+        fi
+    ))
+
+    cd $_DIR
+    (
+	if [[ "${cfg}" != "" ]] ; then
+	    # need to make sure that we don't pass the lock file descriptor
+	    # to subprocesses
+	    exec {cfg}>&-
+	fi
+	nohup $JAVA_HOME/bin/java -Dkie.maven.settings.custom=$_DIR/config/kie_settings.xml -Dlog4j.configuration=file:$_DIR/config/log4j.properties -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_DIR/logs/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_DIR/logs/$PNAME.err) &
+
+	_PID=$!
+	echo $_PID > $_PIDFILE
+    )
+    sleep 5
+    status
+    echo $_STATUS
+    if [ "$_RUNNING" = "1" ]; then
+       RETVAL=0
+    else
+       echo "Failed to start"
+       remove_pid_file
+       RETVAL=1
+    fi
+}
+
+function stop() {
+	um_stop
+	update_monitor off
+}
+
+# unmonitored stop, does not change monitor status (immutable)
+function um_stop() {
+    status
+    if [ "$_RUNNING" = "0" ]; then
+       echo $_STATUS
+       remove_pid_file
+    else
+	if [[ -n ${ENGINE_MANAGEMENT_PASSWORD} ]]; then
+	    http_proxy= curl --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X DELETE http://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
+	else
+	    http_proxy= curl --silent -X DELETE http://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
+	fi
+	sleep 5
+	echo "Stopping $SNAME..."
+	_PID_TO_KILL=$_PID;
+	echo "$SNAME (pid=${_PID_TO_KILL}) is stopping..."
+	kill -TERM $_PID_TO_KILL 2> /dev/null
+	sleep 5
+	check_status_of_pid $_PID_TO_KILL
+	if [ "$_RUNNING" = "1" ]; then
+	   kill -TERM $_PID_TO_KILL
+	fi
+	while [ "$_RUNNING" = "1" ]; do
+	   sleep 2
+	   check_status_of_pid $_PID_TO_KILL
+	done
+	remove_pid_file
+	echo "$SNAME has stopped."
+    fi
+    RETVAL=0
+}
+
+function status() {
+    if [ -f "${_PIDFILE}" ]; then
+        _PID=`cat "${_PIDFILE}"`
+        check_status_of_pid $_PID
+    else
+        _STATUS="$SNAME (no pidfile) is NOT running"
+        _RUNNING=0
+    fi
+    if [[ $_RUNNING = 1 ]]; then
+        RETVAL=0
+    else
+        RETVAL=1
+    fi
+}
+
+
+function check_status_of_pid ()
+{
+    if [ -n "$1" ] && kill -0 $1 2>/dev/null ; then
+        _STATUS="$SNAME (pid $1) is running"
+        _RUNNING=1
+    else
+        _STATUS="$SNAME (pid $1) is NOT running"
+        _RUNNING=0
+    fi
+}
+
+function remove_pid_file ()
+{
+   if [ -f "${_PIDFILE}" ]; then
+      rm "${_PIDFILE}"
+   fi
+}
+
+function update_monitor() {
+	STATUS=$1
+	if [[ -f ${POLICY_HOME}/etc/monitor/monitor.cfg ]]; then
+		/bin/sed -i.bak \
+			-e "s/^${CONTROLLER}=.*/${CONTROLLER}=${STATUS}/g" \
+			${POLICY_HOME}/etc/monitor/monitor.cfg	
+	fi
+}
+
+
+# main
+
+_DIR=${POLICY_HOME}
+CONTROLLER=policy-management-controller
+
+RETVAL=0
+
+_PIDFILE=${POLICY_HOME}/PID
+
+case "$1" in
+    status)
+	status
+	echo "$_STATUS"
+	;;
+    start)
+	if flock ${cfg} ; then
+	    start
+	fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+	;;
+    umstart)
+	um_start
+	;;
+    stop)
+	if flock ${cfg} ; then
+	    stop
+	fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+	;;
+    umstop)
+	um_stop
+	;;
+    restart)
+	if flock ${cfg} ; then
+	    stop
+	    sleep 2
+	    start
+	fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+	;;
+    *)
+	echo "error: invalid option $@"
+	echo "Usage: $0 status|start|stop|restart"
+	RETVAL=1
+	;;
+esac
+
+exit ${RETVAL}

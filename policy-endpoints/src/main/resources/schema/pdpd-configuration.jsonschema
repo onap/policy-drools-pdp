@@ -1,0 +1,61 @@
+{
+	"title": "ENGINE-CONFIGURATION",
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"required":false,
+	"properties":{
+		"requestID": {
+			"description": "Unique Transaction ID.   This is an UUID.",
+			"type":"string",
+			"required":true
+		},
+		"entity": {
+			"description": "Set of entities on which configuration can be performed: controller",
+			"type":"string",
+			"required":true
+		},
+		"controllers": {
+			"description": "Controller Information, only applicable when the entity is set to controller",
+			"type":"array",
+			"required":false,
+			"items": {
+				"description": "Drools Related Information",
+				"type":"object",
+				"required":true,
+				"properties":{
+					"name": {
+						"type":"string",
+						"required":true
+					},
+					"operation": {
+						"description": "Set of operations that can be applied to a controller: create, lock",
+						"type":"string",
+						"required":true
+					},
+					"drools": {
+						"description": "Maven Related Information",
+						"type":"object",
+						"required":false,
+						"properties":{
+							"artifactId": {
+								"description": "Maven Artifact ID",
+								"type":"string",
+								"required":true
+							},
+							"groupId": {
+								"description": "Maven Group ID",
+								"type":"string",
+								"required":true
+							},
+							"version": {
+								"description": "Maven Version",
+								"type":"string",
+								"required":true
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
