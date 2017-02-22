@@ -5,3 +5,8 @@
 .pydevproject
 target
 .metadata/
+policy-endpoints/logs/
+policy-persistence/sql/
+policy-persistence/testingLogs/
+policy-utils/debug-logs/
+policy-utils/logs/
