@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.openecomp.policy.drools-pdp</groupId>
     <artifactId>drools-pdp</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
   
   <artifactId>policy-healthcheck</artifactId>
@@ -140,17 +140,17 @@
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-endpoints</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-management</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
