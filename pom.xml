@@ -45,7 +45,7 @@
 		<sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.jacoco.itReportPath>/opt/app/jacoco-it.exec</sonar.jacoco.itReportPath>
 		<sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero>
-		<nexusproxy>https://nexus.openecomp.org</nexusproxy>
+		<nexusproxy>https://nexus.onap.org</nexusproxy>
 	</properties>
 
 	<modules>
