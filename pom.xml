@@ -47,6 +47,7 @@
 		<sonar.jacoco.itReportPath>/opt/app/jacoco-it.exec</sonar.jacoco.itReportPath>
 		<sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
+                <sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
 	</properties>
 
 	<modules>
@@ -107,8 +108,8 @@
 			<url>${nexusproxy}/content/repositories/snapshots/</url>
 		</snapshotRepository>
 		<site>
-			<id>ecomp-javadoc</id>
-			<url>dav:https://ecomp-nexus:8443/repository/policy-javadoc/${project.version}</url>
+			<id>ecomp-site</id>
+			<url>dav:${nexusproxy}${sitePath}</url>
 		</site>
 	</distributionManagement>
 
@@ -205,6 +206,18 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-site-plugin</artifactId>
+			  <version>3.6</version>
+			  <dependencies>
+			    <dependency>
+			      <groupId>org.apache.maven.wagon</groupId>
+			      <artifactId>wagon-webdav-jackrabbit</artifactId>
+			      <version>2.10</version>
+			    </dependency>
+			  </dependencies>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -233,4 +246,25 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<reporting>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-javadoc-plugin</artifactId>
+	      <version>2.10.4</version>
+	      <configuration>
+		<failOnError>false</failOnError>
+		<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+		<docletArtifact>
+		  <groupId>org.umlgraph</groupId>
+		  <artifactId>umlgraph</artifactId>
+		  <version>5.6</version>
+		</docletArtifact>
+		<additionalparam>-views</additionalparam>
+		<useStandardDocletOptions>true</useStandardDocletOptions>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</reporting>
+
 </project>
