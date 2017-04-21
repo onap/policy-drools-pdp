@@ -24,16 +24,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.openecomp.policy.drools.event.comm.bus.internal.SingleThreadedDmaapTopicSource;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.properties.PolicyProperties;
+
 /**
  * DMAAP Topic Source Factory
  */
 public interface DmaapTopicSourceFactory {
+	public final String DME2_READ_TIMEOUT_PROPERTY = "AFT_DME2_EP_READ_TIMEOUT_MS";
+	public final String DME2_EP_CONN_TIMEOUT_PROPERTY = "AFT_DME2_EP_CONN_TIMEOUT";
+	public final String DME2_ROUNDTRIP_TIMEOUT_PROPERTY = "AFT_DME2_ROUNDTRIP_TIMEOUT_MS";
+	public final String DME2_VERSION_PROPERTY = "Version";
+	public final String DME2_ROUTE_OFFER_PROPERTY = "routeOffer";
+	public final String DME2_SERVICE_NAME_PROPERTY = "ServiceName";
+	public final String DME2_SUBCONTEXT_PATH_PROPERTY = "SubContextPath";
+	public final String DME2_SESSION_STICKINESS_REQUIRED_PROPERTY = "sessionstickinessrequired";
 	
 	/**
 	 * Creates an DMAAP Topic Source based on properties files
@@ -60,6 +70,8 @@ public interface DmaapTopicSourceFactory {
 	 * @param fetchTimeout Read Fetch Timeout
 	 * @param fetchLimit Fetch Limit
 	 * @param managed is this endpoind managed?
+	 * @param useHttps does the connection use HTTPS?
+	 * @param allowSelfSignedCerts does connection allow self-signed certificates?
 	 * 
 	 * @return an DMAAP Topic Source
 	 * @throws IllegalArgumentException if invalid parameters are present
@@ -74,7 +86,56 @@ public interface DmaapTopicSourceFactory {
 								String consumerInstance,
 								int fetchTimeout,
 								int fetchLimit,
-								boolean managed)
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts)
+			throws IllegalArgumentException;
+	
+	/**
+	 * Instantiates a new DMAAP Topic Source
+	 * 
+	 * @param servers list of servers
+	 * @param topic topic name
+	 * @param apiKey API Key
+	 * @param apiSecret API Secret
+	 * @param userName user name
+	 * @param password password
+	 * @param consumerGroup Consumer Group
+	 * @param consumerInstance Consumer Instance
+	 * @param fetchTimeout Read Fetch Timeout
+	 * @param fetchLimit Fetch Limit
+	 * @param environment DME2 environment
+	 * @param aftEnvironment DME2 AFT environment
+	 * @param partner DME2 Partner
+	 * @param latitude DME2 latitude
+	 * @param longitude DME2 longitude
+	 * @param additionalProps additional properties to pass to DME2
+	 * @param managed is this endpoind managed?
+	 * @param useHttps does the connection use HTTPS?
+	 * @param allowSelfSignedCerts does connection allow self-signed certificates?
+	 * 
+	 * @return an DMAAP Topic Source
+	 * @throws IllegalArgumentException if invalid parameters are present
+	 */
+	public DmaapTopicSource build(List<String> servers, 
+								String topic, 
+								String apiKey, 
+								String apiSecret, 
+								String userName, 
+								String password,
+								String consumerGroup, 
+								String consumerInstance,
+								int fetchTimeout,
+								int fetchLimit,
+								String environment,
+								String aftEnvironment,
+								String partner,
+								String latitude,
+								String longitude,
+								Map<String,String> additionalProps,
+								boolean managed,
+								boolean useHttps, 
+								boolean allowSelfSignedCerts)
 			throws IllegalArgumentException;
 	
 	/**
@@ -104,7 +165,7 @@ public interface DmaapTopicSourceFactory {
 	 * @return an DMAAP Topic Source
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public DmaapTopicSource build(List<String> servers, 
+	public DmaapTopicSource build(List<String> servers,
 								String topic)
 			throws IllegalArgumentException;	
 	
@@ -154,7 +215,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	 */
 	protected HashMap<String, DmaapTopicSource> dmaapTopicSources =
 			new HashMap<String, DmaapTopicSource>();
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -169,7 +230,15 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 								String consumerInstance,
 								int fetchTimeout,
 								int fetchLimit,
-								boolean managed) 
+								String environment,
+								String aftEnvironment,
+								String partner,
+								String latitude,
+								String longitude,
+								Map<String,String> additionalProps,
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts) 
 			throws IllegalArgumentException {
 		
 		if (topic == null || topic.isEmpty()) {
@@ -185,7 +254,53 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 					new SingleThreadedDmaapTopicSource(servers, topic, 
 													 apiKey, apiSecret, userName, password,
 													 consumerGroup, consumerInstance, 
-													 fetchTimeout, fetchLimit);
+													 fetchTimeout, fetchLimit,
+													 environment, aftEnvironment, partner,
+													 latitude, longitude, additionalProps, useHttps, allowSelfSignedCerts);
+			
+			if (managed)
+				dmaapTopicSources.put(topic, dmaapTopicSource);
+			
+			return dmaapTopicSource;
+		}
+	}
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public DmaapTopicSource build(List<String> servers, 
+								String topic, 
+								String apiKey, 
+								String apiSecret, 
+								String userName, 
+								String password,
+								String consumerGroup, 
+								String consumerInstance,
+								int fetchTimeout,
+								int fetchLimit,
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts) 
+			throws IllegalArgumentException {
+		
+		if (servers == null || servers.isEmpty()) {
+			throw new IllegalArgumentException("DMaaP Server(s) must be provided");
+		}
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("A topic must be provided");
+		}
+		
+		synchronized(this) {
+			if (dmaapTopicSources.containsKey(topic)) {
+				return dmaapTopicSources.get(topic);
+			}
+			
+			DmaapTopicSource dmaapTopicSource = 
+					new SingleThreadedDmaapTopicSource(servers, topic, 
+													 apiKey, apiSecret, userName, password,
+													 consumerGroup, consumerInstance, 
+													 fetchTimeout, fetchLimit, useHttps,allowSelfSignedCerts);
 			
 			if (managed)
 				dmaapTopicSources.put(topic, dmaapTopicSource);
@@ -216,12 +331,9 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
                                                         topic + 
                                                         PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				
-				if (servers == null || servers.isEmpty()) {
-					logger.error("No UEB servers provided in " + properties);
-					continue;
-				}
-				
-				List<String> serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				List<String> serverList;
+				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				else serverList = new ArrayList<>();
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + 
                         							   "." + topic + 
@@ -250,6 +362,70 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 				String fetchTimeoutString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + 
 						                                           "." + topic + 
                                                                    PolicyProperties.PROPERTY_TOPIC_SOURCE_FETCH_TIMEOUT_SUFFIX);
+				
+				/* DME2 Properties */
+				
+				String dme2Environment = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX);
+
+				String dme2AftEnvironment = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX);
+
+				String dme2Partner = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_PARTNER_SUFFIX);
+				
+				String dme2RouteOffer = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_ROUTE_OFFER_SUFFIX);
+
+				String dme2Latitude = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX);
+
+				String dme2Longitude = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX);
+
+				String dme2EpReadTimeoutMs = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_EP_READ_TIMEOUT_MS_SUFFIX);
+
+				String dme2EpConnTimeout = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_EP_CONN_TIMEOUT_SUFFIX);
+
+				String dme2RoundtripTimeoutMs = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS
+						+ "." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_ROUNDTRIP_TIMEOUT_MS_SUFFIX);
+
+				String dme2Version = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_VERSION_SUFFIX);
+
+				String dme2SubContextPath = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_SUB_CONTEXT_PATH_SUFFIX);
+
+				String dme2SessionStickinessRequired = properties
+						.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
+								+ PolicyProperties.PROPERTY_DMAAP_DME2_SESSION_STICKINESS_REQUIRED_SUFFIX);
+				
+				Map<String,String> dme2AdditionalProps = new HashMap<>();
+				
+				if (dme2EpReadTimeoutMs != null && !dme2EpReadTimeoutMs.isEmpty())
+					dme2AdditionalProps.put(DME2_READ_TIMEOUT_PROPERTY, dme2EpReadTimeoutMs);
+				if (dme2EpConnTimeout != null && !dme2EpConnTimeout.isEmpty())
+					dme2AdditionalProps.put(DME2_EP_CONN_TIMEOUT_PROPERTY, dme2EpConnTimeout);
+				if (dme2RoundtripTimeoutMs != null && !dme2RoundtripTimeoutMs.isEmpty())
+					dme2AdditionalProps.put(DME2_ROUNDTRIP_TIMEOUT_PROPERTY, dme2RoundtripTimeoutMs);
+				if (dme2Version != null && !dme2Version.isEmpty())
+					dme2AdditionalProps.put(DME2_VERSION_PROPERTY, dme2Version);
+				if (dme2RouteOffer != null && !dme2RouteOffer.isEmpty())
+					dme2AdditionalProps.put(DME2_ROUTE_OFFER_PROPERTY, dme2RouteOffer);
+				if (dme2SubContextPath != null && !dme2SubContextPath.isEmpty())
+					dme2AdditionalProps.put(DME2_SUBCONTEXT_PATH_PROPERTY, dme2SubContextPath);
+				if (dme2SessionStickinessRequired != null && !dme2SessionStickinessRequired.isEmpty())
+					dme2AdditionalProps.put(DME2_SESSION_STICKINESS_REQUIRED_PROPERTY, dme2SessionStickinessRequired);
+				
+				
+				if (servers == null || servers.isEmpty()) {
+
+					logger.error("No DMaaP servers or DME2 ServiceName provided");
+					continue;
+				}
+				
 				int fetchTimeout = DmaapTopicSource.DEFAULT_TIMEOUT_MS_FETCH;
 				if (fetchTimeoutString != null && !fetchTimeoutString.isEmpty()) {
 					try {
@@ -279,10 +455,33 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 					managed = Boolean.parseBoolean(managedString);
 				}
 				
+				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_HTTP_HTTPS_SUFFIX);
+
+					//default is to use HTTP if no https property exists
+				boolean useHttps = false;
+				if (useHttpsString != null && !useHttpsString.isEmpty()){
+					useHttps = Boolean.parseBoolean(useHttpsString);
+				}
+				
+				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX);
+
+					//default is to disallow self-signed certs 
+				boolean allowSelfSignedCerts = false;
+				if (allowSelfSignedCertsString != null && !allowSelfSignedCertsString.isEmpty()){
+					allowSelfSignedCerts = Boolean.parseBoolean(allowSelfSignedCertsString);
+				}				
+				
+				
 				DmaapTopicSource uebTopicSource = this.build(serverList, topic, 
 						   						           apiKey, apiSecret, aafMechId, aafPassword,
 						   						           consumerGroup, consumerInstance, 
-						   						           fetchTimeout, fetchLimit, managed);
+						   						           fetchTimeout, fetchLimit, 
+						   						           dme2Environment, dme2AftEnvironment, dme2Partner,
+						   						           dme2Latitude, dme2Longitude, dme2AdditionalProps,
+						   						           managed, useHttps, allowSelfSignedCerts);
+				
 				dmaapTopicSource_s.add(uebTopicSource);
 			}
 		}
@@ -291,25 +490,29 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws IllegalArgumentException 
 	 */
 	@Override
 	public DmaapTopicSource build(List<String> servers, 
 								String topic,
 								String apiKey, 
-								String apiSecret) {
+								String apiSecret) throws IllegalArgumentException {
 		return this.build(servers, topic, 
 				  		  apiKey, apiSecret, null, null,
 				  		  null, null,
 				  		  DmaapTopicSource.DEFAULT_TIMEOUT_MS_FETCH,
 				  		  DmaapTopicSource.DEFAULT_LIMIT_FETCH,
-				  		  true);
+				  		  true,
+				  		  false,
+				  		  false);
 	}
 
 	/**
 	 * {@inheritDoc}
+	 * @throws IllegalArgumentException 
 	 */
 	@Override
-	public DmaapTopicSource build(List<String> servers, String topic) {
+	public DmaapTopicSource build(List<String> servers, String topic) throws IllegalArgumentException {
 		return this.build(servers, topic, null, null);
 	}	
 
@@ -352,7 +555,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 			if (dmaapTopicSources.containsKey(topic)) {
 				return dmaapTopicSources.get(topic);
 			} else {
-				throw new IllegalArgumentException("DmaapTopicSource for " + topic + " not found");
+				throw new IllegalArgumentException("DmaapTopiceSource for " + topic + " not found");
 			}
 		}
 	}

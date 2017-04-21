@@ -519,11 +519,13 @@ public class MavenDroolsController implements DroolsController {
 					                                      this.getArtifactId(), 
 					                                      topic, 
 					                                      event);
+		} catch (UnsupportedOperationException uoe) {
+			if (logger.isInfoEnabled())
+				logger.info("DECODE:"+ this + ":" + topic + ":" + event);
+			return true;
 		} catch (Exception e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, 
-					           "DECODE:"+ this.getGroupId() + ":" + 
-					           this.getArtifactId() + ":" + topic + ":" + event, 
-					           this.toString());
+			e.printStackTrace();
+			logger.error("DECODE:"+ this + ":" + topic + ":" + event);
 			return true;
 		}
 		
@@ -709,8 +711,7 @@ public class MavenDroolsController implements DroolsController {
 		builder.append("MavenDroolsController [policyContainer=")
 		       .append((policyContainer != null) ? policyContainer.getName() : "NULL").append(":")
 		       .append(", alive=")
-			   .append(alive).append(", locked=").append(locked).append(", decoderConfigurations=")
-			   .append(decoderConfigurations).append(", encoderConfigurations=").append(encoderConfigurations)
+			   .append(alive).append(", locked=")
 			   .append(", modelClassLoaderHash=").append(modelClassLoaderHash).append("]");
 		return builder.toString();
 	}

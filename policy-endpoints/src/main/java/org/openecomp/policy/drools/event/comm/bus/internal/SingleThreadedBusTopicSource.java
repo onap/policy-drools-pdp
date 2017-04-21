@@ -98,6 +98,7 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	protected final ArrayList<TopicListener> topicListeners = new ArrayList<TopicListener>();
 	
+
 	/**
 	 * 
 	 * @param servers Bus servers
@@ -108,6 +109,8 @@ public abstract class SingleThreadedBusTopicSource
 	 * @param consumerInstance Bus Reader Instance
 	 * @param fetchTimeout Bus fetch timeout
 	 * @param fetchLimit Bus fetch limit
+	 * @param useHttps does the bus use https
+	 * @param allowSelfSignedCerts are self-signed certificates allowed
 	 * @throws IllegalArgumentException An invalid parameter passed in
 	 */
 	public SingleThreadedBusTopicSource(List<String> servers, 
@@ -117,10 +120,12 @@ public abstract class SingleThreadedBusTopicSource
 			                  			String consumerGroup, 
 			                  			String consumerInstance,
 			                  			int fetchTimeout,
-			                  			int fetchLimit) 
+			                  			int fetchLimit,
+			                  			boolean useHttps,
+			                  			boolean allowSelfSignedCerts) 
 	throws IllegalArgumentException {
 		
-		super(servers, topic, apiKey, apiSecret);
+		super(servers, topic, apiKey, apiSecret, useHttps, allowSelfSignedCerts);
 		
 		if (consumerGroup == null || consumerGroup.isEmpty()) {
 			this.consumerGroup = UUID.randomUUID ().toString();
@@ -145,6 +150,7 @@ public abstract class SingleThreadedBusTopicSource
 		} else {
 			this.fetchLimit = fetchLimit;
 		}
+		
 	}
 	
 	/**

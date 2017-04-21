@@ -317,18 +317,18 @@ public class AggregatedPolicyController implements PolicyController,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean onTopicEvent(Topic.CommInfrastructure commType, 
+	public void onTopicEvent(Topic.CommInfrastructure commType, 
 			                    String topic, String event) {
 
 		logger.info("EVENT NOTIFICATION: " + commType + ":" + topic + ":" + event +  " INTO " + this);
 		
 		if (this.locked)
-			return false;
+			return;
 		
 		if (!this.alive)
-			return true;
+			return;
 		
-		return this.droolsController.offer(topic, event);
+		this.droolsController.offer(topic, event);
 	}
 	
 	/**
@@ -444,8 +444,7 @@ public class AggregatedPolicyController implements PolicyController,
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("AggregatedPolicyController [name=").append(name).append(", sources=").append(sources)
-				.append(", sinks=").append(sinks).append(", alive=").append(alive).append(", locked=").append(locked)
+		builder.append("AggregatedPolicyController [name=").append(name).append(", alive=").append(alive).append(", locked=").append(locked)
 				.append(", droolsController=").append(droolsController).append("]");
 		return builder.toString();
 	}

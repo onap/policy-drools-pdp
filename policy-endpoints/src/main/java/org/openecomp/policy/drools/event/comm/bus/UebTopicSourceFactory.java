@@ -71,7 +71,9 @@ public interface UebTopicSourceFactory {
 								String consumerInstance,
 								int fetchTimeout,
 								int fetchLimit,
-								boolean managed)
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts)
 			throws IllegalArgumentException;
 	
 	/**
@@ -162,8 +164,13 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 								String consumerInstance,
 								int fetchTimeout,
 								int fetchLimit,
-								boolean managed) 
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts) 
 	throws IllegalArgumentException {
+		if (servers == null || servers.isEmpty()) {
+			throw new IllegalArgumentException("UEB Server(s) must be provided");
+		}
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -178,7 +185,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 					new SingleThreadedUebTopicSource(servers, topic, 
 													 apiKey, apiSecret,
 													 consumerGroup, consumerInstance, 
-													 fetchTimeout, fetchLimit);
+													 fetchTimeout, fetchLimit, useHttps, allowSelfSignedCerts);
 			
 			if (managed)
 				uebTopicSources.put(topic, uebTopicSource);
@@ -263,10 +270,28 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 					managed = Boolean.parseBoolean(managedString);
 				}
 			
+				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_HTTP_HTTPS_SUFFIX);
+
+					//default is to use HTTP if no https property exists
+				boolean useHttps = false;
+				if (useHttpsString != null && !useHttpsString.isEmpty()){
+					useHttps = Boolean.parseBoolean(useHttpsString);
+				}
+
+				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX);
+
+					//default is to disallow self-signed certs 
+				boolean allowSelfSignedCerts = false;
+				if (allowSelfSignedCertsString != null && !allowSelfSignedCertsString.isEmpty()){
+					allowSelfSignedCerts = Boolean.parseBoolean(allowSelfSignedCertsString);
+				}
+				
 				UebTopicSource uebTopicSource = this.build(serverList, topic, 
 						   						           apiKey, apiSecret,
 						   						           consumerGroup, consumerInstance, 
-						   						           fetchTimeout, fetchLimit, managed);
+						   						           fetchTimeout, fetchLimit, managed, useHttps, allowSelfSignedCerts);
 				uebTopicSources.add(uebTopicSource);
 			}
 		}
@@ -281,11 +306,12 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 								String topic,
 								String apiKey, 
 								String apiSecret) {
+		
 		return this.build(servers, topic, 
 				  		  apiKey, apiSecret,
 				  		  null, null,
 				  		  UebTopicSource.DEFAULT_TIMEOUT_MS_FETCH,
-				  		  UebTopicSource.DEFAULT_LIMIT_FETCH, true);
+				  		  UebTopicSource.DEFAULT_LIMIT_FETCH, true, false, true);
 	}
 
 	/**

@@ -46,6 +46,8 @@ public interface PolicyProperties {
 	
 	public static final String PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX =".partitionKey";
 	
+	public static final String PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX = ".selfSignedCertificates";
+		
 	/* UEB Properties */
 	
 	public static final String PROPERTY_UEB_SOURCE_TOPICS = "ueb.source.topics";	
@@ -55,6 +57,21 @@ public interface PolicyProperties {
 	
 	public static final String PROPERTY_DMAAP_SOURCE_TOPICS = "dmaap.source.topics";
 	public static final String PROPERTY_DMAAP_SINK_TOPICS = "dmaap.sink.topics";
+	
+	public static final String PROPERTY_DMAAP_DME2_PARTNER_SUFFIX = ".dme2.partner";
+	public static final String PROPERTY_DMAAP_DME2_ROUTE_OFFER_SUFFIX = ".dme2.routeOffer";
+	public static final String PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX = ".dme2.environment";
+	public static final String PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX = ".dme2.aft.environment";
+	public static final String PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX = ".dme2.latitude";
+	public static final String PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX = ".dme2.longitude";
+	
+	public static final String PROPERTY_DMAAP_DME2_EP_READ_TIMEOUT_MS_SUFFIX = ".dme2.epReadTimeoutMs";
+	public static final String PROPERTY_DMAAP_DME2_EP_CONN_TIMEOUT_SUFFIX = ".dme2.epConnTimeout";
+	public static final String PROPERTY_DMAAP_DME2_ROUNDTRIP_TIMEOUT_MS_SUFFIX = ".dme2.roundtripTimeoutMs";
+	public static final String PROPERTY_DMAAP_DME2_VERSION_SUFFIX = ".dme2.version";
+	public static final String PROPERTY_DMAAP_DME2_SERVICE_NAME_SUFFIX = ".dme2.serviceName";
+	public static final String PROPERTY_DMAAP_DME2_SUB_CONTEXT_PATH_SUFFIX = ".dme2.subContextPath";
+	public static final String PROPERTY_DMAAP_DME2_SESSION_STICKINESS_REQUIRED_SUFFIX = ".dme2.sessionStickinessRequired";
 	
 	/* HTTP Server Properties */
 	

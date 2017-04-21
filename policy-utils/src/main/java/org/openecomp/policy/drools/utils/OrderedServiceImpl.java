@@ -22,6 +22,7 @@ package org.openecomp.policy.drools.utils;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -80,7 +81,7 @@ public class OrderedServiceImpl<T extends OrderedService>
 	List<T> tmp = new LinkedList<T>();
 	for (T service : serviceLoader)
 	  {
-		tmp.add(service);
+		tmp.add((T)getSingleton(service));
 	  }
 
 	// Sort the list according to sequence number, and then alphabetically
@@ -113,5 +114,35 @@ public class OrderedServiceImpl<T extends OrderedService>
 	implementers = Collections.unmodifiableList(tmp);
 	System.out.println("***** OrderedServiceImpl implementers:\n" + implementers);
 	return(implementers);
+  }
+
+  // use this to ensure that we only use one unique instance of each class
+  static private HashMap<Class,OrderedService> classToSingleton =
+	new HashMap<>();
+
+  /**
+   * If a service implements multiple APIs managed by 'ServiceLoader', a
+   * separate instance is created for each API. This method ensures that
+   * the first instance is used in all of the lists.
+   *
+   * @param service this is the object created by ServiceLoader
+   * @return the object to use in place of 'service'. If 'service' is the first
+   *	object of this class created by ServiceLoader, it is returned. If not,
+   *	the object of this class that was initially created is returned
+   *	instead.
+   */
+  static private synchronized OrderedService
+	getSingleton(OrderedService service)
+  {
+	// see if we already have an instance of this class
+	OrderedService rval = classToSingleton.get(service.getClass());
+	if (rval == null)
+	  {
+		// No previous instance of this class exists -- use the supplied
+		// instance, and place it in the table.
+		rval = service;
+		classToSingleton.put(service.getClass(), service);
+	  }
+	return(rval);
   }
 }

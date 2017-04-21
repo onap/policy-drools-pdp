@@ -79,8 +79,12 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	logger.info("Running 'RepositoryAudit.invoke'");
 	
 	boolean isActive = true;
+	boolean ignoreErrors = true;		// ignore errors by default
 	String repoAuditIsActive = IntegrityMonitorProperties.getProperty("repository.audit.is.active");
-	logger.debug("RepositoryAudit.invoke: repoAuditIsActive = " + repoAuditIsActive);
+	String repoAuditIgnoreErrors =
+	  IntegrityMonitorProperties.getProperty("repository.audit.ignore.errors");
+	logger.debug("RepositoryAudit.invoke: repoAuditIsActive = " + repoAuditIsActive
+				 + ", repoAuditIgnoreErrors = " + repoAuditIgnoreErrors);
 	
 	if (repoAuditIsActive != null) {
 		try {
@@ -94,6 +98,18 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		logger.info("RepositoryAudit.invoke: exiting because isActive = " + isActive);
 		return;
 	}
+
+	if (repoAuditIgnoreErrors != null)
+	  {
+		try
+		  {
+			ignoreErrors = Boolean.parseBoolean(repoAuditIgnoreErrors.trim());
+		  }
+		catch (NumberFormatException e)
+		  {
+			logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.ignore.errors = " + repoAuditIgnoreErrors);
+		  }
+	  }
 
 	// Fetch repository information from 'IntegrityMonitorProperties'
 	String repositoryId =
@@ -126,9 +142,12 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			logger.error
 			  ("RepositoryAudit: Invalid 'repository.audit.timeout' value: '"
 			   + timeoutString + "'");
-			response.append("Invalid 'repository.audit.timeout' value: '")
-			  .append(timeoutString).append("'\n");
-			setResponse(response.toString());
+			if (!ignoreErrors)
+			  {
+				response.append("Invalid 'repository.audit.timeout' value: '")
+				  .append(timeoutString).append("'\n");
+				setResponse(response.toString());
+			  }
 		  }
 	  }
 
@@ -191,8 +210,11 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		  {
 			logger.error
 			  ("RepositoryAudit: 'mvn deploy:deploy-file' failed");
-			response.append("'mvn deploy:deploy-file' failed\n");
-			setResponse(response.toString());
+			if (!ignoreErrors)
+			  {
+				response.append("'mvn deploy:deploy-file' failed\n");
+				setResponse(response.toString());
+			  }
 		  }
 		else
 		  {
@@ -295,8 +317,11 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	  {
 		logger.error
 		  ("RepositoryAudit: 'mvn compile' invocation failed");
-		response.append("'mvn compile' invocation failed\n");
-		setResponse(response.toString());
+		if (!ignoreErrors)
+		  {
+			response.append("'mvn compile' invocation failed\n");
+			setResponse(response.toString());
+		  }
 	  }
 
 	/*
@@ -362,9 +387,12 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			// Audit ERROR: artifact download failed for some reason
 			logger.error("RepositoryAudit: "
 							   + artifact.toString() + ": does not exist");
-			response.append("Failed to download artifact: ")
-			  .append(artifact).append('\n');
-			setResponse(response.toString());
+			if (!ignoreErrors)
+			  {
+				response.append("Failed to download artifact: ")
+				  .append(artifact).append('\n');
+				setResponse(response.toString());
+			  }
 		  }
 	  }
 
@@ -385,8 +413,11 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		  {
 			logger.error
 			  ("RepositoryAudit: delete of uploaded artifact failed");
-			response.append("delete of uploaded artifact failed\n");
-			setResponse(response.toString());
+			if (!ignoreErrors)
+			  {
+				response.append("delete of uploaded artifact failed\n");
+				setResponse(response.toString());
+			  }
 		  }
 		else
 		  {

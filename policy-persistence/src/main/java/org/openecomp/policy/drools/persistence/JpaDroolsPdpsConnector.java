@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
@@ -54,7 +55,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 		try {
 			em.getTransaction().begin();
 			Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p");
-			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.PESSIMISTIC_READ).getResultList();		
+			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			LinkedList<DroolsPdp> droolsPdpsReturnList = new LinkedList<DroolsPdp>();
 			for(Object o : droolsPdpsList){
 				if(o instanceof DroolsPdp){
@@ -105,7 +106,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 			em.getTransaction().begin();
 			Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
 			droolsPdpsListQuery.setParameter("pdpId", pdp.getPdpId());
-			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.PESSIMISTIC_WRITE).getResultList();
+			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			//em.getTransaction().begin();
 			DroolsPdpEntity droolsPdpEntity;
 			if(droolsPdpsList.size() == 1 && (droolsPdpsList.get(0) instanceof DroolsPdpEntity)){						
@@ -210,7 +211,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 			em.getTransaction().begin();
 			Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
 			droolsPdpsListQuery.setParameter("pdpId", pdp.getPdpId());
-			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.PESSIMISTIC_WRITE).getResultList();
+			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			if(droolsPdpsList.size() == 1 && droolsPdpsList.get(0) instanceof DroolsPdpEntity){			
 				if (logger.isDebugEnabled()) {
 					logger.debug("isPdpCurrent: PDP=" + pdp.getPdpId() + " designated but not current; setting designated to false");
@@ -254,7 +255,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 					.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
 			droolsPdpsListQuery.setParameter("pdpId", pdp.getPdpId());
 			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
-					LockModeType.PESSIMISTIC_WRITE).getResultList();
+					LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			if (droolsPdpsList.size() == 1
 					&& droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
 				DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList
@@ -306,7 +307,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 					.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
 			droolsPdpsListQuery.setParameter("pdpId", pdpId);
 			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
-					LockModeType.PESSIMISTIC_WRITE).getResultList();
+					LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			DroolsPdpEntity droolsPdpEntity;
 			if (droolsPdpsList.size() == 1
 					&& (droolsPdpsList.get(0) instanceof DroolsPdpEntity)) {
@@ -460,7 +461,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 					.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
 			droolsPdpsListQuery.setParameter("pdpId", pdpId);
 			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
-					LockModeType.PESSIMISTIC_WRITE).getResultList();
+					LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			if (droolsPdpsList.size() == 1
 					&& droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
 				droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
@@ -553,7 +554,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 					.createQuery("SELECT p FROM DroolsPdpEntity p");
 			@SuppressWarnings("unchecked")
 			List<DroolsPdp> droolsPdpsList = droolsPdpsListQuery.setLockMode(
-					LockModeType.NONE).getResultList();
+					LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			logger.info("deleteAllPdps: Deleting " + droolsPdpsList.size() + " PDPs");
 			for (DroolsPdp droolsPdp : droolsPdpsList) {
 				String pdpId = droolsPdp.getPdpId();
@@ -634,7 +635,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 					.createQuery("SELECT p FROM DroolsSessionEntity p");
 			@SuppressWarnings("unchecked")
 			List<DroolsSession> droolsSessionsList = droolsSessionListQuery.setLockMode(
-					LockModeType.NONE).getResultList();
+					LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
 			logger.info("deleteAllSessions: Deleting " + droolsSessionsList.size() + " Sessions");
 			for (DroolsSession droolsSession : droolsSessionsList) {
 				logger.info("deleteAllSessions: Deleting droolsSession with pdpId="

@@ -22,23 +22,18 @@ package org.openecomp.policy.drools.core;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 
 import org.openecomp.policy.common.im.IntegrityMonitor;
-import org.openecomp.policy.common.logging.flexlogger.PropertyUtil;
+import org.openecomp.policy.common.logging.eelf.MessageCodes;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.drools.persistence.DroolsPdpsElectionHandler;
+import org.openecomp.policy.common.logging.flexlogger.PropertyUtil;
+import org.openecomp.policy.drools.http.server.HttpServletServer;
 import org.openecomp.policy.drools.persistence.XacmlPersistenceProperties;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import org.openecomp.policy.drools.properties.Startable;
 
 /**
  * This class extends 'IntegrityMonitor' for use in the 'Drools PDP'
@@ -233,11 +228,11 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	// create http server
 	try {
 		logger.info("init: Starting HTTP server, addr=" + addr);
-		HttpServer server = HttpServer.create(addr, 0);
-		server.createContext("/test", new TestHandler());
-		server.setExecutor(null);
-		server.start();
-			System.out.println("init: Started server on hostPort=" + hostPort);
+		IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
+		
+		server.init(integrityMonitorProperties);
+
+		System.out.println("init: Started server on hostPort=" + hostPort);
 	} catch (Exception e) {
 			if (PolicyContainer.isUnitTesting) {
 				System.out
@@ -378,100 +373,59 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	 */
 	abstract void invoke(Properties droolsPersistenceProperties) throws Exception;
   }
-
-  /* ============================================================ */
-
-  /**
-   * This class is the HTTP handler for the REST 'test' invocation
-   */
-  static class TestHandler implements HttpHandler
-  {
-	/**
-	 * Handle an incoming REST 'test' invocation
-	 * @param ex used to pass incoming and outgoing HTTP information
-	 */
-	@Override
-	  public void handle(HttpExchange ex) throws IOException
-	{
-		
-		  System.out.println("TestHandler.handle: Entering");
-
-	  // The responses are stored within the audit objects, so we need to
-	  // invoke the audits and get responses before we handle another
-	  // request.
-	  synchronized(TestHandler.class)
-		{
-		  // will include messages associated with subsystem failures
-		  StringBuilder body = new StringBuilder();
-
-		  // 200=SUCCESS, 500=failure
-		  int responseValue = 200;
-
-		  if (im != null)
-			{
-			  try
-				{
-				  // call 'IntegrityMonitor.evaluateSanity()'
-				  im.evaluateSanity();
+  
+  	public static class IntegrityMonitorRestServer implements Startable {
+  		protected volatile HttpServletServer server = null;
+  		protected volatile Properties integrityMonitorRestServerProperties = null;
+  		
+  		public void init(Properties props) {
+			this.integrityMonitorRestServerProperties = props;
+			this.start();
+  		}
+  		
+  		@Override
+		public boolean start() throws IllegalStateException {
+			try {
+				ArrayList<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
+				
+				if (!servers.isEmpty()) {
+					server = servers.get(0);
+					
+					try {
+						server.start();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			  catch (Exception e)
-				{
-				  // this exception isn't coming from one of the audits,
-				  // because those are caught in 'subsystemTest()'
-				  logger.error
-					(MessageCodes.EXCEPTION_ERROR, e,
-					 "DroolsPDPIntegrityMonitor.evaluateSanity()");
-
-				  // include exception in HTTP response
-				  body.append("\nException: " + e + "\n");
-				  responseValue = 500;
-				}
+			} catch (Exception e) {
+				return false;
 			}
-/*
- * Audit failures are being logged. A string will be generated which captures the 
- * the audit failures. This string will be included in an exception coming from im.evaluateSanity().
- * 
-		  // will contain list of subsystems where the audit failed
-		  LinkedList<String> subsystems = new LinkedList<String>();
-
-		  // Loop through all of the audits, and see which ones have failed.
-		  // NOTE: response information is stored within the audit objects
-		  // themselves -- only one can run at a time.
-		  for (AuditBase audit : audits)
-			{
-			  String response = audit.getResponse();
-			  if (response != null)
-				{
-				  // the audit has failed -- update 'subsystems', 'body',
-				  // and 'responseValue' with the new information
-				  subsystems.add(audit.getName());
-				  body
-					.append('\n')
-					.append(audit.getName())
-					.append(":\n")
-					.append(response)
-					.append('\n');
-				  responseValue = 500;
-				}
-			}
-
-		  if (subsystems.size() != 0)
-			{
-			  // there is at least one failure -- add HTTP headers
-			  ex.getResponseHeaders().put("X-ECOMP-SubsystemFailure",
-										  subsystems);
-			}
-*/
-		  // send response, including the contents of 'body'
-		  // (which is empty if everything is successful)
-		  ex.sendResponseHeaders(responseValue, body.length());
-		  OutputStream os = ex.getResponseBody();
-		  os.write(body.toString().getBytes());
-		  os.close();
-		  System.out.println("TestHandler.handle: Exiting");
+			
+			return true;
 		}
-	}
-  }
+
+  		@Override
+		public boolean stop() throws IllegalStateException {
+			try {
+				server.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+		}
+
+		@Override
+		public void shutdown() throws IllegalStateException {
+			this.stop();
+		}
+		
+		@Override
+		public synchronized boolean isAlive() {
+			return this.integrityMonitorRestServerProperties != null;
+		}
+  	}
+
 	public static DroolsPDPIntegrityMonitor getInstance() throws Exception{
 		logger.info("getInstance() called");
 		if (im == null) {

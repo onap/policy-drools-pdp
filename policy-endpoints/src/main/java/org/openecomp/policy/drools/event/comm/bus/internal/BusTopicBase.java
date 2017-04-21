@@ -23,7 +23,6 @@ package org.openecomp.policy.drools.event.comm.bus.internal;
 import java.util.List;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
-
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.bus.BusTopic;
 
@@ -35,13 +34,30 @@ public abstract class BusTopicBase implements BusTopic, Topic {
 	
 	protected String apiKey;
 	protected String apiSecret;
+	protected boolean useHttps;
+	protected boolean allowSelfSignedCerts;
 	
 	protected CircularFifoQueue<String> recentEvents = new CircularFifoQueue<String>(10);
 	
+	/**
+	 * Instantiates a new Bus Topic Base
+	 * 
+	 * @param servers list of servers
+	 * @param topic topic name
+	 * @param apiKey API Key
+	 * @param apiSecret API Secret
+	 * @param useHttps does connection use HTTPS?
+	 * @param allowSelfSignedCerts are self-signed certificates allow
+	 *  
+	 * @return a Bus Topic Base
+	 * @throws IllegalArgumentException if invalid parameters are present
+	 */
 	public BusTopicBase(List<String> servers, 
 						  String topic, 
 						  String apiKey, 
-						  String apiSecret) 
+						  String apiSecret,
+						  boolean useHttps,
+						  boolean allowSelfSignedCerts) 
 	throws IllegalArgumentException {
 		
 		if (servers == null || servers.isEmpty()) {
@@ -57,6 +73,8 @@ public abstract class BusTopicBase implements BusTopic, Topic {
 		
 		this.apiKey = apiKey;
 		this.apiSecret = apiSecret;
+		this.useHttps = useHttps;
+		this.allowSelfSignedCerts = allowSelfSignedCerts;
 	}
 	
 	/**
@@ -92,6 +110,20 @@ public abstract class BusTopicBase implements BusTopic, Topic {
 	}
 	
 	/**
+	 * @return useHttps
+	 */
+	public boolean isUseHttps(){
+		return useHttps;
+	}
+
+	/**
+	 * @return allowSelfSignedCerts
+	 */
+	public boolean isAllowSelfSignedCerts(){
+		return allowSelfSignedCerts;
+	}
+	
+	/**
 	 * @return the recentEvents
 	 */
 	@Override
@@ -104,8 +136,13 @@ public abstract class BusTopicBase implements BusTopic, Topic {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("UebTopicBase [servers=").append(servers).append(", topic=").append(topic).append(", apiKey=")
-				.append(apiKey).append(", apiSecret=").append(apiSecret).append("]");
+		builder.append("UebTopicBase [servers=").append(servers)
+			.append(", topic=").append(topic)
+			.append(", apiKey=").append(apiKey)
+			.append(", apiSecret=").append(apiSecret)
+			.append(", useHttps=").append(useHttps)
+			.append(", allowSelfSignedCerts=").append(allowSelfSignedCerts)
+			.append("]");
 		return builder.toString();
 	}
 

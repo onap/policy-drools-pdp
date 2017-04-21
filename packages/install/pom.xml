@@ -67,12 +67,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openecomp.policy.drools-pdp</groupId>
-			<artifactId>policy-core</artifactId>
-			<version>${project.version}</version>
-			<type>zip</type>
-		</dependency>
-		<dependency>
-			<groupId>org.openecomp.policy.drools-pdp</groupId>
 			<artifactId>policy-management</artifactId>
 			<version>${project.version}</version>
 			<type>zip</type>

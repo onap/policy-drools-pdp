@@ -43,10 +43,11 @@ import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.common.logging.flexlogger.PropertyUtil;
 import org.openecomp.policy.drools.core.DroolsPDPIntegrityMonitor;
-import org.openecomp.policy.drools.core.FeatureAPI;
+import org.openecomp.policy.drools.core.PolicySessionFeatureAPI;
 import org.openecomp.policy.drools.core.IntegrityMonitorProperties;
 import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.core.PolicySession;
+import org.openecomp.policy.drools.features.PolicyEngineFeatureAPI;
 import org.openecomp.policy.drools.im.PMStandbyStateChangeNotifier;
 import org.openecomp.policy.drools.system.PolicyEngine;
 
@@ -64,7 +65,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * 'PolicyContainer' and 'Main'. It was moved here as part of making this
  * a separate optional feature.
  */
-public class PersistenceFeature implements FeatureAPI
+public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngineFeatureAPI
 {
   // get an instance of logger
   private static Logger logger =
@@ -199,79 +200,6 @@ public class PersistenceFeature implements FeatureAPI
 	getContainerAdjunct(policySession.getPolicyContainer())
 	  .destroyKieSession();
   }
-  
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-	public void beforeStartEngine() 
-   {
-	 return;
-   }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-   public void afterStartEngine() 
-  {
-  	PolicyEngine.manager.lock();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-	public void beforeShutdownEngine() 
-  {
-	  return;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-	public void beforeCreateController(String name, Properties properties) 
-  {
-	  return;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-	public void afterCreateController(String name) 
-  {
-	  return;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-   public void afterShutdownEngine() 
-  {
-  	return;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-   public void beforeStartController(String name) 
-  {
-	  return;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-   public void afterStartController(String name) 
-  {
-	  return;
-  }
 
   /**
    * {@inheritDoc}
@@ -281,6 +209,107 @@ public class PersistenceFeature implements FeatureAPI
   {
 	return(!persistenceDisabled);
   }
+	
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+	public boolean afterStart(PolicyEngine engine) 
+  {
+	// ASSERTION: engine == PolicyEngine.manager
+    PolicyEngine.manager.lock();
+    return false;
+  }
+	
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+	public boolean beforeStart(PolicyEngine engine) {return false;}
+	
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+	public boolean beforeShutdown(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+	public boolean afterShutdown(PolicyEngine engine) {return false;}
+   
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean beforeConfigure(PolicyEngine engine, Properties properties) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean afterConfigure(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean beforeActivate(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+   public boolean afterActivate(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean beforeDeactivate(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean afterDeactivate(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean beforeStop(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean afterStop(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean beforeLock(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean afterLock(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean beforeUnlock(PolicyEngine engine) {return false;}
+
+   /**
+	* {@inheritDoc}
+	*/
+   @Override
+    public boolean afterUnlock(PolicyEngine engine) {return false;}
 
   /**************************/
 

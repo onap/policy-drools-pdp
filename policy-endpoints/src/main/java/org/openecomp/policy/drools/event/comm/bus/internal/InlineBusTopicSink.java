@@ -83,13 +83,15 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	 * @param apiKey api secret
 	 * @param apiSecret api secret
 	 * @param partitionId partition id
+	 * @param useHttps does connection use HTTPS?
+	 * @param allowSelfSignedCerts are self-signed certificates allow
 	 * @throws IllegalArgumentException in invalid parameters are passed in
 	 */
 	public InlineBusTopicSink(List<String> servers, String topic, 
-			                  String apiKey, String apiSecret, String partitionId)
+			                  String apiKey, String apiSecret, String partitionId, boolean useHttps, boolean allowSelfSignedCerts)
 			throws IllegalArgumentException {
 		
-		super(servers, topic, apiKey, apiSecret);		
+		super(servers, topic, apiKey, apiSecret, useHttps, allowSelfSignedCerts);		
 		
 		if (partitionId == null || partitionId.isEmpty()) {
 			this.partitionId = UUID.randomUUID ().toString();

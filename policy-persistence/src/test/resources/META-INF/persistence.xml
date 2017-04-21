@@ -27,7 +27,7 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>org.openecomp.policy.drools.persistence.DroolsPdpEntity</class>
 		<class>org.openecomp.policy.drools.persistence.DroolsSessionEntity</class>
-		<class>org.openecomp.policy.drools.persistence.LastSiteEntity</class>
+		<!-- <class>org.openecomp.policy.drools.persistence.LastSiteEntity</class> -->
 		<class>org.drools.persistence.info.SessionInfo</class>
 		<class>org.drools.persistence.info.WorkItemInfo</class>
 		<class>org.openecomp.policy.common.ia.jpa.IntegrityAuditEntity</class>

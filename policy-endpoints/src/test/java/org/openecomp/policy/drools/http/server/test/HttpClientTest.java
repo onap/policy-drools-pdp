@@ -114,7 +114,7 @@ public class HttpClientTest {
 		HttpClient.factory.destroy();
     }
     
-    @Test
+    //@Test
     public void testHttpAuthClientProps() throws Exception {
 		System.out.println("-- testHttpAuthClientProps() --");
 		

@@ -31,12 +31,7 @@ public interface TopicListener {
 	 * @param commType communication infrastructure type
 	 * @param topic topic name
 	 * @param event event message as a string
-	 * 
-	 * @return boolean.  True if the invoking event dispatcher should continue 
-	 * dispatching the event to subsequent listeners.  False if it is requested
-	 * to the invoking event dispatcher to stop dispatching the same event to
-	 * other listeners of less priority.   This mechanism is generally not used.
 	 */
-	public boolean onTopicEvent(Topic.CommInfrastructure commType, String topic, String event);
+	public void onTopicEvent(Topic.CommInfrastructure commType, String topic, String event);
 
 }
