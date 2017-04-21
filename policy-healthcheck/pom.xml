@@ -83,52 +83,7 @@
               <addParentPoms>false</addParentPoms>
               <copyPom>false</copyPom>
               <excludeGroupIds>org.opendaylight,com.brocade.odl</excludeGroupIds>
-              <scope>provided</scope>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>copy-version</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <phase>validate</phase>
-            <configuration>
-              <outputDirectory>${basedir}/target/versions</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources/versions</directory>
-                  <includes>
-                    <include>version.properties</include>
-                  </includes>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-resources</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <phase>validate</phase>
-            <configuration>
-              <outputDirectory>${basedir}/target/etc/bvc-extensions</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources/etc/bvc-extensions</directory>
-                  <includes>
-                    <include>feature_config_template.cfg</include>
-                    <include>feature_custom.install</include>
-                  </includes>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
+              <excludeScope>provided</excludeScope>
             </configuration>
           </execution>
         </executions>
@@ -141,16 +96,19 @@
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-core</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-endpoints</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-management</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

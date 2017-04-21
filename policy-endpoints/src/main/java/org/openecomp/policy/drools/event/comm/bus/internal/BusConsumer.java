@@ -22,12 +22,20 @@ package org.openecomp.policy.drools.event.comm.bus.internal;
 
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import org.openecomp.policy.common.logging.eelf.PolicyLogger;
+import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSinkFactory;
+import org.openecomp.policy.drools.properties.PolicyProperties;
 
 import com.att.nsa.cambria.client.CambriaClientBuilders;
 import com.att.nsa.cambria.client.CambriaConsumer;
+import com.att.nsa.mr.client.MRClientFactory;
 import com.att.nsa.mr.client.impl.MRConsumerImpl;
+import com.att.nsa.mr.client.response.MRConsumerResponse;
 import com.att.nsa.mr.test.clients.ProtocolTypeConstants;
 import com.att.nsa.cambria.client.CambriaClientBuilders.ConsumerBuilder;
 
@@ -76,17 +84,40 @@ public interface BusConsumer {
 		public CambriaConsumerWrapper(List<String> servers, String topic, 
 								  String apiKey, String apiSecret,
 								  String consumerGroup, String consumerInstance,
-								  int fetchTimeout, int fetchLimit) 
+								  int fetchTimeout, int fetchLimit, boolean useHttps, boolean useSelfSignedCerts) 
 		       throws IllegalArgumentException {
 			
 			ConsumerBuilder builder = 
 					new CambriaClientBuilders.ConsumerBuilder();
 			
-			builder.knownAs(consumerGroup, consumerInstance)
+			
+			if (useHttps){
+				
+				if(useSelfSignedCerts){
+					builder.knownAs(consumerGroup, consumerInstance)
+					.usingHosts(servers)
+					.onTopic(topic)
+					.waitAtServer(fetchTimeout)
+					.receivingAtMost(fetchLimit)
+					.usingHttps()
+					.allowSelfSignedCertificates();
+				}
+				else{
+					builder.knownAs(consumerGroup, consumerInstance)
+					.usingHosts(servers)
+					.onTopic(topic)
+					.waitAtServer(fetchTimeout)
+					.receivingAtMost(fetchLimit)
+					.usingHttps();
+				}
+			}
+			else{
+				builder.knownAs(consumerGroup, consumerInstance)
 			       .usingHosts(servers)
 			       .onTopic(topic)
 			       .waitAtServer(fetchTimeout)
 			       .receivingAtMost(fetchLimit);
+			}
 			
 			if (apiKey != null && !apiKey.isEmpty() &&
 				apiSecret != null && !apiSecret.isEmpty()) {
@@ -123,8 +154,11 @@ public interface BusConsumer {
 	/**
 	 * MR based consumer
 	 */
-	public static class DmaapConsumerWrapper implements BusConsumer {
+	public abstract class DmaapConsumerWrapper implements BusConsumer {
 		
+		protected int fetchTimeout;
+		protected Object closeCondition = new Object();
+			
 		/**
 		 * MR Consumer
 		 */
@@ -137,47 +171,75 @@ public interface BusConsumer {
 		 * @param topic topic
 		 * @param apiKey API Key
 		 * @param apiSecret API Secret
-		 * @param aafLogin AAF Login
-		 * @param aafPassword AAF Password
+		 * @param username AAF Login
+		 * @param password AAF Password
 		 * @param consumerGroup Consumer Group
 		 * @param consumerInstance Consumer Instance
 		 * @param fetchTimeout Fetch Timeout
 		 * @param fetchLimit Fetch Limit
+		 * @throws MalformedURLException 
 		 */
+		@SuppressWarnings("unchecked")
 		public DmaapConsumerWrapper(List<String> servers, String topic, 
 								String apiKey, String apiSecret,
-								String aafLogin, String aafPassword,
+								String username, String password,
 								String consumerGroup, String consumerInstance,
-								int fetchTimeout, int fetchLimit) 
-		throws Exception {
+								int fetchTimeout, int fetchLimit, boolean useHttps)
+										
+										throws MalformedURLException {
+			
+			this.fetchTimeout = fetchTimeout;
+			
+			if (topic == null || topic.isEmpty()) {
+				throw new IllegalArgumentException("No topic for DMaaP");
+			}
 					
 			this.consumer = new MRConsumerImpl(servers, topic, 
 											   consumerGroup, consumerInstance, 
 											   fetchTimeout, fetchLimit, 
 									           null, apiKey, apiSecret);
 			
-			this.consumer.setUsername(aafLogin);
-			this.consumer.setPassword(aafPassword);
+			this.consumer.setUsername(username);
+			this.consumer.setPassword(password);
 			
-			this.consumer.setProtocolFlag(ProtocolTypeConstants.AAF_AUTH.getValue());
 			
-			Properties props = new Properties();
-			props.setProperty("Protocol", "http");
-			this.consumer.setProps(props);
-			this.consumer.setHost(servers.get(0) + ":3904");;
+			
 		}
 		
 		/**
 		 * {@inheritDoc}
 		 */
 		public Iterable<String> fetch() throws Exception {
-			return this.consumer.fetch();
+			MRConsumerResponse response = this.consumer.fetchWithReturnConsumerResponse();
+
+			if (PolicyLogger.isDebugEnabled() && response != null)
+				PolicyLogger.debug(DmaapConsumerWrapper.class.getName(), "DMaaP consumer received " + response.getResponseCode() + ": " + response.getResponseMessage());
+
+			if (response.getResponseCode() == null || !response.getResponseCode().equals("200")) {
+				if (response.getResponseCode() == null)
+					PolicyLogger.error(DmaapConsumerWrapper.class.getName(), "DMaaP consumer received response code null"); 
+				else
+					PolicyLogger.error(DmaapConsumerWrapper.class.getName(), "DMaaP consumer received " + response.getResponseCode() + ": " + response.getResponseMessage());
+				
+				synchronized (closeCondition) {
+					closeCondition.wait(fetchTimeout);
+				}
+			}
+			
+			if (response.getActualMessages() == null)
+				return new ArrayList<String>();
+			else
+				return response.getActualMessages();
 		}
 		
 		/**
 		 * {@inheritDoc}
 		 */
 		public void close() {
+			synchronized (closeCondition) {
+				closeCondition.notifyAll();
+			}
+			
 			this.consumer.close();
 		}
 		
@@ -196,7 +258,181 @@ public interface BusConsumer {
 		}
 	}
 
+	/**
+	 * MR based consumer
+	 */
+	public static class DmaapAafConsumerWrapper extends DmaapConsumerWrapper {
+		private Properties props;
+		
+		/**
+		 * MR Consumer Wrapper
+		 * 
+		 * @param servers messaging bus hosts
+		 * @param topic topic
+		 * @param apiKey API Key
+		 * @param apiSecret API Secret
+		 * @param aafLogin AAF Login
+		 * @param aafPassword AAF Password
+		 * @param consumerGroup Consumer Group
+		 * @param consumerInstance Consumer Instance
+		 * @param fetchTimeout Fetch Timeout
+		 * @param fetchLimit Fetch Limit
+		 * @throws MalformedURLException 
+		 */
+		public DmaapAafConsumerWrapper(List<String> servers, String topic, 
+									String apiKey, String apiSecret,
+									String aafLogin, String aafPassword,
+									String consumerGroup, String consumerInstance,
+									int fetchTimeout, int fetchLimit, boolean useHttps) throws MalformedURLException {
+			
+			super(servers, topic, apiKey, apiSecret,
+								aafLogin, aafPassword,
+								consumerGroup, consumerInstance,
+								fetchTimeout, fetchLimit, useHttps);
+			
+			// super constructor sets servers = {""} if empty to avoid errors when using DME2
+			if ((servers.size() == 1 && servers.get(0).equals("")) ||
+				(servers == null) || (servers.size() == 0)) {
+				throw new IllegalArgumentException("Must provide at least one host for HTTP AAF");
+			}
+
+			this.consumer.setProtocolFlag(ProtocolTypeConstants.AAF_AUTH.getValue());
+
+			props = new Properties();
+			
+			if(useHttps){
+				props.setProperty("Protocol", "https");
+				this.consumer.setHost(servers.get(0) + ":3905");
+				
+			}
+			else{
+				props.setProperty("Protocol", "http");
+				this.consumer.setHost(servers.get(0) + ":3904");
+			}
+
+			this.consumer.setProps(props);
+			PolicyLogger.info(DmaapConsumerWrapper.class.getName(), "CREATION: " + this);
+		}
+		
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			MRConsumerImpl consumer = (MRConsumerImpl) this.consumer;
+			
+			builder.
+			append("DmaapConsumerWrapper [").
+			append("consumer.getAuthDate()=").append(consumer.getAuthDate()).
+			append(", consumer.getAuthKey()=").append(consumer.getAuthKey()).
+			append(", consumer.getHost()=").append(consumer.getHost()).
+			append(", consumer.getProtocolFlag()=").append(consumer.getProtocolFlag()).
+			append(", consumer.getUsername()=").append(consumer.getUsername()).
+			append("]");
+			return builder.toString();
+		}
+	}
 	
+	public static class DmaapDmeConsumerWrapper extends DmaapConsumerWrapper {
+		private Properties props;
+		
+		public DmaapDmeConsumerWrapper(List<String> servers, String topic, 
+								String apiKey, String apiSecret,
+								String dme2Login, String dme2Password,
+								String consumerGroup, String consumerInstance,
+								int fetchTimeout, int fetchLimit,
+								String environment, String aftEnvironment, String dme2Partner,
+								String latitude, String longitude, Map<String,String> additionalProps, boolean useHttps) throws MalformedURLException {
+			
+			
+			
+			super(servers, topic, apiKey, apiSecret,
+								dme2Login, dme2Password,
+								consumerGroup, consumerInstance,
+								fetchTimeout, fetchLimit, useHttps);
+			
+			
+			String dme2RouteOffer = additionalProps.get(DmaapTopicSinkFactory.DME2_ROUTE_OFFER_PROPERTY);
+			
+			if (environment == null || environment.isEmpty()) {
+				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS +
+						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX + " property for DME2 in DMaaP");
+			} if (aftEnvironment == null || aftEnvironment.isEmpty()) {
+				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS +
+						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX + " property for DME2 in DMaaP");
+			} if (latitude == null || latitude.isEmpty()) {
+				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS +
+						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX + " property for DME2 in DMaaP");
+			} if (longitude == null || longitude.isEmpty()) {
+				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS +
+						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX + " property for DME2 in DMaaP");
+			} 
+			
+			if ((dme2Partner == null || dme2Partner.isEmpty()) && (dme2RouteOffer == null || dme2RouteOffer.isEmpty())) {
+				throw new IllegalArgumentException("Must provide at least " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS +
+						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_PARTNER_SUFFIX + " or " + 
+						PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_ROUTE_OFFER_SUFFIX + " for DME2");
+			}
+			
+			String serviceName = servers.get(0);
+			
+			this.consumer.setProtocolFlag(ProtocolTypeConstants.DME2.getValue());
+			
+			this.consumer.setUsername(dme2Login);
+			this.consumer.setPassword(dme2Password);
+			
+			props = new Properties();
+			
+			props.setProperty(DmaapTopicSinkFactory.DME2_SERVICE_NAME_PROPERTY, serviceName);
+			
+			props.setProperty("username", dme2Login);
+			props.setProperty("password", dme2Password);
+			
+			/* These are required, no defaults */
+			props.setProperty("topic", topic);
+			
+			props.setProperty("Environment", environment);
+			props.setProperty("AFT_ENVIRONMENT", aftEnvironment);
+			
+			if (dme2Partner != null)
+				props.setProperty("Partner", dme2Partner);
+			if (dme2RouteOffer != null)
+				props.setProperty(DmaapTopicSinkFactory.DME2_ROUTE_OFFER_PROPERTY, dme2RouteOffer);
+			
+			props.setProperty("Latitude", latitude);
+			props.setProperty("Longitude", longitude);
+			
+			/* These are optional, will default to these values if not set in additionalProps */
+			props.setProperty("AFT_DME2_EP_READ_TIMEOUT_MS", "50000");
+			props.setProperty("AFT_DME2_ROUNDTRIP_TIMEOUT_MS", "240000");
+			props.setProperty("AFT_DME2_EP_CONN_TIMEOUT", "15000");
+			props.setProperty("Version", "1.0");
+			props.setProperty("SubContextPath", "/");
+			props.setProperty("sessionstickinessrequired", "no");
+			
+			/* These should not change */
+			props.setProperty("TransportType", "DME2");
+			props.setProperty("MethodType", "GET");
+			
+			if(useHttps){
+				props.setProperty("Protocol", "https");
+				
+			}
+			else{
+				props.setProperty("Protocol", "http");
+			}
+			
+			props.setProperty("contenttype", "application/json");
+			
+			if (additionalProps != null) {
+				for(String key : additionalProps.keySet())
+					props.put(key, additionalProps.get(key));
+			}
+			
+			MRClientFactory.prop = props;
+			this.consumer.setProps(props);
+			
+			PolicyLogger.info(DmaapConsumerWrapper.class.getName(), "CREATION: " + this);
+		}
+	}
 }
 
 

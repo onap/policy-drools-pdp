@@ -20,10 +20,7 @@
 
 package org.openecomp.policy.drools.core;
 
-import java.util.Properties;
-
 import org.kie.api.runtime.KieSession;
-
 import org.openecomp.policy.drools.utils.OrderedService;
 import org.openecomp.policy.drools.utils.OrderedServiceImpl;
 
@@ -35,14 +32,14 @@ import org.openecomp.policy.drools.utils.OrderedServiceImpl;
  * return a 'void' value. In other cases, such as 'activatePolicySession',
  * may 
  */
-public interface FeatureAPI extends OrderedService
+public interface PolicySessionFeatureAPI extends OrderedService
 {
   /**
    * 'FeatureAPI.impl.getList()' returns an ordered list of objects
    * implementing the 'FeatureAPI' interface.
    */
-  static public OrderedServiceImpl<FeatureAPI> impl =
-	new OrderedServiceImpl<FeatureAPI>(FeatureAPI.class);
+  static public OrderedServiceImpl<PolicySessionFeatureAPI> impl =
+	new OrderedServiceImpl<PolicySessionFeatureAPI>(PolicySessionFeatureAPI.class);
 
   /**
    * This method is called during initialization at a point right after
@@ -86,62 +83,6 @@ public interface FeatureAPI extends OrderedService
    *	'KieSession'
    */
   public void destroyKieSession(PolicySession policySession);
-  
-  /**
-   * called before the Policy Engine is started
-   */
-  public void beforeStartEngine() throws IllegalStateException;
-  
-  /**
-   * called immediately after the Policy Engine is started
-   */
-  public void afterStartEngine();
-  
-  /**
-   * called before the Policy Engine is shut down
-   */
-  public void beforeShutdownEngine();
-  
-  /**
-   * called after the Policy Engine is shut down
-   */
-  public void afterShutdownEngine();
-  
-  /**
-   * called before creating a controller with name 'name'
-   * 
-   * @param name name of the the controller
-   * @param properties configuration properties
-   */
-  public void beforeCreateController(String name, Properties properties);
-
-  /**
-   * NOTE: temporary, should pass the Policy Controller already created
-   * 
-   * called after creating a controller with name 'name'
-   * 
-   * @param name name of the the controller
-   * @param properties configuration properties
-   */
-  public void afterCreateController(String name);
-  
-  /**
-   * NOTE: temporary, should pass the Policy Controller
-   * 
-   * called before starting a controller with name 'name'
-   * 
-   * @param name name of the the controller
-   */
-  public void beforeStartController(String name);
-  
-  /**
-   * NOTE: temporary, should pass the Policy Controller
-   * 
-   * called after starting a controller with name 'name'
-   * 
-   * @param name name of the the controller
-   */
-  public void afterStartController(String name);
 
   /**
    * NOTE: this method is probably temporary

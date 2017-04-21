@@ -21,10 +21,11 @@
 package org.openecomp.policy.drools.event.comm.bus.internal;
 
 import java.util.List;
+import java.util.Map;
 
+import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSource;
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 
 /**
  * This topic reader implementation specializes in reading messages
@@ -33,9 +34,74 @@ import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
                                             implements DmaapTopicSource, Runnable {
 	
+
+	protected boolean allowSelfSignedCerts;
 	protected final String userName;
 	protected final String password;
 	private String className = SingleThreadedDmaapTopicSource.class.getName();
+	
+	protected String environment = null;
+	protected String aftEnvironment = null;
+	protected String partner = null;
+	protected String latitude = null;
+	protected String longitude = null;
+	
+	protected Map<String,String> additionalProps = null;
+
+	
+	/**
+	 * 
+	 * @param servers DMaaP servers
+	 * @param topic DMaaP Topic to be monitored
+	 * @param apiKey DMaaP API Key (optional)
+	 * @param apiSecret DMaaP API Secret (optional)
+	 * @param consumerGroup DMaaP Reader Consumer Group
+	 * @param consumerInstance DMaaP Reader Instance
+	 * @param fetchTimeout DMaaP fetch timeout
+	 * @param fetchLimit DMaaP fetch limit
+	 * @param environment DME2 Environment
+	 * @param aftEnvironment DME2 AFT Environment
+	 * @param partner DME2 Partner
+	 * @param latitude DME2 Latitude
+	 * @param longitude DME2 Longitude
+	 * @param additionalProps Additional properties to pass to DME2
+	 * @param useHttps does connection use HTTPS?
+	 * @param allowSelfSignedCerts are self-signed certificates allow
+	 * 
+	 * @throws IllegalArgumentException An invalid parameter passed in
+	 */
+	public SingleThreadedDmaapTopicSource(List<String> servers, String topic, 
+											String apiKey, String apiSecret,
+											String userName, String password,
+											String consumerGroup, String consumerInstance,
+											int fetchTimeout, int fetchLimit,
+											String environment, String aftEnvironment, String partner,
+											String latitude, String longitude, Map<String,String> additionalProps,
+											boolean useHttps, boolean allowSelfSignedCerts)
+			throws IllegalArgumentException {
+			
+		super(servers, topic, apiKey, apiSecret, 
+			  consumerGroup, consumerInstance, 
+			  fetchTimeout, fetchLimit, useHttps,allowSelfSignedCerts);
+		
+		this.userName = userName;
+		this.password = password;
+		
+		this.environment = environment;
+		this.aftEnvironment = aftEnvironment;
+		this.partner = partner;
+		
+		this.latitude = latitude;
+		this.longitude = longitude;
+		
+		this.additionalProps = additionalProps;
+		try {
+			this.init();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
+	}
 
 	/**
 	 * 
@@ -47,19 +113,21 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	 * @param consumerInstance DMaaP Reader Instance
 	 * @param fetchTimeout DMaaP fetch timeout
 	 * @param fetchLimit DMaaP fetch limit
+	 * @param useHttps does connection use HTTPS?
+	 * @param allowSelfSignedCerts are self-signed certificates allow
 	 * @throws IllegalArgumentException An invalid parameter passed in
 	 */
 	public SingleThreadedDmaapTopicSource(List<String> servers, String topic, 
 			                              String apiKey, String apiSecret,
 			                              String userName, String password,
 			                              String consumerGroup, String consumerInstance, 
-			                              int fetchTimeout, int fetchLimit)
+			                              int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts)
 			throws IllegalArgumentException {
 		
 		
 		super(servers, topic, apiKey, apiSecret, 
 			  consumerGroup, consumerInstance, 
-			  fetchTimeout, fetchLimit);
+			  fetchTimeout, fetchLimit, useHttps, allowSelfSignedCerts);
 		
 		this.userName = userName;
 		this.password = password;		
@@ -78,22 +146,35 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	 */
 	@Override
 	public void init() throws Exception {
-		
 		if (this.userName == null || this.userName.isEmpty() || 
-			this.password == null || this.password.isEmpty()) {
-			this.consumer =
-					new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
-							                           this.apiKey, this.apiSecret,
-							                           this.consumerGroup, this.consumerInstance,
-							                           this.fetchTimeout, this.fetchLimit);			
-		} else {
-			this.consumer =
-					new BusConsumer.DmaapConsumerWrapper(this.servers, this.topic, 
-							                            this.apiKey, this.apiSecret,
-							                            this.userName, this.password,
-							                            this.consumerGroup, this.consumerInstance,
-							                            this.fetchTimeout, this.fetchLimit);
-		}
+				this.password == null || this.password.isEmpty()) {
+				this.consumer =
+						new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
+								                           this.apiKey, this.apiSecret,
+								                           this.consumerGroup, this.consumerInstance,
+								                           this.fetchTimeout, this.fetchLimit,
+								                           this.useHttps, this.allowSelfSignedCerts);
+			} else if ((this.environment == null    || this.environment.isEmpty()) &&
+					   (this.aftEnvironment == null || this.aftEnvironment.isEmpty()) &&
+					   (this.latitude == null	   || this.latitude.isEmpty()) &&
+					   (this.longitude == null	   || this.longitude.isEmpty()) &&
+					   (this.partner == null 	   || this.partner.isEmpty())) {
+				this.consumer =
+						new BusConsumer.DmaapAafConsumerWrapper(this.servers, this.topic, 
+								                            this.apiKey, this.apiSecret,
+								                            this.userName, this.password,
+								                            this.consumerGroup, this.consumerInstance,
+								                            this.fetchTimeout, this.fetchLimit, this.useHttps);
+			} else {
+				this.consumer =
+						new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic, 
+								                            this.apiKey, this.apiSecret,
+								                            this.userName, this.password,
+								                            this.consumerGroup, this.consumerInstance,
+								                            this.fetchTimeout, this.fetchLimit,
+								                            this.environment, this.aftEnvironment, this.partner,
+								                            this.latitude, this.longitude, this.additionalProps, this.useHttps);
+			}
 			
 		PolicyLogger.info(className, "CREATION: " + this);
 	}

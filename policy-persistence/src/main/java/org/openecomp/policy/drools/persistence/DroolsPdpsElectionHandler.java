@@ -499,159 +499,38 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					/*
 					 * We have checked the four combinations of isDesignated and isCurrent.  Where appropriate,
 					 * we added the PDPs to the potential list of designated pdps
-					 * Check if listOfDesignated is empty, has one entry or has multiple entries
-					 * If it has multiple designated PDPs, then we must determine if myPdp is on the list and if
-					 * it is the lowest priority.  If it is on the list and it is not the lowest
-					 * priority, it must be demoted.  Then, we must find the lowest priority
-					 * PDP so we can get the right list of sessions
+					 * 
+					 * We need to give priority to pdps on the same site that is currently being used
+					 * First, however, we must sanitize the list of designated to make sure their are
+					 * only designated members or non-designated members.  There should not be both in 
+					 * the list. Because there are real time delays, it is possible that both types could
+					 * be on the list.
 					 */
-					//we need to give priority to pdps on the same site that is currently being used
+					
+					listOfDesignated = santizeDesignatedList(listOfDesignated);
 
-
-					//we need to figure out the last pdp that was the primary so we can get the last site name and the last session numbers
-					DroolsPdp mostRecentPrimary = new DroolsPdpImpl(null, true, 1, new Date(0));
-					mostRecentPrimary.setSiteName(null);
-					for(DroolsPdp pdp : pdps){
-						if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0){
-							mostRecentPrimary = pdp;
-						}
-					}
-
-					if(listOfDesignated.size() > 1){
-						logger.debug
-						//System.out.println
-						("DesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated.size():  " + listOfDesignated.size());					
-						DroolsPdp rejectedPdp = null;
-						DroolsPdp lowestPrioritySameSite = null;
-						DroolsPdp lowestPriorityDifferentSite = null;
-						for(DroolsPdp pdp : listOfDesignated){
-							// We need to determine if another PDP is the lowest priority
-							if(nullSafeEquals(pdp.getSiteName(),mostRecentPrimary.getSiteName())){
-								if(lowestPrioritySameSite == null){
-									if(lowestPriorityDifferentSite != null){
-										rejectedPdp = lowestPriorityDifferentSite;
-									}
-									lowestPrioritySameSite = pdp;									
-								}else{
-									if(pdp.getPdpId().equals((lowestPrioritySameSite.getPdpId()))){
-										continue;//nothing to compare
-									}
-									if(pdp.comparePriority(lowestPrioritySameSite) <0){
-										logger.debug
-										//System.out.println
-										("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
-												+ " has lower priority than pdp ID: " + lowestPrioritySameSite.getPdpId());
-
-										//we need to reject lowestPrioritySameSite
-										rejectedPdp = lowestPrioritySameSite;
-										lowestPrioritySameSite = pdp;
-									} else{
-										//we need to reject pdp and keep lowestPrioritySameSite
-										logger.debug
-										//System.out.println
-										("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
-												+ " has higher priority than pdp ID: " + lowestPrioritySameSite.getPdpId());
-										rejectedPdp = pdp;
-									}
-								}
-							} else{
-								if(lowestPrioritySameSite != null){
-									//if we already have a candidate for same site, we don't want to bother with different sites
-									rejectedPdp = pdp;
-								} else{
-									if(lowestPriorityDifferentSite == null){
-										lowestPriorityDifferentSite = pdp;
-										continue;
-									}
-									if(pdp.getPdpId().equals((lowestPriorityDifferentSite.getPdpId()))){
-										continue;//nothing to compare
-									}
-									if(pdp.comparePriority(lowestPriorityDifferentSite) <0){
-										logger.debug
-										//System.out.println
-										("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
-												+ " has lower priority than pdp ID: " + lowestPriorityDifferentSite.getPdpId());
-
-										//we need to reject lowestPriorityDifferentSite
-										rejectedPdp = lowestPriorityDifferentSite;
-										lowestPriorityDifferentSite = pdp;
-									} else{
-										//we need to reject pdp and keep lowestPriorityDifferentSite
-										logger.debug
-										//System.out.println
-										("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
-												+ " has higher priority than pdp ID: " + lowestPriorityDifferentSite.getPdpId());
-										rejectedPdp = pdp;
-									}
-								}
-							}
-							// If the rejectedPdp is myPdp, we need to stand it down and demote it.  Each pdp is responsible
-							// for demoting itself
-							if(rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(),myPdp.getPdpId())){
-								logger.debug
-								//System.out.println
-								("\n\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated myPdp ID: " + myPdp.getPdpId() 
-										+ " is NOT the lowest priority.  Executing stateManagement.demote()" + "\n\n");
-								// We found that myPdp is on the listOfDesignated and it is not the lowest priority
-								// So, we must demote it
-								try {
-									//Keep the order like this.  StateManagement is last since it triggers controller shutdown
-									myPdp.setDesignated(false);
-									pdpsConnector.setDesignated(myPdp, false);
-									isDesignated = false;
-									String standbyStatus = stateManagement.getStandbyStatus();
-									if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) || 
-											standbyStatus.equals(StateManagement.COLD_STANDBY))){
-										/*
-										 * Only call demote if it is not already in the right state.  Don't worry about
-										 * synching the lower level topic endpoint states.  That is done by the
-										 * refreshStateAudit.
-										 */
-										stateManagement.demote();
-									}
-								} catch (Exception e) {
-									myPdp.setDesignated(false);
-									pdpsConnector.setDesignated(myPdp, false);
-									isDesignated = false;
-									logger.error
-									//System.out.println
-									("DesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " Caught Exception attempting to demote myPdp'"
-											+ myPdp.getPdpId()
-											+ "', message="
-											+ e.getMessage());
-									System.out.println(new Date() + " DesignatedWaiter.run: caught unexpected exception "
-											+ "from stateManagement.demote()");
-									e.printStackTrace();
-								}
-							}
-						} //end: for(DroolsPdp pdp : listOfDesignated)
-						if(lowestPrioritySameSite != null){
-							lowestPriorityPdp = lowestPrioritySameSite;
-						} else {
-							lowestPriorityPdp = lowestPriorityDifferentSite;
-						}
-						//now we have a valid value for lowestPriorityPdp
-						logger.debug
-						//System.out.println
-						("\n\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated found the LOWEST priority pdp ID: " 
-								+ lowestPriorityPdp.getPdpId() 
-								+ " It is now the designatedPpd from the perspective of myPdp ID: " + myPdp + "\n\n");
-						designatedPdp = lowestPriorityPdp;
-						this.sessions = mostRecentPrimary.getSessions();
-
-					} else if(listOfDesignated.isEmpty()){
-						logger.debug
-						//System.out.println
-						("\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated is: EMPTY.");
-						designatedPdp = null;
-					} else{ //only one in listOfDesignated
-						logger.debug
-						//System.out.println
-						("\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated has ONE entry. PDP ID: "
-								+ listOfDesignated.get(0).getPdpId());
-						designatedPdp = listOfDesignated.get(0);
-						this.sessions = mostRecentPrimary.getSessions();
-					}
+					/*
+					 * We need to figure out the last pdp that was the primary so we can get the last site 
+					 * name and the last session numbers.  We need to create a "dummy" droolspdp since
+					 * it will be used in later comparrisons and cannot be null.
+					 */
+					
+					DroolsPdp mostRecentPrimary = computeMostRecentPrimary(pdps, listOfDesignated);
+					
+					
+					/*
+					 * It is possible to get here with more than one pdp designated and providingservice. This normally
+					 * occurs when there is a race condition with multiple nodes coming up at the same time. If that is
+					 * the case we must determine which one is the one that should be designated and which one should
+					 * be demoted.
+					 * 
+					 * It is possible to have 0, 1, 2 or more but not all, or all designated.  
+					 *   If we have one designated and current, we chose it and are done
+					 *   If we have 2 or more, but not all, we must determine which one is in the same site as
+					 *   the previously designated pdp.
+					 */
+					
+					designatedPdp = computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
 
 
 					if (designatedPdp == null) {
@@ -686,7 +565,10 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 								 * Only call promote if it is not already in the right state.  Don't worry about
 								 * synching the lower level topic endpoint states.  That is done by the
 								 * refreshStateAudit.
+								 * Note that we need to fetch the session list from 'mostRecentPrimary'
+								 * at this point -- soon, 'mostRecentPrimary' will be set to this host.
 								 */
+								this.sessions = mostRecentPrimary.getSessions();
 								stateManagement.promote();
 							}
 						} catch (StandbyStatusException e) {
@@ -782,6 +664,262 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				e.printStackTrace();
 			}
 		} // end run
+	}
+	
+	public ArrayList<DroolsPdp> santizeDesignatedList(ArrayList<DroolsPdp> listOfDesignated){
+
+		boolean containsDesignated = false;
+		boolean containsHotStandby = false;
+		ArrayList<DroolsPdp> listForRemoval = new ArrayList<DroolsPdp>();
+		for(DroolsPdp pdp : listOfDesignated){
+			logger.debug
+			//System.out.println
+			("DesignatedWaiter.run sanitizing: pdp = " + pdp.getPdpId() 
+					+ " isDesignated = " + pdp.isDesignated());
+			if(pdp.isDesignated()){
+				containsDesignated = true;
+			}else {
+				containsHotStandby = true;
+				listForRemoval.add(pdp);
+			}
+		}
+		if(containsDesignated && containsHotStandby){
+			//remove the hot standby from the list
+			listOfDesignated.removeAll(listForRemoval);
+			containsHotStandby = false;
+		}
+		return listOfDesignated;
+	}
+	
+	public DroolsPdp computeMostRecentPrimary(Collection<DroolsPdp> pdps, ArrayList<DroolsPdp> listOfDesignated){
+		boolean containsDesignated = false;
+		for(DroolsPdp pdp : listOfDesignated){
+			if(pdp.isDesignated()){
+				containsDesignated = true;
+			}
+		}
+		DroolsPdp mostRecentPrimary = new DroolsPdpImpl(null, true, 1, new Date(0));
+		mostRecentPrimary.setSiteName(null);
+		logger.debug
+		//System.out.println
+		("DesignatedWaiter.run listOfDesignated.size() = " + listOfDesignated.size());
+		if(listOfDesignated.size() <=1){
+			logger.debug("DesignatedWainter.run: listOfDesignated.size <=1");
+			//Only one or none is designated or hot standby.  Choose the latest designated date
+			for(DroolsPdp pdp : pdps){
+				logger.debug
+				//System.out.println
+				("DesignatedWaiter.run pdp = " + pdp.getPdpId() 
+						+ " pdp.getDesignatedDate() = "	+ pdp.getDesignatedDate());
+				if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0){
+					mostRecentPrimary = pdp;
+					logger.debug
+					//System.out.println
+					("DesignatedWaiter.run mostRecentPrimary = " + mostRecentPrimary.getPdpId());
+				}
+			}
+		}else if(listOfDesignated.size() == pdps.size()){
+			logger.debug("DesignatedWainter.run: listOfDesignated.size = pdps.size() which is " + pdps.size());
+			//They are all designated or all hot standby.
+			mostRecentPrimary = null;
+			for(DroolsPdp pdp : pdps){
+				if(mostRecentPrimary == null){
+					mostRecentPrimary = pdp;
+					continue;
+				}
+				if(containsDesignated){ //Choose the site of the first designated date
+					if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) < 0){
+						mostRecentPrimary = pdp;
+						logger.debug
+						//System.out.println
+						("DesignatedWaiter.run mostRecentPrimary = " + mostRecentPrimary.getPdpId());
+					}
+				}else{ //Choose the site with the latest designated date
+					if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0){
+						mostRecentPrimary = pdp;
+						logger.debug
+						//System.out.println
+						("DesignatedWaiter.run mostRecentPrimary = " + mostRecentPrimary.getPdpId());
+					}
+				}
+			}
+		}else{
+			logger.debug("DesignatedWainter.run: Some but not all are designated or hot standby. ");
+			//Some but not all are designated or hot standby. 
+			if(containsDesignated){
+				logger.debug("DesignatedWainter.run: containsDesignated = " + containsDesignated);
+				/*
+				 * The list only contains designated.  This is a problem.  It is most likely a race
+				 * condition that resulted in two thinking they should be designated. Choose the 
+				 * site with the latest designated date for the pdp not included on the designated list.
+				 * This should be the site that had the last designation before this race condition
+				 * occurred.
+				 */
+				for(DroolsPdp pdp : pdps){
+					if(listOfDesignated.contains(pdp)){
+						continue; //Don't consider this entry
+					}
+					if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0){
+						mostRecentPrimary = pdp;
+						logger.debug
+						//System.out.println
+						("DesignatedWaiter.run mostRecentPrimary = " + mostRecentPrimary.getPdpId());
+					}
+				}
+			}else{
+				logger.debug("DesignatedWainter.run: containsDesignated = " + containsDesignated);
+				//The list only contains hot standby. Choose the site of the latest designated date
+				for(DroolsPdp pdp : pdps){
+					if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0){
+						mostRecentPrimary = pdp;
+						logger.debug
+						//System.out.println
+						("DesignatedWaiter.run mostRecentPrimary = " + mostRecentPrimary.getPdpId());
+					}
+				}
+			}
+		}
+		return mostRecentPrimary;
+	}
+	
+	public DroolsPdp computeDesignatedPdp(ArrayList<DroolsPdp> listOfDesignated, DroolsPdp mostRecentPrimary){
+		DroolsPdp designatedPdp = null;
+		DroolsPdp lowestPriorityPdp = null;
+		if(listOfDesignated.size() > 1){
+			logger.debug
+			//System.out.println
+			("DesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated.size():  " + listOfDesignated.size());					
+			DroolsPdp rejectedPdp = null;
+			DroolsPdp lowestPrioritySameSite = null;
+			DroolsPdp lowestPriorityDifferentSite = null;
+			for(DroolsPdp pdp : listOfDesignated){
+				// We need to determine if another PDP is the lowest priority
+				if(nullSafeEquals(pdp.getSiteName(),mostRecentPrimary.getSiteName())){
+					if(lowestPrioritySameSite == null){
+						if(lowestPriorityDifferentSite != null){
+							rejectedPdp = lowestPriorityDifferentSite;
+						}
+						lowestPrioritySameSite = pdp;									
+					}else{
+						if(pdp.getPdpId().equals((lowestPrioritySameSite.getPdpId()))){
+							continue;//nothing to compare
+						}
+						if(pdp.comparePriority(lowestPrioritySameSite) <0){
+							logger.debug
+							//System.out.println
+							("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
+									+ " has lower priority than pdp ID: " + lowestPrioritySameSite.getPdpId());
+
+							//we need to reject lowestPrioritySameSite
+							rejectedPdp = lowestPrioritySameSite;
+							lowestPrioritySameSite = pdp;
+						} else{
+							//we need to reject pdp and keep lowestPrioritySameSite
+							logger.debug
+							//System.out.println
+							("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
+									+ " has higher priority than pdp ID: " + lowestPrioritySameSite.getPdpId());
+							rejectedPdp = pdp;
+						}
+					}
+				} else{
+					if(lowestPrioritySameSite != null){
+						//if we already have a candidate for same site, we don't want to bother with different sites
+						rejectedPdp = pdp;
+					} else{
+						if(lowestPriorityDifferentSite == null){
+							lowestPriorityDifferentSite = pdp;
+							continue;
+						}
+						if(pdp.getPdpId().equals((lowestPriorityDifferentSite.getPdpId()))){
+							continue;//nothing to compare
+						}
+						if(pdp.comparePriority(lowestPriorityDifferentSite) <0){
+							logger.debug
+							//System.out.println
+							("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
+									+ " has lower priority than pdp ID: " + lowestPriorityDifferentSite.getPdpId());
+
+							//we need to reject lowestPriorityDifferentSite
+							rejectedPdp = lowestPriorityDifferentSite;
+							lowestPriorityDifferentSite = pdp;
+						} else{
+							//we need to reject pdp and keep lowestPriorityDifferentSite
+							logger.debug
+							//System.out.println
+							("\nDesignatedWaiter.run: myPdp" + myPdp.getPdpId() + " listOfDesignated pdp ID: " + pdp.getPdpId() 
+									+ " has higher priority than pdp ID: " + lowestPriorityDifferentSite.getPdpId());
+							rejectedPdp = pdp;
+						}
+					}
+				}
+				// If the rejectedPdp is myPdp, we need to stand it down and demote it.  Each pdp is responsible
+				// for demoting itself
+				if(rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(),myPdp.getPdpId())){
+					logger.debug
+					//System.out.println
+					("\n\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated myPdp ID: " + myPdp.getPdpId() 
+							+ " is NOT the lowest priority.  Executing stateManagement.demote()" + "\n\n");
+					// We found that myPdp is on the listOfDesignated and it is not the lowest priority
+					// So, we must demote it
+					try {
+						//Keep the order like this.  StateManagement is last since it triggers controller shutdown
+						myPdp.setDesignated(false);
+						pdpsConnector.setDesignated(myPdp, false);
+						isDesignated = false;
+						String standbyStatus = stateManagement.getStandbyStatus();
+						if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) || 
+								standbyStatus.equals(StateManagement.COLD_STANDBY))){
+							/*
+							 * Only call demote if it is not already in the right state.  Don't worry about
+							 * synching the lower level topic endpoint states.  That is done by the
+							 * refreshStateAudit.
+							 */
+							stateManagement.demote();
+						}
+					} catch (Exception e) {
+						myPdp.setDesignated(false);
+						pdpsConnector.setDesignated(myPdp, false);
+						isDesignated = false;
+						logger.error
+						//System.out.println
+						("DesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " Caught Exception attempting to demote myPdp'"
+								+ myPdp.getPdpId()
+								+ "', message="
+								+ e.getMessage());
+						System.out.println(new Date() + " DesignatedWaiter.run: caught unexpected exception "
+								+ "from stateManagement.demote()");
+						e.printStackTrace();
+					}
+				}
+			} //end: for(DroolsPdp pdp : listOfDesignated)
+			if(lowestPrioritySameSite != null){
+				lowestPriorityPdp = lowestPrioritySameSite;
+			} else {
+				lowestPriorityPdp = lowestPriorityDifferentSite;
+			}
+			//now we have a valid value for lowestPriorityPdp
+			logger.debug
+			//System.out.println
+			("\n\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated found the LOWEST priority pdp ID: " 
+					+ lowestPriorityPdp.getPdpId() 
+					+ " It is now the designatedPpd from the perspective of myPdp ID: " + myPdp + "\n\n");
+			designatedPdp = lowestPriorityPdp;
+
+		} else if(listOfDesignated.isEmpty()){
+			logger.debug
+			//System.out.println
+			("\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated is: EMPTY.");
+			designatedPdp = null;
+		} else{ //only one in listOfDesignated
+			logger.debug
+			//System.out.println
+			("\nDesignatedWaiter.run: myPdp: " + myPdp.getPdpId() + " listOfDesignated has ONE entry. PDP ID: "
+					+ listOfDesignated.get(0).getPdpId());
+			designatedPdp = listOfDesignated.get(0);
+		}
+		return designatedPdp;
+
 	}
 	
 	private class TimerUpdateClass extends TimerTask{
@@ -926,7 +1064,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		long nowModMs = nowMs % pdpUpdateInterval;
 		
 		// Time to the start of the next pdpUpdateInterval multiple
-		long startMs = pdpUpdateInterval - nowModMs;
+		long startMs = 2*pdpUpdateInterval - nowModMs;
 
 		// Give the start time a minimum of a 5 second cushion
 		if(startMs < 5000){

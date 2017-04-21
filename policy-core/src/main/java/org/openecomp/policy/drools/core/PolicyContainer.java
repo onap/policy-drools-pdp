@@ -22,42 +22,26 @@ package org.openecomp.policy.drools.core;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-
-import bitronix.tm.Configuration;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
-import org.openecomp.policy.common.ia.IntegrityAudit;
-import org.openecomp.policy.common.ia.IntegrityAuditProperties;
-import org.openecomp.policy.drools.properties.Startable;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.common.logging.eelf.MessageCodes;
 import org.openecomp.policy.common.logging.eelf.PolicyLogger;
+import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
+import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.common.logging.flexlogger.PropertyUtil;
+import org.openecomp.policy.drools.properties.Startable;
 
 /**
  * This class is a wrapper around 'KieContainer', which adds the ability
@@ -296,7 +280,7 @@ public class PolicyContainer implements Startable
 
 			// loop through all of the features, and give each one
 			// a chance to create the 'KieSession'
-			for (FeatureAPI feature : FeatureAPI.impl.getList())
+			for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
 			  {
 				if ((kieSession = feature.activatePolicySession
 					 (this, name, kieBaseName)) != null)
@@ -453,7 +437,7 @@ public class PolicyContainer implements Startable
 	// KLUDGE WARNING: this is a temporary workaround -- if there are
 	// no features, we don't have persistence, and 'activate' is never
 	// called. In this case, make sure the container is started.
-	if (FeatureAPI.impl.getList().size() == 0)
+	if (PolicySessionFeatureAPI.impl.getList().size() == 0)
 	  {
 		start();
 	  }
@@ -606,7 +590,7 @@ public class PolicyContainer implements Startable
 			session.getKieSession().dispose();
 
 			// notify features
-			for (FeatureAPI feature : FeatureAPI.impl.getList())
+			for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
 			  {
 				feature.disposeKieSession(session);
 			  }
@@ -673,7 +657,7 @@ public class PolicyContainer implements Startable
 		session.getKieSession().destroy();
 
 		// notify features
-		for (FeatureAPI feature : FeatureAPI.impl.getList())
+		for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
 		  {
 			feature.destroyKieSession(session);
 		  }
@@ -766,7 +750,7 @@ public class PolicyContainer implements Startable
 	logger.info("initlogger returned");
 
 	// invoke 'globalInit' on all of the features
-	for (FeatureAPI feature : FeatureAPI.impl.getList())
+	for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
 	  {
 		feature.globalInit(args, configDir);
 	  }

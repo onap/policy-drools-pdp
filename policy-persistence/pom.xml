@@ -37,8 +37,7 @@
   <properties>
           <maven.compiler.source>1.8</maven.compiler.source>
           <maven.compiler.target>1.8</maven.compiler.target>
-          <cambria.version>0.2.4</cambria.version>
-          <dmaap.version>0.2.9</dmaap.version>
+          <swagger.version>1.5.0</swagger.version>
   </properties>
 
   <build>
@@ -84,53 +83,8 @@
               <useRepositoryLayout>false</useRepositoryLayout>
               <addParentPoms>false</addParentPoms>
               <copyPom>false</copyPom>
-              <excludeGroupIds>org.opendaylight,com.brocade.odl</excludeGroupIds>
-              <scope>provided</scope>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>copy-version</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <phase>validate</phase>
-            <configuration>
-              <outputDirectory>${basedir}/target/versions</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources/versions</directory>
-                  <includes>
-                    <include>version.properties</include>
-                  </includes>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-resources</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <phase>validate</phase>
-            <configuration>
-              <outputDirectory>${basedir}/target/etc/bvc-extensions</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources/etc/bvc-extensions</directory>
-                  <includes>
-                    <include>feature_config_template.cfg</include>
-                    <include>feature_custom.install</include>
-                  </includes>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
+              <excludeGroupIds>javax.inject</excludeGroupIds>
+              <excludeScope>provided</excludeScope>
             </configuration>
           </execution>
         </executions>
@@ -140,14 +94,21 @@
 
   <dependencies>
     <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-jersey2-jaxrs</artifactId>
+      <version>${swagger.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-core</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-management</artifactId>
       <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

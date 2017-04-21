@@ -24,17 +24,64 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.openecomp.policy.drools.event.comm.bus.internal.InlineDmaapTopicSink;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.openecomp.policy.drools.event.comm.bus.internal.InlineDmaapTopicSink;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
 /**
  * DMAAP Topic Sink Factory
  */
 public interface DmaapTopicSinkFactory {
+	public final String DME2_READ_TIMEOUT_PROPERTY = "AFT_DME2_EP_READ_TIMEOUT_MS";
+	public final String DME2_EP_CONN_TIMEOUT_PROPERTY = "AFT_DME2_EP_CONN_TIMEOUT";
+	public final String DME2_ROUNDTRIP_TIMEOUT_PROPERTY = "AFT_DME2_ROUNDTRIP_TIMEOUT_MS";
+	public final String DME2_VERSION_PROPERTY = "Version";
+	public final String DME2_ROUTE_OFFER_PROPERTY = "routeOffer";
+	public final String DME2_SERVICE_NAME_PROPERTY = "ServiceName";
+	public final String DME2_SUBCONTEXT_PATH_PROPERTY = "SubContextPath";
+	public final String DME2_SESSION_STICKINESS_REQUIRED_PROPERTY = "sessionstickinessrequired";
+
+	/**
+	 * Instantiates a new DMAAP Topic Sink
+	 * 
+	 * @param servers list of servers
+	 * @param topic topic name
+	 * @param apiKey API Key
+	 * @param apiSecret API Secret
+	 * @param userName AAF user name
+	 * @param password AAF password
+	 * @param partitionKey Consumer Group
+	 * @param environment DME2 environment
+	 * @param aftEnvironment DME2 AFT environment
+	 * @param partner DME2 Partner
+	 * @param latitude DME2 latitude
+	 * @param longitude DME2 longitude
+	 * @param additionalProps additional properties to pass to DME2
+	 * @param managed is this sink endpoint managed?
+	 * 
+	 * @return an DMAAP Topic Sink
+	 * @throws IllegalArgumentException if invalid parameters are present
+	 */
+	public DmaapTopicSink build(List<String> servers, 
+								String topic, 
+								String apiKey, 
+								String apiSecret,
+								String userName,
+								String password,
+								String partitionKey,
+								String environment,
+								String aftEnvironment,
+								String partner,
+								String latitude,
+								String longitude,
+								Map<String,String> additionalProps,
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts) ;
 	
 	/**
 	 * Instantiates a new DMAAP Topic Sink
@@ -58,7 +105,9 @@ public interface DmaapTopicSinkFactory {
 								String userName,
 								String password,
 								String partitionKey,
-								boolean managed)
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts)
 			throws IllegalArgumentException;
 	
 	/**
@@ -142,7 +191,15 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 								String userName,
 								String password,
 								String partitionKey,
-								boolean managed) 
+								String environment,
+								String aftEnvironment,
+								String partner,
+								String latitude,
+								String longitude,
+								Map<String,String> additionalProps,
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts) 
 			throws IllegalArgumentException {
 		
 		if (topic == null || topic.isEmpty()) {
@@ -158,7 +215,45 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 					new InlineDmaapTopicSink(servers, topic, 
 										     apiKey, apiSecret,
 										     userName, password,
-										     partitionKey);
+										     partitionKey,
+										     environment, aftEnvironment, 
+										     partner, latitude, longitude, additionalProps, useHttps, allowSelfSignedCerts);
+			
+			if (managed)
+				dmaapTopicWriters.put(topic, dmaapTopicSink);
+			return dmaapTopicSink;
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public DmaapTopicSink build(List<String> servers, 
+								String topic, 
+								String apiKey, 
+								String apiSecret,
+								String userName,
+								String password,
+								String partitionKey,
+								boolean managed,
+								boolean useHttps, boolean allowSelfSignedCerts) 
+			throws IllegalArgumentException {
+		
+		if (topic == null || topic.isEmpty()) {
+			throw new IllegalArgumentException("A topic must be provided");
+		}
+		
+		synchronized (this) {
+			if (dmaapTopicWriters.containsKey(topic)) {
+				return dmaapTopicWriters.get(topic);
+			}
+			
+			DmaapTopicSink dmaapTopicSink = 
+					new InlineDmaapTopicSink(servers, topic, 
+										     apiKey, apiSecret,
+										     userName, password,
+										     partitionKey, useHttps, allowSelfSignedCerts);
 			
 			if (managed)
 				dmaapTopicWriters.put(topic, dmaapTopicSink);
@@ -172,7 +267,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 	 */
 	@Override
 	public DmaapTopicSink build(List<String> servers, String topic) throws IllegalArgumentException {
-		return this.build(servers, topic, null, null, null, null, null, true);
+		return this.build(servers, topic, null, null, null, null, null, true, false, false);
 	}
 	
 
@@ -196,12 +291,10 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 				String servers = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + 
 				                                        topic + 
 				                                        PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
-				if (servers == null || servers.isEmpty()) {
-					logger.error("No DMAAP servers provided in " + properties);
-					continue;
-				}
 				
-				List<String> serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				List<String> serverList;
+				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				else serverList = new ArrayList<>();
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
 						                               "." + topic + 
@@ -223,14 +316,100 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 				
 				String managedString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic +
 						                                      PolicyProperties.PROPERTY_MANAGED_SUFFIX);
+				
+				/* DME2 Properties */
+				
+				String dme2Environment = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX);
+
+				String dme2AftEnvironment = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX);
+
+				String dme2Partner = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_PARTNER_SUFFIX);
+				
+				String dme2RouteOffer = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_ROUTE_OFFER_SUFFIX);
+
+				String dme2Latitude = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX);
+
+				String dme2Longitude = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX);
+
+				String dme2EpReadTimeoutMs = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_EP_READ_TIMEOUT_MS_SUFFIX);
+
+				String dme2EpConnTimeout = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_EP_CONN_TIMEOUT_SUFFIX);
+
+				String dme2RoundtripTimeoutMs = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS
+						+ "." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_ROUNDTRIP_TIMEOUT_MS_SUFFIX);
+
+				String dme2Version = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
+						+ PolicyProperties.PROPERTY_DMAAP_DME2_VERSION_SUFFIX);
+
+				String dme2SubContextPath = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_SUB_CONTEXT_PATH_SUFFIX);
+
+				String dme2SessionStickinessRequired = properties
+						.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
+								+ PolicyProperties.PROPERTY_DMAAP_DME2_SESSION_STICKINESS_REQUIRED_SUFFIX);
+				
+				Map<String,String> dme2AdditionalProps = new HashMap<>();
+				
+				if (dme2EpReadTimeoutMs != null && !dme2EpReadTimeoutMs.isEmpty())
+					dme2AdditionalProps.put(DME2_READ_TIMEOUT_PROPERTY, dme2EpReadTimeoutMs);
+				if (dme2EpConnTimeout != null && !dme2EpConnTimeout.isEmpty())
+					dme2AdditionalProps.put(DME2_EP_CONN_TIMEOUT_PROPERTY, dme2EpConnTimeout);
+				if (dme2RoundtripTimeoutMs != null && !dme2RoundtripTimeoutMs.isEmpty())
+					dme2AdditionalProps.put(DME2_ROUNDTRIP_TIMEOUT_PROPERTY, dme2RoundtripTimeoutMs);
+				if (dme2Version != null && !dme2Version.isEmpty())
+					dme2AdditionalProps.put(DME2_VERSION_PROPERTY, dme2Version);
+				if (dme2RouteOffer != null && !dme2RouteOffer.isEmpty())
+					dme2AdditionalProps.put(DME2_ROUTE_OFFER_PROPERTY, dme2RouteOffer);
+				if (dme2SubContextPath != null && !dme2SubContextPath.isEmpty())
+					dme2AdditionalProps.put(DME2_SUBCONTEXT_PATH_PROPERTY, dme2SubContextPath);
+				if (dme2SessionStickinessRequired != null && !dme2SessionStickinessRequired.isEmpty())
+					dme2AdditionalProps.put(DME2_SESSION_STICKINESS_REQUIRED_PROPERTY, dme2SessionStickinessRequired);
+
+				if (servers == null || servers.isEmpty()) {
+					logger.error("No DMaaP servers or DME2 ServiceName provided");
+					continue;
+				}
+				
 				boolean managed = true;
 				if (managedString != null && !managedString.isEmpty()) {
 					managed = Boolean.parseBoolean(managedString);
 				}
 				
+				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_HTTP_HTTPS_SUFFIX);
+
+				//default is to use HTTP if no https property exists
+				boolean useHttps = false;
+				if (useHttpsString != null && !useHttpsString.isEmpty()){
+					useHttps = Boolean.parseBoolean(useHttpsString);
+				}
+				
+				
+				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX);
+
+					//default is to disallow self-signed certs 
+				boolean allowSelfSignedCerts = false;
+				if (allowSelfSignedCertsString != null && !allowSelfSignedCertsString.isEmpty()){
+					allowSelfSignedCerts = Boolean.parseBoolean(allowSelfSignedCertsString);
+				}				
+				
 				DmaapTopicSink dmaapTopicSink = this.build(serverList, topic, 
-						   						           apiKey, apiSecret, aafMechId, aafPassword,
-						   						           partitionKey, managed);
+						   						           apiKey, apiSecret,
+						   						           aafMechId, aafPassword,
+						   						           partitionKey,
+						   						           dme2Environment, dme2AftEnvironment,
+						   						           dme2Partner, dme2Latitude, dme2Longitude,
+						   						           dme2AdditionalProps, managed, useHttps, allowSelfSignedCerts);
+				
 				dmaapTopicWriters.add(dmaapTopicSink);
 			}
 			return dmaapTopicWriters;

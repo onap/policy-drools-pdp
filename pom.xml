@@ -34,10 +34,16 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
+		<swagger-maven-plugin-version>3.1.4</swagger-maven-plugin-version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.source.version>1.8</project.source.version>
 		<project.target.version>1.8</project.target.version>
 		<common-modules.version>1.1.0-SNAPSHOT</common-modules.version>
+		<dmaap.version>0.2.12</dmaap.version>
+		<cambria.version>0.0.1</cambria.version>
+		<jersey.version>2.22.2</jersey.version>
+		<jackson.version>2.8.4</jackson.version>
   
 		<sonar.language>java</sonar.language>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -118,7 +124,61 @@
 	<dependencies>
 
 	</dependencies>
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>10.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.ws.rs</groupId>
+				<artifactId>javax.ws.rs-api</artifactId>
+				<version>2.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.hk2.external</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>2.4.0-b31</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-base</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-json-provider</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-xml</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-yaml</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-joda</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-common</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-servlet-core</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -131,6 +191,53 @@
 					<stagingProfileId>176c31dfe190a</stagingProfileId>
 					<serverId>ecomp-staging</serverId>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.kongchen</groupId>
+				<artifactId>swagger-maven-plugin</artifactId>
+				<version>${swagger-maven-plugin-version}</version>
+				<configuration>
+					<apiSources>
+						<apiSource>
+							<springmvc>false</springmvc>
+							<locations>
+								<location>
+									org.openecomp.policy.drools.core.DroolsPDPIntegrityMonitor
+								</location>
+							</locations>
+							<info>
+								<title>Drools PDP</title>
+								<version>1.0.0</version>
+							</info>
+							<swaggerDirectory>${project.build.directory}/swagger/integrityMonitor</swaggerDirectory>
+							<swaggerFileName>swagger</swaggerFileName>
+							<attachSwaggerArtifact>true</attachSwaggerArtifact>
+						</apiSource>
+					</apiSources>
+				</configuration>
+				<dependencies>
+					<!-- Adding dependency to swagger-hibernate-validations to enable the BeanValidator as a custom
+						 model converter -->
+					<dependency>
+						<groupId>io.swagger</groupId>
+						<artifactId>swagger-hibernate-validations</artifactId>
+						<version>1.5.6</version>
+					</dependency>
+					<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+					<dependency>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>commons-lang3</artifactId>
+						<version>3.4</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -42,18 +42,24 @@ public class SingleThreadedUebTopicSource extends SingleThreadedBusTopicSource
 	 * @param consumerInstance UEB Reader Instance
 	 * @param fetchTimeout UEB fetch timeout
 	 * @param fetchLimit UEB fetch limit
+	 * @param useHttps does topicSource use HTTPS?
+	 * @param allowSelfSignedCerts does topicSource allow self-signed certs?
+	 * 
 	 * @throws IllegalArgumentException An invalid parameter passed in
 	 */
+	
+		
 	public SingleThreadedUebTopicSource(List<String> servers, String topic, 
 			                            String apiKey, String apiSecret,
 			                            String consumerGroup, String consumerInstance, 
-			                            int fetchTimeout, int fetchLimit)
+			                            int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts)
 			throws IllegalArgumentException {
 		
 		super(servers, topic, apiKey, apiSecret, 
 			  consumerGroup, consumerInstance, 
-			  fetchTimeout, fetchLimit);
+			  fetchTimeout, fetchLimit, useHttps, allowSelfSignedCerts);
 		
+		this.allowSelfSignedCerts = allowSelfSignedCerts;
 		
 		this.init();
 	}
@@ -67,7 +73,7 @@ public class SingleThreadedUebTopicSource extends SingleThreadedBusTopicSource
 			new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
 					                           this.apiKey, this.apiSecret,
 					                           this.consumerGroup, this.consumerInstance,
-					                           this.fetchTimeout, this.fetchLimit);
+					                           this.fetchTimeout, this.fetchLimit, this.useHttps, this.allowSelfSignedCerts);
 	}
 	
 	/**
@@ -77,6 +83,7 @@ public class SingleThreadedUebTopicSource extends SingleThreadedBusTopicSource
 	public CommInfrastructure getTopicCommInfrastructure() {
 		return Topic.CommInfrastructure.UEB;
 	}
+	
 
 	@Override
 	public String toString() {

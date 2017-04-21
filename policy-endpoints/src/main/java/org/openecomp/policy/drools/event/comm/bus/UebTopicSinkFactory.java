@@ -54,7 +54,9 @@ public interface UebTopicSinkFactory {
 								String apiKey, 
 								String apiSecret,
 								String partitionKey,
-								boolean managed)
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts)
 			throws IllegalArgumentException;
 	
 	/**
@@ -135,9 +137,15 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 								String apiKey, 
 								String apiSecret,
 								String partitionKey,
-								boolean managed) 
+								boolean managed,
+								boolean useHttps,
+								boolean allowSelfSignedCerts) 
 			throws IllegalArgumentException {
 		
+		if (servers == null || servers.isEmpty()) {
+			throw new IllegalArgumentException("UEB Server(s) must be provided");
+		}
+
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
 		}
@@ -149,7 +157,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 			
 			UebTopicSink uebTopicWriter = 
 					new InlineUebTopicSink(servers, topic, 
-										   apiKey, apiSecret,partitionKey);
+										   apiKey, apiSecret,partitionKey, useHttps, allowSelfSignedCerts);
 			
 			if (managed)
 				uebTopicSinks.put(topic, uebTopicWriter);
@@ -164,7 +172,8 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	 */
 	@Override
 	public UebTopicSink build(List<String> servers, String topic) throws IllegalArgumentException {
-		return this.build(servers, topic, null, null, null, true);
+		
+		return this.build(servers, topic, null, null, null, true, false, false);
 	}
 	
 
@@ -212,9 +221,28 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 					managed = Boolean.parseBoolean(managedString);
 				}
 				
+				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_HTTP_HTTPS_SUFFIX);
+				
+				//default is to use HTTP if no https property exists
+				boolean useHttps = false;
+				if (useHttpsString != null && !useHttpsString.isEmpty()){
+					useHttps = Boolean.parseBoolean(useHttpsString);
+				}
+				
+				
+				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic +
+						PolicyProperties.PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX);
+
+					//default is to disallow self-signed certs 
+				boolean allowSelfSignedCerts = false;
+				if (allowSelfSignedCertsString != null && !allowSelfSignedCertsString.isEmpty()){
+					allowSelfSignedCerts = Boolean.parseBoolean(allowSelfSignedCertsString);
+				}			
+				
 				UebTopicSink uebTopicWriter = this.build(serverList, topic, 
 						   						         apiKey, apiSecret, 
-						   						         partitionKey, managed);
+						   						         partitionKey, managed, useHttps, allowSelfSignedCerts);
 				uebTopicWriters.add(uebTopicWriter);
 			}
 			return uebTopicWriters;

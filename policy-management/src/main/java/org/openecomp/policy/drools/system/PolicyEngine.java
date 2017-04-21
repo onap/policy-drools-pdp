@@ -28,7 +28,6 @@ import org.openecomp.policy.common.logging.eelf.MessageCodes;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.controller.DroolsController;
-import org.openecomp.policy.drools.core.FeatureAPI;
 import org.openecomp.policy.drools.core.jmx.PdpJmxListener;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.Topic.CommInfrastructure;
@@ -36,6 +35,8 @@ import org.openecomp.policy.drools.event.comm.TopicEndpoint;
 import org.openecomp.policy.drools.event.comm.TopicListener;
 import org.openecomp.policy.drools.event.comm.TopicSink;
 import org.openecomp.policy.drools.event.comm.TopicSource;
+import org.openecomp.policy.drools.features.PolicyControllerFeatureAPI;
+import org.openecomp.policy.drools.features.PolicyEngineFeatureAPI;
 import org.openecomp.policy.drools.http.server.HttpServletServer;
 import org.openecomp.policy.drools.persistence.SystemPersistence;
 import org.openecomp.policy.drools.properties.Lockable;
@@ -329,17 +330,31 @@ class PolicyEngineManager implements PolicyEngine {
 	 */
 	protected List<HttpServletServer> httpServers = new ArrayList<HttpServletServer>();
 	
+	/**
+	 * gson parser to decode configuration requests
+	 */
 	protected Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void configure(Properties properties) throws IllegalArgumentException {
+	public synchronized void configure(Properties properties) throws IllegalArgumentException {
 		
 		if (properties == null) {
 			logger.warn("No properties provided");
 			throw new IllegalArgumentException("No properties provided");
+		}
+		
+		/* policy-engine dispatch pre configure hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeConfigure(this, properties))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		
 		this.properties = properties;
@@ -365,6 +380,17 @@ class PolicyEngineManager implements PolicyEngine {
 			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "configure");
 		}
 		
+		/* policy-engine dispatch post configure hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterConfigure(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
 		return;
 	}
 
@@ -372,7 +398,7 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PolicyController createPolicyController(String name, Properties properties) 
+	public synchronized PolicyController createPolicyController(String name, Properties properties) 
 			throws IllegalArgumentException, IllegalStateException {
 		
 		// check if a PROPERTY_CONTROLLER_NAME property is present
@@ -388,19 +414,31 @@ class PolicyEngineManager implements PolicyEngine {
 			name = propertyControllerName;
 		}
 		
-		// feature hook
-		for (FeatureAPI feature : FeatureAPI.impl.getList()) {
-			feature.beforeCreateController(name, properties);
+		PolicyController controller;
+		for (PolicyControllerFeatureAPI controllerFeature : PolicyControllerFeatureAPI.providers.getList()) {
+			try {
+				controller = controllerFeature.beforeCreate(name, properties);
+				if (controller != null)
+					return controller;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + controllerFeature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		
-		PolicyController controller = PolicyController.factory.build(name, properties);	
+		controller = PolicyController.factory.build(name, properties);	
 		if (this.isLocked())
 			controller.lock();
 		
 		// feature hook
-		for (FeatureAPI feature : FeatureAPI.impl.getList()) {
-			//  NOTE: this should change to the actual controller object
-			feature.afterCreateController(name);
+		for (PolicyControllerFeatureAPI controllerFeature : PolicyControllerFeatureAPI.providers.getList()) {
+			try {
+				if (controllerFeature.afterCreate(controller))
+					return controller;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + controllerFeature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		
 		return controller;
@@ -573,22 +611,24 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean start() throws IllegalStateException {
+	public synchronized boolean start() throws IllegalStateException {
 		
-		if (this.locked) {
-			throw new IllegalStateException("Engine is locked");
+		/* policy-engine dispatch pre start hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeStart(this))
+					return true;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
-		
-		// Features hook
-		for (FeatureAPI feature : FeatureAPI.impl.getList()) {
-			feature.beforeStartEngine();
-		}
-		
-		synchronized(this) {
-			this.alive = true;
-		}
-		
+			
 		boolean success = true;
+		if (this.locked)
+			throw new IllegalStateException("Engine is locked");
+		
+		this.alive = true;
 
 		/* Start Policy Engine exclusively-owned (unmanaged) http servers */
 		
@@ -600,6 +640,7 @@ class PolicyEngineManager implements PolicyEngine {
 				logger.error(MessageCodes.EXCEPTION_ERROR, e, httpServer.toString(), this.toString());
 			}
 		}
+		
 		/* Start Policy Engine exclusively-owned (unmanaged) sources */
 		
 		for (TopicSource source: this.sources) {
@@ -650,9 +691,15 @@ class PolicyEngineManager implements PolicyEngine {
 		
 		PdpJmxListener.start();
 		
-		// Features hook
-		for (FeatureAPI feature : FeatureAPI.impl.getList()) {
-			feature.afterStartEngine();
+		/* policy-engine dispatch after start hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterStart(this))
+					return success;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 
 		return success;
@@ -662,18 +709,27 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean stop() {
+	public synchronized boolean stop() {
+		
+		/* policy-engine dispatch pre stop hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeStop(this))
+					return true;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 		
 		/* stop regardless of the lock state */
 		
-		synchronized(this) {
-			if (!this.alive)
-				return true;
-			
-			this.alive = false;			
-		}
-		
 		boolean success = true;
+		if (!this.alive)
+			return true;
+		
+		this.alive = false;			
+	
 		List<PolicyController> controllers = PolicyController.factory.inventory();
 		for (PolicyController controller : controllers) {
 			try {
@@ -719,6 +775,17 @@ class PolicyEngineManager implements PolicyEngine {
 			}
 		}		
 		
+		/* policy-engine dispatch pre stop hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterStop(this))
+					return success;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
 		return success;
 	}
 	
@@ -726,17 +793,21 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public synchronized void shutdown() throws IllegalStateException {
+		
+		/* policy-engine dispatch pre shutdown hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeShutdown(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 
-		synchronized(this) {
-			this.alive = false;			
-		}
-		
-		// feature hook reporting that the Policy Engine is being shut down		
-		for (FeatureAPI feature : FeatureAPI.impl.getList()) {
-			feature.beforeShutdownEngine();
-		}
-		
+		this.alive = false;			
+	
 		/* Shutdown Policy Engine owned (unmanaged) sources */
 		for (TopicSource source: this.sources) {
 			try {
@@ -764,10 +835,17 @@ class PolicyEngineManager implements PolicyEngine {
 		
 		PdpJmxListener.stop();
 		
-		// feature hook reporting that the Policy Engine has being shut down		
-		for (FeatureAPI feature : FeatureAPI.impl.getList()) {
-			feature.afterShutdownEngine();
+		/* policy-engine dispatch post shutdown hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterShutdown(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
+
 		
 		new Thread(new Runnable() {
 		    @Override
@@ -802,7 +880,7 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isAlive() {
+	public synchronized boolean isAlive() {
 		return this.alive;
 	}
 
@@ -810,15 +888,24 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean lock() {
+	public synchronized boolean lock() {
 		
-		synchronized(this) {
-			if (this.locked)
-				return true;
-			
-			this.locked = true;			
+		/* policy-engine dispatch pre lock hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeLock(this))
+					return true;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		
+		if (this.locked)
+			return true;
+		
+		this.locked = true;			
+	
 		boolean success = true;
 		List<PolicyController> controllers = PolicyController.factory.inventory();
 		for (PolicyController controller : controllers) {
@@ -830,7 +917,19 @@ class PolicyEngineManager implements PolicyEngine {
 			}
 		}
 		
-		success = TopicEndpoint.manager.lock();		
+		success = TopicEndpoint.manager.lock() && success;	
+			
+		/* policy-engine dispatch post lock hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterLock(this))
+					return success;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
 		return success;
 	}
 
@@ -838,13 +937,23 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean unlock() {
-		synchronized(this) {
-			if (!this.locked)
-				return true;
-			
-			this.locked = false;			
+	public synchronized boolean unlock() {
+		
+		/* policy-engine dispatch pre unlock hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeUnlock(this))
+					return true;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
 		}
+		
+		if (!this.locked)
+			return true;
+		
+		this.locked = false;			
 		
 		boolean success = true;
 		List<PolicyController> controllers = PolicyController.factory.inventory();
@@ -857,7 +966,19 @@ class PolicyEngineManager implements PolicyEngine {
 			}
 		}
 		
-		success = TopicEndpoint.manager.unlock();		
+		success = TopicEndpoint.manager.unlock() && success;
+		
+		/* policy-engine dispatch after unlock hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterUnlock(this))
+					return success;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		
 		return success;
 	}
 
@@ -865,7 +986,7 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isLocked() {
+	public synchronized boolean isLocked() {
 		return this.locked;
 	}
 
@@ -945,7 +1066,7 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean onTopicEvent(CommInfrastructure commType, String topic, String event) {
+	public void onTopicEvent(CommInfrastructure commType, String topic, String event) {
 		/* configuration request */
 		try {
 			PdpdConfiguration configuration = this.decoder.fromJson(event, PdpdConfiguration.class);
@@ -953,8 +1074,6 @@ class PolicyEngineManager implements PolicyEngine {
 		} catch (Exception e) {
 			logger.error(MessageCodes.EXCEPTION_ERROR, e, "CONFIGURATION ERROR IN PDP-D POLICY ENGINE: "+ event + ":" + e.getMessage() + ":" + this);
 		}
-		
-		return true;
 	}
 
 	/**
@@ -1131,6 +1250,17 @@ class PolicyEngineManager implements PolicyEngine {
 	 */
 	@Override
 	public synchronized void activate() {
+		
+		/* policy-engine dispatch pre activate hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeActivate(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 
 		// activate 'policy-management'
 		for (PolicyController policyController : getPolicyControllers()) {
@@ -1147,6 +1277,17 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 		
 		this.unlock();
+		
+		/* policy-engine dispatch post activate hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterActivate(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -1154,6 +1295,17 @@ class PolicyEngineManager implements PolicyEngine {
 	 */
 	@Override
 	public synchronized void deactivate() {
+		
+		/* policy-engine dispatch pre deactivate hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeDeactivate(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 		
 		this.lock();
 		
@@ -1167,7 +1319,18 @@ class PolicyEngineManager implements PolicyEngine {
 				logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine.deactivate: cannot start " + 
 			                 policyController + " because of " + e.getMessage());
 			}
-		}	  
+		}
+		
+		/* policy-engine dispatch post deactivate hook */
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterDeactivate(this))
+					return;
+			} catch (Exception e) {
+				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

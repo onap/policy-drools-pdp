@@ -24,10 +24,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import org.junit.After;
@@ -36,7 +42,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.common.im.AdministrativeStateException;
 import org.openecomp.policy.common.im.IntegrityMonitor;
@@ -50,17 +55,24 @@ import org.openecomp.policy.drools.persistence.DroolsPdp;
 import org.openecomp.policy.drools.persistence.DroolsPdpEntity;
 import org.openecomp.policy.drools.persistence.DroolsPdpImpl;
 import org.openecomp.policy.drools.persistence.DroolsPdpsConnector;
+import org.openecomp.policy.drools.persistence.DroolsPdpsElectionHandler;
 import org.openecomp.policy.drools.persistence.JpaDroolsPdpsConnector;
 import org.openecomp.policy.drools.persistence.DroolsPersistenceProperties;
 import org.openecomp.policy.drools.persistence.XacmlPersistenceProperties;
 import org.openecomp.policy.drools.system.Main;
 import org.openecomp.policy.drools.system.PolicyEngine;
-
 import org.apache.commons.lang3.time.DateUtils;
 
 /*
- * Cloned from StandbyStateManagement.java in support of US673632.
- * See MultiSite_v1-10.ppt, slide 38
+ * All JUnits are designed to run in the local development environment
+ * where they have write privileges and can execute time-sensitive
+ * tasks.
+ * 
+ * These tests can be run as JUnits, but there is some issue with running them
+ * as part of a "mvn install" build.  Also, they take a very long time to run
+ * due to many real time breaks.  Consequently, they are marked as @Ignore and
+ * only run from the desktop.
+ * 
  */
 public class StandbyStateManagementTest {
 			
@@ -82,6 +94,12 @@ public class StandbyStateManagementTest {
 	 * Sleep 5 seconds after each test to allow interrupt (shutdown) recovery.
 	 */
 	long interruptRecoveryTime = 5000;
+	
+	private static EntityManagerFactory emfx;
+	private static EntityManagerFactory emfd;
+	private static EntityManager emx;
+	private static EntityManager emd;
+	private static EntityTransaction et;
 
 	/*
 	 * See the IntegrityMonitor.getJmxUrl() method for the rationale behind this jmx related processing.
@@ -106,18 +124,423 @@ public class StandbyStateManagementTest {
 
 	@Before
 	public void setUp() throws Exception {
+		//Create teh data access for xaml db
+		Properties xacmlPersistenceProperties = new Properties();
+		xacmlPersistenceProperties.load(new FileInputStream(new File(
+				"src/test/server/config/xacmlPersistence.properties")));
+
+		emfx = Persistence.createEntityManagerFactory("junitXacmlPU", xacmlPersistenceProperties);
+
+		// Create an entity manager to use the DB
+		emx = emfx.createEntityManager();
+		
+		//Create the data access for drools db
+		Properties droolsPersistenceProperties = new Properties();
+		droolsPersistenceProperties.load(new FileInputStream(new File(
+				"src/test/server/config/droolsPersistence.properties")));
+
+		emfd = Persistence.createEntityManagerFactory("junitDroolsPU", droolsPersistenceProperties);
+
+		// Create an entity manager to use the DB
+		emd = emfd.createEntityManager();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 				
 	}
-
+	
+	public void cleanXacmlDb(){
+		et = emx.getTransaction();
+		
+		et.begin();
+		// Make sure we leave the DB clean
+		emx.createQuery("DELETE FROM StateManagementEntity").executeUpdate();
+		emx.createQuery("DELETE FROM ResourceRegistrationEntity").executeUpdate();
+		emx.createQuery("DELETE FROM ForwardProgressEntity").executeUpdate();
+		emx.createQuery("DELETE FROM IntegrityAuditEntity").executeUpdate();
+		emx.flush();
+		et.commit();
+	}
+	
+	public void cleanDroolsDb(){
+		et = emd.getTransaction();
+		
+		et.begin();
+		// Make sure we leave the DB clean
+		emd.createQuery("DELETE FROM DroolsPdpEntity").executeUpdate();
+		emd.createQuery("DELETE FROM DroolsSessionEntity").executeUpdate();
+		emd.createQuery("DELETE FROM SessionInfo").executeUpdate();
+		emd.createQuery("DELETE FROM WorkItemInfo").executeUpdate();
+		emd.createQuery("DELETE FROM IntegrityAuditEntity").executeUpdate();
+		emd.flush();
+		et.commit();
+	}
+	
 	@Ignore
 	@Test
+	public void runAllTests() throws Exception {
+		//testColdStandby();
+		//testHotStandby1();
+		//testHotStandby2();
+		//testLocking1();
+		//testLocking2();
+		testSanitizeDesignatedList();
+		testComputeMostRecentPrimary();
+		testComputeDesignatedPdp();
+	}
+	
+	//@Ignore
+	//@Test
+	public void testSanitizeDesignatedList() throws Exception {
+
+		PolicyLogger.debug("\n\ntestSanitizeDesignatedList: Entering\n\n");
+		
+		/*
+		 * Get a DroolsPdpsConnector
+		 */
+		PolicyLogger.debug("testSanitizeDesignatedList: Reading droolsPersistenceProperties");
+		Properties droolsPersistenceProperties = new Properties();
+		droolsPersistenceProperties.load(new FileInputStream(new File(
+				"src/test/server/config/droolsPersistence.properties")));
+		DroolsPersistenceProperties.initProperties(droolsPersistenceProperties);
+
+		PolicyLogger.debug("testSanitizeDesignatedList: Creating emfDrools");
+		EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
+				"junitDroolsPU", droolsPersistenceProperties);
+		
+		DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfDrools);
+		
+		/*
+		 * Create 4 pdpd all not designated
+		 */
+		DroolsPdp pdp1 = new DroolsPdpImpl("pdp1", false, 4, new Date());
+		DroolsPdp pdp2 = new DroolsPdpImpl("pdp2", false, 4, new Date());
+		DroolsPdp pdp3 = new DroolsPdpImpl("pdp3", false, 4, new Date());
+		DroolsPdp pdp4 = new DroolsPdpImpl("pdp4", false, 4, new Date());
+		
+		ArrayList<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
+		listOfDesignated.add(pdp1);
+		listOfDesignated.add(pdp2);
+		listOfDesignated.add(pdp3);
+		listOfDesignated.add(pdp4);
+		
+		DroolsPDPIntegrityMonitor droolsPDPIntegrityMonitor;
+		try{
+			droolsPDPIntegrityMonitor = DroolsPDPIntegrityMonitor.init("src/test/server/config");
+		}catch(Exception e){
+			//If it already exists, just get it
+			droolsPDPIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
+		}
+		DroolsPdpsElectionHandler droolsPdpsElectionHandler =  new DroolsPdpsElectionHandler(droolsPdpsConnector, pdp1, droolsPDPIntegrityMonitor);
+		
+		listOfDesignated = droolsPdpsElectionHandler.santizeDesignatedList(listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size = " + listOfDesignated.size() + "\n\n");
+		
+		assertTrue(listOfDesignated.size()==4);
+		
+		/*
+		 * Now make 2 designated
+		 */
+		pdp1.setDesignated(true);
+		pdp2.setDesignated(true);
+		
+		listOfDesignated = droolsPdpsElectionHandler.santizeDesignatedList(listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after 2 designated = " + listOfDesignated.size() + "\n\n");
+		
+		assertTrue(listOfDesignated.size()==2);
+		assertTrue(listOfDesignated.contains(pdp1));
+		assertTrue(listOfDesignated.contains(pdp2));
+		
+		/*
+		 * Now all are designated.  But, we have to add back the previously non-designated nodes
+		 */
+		pdp3.setDesignated(true);
+		pdp4.setDesignated(true);
+		listOfDesignated.add(pdp3);
+		listOfDesignated.add(pdp4);
+		
+		listOfDesignated = droolsPdpsElectionHandler.santizeDesignatedList(listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after all designated = " + listOfDesignated.size() + "\n\n");
+		
+		assertTrue(listOfDesignated.size()==4);
+		
+	}
+	
+	//@Ignore
+	//@Test
+	public void testComputeMostRecentPrimary() throws Exception {
+
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: Entering\n\n");
+		
+		/*
+		 * Get a DroolsPdpsConnector
+		 */
+		PolicyLogger.debug("testComputeMostRecentPrimary: Reading droolsPersistenceProperties");
+		Properties droolsPersistenceProperties = new Properties();
+		droolsPersistenceProperties.load(new FileInputStream(new File(
+				"src/test/server/config/droolsPersistence.properties")));
+		DroolsPersistenceProperties.initProperties(droolsPersistenceProperties);
+
+		PolicyLogger.debug("testComputeMostRecentPrimary: Creating emfDrools");
+		EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
+				"junitDroolsPU", droolsPersistenceProperties);
+		
+		DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfDrools);
+		
+		/*
+		 * Create 4 pdpd all not designated
+		 */
+		long designatedDateMS = new Date().getTime();
+		DroolsPdp pdp1 = new DroolsPdpImpl("pdp1", false, 4, new Date());
+		pdp1.setDesignatedDate(new Date(designatedDateMS - 2));
+		
+		DroolsPdp pdp2 = new DroolsPdpImpl("pdp2", false, 4, new Date());
+		//oldest
+		pdp2.setDesignatedDate(new Date(designatedDateMS - 3));
+		
+		DroolsPdp pdp3 = new DroolsPdpImpl("pdp3", false, 4, new Date());
+		pdp3.setDesignatedDate(new Date(designatedDateMS - 1));
+
+		DroolsPdp pdp4 = new DroolsPdpImpl("pdp4", false, 4, new Date());
+		//most recent
+		pdp4.setDesignatedDate(new Date(designatedDateMS));
+		
+		ArrayList<DroolsPdp> listOfAllPdps = new ArrayList<DroolsPdp>();
+		listOfAllPdps.add(pdp1);
+		listOfAllPdps.add(pdp2);
+		listOfAllPdps.add(pdp3);
+		listOfAllPdps.add(pdp4);
+				
+		
+		ArrayList<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
+		listOfDesignated.add(pdp1);
+		listOfDesignated.add(pdp2);
+		listOfDesignated.add(pdp3);
+		listOfDesignated.add(pdp4);
+		
+		
+		/*
+		 * Because the way we sanitize the listOfDesignated, it will always contain all hot standby 
+		 * or all designated members.
+		 */
+		DroolsPDPIntegrityMonitor droolsPDPIntegrityMonitor;
+		try{
+			droolsPDPIntegrityMonitor = DroolsPDPIntegrityMonitor.init("src/test/server/config");
+		}catch(Exception e){
+			//If it already exists, just get it
+			droolsPDPIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
+		}
+		DroolsPdpsElectionHandler droolsPdpsElectionHandler =  new DroolsPdpsElectionHandler(droolsPdpsConnector, pdp1, droolsPDPIntegrityMonitor);
+	
+		DroolsPdp mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = " + mostRecentPrimary.getPdpId() + "\n\n");
+		
+		/*
+		 * If all of the pdps are included in the listOfDesignated and none are designated, it will choose 
+		 * the one which has the most recent designated date.
+		 */
+		assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+		
+		/*
+		 * Now let's designate all of those on the listOfDesignated.  It will choose the first one designated
+		 */
+		pdp1.setDesignated(true);
+		pdp2.setDesignated(true);
+		pdp3.setDesignated(true);
+		pdp4.setDesignated(true);
+		
+		mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: All designated all on list, mostRecentPrimary.getPdpId() = " + mostRecentPrimary.getPdpId() + "\n\n");
+		
+		/*
+		 * If all of the pdps are included in the listOfDesignated and all are designated, it will choose 
+		 * the one which was designated first
+		 */
+		assertTrue(mostRecentPrimary.getPdpId().equals("pdp2"));
+		
+		/*
+		 * Now we will designate only 2 and put just them in the listOfDesignated.  The algorithm will now
+		 * look for the most recently designated pdp which is not currently designated.
+		 */
+		pdp3.setDesignated(false);
+		pdp4.setDesignated(false);
+		
+		listOfDesignated.remove(pdp3);
+		listOfDesignated.remove(pdp4);
+		
+		mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = " + mostRecentPrimary.getPdpId() + "\n\n");
+		
+		assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+		
+		
+		/*
+		 * Now we will have none designated and put two of them in the listOfDesignated.  The algorithm will now
+		 * look for the most recently designated pdp regardless of whether it is currently marked as designated.
+		 */
+		pdp1.setDesignated(false);
+		pdp2.setDesignated(false);
+		
+		mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: 2 on list mostRecentPrimary.getPdpId() = " + mostRecentPrimary.getPdpId() + "\n\n");
+		
+		assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+		
+		/*
+		 * If we have only one pdp on in the listOfDesignated, the most recently designated pdp will be chosen, regardless
+		 * of its designation status
+		 */
+		listOfDesignated.remove(pdp1);
+		
+		mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: 1 on list mostRecentPrimary.getPdpId() = " + mostRecentPrimary.getPdpId() + "\n\n");
+		
+		assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+		
+		/*
+		 * Finally, if none are on the listOfDesignated, it will again choose the most recently designated pdp.
+		 */
+		listOfDesignated.remove(pdp2);
+
+		mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
+		
+		PolicyLogger.debug("\n\ntestComputeMostRecentPrimary: 0 on list mostRecentPrimary.getPdpId() = " + mostRecentPrimary.getPdpId() + "\n\n");
+		
+		assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+		
+	}
+	
+	//@Ignore
+	//@Test
+	public void testComputeDesignatedPdp() throws Exception{
+		
+		PolicyLogger.debug("\n\ntestComputeDesignatedPdp: Entering\n\n");
+		
+		/*
+		 * Get a DroolsPdpsConnector
+		 */
+		PolicyLogger.debug("testComputeDesignatedPdp: Reading droolsPersistenceProperties");
+		Properties droolsPersistenceProperties = new Properties();
+		droolsPersistenceProperties.load(new FileInputStream(new File(
+				"src/test/server/config/droolsPersistence.properties")));
+		DroolsPersistenceProperties.initProperties(droolsPersistenceProperties);
+
+		PolicyLogger.debug("testComputeDesignatedPdp: Creating emfDrools");
+		EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
+				"junitDroolsPU", droolsPersistenceProperties);
+		
+		DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfDrools);
+		
+		/*
+		 * Create 4 pdpd all not designated.  Two on site1. Two on site2
+		 */
+		long designatedDateMS = new Date().getTime();
+		DroolsPdp pdp1 = new DroolsPdpImpl("pdp1", false, 4, new Date());
+		pdp1.setDesignatedDate(new Date(designatedDateMS - 2));
+		pdp1.setSiteName("site1");
+		
+		DroolsPdp pdp2 = new DroolsPdpImpl("pdp2", false, 4, new Date());
+		pdp2.setDesignatedDate(new Date(designatedDateMS - 3));
+		pdp2.setSiteName("site1");
+
+		//oldest		
+		DroolsPdp pdp3 = new DroolsPdpImpl("pdp3", false, 4, new Date());
+		pdp3.setDesignatedDate(new Date(designatedDateMS - 4));
+		pdp3.setSiteName("site2");
+		
+		DroolsPdp pdp4 = new DroolsPdpImpl("pdp4", false, 4, new Date());
+		//most recent
+		pdp4.setDesignatedDate(new Date(designatedDateMS));
+		pdp4.setSiteName("site2");
+		
+		ArrayList<DroolsPdp> listOfAllPdps = new ArrayList<DroolsPdp>();
+		listOfAllPdps.add(pdp1);
+		listOfAllPdps.add(pdp2);
+		listOfAllPdps.add(pdp3);
+		listOfAllPdps.add(pdp4);
+				
+		
+		ArrayList<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
+		
+		/*
+		 * We will first test an empty listOfDesignated. As we know from the previous JUnit,
+		 * the pdp with the most designated date will be chosen for mostRecentPrimary  
+		 */
+		
+		DroolsPDPIntegrityMonitor droolsPDPIntegrityMonitor;
+		try{
+			droolsPDPIntegrityMonitor = DroolsPDPIntegrityMonitor.init("src/test/server/config");
+		}catch(Exception e){
+			//If it already exists, just get it
+			droolsPDPIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
+		}
+		DroolsPdpsElectionHandler droolsPdpsElectionHandler =  new DroolsPdpsElectionHandler(droolsPdpsConnector, pdp1, droolsPDPIntegrityMonitor);
+		
+		DroolsPdp mostRecentPrimary = pdp4;
+	
+		DroolsPdp designatedPdp = droolsPdpsElectionHandler.computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
+		
+		/*
+		 * The designatedPdp should be null
+		 */
+		assertTrue(designatedPdp==null);
+		
+		/*
+		 * Now let's try having only one pdp in listOfDesignated, but not in the same site as the most recent primary
+		 */
+		
+		listOfDesignated.add(pdp2);
+		
+		designatedPdp = droolsPdpsElectionHandler.computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
+		
+		/*
+		 * Now the designatedPdp should be the one and only selection in the listOfDesignated
+		 */
+		assertTrue(designatedPdp.getPdpId().equals(pdp2.getPdpId()));
+		
+		/*
+		 * Now let's put 2 pdps in the listOfDesignated, neither in the same site as the mostRecentPrimary
+		 */
+		listOfDesignated.add(pdp1);
+		
+		designatedPdp = droolsPdpsElectionHandler.computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
+		
+		/*
+		 * The designatedPdp should now be the one with the lowest lexiographic score - pdp1
+		 */
+		assertTrue(designatedPdp.getPdpId().equals(pdp1.getPdpId()));
+		
+		/*
+		 * Finally, we will have 2 pdps in the listOfDesignated, one in the same site with the mostRecentPrimary
+		 */
+		listOfDesignated.remove(pdp1);
+		listOfDesignated.add(pdp3);
+		
+		designatedPdp = droolsPdpsElectionHandler.computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
+		
+		/*
+		 * The designatedPdp should now be the one on the same site as the mostRecentPrimary
+		 */
+		assertTrue(designatedPdp.getPdpId().equals(pdp3.getPdpId()));
+	}
+	
+	
+	//@Ignore
+	//@Test
 	public void testColdStandby() throws Exception {
 
 		PolicyLogger.debug("\n\ntestColdStandby: Entering\n\n");
+		cleanXacmlDb();
+		cleanDroolsDb();
 
 		PolicyLogger.debug("testColdStandby: Reading IntegrityMonitorProperties");
 		Properties integrityMonitorProperties = new Properties();
@@ -213,7 +636,7 @@ public class StandbyStateManagementTest {
 		assertTrue(droolsPdpEntity.isDesignated() == false);
 		
 		PolicyLogger.debug("testColdStandby: Stopping policyManagementRunner");
-		policyManagementRunner.stopRunner();
+		//policyManagementRunner.stopRunner();
 	
 		PolicyLogger.debug("\n\ntestColdStandby: Exiting\n\n");
 		Thread.sleep(interruptRecoveryTime);
@@ -223,11 +646,13 @@ public class StandbyStateManagementTest {
 	/*
 	 * Tests hot standby when there is only one PDP.
 	 */
-	@Ignore
-	@Test
+	//@Ignore
+	//@Test
 	public void testHotStandby1() throws Exception {
 	
 		PolicyLogger.debug("\n\ntestHotStandby1: Entering\n\n");
+		cleanXacmlDb();
+		cleanDroolsDb();
 		
 		PolicyLogger.debug("testHotStandby1: Reading IntegrityMonitorProperties");
 		Properties integrityMonitorProperties = new Properties();
@@ -310,7 +735,7 @@ public class StandbyStateManagementTest {
 		assertTrue(standbyStatus != null  &&  standbyStatus.equals(StateManagement.PROVIDING_SERVICE));
 				
 		PolicyLogger.debug("testHotStandby1: Stopping policyManagementRunner");
-		policyManagementRunner.stopRunner();		
+		//policyManagementRunner.stopRunner();		
 	
 		PolicyLogger.debug("\n\ntestHotStandby1: Exiting\n\n");
 		Thread.sleep(interruptRecoveryTime);
@@ -320,11 +745,13 @@ public class StandbyStateManagementTest {
 	/*
 	 * Tests hot standby when two PDPs are involved.
 	 */
-	@Ignore
-	@Test
+	//@Ignore
+	//@Test
 	public void testHotStandby2() throws Exception {
 
 		PolicyLogger.info("\n\ntestHotStandby2: Entering\n\n");
+		cleanXacmlDb();
+		cleanDroolsDb();
 		
 		PolicyLogger.info("testHotStandby2: Reading IntegrityMonitorProperties");
 		Properties integrityMonitorProperties = new Properties();
@@ -453,7 +880,7 @@ public class StandbyStateManagementTest {
 				&& standbyStatus.equals(StateManagement.PROVIDING_SERVICE));
 				
 		PolicyLogger.info("testHotStandby2: Stopping policyManagementRunner");
-		policyManagementRunner.stopRunner();		
+		//policyManagementRunner.stopRunner();		
 
 		PolicyLogger.info("\n\ntestHotStandby2: Exiting\n\n");
 		Thread.sleep(interruptRecoveryTime);
@@ -477,10 +904,13 @@ public class StandbyStateManagementTest {
 	 * 5) Promotes PDP and verifies that startTransaction is once again
 	 * successful.
 	 */
-	@Ignore
-	@Test
+	//@Ignore
+	//@Test
 	public void testLocking1() throws Exception {
-				
+		PolicyLogger.debug("testLocking1: Entry");
+		cleanXacmlDb();
+		cleanDroolsDb();		
+		
 		PolicyLogger.debug("testLocking1: Reading IntegrityMonitorProperties");
 		Properties integrityMonitorProperties = new Properties();
 		integrityMonitorProperties.load(new FileInputStream(new File(
@@ -631,13 +1061,13 @@ public class StandbyStateManagementTest {
 			droolsPdpIntegrityMonitor.endTransaction();
 		}		
 		
-		// unlocking should cause state to transit to hot standby
+		// unlocking should cause state to transit to hot standby and then providing service
 		PolicyLogger.debug("testLocking1: unlocking PDP=" + thisPdpId);
 		sm.unlock();
 		
 		// Just to avoid any race conditions, sleep a little after locking
 		PolicyLogger.debug("testLocking1: Sleeping a few millis after unlocking, to avoid race condition");
-		Thread.sleep(100);
+		Thread.sleep(electionWaitSleepTime);
 		
 		PolicyLogger.debug("testLocking1: Invoking startTransaction on unlocked PDP="
 				+ thisPdpId
@@ -645,13 +1075,13 @@ public class StandbyStateManagementTest {
 				+ conn.getPdp(thisPdpId).isDesignated());
 		try {
 			droolsPdpIntegrityMonitor.startTransaction();
-			PolicyLogger.error("testLocking1: startTransaction unexpectedly successful");
-			assertTrue(false);
+			PolicyLogger.error("testLocking1: startTransaction successful as expected");
 		} catch (AdministrativeStateException e) {
 			PolicyLogger.error("testLocking1: Unexpectedly caught AdministrativeStateException, message=" + e.getMessage());
 			assertTrue(false);
 		} catch (StandbyStatusException e) {
-			PolicyLogger.debug("testLocking1: As expected, caught StandbyStatusException, message=" + e.getMessage());
+			PolicyLogger.debug("testLocking1: Unexpectedly caught StandbyStatusException, message=" + e.getMessage());
+			assertTrue(false);
 		} catch (Exception e) {
 			PolicyLogger.error("testLocking1: Unexpectedly caught Exception, message=" + e.getMessage());
 			assertTrue(false);
@@ -659,35 +1089,35 @@ public class StandbyStateManagementTest {
 			droolsPdpIntegrityMonitor.endTransaction();
 		}
 		
-		// promoting should cause state to transit to providing service
-		PolicyLogger.debug("testLocking1: promoting PDP=" + thisPdpId);
-		sm.promote();
+		// demoting should cause state to transit to providing service
+		PolicyLogger.debug("testLocking1: demoting PDP=" + thisPdpId);
+		sm.demote();
 		
 		// Just to avoid any race conditions, sleep a little after promoting
-		PolicyLogger.debug("testLocking1: Sleeping a few millis after promoting, to avoid race condition");
+		PolicyLogger.debug("testLocking1: Sleeping a few millis after demoting, to avoid race condition");
 		Thread.sleep(100);
 		
-		PolicyLogger.debug("testLocking1: Invoking startTransaction on promoted PDP="
+		PolicyLogger.debug("testLocking1: Invoking startTransaction on demoted PDP="
 				+ thisPdpId
 				+ ", designated="
 				+ conn.getPdp(thisPdpId).isDesignated());
 		try {
 			droolsPdpIntegrityMonitor.startTransaction();
 			droolsPdpIntegrityMonitor.endTransaction();
-			PolicyLogger.debug("testLocking1: As expected, transaction successful");
+			PolicyLogger.debug("testLocking1: Unexpectedly, transaction successful");
+			assertTrue(false);
 		} catch (AdministrativeStateException e) {
 			PolicyLogger.error("testLocking1: Unexpectedly caught AdministrativeStateException, message=" + e.getMessage());
 			assertTrue(false);
 		} catch (StandbyStatusException e) {
-			PolicyLogger.error("testLocking1: Unexpectedly caught StandbyStatusException, message=" + e.getMessage());
-			assertTrue(false);
+			PolicyLogger.error("testLocking1: As expected caught StandbyStatusException, message=" + e.getMessage());
 		} catch (Exception e) {
 			PolicyLogger.error("testLocking1: Unexpectedly caught Exception, message=" + e.getMessage());
 			assertTrue(false);
 		}
 		
 		PolicyLogger.debug("testLocking1: Stopping policyManagementRunner");
-		policyManagementRunner.stopRunner();		
+		//policyManagementRunner.stopRunner();		
 
 		PolicyLogger.debug("\n\ntestLocking1: Exiting\n\n");
 		Thread.sleep(interruptRecoveryTime);
@@ -703,11 +1133,13 @@ public class StandbyStateManagementTest {
 	 * 3) Demotes this PDP, and verifies 1) that other PDP is not promoted (because one
 	 * PDP cannot promote another PDP) and 2) that this PDP is re-promoted.
 	 */
-	@Ignore
-	@Test
+	//@Ignore
+	//@Test
 	public void testLocking2() throws Exception {
 
 		PolicyLogger.debug("\n\ntestLocking2: Entering\n\n");
+		cleanXacmlDb();
+		cleanDroolsDb();		
 		
 		PolicyLogger.debug("testLocking2: Reading IntegrityMonitorProperties");
 		Properties integrityMonitorProperties = new Properties();
@@ -856,7 +1288,7 @@ public class StandbyStateManagementTest {
 		assertTrue(standbyPdpDesignated == false);
 		
 		PolicyLogger.debug("testLocking2: Stopping policyManagementRunner");
-		policyManagementRunner.stopRunner();		
+		//policyManagementRunner.stopRunner();		
 
 		PolicyLogger.debug("\n\ntestLocking2: Exiting\n\n");
 		Thread.sleep(interruptRecoveryTime);
@@ -874,6 +1306,7 @@ public class StandbyStateManagementTest {
 				PolicyLogger
 						.info("PolicyManagementRunner.run: Exception thrown from Main.main(), message="
 								+ e.getMessage());
+				return;
 			}
 			PolicyLogger.info("PolicyManagementRunner.run: Exiting");
 		}
