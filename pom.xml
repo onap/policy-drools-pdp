@@ -26,7 +26,7 @@
 	<artifactId>drools-pdp</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>ECOMP Policy Engine - Drools PDP</name>
+	<name>Policy Engine - Drools PDP</name>
 
 	<description>The ECOMP Policy Engine drools-based PDP Project</description>
 
