@@ -70,27 +70,9 @@
 
 	<repositories>
 		<repository>
-			<id>central</id>
-			<name>Maven 2 repository</name>
-			<url>http://repo2.maven.org/maven2/</url>
-		</repository>
-
-		<repository>
-		  <id>eclipse</id>
-		  <url>https://repo.eclipse.org/content/repositories/releases</url>
-		  <releases>
-		    <enabled>true</enabled>
-		    <updatePolicy>daily</updatePolicy>
-		  </releases>
-		  <snapshots>
-		    <enabled>false</enabled>
-		  </snapshots>
-		</repository>
-
-		<repository>
-			<id>soapUI</id>
-			<url>http://www.soapui.org/repository/maven2/</url>
-			<name>SoapUI plugin</name>
+			<id>ecomp-snapshots</id>
+			<name>OpenECOMP Snapshot Repository</name>
+			<url>${nexusproxy}/${snapshots.path}</url>
 		</repository>
 		<repository>
 			<id>ecomp-releases</id>
