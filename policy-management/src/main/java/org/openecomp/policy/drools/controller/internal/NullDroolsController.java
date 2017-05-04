@@ -21,7 +21,9 @@
 package org.openecomp.policy.drools.controller.internal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.event.comm.TopicSink;
@@ -31,16 +33,6 @@ import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration
  * no-op Drools Controller
  */
 public class NullDroolsController implements DroolsController {
-	
-	/**
-	 * empty cached events
-	 */
-	protected static final String[] emptyRecentEvents = new String[0];	
-	
-	/**
-	 * empty session names
-	 */
-	protected static final List<String> emptySessionNames = new ArrayList<String>();
 
 	/**
 	 * {@inheritDoc}
@@ -128,13 +120,21 @@ public class NullDroolsController implements DroolsController {
 	@Override
 	public String getVersion() {
 		return NO_VERSION;
-	}
+	}	
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<String> getSessionNames() {
+		return new ArrayList<String>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> getCanonicalSessionNames() {
 		return new ArrayList<String>();
 	}
 
@@ -160,7 +160,7 @@ public class NullDroolsController implements DroolsController {
 	 */
 	@Override
 	public Object[] getRecentSourceEvents() {
-		return NullDroolsController.emptyRecentEvents;
+		return new String[0];
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class NullDroolsController implements DroolsController {
 	 */
 	@Override
 	public String[] getRecentSinkEvents() {
-		return NullDroolsController.emptyRecentEvents;
+		return new String[0];
 	}
 
 	/**
@@ -214,6 +214,38 @@ public class NullDroolsController implements DroolsController {
 			List<TopicCoderFilterConfiguration> encoderConfigurations)
 			throws IllegalArgumentException, LinkageError, Exception {
 		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String, Integer> factClassNames(String sessionName) throws IllegalArgumentException {
+		return new HashMap<String,Integer>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public long factCount(String sessionName) throws IllegalArgumentException {
+		return 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Object> facts(String sessionName, String className) {
+		return new ArrayList<Object>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity) {
+		return new ArrayList<Object>();
 	}
 
 }

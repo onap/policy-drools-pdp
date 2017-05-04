@@ -1075,7 +1075,7 @@ abstract class GenericEventProtocolCoder  {
 	 * @throws UnsupportedOperationException if the operation cannot be performed
 	 */
 	public String encode(String topic, Object encodedClass) 
-			throws IllegalArgumentException, IllegalArgumentException, UnsupportedOperationException {
+			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
 		
 		if (encodedClass == null) {
 			throw new IllegalArgumentException("Invalid encoded class");
@@ -1090,11 +1090,20 @@ abstract class GenericEventProtocolCoder  {
 				          encodedClass);
 		
 		List<DroolsController> droolsControllers = droolsCreators(topic, encodedClass);
+		
+		if (droolsControllers.isEmpty()) {
+			if (logger.isWarnEnabled())
+				logger.warn("No Drool Controllers for: " + topic + ":" + 
+	                        encodedClass.getClass().getCanonicalName() + ":" + 
+	                        droolsControllers + " IN " + this);		
+			throw new IllegalArgumentException("Invalid Topic: " + topic);
+		}
+		
 		if (droolsControllers.size() > 1) {
-			// unexpected
-			logger.warn("MULTIPLE DROOLS CONTROLLERS FOUND for: " + topic + ":" + 
-                              encodedClass.getClass().getCanonicalName() + ":" + 
-                              droolsControllers + " IN " + this);		
+			if (logger.isWarnEnabled())
+				logger.warn("MULTIPLE DROOLS CONTROLLERS FOUND for: " + topic + ":" + 
+	                              encodedClass.getClass().getCanonicalName() + ":" + 
+	                              droolsControllers + " IN " + this);		
 			// continue
 		}
 		
@@ -1376,8 +1385,16 @@ abstract class GenericEventProtocolCoder  {
 		}
 		
 		List<DroolsController> droolsControllers = droolsCreators(topic, fact);
+		
+		if (droolsControllers.isEmpty()) {
+			if (logger.isWarnEnabled())
+				logger.warn("No Drool Controllers for: " + topic + ":" + 
+								fact.getClass().getCanonicalName() + ":" + 
+								droolsControllers + " IN " + this);		
+			throw new IllegalArgumentException("Invalid Topic: " + topic);
+		}
+		
 		if (droolsControllers.size() > 1) {
-			// unexpected
 			logger.warn("MULTIPLE DROOLS CONTROLLERS FOUND for: " + topic + ":" + 
                               fact.getClass().getCanonicalName() + ":" + 
                               droolsControllers + " IN " + this);		

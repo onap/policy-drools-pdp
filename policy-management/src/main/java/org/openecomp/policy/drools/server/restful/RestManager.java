@@ -405,16 +405,94 @@ public class RestManager {
                 build();
     }
     
-    public DroolsController getDroolsController(String controllerName) throws IllegalArgumentException {
-		PolicyController controller = PolicyController.factory.get(controllerName);
-    	if (controller == null)
-    		throw new IllegalArgumentException(controllerName + "  does not exist");
-
-		DroolsController drools = controller.getDrools();
-    	if (drools == null)
-    		throw new IllegalArgumentException(controllerName + "  has no drools configuration");
-    	
-    	return drools;
+    @GET
+    @Path("engine/controllers/{controllerName}/drools")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response drools(@PathParam("controllerName") String controllerName) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);			
+			return Response.status(Response.Status.OK).
+	                               entity(drools).
+	                               build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
+	                  controllerName, this.toString());
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		}
+    }
+    
+    @GET
+    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response droolsFacts(@DefaultValue("false") @QueryParam("count") boolean count,
+    		                    @PathParam("controllerName") String controllerName,
+    		                    @PathParam("sessionName") String sessionName) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			if (!count)
+				return Response.status(Response.Status.OK).
+		                               entity(drools.factClassNames(sessionName)).
+		                               build();
+			else
+				return Response.status(Response.Status.OK).
+                                       entity(new Long(drools.factCount(sessionName))).
+                                       build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
+	                  controllerName, this.toString());
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		}
+    }
+    
+    @GET
+    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{className}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response droolsFacts(@DefaultValue("false") @QueryParam("count") boolean count,
+    		                    @PathParam("controllerName") String controllerName,
+    		                    @PathParam("sessionName") String sessionName,
+    		                    @PathParam("className") String className) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			List<Object> facts = drools.facts(sessionName, className);
+			if (!count)
+				return Response.status(Response.Status.OK).entity(facts).build();
+			else
+				return Response.status(Response.Status.OK).entity(facts.size()).build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
+	                  controllerName, this.toString());
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		}
+    }
+    
+    @GET
+    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response droolsFacts(@DefaultValue("false") @QueryParam("count") boolean count,
+    		                    @PathParam("controllerName") String controllerName,
+    		                    @PathParam("sessionName") String sessionName,
+    		                    @PathParam("queryName") String queryName,
+    		                    @PathParam("queriedEntity") String queriedEntity) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			List<Object> facts = drools.factQuery(sessionName, queryName, queriedEntity);
+			if (!count)
+				return Response.status(Response.Status.OK).entity(facts).build();
+			else
+				return Response.status(Response.Status.OK).entity(facts.size()).build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
+	                  controllerName, this.toString());
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		}
     }
     
     @GET
@@ -1132,6 +1210,19 @@ public class RestManager {
 		return Response.status(Status.OK).
 		        entity(UUID.randomUUID().toString()).
 		        build();
+    }
+    
+    
+    protected DroolsController getDroolsController(String controllerName) throws IllegalArgumentException {
+		PolicyController controller = PolicyController.factory.get(controllerName);
+    	if (controller == null)
+    		throw new IllegalArgumentException(controllerName + "  does not exist");
+
+		DroolsController drools = controller.getDrools();
+    	if (drools == null)
+    		throw new IllegalArgumentException(controllerName + "  has no drools configuration");
+    	
+    	return drools;
     }
     
     /*

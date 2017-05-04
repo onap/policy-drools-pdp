@@ -282,12 +282,15 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 			logger.warn("No topic for DMAAP Sink " + properties);
 			return new ArrayList<DmaapTopicSink>();
 		}
-		List<String> writeTopicList = new ArrayList<String>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
 		
+		List<String> writeTopicList = new ArrayList<String>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
+		List<DmaapTopicSink> newDmaapTopicSinks = new ArrayList<DmaapTopicSink>();
 		synchronized(this) {
-			List<DmaapTopicSink> dmaapTopicWriters = new ArrayList<DmaapTopicSink>();
 			for (String topic: writeTopicList) {
-				
+				if (this.dmaapTopicWriters.containsKey(topic)) {
+					newDmaapTopicSinks.add(this.dmaapTopicWriters.get(topic));
+					continue;
+				}
 				String servers = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + 
 				                                        topic + 
 				                                        PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
@@ -410,9 +413,9 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 						   						           dme2Partner, dme2Latitude, dme2Longitude,
 						   						           dme2AdditionalProps, managed, useHttps, allowSelfSignedCerts);
 				
-				dmaapTopicWriters.add(dmaapTopicSink);
+				newDmaapTopicSinks.add(dmaapTopicSink);
 			}
-			return dmaapTopicWriters;
+			return newDmaapTopicSinks;
 		}
 	}
 	

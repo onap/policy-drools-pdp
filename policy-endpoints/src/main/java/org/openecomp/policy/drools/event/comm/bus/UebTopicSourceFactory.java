@@ -208,9 +208,13 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 		}
 		List<String> readTopicList = new ArrayList<String>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
 		
-		List<UebTopicSource> uebTopicSources = new ArrayList<UebTopicSource>();
+		List<UebTopicSource> newUebTopicSources = new ArrayList<UebTopicSource>();
 		synchronized(this) {
 			for (String topic: readTopicList) {
+				if (this.uebTopicSources.containsKey(topic)) {
+					newUebTopicSources.add(this.uebTopicSources.get(topic));
+					continue;
+				}
 				
 				String servers = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + 
                                                         topic + 
@@ -292,10 +296,10 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 						   						           apiKey, apiSecret,
 						   						           consumerGroup, consumerInstance, 
 						   						           fetchTimeout, fetchLimit, managed, useHttps, allowSelfSignedCerts);
-				uebTopicSources.add(uebTopicSource);
+				newUebTopicSources.add(uebTopicSource);
 			}
 		}
-		return uebTopicSources;
+		return newUebTopicSources;
 	}
 	
 	/**

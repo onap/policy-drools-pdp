@@ -179,14 +179,12 @@ public interface BusConsumer {
 		 * @param fetchLimit Fetch Limit
 		 * @throws MalformedURLException 
 		 */
-		@SuppressWarnings("unchecked")
 		public DmaapConsumerWrapper(List<String> servers, String topic, 
 								String apiKey, String apiSecret,
 								String username, String password,
 								String consumerGroup, String consumerInstance,
-								int fetchTimeout, int fetchLimit, boolean useHttps)
-										
-										throws MalformedURLException {
+								int fetchTimeout, int fetchLimit, boolean useHttps)									
+		throws MalformedURLException {
 			
 			this.fetchTimeout = fetchTimeout;
 			
@@ -201,9 +199,6 @@ public interface BusConsumer {
 			
 			this.consumer.setUsername(username);
 			this.consumer.setPassword(password);
-			
-			
-			
 		}
 		
 		/**

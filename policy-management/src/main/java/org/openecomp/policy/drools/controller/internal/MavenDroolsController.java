@@ -21,10 +21,17 @@
 package org.openecomp.policy.drools.controller.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
-
+import org.drools.core.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.openecomp.policy.common.logging.eelf.MessageCodes;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
@@ -40,6 +47,7 @@ import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration
 import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
 import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 import org.openecomp.policy.drools.utils.ReflectionUtil;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -647,20 +655,191 @@ public class MavenDroolsController implements DroolsController {
 		return this.locked;
 	}
 	
+	/**
+	 * gets the policy container
+	 * @return the underlying container
+	 */
+	@JsonIgnore
+	protected PolicyContainer getContainer() {
+		return this.policyContainer;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<String> getSessionNames() {
+		return getSessionNames(true);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> getCanonicalSessionNames() {
+		return getSessionNames(false);
+	}
+	
+	/**
+	 * get session names
+	 * @param abbreviated true for the short form, otherwise the long form
+	 * @return session names
+	 */
+	protected List<String> getSessionNames(boolean abbreviated) {
 		List<String> sessionNames = new ArrayList<String>();
 		try {
 			for (PolicySession session: this.policyContainer.getPolicySessions()) {
-				sessionNames.add(session.getFullName());
+				if (abbreviated)
+					sessionNames.add(session.getName());
+				else
+					sessionNames.add(session.getFullName());
 			}
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			            "Can't retrieve POLICY-CORE sessions: " + e.getMessage(), 
-			            this.toString());
+			logger.warn("Can't retrieve CORE sessions: " + e.getMessage(), e);
 			sessionNames.add(e.getMessage());
 		}
 		return sessionNames;
+	}
+	
+	/**
+	 * provides the underlying core layer container sessions
+	 * 
+	 * @return the attached Policy Container
+	 */
+	protected List<PolicySession> getSessions() {
+		List<PolicySession> sessions = new ArrayList<PolicySession>();
+		sessions.addAll(this.policyContainer.getPolicySessions());
+		return sessions;
+	}
+	
+	/**
+	 * provides the underlying core layer container session with name sessionName
+	 * 
+	 * @param sessionName session name
+	 * @return the attached Policy Container
+	 * @throws IllegalArgumentException when an invalid session name is provided
+	 * @throws IllegalStateException when the drools controller is in an invalid state
+	 */
+	protected PolicySession getSession(String sessionName) {
+		if (sessionName == null || sessionName.isEmpty())
+			throw new IllegalArgumentException("A Session Name must be provided");
+		
+		List<PolicySession> sessions = this.getSessions();
+		for (PolicySession session : sessions) {
+			if (sessionName.equals(session.getName()) || sessionName.equals(session.getName()))
+				return session;				
+		}
+		
+		throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Map<String,Integer> factClassNames(String sessionName) throws IllegalArgumentException {		
+		if (sessionName == null || sessionName.isEmpty())
+			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+		
+		// List<String> classNames = new ArrayList<>();
+		Map<String,Integer> classNames = new HashMap<>();
+		
+		PolicySession session = getSession(sessionName);
+		KieSession kieSession = session.getKieSession();
+
+		Collection<FactHandle> facts = session.getKieSession().getFactHandles();
+		for (FactHandle fact : facts) {
+			try {
+				String className = kieSession.getObject(fact).getClass().getName();
+				if (classNames.containsKey(className))
+					classNames.put(className, classNames.get(className) + 1);
+				else
+					classNames.put(className, 1);
+			} catch (Exception e) {
+				if (logger.isInfoEnabled())
+					logger.info("Object cannot be retrieved from fact: " + fact);
+			}			
+		}	
+		
+		return classNames;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public long factCount(String sessionName) throws IllegalArgumentException {		
+		if (sessionName == null || sessionName.isEmpty())
+			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+		
+		PolicySession session = getSession(sessionName);
+		return session.getKieSession().getFactCount();	
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Object> facts(String sessionName, String className) {		
+		if (sessionName == null || sessionName.isEmpty())
+			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+		
+		if (className == null || className.isEmpty())
+			throw new IllegalArgumentException("Invalid Class Name: " + className);
+		
+		Class<?> factClass = 
+				ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), className);
+		if (factClass == null)
+			throw new IllegalArgumentException("Class cannot be fetched in model's classloader: " + className);
+		
+		PolicySession session = getSession(sessionName);
+		KieSession kieSession = session.getKieSession();
+		
+		List<Object> factObjects = new ArrayList<>();
+		
+		Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(factClass));
+		for (FactHandle factHandle : factHandles) {
+			try {
+				factObjects.add(kieSession.getObject(factHandle));
+			} catch (Exception e) {
+				if (logger.isInfoEnabled())
+					logger.info("Object cannot be retrieved from fact: " + factHandle);
+			}
+		}		
+		
+		return factObjects;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity) {		
+		if (sessionName == null || sessionName.isEmpty())
+			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+		
+		if (queryName == null || queryName.isEmpty())
+			throw new IllegalArgumentException("Invalid Query Name: " + queryName);
+		
+		if (queriedEntity == null || queriedEntity.isEmpty())
+			throw new IllegalArgumentException("Invalid Queried Entity: " + queriedEntity);
+		
+		PolicySession session = getSession(sessionName);
+		KieSession kieSession = session.getKieSession();
+		
+		List<Object> factObjects = new ArrayList<>();
+		
+		QueryResults queryResults = kieSession.getQueryResults(queryName);
+		for (QueryResultsRow row : queryResults) {
+			try {
+				factObjects.add(row.get(queriedEntity));
+			} catch (Exception e) {
+				if (logger.isInfoEnabled())
+					logger.info("Object cannot be retrieved from fact: " + row);
+			}
+		}
+		
+		return factObjects;
 	}
 	
 	/**

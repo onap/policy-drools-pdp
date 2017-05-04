@@ -326,6 +326,10 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 		List<DmaapTopicSource> dmaapTopicSource_s = new ArrayList<DmaapTopicSource>();
 		synchronized(this) {
 			for (String topic: readTopicList) {
+				if (this.dmaapTopicSources.containsKey(topic)) {
+					dmaapTopicSource_s.add(this.dmaapTopicSources.get(topic));
+					continue;
+				}
 				
 				String servers = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + 
                                                         topic + 

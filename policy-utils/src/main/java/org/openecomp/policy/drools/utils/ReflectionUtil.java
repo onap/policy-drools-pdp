@@ -36,7 +36,7 @@ public class ReflectionUtil {
 	 * 
 	 * @param classLoader the class loader
 	 * @param classname the class name
-	 * @return the PolicyEvent class
+	 * @return the actual class
 	 * @throws IllegalArgumentException if an invalid parameter has been passed in
 	 */
 	public static Class<?> fetchClass(ClassLoader classLoader, 

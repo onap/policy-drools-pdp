@@ -171,8 +171,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UebTopicSink build(List<String> servers, String topic) throws IllegalArgumentException {
-		
+	public UebTopicSink build(List<String> servers, String topic) throws IllegalArgumentException {	
 		return this.build(servers, topic, null, null, null, true, false, false);
 	}
 	
@@ -188,11 +187,15 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 			logger.warn("No topic for UEB Sink " + properties);
 			return new ArrayList<UebTopicSink>();
 		}
-		List<String> writeTopicList = new ArrayList<String>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
 		
+		List<String> writeTopicList = new ArrayList<String>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
+		List<UebTopicSink> newUebTopicSinks = new ArrayList<UebTopicSink>();
 		synchronized(this) {
-			List<UebTopicSink> uebTopicWriters = new ArrayList<UebTopicSink>();
 			for (String topic: writeTopicList) {
+				if (this.uebTopicSinks.containsKey(topic)) {
+					newUebTopicSinks.add(this.uebTopicSinks.get(topic));
+					continue;
+				}
 				
 				String servers = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + 
 				                                        topic + 
@@ -243,9 +246,9 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 				UebTopicSink uebTopicWriter = this.build(serverList, topic, 
 						   						         apiKey, apiSecret, 
 						   						         partitionKey, managed, useHttps, allowSelfSignedCerts);
-				uebTopicWriters.add(uebTopicWriter);
+				newUebTopicSinks.add(uebTopicWriter);
 			}
-			return uebTopicWriters;
+			return newUebTopicSinks;
 		}
 	}
 	

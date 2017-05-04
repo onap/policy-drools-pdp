@@ -21,6 +21,7 @@
 package org.openecomp.policy.drools.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openecomp.policy.drools.event.comm.TopicSink;
 import org.openecomp.policy.drools.properties.Lockable;
@@ -65,14 +66,20 @@ public interface DroolsController extends Startable, Lockable {
 	 * @return version
 	 */
 	public String getVersion();
-	
 
 	/**
 	 * return the policy session names
 	 * 
 	 * @return policy session
 	 */
-	public List<String> getSessionNames();
+	public List<String> getSessionNames();	
+	
+	/**
+	 * return the policy full session names
+	 * 
+	 * @return policy session
+	 */
+	public List<String> getCanonicalSessionNames();
 	
 	/**
 	 * offers an event to this controller for processing
@@ -152,7 +159,40 @@ public interface DroolsController extends Startable, Lockable {
 			List<TopicCoderFilterConfiguration> decoderConfigurations,
 			List<TopicCoderFilterConfiguration> encoderConfigurations)
 	throws IllegalArgumentException, LinkageError, Exception;
+
+	/**
+	 * gets the classnames of facts as well as the current count
+	 * @param sessionName the session name
+	 * @return map of class to count
+	 */
+	public Map<String,Integer> factClassNames(String sessionName) throws IllegalArgumentException;	
 	
+	/**
+	 * gets the count of facts for a given session
+	 * @param sessionName the session name
+	 * @return the fact count 
+	 * @throws IllegalArgumentException
+	 */
+	public long factCount(String sessionName) throws IllegalArgumentException;
+	
+	/**
+	 * gets all the facts of a given class for a given session
+	 *  
+	 * @param sessionName the session identifier
+	 * @param className the class type
+	 * @return the list of facts returned by the query
+	 */
+	public List<Object> facts(String sessionName, String className);
+
+	/**
+	 * gets the facts associated with a query for a give session for a given queried entity
+	 * 
+	 * @param sessionName the session
+	 * @param queryName the query identifier
+	 * @param queriedEntity the queried entity
+	 * @return list of facts returned by the query
+	 */
+	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity);
 	
 	/**
 	 * halts and permanently releases all resources
@@ -165,6 +205,4 @@ public interface DroolsController extends Startable, Lockable {
 	 */
 	public static final DroolsControllerFactory factory = 
 									new IndexedDroolsControllerFactory();
-
-
 }
