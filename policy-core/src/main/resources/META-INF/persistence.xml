@@ -38,6 +38,20 @@
         </properties>
 	</persistence-unit>
 	
+	<!-- This is the PU used by IntegrityAudit to audit DB tables used by Drools PDP -->
+	<persistence-unit name="auditDroolsPU" transaction-type="RESOURCE_LOCAL">
+		<!-- This is for database access by non-drools methods -->
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.openecomp.policy.drools.persistence.DroolsPdpEntity</class>
+		<class>org.openecomp.policy.drools.persistence.DroolsSessionEntity</class>
+		<class>org.drools.persistence.info.SessionInfo</class>
+		<class>org.drools.persistence.info.WorkItemInfo</class>
+		<class>org.openecomp.policy.common.ia.jpa.IntegrityAuditEntity</class>
+		<properties>
+			<!-- Properties are passed in -->
+        </properties>
+	</persistence-unit>
+	
 	<persistence-unit name="ncompsessionsPU" transaction-type="JTA">
 	<!-- Used for drools session data access -->
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>		
