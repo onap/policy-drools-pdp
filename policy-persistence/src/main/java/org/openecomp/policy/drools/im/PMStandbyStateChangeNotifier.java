@@ -84,7 +84,11 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 	private long startTimeWaitingForActivationMs;
 	private long waitInterval;
 	private boolean isNowActivating;
-	
+	private String previousStandbyStatus;
+	public static String NONE = "none";
+	public static String UNSUPPORTED = "unsupported";
+	public static String HOTSTANDBY_OR_COLDSTANDBY = "hotstandby_or_coldstandby";
+		
 	public PMStandbyStateChangeNotifier(){
 		pdpUpdateInterval = Integer.parseInt(IntegrityMonitorProperties.getProperty(IntegrityMonitorProperties.PDP_UPDATE_INTERVAL));
 		isWaitingForActivation = false;
@@ -92,6 +96,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 		//delay the activate so the DesignatedWaiter can run twice - give it an extra 2 seconds
 		waitInterval = 2*pdpUpdateInterval + 2000;
 		isNowActivating=false;
+		previousStandbyStatus = PMStandbyStateChangeNotifier.NONE;
 	}
 
 	@Override
@@ -101,99 +106,141 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 		 * has synchronize all of its methods. Only one stateManagement operation can occur at a time. Thus,
 		 * only one handleStateChange() call will ever be made at a time.
 		 */
-		
-		logger.info("handleStateChange: Entering, message='"
+		if(logger.isInfoEnabled()){
+			logger.info("handleStateChange: Entering, message='"
 				+ super.getMessage() + "', standbyStatus='"
 				+ super.getStateManagement().getStandbyStatus() + "'");
-		
+		}
 		String standbyStatus = super.getStateManagement().getStandbyStatus();
 		String pdpId = IntegrityMonitorProperties
 				.getProperty(IntegrityMonitorProperties.PDP_INSTANCE_ID);
 		DroolsPdpsConnector conn = PersistenceFeature
 				.getDroolsPdpsConnector("ncompPU");
 
-		if (standbyStatus == null) {
-			logger.info("handleStateChange: standbyStatus is null; standing down PDP=" + pdpId);
+		if(logger.isDebugEnabled()){
+			logger.debug("handleStateChange: previousStandbyStatus = " + previousStandbyStatus
+				+ "; standbyStatus = " + standbyStatus);
+		}
+		
+		if (standbyStatus == null  || standbyStatus.equals(StateManagement.NULL_VALUE)) {
+			if(logger.isInfoEnabled()){
+				logger.info("handleStateChange: standbyStatus is null; standing down PDP=" + pdpId);
+			}
+			if(previousStandbyStatus.equals(StateManagement.NULL_VALUE)){
+				//We were just here and did this successfully
+				if(logger.isDebugEnabled()){
+					logger.debug("handleStateChange: Is returning because standbyStatus is null and was previously 'null'; PDP=" + pdpId);
+				}
+				return;
+			}
 			isWaitingForActivation = false;
 			try{
 				try{
-					logger.info("handleStateChange: null:  cancelling delayActivationTimer.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: null:  cancelling delayActivationTimer.");
+					}
 					delayActivateTimer.cancel();
 				}catch(Exception e){
-					logger.info("handleStateChange: null no delayActivationTimer existed.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: null no delayActivationTimer existed.");
+					}
 					//If you end of here, there was no active timer
 				}
 				conn.standDownPdp(pdpId);
 				//Only want to lock the endpoints, not the controllers.
 				PolicyEngine.manager.deactivate();
+				//The operation was fully successful, but you cannot assign it a real null value
+				//because later we might try to execute previousStandbyStatus.equals() and get
+				//a null pointer exception.
+				previousStandbyStatus = StateManagement.NULL_VALUE;
 			}catch(Exception e){
 				logger.warn("handleStateChange: standbyStatus == null caught exception: " + e);
 				e.printStackTrace();
 			}
-
-		} else if (standbyStatus.equals("null")) {
-			logger.info("handleStateChange: standbyStatus equals 'null'; standing down PDP=" + pdpId);
-			isWaitingForActivation = false;
-			try{
-				try{
-					logger.info("handleStateChange: NULL_VALUE:  cancelling delayActivationTimer.");
-					delayActivateTimer.cancel();
-				}catch(Exception e){
-					logger.info("handleStateChange: NULL_VALUE no delayActivationTimer existed.");
-					//If you end of here, there was no active timer
-				}
-				conn.standDownPdp(pdpId);
-				//Only want to lock the endpoints, not the controllers.
-				PolicyEngine.manager.deactivate();
-			}catch(Exception e){
-				logger.warn("handleStateChange: standbyStatus == \"null\" caught exception: " + e);
-				e.printStackTrace();
-			}
 		} else if (standbyStatus.equals(StateManagement.HOT_STANDBY) || standbyStatus.equals(StateManagement.COLD_STANDBY)) {
-			logger.info("handleStateChange: standbyStatus=" + standbyStatus + "; standing down PDP=" + pdpId);
+			if(logger.isInfoEnabled()){
+				logger.info("handleStateChange: standbyStatus=" + standbyStatus + "; standing down PDP=" + pdpId);
+			}
+			if(previousStandbyStatus.equals(PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY)){
+				//We were just here and did this successfully
+				if(logger.isDebugEnabled()){
+					logger.debug("handleStateChange: Is returning because standbyStatus is "
+						+ standbyStatus + " and was previously " + previousStandbyStatus 
+						+ "; PDP=" + pdpId);
+				}
+				return;
+			}
 			isWaitingForActivation = false;
 			try{
 				try{
-					logger.info("handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.");
+					}
 					delayActivateTimer.cancel();
 				}catch(Exception e){
-					logger.info("handleStateChange: HOT_STANDBY || COLD_STANDBY no delayActivationTimer existed.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: HOT_STANDBY || COLD_STANDBY no delayActivationTimer existed.");
+					}
 					//If you end of here, there was no active timer
 				}
 				//Only want to lock the endpoints, not the controllers.
 				conn.standDownPdp(pdpId);
 				PolicyEngine.manager.deactivate();
+				//The operation was fully successful
+				previousStandbyStatus = PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY;
 			}catch(Exception e){
 				logger.warn("handleStateChange: standbyStatus == " + standbyStatus + " caught exception: " + e);
 				e.printStackTrace();
 			}
 
 		} else if (standbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {
+			if(logger.isInfoEnabled()){
+				logger.info("handleStateChange: standbyStatus=" + standbyStatus + "; scheduling activation of PDP=" + pdpId);
+			}
+			if(previousStandbyStatus.equals(StateManagement.PROVIDING_SERVICE)){
+				//We were just here and did this successfully
+				if(logger.isDebugEnabled()){
+					logger.debug("handleStateChange: Is returning because standbyStatus is "
+						+ standbyStatus + " and was previously " + previousStandbyStatus 
+						+ "; PDP=" + pdpId);
+				}
+				return;
+			}
 			try{
 				//UnLock all the endpoints
-				logger.info("handleStateChange: standbyStatus=" + standbyStatus + "; controllers must be unlocked.");
+				if(logger.isInfoEnabled()){
+					logger.info("handleStateChange: standbyStatus=" + standbyStatus + "; controllers must be unlocked.");
+				}
 				/*
 				 * Only endpoints should be unlocked. Controllers have not been locked.
 				 * Because, sometimes, it is possible for more than one PDP-D to become active (race conditions)
 				 * we need to delay the activation of the topic endpoint interfaces to give the election algorithm
 				 * time to resolve the conflict.
 				 */
-				logger.info("handleStateChange: PROVIDING_SERVICE isWaitingForActivation= " +isWaitingForActivation);
+				if(logger.isInfoEnabled()){
+					logger.info("handleStateChange: PROVIDING_SERVICE isWaitingForActivation= " +isWaitingForActivation);
+				}
 				//Delay activation for 2*pdpUpdateInterval+2000 ms in case of an election handler conflict.  
 				//You could have multiple election handlers thinking they can take over.
 				
 				 // First let's check that the timer has not died
 				if(isWaitingForActivation){
-					logger.info("handleStateChange: PROVIDING_SERVICE isWaitingForActivation = " + isWaitingForActivation);
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: PROVIDING_SERVICE isWaitingForActivation = " + isWaitingForActivation);
+					}
 					long now = new Date().getTime();
 					long waitTimeMs = now - startTimeWaitingForActivationMs;
 					if(waitTimeMs > 3*waitInterval){
-						logger.info("handleStateChange: PROVIDING_SERVICE looks like the activation wait timer may be hung,"
+						if(logger.isInfoEnabled()){
+							logger.info("handleStateChange: PROVIDING_SERVICE looks like the activation wait timer may be hung,"
 								+ " waitTimeMs = " + waitTimeMs + " and allowable waitInterval = " + waitInterval
 								+ " Checking whether it is currently in activation. isNowActivating = " + isNowActivating);
+						}
 						//Now check that it is not currently executing an activation
 						if(!isNowActivating){
-							logger.info("handleStateChange: PROVIDING_SERVICE looks like the activation wait timer died");
+							if(logger.isInfoEnabled()){
+								logger.info("handleStateChange: PROVIDING_SERVICE looks like the activation wait timer died");
+							}
 							// This will assure the timer is cancelled and rescheduled.
 							isWaitingForActivation = false;
 						}
@@ -204,10 +251,14 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 				if(!isWaitingForActivation){
 					try{
 						//Just in case there is an old timer hanging around
-						logger.info("handleStateChange: PROVIDING_SERVICE cancelling delayActivationTimer.");
+						if(logger.isInfoEnabled()){
+							logger.info("handleStateChange: PROVIDING_SERVICE cancelling delayActivationTimer.");
+						}
 						delayActivateTimer.cancel();
 					}catch(Exception e){
-						logger.info("handleStateChange: PROVIDING_SERVICE no delayActivationTimer existed.");
+						if(logger.isInfoEnabled()){
+							logger.info("handleStateChange: PROVIDING_SERVICE no delayActivationTimer existed.");
+						}
 						//If you end of here, there was no active timer
 					}
 					delayActivateTimer = new Timer();
@@ -215,9 +266,13 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 					delayActivateTimer.schedule(new DelayActivateClass(), waitInterval);
 					isWaitingForActivation = true;
 					startTimeWaitingForActivationMs = new Date().getTime();
-					logger.info("handleStateChange: PROVIDING_SERVICE scheduling delayActivationTimer in " + waitInterval + " ms");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: PROVIDING_SERVICE scheduling delayActivationTimer in " + waitInterval + " ms");
+					}
 				}else{
-					logger.info("handleStateChange: PROVIDING_SERVICE delayActivationTimer is waiting for activation.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: PROVIDING_SERVICE delayActivationTimer is waiting for activation.");
+					}
 				}
 				
 			}catch(Exception e){
@@ -227,27 +282,41 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 
 		} else {
 			logger.error("handleStateChange: Unsupported standbyStatus=" + standbyStatus + "; standing down PDP=" + pdpId);
+			if(previousStandbyStatus.equals(PMStandbyStateChangeNotifier.UNSUPPORTED)){
+				//We were just here and did this successfully
+				if(logger.isDebugEnabled()){
+					logger.debug("handleStateChange: Is returning because standbyStatus is "
+						+ "UNSUPPORTED and was previously " + previousStandbyStatus 
+						+ "; PDP=" + pdpId);
+				}
+				return;
+			}
 			//Only want to lock the endpoints, not the controllers.
 			isWaitingForActivation = false;
 			try{
 				try{
-					logger.info("handleStateChange: unsupported standbystatus:  cancelling delayActivationTimer.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: unsupported standbystatus:  cancelling delayActivationTimer.");
+					}
 					delayActivateTimer.cancel();
 				}catch(Exception e){
-					logger.info("handleStateChange: unsupported standbystatus: no delayActivationTimer existed.");
+					if(logger.isInfoEnabled()){
+						logger.info("handleStateChange: unsupported standbystatus: no delayActivationTimer existed.");
+					}
 					//If you end of here, there was no active timer
 				}
 				conn.standDownPdp(pdpId);
 				PolicyEngine.manager.deactivate();
+				//We know the standbystatus is unsupported
+				previousStandbyStatus = PMStandbyStateChangeNotifier.UNSUPPORTED;
 			}catch(Exception e){
 				logger.warn("handleStateChange: Unsupported standbyStatus == " + standbyStatus + "caught exception: " + e);
 				e.printStackTrace();
 			}
 		}
-
-		//if (logger.isDebugEnabled()) {
-			logger.info("handleStateChange: Exiting");
-		//}
+		if(logger.isDebugEnabled()){
+			logger.debug("handleStateChange: Exiting");
+		}
 	}
 
 	private class DelayActivateClass extends TimerTask{
@@ -259,14 +328,20 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 		public void run() {
 			isNowActivating = true;
 			try{
-				logger.info("DelayActivateClass.run: entry");
+				if(logger.isInfoEnabled()){
+					logger.info("DelayActivateClass.run: entry");
+				}
 				synchronized(delayActivateLock){
 					PolicyEngine.manager.activate();
+					// The state change fully succeeded
+					previousStandbyStatus = StateManagement.PROVIDING_SERVICE;
 					// We want to set this to false here because the activate call can take a while
 					isWaitingForActivation = false;
 					isNowActivating = false;
 				}
-				logger.info("DelayActivateClass.run.exit");
+				if(logger.isInfoEnabled()){
+					logger.info("DelayActivateClass.run.exit");
+				}
 			}catch(Exception e){
 				isWaitingForActivation = false;
 				isNowActivating = false;
@@ -276,5 +351,9 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public String getPreviousStandbyStatus(){
+		return previousStandbyStatus;
 	}
 }

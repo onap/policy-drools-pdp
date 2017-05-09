@@ -21,6 +21,10 @@
 package org.openecomp.policy.drools.persistence;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -255,7 +259,109 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	* {@inheritDoc}
 	*/
    @Override
-    public boolean beforeActivate(PolicyEngine engine) {return false;}
+	public boolean beforeActivate(PolicyEngine engine)
+  {
+	if (persistenceDisabled)
+	  {
+		return(false);
+	  }
+
+	// The following code will remove "old" Drools 'sessioninfo' records, so
+	// they aren't used to restore data to Drools sessions. This also has the
+	// useful side-effect of removing abandoned records as well.
+
+	// Fetch the timeout value, in seconds. If it is not specified or is
+	// less than or equal to 0, no records are removed.
+
+	String timeoutString = null;
+	int timeout = 0;
+	try
+	  {
+		timeoutString = DroolsPersistenceProperties.getProperty
+		  ("persistence.sessioninfo.timeout");
+		if (timeoutString != null)
+		  {
+			// timeout parameter is specified
+			timeout = Integer.valueOf(timeoutString);
+		  }
+	  }
+	catch (NumberFormatException e)
+	  {
+		logger.error("Invalid value for Drools persistence property "
+					 + "persistence.sessioninfo.timeout: "
+					 + timeoutString);
+	  }
+	if (timeout <= 0)
+	  {
+		// parameter is not specified, is <= 0, or is an invalid number
+		return(false);
+	  }
+
+	// if we reach this point, we are ready to remove old records from
+	// the database
+
+	Connection connection = null;
+	PreparedStatement statement = null;
+	try
+	  {
+		// fetch database parameters from properties
+
+		String url = DroolsPersistenceProperties.getProperty
+		  (DroolsPersistenceProperties.DB_URL);
+		String user = DroolsPersistenceProperties.getProperty
+		  (DroolsPersistenceProperties.DB_USER);
+		String password = DroolsPersistenceProperties.getProperty
+		  (DroolsPersistenceProperties.DB_PWD);
+
+		if (url != null && user != null && password != null)
+		  {
+			// get DB connection
+			connection = DriverManager.getConnection(url, user, password);
+
+			// create statement to delete old records
+			statement = connection.prepareStatement
+			  ("DELETE FROM sessioninfo WHERE "
+			   + "timestampdiff(second,lastmodificationdate,now()) > ?");
+			statement.setInt(1,timeout);
+
+			// execute statement
+			int count = statement.executeUpdate();
+			logger.info("Cleaning up sessioninfo table -- "
+						+ count + " records removed");
+		  }
+	  }
+	catch (SQLException e)
+	  {
+		logger.error("Clean up of sessioninfo table failed", e);
+	  }
+	finally
+	  {
+		// cleanup
+		if (statement != null)
+		  {
+			try
+			  {
+				statement.close();
+			  }
+			catch (SQLException e)
+			  {
+				logger.error("SQL connection close failed", e);
+			  }
+		  }
+		if (connection != null)
+		  {
+			try
+			  {
+				connection.close();
+			  }
+			catch (SQLException e)
+			  {
+				logger.error("SQL connection close failed", e);
+			  }
+		  }
+	  }
+	return(false);
+  }
 
    /**
 	* {@inheritDoc}
@@ -468,7 +574,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 			 * Start audit for Drools DB.
 			 */
 			integrityAudit = new IntegrityAudit(
-					resourceName, "ncompPU", droolsPia);
+					resourceName, "auditDroolsPU", droolsPia);
 			integrityAudit.startAuditThread();
 
 		} catch (IOException e1) {
