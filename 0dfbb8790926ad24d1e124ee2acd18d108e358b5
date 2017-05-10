@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da141535_7c3bdfeb",
+        "filename": "policy-management/src/main/java/org/openecomp/policy/drools/system/PolicyController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-05-10T10:38:29Z",
+      "side": 1,
+      "message": "Interface change -- this will break \u0027GuardContext\u0027, which is calling the old method.",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 74,
+        "endChar": 7
+      },
+      "revId": "0dfbb8790926ad24d1e124ee2acd18d108e358b5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
