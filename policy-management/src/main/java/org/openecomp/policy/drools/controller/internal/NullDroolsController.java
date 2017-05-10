@@ -220,7 +220,8 @@ public class NullDroolsController implements DroolsController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Map<String, Integer> factClassNames(String sessionName) throws IllegalArgumentException {
+	public Map<String, Integer> factClassNames(String sessionName) 
+		   throws IllegalArgumentException {
 		return new HashMap<String,Integer>();
 	}
 
@@ -236,7 +237,7 @@ public class NullDroolsController implements DroolsController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Object> facts(String sessionName, String className) {
+	public List<Object> facts(String sessionName, String className, boolean delete) {
 		return new ArrayList<Object>();
 	}
 
@@ -244,7 +245,9 @@ public class NullDroolsController implements DroolsController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity) {
+	public List<Object> factQuery(String sessionName, String queryName, 
+			                      String queriedEntity, 
+			                      boolean delete, Object... queryParams) {
 		return new ArrayList<Object>();
 	}
 

@@ -25,11 +25,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.openecomp.policy.drools.controller.DroolsController;
+import org.openecomp.policy.drools.features.PolicyControllerFeatureAPI;
 import org.openecomp.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.openecomp.policy.drools.system.internal.AggregatedPolicyController;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Policy Controller Factory to manage controller creation, destruction,
@@ -148,6 +151,25 @@ public interface PolicyControllerFactory {
 	 */
 	public PolicyController get(String groupId, String artifactId)
 		   throws IllegalArgumentException, IllegalStateException;
+	
+	/**
+	 * get features attached to the Policy Controllers
+	 * @return list of features
+	 */
+	public List<PolicyControllerFeatureAPI> getFeatureProviders();
+	
+	/**
+	 * get named feature attached to the Policy Controllers
+	 * @return the feature
+	 */
+	public PolicyControllerFeatureAPI getFeatureProvider(String featureName) 
+			throws IllegalArgumentException;
+	
+	/**
+	 * get features attached to the Policy Controllers
+	 * @return list of features
+	 */
+	public List<String> getFeatures();
 	
 	/**
 	 * returns the current inventory of Policy Controllers
@@ -461,4 +483,40 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 		 return controllers;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override 
+	public List<String> getFeatures() {
+		List<String> features = new ArrayList<String>();
+		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
+			features.add(feature.getName());
+		}
+		return features;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@JsonIgnore
+	@Override
+	public List<PolicyControllerFeatureAPI> getFeatureProviders() {
+		return PolicyControllerFeatureAPI.providers.getList();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PolicyControllerFeatureAPI getFeatureProvider(String featureName) throws IllegalArgumentException {
+		if (featureName == null || featureName.isEmpty())
+			throw new IllegalArgumentException("A feature name must be provided");
+		
+		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
+			if (feature.getName().equals(featureName))
+				return feature;
+		}
+		
+		throw new IllegalArgumentException("Invalid Feature Name: " + featureName);
+	}
 }

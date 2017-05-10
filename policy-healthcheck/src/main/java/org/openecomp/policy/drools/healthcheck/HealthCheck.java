@@ -11,13 +11,38 @@ import org.openecomp.policy.drools.persistence.SystemPersistence;
 import org.openecomp.policy.drools.properties.Startable;
 import org.openecomp.policy.drools.system.PolicyEngine;
 
+/**
+ * Healthcheck
+ */
 public interface HealthCheck extends Startable {
 	
+	/**
+	 * Healthcheck Report
+	 */
 	public static class Report {
+		/**
+		 * Named Entity in the report
+		 */
 		public String name;
+		
+		/**
+		 * URL queried
+		 */
 		public String url;
+		
+		/**
+		 * healthy?
+		 */
 		public boolean healthy;
+		
+		/**
+		 * return code
+		 */
 		public int code;
+		
+		/**
+		 * Message from remote entity
+		 */
 		public String message;
 		
 		@Override
@@ -38,6 +63,9 @@ public interface HealthCheck extends Startable {
 		}
 	}
 	
+	/**
+	 * Report aggregation
+	 */
 	public static class Reports {
 		public boolean healthy;
 		public ArrayList<Report> details = new ArrayList<>();
@@ -54,17 +82,41 @@ public interface HealthCheck extends Startable {
 		}
 	}
 	
+	/**
+	 * perform a healthcheck
+	 * @return a report
+	 */
 	public Reports healthCheck();
 
+	/**
+	 * Healthcheck Monitor
+	 */
 	public static final HealthCheck monitor = new HealthCheckMonitor();
 }
 
+/**
+ * Healthcheck Monitor
+ */
 class HealthCheckMonitor implements HealthCheck {
 
+	/**
+	 * attached http servers
+	 */
 	protected volatile ArrayList<HttpServletServer> servers = new ArrayList<>();
+	
+	/**
+	 * attached http clients
+	 */
 	protected volatile ArrayList<HttpClient> clients = new ArrayList<>();
+	
+	/**
+	 * healthcheck configuration
+	 */
 	protected volatile Properties healthCheckProperties = null; 
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public Reports healthCheck() {
 		Reports reports = new Reports();
 		reports.healthy = PolicyEngine.manager.isAlive();
@@ -104,6 +156,9 @@ class HealthCheckMonitor implements HealthCheck {
 		return reports;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean start() throws IllegalStateException {
 		try {
@@ -125,6 +180,9 @@ class HealthCheckMonitor implements HealthCheck {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean stop() throws IllegalStateException {
 		for (HttpServletServer server : servers) {
@@ -146,20 +204,32 @@ class HealthCheckMonitor implements HealthCheck {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void shutdown() throws IllegalStateException {
 		this.stop();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public synchronized boolean isAlive() {
 		return this.healthCheckProperties != null;
 	}
 	
+	/**
+	 * @return list of attached Http Servers
+	 */
 	public ArrayList<HttpServletServer> getServers() {
 		return this.servers;
 	}
 	
+	/**
+	 * @return list of attached Http Clients
+	 */
 	public ArrayList<HttpClient> getClients() {
 		return this.clients;
 	}

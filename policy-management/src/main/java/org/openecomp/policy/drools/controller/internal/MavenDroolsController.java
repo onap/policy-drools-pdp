@@ -780,7 +780,7 @@ public class MavenDroolsController implements DroolsController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Object> facts(String sessionName, String className) {		
+	public List<Object> facts(String sessionName, String className, boolean delete) {		
 		if (sessionName == null || sessionName.isEmpty())
 			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
 		
@@ -801,6 +801,8 @@ public class MavenDroolsController implements DroolsController {
 		for (FactHandle factHandle : factHandles) {
 			try {
 				factObjects.add(kieSession.getObject(factHandle));
+				if (delete)
+					kieSession.delete(factHandle);					
 			} catch (Exception e) {
 				if (logger.isInfoEnabled())
 					logger.info("Object cannot be retrieved from fact: " + factHandle);
@@ -814,7 +816,7 @@ public class MavenDroolsController implements DroolsController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity) {		
+	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, boolean delete, Object... queryParams) {		
 		if (sessionName == null || sessionName.isEmpty())
 			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
 		
@@ -829,10 +831,12 @@ public class MavenDroolsController implements DroolsController {
 		
 		List<Object> factObjects = new ArrayList<>();
 		
-		QueryResults queryResults = kieSession.getQueryResults(queryName);
+		QueryResults queryResults = kieSession.getQueryResults(queryName, queryParams);
 		for (QueryResultsRow row : queryResults) {
 			try {
 				factObjects.add(row.get(queriedEntity));
+				if (delete)
+					kieSession.delete(row.getFactHandle(queriedEntity));
 			} catch (Exception e) {
 				if (logger.isInfoEnabled())
 					logger.info("Object cannot be retrieved from fact: " + row);

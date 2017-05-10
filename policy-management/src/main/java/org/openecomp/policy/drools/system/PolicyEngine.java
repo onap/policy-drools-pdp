@@ -190,6 +190,25 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	public Properties getProperties();
 	
 	/**
+	 * get features attached to the Policy Engine
+	 * @return list of features
+	 */
+	public List<PolicyEngineFeatureAPI> getFeatureProviders();
+	
+	/**
+	 * get named feature attached to the Policy Engine
+	 * @return the feature
+	 */
+	public PolicyEngineFeatureAPI getFeatureProvider(String featureName) 
+			throws IllegalArgumentException;
+	
+	/**
+	 * get features attached to the Policy Engine
+	 * @return list of features
+	 */
+	public List<String> getFeatures();
+	
+	/**
 	 * Attempts the dispatching of an "event" object
 	 * 
 	 * @param topic topic
@@ -1031,6 +1050,7 @@ class PolicyEngineManager implements PolicyEngine {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@JsonIgnore
 	public Properties getProperties() {
 		return this.properties;
 	}
@@ -1060,6 +1080,44 @@ class PolicyEngineManager implements PolicyEngine {
 	@Override
 	public List<HttpServletServer> getHttpServers() {
 		return this.httpServers;
+	}
+	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<String> getFeatures() {
+		List<String> features = new ArrayList<String>();
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			features.add(feature.getName());
+		}
+		return features;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@JsonIgnore
+	@Override
+	public List<PolicyEngineFeatureAPI> getFeatureProviders() {
+		return PolicyEngineFeatureAPI.providers.getList();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PolicyEngineFeatureAPI getFeatureProvider(String featureName) throws IllegalArgumentException {
+		if (featureName == null || featureName.isEmpty())
+			throw new IllegalArgumentException("A feature name must be provided");
+		
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			if (feature.getName().equals(featureName))
+				return feature;
+		}
+		
+		throw new IllegalArgumentException("Invalid Feature Name: " + featureName);
 	}
 	
 	/**

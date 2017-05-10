@@ -32,4 +32,10 @@ public interface OrderedService
    *	of objects implementing this interface
    */
   public int getSequenceNumber();
+  
+  
+  /**
+   * @return the name of the ordered service
+   */
+  public default String getName() {return this.getClass().getName();}
 }

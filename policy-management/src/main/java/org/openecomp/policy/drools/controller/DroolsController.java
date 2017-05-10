@@ -180,9 +180,10 @@ public interface DroolsController extends Startable, Lockable {
 	 *  
 	 * @param sessionName the session identifier
 	 * @param className the class type
+	 * @param delete retract from drools the results of the query?
 	 * @return the list of facts returned by the query
 	 */
-	public List<Object> facts(String sessionName, String className);
+	public List<Object> facts(String sessionName, String className, boolean delete);
 
 	/**
 	 * gets the facts associated with a query for a give session for a given queried entity
@@ -190,9 +191,12 @@ public interface DroolsController extends Startable, Lockable {
 	 * @param sessionName the session
 	 * @param queryName the query identifier
 	 * @param queriedEntity the queried entity
+	 * @param delete retract from drools the results of the query?
+	 * @param queryParams query parameters
 	 * @return list of facts returned by the query
 	 */
-	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity);
+	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, 
+			                      boolean delete, Object... queryParams);
 	
 	/**
 	 * halts and permanently releases all resources

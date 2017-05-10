@@ -51,6 +51,8 @@ import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSource;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSource;
+import org.openecomp.policy.drools.features.PolicyControllerFeatureAPI;
+import org.openecomp.policy.drools.features.PolicyEngineFeatureAPI;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 import org.openecomp.policy.drools.protocol.coders.EventProtocolCoder;
 import org.openecomp.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
@@ -112,6 +114,33 @@ public class RestManager {
                     entity(new Error("cannot perform operation")).build();
 		else
 			return Response.status(Response.Status.OK).entity(controller).build();
+    }
+     
+    @GET
+    @Path("engine/features")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicyEngineFeatureAPI> engineFeatures() {
+        return PolicyEngine.manager.getFeatureProviders();
+    }
+    
+    @GET
+    @Path("engine/features/{featureName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response engineFeature(@PathParam("featureName") String featureName) {
+    	try {
+	    	return Response.status(Response.Status.OK).
+			        entity(PolicyEngine.manager.getFeatureProvider(featureName)).build();
+    	} catch(IllegalArgumentException iae) {
+    		return Response.status(Response.Status.NOT_FOUND).
+                    entity(new Error(iae.getMessage())).build();
+    	}
+    }
+    
+    @GET
+    @Path("engine/properties")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Properties engineProperties() {
+        return PolicyEngine.manager.getProperties();
     }
     
     /**
@@ -289,28 +318,71 @@ public class RestManager {
     }    
     
     @GET
+    @Path("engine/controllers/features")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PolicyControllerFeatureAPI> controllerFeatures() {
+        return PolicyController.factory.getFeatureProviders();
+    }
+    
+    @GET
+    @Path("engine/controllers/features/{featureName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response controllerFeature(@PathParam("controllerName") String controllerName,
+    		                          @PathParam("featureName") String featureName) {
+    	try {
+	    	return Response.status(Response.Status.OK).
+			                entity(PolicyController.factory.getFeatureProvider(featureName)).
+			                build();
+    	} catch(IllegalArgumentException iae) {
+    		return Response.status(Response.Status.NOT_FOUND).
+                    entity(new Error(iae.getMessage())).build();
+    	}
+    }
+
+    @GET
     @Path("engine/controllers/{controllerName}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response controller(@PathParam("controllerName") String controllerName) {
-    	PolicyController controller = null;
 		try {
-			controller = PolicyController.factory.get(controllerName);
-		} catch (IllegalArgumentException e) {
-			logger.info("Can't retrieve controller " + controllerName + 
-					          ".  Reason: " + e.getMessage());
-		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              controllerName, this.toString());
-			return Response.status(Response.Status.NOT_ACCEPTABLE).
-                            entity(new Error(controllerName + " not acceptable")).build();
-		}
-    	
-		if (controller != null)
     		return Response.status(Response.Status.OK).
-			        entity(controller).build();
-		else
+    				        entity(PolicyController.factory.get(controllerName)).
+    				        build();
+		} catch (IllegalArgumentException e) {
 			return Response.status(Response.Status.NOT_FOUND).
-		                           entity(new Error(controllerName + " not found")).build();
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
+		}
+    }
+    @GET
+    @Path("engine/controllers/{controllerName}/properties")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response controllerProperties(@PathParam("controllerName") String controllerName) {
+		try {
+			PolicyController controller = PolicyController.factory.get(controllerName);
+    		return Response.status(Response.Status.OK).
+    				        entity(controller.getProperties()).
+    				        build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
+		}
     }
     
     @DELETE
@@ -457,7 +529,7 @@ public class RestManager {
     		                    @PathParam("className") String className) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
-			List<Object> facts = drools.facts(sessionName, className);
+			List<Object> facts = drools.facts(sessionName, className, false);
 			if (!count)
 				return Response.status(Response.Status.OK).entity(facts).build();
 			else
@@ -471,6 +543,27 @@ public class RestManager {
 		}
     }
     
+    @DELETE
+    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{className}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteDroolsFacts(@PathParam("controllerName") String controllerName,
+    		                          @PathParam("sessionName") String sessionName,
+    		                          @PathParam("className") String className) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			List<Object> facts = drools.facts(sessionName, className, true);
+			return Response.status(Response.Status.OK).entity(facts).build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+		                    entity(new Error(e.getMessage())).
+		                    build();			
+		}
+    }
+    
     @GET
     @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -481,17 +574,73 @@ public class RestManager {
     		                    @PathParam("queriedEntity") String queriedEntity) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
-			List<Object> facts = drools.factQuery(sessionName, queryName, queriedEntity);
+			List<Object> facts = drools.factQuery(sessionName, queryName, queriedEntity, false);
 			if (!count)
 				return Response.status(Response.Status.OK).entity(facts).build();
 			else
 				return Response.status(Response.Status.OK).entity(facts.size()).build();
 		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
 			return Response.status(Response.Status.BAD_REQUEST).
 					               entity(new Error(e.getMessage())).
 					               build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+		                    entity(new Error(e.getMessage())).
+		                    build();			
+		}
+    }
+    
+    @PUT
+    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response droolsFacts(@PathParam("controllerName") String controllerName,
+    		                    @PathParam("sessionName") String sessionName,
+    		                    @PathParam("queryName") String queryName,
+    		                    @PathParam("queriedEntity") String queriedEntity,
+    		                    List<Object> queryParameters) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			List<Object> facts;
+			if (queryParameters == null || queryParameters.isEmpty())
+				facts = drools.factQuery(sessionName, queryName, queriedEntity, false);
+			else
+				facts = drools.factQuery(sessionName, queryName, queriedEntity, false, queryParameters.toArray());
+			return Response.status(Response.Status.OK).entity(facts).build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+		                    entity(new Error(e.getMessage())).
+		                    build();			
+		}
+    }
+    
+    @DELETE
+    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteDroolsFacts(@PathParam("controllerName") String controllerName,
+    		                          @PathParam("sessionName") String sessionName,
+    		                          @PathParam("queryName") String queryName,
+    		                          @PathParam("queriedEntity") String queriedEntity,
+    		                          List<Object> queryParameters) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			List<Object> facts;
+			if (queryParameters == null || queryParameters.isEmpty())
+				facts = drools.factQuery(sessionName, queryName, queriedEntity, true);
+			else
+				facts = drools.factQuery(sessionName, queryName, queriedEntity, true, queryParameters.toArray());			
+			return Response.status(Response.Status.OK).entity(facts).build();
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(e.getMessage())).
+					               build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+		                    entity(new Error(e.getMessage())).
+		                    build();			
 		}
     }
     
@@ -1031,7 +1180,24 @@ public class RestManager {
 		        build();
     }
     
-    @GET
+    @DELETE
+	@Path("engine/topics/lock")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response unlockTopics() {
+		boolean success = TopicEndpoint.manager.unlock();
+		if (success)
+			return Response.status(Status.OK).
+					        entity("Endpoints are unlocked").
+					        build();
+		else
+			return Response.status(Status.SERVICE_UNAVAILABLE).
+					        entity("Endpoints cannot be unlocked").
+					        build();
+	}
+
+
+	@GET
     @Path("engine/topics/{topic}/dmaap/sink/events")
     @Produces(MediaType.APPLICATION_JSON)
     public Response dmaapSinkEvent(@PathParam("topic") String topicName) {
@@ -1054,11 +1220,10 @@ public class RestManager {
 			boolean success = uebReader.offer(json);
 			if (success)
 				return Response.status(Status.OK).
-						        entity("Successfully injected event over " + topicName).
 						        build();
 			else
 				return Response.status(Status.NOT_ACCEPTABLE).
-						        entity("Failure to inject event over " + topicName).
+						        entity(new Error("Failure to inject event over " + topicName)).
 						        build();
 		} catch (Exception e) {
     		return Response.status(Response.Status.BAD_REQUEST).
@@ -1078,17 +1243,16 @@ public class RestManager {
 			boolean success = dmaapReader.offer(json);
 			if (success)
 				return Response.status(Status.OK).
-						        entity("Successfully injected event over " + topicName).
 						        build();
 			else
 				return Response.status(Status.NOT_ACCEPTABLE).
-						        entity("Failure to inject event over " + topicName).
+						        entity(new Error("Failure to inject event over " + topicName)).
 						        build();
 		} catch (Exception e) {
     		return Response.status(Response.Status.BAD_REQUEST).
 			        entity(new Error(e.getMessage())).
 			        build();
-		} 
+		}
     }
     
     @PUT
@@ -1104,22 +1268,6 @@ public class RestManager {
     	else
     		return Response.status(Status.SERVICE_UNAVAILABLE).
     				        entity("Endpoints cannot be locked").
-    				        build();
-    }
-    
-    @DELETE
-    @Path("engine/topics/lock")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response unlockTopics() {
-    	boolean success = TopicEndpoint.manager.unlock();
-    	if (success)
-    		return Response.status(Status.OK).
-    				        entity("Endpoints are unlocked").
-    				        build();
-    	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Endpoints cannot be unlocked").
     				        build();
     }
     
@@ -1212,7 +1360,12 @@ public class RestManager {
 		        build();
     }
     
-    
+    /**
+     * gets the underlying drools controller from the named policy controller
+     * @param controllerName the policy controller name
+     * @return the underlying drools controller
+     * @throws IllegalArgumentException if an invalid controller name has been passed in
+     */
     protected DroolsController getDroolsController(String controllerName) throws IllegalArgumentException {
 		PolicyController controller = PolicyController.factory.get(controllerName);
     	if (controller == null)
@@ -1230,6 +1383,9 @@ public class RestManager {
      */
     
     
+    /**
+     * Endpoints aggregation Helper class
+     */
 	public static class Endpoints {
 		public List<TopicSource> sources;
 		public List<TopicSink> sinks;
@@ -1241,6 +1397,9 @@ public class RestManager {
 		}
 	}
 	
+	/**
+	 * Endpoint Helper Class
+	 */
 	public static class Endpoint {
 		public TopicSource source;
 		public TopicSink sink;
@@ -1252,6 +1411,9 @@ public class RestManager {
 		}
 	}
 	
+	/**
+	 * Coding (Encoding) Helper class 
+	 */
 	public static class CodingResult {
 		public String jsonEncoding;
 		public Boolean encoding;
