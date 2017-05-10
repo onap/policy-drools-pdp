@@ -126,6 +126,7 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			   + " UNIQUE KEY name (name)\n"
 			   + ") DEFAULT CHARSET=latin1;");
 			statement.execute();
+			statement.close();
 			createTableNeeded = false;
 		  }
 
@@ -136,6 +137,7 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		  ("INSERT INTO Audit (name) VALUES (?)");
 		statement.setString(1, key);
 		statement.executeUpdate();
+		statement.close();
 
 		// fetch the entry from the table
 		phase = "fetch entry";
@@ -154,6 +156,7 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			  ("DbAudit: can't find newly-created entry with key " + key);
 			setResponse("Can't find newly-created entry");
 		  }
+		statement.close();
 
 		// delete entries from table
 		phase = "delete entry";
@@ -161,6 +164,8 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		  ("DELETE FROM Audit WHERE name = ?");
 		statement.setString(1, key);
 		statement.executeUpdate();
+		statement.close();
+		statement = null;
 	  }
 	catch (Exception e)
 	  {
