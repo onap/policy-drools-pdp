@@ -22,6 +22,30 @@
       "revId": "0dfbb8790926ad24d1e124ee2acd18d108e358b5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da141535_f04dd373",
+        "filename": "policy-management/src/main/java/org/openecomp/policy/drools/system/PolicyController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-05-10T13:49:02Z",
+      "side": 1,
+      "message": "Thanks for the pointer, I\u0027ll take care of it in internal repos, once I ported it.",
+      "parentUuid": "da141535_7c3bdfeb",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 74,
+        "endChar": 7
+      },
+      "revId": "0dfbb8790926ad24d1e124ee2acd18d108e358b5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
