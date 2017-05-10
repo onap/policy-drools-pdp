@@ -69,9 +69,9 @@ public interface PolicyController extends Startable, Lockable {
 	public boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
 	
 	/**
-	 * Get the Initialization Properties
+	 * Get the Properties
 	 */
-	public Properties getInitializationProperties();
+	public Properties getProperties();
 	
 	/**
 	 * Attempts delivering of an String over communication 

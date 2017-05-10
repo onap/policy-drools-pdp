@@ -156,5 +156,13 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
 	public boolean afterUnlock(PolicyEngine engine) {
 		return false;
 	}
+	
+	/**
+	 * gets the monitor
+	 * @return the healthcheck monitor
+	 */
+	public HealthCheck getMonitor() {
+		return HealthCheck.monitor;
+	}
 
 }

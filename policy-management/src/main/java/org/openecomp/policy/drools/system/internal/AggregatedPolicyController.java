@@ -24,18 +24,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
+import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.TopicEndpoint;
 import org.openecomp.policy.drools.event.comm.TopicListener;
 import org.openecomp.policy.drools.event.comm.TopicSink;
 import org.openecomp.policy.drools.event.comm.TopicSource;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.persistence.SystemPersistence;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 import org.openecomp.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.openecomp.policy.drools.system.PolicyController;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -440,6 +441,16 @@ public class AggregatedPolicyController implements PolicyController,
 	public DroolsController getDrools() {
 		return this.droolsController;
 	}
+	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@JsonIgnore
+	public Properties getProperties() {
+		return this.properties;
+	}
 
 	@Override
 	public String toString() {
@@ -447,14 +458,6 @@ public class AggregatedPolicyController implements PolicyController,
 		builder.append("AggregatedPolicyController [name=").append(name).append(", alive=").append(alive).append(", locked=").append(locked)
 				.append(", droolsController=").append(droolsController).append("]");
 		return builder.toString();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Properties getInitializationProperties() {
-		return this.properties;
 	}
 
 }
