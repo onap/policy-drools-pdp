@@ -180,7 +180,6 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 					Collection<DroolsPdp> pdps = pdpsConnector.getDroolsPdps();
 					DroolsPdp designatedPdp = null;
-					DroolsPdp lowestPriorityPdp = null;
 
 					logger.debug
 					//System.out.println

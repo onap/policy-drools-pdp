@@ -28,6 +28,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 @Entity
 public class DroolsSessionEntity implements Serializable, DroolsSession {
+
+	private static final long serialVersionUID = -5495057038819948709L;
+	
 	@Id
 	@Column(name="pdpId", nullable=false)
 	private String pdpId="-1";

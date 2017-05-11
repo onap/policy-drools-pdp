@@ -31,7 +31,7 @@ public abstract class DroolsPdpObject implements DroolsPdp{
 			return false;
 		}
 	}
-	private int nullSafeCompare(Comparable one, Comparable two){
+	private int nullSafeCompare(String one, String two){
 		if(one != null && two != null){
 			return one.compareTo(two);
 		}

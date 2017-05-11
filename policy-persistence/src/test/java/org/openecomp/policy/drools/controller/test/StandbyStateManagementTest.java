@@ -59,7 +59,6 @@ import org.openecomp.policy.drools.persistence.DroolsPersistenceProperties;
 import org.openecomp.policy.drools.persistence.JpaDroolsPdpsConnector;
 import org.openecomp.policy.drools.persistence.XacmlPersistenceProperties;
 import org.openecomp.policy.drools.system.Main;
-import org.openecomp.policy.drools.system.PolicyEngine;
 
 /*
  * All JUnits are designed to run in the local development environment
@@ -1400,10 +1399,6 @@ public class StandbyStateManagementTest {
 				return;
 			}
 			logger.info("PolicyManagementRunner.run: Exiting");
-		}
-		
-		public void stopRunner() {
-			PolicyEngine.manager.shutdown();
 		}
 
 	}

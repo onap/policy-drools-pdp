@@ -36,24 +36,18 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.common.ia.IntegrityAudit;
-import org.openecomp.policy.common.im.AdministrativeStateException;
-import org.openecomp.policy.common.im.IntegrityMonitor;
-import org.openecomp.policy.common.im.StandbyStatusException;
 import org.openecomp.policy.common.im.StateManagement;
-import org.openecomp.policy.drools.core.DroolsPDPIntegrityMonitor;
+import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.drools.core.IntegrityMonitorProperties;
 import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.im.PMStandbyStateChangeNotifier;
 import org.openecomp.policy.drools.persistence.DroolsPdpEntity;
 import org.openecomp.policy.drools.persistence.DroolsPdpImpl;
 import org.openecomp.policy.drools.persistence.DroolsPdpsConnector;
-import org.openecomp.policy.drools.persistence.JpaDroolsPdpsConnector;
 import org.openecomp.policy.drools.persistence.DroolsPersistenceProperties;
+import org.openecomp.policy.drools.persistence.JpaDroolsPdpsConnector;
 import org.openecomp.policy.drools.persistence.PersistenceFeature;
 import org.openecomp.policy.drools.persistence.XacmlPersistenceProperties;
 import org.openecomp.policy.drools.system.Main;
@@ -67,14 +61,6 @@ public class IntegrityAuditIntegrationTest {
 		
 	
 	public static final String INTEGRITY_MONITOR_PROPERTIES_FILE="src/test/server/config/IntegrityMonitor.properties";
-
-	/*
-	 * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every ten seconds, starting 
-	 * at ten seconds after the minute boundary (e.g. 13:05:10). So, an 80 second sleep should be 
-	 * sufficient to ensure that we wait for the DesignationWaiter to do its job, before 
-	 * checking the results. 
-	 */
-	private long sleepTime = 80000;
 		
 	/*
 	 * Sleep 5 seconds after each test to allow interrupt (shutdown) recovery.

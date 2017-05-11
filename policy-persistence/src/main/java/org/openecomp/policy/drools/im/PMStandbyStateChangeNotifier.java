@@ -45,11 +45,9 @@ import java.util.TimerTask;
 
 import org.openecomp.policy.common.im.StateChangeNotifier;
 import org.openecomp.policy.common.im.StateManagement;
-import org.openecomp.policy.drools.controller.internal.MavenDroolsController;
-import org.openecomp.policy.drools.core.IntegrityMonitorProperties;
-import org.openecomp.policy.drools.event.comm.TopicEndpoint;
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.openecomp.policy.drools.core.IntegrityMonitorProperties;
 import org.openecomp.policy.drools.persistence.DroolsPdpsConnector;
 import org.openecomp.policy.drools.persistence.PersistenceFeature;
 import org.openecomp.policy.drools.system.PolicyEngine;
