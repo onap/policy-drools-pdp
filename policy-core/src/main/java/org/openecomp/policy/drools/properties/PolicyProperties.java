@@ -90,6 +90,7 @@ public interface PolicyProperties {
 	public static final String PROPERTY_HTTP_REST_URIPATH_SUFFIX = ".restUriPath";
 	
 	public static final String PROPERTY_HTTP_HTTPS_SUFFIX = ".https";
+	public static final String PROPERTY_HTTP_SWAGGER_SUFFIX = ".swagger";
 	
 	/* HTTP Client Properties */
 	

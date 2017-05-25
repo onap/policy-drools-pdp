@@ -20,8 +20,10 @@
 
 package org.openecomp.policy.drools.server.restful;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -64,41 +66,145 @@ import org.openecomp.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.openecomp.policy.drools.system.PolicyController;
 import org.openecomp.policy.drools.system.PolicyEngine;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
+
 
 /**
- * REST Endpoint for management of the Drools PDP
+ * Telemetry JAX-RS Interface to the PDP-D
  */
+
 @Path("/policy/pdp")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@Api
+@SwaggerDefinition(
+    info = @Info(
+        description = "PDP-D Telemetry Services",
+        version = "v1.0",
+        title = "PDP-D Telemetry"
+    ),
+    consumes = {MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN},
+    produces = {MediaType.APPLICATION_JSON},
+    schemes = {SwaggerDefinition.Scheme.HTTP},
+    tags = {
+        @Tag(name = "pdp-d-telemetry", description = "Drools PDP Telemetry Operations")
+    }
+)
 public class RestManager {
 	/**
 	 * Logger
 	 */
 	private static Logger  logger = FlexLogger.getLogger(RestManager.class);  
 	
-	/**
-	 * gets the Policy Engine
-	 * 
-	 * @return the Policy Engine
-	 */
     @GET
     @Path("engine")
-    @Produces(MediaType.APPLICATION_JSON)
-    public PolicyEngine engine() {    	
-    	return PolicyEngine.manager;
+    @ApiOperation(
+    	value="Retrieves the Engine Operational Status", 
+    	notes="Top-level abstraction.  Provides a global view of resources",
+    	response=PolicyEngine.class
+    )
+    public Response engine() {    	
+    	return Response.status(Response.Status.OK).entity(PolicyEngine.manager).build();
     }
     
-    
-    /**
-     * Updates the Policy Engine
-     * 
-     * @param configuration configuration
-     * @return Policy Engine
-     */
-    @PUT
+    @DELETE
     @Path("engine")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateEngine(PdpdConfiguration configuration) {
+    @ApiOperation(
+        	value="Shuts down the Engine", 
+        	notes="Deleting the engine, the top-level abstraction, equivalenty shuts it down",
+        	response=PolicyEngine.class
+    )
+    public Response engineShutdown() { 
+    	try {
+			PolicyEngine.manager.shutdown();
+		} catch (IllegalStateException e) {
+			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
+					          "shutdown: " + PolicyEngine.manager);
+    		return Response.status(Response.Status.BAD_REQUEST).
+			        entity(PolicyEngine.manager).
+			        build();
+		}
+    	
+		return Response.status(Response.Status.OK).
+		                entity(PolicyEngine.manager).
+		                build();
+    }
+    
+    @GET
+    @Path("engine/features")
+    @ApiOperation(
+        	value="Engine Features", 
+        	notes="Provides the list of loaded features using the PolicyEngineFeatureAPI",
+        	responseContainer="List"
+    )
+    public Response engineFeatures() {
+        return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getFeatures()).build();
+    }
+    
+    @GET
+    @Path("engine/features/inventory")
+    @ApiOperation(
+        	value="Engine Detailed Feature Inventory", 
+        	notes="Provides detailed list of loaded features using the PolicyEngineFeatureAPI",
+        	responseContainer="List",
+        	response=PolicyEngineFeatureAPI.class
+    )
+    public Response engineFeaturesInventory() {
+        return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getFeatureProviders()).build();
+    } 
+    
+    @GET
+    @Path("engine/features/{featureName}")
+    @ApiOperation(
+        	value="Engine Feature", 
+        	notes="Provides Details for a given feature Engine Provider",
+        	response=PolicyEngineFeatureAPI.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message = "The feature cannot be found")
+    })
+    public Response engineFeature(@ApiParam(value="Feature Name", required=true)  
+                                  @PathParam("featureName") String featureName) {
+    	try {
+	    	return Response.status(Response.Status.OK).
+			        entity(PolicyEngine.manager.getFeatureProvider(featureName)).build();
+    	} catch(IllegalArgumentException iae) {
+    		return Response.status(Response.Status.NOT_FOUND).
+                    entity(new Error(iae.getMessage())).build();
+    	}
+    }
+    
+    @GET
+    @Path("engine/inputs")
+    @ApiOperation(
+        	value="Engine Input Ports", 
+        	notes="List of input ports",
+        	responseContainer="List"
+    )
+    public Response engineInputs() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Inputs.values())).
+                        build();
+    }
+    
+    @POST
+    @Path("engine/inputs/configuration")
+    @ApiOperation(
+        	value="Engine Input Configuration Requests", 
+        	notes="Feeds a configuration request input into the Engine"
+    )
+    @ApiResponses(value={
+    	@ApiResponse(code=406, message = "The configuration request cannot be honored") 
+    })
+    public Response engineUpdate(
+    		@ApiParam(value="Configuration to apply", required=true) PdpdConfiguration configuration) {
     	PolicyController controller = null;
     	boolean success = true;
 		try {
@@ -115,44 +221,40 @@ public class RestManager {
 		else
 			return Response.status(Response.Status.OK).entity(controller).build();
     }
-     
-    @GET
-    @Path("engine/features")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyEngineFeatureAPI> engineFeatures() {
-        return PolicyEngine.manager.getFeatureProviders();
-    }
-    
-    @GET
-    @Path("engine/features/{featureName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response engineFeature(@PathParam("featureName") String featureName) {
-    	try {
-	    	return Response.status(Response.Status.OK).
-			        entity(PolicyEngine.manager.getFeatureProvider(featureName)).build();
-    	} catch(IllegalArgumentException iae) {
-    		return Response.status(Response.Status.NOT_FOUND).
-                    entity(new Error(iae.getMessage())).build();
-    	}
-    }
     
     @GET
     @Path("engine/properties")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Properties engineProperties() {
-        return PolicyEngine.manager.getProperties();
+    @ApiOperation(
+        	value="Engine Configuration Properties", 
+        	notes="Used for booststrapping the engine",
+        	response=Properties.class
+    )
+    public Response engineProperties() {
+        return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getProperties()).build();
     }
     
-    /**
-     * Activates the Policy Engine
-     * 
-     * @param configuration configuration
-     * @return Policy Engine
-     */
+    @GET
+    @Path("engine/switches")
+    @ApiOperation(
+        	value="Engine Control Switches", 
+        	notes="List of the Engine Control Switches",
+        	responseContainer="List"
+    )
+    public Response engineSwitches() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Switches.values())).
+                        build();
+    }
+    
     @PUT
-    @Path("engine/activation")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response activateEngine() {
+    @Path("engine/switches/activation")
+    @ApiOperation(
+        	value="Switches on the Engine Activation Switch", 
+        	notes="Turns on Activation Switch on the Engine. This order entails that the engine " +
+        	      "and controllers are unlocked and started",
+        	response=PolicyEngine.class
+    )
+    public Response engineActivation() {
     	boolean success = true;
 		try {
 			PolicyEngine.manager.activate();
@@ -169,16 +271,15 @@ public class RestManager {
 			return Response.status(Response.Status.OK).entity(PolicyEngine.manager).build();
     }
     
-    /**
-     * Activates the Policy Engine
-     * 
-     * @param configuration configuration
-     * @return Policy Engine
-     */
-    @PUT
-    @Path("engine/deactivation")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deactivateEngine() {
+    @DELETE
+    @Path("engine/switches/activation")
+    @ApiOperation(
+        	value="Switches off Engine Activation Switch", 
+        	notes="Turns off the Activation Switch on the Engine. This order entails that the engine " +
+        	      "and controllers are locked (with the exception of those resources defined as unmanaged)",
+        	response=PolicyEngine.class
+    )
+    public Response engineDeactivation() {
     	boolean success = true;
 		try {
 			PolicyEngine.manager.deactivate();
@@ -193,71 +294,95 @@ public class RestManager {
                     entity(new Error("cannot perform operation")).build();
 		else
 			return Response.status(Response.Status.OK).entity(PolicyEngine.manager).build();
-    }
-    
-    @DELETE
-    @Path("engine")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response engineShutdown() { 
-    	try {
-			PolicyEngine.manager.shutdown();
-		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-					          "shutdown: " + PolicyEngine.manager);
-    		return Response.status(Response.Status.BAD_REQUEST).
-			        entity(PolicyEngine.manager).
-			        build();
-		}
-    	
-		return Response.status(Response.Status.OK).
-		                entity(PolicyEngine.manager).
-		                build();
-    }   
+    }  
     
     @PUT
-    @Path("engine/lock")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response lockEngine() {
+    @Path("engine/switches/lock")
+    @ApiOperation(
+        	value="Switches on the Engine Lock Control", 
+        	notes="This switch locks all the engine resources as a whole, except those that are defined unmanaged",
+          	response=PolicyEngine.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response engineLock() {
     	boolean success = PolicyEngine.manager.lock();
     	if (success)
     		return Response.status(Status.OK).
-    				        entity("Policy Engine is locked").
+    				        entity(PolicyEngine.manager).
     				        build();
     	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Policy Engine cannot be locked").
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("cannot perform operation")).
     				        build();
     }
     
     @DELETE
-    @Path("engine/unlock")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response unlockEngine() {
+    @Path("engine/switches/lock")
+    @ApiOperation(
+        	value="Switches off the Lock control", 
+        	notes="This switch locks all the engine resources as a whole, except those that are defined unmanaged",
+          	response=PolicyEngine.class
+    )  
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response engineUnlock() {
     	boolean success = PolicyEngine.manager.unlock();
     	if (success)
     		return Response.status(Status.OK).
-    				        entity("Policy Engine is unlocked").
+    				        entity(PolicyEngine.manager).
     				        build();
     	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Policy Engine cannot be unlocked").
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("cannot perform operation")).
     				        build();
     }
     
     @GET
     @Path("engine/controllers")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyController> controllers() {
-        return PolicyEngine.manager.getPolicyControllers();
+    @ApiOperation(
+        	value="Lists the Policy Controllers Names", 
+        	notes="Unique Policy Controller Identifiers",
+        	responseContainer="List"
+    )
+    public Response controllers() {
+		return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getPolicyControllerIds()).build();
+    }
+    
+    @GET
+    @Path("engine/controllers/inventory")
+    @ApiOperation(
+        	value="Lists the Policy Controllers", 
+        	notes="Detailed list of Policy Controllers",
+        	responseContainer="List",
+        	response=PolicyController.class
+    )
+    public Response controllerInventory() {
+		return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getPolicyControllers()).build();
     }
     
     @POST
     @Path("engine/controllers")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response addController(Properties config) {
+    @ApiOperation(
+        	value="Creates and starts a new Policy Controller", 
+        	notes="Controller creation based on properties",
+          	response=PolicyController.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=400, message = "Invalid configuration information has been provided"),
+        @ApiResponse(code=304, message = "The controller already exists"),
+        @ApiResponse(code=406, message = "The administrative state of the system prevents it " +
+                                         "from processing this request"),
+        @ApiResponse(code=206, message = "The controller has been created " +
+                                          "but cannot be started"),
+        @ApiResponse(code=201, message = "The controller has been succesfully created and started")
+    })
+    public Response controllerAdd(@ApiParam(value="Configuration Properties to apply", required = true) 
+                                  Properties config) {
     	if (config == null)
     		return Response.status(Response.Status.BAD_REQUEST).
     				        entity(new Error("A configuration must be provided")).
@@ -315,20 +440,45 @@ public class RestManager {
 		return Response.status(Response.Status.CREATED).
                 entity(controller).
                 build();
-    }    
+    }  
     
     @GET
     @Path("engine/controllers/features")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<PolicyControllerFeatureAPI> controllerFeatures() {
-        return PolicyController.factory.getFeatureProviders();
+    @ApiOperation(
+        	value="Lists of Feature Providers Identifiers", 
+        	notes="Unique Policy Controller Identifiers",
+        	responseContainer="List"
+    )
+    public Response controllerFeatures() {
+		return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getFeatures()).build();
+    }
+    
+    @GET
+    @Path("engine/controllers/features/inventory")
+    @ApiOperation(
+        	value="Detailed Controllers Feature Inventory", 
+        	notes="Provides detailed list of loaded features using the PolicyControllerFeatureAPI",
+        	responseContainer="List",
+        	response=PolicyControllerFeatureAPI.class
+    )    
+    public Response controllerFeaturesInventory() {
+		return Response.status(Response.Status.OK).
+				        entity(PolicyController.factory.getFeatureProviders()).
+                        build();
     }
     
     @GET
     @Path("engine/controllers/features/{featureName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response controllerFeature(@PathParam("controllerName") String controllerName,
-    		                          @PathParam("featureName") String featureName) {
+    @ApiOperation(
+        	value="Controller Feature", 
+        	notes="Provides Details for a given Policy Controller feature provider",
+        	response=PolicyControllerFeatureAPI.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message = "The feature cannot be found")
+    })    
+    public Response controllerFeature(@ApiParam(value="Feature Name", required=true) 
+                                      @PathParam("featureName") String featureName) {
     	try {
 	    	return Response.status(Response.Status.OK).
 			                entity(PolicyController.factory.getFeatureProvider(featureName)).
@@ -340,9 +490,21 @@ public class RestManager {
     }
 
     @GET
-    @Path("engine/controllers/{controllerName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response controller(@PathParam("controllerName") String controllerName) {
+    @Path("engine/controllers/{controller}")
+    @ApiOperation(
+        	value="Retrieves a Policy Controller", 
+        	notes="A Policy Controller is a concrete drools application abstraction.  " +
+        	      "It aggregates networking, drools, and other resources," + 
+        	      "as provides operational controls over drools applications",
+        	response=PolicyController.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                                 "this request to be fulfilled")
+    }) 
+    public Response controller(@ApiParam(value="Policy Controller Name", required=true) 
+                               @PathParam("controller") String controllerName) {
 		try {
     		return Response.status(Response.Status.OK).
     				        entity(PolicyController.factory.get(controllerName)).
@@ -355,46 +517,26 @@ public class RestManager {
 			return Response.status(Response.Status.NOT_ACCEPTABLE).
                             entity(new Error(controllerName + " not acceptable")).
                             build();
-		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
-                            entity(new Error(controllerName + " not acceptable")).
-                            build();
-		}
-    }
-    @GET
-    @Path("engine/controllers/{controllerName}/properties")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response controllerProperties(@PathParam("controllerName") String controllerName) {
-		try {
-			PolicyController controller = PolicyController.factory.get(controllerName);
-    		return Response.status(Response.Status.OK).
-    				        entity(controller.getProperties()).
-    				        build();
-		} catch (IllegalArgumentException e) {
-			return Response.status(Response.Status.NOT_FOUND).
-                            entity(new Error(controllerName + " not found")).
-                            build();
-		} catch (IllegalStateException e) {
-			return Response.status(Response.Status.NOT_ACCEPTABLE).
-                            entity(new Error(controllerName + " not acceptable")).
-                            build();
-		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
-                            entity(new Error(controllerName + " not acceptable")).
-                            build();
 		}
     }
     
     @DELETE
-    @Path("engine/controllers/{controllerName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response deleteController(@PathParam("controllerName") String controllerName) {
-    	
-    	if (controllerName == null || controllerName.isEmpty())
-    		return Response.status(Response.Status.BAD_REQUEST).
-    				        entity("A controller name must be provided").
-    				        build();
+    @Path("engine/controllers/{controller}")
+    @ApiOperation(
+        	value="Deletes a Policy Controller", 
+        	notes="A Policy Controller is a concrete drools application abstraction.  " +
+          	      "It aggregates networking, drools, and other resources," + 
+          	      "as provides operational controls over drools applications",
+          	response=PolicyController.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                                "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A problem has occurred while deleting the Policy Controller")
+    }) 
+    public Response controllerDelete(@ApiParam(value="Policy Controller Name", required=true) 
+                                     @PathParam("controller") String controllerName) {
     	
     	PolicyController controller;
     	try {
@@ -432,17 +574,62 @@ public class RestManager {
                 build();
     }
     
-    /**
-     * Updates the Policy Engine
-     * 
-     * @param configuration configuration
-     * @return Policy Engine
-     */
-    @PUT
-    @Path("engine/controllers/{controllerName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateController(@PathParam("controllerName") String controllerName,
+    @GET
+    @Path("engine/controllers/{controller}/properties")
+    @ApiOperation(
+        	value="Retrieves the configuration properties of a Policy Controller", 
+        	notes="Configuration resources used by the controller if Properties format",
+        	response=PolicyController.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    }) 
+    public Response controllerProperties(@ApiParam(value="Policy Controller Name", required=true) 
+                                         @PathParam("controller") String controllerName) {
+		try {
+			PolicyController controller = PolicyController.factory.get(controllerName);
+    		return Response.status(Response.Status.OK).
+    				        entity(controller.getProperties()).
+    				        build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
+		}
+    }
+    
+    @GET
+    @Path("engine/controllers/{controller}/inputs")
+    @ApiOperation(
+        	value="Policy Controller Input Ports", 
+        	notes="List of input ports",
+        	responseContainer="List"
+    )
+    public Response controllerInputs() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Inputs.values())).
+                        build();
+    }
+    
+    @POST
+    @Path("engine/controllers/{controller}/inputs/configuration")
+    @ApiOperation(
+        	value="Policy Controller Input Configuration Requests", 
+        	notes="Feeds a configuration request input into the given Policy Controller"
+    )
+    @ApiResponses(value={
+    	@ApiResponse(code=400, message = "The configuration request is invalid"),
+    	@ApiResponse(code=406, message = "The configuration request cannot be honored") 
+    })
+    public Response controllerUpdate(@ApiParam(value="Policy Controller Name", required=true) 
+                                     @PathParam("controller") String controllerName,
+                                     @ApiParam(value="Configuration to apply", required=true)
     		                         ControllerConfiguration controllerConfiguration) {
     	
     	if (controllerName == null || controllerName.isEmpty() || 
@@ -478,85 +665,240 @@ public class RestManager {
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/drools")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response drools(@PathParam("controllerName") String controllerName) {
+    @Path("engine/controllers/{controller}/switches")
+    @ApiOperation(
+        	value="Policy Controller Switches", 
+        	notes="List of the Policy Controller Switches",
+        	responseContainer="List"
+    )
+    public Response controllerSwitches() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Switches.values())).
+                        build();
+    }
+    
+    @PUT
+    @Path("engine/controllers/{controller}/switches/lock")
+    @ApiOperation(
+        	value="Switches on the Policy Controller Lock Control", 
+        	notes="This action on the switch locks the Policy Controller",
+          	response=PolicyController.class
+    )   
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response controllerLock(@ApiParam(value="Policy Controller Name", required=true) 
+                                   @PathParam("controller") String controllerName) {
+    	PolicyController policyController = PolicyController.factory.get(controllerName);
+    	boolean success = policyController.lock();
+    	if (success)
+    		return Response.status(Status.OK).
+    				        entity(policyController).
+    				        build();
+    	else
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("Controller " + controllerName + " cannot be locked")).
+    				        build();
+    }  
+    
+    @DELETE
+    @Path("engine/controllers/{controller}/switches/lock")
+    @ApiOperation(
+        	value="Switches off the Policy Controller Lock Control", 
+        	notes="This action on the switch unlocks the Policy Controller",
+          	response=PolicyController.class
+    ) 
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response controllerUnlock(@ApiParam(value="Policy Controller Name", required=true) 
+                                     @PathParam("controller") String controllerName) {
+    	PolicyController policyController = PolicyController.factory.get(controllerName);
+    	boolean success = policyController.unlock();
+    	if (success)
+    		return Response.status(Status.OK).
+    				        entity(policyController).
+    				        build();
+    	else
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("Controller " + controllerName + " cannot be unlocked")).
+    				        build();
+    }
+    
+    @GET
+    @Path("engine/controllers/{controller}/drools")
+    @ApiOperation(
+        	value="Retrieves the Drools Controller subcomponent of the Policy Controller", 
+        	notes="The Drools Controller provides an abstraction over the Drools subsystem",
+        	response=DroolsController.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    }) 
+    public Response drools(@ApiParam(value="Policy Controller Name", required=true) 
+                           @PathParam("controller") String controllerName) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);			
 			return Response.status(Response.Status.OK).
 	                               entity(drools).
 	                               build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response droolsFacts(@DefaultValue("false") @QueryParam("count") boolean count,
-    		                    @PathParam("controllerName") String controllerName,
-    		                    @PathParam("sessionName") String sessionName) {
+    @Path("engine/controllers/{controller}/drools/facts")
+    @ApiOperation(
+        	value="Retrieves Facts Summary information for a given controller", 
+        	notes="Provides the session names, and a count of fact object in the drools working memory",
+        	responseContainer="Map"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response droolsFacts(@ApiParam(value="Policy Controller Name", required=true) 
+                                @PathParam("controller") String controllerName) {
 		try {
+			Map<String,Long> sessionCounts = new HashMap<>(); 
 			DroolsController drools = getDroolsController(controllerName);
-			if (!count)
-				return Response.status(Response.Status.OK).
-		                               entity(drools.factClassNames(sessionName)).
-		                               build();
-			else
-				return Response.status(Response.Status.OK).
-                                       entity(new Long(drools.factCount(sessionName))).
-                                       build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+			for (String session : drools.getSessionNames()) {
+				sessionCounts.put(session, drools.factCount(session));
+			}
+			return Response.status(Response.Status.OK).
+	                               entity(sessionCounts).
+	                               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{className}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response droolsFacts(@DefaultValue("false") @QueryParam("count") boolean count,
-    		                    @PathParam("controllerName") String controllerName,
-    		                    @PathParam("sessionName") String sessionName,
-    		                    @PathParam("className") String className) {
+    @Path("engine/controllers/{controller}/drools/facts/{session}")
+    @ApiOperation(
+        	value="Retrieves Fact Types (classnames) for a given controller and its count", 
+        	notes="The fact types are the classnames of the objects inserted in the drools working memory",
+        	responseContainer="Map"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller or session cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response droolsFacts(@ApiParam(value="Policy Controller Name", required=true)
+                                @PathParam("controller") String controllerName,
+                                @ApiParam(value="Drools Session Name", required=true)
+    		                    @PathParam("session") String sessionName) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
-			List<Object> facts = drools.facts(sessionName, className, false);
+			return Response.status(Response.Status.OK).
+	                               entity(drools.factClassNames(sessionName)).
+	                               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error("entity not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + sessionName + " not acceptable")).
+                            build();
+		}
+    }
+    
+    @GET
+    @Path("engine/controllers/{controller}/drools/facts/{session}/{factType}")
+    @ApiOperation(
+        	value="Retrieves fact objects of a given type in the drools working memory" +
+                  "for a given controller and session", 
+            notes="The fact types are the classnames of the objects inserted in the drools working memory",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller, session, or fact type cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response droolsFacts(@ApiParam(value="Fact count", required=false)
+                                @DefaultValue("false") @QueryParam("count") boolean count,
+                                @ApiParam(value="Policy Controller Name", required=true)
+    		                    @PathParam("controller") String controllerName,
+                                @ApiParam(value="Drools Session Name", required=true)
+    		                    @PathParam("session") String sessionName,
+                                @ApiParam(value="Drools Fact Type", required=true)
+    		                    @PathParam("factType") String factType) {
+		try {
+			DroolsController drools = getDroolsController(controllerName);
+			List<Object> facts = drools.facts(sessionName, factType, false);
 			if (!count)
 				return Response.status(Response.Status.OK).entity(facts).build();
 			else
 				return Response.status(Response.Status.OK).entity(facts.size()).build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + factType + 
+                            		         " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + factType + 
+                            		         " not acceptable")).
+                            build();
 		}
     }
     
     @DELETE
-    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{className}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteDroolsFacts(@PathParam("controllerName") String controllerName,
-    		                          @PathParam("sessionName") String sessionName,
-    		                          @PathParam("className") String className) {
+    @Path("engine/controllers/{controller}/drools/facts/{session}/{factType}")
+    @ApiOperation(
+        	value="Deletes all the fact objects of a given type from the drools working memory" +
+                  "for a given controller and session.   The objects retracted from the working " +
+        		  "memory are provided in the response.", 
+            notes="The fact types are the classnames of the objects inserted in the drools working memory",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller, session, or fact type, cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A server error has occurred processing this request")
+    })
+    public Response droolsFactsDelete(@ApiParam(value="Policy Controller Name", required=true)
+								      @PathParam("controller") String controllerName,
+								      @ApiParam(value="Drools Session Name", required=true)
+								      @PathParam("session") String sessionName,
+								      @ApiParam(value="Drools Fact Type", required=true)
+								      @PathParam("factType") String factType) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
-			List<Object> facts = drools.facts(sessionName, className, true);
+			List<Object> facts = drools.facts(sessionName, factType, true);
 			return Response.status(Response.Status.OK).entity(facts).build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + factType + 
+                            		         " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + factType + 
+                            		         " not acceptable")).
+                            build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
 		                    entity(new Error(e.getMessage())).
@@ -565,12 +907,28 @@ public class RestManager {
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response droolsFacts(@DefaultValue("false") @QueryParam("count") boolean count,
-    		                    @PathParam("controllerName") String controllerName,
-    		                    @PathParam("sessionName") String sessionName,
-    		                    @PathParam("queryName") String queryName,
+    @Path("engine/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}")
+    @ApiOperation(
+        	value="Gets all the fact objects returned by a DRL query with no parameters from the drools working memory" +
+                  "for a given controller and session", 
+            notes="The DRL query must be defined in the DRL file",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller, session, or query information, cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A server error has occurred processing this request")
+    })
+    public Response droolsFacts(@ApiParam(value="Fact count", required=false)
+                                @DefaultValue("false") @QueryParam("count") boolean count,
+                                @ApiParam(value="Policy Controller Name", required=true)
+                                @PathParam("controller") String controllerName,
+                                @ApiParam(value="Drools Session Name", required=true)
+                                @PathParam("session") String sessionName,
+                                @ApiParam(value="Query Name Present in DRL", required=true)
+                                @PathParam("query") String queryName,
+                                @ApiParam(value="Query Identifier Present in the DRL Query", required=true)
     		                    @PathParam("queriedEntity") String queriedEntity) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
@@ -579,10 +937,16 @@ public class RestManager {
 				return Response.status(Response.Status.OK).entity(facts).build();
 			else
 				return Response.status(Response.Status.OK).entity(facts.size()).build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + queryName + 
+                            		         queriedEntity + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + queryName + 
+                            		         queriedEntity + " not acceptable")).
+                            build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
 		                    entity(new Error(e.getMessage())).
@@ -590,14 +954,30 @@ public class RestManager {
 		}
     }
     
-    @PUT
-    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response droolsFacts(@PathParam("controllerName") String controllerName,
-    		                    @PathParam("sessionName") String sessionName,
-    		                    @PathParam("queryName") String queryName,
+    @POST
+    @Path("engine/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}")
+    @ApiOperation(
+        	value="Gets all the fact objects returned by a DRL query with parameters from the drools working memory" +
+                  "for a given controller and session", 
+            notes="The DRL query with parameters must be defined in the DRL file",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller, session, or query information, cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A server error has occurred processing this request")
+    })
+    public Response droolsFacts(@ApiParam(value="Policy Controller Name", required=true)
+                                @PathParam("controller") String controllerName,
+                                @ApiParam(value="Drools Session Name", required=true)
+                                @PathParam("session") String sessionName,
+                                @ApiParam(value="Query Name Present in DRL", required=true)
+                                @PathParam("query") String queryName,
+                                @ApiParam(value="Query Identifier Present in the DRL Query", required=true)
     		                    @PathParam("queriedEntity") String queriedEntity,
-    		                    List<Object> queryParameters) {
+    		                    @ApiParam(value="Query Parameter Values to pass in the DRL Query", required=false)
+                                List<Object> queryParameters) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 			List<Object> facts;
@@ -606,10 +986,16 @@ public class RestManager {
 			else
 				facts = drools.factQuery(sessionName, queryName, queriedEntity, false, queryParameters.toArray());
 			return Response.status(Response.Status.OK).entity(facts).build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + queryName + 
+                            		         queriedEntity + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + queryName + 
+                            		         queriedEntity + " not acceptable")).
+                            build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
 		                    entity(new Error(e.getMessage())).
@@ -618,13 +1004,29 @@ public class RestManager {
     }
     
     @DELETE
-    @Path("engine/controllers/{controllerName}/drools/facts/{sessionName}/{queryName}/{queriedEntity}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteDroolsFacts(@PathParam("controllerName") String controllerName,
-    		                          @PathParam("sessionName") String sessionName,
-    		                          @PathParam("queryName") String queryName,
-    		                          @PathParam("queriedEntity") String queriedEntity,
-    		                          List<Object> queryParameters) {
+    @Path("engine/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}")
+    @ApiOperation(
+        	value="Deletes all the fact objects returned by a DRL query with parameters from the drools working memory" +
+                  "for a given controller and session", 
+            notes="The DRL query with parameters must be defined in the DRL file",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller, session, or query information, cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A server error has occurred processing this request")
+    })
+    public Response droolsFactsDelete(@ApiParam(value="Policy Controller Name", required=true)
+								      @PathParam("controller") String controllerName,
+								      @ApiParam(value="Drools Session Name", required=true)
+								      @PathParam("session") String sessionName,
+								      @ApiParam(value="Query Name Present in DRL", required=true)
+								      @PathParam("query") String queryName,
+								      @ApiParam(value="Query Identifier Present in the DRL Query", required=true)
+								      @PathParam("queriedEntity") String queriedEntity,
+								      @ApiParam(value="Query Parameter Values to pass in the DRL Query", required=false)
+								      List<Object> queryParameters) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 			List<Object> facts;
@@ -633,10 +1035,16 @@ public class RestManager {
 			else
 				facts = drools.factQuery(sessionName, queryName, queriedEntity, true, queryParameters.toArray());			
 			return Response.status(Response.Status.OK).entity(facts).build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + queryName + 
+                            		         queriedEntity + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + sessionName + ":" + queryName + 
+                            		         queriedEntity + " not acceptable")).
+                            build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
 		                    entity(new Error(e.getMessage())).
@@ -644,10 +1052,45 @@ public class RestManager {
 		}
     }
     
+    @POST
+    @Path("engine/controllers/tools/coders/decoders/filters/rules/{ruleName}")
+    @ApiOperation(
+        	value="Produces a Decoder Rule Filter in a format that the Policy Controller can understand", 
+        	notes="The result can be used with other APIs to attach a filter to a decoder"
+    )
+    public Response rules(@ApiParam(value="Negate regex?", required=true)
+                          @DefaultValue("false") @QueryParam("negate") boolean negate,
+    		              @ApiParam(value="Rule Name", required=true)
+    		              @PathParam("ruleName") String name,
+    		              @ApiParam(value="Regex expression", required=true)
+    		              String regex) {   	
+    	String literalRegex = Pattern.quote(regex);
+    	if (negate)
+    		literalRegex = "^(?!" + literalRegex + "$).*";
+    	
+		return Response.status(Status.OK).
+				        entity(new JsonProtocolFilter.FilterRule(name,literalRegex)).
+				        build();
+    }
+    
     @GET
-    @Path("engine/controllers/{controllerName}/decoders")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoders(@PathParam("controllerName") String controllerName) {
+    @Path("engine/controllers/{controller}/decoders")
+    @ApiOperation(
+        	value="Gets all the decoders used by a controller", 
+            notes="A Policy Controller uses decoders to deserialize incoming network messages from " +
+        	      "subscribed network topics into specific (fact) objects. " +
+        	      "The deserialized (fact) object will typically be inserted in the drools working " +
+        	      " memory of the controlled drools application.",
+        	responseContainer="List",
+        	response=ProtocolCoderToolset.class
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoders(@ApiParam(value="Policy Controller Name", required=true)
+                             @PathParam("controller") String controllerName) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 			List<ProtocolCoderToolset> decoders = EventProtocolCoder.manager.getDecoders
@@ -655,117 +1098,210 @@ public class RestManager {
 			return Response.status(Response.Status.OK).
 	                               entity(decoders).
 	                               build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/decoders/filters")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilters(@PathParam("controllerName") String controllerName) {
+    @Path("engine/controllers/{controller}/decoders/filters")
+    @ApiOperation(
+        	value="Gets all the filters used by a controller", 
+            notes="A Policy Controller uses decoders to deserialize incoming network messages from " +
+          	      "subscribed network topics into specific (fact) objects. " +
+          	      "The deserialized (fact) object will typically be inserted in the drools working " +
+          	      " memory of the controlled drools application." +
+                  "Acceptance filters are used to filter out undesired network messages for the given controller",
+        	responseContainer="List",
+        	response=CoderFilters.class
+    )
+    @ApiResponses(value = { 
+    	@ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilters(@ApiParam(value="Policy Controller Name", required=true)
+                                   @PathParam("controller") String controllerName) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 			List<CoderFilters> filters = EventProtocolCoder.manager.getDecoderFilters
-							(drools.getGroupId(), drools.getArtifactId());
+														(drools.getGroupId(), drools.getArtifactId());
 			return Response.status(Response.Status.OK).
 		                    entity(filters).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoder(@PathParam("controllerName") String controllerName,
-    		                 @PathParam("topicName") String topicName) {
+    @Path("engine/controllers/{controller}/decoders/{topic}")
+    @ApiOperation(
+        	value="Gets all the decoders in use by a controller for a networked topic", 
+            notes="A Policy Controller uses decoders to deserialize incoming network messages from " +
+          	      "subscribed network topics into specific (fact) objects. " +
+          	      "The deserialized (fact) object will typically be inserted in the drools working " +
+          	      " memory of the controlled drools application.",
+        	responseContainer="List",
+        	response=ProtocolCoderToolset.class
+    )
+    @ApiResponses(value = { 
+    	@ApiResponse(code=404, message="The controller or topic cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoder(@ApiParam(value="Policy Controller Name", required=true)
+                            @PathParam("controller") String controllerName,
+                            @ApiParam(value="Networked Topic Name", required=true)
+    		                @PathParam("topic") String topic) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 			ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-							(drools.getGroupId(), drools.getArtifactId(), topicName);
+							(drools.getGroupId(), drools.getArtifactId(), topic);
 			return Response.status(Response.Status.OK).
 		                    entity(decoder).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + " not acceptable")).
+                            build();
 		}
     }    
     
     @GET
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilter(@PathParam("controllerName") String controllerName,
-    		                       @PathParam("topicName") String topicName) {
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters")
+    @ApiOperation(
+        	value="Gets all filters attached to decoders for a given networked topic in use by a controller", 
+            notes="A Policy Controller uses decoders to deserialize incoming network messages from " +
+            	      "subscribed network topics into specific (fact) objects. " +
+            	      "The deserialized (fact) object will typically be inserted in the drools working " +
+            	      " memory of the controlled drools application." +
+                      "Acceptance filters are used to filter out undesired network messages for the given controller",
+          	responseContainer="List",
+        	response=CoderFilters.class
+    )
+    @ApiResponses(value = { 
+    	@ApiResponse(code=404, message="The controller or topic cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilter(@ApiParam(value="Policy Controller Name", required=true)
+							      @PathParam("controller") String controllerName,
+							      @ApiParam(value="Networked Topic Name", required=true)
+							      @PathParam("topic") String topic) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 			ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-												(drools.getGroupId(), drools.getArtifactId(), topicName);
+												(drools.getGroupId(), drools.getArtifactId(), topic);
 			if (decoder == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(topicName + "  does not exist")).
+				        entity(new Error(topic + "  does not exist")).
 				        build();
 			else
 				return Response.status(Response.Status.OK).
 	                    entity(decoder.getCoders()).
 	                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters/{factClassName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilter(@PathParam("controllerName") String controllerName,
-    		                       @PathParam("topicName") String topicName,
-    		                       @PathParam("factClassName") String factClass) {
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}")
+    @ApiOperation(
+        	value="Gets all filters attached to decoders for a given subscribed networked topic " +
+                  "and fact type", 
+            notes="Decoders are associated with networked topics. A Policy Controller manages " +
+        	      "multiple topics and therefore its attached decoders. " + 
+        	      "A Policy Controller uses filters to further specify the fact mapping.  " +
+        	      "Filters are applied on a per fact type (classname).",
+        	responseContainer="List",
+        	response=CoderFilters.class
+    )
+    @ApiResponses(value = { 
+        @ApiResponse(code=404, message="The controller, topic, or fact type cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilter(@ApiParam(value="Policy Controller Name", required=true)
+                                  @PathParam("controller") String controllerName,
+                                  @ApiParam(value="Networked Topic Name", required=true)
+    		                      @PathParam("topic") String topic,
+    		                      @ApiParam(value="Fact Type", required=true)
+    		                      @PathParam("factType") String factClass) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 	    	ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-											(drools.getGroupId(), drools.getArtifactId(), topicName);
+											(drools.getGroupId(), drools.getArtifactId(), topic);
 			CoderFilters filters = decoder.getCoder(factClass);
 			if (filters == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(topicName + ":" + factClass + "  does not exist")).
+				        entity(new Error(topic + ":" + factClass + "  does not exist")).
 				        build();
 			else
 				return Response.status(Response.Status.OK).
                         entity(filters).
                         build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not acceptable")).
+                            build();
 		}
     }
     
-    @POST
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters/{factClassName}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilter(@PathParam("controllerName") String controllerName,
-    		                      @PathParam("topicName") String topicName,
-    		                      @PathParam("factClassName") String factClass,
+    @PUT
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}")
+    @ApiOperation(
+        	value="Attaches filters to the decoder for a given networked topic " +
+                  "and fact type", 
+            notes="Decoders are associated with networked topics. A Policy Controller manages " +
+        	      "multiple topics and therefore its attached decoders. " + 
+        	      "A Policy Controller uses filters to further specify the fact mapping.  " +
+        	      "Filters are applied on a per fact type (classname).",
+        	responseContainer="List",
+        	response=CoderFilters.class
+    )
+    @ApiResponses(value = { 
+        @ApiResponse(code=404, message="The controller, topic, fact type, cannot be found, " +
+                                       "or a filter has not been provided"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilter(@ApiParam(value="Policy Controller Name", required=true)
+							      @PathParam("controller") String controllerName,
+							      @ApiParam(value="Topic Name", required=true)
+							      @PathParam("topic") String topic,
+							      @ApiParam(value="Fact Type", required=true)
+							      @PathParam("factType") String factClass,
+							      @ApiParam(value="Configuration Filter", required=true)
     		                      JsonProtocolFilter configFilters) {
     	
     	if (configFilters == null) {
@@ -777,121 +1313,183 @@ public class RestManager {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 	    	ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-											(drools.getGroupId(), drools.getArtifactId(), topicName);
+											(drools.getGroupId(), drools.getArtifactId(), topic);
 	    	CoderFilters filters = decoder.getCoder(factClass);
 			if (filters == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(topicName + ":" + factClass + "  does not exist")).
+				        entity(new Error(topic + ":" + factClass + "  does not exist")).
 				        build();
 			filters.setFilter(configFilters);
 			return Response.status(Response.Status.OK).
 		                    entity(filters).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters/{factClassName}/rules")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilterRules(@PathParam("controllerName") String controllerName,
-    		                          @PathParam("topicName") String topicName,
-    		                          @PathParam("factClassName") String factClass) {
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules")
+    @ApiOperation(
+        	value="Gets the filter rules attached to a topic decoder of a controller", 
+            notes="Decoders are associated with networked topics. A Policy Controller manages " +
+        	      "multiple topics and therefore its attached decoders. " + 
+        	      "A Policy Controller uses filters to further specify the fact mapping.  " +
+        	      "Filters are applied on a per fact type and are composed of field matching rules. ",
+          	responseContainer="List",
+        	response=FilterRule.class
+    )
+    @ApiResponses(value = { 
+        @ApiResponse(code=404, message="The controller, topic, or fact type cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilterRules(@ApiParam(value="Policy Controller Name", required=true)
+									   @PathParam("controller") String controllerName,
+									   @ApiParam(value="Topic Name", required=true)
+									   @PathParam("topic") String topic,
+									   @ApiParam(value="Fact Type", required=true)
+									   @PathParam("factType") String factClass) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 	    	ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-											(drools.getGroupId(), drools.getArtifactId(), topicName);
+											(drools.getGroupId(), drools.getArtifactId(), topic);
 	    	
 	    	CoderFilters filters = decoder.getCoder(factClass);
 			if (filters == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  does not exist")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  does not exist")).
 				        build();
 			
 			JsonProtocolFilter filter = filters.getFilter();
 			if (filter == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  no filters")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).
 				        build();
 			
 			return Response.status(Response.Status.OK).
 		                    entity(filter.getRules()).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not acceptable")).
+                            build();
 		}
     }
     
     @GET
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters/{factClassName}/rules/{ruleName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilterRules(@PathParam("controllerName") String controllerName,
-    		                          @PathParam("topicName") String topicName,
-    		                          @PathParam("factClassName") String factClass,
-    		                          @PathParam("ruleName") String ruleName) {
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules/{ruleName}")
+    @ApiOperation(
+        	value="Gets a filter rule by name attached to a topic decoder of a controller", 
+            notes="Decoders are associated with networked topics. A Policy Controller manages " +
+        	      "multiple topics and therefore its attached decoders. " + 
+        	      "A Policy Controller uses filters to further specify the fact mapping.  " +
+        	      "Filters are applied on a per fact type and are composed of field matching rules. ",
+        	responseContainer="List",
+        	response=FilterRule.class
+    )
+    @ApiResponses(value = { 
+        @ApiResponse(code=404, message="The controller, topic, fact type, or rule name cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilterRules(@ApiParam(value="Policy Controller Name", required=true)
+									   @PathParam("controller") String controllerName,
+									   @ApiParam(value="Topic Name", required=true)
+									   @PathParam("topic") String topic,
+									   @ApiParam(value="Fact Type", required=true)
+									   @PathParam("factType") String factClass,
+									   @ApiParam(value="Rule Name", required=true)
+    		                           @PathParam("ruleName") String ruleName) {
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 	    	ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-											(drools.getGroupId(), drools.getArtifactId(), topicName);
+											(drools.getGroupId(), drools.getArtifactId(), topic);
 	    	
 	    	CoderFilters filters = decoder.getCoder(factClass);
 			if (filters == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  does not exist")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  does not exist")).
 				        build();
 			
 			JsonProtocolFilter filter = filters.getFilter();
 			if (filter == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  no filters")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).
 				        build();
 			
 			return Response.status(Response.Status.OK).
 		                    entity(filter.getRules(ruleName)).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + ": " + ruleName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + ":" + ruleName + " not acceptable")).
+                            build();
 		}
     }
     
     @DELETE
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters/{factClassName}/rules/{ruleName}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteDecoderFilterRule(@PathParam("controllerName") String controllerName,
-	    		                          @PathParam("topicName") String topicName,
-	    		                          @PathParam("factClassName") String factClass,
-	    		                          @PathParam("ruleName") String ruleName,
-	    		                          FilterRule rule) {
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules/{ruleName}")
+    @ApiOperation(
+        	value="Deletes a filter rule by name attached to a topic decoder of a controller", 
+            notes="Decoders are associated with networked topics. A Policy Controller manages " +
+        	      "multiple topics and therefore its attached decoders. " + 
+        	      "A Policy Controller uses filters to further specify the fact mapping.  " +
+        	      "Filters are applied on a per fact type and are composed of field matching rules. ",
+        	responseContainer="List",
+        	response=FilterRule.class
+    )
+    @ApiResponses(value = { 
+        @ApiResponse(code=404, message="The controller, topic, fact type, or rule name cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilterRuleDelete(@ApiParam(value="Policy Controller Name", required=true)
+										    @PathParam("controller") String controllerName,
+										    @ApiParam(value="Topic Name", required=true)
+										    @PathParam("topic") String topic,
+										    @ApiParam(value="Fact Type", required=true)
+										    @PathParam("factType") String factClass,
+										    @ApiParam(value="Rule Name", required=true)
+									        @PathParam("ruleName") String ruleName,
+									        @ApiParam(value="Filter Rule", required=true)
+	    		                            FilterRule rule) {
 		
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 	    	ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-											(drools.getGroupId(), drools.getArtifactId(), topicName);
+											(drools.getGroupId(), drools.getArtifactId(), topic);
 	    	
 	    	CoderFilters filters = decoder.getCoder(factClass);
 			if (filters == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  does not exist")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  does not exist")).
 				        build();
 			
 			JsonProtocolFilter filter = filters.getFilter();
 			if (filter == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  no filters")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).
 				        build();
 			
 			if (rule == null) {
@@ -903,7 +1501,7 @@ public class RestManager {
 			
 			if (rule.getName() == null || !rule.getName().equals(ruleName))
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + ":" + ruleName + 
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + ":" + ruleName + 
 				        		         " rule name request inconsistencies (" + rule.getName() + ")")).
 				        build();
 			
@@ -911,43 +1509,66 @@ public class RestManager {
 			return Response.status(Response.Status.OK).
 		                    entity(filter.getRules()).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + ": " + ruleName + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + ":" + ruleName + " not acceptable")).
+                            build();
 		}
     }
     
     @PUT
-    @Path("engine/controllers/{controllerName}/decoders/{topicName}/filters/{factClassName}/rules")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decoderFilterRule(@PathParam("controllerName") String controllerName,
-	    		                      @PathParam("topicName") String topicName,
-	    		                      @PathParam("factClassName") String factClass,
-	    		                      JsonProtocolFilter.FilterRule rule) {
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules")
+    @ApiOperation(
+        	value="Places a new filter rule in a topic decoder", 
+            notes="Decoders are associated with networked topics. A Policy Controller manages " +
+        	      "multiple topics and therefore its attached decoders. " + 
+        	      "A Policy Controller uses filters to further specify the fact mapping.  " +
+        	      "Filters are applied on a per fact type and are composed of field matching rules. ",
+        	responseContainer="List",
+        	response=FilterRule.class
+    )
+    @ApiResponses(value = { 
+        @ApiResponse(code=404, message="The controller, topic, or fact type cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decoderFilterRule(@ApiParam(value="Policy Controller Name", required=true)
+									  @PathParam("controller") String controllerName,
+									  @ApiParam(value="Topic Name", required=true)
+									  @PathParam("topic") String topic,
+									  @ApiParam(value="Fact Type", required=true)
+									  @PathParam("factType") String factClass,
+									  @ApiParam(value="Rule Name", required=true)
+									  @PathParam("ruleName") String ruleName,
+									  @ApiParam(value="Filter Rule", required=true)
+									  FilterRule rule) {
 		
 		try {
 			DroolsController drools = getDroolsController(controllerName);
 	    	ProtocolCoderToolset decoder = EventProtocolCoder.manager.getDecoders
-											(drools.getGroupId(), drools.getArtifactId(), topicName);
+											(drools.getGroupId(), drools.getArtifactId(), topic);
 	    	
 	    	CoderFilters filters = decoder.getCoder(factClass);
 			if (filters == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  does not exist")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  does not exist")).
 				        build();
 			
 			JsonProtocolFilter filter = filters.getFilter();
 			if (filter == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass + "  no filters")).
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).
 				        build();
 			
 			if (rule.getName() == null)
 	    		return Response.status(Response.Status.BAD_REQUEST).
-				        entity(new Error(controllerName + ":" + topicName + ":" + factClass +  
+				        entity(new Error(controllerName + ":" + topic + ":" + factClass +  
 				        		         " rule name request inconsistencies (" + rule.getName() + ")")).
 				        build();
 			
@@ -955,59 +1576,54 @@ public class RestManager {
 			return Response.status(Response.Status.OK).
 		                    entity(filter.getRules()).
 		                    build();
-		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(e.getMessage())).
-					               build();
-		}
-    }
-    
-    @GET
-    @Path("engine/controllers/{controllerName}/encoders")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response encoderFilters(@PathParam("controllerName") String controllerName) {   	
-		List<CoderFilters> encoders;
-		try {
-			PolicyController controller = PolicyController.factory.get(controllerName);
-	    	if (controller == null)
-	    		return Response.status(Response.Status.BAD_REQUEST).
-	    				        entity(new Error(controllerName + "  does not exist")).
-	    				        build();
-			DroolsController drools = controller.getDrools();
-	    	if (drools == null)
-	    		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
-	    				        entity(new Error(controllerName + "  has not drools component")).
-	    				        build();
-			encoders = EventProtocolCoder.manager.getEncoderFilters
-							(drools.getGroupId(), drools.getArtifactId());
 		} catch (IllegalArgumentException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                  controllerName, this.toString());
-			return Response.status(Response.Status.BAD_REQUEST).
-					               entity(new Error(controllerName +  " not found: " + e.getMessage())).
-					               build();
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not found")).
+                            build();
 		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                    controllerName, this.toString());
 			return Response.status(Response.Status.NOT_ACCEPTABLE).
-                            entity(new Error(controllerName + " is not accepting the request")).build();
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 factClass + " not acceptable")).
+                            build();
 		}
-		
-		return Response.status(Response.Status.OK).
-                               entity(encoders).
-                               build();
     }
     
     @POST
-    @Path("engine/controllers/{controllerName}/decoders/{topic}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response decode(@PathParam("controllerName") String controllerName,
-    		                   @PathParam("topic") String topic,
-    		                   String json) {
+    @Path("engine/controllers/{controller}/decoders/{topic}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @ApiOperation(
+        	value="Decodes a string into a fact object, and encodes it back into a string", 
+            notes="Tests the decode/encode functions of a controller",
+        	response=CodingResult.class
+    )
+    @ApiResponses(value = { 
+    	@ApiResponse(code=400, message="Bad input has been provided"),
+        @ApiResponse(code=404, message="The controller cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response decode(@ApiParam(value="Policy Controller Name", required=true)
+                           @PathParam("controller") String controllerName,
+                           @ApiParam(value="Topic Name", required=true)
+    					   @PathParam("topic") String topic,
+    					   @ApiParam(value="JSON String to decode", required=true)
+    		               String json) {
     	
-    	PolicyController policyController = PolicyController.factory.get(controllerName);
+    	PolicyController policyController;
+		try {
+			policyController = PolicyController.factory.get(controllerName);
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(controllerName + ":" + topic + ":" +
+			                                 " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + ":" + topic + ":" + 
+			                                 " not acceptable")).
+                            build();
+		}
     	
     	CodingResult result = new CodingResult();
 		result.decoding = false;
@@ -1032,9 +1648,7 @@ public class RestManager {
     		result.jsonEncoding = EventProtocolCoder.manager.encode(topic, event);
     		result.encoding = true;
     	} catch (Exception e) {
-    		return Response.status(Response.Status.OK).
-			        entity(result).
-			        build();
+    		// continue so to propagate decoding results ..
     	} 
     	
 		return Response.status(Response.Status.OK).
@@ -1042,318 +1656,526 @@ public class RestManager {
                 build();
     }
     
+    @GET
+    @Path("engine/controllers/{controller}/encoders")
+    @ApiOperation(
+        	value="Retrieves the encoder filters of a controller", 
+            notes="The encoders serializes a fact object, typically for network transmission",
+            responseContainer="List",
+        	response=CoderFilters.class
+    )
+    @ApiResponses(value = { 
+    	@ApiResponse(code=400, message="Bad input has been provided"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled")
+    })
+    public Response encoderFilters(@ApiParam(value="Policy Controller Name", required=true)
+                                   @PathParam("controller") String controllerName) {   	
+		List<CoderFilters> encoders;
+		try {
+			PolicyController controller = PolicyController.factory.get(controllerName);
+			DroolsController drools = controller.getDrools();
+			encoders = EventProtocolCoder.manager.getEncoderFilters
+							(drools.getGroupId(), drools.getArtifactId());
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.BAD_REQUEST).
+					               entity(new Error(controllerName +  " not found: " + e.getMessage())).
+					               build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(controllerName + " is not accepting the request")).build();
+		}
+		
+		return Response.status(Response.Status.OK).
+                               entity(encoders).
+                               build();
+    }
+    
 	@GET
     @Path("engine/topics")
-    @Produces(MediaType.APPLICATION_JSON)
-    public TopicEndpoint topics() {
-    	return TopicEndpoint.manager;
+    @ApiOperation(
+        	value="Retrieves the managed topics", 
+            notes="Network Topics Aggregation",
+        	response=TopicEndpoint.class
+    )
+    public Response topics() {
+		return Response.status(Response.Status.OK).
+				        entity(TopicEndpoint.manager).
+				        build();
+    }
+	
+    @GET
+    @Path("engine/topics/switches")
+    @ApiOperation(
+        	value="Topics Control Switches", 
+        	notes="List of the Topic Control Switches",
+        	responseContainer="List"
+    )
+    public Response topicSwitches() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Switches.values())).
+                        build();
     }
     
-	@SuppressWarnings("unchecked")
+    @PUT
+    @Path("engine/topics/switches/lock")
+    @ApiOperation(
+        	value="Locks all the managed topics", 
+        	notes="The operation affects all managed sources and sinks",
+        	response=TopicEndpoint.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response topicsLock() {
+    	boolean success = TopicEndpoint.manager.lock();
+		if (success)
+			return Response.status(Status.OK).
+					        entity(TopicEndpoint.manager).
+					        build();
+		else
+			return Response.status(Status.NOT_ACCEPTABLE).
+					        entity(new Error("cannot perform operation")).
+					        build();
+    }
+    
+    @DELETE
+	@Path("engine/topics/switches/lock")
+    @ApiOperation(
+        	value="Unlocks all the managed topics", 
+        	notes="The operation affects all managed sources and sinks",
+        	response=TopicEndpoint.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+	public Response topicsUnlock() {
+		boolean success = TopicEndpoint.manager.unlock();
+		if (success)
+			return Response.status(Status.OK).
+					        entity(TopicEndpoint.manager).
+					        build();
+		else
+			return Response.status(Status.NOT_ACCEPTABLE).
+					        entity(new Error("cannot perform operation")).
+					        build();
+	}
+    
 	@GET
     @Path("engine/topics/sources")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<TopicSource> sources() {
-    	return (List<TopicSource>) TopicEndpoint.manager.getTopicSources();
+    @ApiOperation(
+        	value="Retrieves the managed topic sources", 
+            notes="Network Topic Sources Agregation",
+            responseContainer="List",
+        	response=TopicSource.class
+    )
+    public Response sources() {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getTopicSources()).
+    			        build();
     }
     
-    @SuppressWarnings("unchecked")
 	@GET
     @Path("engine/topics/sinks")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<TopicSink> sinks() {
-    	return (List<TopicSink>) TopicEndpoint.manager.getTopicSinks();
+    @ApiOperation(
+        	value="Retrieves the managed topic sinks", 
+            notes="Network Topic Sinks Agregation",
+            responseContainer="List",
+        	response=TopicSink.class
+    )
+    public Response sinks() {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getTopicSinks()).
+    			        build();
     }
     
 	@GET
     @Path("engine/topics/sources/ueb")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<UebTopicSource> uebSources() {
-    	return TopicEndpoint.manager.getUebTopicSources();
+    @ApiOperation(
+        	value="Retrieves the UEB managed topic sources", 
+            notes="UEB Topic Sources Agregation",
+            responseContainer="List",
+        	response=UebTopicSource.class
+    )
+    public Response uebSources() {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getUebTopicSources()).
+    			        build();
     }
     
 	@GET
     @Path("engine/topics/sinks/ueb")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<UebTopicSink> uebSinks() {
-    	return (List<UebTopicSink>) TopicEndpoint.manager.getUebTopicSinks();
+    @ApiOperation(
+        	value="Retrieves the UEB managed topic sinks", 
+            notes="UEB Topic Sinks Agregation",
+            responseContainer="List",
+        	response=UebTopicSource.class
+    )
+    public Response uebSinks() {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getUebTopicSinks()).
+    			        build();
     }
     
 	@GET
     @Path("engine/topics/sources/dmaap")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<DmaapTopicSource> dmaapSources() {
-    	return TopicEndpoint.manager.getDmaapTopicSources();
+    @ApiOperation(
+        	value="Retrieves the DMaaP managed topic sources", 
+            notes="DMaaP Topic Sources Agregation",
+            responseContainer="List",
+        	response=DmaapTopicSource.class
+    )
+    public Response dmaapSources() {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getDmaapTopicSources()).
+    			        build();
     }
     
 	@GET
     @Path("engine/topics/sinks/dmaap")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<DmaapTopicSink> dmaapSinks() {
-    	return (List<DmaapTopicSink>) TopicEndpoint.manager.getDmaapTopicSinks();
-    }
-    
-    @SuppressWarnings("unchecked")
-    @GET
-    @Path("engine/topics/{topic}/sources")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<TopicSource> sourceTopic(@PathParam("topic") String topic) {
-    	List<String> topics = new ArrayList<String>();
-    	topics.add(topic);
-    	
-    	return (List<TopicSource>) TopicEndpoint.manager.getTopicSources(topics);
-    }
-    
-    @SuppressWarnings("unchecked")
-    @GET
-    @Path("engine/topics/{topic}/sinks")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<TopicSink> sinkTopic(@PathParam("topic") String topic) {
-    	List<String> topics = new ArrayList<String>();
-    	topics.add(topic);
-    	
-    	return (List<TopicSink>) TopicEndpoint.manager.getTopicSinks(topics);
-    }
-    
-    
-    @GET
-    @Path("engine/topics/{topic}/ueb/source")
-    @Produces(MediaType.APPLICATION_JSON)
-    public UebTopicSource uebSourceTopic(@PathParam("topic") String topic) {
-    	return TopicEndpoint.manager.getUebTopicSource(topic);
+    @ApiOperation(
+        	value="Retrieves the DMaaP managed topic sinks", 
+            notes="DMaaP Topic Sinks Agregation",
+            responseContainer="List",
+        	response=DmaapTopicSink.class
+    )
+    public Response dmaapSinks() {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getDmaapTopicSinks()).
+    			        build();
     }
     
     @GET
-    @Path("engine/topics/{topic}/ueb/sink")
-    @Produces(MediaType.APPLICATION_JSON)
-    public UebTopicSink uebSinkTopic(@PathParam("topic") String topic) {
-    	return TopicEndpoint.manager.getUebTopicSink(topic);
+    @Path("engine/topics/sources/ueb/{topic}")
+    @ApiOperation(
+        	value="Retrieves an UEB managed topic source", 
+            notes="This is an UEB Network Communicaton Endpoint source of messages for the Engine",
+        	response=UebTopicSource.class
+    )
+    public Response uebSourceTopic(@ApiParam(value="Topic Name", required=true)
+                                   @PathParam("topic") String topic) {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getUebTopicSource(topic)).
+    			        build();
     }
     
     @GET
-    @Path("engine/topics/{topic}/dmaap/source")
-    @Produces(MediaType.APPLICATION_JSON)
-    public DmaapTopicSource dmaapSourceTopic(@PathParam("topic") String topic) {
-    	return TopicEndpoint.manager.getDmaapTopicSource(topic);
+    @Path("engine/topics/sinks/ueb/{topic}")
+    @ApiOperation(
+        	value="Retrieves an UEB managed topic sink", 
+            notes="This is an UEB Network Communicaton Endpoint destination of messages from the Engine",
+        	response=UebTopicSink.class
+    )
+    public Response uebSinkTopic(@ApiParam(value="Topic Name", required=true) 
+                                 @PathParam("topic") String topic) {
+    	return Response.status(Response.Status.OK).
+    			        entity(TopicEndpoint.manager.getUebTopicSink(topic)).
+    			        build();
     }
     
     @GET
-    @Path("engine/topics/{topic}/dmaap/sink")
-    @Produces(MediaType.APPLICATION_JSON)
-    public DmaapTopicSink dmaapSinkTopic(@PathParam("topic") String topic) {
-    	return TopicEndpoint.manager.getDmaapTopicSink(topic);
+    @Path("engine/topics/sources/dmaap/{topic}")
+    @ApiOperation(
+        	value="Retrieves a DMaaP managed topic source", 
+            notes="This is a DMaaP Network Communicaton Endpoint source of messages for the Engine",
+        	response=DmaapTopicSource.class
+    )
+    public Response dmaapSourceTopic(@ApiParam(value="Topic Name", required=true) 
+                                     @PathParam("topic") String topic) {
+    	return Response.status(Response.Status.OK).
+                        entity(TopicEndpoint.manager.getDmaapTopicSource(topic)).
+                        build();
     }
     
     @GET
-    @Path("engine/topics/{topic}/ueb/source/events")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response uebSourceEvent(@PathParam("topic") String topicName) {
-    	
-    	UebTopicSource uebReader = TopicEndpoint.manager.getUebTopicSource(topicName);
-    	String[] events = uebReader.getRecentEvents();
+    @Path("engine/topics/sinks/dmaap/{topic}")
+    @ApiOperation(
+        	value="Retrieves a DMaaP managed topic sink", 
+            notes="This is a DMaaP Network Communicaton Endpoint destination of messages from the Engine",
+        	response=DmaapTopicSink.class
+    )
+    public Response dmaapSinkTopic(@ApiParam(value="Topic Name", required=true)
+                                   @PathParam("topic") String topic) {
+    	return Response.status(Response.Status.OK).
+		                entity(TopicEndpoint.manager.getDmaapTopicSink(topic)).
+		                build();
+    }
+    
+    @GET
+    @Path("engine/topics/sources/ueb/{topic}/events")
+    @ApiOperation(
+        	value="Retrieves the latest events received by an UEB topic", 
+            notes="This is a UEB Network Communicaton Endpoint source of messages for the Engine",
+            responseContainer="List"
+    )
+    public Response uebSourceEvents(@ApiParam(value="Topic Name", required=true)
+                                    @PathParam("topic") String topic) {
 		return Response.status(Status.OK).
-		        entity(events).
-		        build();
+		                entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents())).
+		                build();
     }
     
     @GET
-    @Path("engine/topics/{topic}/ueb/sink/events")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response uebSinkEvent(@PathParam("topic") String topicName) {
-    	
-    	UebTopicSink uebSink = TopicEndpoint.manager.getUebTopicSink(topicName);
-    	String[] events = uebSink.getRecentEvents();
+    @Path("engine/topics/sinks/ueb/{topic}/events")
+    @ApiOperation(
+        	value="Retrieves the latest events sent from a topic", 
+            notes="This is a UEB Network Communicaton Endpoint sink of messages from the Engine",
+            responseContainer="List"
+    )
+    public Response uebSinkEvents(@ApiParam(value="Topic Name", required=true)
+                                  @PathParam("topic") String topic) {
 		return Response.status(Status.OK).
-		        entity(events).
-		        build();
-    }
-    
-    @GET
-    @Path("engine/topics/{topic}/dmaap/source/events")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response dmaapSourcevent(@PathParam("topic") String topicName) {
-    	
-    	DmaapTopicSource uebReader = TopicEndpoint.manager.getDmaapTopicSource(topicName);
-    	String[] events = uebReader.getRecentEvents();
-		return Response.status(Status.OK).
-		        entity(events).
-		        build();
-    }
-    
-    @DELETE
-	@Path("engine/topics/lock")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response unlockTopics() {
-		boolean success = TopicEndpoint.manager.unlock();
-		if (success)
-			return Response.status(Status.OK).
-					        entity("Endpoints are unlocked").
-					        build();
-		else
-			return Response.status(Status.SERVICE_UNAVAILABLE).
-					        entity("Endpoints cannot be unlocked").
-					        build();
-	}
-
-
-	@GET
-    @Path("engine/topics/{topic}/dmaap/sink/events")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response dmaapSinkEvent(@PathParam("topic") String topicName) {
-    	
-    	DmaapTopicSink uebSink = TopicEndpoint.manager.getDmaapTopicSink(topicName);
-    	String[] events = uebSink.getRecentEvents();
-		return Response.status(Status.OK).
-		        entity(events).
-		        build();
-    }
-    
-    @PUT
-    @Path("engine/topics/{topic}/ueb/sources/events")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response uebOffer(@PathParam("topic") String topicName,
-    		                 String json) {
-    	try {
-			UebTopicSource uebReader = TopicEndpoint.manager.getUebTopicSource(topicName);
-			boolean success = uebReader.offer(json);
-			if (success)
-				return Response.status(Status.OK).
-						        build();
-			else
-				return Response.status(Status.NOT_ACCEPTABLE).
-						        entity(new Error("Failure to inject event over " + topicName)).
-						        build();
-		} catch (Exception e) {
-    		return Response.status(Response.Status.BAD_REQUEST).
-			        entity(new Error(e.getMessage())).
-			        build();
-		} 
-    }
-    
-    @PUT
-    @Path("engine/topics/{topic}/dmaap/sources/events")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response dmaapOffer(@PathParam("topic") String topicName,
-    		                   String json) {
-    	try {
-			DmaapTopicSource dmaapReader = TopicEndpoint.manager.getDmaapTopicSource(topicName);
-			boolean success = dmaapReader.offer(json);
-			if (success)
-				return Response.status(Status.OK).
-						        build();
-			else
-				return Response.status(Status.NOT_ACCEPTABLE).
-						        entity(new Error("Failure to inject event over " + topicName)).
-						        build();
-		} catch (Exception e) {
-    		return Response.status(Response.Status.BAD_REQUEST).
-			        entity(new Error(e.getMessage())).
-			        build();
-		}
-    }
-    
-    @PUT
-    @Path("engine/topics/lock")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response lockTopics() {
-    	boolean success = TopicEndpoint.manager.lock();
-    	if (success)
-    		return Response.status(Status.OK).
-    				        entity("Endpoints are locked").
-    				        build();
-    	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Endpoints cannot be locked").
-    				        build();
-    }
-    
-    @PUT
-    @Path("engine/topics/{topic}/ueb/sources/lock")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response lockTopic(@PathParam("topic") String topicName) {
-    	UebTopicSource reader = TopicEndpoint.manager.getUebTopicSource(topicName);  	
-    	boolean success = reader.lock();
-    	if (success)
-    		return Response.status(Status.OK).
-    				        entity("Endpoints are unlocked").
-    				        build();
-    	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Endpoints cannot be unlocked").
-    				        build();
-    }
-    
-    @PUT
-    @Path("engine/topics/{topic}/ueb/sources/unlock")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response unlockTopic(@PathParam("topic") String topicName) {
-    	UebTopicSource reader = TopicEndpoint.manager.getUebTopicSource(topicName);  	
-    	boolean success = reader.unlock();
-    	if (success)
-    		return Response.status(Status.OK).
-    				        entity("Endpoints are unlocked").
-    				        build();
-    	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Endpoints cannot be unlocked").
-    				        build();
-    }
-    
-    @PUT
-    @Path("engine/controllers/{controllerName}/lock")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response lockController(@PathParam("controllerName") String controllerName) {
-    	PolicyController policyController = PolicyController.factory.get(controllerName);
-    	boolean success = policyController.lock();
-    	if (success)
-    		return Response.status(Status.OK).
-    				        entity("Controller " + controllerName + " is now locked").
-    				        build();
-    	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Controller " + controllerName + " cannot be locked").
-    				        build();
-    }  
-    
-    @DELETE
-    @Path("engine/controllers/{controllerName}/lock")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response unlockController(@PathParam("controllerName") String controllerName) {
-    	PolicyController policyController = PolicyController.factory.get(controllerName);
-    	boolean success = policyController.unlock();
-    	if (success)
-    		return Response.status(Status.OK).
-    				        entity("Controller " + controllerName + " is now unlocked").
-    				        build();
-    	else
-    		return Response.status(Status.SERVICE_UNAVAILABLE).
-    				        entity("Controller " + controllerName + " cannot be unlocked").
-    				        build();
-    }
-    
-    @POST
-    @Path("engine/util/coders/filters/rules/{ruleName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response rules(@DefaultValue("false") @QueryParam("negate") boolean negate,
-    		              @PathParam("ruleName") String name,
-    		              String regex) {   	
-    	String literalRegex = Pattern.quote(regex);
-    	if (negate)
-    		literalRegex = "^(?!" + literalRegex + "$).*";
-    	
-		return Response.status(Status.OK).
-				        entity(new JsonProtocolFilter.FilterRule(name,literalRegex)).
+				        entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSink(topic).getRecentEvents())).
 				        build();
     }
     
     @GET
-    @Path("engine/util/uuid")
+    @Path("engine/topics/sources/dmaap/{topic}/events")
+    @ApiOperation(
+        	value="Retrieves the latest events received by a DMaaP topic", 
+            notes="This is a DMaaP Network Communicaton Endpoint source of messages for the Engine",
+            responseContainer="List"
+    )
+    public Response dmaapSourceEvents(@ApiParam(value="Topic Name", required=true)
+                                      @PathParam("topic") String topic) {   	
+		return Response.status(Status.OK).
+                entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents())).
+                build();
+    }
+    
+    @GET
+    @Path("engine/topics/sinks/dmaap/{topic}/events")
+    @ApiOperation(
+        	value="Retrieves the latest events send through a DMaaP topic", 
+            notes="This is a DMaaP Network Communicaton Endpoint destination of messages from the Engine",
+            responseContainer="List"
+    )
+    public Response dmaapSinkEvents(
+                                    @PathParam("topic") String topic) {   	
+		return Response.status(Status.OK).
+                entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSink(topic).getRecentEvents())).
+                build();
+    }
+    
+    @GET
+    @Path("engine/topics/sources/ueb/{topic}/switches")
+    @ApiOperation(
+        	value="UEB Topic Control Switches", 
+        	notes="List of the UEB Topic Control Switches",
+        	responseContainer="List"
+    )
+    public Response uebTopicSwitches() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Switches.values())).
+                        build();
+    }
+    
+    @PUT
+    @Path("engine/topics/sources/ueb/{topic}/switches/lock")
+    @ApiOperation(
+        	value="Locks an UEB Source topic", 
+        	response=UebTopicSource.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response uebTopicLock(@ApiParam(value="Topic Name", required=true)
+                                 @PathParam("topic") String topic) {
+    	UebTopicSource source = TopicEndpoint.manager.getUebTopicSource(topic);  	
+    	boolean success = source.lock();
+    	if (success)
+    		return Response.status(Status.OK).
+    				        entity(source).
+    				        build();
+    	else
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("cannot perform operation on " + topic)).
+    				        build();
+    }
+    
+    @DELETE
+    @Path("engine/topics/sources/ueb/{topic}/switches/lock")
+    @ApiOperation(
+        	value="Unlocks an UEB Source topic", 
+        	response=UebTopicSource.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response uebTopicUnlock(@ApiParam(value="Topic Name", required=true)
+                                   @PathParam("topic") String topic) {
+    	UebTopicSource source = TopicEndpoint.manager.getUebTopicSource(topic);  	
+    	boolean success = source.unlock();
+    	if (success)
+    		return Response.status(Status.OK).
+    				        entity(source).
+    				        build();
+    	else
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("cannot perform operation on " + topic)).
+    				        build();
+    }
+    
+    @GET
+    @Path("engine/topics/sources/dmaap/{topic}/switches")
+    @ApiOperation(
+        	value="DMaaP Topic Control Switches", 
+        	notes="List of the DMaaP Topic Control Switches",
+        	responseContainer="List"
+    )
+    public Response dmaapTopicSwitches() {  	
+		return Response.status(Response.Status.OK).
+                        entity(Arrays.asList(Switches.values())).
+                        build();
+    }
+    
+    @PUT
+    @Path("engine/topics/sources/dmaap/{topic}/switches/lock")
+    @ApiOperation(
+        	value="Locks an DMaaP Source topic", 
+        	response=DmaapTopicSource.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response dmmapTopicLock(@ApiParam(value="Topic Name", required=true)
+                                   @PathParam("topic") String topic) {
+    	DmaapTopicSource source = TopicEndpoint.manager.getDmaapTopicSource(topic);  	
+    	boolean success = source.lock();
+    	if (success)
+    		return Response.status(Status.OK).
+    				        entity(source).
+    				        build();
+    	else
+    		return Response.status(Status.NOT_ACCEPTABLE).
+    				        entity(new Error("cannot perform operation on " + topic)).
+    				        build();
+    }
+    
+    @DELETE
+    @Path("engine/topics/sources/dmaap/{topic}/switches/lock")
+    @ApiOperation(
+        	value="Unlocks an DMaaP Source topic", 
+        	response=DmaapTopicSource.class
+    )
+    @ApiResponses(value = { 
+    		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+    		                               "this request to be fulfilled")
+    })
+    public Response dmaapTopicUnlock(@ApiParam(value="Topic Name", required=true)
+                                     @PathParam("topic") String topic) {
+    	DmaapTopicSource source = TopicEndpoint.manager.getDmaapTopicSource(topic);  	
+    	boolean success = source.unlock();
+    	if (success)
+    		return Response.status(Status.OK).
+    				        entity(source).
+    				        build();
+    	else
+    		return Response.status(Status.SERVICE_UNAVAILABLE).
+    				        entity(new Error("cannot perform operation on " + topic)).
+    				        build();
+    }
+    
+    @PUT
+    @Path("engine/topics/sources/ueb/{topic}/events")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @ApiOperation(
+        	value="Offers an event to an UEB topic for internal processing by the engine", 
+        	notes="The offered event is treated as it was incoming from the network",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The topic information cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A server error has occurred processing this request")
+    })
+    public Response uebOffer(@ApiParam(value="Topic Name", required=true)
+                             @PathParam("topic") String topic,
+                             @ApiParam(value="Network Message", required=true)
+    		                 String json) {
+    	try {
+			UebTopicSource uebReader = TopicEndpoint.manager.getUebTopicSource(topic);
+			boolean success = uebReader.offer(json);
+			if (success)
+				return Response.status(Status.OK).
+						        entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents())).
+						        build();
+			else
+				return Response.status(Status.NOT_ACCEPTABLE).
+						        entity(new Error("Failure to inject event over " + topic)).
+						        build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(topic + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(topic + " not acceptable due to current state")).
+                            build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+		                    entity(new Error(e.getMessage())).
+		                    build();			
+		}
+    }
+    
+    @PUT
+    @Path("engine/topics/sources/dmaap/{topic}/events")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @ApiOperation(
+        	value="Offers an event to a DMaaP topic for internal processing by the engine", 
+        	notes="The offered event is treated as it was incoming from the network",
+        	responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=404, message="The topic information cannot be found"),
+		@ApiResponse(code=406, message="The system is an administrative state that prevents " +
+		                               "this request to be fulfilled"),
+		@ApiResponse(code=500, message="A server error has occurred processing this request")
+    })
+    public Response dmaapOffer(@ApiParam(value="Topic Name", required=true)
+                               @PathParam("topic") String topic,
+                               @ApiParam(value="Network Message", required=true)
+    		                   String json) {
+    	try {
+			DmaapTopicSource dmaapReader = TopicEndpoint.manager.getDmaapTopicSource(topic);
+			boolean success = dmaapReader.offer(json);
+			if (success)
+				return Response.status(Status.OK).
+				                entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents())).
+				                build();
+			else
+				return Response.status(Status.NOT_ACCEPTABLE).
+						        entity(new Error("Failure to inject event over " + topic)).
+						        build();
+		} catch (IllegalArgumentException e) {
+			return Response.status(Response.Status.NOT_FOUND).
+                            entity(new Error(topic + " not found")).
+                            build();
+		} catch (IllegalStateException e) {
+			return Response.status(Response.Status.NOT_ACCEPTABLE).
+                            entity(new Error(topic + " not acceptable due to current state")).
+                            build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
+		                    entity(new Error(e.getMessage())).
+		                    build();			
+		}
+    }
+    
+    @GET
+    @Path("engine/tools/uuid")
+    @ApiOperation(
+        	value="Produces an UUID", 
+        	notes="UUID generation utility"
+    )
+    @Produces(MediaType.TEXT_PLAIN)
     public Response uuid() {   	
 		return Response.status(Status.OK).
 		        entity(UUID.randomUUID().toString()).
@@ -1381,54 +2203,52 @@ public class RestManager {
     /*
      * Helper classes for aggregation of results
      */
-    
-    
-    /**
-     * Endpoints aggregation Helper class
-     */
-	public static class Endpoints {
-		public List<TopicSource> sources;
-		public List<TopicSink> sinks;
-		
-		public Endpoints(List<TopicSource> sources,
-				         List<TopicSink> sinks) {
-			this.sources = sources;
-			this.sinks = sinks;
-		}
-	}
 	
 	/**
-	 * Endpoint Helper Class
-	 */
-	public static class Endpoint {
-		public TopicSource source;
-		public TopicSink sink;
-		
-		public Endpoint(TopicSource source,
-				           TopicSink sink) {
-			this.source = source;
-			this.sink = sink;
-		}
-	}
-	
-	/**
-	 * Coding (Encoding) Helper class 
+	 * Coding/Encoding Results Aggregation Helper class 
 	 */
 	public static class CodingResult {
+		/**
+		 * serialized output
+		 */
+		
 		public String jsonEncoding;
+		/**
+		 * encoding result
+		 */
+		
 		public Boolean encoding;
+		
+		/**
+		 * decoding result
+		 */
 		public Boolean decoding;
 	}
 	
+	/**
+	 * Generic Error Reporting class 
+	 */
 	public static class Error {
 		public String error;
 
-		/**
-		 * @param error
-		 */
 		public Error(String error) {
 			this.error = error;
 		}
+	}
+	
+	/**
+	 * Feed Ports into Resources
+	 */
+	public enum Inputs {
+		configuration,
+	}
+	
+	/**
+	 * Resource Toggles
+	 */
+	public enum Switches {
+		activation,
+		lock,
 	}
 }
 

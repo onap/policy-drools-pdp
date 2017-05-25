@@ -44,10 +44,10 @@ public interface HttpServletServer extends Startable {
 	/**
 	 * adds a JAX-RS servlet class to serve REST requests
 	 * 
-	 * @param servletPath
-	 * @param restClass
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
+	 * @param servletPath servlet path
+	 * @param restClass JAX-RS API Class
+	 * @throws IllegalArgumentException unable to process because of invalid input
+	 * @throws IllegalStateException unable to process because of invalid state
 	 */
 	public void addServletClass(String servletPath, String restClass) 
 			throws IllegalArgumentException, IllegalStateException;
@@ -55,10 +55,10 @@ public interface HttpServletServer extends Startable {
 	/**
 	 * adds a package containing JAX-RS classes to serve REST requests
 	 * 
-	 * @param servletPath
-	 * @param restPackage
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
+	 * @param servletPath servlet path
+	 * @param restPackage JAX-RS package to scan
+	 * @throws IllegalArgumentException unable to process because of invalid input
+	 * @throws IllegalStateException unable to process because of invalid state
 	 */
 	public void addServletPackage(String servletPath, String restPackage) 
 			throws IllegalArgumentException, IllegalStateException;

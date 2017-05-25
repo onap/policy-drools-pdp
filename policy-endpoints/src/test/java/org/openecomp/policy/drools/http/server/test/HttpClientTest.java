@@ -38,7 +38,7 @@ public class HttpClientTest {
 	public void testHttpNoAuthClient() throws Exception {		
 		System.out.println("-- testHttpNoAuthClient() --");
 
-		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", false, true);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
 		server.waitedStart(5000);
 		
@@ -59,7 +59,7 @@ public class HttpClientTest {
 	public void testHttpAuthClient() throws Exception {		
 		System.out.println("-- testHttpAuthClient() --");
 
-		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", false, true);
 		server.setBasicAuthentication("x", "y", null);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
 		server.waitedStart(5000);
@@ -81,7 +81,7 @@ public class HttpClientTest {
 	public void testHttpAuthClient401() throws Exception {		
 		System.out.println("-- testHttpAuthClient401() --");
 
-		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", false, true);
 		server.setBasicAuthentication("x", "y", null);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
 		server.waitedStart(5000);

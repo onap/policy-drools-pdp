@@ -31,36 +31,87 @@ import org.openecomp.policy.drools.http.server.internal.JettyJerseyServer;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
 /**
- * Jetty Server Factory
+ * Factory of HTTP Servlet-Enabled Servlets
  */
 public interface HttpServletServerFactory {
 
-	public HttpServletServer build(String name, String host, int port, String contextPath, boolean managed)
-		throws IllegalArgumentException;
+	/**
+	 * builds an http server with support for servlets
+	 * 
+	 * @param name name
+	 * @param host binding host
+	 * @param port port
+	 * @param contextPath server base path
+	 * @param swagger enable swagger documentation
+	 * @param managed is it managed by infrastructure
+	 * @return http server
+	 * @throws IllegalArgumentException when invalid parameters are provided
+	 */
+	public HttpServletServer build(String name, String host, int port, String contextPath, 
+			                       boolean swagger, boolean managed)
+		   throws IllegalArgumentException;
 	
+	/**
+	 * list of http servers per properties
+	 * 
+	 * @param properties properties based configuration
+	 * @return list of http servers
+	 * @throws IllegalArgumentException when invalid parameters are provided
+	 */
 	public ArrayList<HttpServletServer> build(Properties properties) throws IllegalArgumentException;
 	
+	/**
+	 * gets a server based on the port
+	 * 
+	 * @param port port
+	 * @return http server
+	 */
 	public HttpServletServer get(int port);
+	
+	/**
+	 * provides an inventory of servers
+	 * 
+	 * @return inventory of servers
+	 */
 	public List<HttpServletServer> inventory();
+	
+	/**
+	 * destroys server bound to a port
+	 * @param port
+	 */
 	public void destroy(int port);
+	
+	/**
+	 * destroys the factory and therefore all servers
+	 */
 	public void destroy();
 }
 
+/**
+ * Indexed factory implementation
+ */
 class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	
-	protected static Logger  logger = FlexLogger.getLogger(IndexedHttpServletServerFactory.class);	
+	/**
+	 * logger
+	 */
+	protected static Logger logger = FlexLogger.getLogger(IndexedHttpServletServerFactory.class);	
 	
-	protected HashMap<Integer, JettyJerseyServer> servers = new HashMap<Integer, JettyJerseyServer>();
+	/**
+	 * servers index
+	 */
+	protected HashMap<Integer, HttpServletServer> servers = new HashMap<Integer, HttpServletServer>();
 
 	@Override
 	public synchronized HttpServletServer build(String name, String host, int port, 
-			                                    String contextPath, boolean managed) 
+			                                    String contextPath, boolean swagger,
+			                                    boolean managed) 
 		throws IllegalArgumentException {	
 		
 		if (servers.containsKey(port))
 			return servers.get(port);
 		
-		JettyJerseyServer server = new JettyJerseyServer(name, host, port, contextPath);
+		JettyJerseyServer server = new JettyJerseyServer(name, host, port, contextPath, swagger);
 		if (managed)
 			servers.put(port, server);
 		
@@ -140,7 +191,15 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 				managed = Boolean.parseBoolean(managedString);
 			}
 			
-			HttpServletServer service = build(serviceName, hostName, servicePort, contextUriPath, managed);
+			String swaggerString = properties.getProperty(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." +
+									                      serviceName + 
+									                      PolicyProperties.PROPERTY_HTTP_SWAGGER_SUFFIX);		
+			boolean swagger = false;
+			if (swaggerString != null && !swaggerString.isEmpty()) {
+				swagger = Boolean.parseBoolean(swaggerString);
+			}
+			
+			HttpServletServer service = build(serviceName, hostName, servicePort, contextUriPath, swagger, managed);
 			if (userName != null && !userName.isEmpty() && password != null && !password.isEmpty()) {
 				service.setBasicAuthentication(userName, password, authUriPath);
 			}

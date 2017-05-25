@@ -33,9 +33,6 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-
-		<swagger-maven-plugin-version>3.1.4</swagger-maven-plugin-version>
-
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.source.version>1.8</project.source.version>
 		<project.target.version>1.8</project.target.version>
@@ -43,6 +40,7 @@
 		<dmaap.version>0.2.12</dmaap.version>
 		<cambria.version>0.0.1</cambria.version>
 		<jersey.version>2.22.2</jersey.version>
+		<jersey.swagger.version>1.5.13</jersey.swagger.version>
 		<jackson.version>2.8.4</jackson.version>
   
 		<sonar.language>java</sonar.language>
@@ -158,6 +156,11 @@
 				<artifactId>jersey-container-servlet-core</artifactId>
 				<version>${jersey.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-jersey2-jaxrs</artifactId>
+				<version>${jersey.swagger.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	
@@ -173,53 +176,6 @@
 					<stagingProfileId>176c31dfe190a</stagingProfileId>
 					<serverId>ecomp-staging</serverId>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.kongchen</groupId>
-				<artifactId>swagger-maven-plugin</artifactId>
-				<version>${swagger-maven-plugin-version}</version>
-				<configuration>
-					<apiSources>
-						<apiSource>
-							<springmvc>false</springmvc>
-							<locations>
-								<location>
-									org.openecomp.policy.drools.core.DroolsPDPIntegrityMonitor
-								</location>
-							</locations>
-							<info>
-								<title>Drools PDP</title>
-								<version>1.0.0</version>
-							</info>
-							<swaggerDirectory>${project.build.directory}/swagger/integrityMonitor</swaggerDirectory>
-							<swaggerFileName>swagger</swaggerFileName>
-							<attachSwaggerArtifact>true</attachSwaggerArtifact>
-						</apiSource>
-					</apiSources>
-				</configuration>
-				<dependencies>
-					<!-- Adding dependency to swagger-hibernate-validations to enable the BeanValidator as a custom
-						 model converter -->
-					<dependency>
-						<groupId>io.swagger</groupId>
-						<artifactId>swagger-hibernate-validations</artifactId>
-						<version>1.5.6</version>
-					</dependency>
-					<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-					<dependency>
-						<groupId>org.apache.commons</groupId>
-						<artifactId>commons-lang3</artifactId>
-						<version>3.4</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

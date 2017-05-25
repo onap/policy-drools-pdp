@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.openecomp.policy.drools.http.server.HttpServletServer;
 
 /**
- *
+ * HttpServletServer JUNIT tests
  */
 public class HttpServerTest {
 
@@ -39,7 +39,7 @@ public class HttpServerTest {
 	public void testSingleServer() throws Exception {
 		System.out.println("-- testSingleServer() --");
 		
-		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 5678, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 5678, "/", false, true);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
 		server.waitedStart(5000);
 		
@@ -50,6 +50,16 @@ public class HttpServerTest {
 		String response = response(url);
 		System.out.println("Received .. " + response);
 		assertTrue(response.equals(echo));
+	
+		String responseSwagger =  null;
+		try {
+			URL urlSwagger = new URL("http://localhost:5678/swagger.json" + echo);
+			responseSwagger = response(urlSwagger);
+		} catch(IOException ioe) {
+			// Expected
+		}
+		
+		assertTrue(responseSwagger == null);	
 		
 		HttpServletServer.factory.destroy();
 		assertTrue(HttpServletServer.factory.inventory().size() == 0);
@@ -59,11 +69,11 @@ public class HttpServerTest {
 	public void testMultipleServers() throws Exception {
 		System.out.println("-- testMultipleServers() --");
 		
-		HttpServletServer server1 = HttpServletServer.factory.build("echo-1", "localhost", 5678, "/", true);
+		HttpServletServer server1 = HttpServletServer.factory.build("echo-1", "localhost", 5678, "/", true, true);
 		server1.addServletPackage("/*", this.getClass().getPackage().getName());
 		server1.waitedStart(5000);
 		
-		HttpServletServer server2 = HttpServletServer.factory.build("echo-2", "localhost", 5679, "/", true);
+		HttpServletServer server2 = HttpServletServer.factory.build("echo-2", "localhost", 5679, "/", false, true);
 		server2.addServletPackage("/*", this.getClass().getPackage().getName());
 		server2.waitedStart(5000);
 		
@@ -77,10 +87,27 @@ public class HttpServerTest {
 		System.out.println("Received .. " + response1);
 		assertTrue(response1.equals(echo));
 		
+		URL urlSwagger = new URL("http://localhost:5678/swagger.json");
+		String responseSwagger = response(urlSwagger);
+		
+		System.out.println("Received .. " + responseSwagger);		
+		assertTrue(responseSwagger != null);
+		
 		URL url2 = new URL("http://localhost:5679/junit/echo/" + echo);
 		String response2 = response(url2);
 		System.out.println("Received .. " + response2);
 		assertTrue(response2.equals(echo));
+		
+		String responseSwagger2 =  null;
+		try {
+			URL urlSwagger2 = new URL("http://localhost:5679/swagger.json");
+			responseSwagger2 = response(urlSwagger2);
+		} catch(IOException ioe) {
+			// Expected
+		}
+		
+		System.out.println("Received .. " + responseSwagger2);		
+		assertTrue(responseSwagger2 == null);
 		
 		HttpServletServer.factory.destroy();		
 		assertTrue(HttpServletServer.factory.inventory().size() == 0);
@@ -92,7 +119,7 @@ public class HttpServerTest {
 		
 		String randomName = UUID.randomUUID().toString();
 		
-		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
 		server.waitedStart(5000);
 		
@@ -118,7 +145,7 @@ public class HttpServerTest {
 		System.out.println("-- testServiceClass() --");
 		String randomName = UUID.randomUUID().toString();
 		
-		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
 		server.addServletClass("/*", RestEchoService.class.getCanonicalName());
 		server.waitedStart(5000);
 		
@@ -140,7 +167,7 @@ public class HttpServerTest {
 		
 		String randomName = UUID.randomUUID().toString();
 		
-		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", true);
+		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
 		server.addServletClass("/*", RestEchoService.class.getCanonicalName());
 		server.addServletClass("/*", RestEndpoints.class.getCanonicalName());
 		server.waitedStart(5000);
@@ -173,6 +200,9 @@ public class HttpServerTest {
 		while ((line = ioReader.readLine()) != null) {
 			response += line; 
 		}
+		
+		System.out.println("R is " + response);
+		ioReader.close();
 		return response;
 	}
 	

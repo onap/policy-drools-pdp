@@ -47,6 +47,7 @@ import org.openecomp.policy.drools.protocol.configuration.ControllerConfiguratio
 import org.openecomp.policy.drools.protocol.configuration.PdpdConfiguration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -161,6 +162,14 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * @return list of Policy Controllers
 	 */
 	public List<PolicyController> getPolicyControllers();
+	
+
+	/**
+	 * get policy controller names
+	 * 
+	 * @return list of controller names
+	 */
+	public List<String> getPolicyControllerIds();
 	
 	/**
 	 * get unmanaged sources
@@ -296,13 +305,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * Invoked when the host goes into the standby state.
 	 */
 	public void deactivate();
-
-	/**
-	 * get policy controller names
-	 * 
-	 * @return list of controller names
-	 */
-	public List<String> getControllers();
 	
 	/**
 	 * Policy Engine Manager
@@ -1037,8 +1039,9 @@ class PolicyEngineManager implements PolicyEngine {
 	/**
 	 * {@inheritDoc}
 	 */
+	@JsonProperty("controllers")
 	@Override
-	public List<String> getControllers() {
+	public List<String> getPolicyControllerIds() {
 		List<String> controllerNames = new ArrayList<String>();
 		for (PolicyController controller: PolicyController.factory.inventory()) {
 			controllerNames.add(controller.getName());

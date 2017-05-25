@@ -32,7 +32,7 @@
   <artifactId>policy-healthcheck</artifactId>
   
   <name>policy-healthcheck</name>
-  <description>Separately loadable module with healthcheck code</description>
+  <description>Separately loadable module to perform healthchecks of the system</description>
 
   <properties>
           <maven.compiler.source>1.8</maven.compiler.source>
@@ -92,6 +92,11 @@
   </build>
 
   <dependencies>
+	<dependency>
+	  <groupId>io.swagger</groupId>
+	  <artifactId>swagger-jersey2-jaxrs</artifactId>
+	  <scope>provided</scope>
+	</dependency>  
     <dependency>
       <groupId>org.openecomp.policy.drools-pdp</groupId>
       <artifactId>policy-core</artifactId>

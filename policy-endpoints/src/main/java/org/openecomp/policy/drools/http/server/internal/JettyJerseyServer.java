@@ -19,52 +19,132 @@
  */
 package org.openecomp.policy.drools.http.server.internal;
 
-import java.util.ArrayList;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import org.eclipse.jetty.servlet.ServletHolder;
-
 import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
 import org.openecomp.policy.common.logging.flexlogger.Logger;
 
+import io.swagger.jersey.config.JerseyJaxrsConfig;
+
 /**
- * REST Jetty Server using Jersey
+ * REST Jetty Server that uses Jersey Servlets to support JAX-RS Web Services
  */
 public class JettyJerseyServer extends JettyServletServer {
 	
-	protected static final String JERSEY_PACKAGES_PARAM = "jersey.config.server.provider.packages";
-	protected static final String JERSEY_CLASSNAMES_PARAM = "jersey.config.server.provider.classnames";
+	/**
+	 * Jersey Packages Init Param Name
+	 */
+	protected static final String JERSEY_INIT_PACKAGES_PARAM_NAME = "jersey.config.server.provider.packages";
 	
+	/**
+	 * Jersey Packages Init Param Value
+	 */
+	protected static final String JERSEY_INIT_PACKAGES_PARAM_VALUE = "com.fasterxml.jackson.jaxrs.json";
+	
+	/**
+	 * Swagger Packages
+	 */
+	protected static final String SWAGGER_INIT_PACKAGES_PARAM_VALUE = "io.swagger.jaxrs.listing";
+	
+	/**
+	 * Jersey Classes Init Param Name
+	 */
+	protected static final String JERSEY_INIT_CLASSNAMES_PARAM_NAME = "jersey.config.server.provider.classnames";
+	
+	/**
+	 * Jersey Jackson Classes Init Param Value
+	 */
+	protected static final String JERSEY_JACKSON_INIT_CLASSNAMES_PARAM_VALUE = "com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider";
+	
+	/**
+	 * Jersey Swagger Classes Init Param Value
+	 */
+	protected static final String SWAGGER_INIT_CLASSNAMES_PARAM_VALUE = "io.swagger.jaxrs.listing.ApiListingResource," +
+																        "io.swagger.jaxrs.listing.SwaggerSerializers";
+	/**
+	 * Logger
+	 */
 	protected static Logger logger = FlexLogger.getLogger(JettyJerseyServer.class);
 	
-	protected ArrayList<String> packages = new ArrayList<String>();
-	protected HashMap<String, ServletHolder> servlets = 
-							new HashMap<String, ServletHolder>();
+	/**
+	 * Container for servlets
+	 */
+	protected HashMap<String, ServletHolder> servlets = new HashMap<String, ServletHolder>();
 	
-	public JettyJerseyServer(String name, String host, int port, String contextPath) 
-	       throws IllegalArgumentException {		
+	/**
+	 * Swagger ID
+	 */
+	protected String swaggerId = null;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param name name
+	 * @param host host server host
+	 * @param port port server port
+	 * @param swagger support swagger?
+	 * @param contextPath context path
+	 * 
+	 * @throws IllegalArgumentException in invalid arguments are provided
+	 */
+	public JettyJerseyServer(String name, String host, int port, String contextPath, boolean swagger) 
+	       throws IllegalArgumentException {
+		
 		super(name, host, port, contextPath);
+		if (swagger) {
+			this.swaggerId = "swagger-" + this.port;
+			attachSwaggerServlet();
+		}
 	}
 	
-	protected synchronized ServletHolder getServlet(String servletPath) 
-			  throws IllegalArgumentException {
+	/**
+	 * attaches a swagger initialization servlet
+	 */
+	protected void attachSwaggerServlet() {
 		
-		if (servletPath == null || servletPath.isEmpty())
-			servletPath = "/*";
+		ServletHolder swaggerServlet = context.addServlet(JerseyJaxrsConfig.class, "/");
+
+		String hostname = this.connector.getHost();
+		if (hostname == null || hostname.isEmpty() || hostname.equals("0.0.0.0")) {
+			try {
+				hostname = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException e) {
+				logger.warn("can't resolve connector's hostname: " + this);
+				hostname = "localhost";
+			}
+		}
+
+		swaggerServlet.setInitParameter("swagger.api.basepath",
+				"http://" + hostname + ":" + this.connector.getPort() + "/");
+		swaggerServlet.setInitParameter("swagger.context.id", swaggerId);
+		swaggerServlet.setInitParameter("swagger.scanner.id", swaggerId);
+		swaggerServlet.setInitParameter("swagger.pretty.print", "true");
+		swaggerServlet.setInitOrder(2);
+		
+        if (logger.isDebugEnabled())
+        	logger.debug(this + "Swagger Servlet has been attached: " + swaggerServlet.dump());
+	}	
+	
+	/**
+	 * retrieves cached server based on servlet path
+	 * 
+	 * @param servletPath servlet path
+	 * @return the jetty servlet holder
+	 * 
+	 * @throws IllegalArgumentException if invalid arguments are provided
+	 */
+	protected synchronized ServletHolder getServlet(String servletPath)
+			  throws IllegalArgumentException {
 		
 		ServletHolder jerseyServlet = servlets.get(servletPath);
 		if (jerseyServlet == null) {
 			jerseyServlet = context.addServlet
 	                (org.glassfish.jersey.servlet.ServletContainer.class, servletPath);  
 			jerseyServlet.setInitOrder(0);
-			String initPackages = 
-					jerseyServlet.getInitParameter(JERSEY_PACKAGES_PARAM);
-			if (initPackages == null) {
-		        jerseyServlet.setInitParameter(
-		        		JERSEY_PACKAGES_PARAM,
-		        		"com.jersey.jaxb,com.fasterxml.jackson.jaxrs.json");
-			}
-			this.servlets.put(servletPath, jerseyServlet);
+			servlets.put(servletPath, jerseyServlet);
 		}
 		
 		return jerseyServlet;
@@ -76,19 +156,36 @@ public class JettyJerseyServer extends JettyServletServer {
 		
     	if (restPackage == null || restPackage.isEmpty())
 			throw new IllegalArgumentException("No discoverable REST package provided");
+    	
+    	if (servletPath == null || servletPath.isEmpty())
+    		servletPath = "/*";
 		
 		ServletHolder jerseyServlet = this.getServlet(servletPath);
-		if (jerseyServlet == null)
-			throw new IllegalStateException("Unexpected, no Jersey Servlet class");
+		
+		String initClasses = 
+				jerseyServlet.getInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME);
+		if (initClasses != null && !initClasses.isEmpty())
+			logger.warn("Both packages and classes are used in Jetty+Jersey Configuration: " + restPackage);
 		
 		String initPackages = 
-				jerseyServlet.getInitParameter(JERSEY_PACKAGES_PARAM);
-		if (initPackages == null)
-			throw new IllegalStateException("Unexpected, no Init Parameters loaded");
+				jerseyServlet.getInitParameter(JERSEY_INIT_PACKAGES_PARAM_NAME);
+		if (initPackages == null) {
+			if (this.swaggerId != null) {
+				initPackages = JERSEY_INIT_PACKAGES_PARAM_VALUE + "," + 
+				               SWAGGER_INIT_PACKAGES_PARAM_VALUE + "," + 
+						       restPackage;
+				
+	        	jerseyServlet.setInitParameter("swagger.context.id", swaggerId);
+	    		jerseyServlet.setInitParameter("swagger.scanner.id", swaggerId);
+			} else {
+				initPackages = JERSEY_INIT_PACKAGES_PARAM_VALUE + "," + 
+				               restPackage;
+			}
+		} else {
+			initPackages = initPackages + "," + restPackage;
+		}
 		
-        jerseyServlet.setInitParameter(
-        		JERSEY_PACKAGES_PARAM,
-        		initPackages + "," + restPackage);
+        jerseyServlet.setInitParameter(JERSEY_INIT_PACKAGES_PARAM_NAME,  initPackages);
         
         if (logger.isDebugEnabled())
         	logger.debug(this + "Added REST Package: " + jerseyServlet.dump());
@@ -100,31 +197,45 @@ public class JettyJerseyServer extends JettyServletServer {
 			
     	if (restClass == null || restClass.isEmpty())
 			throw new IllegalArgumentException("No discoverable REST class provided");
+    	
+    	if (servletPath == null || servletPath.isEmpty())
+    		servletPath = "/*";
 		
 		ServletHolder jerseyServlet = this.getServlet(servletPath);
-		if (jerseyServlet == null)
-			throw new IllegalStateException("Unexpected, no Jersey Servlet class");
+		
+		String initPackages = 
+				jerseyServlet.getInitParameter(JERSEY_INIT_PACKAGES_PARAM_NAME);
+		if (initPackages != null && !initPackages.isEmpty())
+			logger.warn("Both classes and packages are used in Jetty+Jersey Configuration: " + restClass);
 		
 		String initClasses = 
-				jerseyServlet.getInitParameter(JERSEY_CLASSNAMES_PARAM);
-		if (initClasses == null)
-			initClasses = restClass;
-		else
+				jerseyServlet.getInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME);
+		if (initClasses == null) {
+			if (this.swaggerId != null) {
+				initClasses = JERSEY_JACKSON_INIT_CLASSNAMES_PARAM_VALUE + "," + 
+						      SWAGGER_INIT_CLASSNAMES_PARAM_VALUE + "," + 
+				              restClass;
+				
+	        	jerseyServlet.setInitParameter("swagger.context.id", swaggerId);
+	    		jerseyServlet.setInitParameter("swagger.scanner.id", swaggerId);
+			} else {
+				initClasses = JERSEY_JACKSON_INIT_CLASSNAMES_PARAM_VALUE + "," + restClass;
+			}			
+		} else {
 			initClasses = initClasses + "," + restClass;
+		}
 		
-        jerseyServlet.setInitParameter(
-        		JERSEY_CLASSNAMES_PARAM,
-        		initClasses);
+        jerseyServlet.setInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME, initClasses);
         
         if (logger.isDebugEnabled())
         	logger.debug(this + "Added REST Class: " + jerseyServlet.dump());
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("JerseyJettyServer [packages=").append(packages).append(", servlets=").append(servlets)
-			   .append(", toString()=").append(super.toString()).append("]");
+		builder.append("JettyJerseyServer [servlets=").append(servlets).append(", swaggerId=").append(swaggerId)
+				.append(", toString()=").append(super.toString()).append("]");
 		return builder.toString();
 	}
 }

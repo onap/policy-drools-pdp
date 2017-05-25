@@ -49,6 +49,7 @@ import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration
 import org.openecomp.policy.drools.utils.ReflectionUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Maven-based Drools Controller that interacts with the 
@@ -667,6 +668,7 @@ public class MavenDroolsController implements DroolsController {
 	/**
 	 * {@inheritDoc}
 	 */
+	@JsonProperty("sessions")
 	@Override
 	public List<String> getSessionNames() {
 		return getSessionNames(true);
@@ -675,6 +677,7 @@ public class MavenDroolsController implements DroolsController {
 	/**
 	 * {@inheritDoc}
 	 */
+	@JsonProperty("sessionCoordinates")
 	@Override
 	public List<String> getCanonicalSessionNames() {
 		return getSessionNames(false);
