@@ -20,11 +20,7 @@
 
 package org.openecomp.policy.drools.utils;
 
-import static org.junit.Assert.*;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,8 +31,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 
 public class PropertyUtilTest
@@ -198,7 +195,7 @@ public class PropertyUtilTest
 	assertEquals(prop2, returns[0]);
 
 	// verify that we have the expected set of keys
-	assertEquals(new TreeSet(Arrays.asList(new String[]{"p1", "p2", "p4"})),
+	assertEquals(new TreeSet<String>(Arrays.asList(new String[]{"p1", "p2", "p4"})),
 				 returns[1]);
   }
 }

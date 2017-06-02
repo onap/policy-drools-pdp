@@ -224,36 +224,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     PolicyEngine.manager.lock();
     return false;
   }
-	
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-	public boolean beforeStart(PolicyEngine engine) {return false;}
-	
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-	public boolean beforeShutdown(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-	public boolean afterShutdown(PolicyEngine engine) {return false;}
-   
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean beforeConfigure(PolicyEngine engine, Properties properties) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean afterConfigure(PolicyEngine engine) {return false;}
 
    /**
 	* {@inheritDoc}
@@ -362,60 +332,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	  }
 	return(false);
   }
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-   public boolean afterActivate(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean beforeDeactivate(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean afterDeactivate(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean beforeStop(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean afterStop(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean beforeLock(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean afterLock(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean beforeUnlock(PolicyEngine engine) {return false;}
-
-   /**
-	* {@inheritDoc}
-	*/
-   @Override
-    public boolean afterUnlock(PolicyEngine engine) {return false;}
 
   /**************************/
 
