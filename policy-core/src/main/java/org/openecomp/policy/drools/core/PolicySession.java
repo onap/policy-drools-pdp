@@ -20,6 +20,8 @@
 
 package org.openecomp.policy.drools.core;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -57,6 +59,10 @@ public class PolicySession
   // the associated 'PolicyContainer', which may have additional
   // 'PolicySession' instances in addition to this one
   private PolicyContainer container;
+
+  // maps feature objects to per-PolicyContainer data
+  private ConcurrentHashMap<Object, Object> adjuncts =
+	new ConcurrentHashMap<Object, Object>();
 
   // associated 'KieSession' instance
   private KieSession kieSession;
@@ -222,6 +228,41 @@ public class PolicySession
   public static PolicySession getCurrentSession()
   {
 	return(policySession.get());
+  }
+	
+  /**
+   * Fetch the adjunct object associated with a given feature
+   *
+   * @param object this is typically the singleton feature object that is
+   *	used as a key, but it might also be useful to use nested objects
+   *	within the feature as keys.
+   * @return a feature-specific object associated with the key, or 'null'
+   *	if it is not found.
+   */
+  public Object getAdjunct(Object object)
+  {
+	return(adjuncts.get(object));
+  }
+
+  /**
+   * Store the adjunct object associated with a given feature
+   *
+   * @param object this is typically the singleton feature object that is
+   *	used as a key, but it might also be useful to use nested objects
+   *	within the feature as keys.
+   * @param value a feature-specific object associated with the key, or 'null'
+   *	if the feature-specific object should be removed
+   */
+  public void setAdjunct(Object object, Object value)
+  {
+	if (value == null)
+	  {
+		adjuncts.remove(object);
+	  }
+	else
+	  {
+		adjuncts.put(object, value);
+	  }
   }
 
   /***********************************/
