@@ -45,7 +45,7 @@ public class OrderedServiceImpl<T extends OrderedService>
    * @param clazz the class object associated with 'T' (I supposed it could
    *	be a subclass, but I'm not sure this is useful)
    */
-  public OrderedServiceImpl(Class clazz)
+  public OrderedServiceImpl(Class<T> clazz)
   {
 	// This constructor wouldn't be needed if 'T.class' was legal
 	serviceLoader = ServiceLoader.load(clazz);
@@ -75,6 +75,7 @@ public class OrderedServiceImpl<T extends OrderedService>
    * @return the sorted list of services implementing interface 'T' discovered
    *	by 'ServiceLoader'.
    */
+  @SuppressWarnings("unchecked")
   public synchronized List<T> rebuildList()
   {
 	// build a list of all of the current implementors
@@ -117,6 +118,7 @@ public class OrderedServiceImpl<T extends OrderedService>
   }
 
   // use this to ensure that we only use one unique instance of each class
+  @SuppressWarnings("rawtypes")
   static private HashMap<Class,OrderedService> classToSingleton =
 	new HashMap<>();
 

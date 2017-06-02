@@ -39,7 +39,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean beforeConfigure(PolicyEngine engine, Properties properties);
+	  public default boolean beforeConfigure(PolicyEngine engine, Properties properties) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is configured.
@@ -48,7 +48,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean afterConfigure(PolicyEngine engine);
+	  public default boolean afterConfigure(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept before the Policy Engine goes active.
@@ -57,7 +57,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean beforeActivate(PolicyEngine engine);
+	  public default boolean beforeActivate(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine goes active.
@@ -66,7 +66,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean afterActivate(PolicyEngine engine);
+	  public default boolean afterActivate(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept before the Policy Engine goes standby.
@@ -75,7 +75,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean beforeDeactivate(PolicyEngine engine);
+	  public default boolean beforeDeactivate(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine goes standby.
@@ -84,7 +84,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean afterDeactivate(PolicyEngine engine);
+	  public default boolean afterDeactivate(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept before the Policy Engine is started.
@@ -93,7 +93,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean beforeStart(PolicyEngine engine);
+	  public default boolean beforeStart(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is started.
@@ -102,7 +102,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean afterStart(PolicyEngine engine);
+	  public default boolean afterStart(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept before the Policy Engine is stopped.
@@ -111,7 +111,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise..
 	   */
-	  public boolean beforeStop(PolicyEngine engine);
+	  public default boolean beforeStop(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is stopped
@@ -120,7 +120,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.d.
 	   */
-	  public boolean afterStop(PolicyEngine engine);
+	  public default boolean afterStop(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept before the Policy Engine is locked
@@ -129,7 +129,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean beforeLock(PolicyEngine engine);
+	  public default boolean beforeLock(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is locked
@@ -138,7 +138,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise..
 	   */
-	  public boolean afterLock(PolicyEngine engine);
+	  public default boolean afterLock(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept before the Policy Engine is locked
@@ -147,7 +147,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean beforeUnlock(PolicyEngine engine);
+	  public default boolean beforeUnlock(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is locked
@@ -156,7 +156,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean afterUnlock(PolicyEngine engine);
+	  public default boolean afterUnlock(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * intercept the Policy Engine is shut down
@@ -165,7 +165,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise..
 	   */
-	  public boolean beforeShutdown(PolicyEngine engine);
+	  public default boolean beforeShutdown(PolicyEngine engine){return false;};
 	  
 	  /**
 	   * called after the Policy Engine is shut down
@@ -174,7 +174,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public boolean afterShutdown(PolicyEngine engine);
+	  public default boolean afterShutdown(PolicyEngine engine) {return false;};
 	  
 	  /**
 	   * Feature providers implementing this interface
