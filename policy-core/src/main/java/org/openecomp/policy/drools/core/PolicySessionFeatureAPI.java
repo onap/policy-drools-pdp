@@ -48,7 +48,7 @@ public interface PolicySessionFeatureAPI extends OrderedService
    * @param args standard 'main' arguments, which are currently ignored
    * @param configDir the relative directory containing configuration files
    */
-  public void globalInit(String args[], String configDir);
+  default public void globalInit(String args[], String configDir) {}
 
   /**
    * This method is used to create a 'KieSession' as part of a
@@ -65,8 +65,19 @@ public interface PolicySessionFeatureAPI extends OrderedService
    *	(this depends on the capabilities and state of the object implementing
    *	this interface)
    */
-  public KieSession activatePolicySession
-	(PolicyContainer policyContainer, String name, String kieBaseName);
+  default public KieSession activatePolicySession
+	(PolicyContainer policyContainer, String name, String kieBaseName)
+  {
+	return(null);
+  }
+
+  /**
+   * This method is called after a new 'PolicySession' has been initialized,
+   * and linked to the 'PolicyContainer'.
+   *
+   * @param policySession the new 'PolicySession' instance
+   */
+  default public void newPolicySession(PolicySession policySession) {}
 
   /**
    * This method is called after 'KieSession.dispose()' is called
@@ -74,7 +85,7 @@ public interface PolicySessionFeatureAPI extends OrderedService
    * @param policySession the 'PolicySession' object that wrapped the
    *	'KieSession'
    */
-  public void disposeKieSession(PolicySession policySession);
+  default public void disposeKieSession(PolicySession policySession) {}
 
   /**
    * This method is called after 'KieSession.destroy()' is called
@@ -82,13 +93,5 @@ public interface PolicySessionFeatureAPI extends OrderedService
    * @param policySession the 'PolicySession' object that wrapped the
    *	'KieSession'
    */
-  public void destroyKieSession(PolicySession policySession);
-
-  /**
-   * NOTE: this method is probably temporary
-   *
-   * @return 'true' if persistence is enabled, and 'false' if not, or if
-   *	this feature is not related to persistence.
-   */
-  public boolean isPersistenceEnabled();
+  default public void destroyKieSession(PolicySession policySession) {}
 }

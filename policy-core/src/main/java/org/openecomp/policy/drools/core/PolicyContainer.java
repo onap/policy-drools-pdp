@@ -280,11 +280,20 @@ public class PolicyContainer implements Startable
 
 			// loop through all of the features, and give each one
 			// a chance to create the 'KieSession'
-			for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
+			for (PolicySessionFeatureAPI feature :
+				   PolicySessionFeatureAPI.impl.getList())
 			  {
-				if ((kieSession = feature.activatePolicySession
-					 (this, name, kieBaseName)) != null)
-				  break;
+				try
+				  {
+					if ((kieSession = feature.activatePolicySession
+						 (this, name, kieBaseName)) != null)
+					  break;
+				  }
+				catch (Exception e)
+				  {
+					logger.error("ERROR: Feature API: "
+								 + feature.getClass().getName(), e);
+				  }
 			  }
 
 			// if none of the features created the session, create one now
@@ -299,6 +308,21 @@ public class PolicyContainer implements Startable
 				// a PolicySession
 				session = new PolicySession(name, this, kieSession);
 				sessions.put(name, session);
+
+				// notify features
+				for (PolicySessionFeatureAPI feature :
+					   PolicySessionFeatureAPI.impl.getList())
+				  {
+					try
+					  {
+						feature.newPolicySession(session);
+					  }
+					catch (Exception e)
+					  {
+						logger.error("ERROR: Feature API: "
+									 + feature.getClass().getName(), e);
+					  }
+				  }
 				logger.info("activatePolicySession:new session was added in sessions with name " + name);
 			  }
 		  }
@@ -374,6 +398,21 @@ public class PolicyContainer implements Startable
 		PolicySession policySession =
 		  new PolicySession(name, this, kieSession);
 		sessions.put(name, policySession);
+
+		// notify features
+		for (PolicySessionFeatureAPI feature :
+			   PolicySessionFeatureAPI.impl.getList())
+		  {
+			try
+			  {
+				feature.newPolicySession(policySession);
+			  }
+			catch (Exception e)
+			  {
+				logger.error("ERROR: Feature API: "
+							 + feature.getClass().getName(), e);
+			  }
+		  }
 		return(policySession);
 	  }
   }
@@ -590,9 +629,18 @@ public class PolicyContainer implements Startable
 			session.getKieSession().dispose();
 
 			// notify features
-			for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
+			for (PolicySessionFeatureAPI feature :
+				   PolicySessionFeatureAPI.impl.getList())
 			  {
-				feature.disposeKieSession(session);
+				try
+				  {
+					feature.disposeKieSession(session);
+				  }
+				catch (Exception e)
+				  {
+					logger.error("ERROR: Feature API: "
+								 + feature.getClass().getName(), e);
+				  }
 			  }
 		  }
 		isStarted = false;
@@ -657,9 +705,18 @@ public class PolicyContainer implements Startable
 		session.getKieSession().destroy();
 
 		// notify features
-		for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
+		for (PolicySessionFeatureAPI feature :
+			   PolicySessionFeatureAPI.impl.getList())
 		  {
-			feature.destroyKieSession(session);
+			try
+			  {
+				feature.destroyKieSession(session);
+			  }
+			catch (Exception e)
+			  {
+				logger.error("ERROR: Feature API: "
+							 + feature.getClass().getName(), e);
+			  }
 		  }
 	  }
 	isStarted = false;
@@ -750,9 +807,18 @@ public class PolicyContainer implements Startable
 	logger.info("initlogger returned");
 
 	// invoke 'globalInit' on all of the features
-	for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList())
+	for (PolicySessionFeatureAPI feature :
+		   PolicySessionFeatureAPI.impl.getList())
 	  {
-		feature.globalInit(args, configDir);
+		try
+		  {
+			feature.globalInit(args, configDir);
+		  }
+		catch (Exception e)
+		  {
+			logger.error("ERROR: Feature API: "
+						 + feature.getClass().getName(), e);
+		  }
 	  }
   }
 

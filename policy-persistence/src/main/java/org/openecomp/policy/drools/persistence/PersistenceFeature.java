@@ -204,15 +204,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	getContainerAdjunct(policySession.getPolicyContainer())
 	  .destroyKieSession();
   }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-	public boolean isPersistenceEnabled()
-  {
-	return(!persistenceDisabled);
-  }
 	
   /**
    * {@inheritDoc}
