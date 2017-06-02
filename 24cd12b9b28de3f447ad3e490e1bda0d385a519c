@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da141535_78f641d9",
+        "filename": "policy-core/src/main/java/org/openecomp/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 819,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-06-02T16:35:45Z",
+      "side": 1,
+      "message": "Should the logger.warn(\"ERROR\") be either:\nlogger.error(\"ERROR\"\n-or-\nlogger.warn(\"WARNING\"",
+      "range": {
+        "startLine": 819,
+        "startChar": 3,
+        "endLine": 819,
+        "endChar": 21
+      },
+      "revId": "24cd12b9b28de3f447ad3e490e1bda0d385a519c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
