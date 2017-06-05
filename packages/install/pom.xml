@@ -33,7 +33,7 @@
 	<packaging>pom</packaging>
 
 	<name>Installation Package</name>
-	<description>D2 ECOMP Policy Drools PDP Installation Package</description>
+	<description>ONAP Policy Drools PDP Installation Package</description>
 
 	<build>
 		<plugins>
@@ -68,12 +68,6 @@
 		<dependency>
 			<groupId>org.openecomp.policy.drools-pdp</groupId>
 			<artifactId>policy-management</artifactId>
-			<version>${project.version}</version>
-			<type>zip</type>
-		</dependency>
-		<dependency>
-			<groupId>org.openecomp.policy.drools-pdp</groupId>
-			<artifactId>policy-persistence</artifactId>
 			<version>${project.version}</version>
 			<type>zip</type>
 		</dependency>

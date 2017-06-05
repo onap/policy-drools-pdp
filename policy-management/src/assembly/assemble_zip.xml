@@ -29,8 +29,6 @@
 		<format>zip</format>
 	</formats>
 
-	<!-- we want "system" and related files right at the root level as this 
-		file is suppose to be unzip on top of a karaf distro. -->
 	<includeBaseDirectory>false</includeBaseDirectory>
 
 	<fileSets>

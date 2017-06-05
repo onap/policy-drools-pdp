@@ -42,6 +42,8 @@
 		<jersey.version>2.22.2</jersey.version>
 		<jersey.swagger.version>1.5.13</jersey.swagger.version>
 		<jackson.version>2.8.4</jackson.version>
+		<http.client>4.5</http.client>
+		<http.core>4.4.4</http.core>
   
 		<sonar.language>java</sonar.language>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -61,7 +63,6 @@
 		<module>policy-core</module>
 		<module>policy-endpoints</module>
 		<module>policy-management</module>
-		<module>policy-persistence</module>
 		<module>policy-healthcheck</module>
 		<module>packages</module>
 	</modules>
@@ -160,6 +161,16 @@
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-jersey2-jaxrs</artifactId>
 				<version>${jersey.swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${http.client}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>${http.core}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

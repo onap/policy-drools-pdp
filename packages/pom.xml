@@ -33,11 +33,10 @@
 	<packaging>pom</packaging>
 
 	<name>Policy Packages</name>
-	<description>D2 ECOMP Policy Drools PDP Installation Packages</description>
+	<description>ONAP Policy Drools PDP Installation Packages</description>
 
 	<modules>
 		<module>base</module>
-		<!-- <module>root</module> -->
 		<module>install</module>
 	</modules>
 </project>

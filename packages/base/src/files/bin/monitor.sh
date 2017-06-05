@@ -64,7 +64,6 @@ function on() {
 	fi
 		
 	CONTROLLER=$1
-	NAGIOS_COMPONENT_SERVICE="Check_${CONTROLLER}-AliveStatus_AP_24094"
 
 	${POLICY_HOME}/bin/${CONTROLLER} status
 	if [[ $? != 0 ]]; then
@@ -84,7 +83,6 @@ function off() {
 	fi
 		
 	CONTROLLER=$1
-	NAGIOS_COMPONENT_SERVICE="Check_${CONTROLLER}-AliveStatus_AP_24094"
 
 	${POLICY_HOME}/bin/${CONTROLLER} status
 	if [[ $? != 0 ]]; then
@@ -136,10 +134,6 @@ if pidof -o %PPID -x $(basename $0) > /dev/null 2>&1; then
 fi
 
 . ${POLICY_HOME}/etc/profile.d/env.sh
-
-if [[ ${NAGIOS_NRDP_DISABLED} == true ]]; then
-	log "Nagios NRDS is disabled."
-fi
 
 if flock ${cfg} ; then
 	process_config

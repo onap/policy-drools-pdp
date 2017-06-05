@@ -33,7 +33,7 @@
 	<packaging>pom</packaging>
 
 	<name>Base Package</name>
-	<description>D2 ECOMP Policy Drools PDP Packaging</description>
+	<description>ONAP Policy Drools PDP Packaging</description>
 
 	<build>
 		<plugins>
@@ -82,7 +82,7 @@
 									<executable>/bin/bash</executable>
 									<arguments>
 										<argument>-c</argument>
-										<argument>mkdir -p target ; echo -e 'version="${project.version}"\ndescription="Open ECOMP Drools PDP"\nbuildTag="'"${BUILD_TAG}"'"\ncommit="'"${GIT_COMMIT}"'"\ntimestamp="${maven.build.timestamp}"' >target/build.info</argument>
+										<argument>mkdir -p target ; echo -e 'version="${project.version}"\ndescription="ONAP Drools PDP"\nbuildTag="'"${BUILD_TAG}"'"\ncommit="'"${GIT_COMMIT}"'"\ntimestamp="${maven.build.timestamp}"' >target/build.info</argument>
 									</arguments>
 								</configuration>
 							</execution>
