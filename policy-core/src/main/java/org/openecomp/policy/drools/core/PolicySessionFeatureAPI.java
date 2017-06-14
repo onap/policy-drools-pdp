@@ -80,6 +80,16 @@ public interface PolicySessionFeatureAPI extends OrderedService
   default public void newPolicySession(PolicySession policySession) {}
 
   /**
+   * This method is called to select the 'ThreadModel' instance associated
+   * with a 'PolicySession' instance.
+   */
+  default public PolicySession.ThreadModel selectThreadModel
+	(PolicySession session)
+  {
+	return(null);
+  }
+
+  /**
    * This method is called after 'KieSession.dispose()' is called
    *
    * @param policySession the 'PolicySession' object that wrapped the

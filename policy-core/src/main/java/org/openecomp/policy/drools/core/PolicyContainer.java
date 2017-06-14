@@ -454,7 +454,15 @@ public class PolicyContainer implements Startable
     }else {
        logger.info("updateToVersion:releaseId " + releaseId.toString());
     }
-	return(kieContainer.updateToVersion(releaseId));
+
+	// notify all 'PolicySession' instances
+	Results results = kieContainer.updateToVersion(releaseId);
+	for (PolicySession session : sessions.values())
+	  {
+		session.updated();
+	  }
+
+	return(results);
   }
 
   /**
