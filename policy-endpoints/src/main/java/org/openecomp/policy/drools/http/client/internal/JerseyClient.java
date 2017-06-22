@@ -35,10 +35,17 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.openecomp.policy.drools.http.client.HttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class JerseyClient implements HttpClient {
+	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(JerseyClient.class); 
 	
 	protected final String name;
 	protected final boolean https;
@@ -156,7 +163,8 @@ public class JerseyClient implements HttpClient {
 		try {
 			this.client.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("{}: cannot close because of {}", this, 
+				        e.getMessage(), e);
 		}
 	}
 

@@ -34,12 +34,12 @@ import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertyUtilTest
 {
- // private static final Logger PolicyLogger =
-//	Logger.getLogger(PropertyUtilTest.class.getName());
+  private final static Logger logger = LoggerFactory.getLogger(PropertyUtilTest.class);
 
   private static File directory = null;
 
@@ -49,7 +49,7 @@ public class PropertyUtilTest
   @BeforeClass
 	static public void setup()
   {
-	PolicyLogger.info("setup: creating a temporary directory");
+	logger.info("setup: creating a temporary directory");
 
 	// create a directory for temporary files
 	directory = new File(UUID.randomUUID().toString());
@@ -62,7 +62,7 @@ public class PropertyUtilTest
   @AfterClass
 	static public void teardown()
   {
-	PolicyLogger.info("teardown: remove the temporary directory");
+	logger.info("teardown: remove the temporary directory");
 
 	// the assumption is that we only have one level of temporary files
 	for (File file : directory.listFiles())
@@ -114,7 +114,7 @@ public class PropertyUtilTest
 		{
 		  // When a notification is received, store the values in the
 		  // 'returns' array, and signal using the same array.
-		  PolicyLogger.info("Listener invoked: properties=" + properties
+		  logger.info("Listener invoked: properties=" + properties
 					  + ", changedKeys=" + changedKeys);
 		  returns[0] = properties;
 		  returns[1] = changedKeys;
@@ -132,15 +132,15 @@ public class PropertyUtilTest
   @Test
 	public void testGetProperties() throws Exception
   {
-	PolicyLogger.info("testGetProperties: test the basic properties file interface");
+	logger.info("testGetProperties: test the basic properties file interface");
 
 	// copy system properties
-	PolicyLogger.info("Copy system properties to a file");
+	logger.info("Copy system properties to a file");
 	Properties prop1 = System.getProperties();
 	File file1 = createFile("createAndReadPropertyFile-1", prop1);
 
 	// read in properties, and compare
-	PolicyLogger.info("Read in properties from new file");
+	logger.info("Read in properties from new file");
 	Properties prop2 = PropertyUtil.getProperties(file1);
 
 	// they should match
@@ -153,14 +153,14 @@ public class PropertyUtilTest
   @Test
 	public void testListenerInterface() throws Exception
   {
-	PolicyLogger.info("testListenerInterface: test receipt of dynamic updates");
+	logger.info("testListenerInterface: test receipt of dynamic updates");
 
 	// create initial property file
 	Properties prop1 = new Properties();
 	prop1.setProperty("p1", "p1 value");
 	prop1.setProperty("p2", "p2 value");
 	prop1.setProperty("p3", "p3 value");
-	PolicyLogger.info("Create initial properties file: " + prop1);
+	logger.info("Create initial properties file: " + prop1);
 	File file1 = createFile("createAndReadPropertyFile-2", prop1);
 
 	// create a listener for the notification interface
@@ -169,7 +169,7 @@ public class PropertyUtilTest
 
 	// read it in, and do a comparison
 	Properties prop2 = PropertyUtil.getProperties(file1, listener);
-	PolicyLogger.info("Read in properties: " + prop2);
+	logger.info("Read in properties: " + prop2);
 	assertEquals(prop1, prop2);
 	assertEquals(prop2.getProperty("p1"), "p1 value");
 	assertEquals(prop2.getProperty("p2"), "p2 value");
@@ -179,7 +179,7 @@ public class PropertyUtilTest
 	prop2.remove("p1");		// remove one property
 	prop2.setProperty("p2", "new p2 value");	// change one property
 	prop2.setProperty("p4", "p4 value");		// add a new property
-	PolicyLogger.info("Modified properties: " + prop2);
+	logger.info("Modified properties: " + prop2);
 
 	// now, update the file, and wait for notification
 	synchronized(returns)

@@ -27,6 +27,8 @@ import java.util.Properties;
 
 import org.openecomp.policy.drools.http.client.internal.JerseyClient;
 import org.openecomp.policy.drools.properties.PolicyProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface HttpClientFactory {
 	
@@ -49,6 +51,11 @@ public interface HttpClientFactory {
 }
 
 class IndexedHttpClientFactory implements HttpClientFactory {
+	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(IndexedHttpClientFactory.class);
 	
 	protected HashMap<String, HttpClient> clients = new HashMap<String, HttpClient>();
 
@@ -105,7 +112,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 				}
 				port = Integer.parseInt(servicePortString);
 			} catch (NumberFormatException nfe) {
-				nfe.printStackTrace();
+				logger.error("http-client-factory: cannot parse port {}", servicePortString, nfe);
 				continue;
 			}
 			
@@ -135,7 +142,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 								   userName, password, managed);
 				clientList.add(client);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("http-client-factory: cannot build client {}", clientName, e);
 			}
 		}
 		
@@ -166,7 +173,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 		try {
 			client.shutdown();
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			logger.error("http-client-factory: cannot shutdown client {}", client, e);
 		}
 	}
 

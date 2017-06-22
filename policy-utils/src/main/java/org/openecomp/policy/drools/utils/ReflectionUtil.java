@@ -23,43 +23,41 @@
  */
 package org.openecomp.policy.drools.utils;
 
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Reflection utilities
  *
  */
 public class ReflectionUtil {
 	
+	protected final static Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
+	
 	/**
 	 * returns (if exists) a class fetched from a given classloader
 	 * 
 	 * @param classLoader the class loader
-	 * @param classname the class name
+	 * @param className the class name
 	 * @return the actual class
 	 * @throws IllegalArgumentException if an invalid parameter has been passed in
 	 */
 	public static Class<?> fetchClass(ClassLoader classLoader, 
-			                          String classname) 
+			                          String className) 
 		throws IllegalArgumentException {
-		
-		PolicyLogger.info("FETCH-CLASS: " +  classname + " FROM " + classLoader);
-		
 		if (classLoader == null)
 			throw new IllegalArgumentException("A class loader must be provided");
 		
-		if (classname == null)
+		if (className == null)
 			throw new IllegalArgumentException("A class name to be fetched in class loader " +
 		                                       classLoader + " must be provided");
 		
 		try {
-			Class<?> aClass = Class.forName(classname, 
+			Class<?> aClass = Class.forName(className, 
 					                        true, 
 					                        classLoader);
 			return aClass;
 		} catch (Exception e) {
-			e.printStackTrace();
-			PolicyLogger.error("FETCH-CLASS: " + classname + " IN " + classLoader + " does NOT exist");
+			logger.error("FETCHED-CLASS {} IN {} does NOT EXIST", className, classLoader);
 		}
 		
 		return null;
@@ -84,8 +82,6 @@ public class ReflectionUtil {
 	 * @return
 	 */
 	public static boolean isSubclass(Class<?> parent, Class<?> presumedSubclass) {		
-		PolicyLogger.debug("IS-SUBCLASS: superclass: " +  parent.getCanonicalName() + 
-				          " subclass: " + presumedSubclass.getCanonicalName());
 		return (parent.isAssignableFrom(presumedSubclass));
 	}
 

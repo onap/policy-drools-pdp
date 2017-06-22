@@ -24,9 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.core.jmx.PdpJmxListener;
 import org.openecomp.policy.drools.event.comm.Topic;
@@ -319,7 +318,7 @@ class PolicyEngineManager implements PolicyEngine {
 	/**
 	 * logger
 	 */
-	private static Logger  logger = FlexLogger.getLogger(PolicyEngineManager.class);  	
+	private static Logger  logger = LoggerFactory.getLogger(PolicyEngineManager.class);  	
 	
 	/**
 	 * Is the Policy Engine running?
@@ -373,8 +372,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeConfigure(this, properties))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-configure failure because of {}",  
+				             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -386,19 +385,19 @@ class PolicyEngineManager implements PolicyEngine {
 				source.register(this);
 			}
 		} catch (Exception e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "configure");
+			logger.error("{}: add-sources failed", this, e);
 		}
 		
 		try {
 			this.sinks = TopicEndpoint.manager.addTopicSinks(properties);
 		} catch (IllegalArgumentException e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "configure");
+			logger.error("{}: add-sinks failed", this, e);
 		}
 		
 		try {
 			this.httpServers = HttpServletServer.factory.build(properties);
 		} catch (IllegalArgumentException e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "configure");
+			logger.error("{}: add-http-servers failed", this, e);
 		}
 		
 		/* policy-engine dispatch post configure hook */
@@ -407,8 +406,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterConfigure(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-configure failure because of {}",  
+						     this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -442,8 +441,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (controller != null)
 					return controller;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + controllerFeature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-controller-create failure because of {}",  
+				             this, controllerFeature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -457,8 +456,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (controllerFeature.afterCreate(controller))
 					return controller;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + controllerFeature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-controller-create failure because of {}",  
+			                 this, controllerFeature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -519,7 +518,7 @@ class PolicyEngineManager implements PolicyEngine {
 				PolicyController policyController = this.updatePolicyController(configController);
 				policyControllers.add(policyController);
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "updatePolicyControllers");
+				logger.error("{}: cannot update-policy-controllers because of {}", this, e.getMessage(), e);
 			}
 		}
 		
@@ -620,10 +619,10 @@ class PolicyEngineManager implements PolicyEngine {
 			
 			return policyController;
 		} catch (Exception e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "updatePolicyController " + e.getMessage());
+			logger.error("{}: cannot update-policy-controller because of {}", this, e.getMessage(), e);
 			throw e;
 		} catch (LinkageError e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine", "updatePolicyController " + e.getMessage());
+			logger.error("{}: cannot update-policy-controllers (rules) because of {}", this, e.getMessage(), e);
 			throw new IllegalStateException(e);
 		}
 	}
@@ -640,8 +639,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeStart(this))
 					return true;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-start failure because of {}", 
+					         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 			
@@ -658,7 +657,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!httpServer.start())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, httpServer.toString(), this.toString());
+				logger.error("{}: cannot start http-server {} because of {}", this, 
+						     httpServer, e.getMessage(), e);
 			}
 		}
 		
@@ -669,7 +669,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!source.start())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, source.toString(), this.toString());
+				logger.error("{}: cannot start topic-source {} because of {}", this, 
+					         source, e.getMessage(), e);
 			}
 		}
 		
@@ -680,7 +681,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!sink.start())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, sink.toString(), this.toString());
+				logger.error("{}: cannot start topic-sink {} because of {}", this, 
+				             sink, e.getMessage(), e);
 			}
 		}
 		
@@ -692,7 +694,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!controller.start())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, controller.toString(), this.toString());
+				logger.error("{}: cannot start policy-controller {} because of {}", this, 
+			                 controller, e.getMessage(), e);
 				success = false;
 			}
 		}
@@ -703,8 +706,7 @@ class PolicyEngineManager implements PolicyEngine {
 			if (!TopicEndpoint.manager.start())
 				success = false;			
 		} catch (IllegalStateException e) {
-			String msg = "Topic Endpoint Manager is in an invalid state: " + e.getMessage() + " : " + this;
-			logger.warn(msg);			
+			logger.warn("{}: Topic Endpoint Manager is in an invalid state because of {}", this, e.getMessage(), e);			
 		}
 		
 		
@@ -718,8 +720,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterStart(this))
 					return success;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-start failure because of {}",  
+					         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 
@@ -738,8 +740,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeStop(this))
 					return true;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-stop failure because of {}", 
+					     this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -757,7 +759,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!controller.stop())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, controller.toString(), this.toString());
+				logger.error("{}: cannot stop policy-controller {} because of {}", this, 
+		                     controller, e.getMessage(), e);
 				success = false;
 			}
 		}
@@ -768,7 +771,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!source.stop())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, source.toString(), this.toString());
+				logger.error("{}: cannot start topic-source {} because of {}", this, 
+		                     source, e.getMessage(), e);
 			}
 		}
 		
@@ -778,7 +782,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!sink.stop())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, sink.toString(), this.toString());
+				logger.error("{}: cannot start topic-sink {} because of {}", this, 
+	                         sink, e.getMessage(), e);
 			}
 		}
 		
@@ -792,7 +797,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (!httpServer.stop())
 					success = false;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, httpServer.toString(), this.toString());
+				logger.error("{}: cannot start http-server {} because of {}", this, 
+						     httpServer, e.getMessage(), e);
 			}
 		}		
 		
@@ -802,8 +808,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterStop(this))
 					return success;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-stop failure because of {}",  
+					         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -822,8 +828,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeShutdown(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-shutdown failure because of {}", 
+					         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 
@@ -834,7 +840,8 @@ class PolicyEngineManager implements PolicyEngine {
 			try {
 				source.shutdown();
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, source.toString(), this.toString());
+				logger.error("{}: cannot shutdown topic-source {} because of {}", this, 
+	                         source, e.getMessage(), e);
 			}
 		}
 		
@@ -843,7 +850,8 @@ class PolicyEngineManager implements PolicyEngine {
 			try {
 				sink.shutdown();
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, sink.toString(), this.toString());
+				logger.error("{}: cannot shutdown topic-sink {} because of {}", this, 
+                             sink, e.getMessage(), e);
 			}
 		}
 		
@@ -862,8 +870,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterShutdown(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-shutdown failure because of {}",  
+				         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 
@@ -874,7 +882,7 @@ class PolicyEngineManager implements PolicyEngine {
 		    	try {
 					Thread.sleep(5000L);
 				} catch (InterruptedException e) {
-					logger.warn("InterruptedException while shutting down management server: " +  this.toString());
+					logger.warn("{}: interrupted-exception while shutting down management server: ", this);
 				}		    	
 				
 				/* shutdown all unmanaged http servers */
@@ -882,14 +890,15 @@ class PolicyEngineManager implements PolicyEngine {
 					try {
 						httpServer.shutdown();
 					} catch (Exception e) {
-						logger.error(MessageCodes.EXCEPTION_ERROR, e, httpServer.toString(), this.toString());
+						logger.error("{}: cannot shutdown http-server {} because of {}", this, 
+								     httpServer, e.getMessage(), e);
 					}
 				} 
 		    	
 		    	try {
 					Thread.sleep(5000L);
 				} catch (InterruptedException e) {
-					logger.warn("InterruptedException while shutting down management server: " +  this.toString());
+					logger.warn("{}: interrupted-exception while shutting down management server: ", this);
 				}
 		    	
 		    	System.exit(0);
@@ -917,8 +926,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeLock(this))
 					return true;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-lock failure because of {}",  
+				         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -933,7 +942,8 @@ class PolicyEngineManager implements PolicyEngine {
 			try {
 				success = controller.lock() && success;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, controller.toString(), this.toString());
+				logger.error("{}: cannot lock policy-controller {} because of {}", this, 
+						     controller, e.getMessage(), e);
 				success = false;
 			}
 		}
@@ -946,8 +956,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterLock(this))
 					return success;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-lock failure because of {}",  
+				         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -966,8 +976,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeUnlock(this))
 					return true;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-unlock failure because of {}",  
+				         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -982,7 +992,8 @@ class PolicyEngineManager implements PolicyEngine {
 			try {
 				success = controller.unlock() && success;
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, controller.toString(), this.toString());
+				logger.error("{}: cannot unlock policy-controller {} because of {}", this, 
+					         controller, e.getMessage(), e);
 				success = false;
 			}
 		}
@@ -995,8 +1006,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterUnlock(this))
 					return success;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-unlock failure because of {}",  
+				         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -1133,7 +1144,8 @@ class PolicyEngineManager implements PolicyEngine {
 			PdpdConfiguration configuration = this.decoder.fromJson(event, PdpdConfiguration.class);
 			this.configure(configuration);
 		} catch (Exception e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "CONFIGURATION ERROR IN PDP-D POLICY ENGINE: "+ event + ":" + e.getMessage() + ":" + this);
+			logger.error("{}: configuration-error due to {} because of {}", 
+					     this, event, e.getMessage(), e);
 		}
 	}
 
@@ -1248,8 +1260,9 @@ class PolicyEngineManager implements PolicyEngine {
 			if (controller != null)
 				return controller.deliver(busType, topic, event);
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-					          busType + ":" + topic + " :" + event, this.toString());
+			logger.warn("{}: cannot find policy-controller to deliver {} over {}:{} because of {}", 
+					    this, event, busType, topic, e.getMessage(), e);
+			
 			/* continue (try without routing through the controller) */
 		}
 		
@@ -1262,8 +1275,8 @@ class PolicyEngineManager implements PolicyEngine {
 			return this.deliver(busType, topic, json);
 
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			          busType + ":" + topic + " :" + event, this.toString());
+			logger.warn("{}: cannot deliver {} over {}:{} because of {}", 
+				        this, event, busType, topic, e.getMessage(), e);
 			throw e;
 		}
 	}
@@ -1300,8 +1313,8 @@ class PolicyEngineManager implements PolicyEngine {
 			return sink.send(event);
 
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			          busType + ":" + topic + " :" + event, this.toString());
+			logger.warn("{}: cannot deliver {} over {}:{} because of {}", 
+			            this, event, busType, topic, e.getMessage(), e);
 			throw e;
 		}
 	}
@@ -1318,8 +1331,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeActivate(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-activate failure because of {}",  
+				             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 
@@ -1329,11 +1342,11 @@ class PolicyEngineManager implements PolicyEngine {
 				policyController.unlock();
 				policyController.start();
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine.activate: cannot start " + 
-		                     policyController + " because of " + e.getMessage());
+				logger.error("{}: cannot activate of policy-controller {} because of {}", 
+				             this, policyController,e.getMessage(), e);
 			} catch (LinkageError e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine.activate: cannot start " + 
-			                 policyController + " because of " + e.getMessage());
+				logger.error("{}: cannot activate (rules compilation) of policy-controller {} because of {}", 
+			                 this, policyController,e.getMessage(), e);
 			}
 		}
 		
@@ -1345,8 +1358,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterActivate(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-activate failure because of {}",  
+				             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 	}
@@ -1363,8 +1376,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.beforeDeactivate(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} before-deactivate failure because of {}",  
+				              this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -1374,11 +1387,11 @@ class PolicyEngineManager implements PolicyEngine {
 			try { 
 				policyController.stop();
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine.deactivate: cannot stop " + 
-		                     policyController + " because of " + e.getMessage());
+				logger.error("{}: cannot deactivate (stop) policy-controller {} because of {}", 
+			                 this, policyController, e.getMessage(), e);
 			} catch (LinkageError e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, "PolicyEngine.deactivate: cannot start " + 
-			                 policyController + " because of " + e.getMessage());
+				logger.error("{}: cannot deactivate (stop) policy-controller {} because of {}", 
+		                     this, policyController, e.getMessage(), e);
 			}
 		}
 		
@@ -1388,8 +1401,8 @@ class PolicyEngineManager implements PolicyEngine {
 				if (feature.afterDeactivate(this))
 					return;
 			} catch (Exception e) {
-				System.out.println("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: feature {} after-deactivate failure because of {}",  
+				             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 	}

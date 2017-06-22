@@ -28,9 +28,8 @@ import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSource;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSource;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.properties.Lockable;
 import org.openecomp.policy.drools.properties.Startable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -239,8 +238,10 @@ public interface TopicEndpoint extends Startable, Lockable {
  * implementations according to the communication infrastructure that are supported
  */
 class ProxyTopicEndpointManager implements TopicEndpoint {
-	// get an instance of logger 
-	private static Logger  logger = FlexLogger.getLogger(ProxyTopicEndpointManager.class);
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(ProxyTopicEndpointManager.class);
 	/**
 	 * Is this element locked?
 	 */
@@ -386,7 +387,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				success = endpoint.start() && success;
 			} catch (Exception e) {
 				success = false;
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, endpoint.toString(), this.toString());
+				logger.error("Problem starting endpoint: {}", endpoint, e);
 			}
 		}
 		
@@ -417,7 +418,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				success = endpoint.stop() && success;
 			} catch (Exception e) {
 				success = false;
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, endpoint.toString(), this.toString());
+				logger.error("Problem stopping endpoint: {}", endpoint, e);
 			}
 		}
 		
@@ -532,7 +533,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (uebSource != null)
 					sources.add(uebSource);
 			} catch (Exception e) {
-				logger.info("No UEB source for topic: " + topic);
+				logger.info("No UEB source for topic: {}", topic);
 			}
 			
 			try {
@@ -540,7 +541,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (dmaapSource != null)
 					sources.add(dmaapSource);
 			} catch (Exception e) {
-				logger.info("No DMAAP source for topic: " + topic);
+				logger.info("No DMAAP source for topic: {}", topic);
 			}
 		}
 		return sources;
@@ -564,7 +565,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (uebSink != null)
 					sinks.add(uebSink);
 			} catch (Exception e) {
-				logger.info("No UEB sink for topic: " + topic);
+				logger.info("No UEB sink for topic: {}", topic);
 			}
 			
 			try {
@@ -572,7 +573,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (dmaapSink != null)
 					sinks.add(dmaapSink);
 			} catch (Exception e) {
-				logger.info("No DMAAP sink for topic: " + topic);
+				logger.info("No DMAAP sink for topic: {}", topic);
 			}
 		}
 		return sinks;

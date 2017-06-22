@@ -23,8 +23,8 @@ package org.openecomp.policy.drools.event.comm.bus.internal;
 import java.util.List;
 import java.util.Map;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSink;
 
@@ -35,7 +35,7 @@ import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSink;
 public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTopicSink {
 	
 	protected static Logger logger = 
-			FlexLogger.getLogger(InlineDmaapTopicSink.class);
+			LoggerFactory.getLogger(InlineDmaapTopicSink.class);
 	
 	protected final String userName;
 	protected final String password;
@@ -128,8 +128,8 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 						                               this.partner, this.latitude, this.longitude,
 						                               this.additionalProps, this.useHttps);
 		}
-		if (logger.isInfoEnabled())
-			logger.info("DMAAP SINK TOPIC created " + this);
+		
+		logger.info("{}: DMAAP SINK created", this);
 	}
 
 	/**

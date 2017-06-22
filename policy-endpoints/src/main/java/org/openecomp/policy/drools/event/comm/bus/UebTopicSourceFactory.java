@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openecomp.policy.drools.event.comm.bus.internal.SingleThreadedUebTopicSource;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
 /**
@@ -144,8 +144,11 @@ public interface UebTopicSourceFactory {
  * Factory of UEB Source Topics indexed by topic name
  */
 class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
-	// get an instance of logger 
-	private static Logger  logger = FlexLogger.getLogger(IndexedUebTopicSourceFactory.class);	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(IndexedUebTopicSourceFactory.class);	
+	
 	/**
 	 * UEB Topic Name Index
 	 */
@@ -203,7 +206,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 		
 		String readTopics = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS);
 		if (readTopics == null || readTopics.isEmpty()) {
-			logger.warn("No topic for UEB Source " + properties);
+			logger.info("{}: no topic for UEB Source", this);
 			return new ArrayList<UebTopicSource>();
 		}
 		List<String> readTopicList = new ArrayList<String>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
@@ -221,7 +224,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
                                                         PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				
 				if (servers == null || servers.isEmpty()) {
-					logger.error("No UEB servers provided in " + properties);
+					logger.error("{}: no UEB servers configured for sink {}", this, topic);
 					continue;
 				}
 				
@@ -251,7 +254,8 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 					try {
 						fetchTimeout = Integer.parseInt(fetchTimeoutString);
 					} catch (NumberFormatException nfe) {
-						logger.warn("Fetch Timeout in invalid format for topic " + topic + ": " + fetchTimeoutString);
+						logger.warn("{}: fetch timeout {} is in invalid format for topic {} ", 
+							        this, fetchTimeoutString, topic);
 					}
 				}
 					
@@ -263,7 +267,8 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 					try {
 						fetchLimit = Integer.parseInt(fetchLimitString);
 					} catch (NumberFormatException nfe) {
-						logger.warn("Fetch Limit in invalid format for topic " + topic + ": " + fetchLimitString);
+						logger.warn("{}: fetch limit {} is in invalid format for topic {} ", 
+						            this, fetchLimitString, topic);
 					}
 				}
 				
@@ -387,6 +392,13 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 		synchronized(this) {
 			this.uebTopicSources.clear();
 		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IndexedUebTopicSourceFactory []");
+		return builder.toString();
 	}
 	
 }

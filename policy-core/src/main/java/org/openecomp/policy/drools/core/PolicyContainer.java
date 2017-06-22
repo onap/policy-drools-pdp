@@ -20,12 +20,10 @@
 
 package org.openecomp.policy.drools.core;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.KieBase;
@@ -36,12 +34,9 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
-import org.openecomp.policy.common.logging.flexlogger.PropertyUtil;
 import org.openecomp.policy.drools.properties.Startable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is a wrapper around 'KieContainer', which adds the ability
@@ -50,7 +45,7 @@ import org.openecomp.policy.drools.properties.Startable;
 public class PolicyContainer implements Startable
 {
 	// get an instance of logger 
-  private static Logger  logger = FlexLogger.getLogger(PolicyContainer.class);	
+  private static Logger logger = LoggerFactory.getLogger(PolicyContainer.class);	
   // 'KieServices' singleton
   static private KieServices kieServices = KieServices.Factory.get();
 
@@ -79,9 +74,6 @@ public class PolicyContainer implements Startable
   // indicates whether the scanner has been started
   // (it can block for a long time)
   private boolean scannerStarted = false;
-
-  // Used to set relative pathing to config files for unit test environment
-  public static boolean isUnitTesting = false;
 
   /**
    * uses 'groupId', 'artifactId' and 'version', and fetches the associated
@@ -528,7 +520,7 @@ public class PolicyContainer implements Startable
 		catch (Exception e)
 		  {
 			// sometimes the scanner initialization fails for some reason
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "main", "startServer");
+			logger.error("startScanner error", e);
 		  }
 	  }
   }
@@ -752,10 +744,7 @@ public class PolicyContainer implements Startable
 		  }
 		catch (Exception e)
 		  {
-			e.printStackTrace();
-			logger.error(MessageCodes.EXCEPTION_ERROR, e,
-							   "activate",
-							   "PolicyContainer.start()");
+			logger.error("PolicyContainer.start() error in activate", e);
 		  }
 	  }
   }
@@ -774,10 +763,7 @@ public class PolicyContainer implements Startable
 		  }
 		catch (Exception e)
 		  {
-			e.printStackTrace();
-			logger.error(MessageCodes.EXCEPTION_ERROR, e,
-							   "deactivate",
-							   "PolicyContainer.stop()");
+			logger.error("PolicyContainer.start() error in deactivate", e);
 		  }
 	  }
   }
@@ -796,23 +782,8 @@ public class PolicyContainer implements Startable
    */
   public static void globalInit(String args[])
   {
-	  
-	/*
-	 * When JUnit testing, working directory should be
-	 * "../policy-management". In test environment, command line argument
-	 * should specify the relative path from this directory to the config
-	 * directory ("src/test/server/config")
-	 */
 	String configDir = "config";
-	if (isUnitTesting) {
-		configDir = "src/test/server/config";
-	} 
-	System.out.println("PolicyContainer.main: configDir=" + configDir);
-	
-	logger.info("Calling initlogger");
-	
-	initlogger(configDir);
-	logger.info("initlogger returned");
+	logger.info("PolicyContainer.main: configDir=" + configDir);
 
 	// invoke 'globalInit' on all of the features
 	for (PolicySessionFeatureAPI feature :
@@ -828,25 +799,6 @@ public class PolicyContainer implements Startable
 						 + feature.getClass().getName(), e);
 		  }
 	  }
-  }
-
-  /**
-   * Read in the logger properties
-   */
-  private static void initlogger(String configDir){
-		try {
-			Properties properties =
-					  PropertyUtil.getProperties(configDir + "/policyLogger.properties");			
-			try {
-				
-				PolicyLogger.init(properties);
-				
-			} catch (Exception e) {
-				logger.error(MessageCodes.MISS_PROPERTY_ERROR, e, "initlogger");
-			}
-		} catch (IOException e1) {
-			logger.error(MessageCodes.MISS_PROPERTY_ERROR, e1, "initlogger");
-		}
   }
 	
   /**

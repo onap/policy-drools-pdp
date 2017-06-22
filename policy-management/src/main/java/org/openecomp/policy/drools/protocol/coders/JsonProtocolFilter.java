@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openecomp.policy.drools.utils.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,6 +36,11 @@ import com.google.gson.JsonParser;
  * passes its filters.
  */
 public class JsonProtocolFilter {
+	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(JsonProtocolFilter.class);
 	
 	/**
 	 * Helper class to collect Filter information
@@ -130,7 +137,6 @@ public class JsonProtocolFilter {
 		List<FilterRule> filters = new ArrayList<FilterRule>();
 		for (Pair<String, String> filterPair: rawFilters) {
 			if  (filterPair.first() == null || filterPair.first().isEmpty()) {
-				// TODO: warn
 				continue;
 			}
 			
@@ -211,8 +217,6 @@ public class JsonProtocolFilter {
 			}
 			return true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -244,8 +248,8 @@ public class JsonProtocolFilter {
 		} catch (IllegalArgumentException ile) {
 			throw ile;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info("{}: cannot accept {} because of {}", 
+					    this, json, e.getMessage(), e);
 			throw new IllegalArgumentException(e);			
 		}
 	}

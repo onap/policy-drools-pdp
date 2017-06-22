@@ -36,10 +36,10 @@ import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.core.jmx.PdpJmx;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * This class is a wrapper around 'KieSession', which adds the following:
@@ -52,7 +52,7 @@ public class PolicySession
   implements AgendaEventListener, RuleRuntimeEventListener
 {
 	// get an instance of logger 
-  private static Logger  logger = FlexLogger.getLogger(PolicySession.class);		
+  private static Logger  logger = LoggerFactory.getLogger(PolicySession.class);		
   // name of the 'PolicySession' and associated 'KieSession'
   private String name;
 
@@ -526,7 +526,7 @@ public class PolicySession
 		}
 	  catch (Exception e)
 		{
-		  logger.error(MessageCodes.EXCEPTION_ERROR, e, "stopThread", "thread.join");
+		  logger.error("stopThread in thread.join error");
 		}
 	}
 
@@ -567,7 +567,7 @@ public class PolicySession
 			}
 		  catch (Throwable e)
 			{
-			  logger.error(MessageCodes.EXCEPTION_ERROR, e, "startThread", "kieSession.fireUntilHalt");						
+			  logger.error("startThread error in kieSession.fireUntilHalt", e);						
 			}
 		}
 	  logger.info("fireUntilHalt() returned");

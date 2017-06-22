@@ -30,13 +30,12 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PdpJmxListener {
 
-	public static final Logger logger = FlexLogger.getLogger(PdpJmxListener.class);
+	public static final Logger logger = LoggerFactory.getLogger(PdpJmxListener.class);
 	
 	public static void stop() {
 		final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
@@ -44,7 +43,9 @@ public class PdpJmxListener {
 			server.unregisterMBean(new ObjectName("PolicyEngine:type=PdpJmx"));
 		} catch (MBeanRegistrationException | InstanceNotFoundException
 				| MalformedObjectNameException e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PdpJmxListener.stop()", "Could not unregister PolicyEngine:type=PdpJmx MBean with the MBean server");
+			logger.error("PdpJmxListener.stop(): " + 
+				         "Could not unregister PolicyEngine:type=PdpJmx MBean " +
+					     "with the MBean server", e);
 		}
 		
 	}
@@ -56,7 +57,9 @@ public class PdpJmxListener {
 			server.registerMBean(PdpJmx.getInstance(), new ObjectName("PolicyEngine:type=PdpJmx"));
 		} catch (InstanceAlreadyExistsException | MBeanRegistrationException
 				| NotCompliantMBeanException | MalformedObjectNameException e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "PdpJmxListener.start()", "Could not register PolicyEngine:type=PdpJmx MBean with the MBean server");
+			logger.error("PdpJmxListener.start(): " + 
+			             "Could not unregister PolicyEngine:type=PdpJmx MBean " +
+				         "with the MBean server", e);
 		}
 		
 	}

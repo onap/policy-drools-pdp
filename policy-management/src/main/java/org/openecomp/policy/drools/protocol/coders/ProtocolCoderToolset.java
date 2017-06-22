@@ -21,7 +21,6 @@
 package org.openecomp.policy.drools.protocol.coders;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -31,14 +30,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
 import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,6 +58,11 @@ import com.google.gson.JsonSerializer;
  * Protocol Coding/Decoding Toolset
  */
 public abstract class ProtocolCoderToolset {
+	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
 	
 	/**
 	 * topic
@@ -274,8 +277,6 @@ public abstract class ProtocolCoderToolset {
 		try {
 			event = this.filteringParser.parse(json);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			throw new UnsupportedOperationException(e);
 		}
 		
@@ -286,8 +287,9 @@ public abstract class ProtocolCoderToolset {
 					return decoder;
 				} 
 			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
+				logger.info("{}: unexpected failure accepting {} because of {}", 
+						    this, event, e.getMessage(), e);
+				// continue
 			}
 		}
 		
@@ -331,7 +333,7 @@ public abstract class ProtocolCoderToolset {
  * Tools used for encoding/decoding using Jackson
  */
 class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
-	private static Logger  logger = FlexLogger.getLogger(JacksonProtocolCoderToolset.class);	
+	private static Logger  logger = LoggerFactory.getLogger(JacksonProtocolCoderToolset.class);	
 	/**
 	 * decoder
 	 */
@@ -396,16 +398,14 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
 		DroolsController droolsController = 
 				DroolsController.factory.get(groupId, artifactId, "");
 		if (droolsController == null) {
-			String error = "NO-DROOLS-CONTROLLER for: " + json + " IN " + this;
-			logger.warn(error);
-			throw new IllegalStateException(error);
+			logger.warn("{}: no drools-controller to process {}", this, json);
+			throw new IllegalStateException("no drools-controller to process event");
 		}
 		
 		CoderFilters decoderFilter = filter(json);
 		if (decoderFilter == null) {
-			String error = "NO-DECODER for: " + json + " IN " + this;
-			logger.warn(error);
-			throw new UnsupportedOperationException(error);
+			logger.debug("{}: no decoder to process {}", this, json);
+			throw new UnsupportedOperationException("no decoder to process event");
 		}
 		
 		Class<?> decoderClass;
@@ -413,14 +413,13 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
 			decoderClass = 
 					droolsController.fetchModelClass(decoderFilter.getCodedClass());
 			if (decoderClass ==  null) {
-				String error = "DECODE-ERROR FETCHING MODEL CLASS: " + ":" + json + ":" + this;
-				logger.error(error);
-				throw new IllegalStateException(error);				
+				logger.warn("{}: cannot fetch application class {}", this, decoderFilter.getCodedClass());
+				throw new IllegalStateException("cannot fetch application class " +  decoderFilter.getCodedClass());				
 			}
 		} catch (Exception e) {
-			String error = "DECODE-ERROR FETCHING MODEL CLASS: "+ e.getMessage() + ":" + json + ":" + this;
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, error);
-			throw new UnsupportedOperationException(error, e);
+			logger.warn("{}: cannot fetch application class {} because of {}", this, 
+					    decoderFilter.getCodedClass(), e.getMessage());
+			throw new UnsupportedOperationException("cannot fetch application class " +  decoderFilter.getCodedClass(), e);
 		}
 		
 
@@ -428,9 +427,9 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
 			Object fact = this.decoder.readValue(json, decoderClass);
 			return fact;
 		} catch (Exception e) {
-			String error = "DECODE-ERROR FROM PDP-D FRAMEWORK: "+ json + ":" + e.getMessage() + ":" + this;
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, error);
-			throw new UnsupportedOperationException(error, e);
+			logger.warn("{} cannot decode {} into {} because of {}",
+					    this, json, decoderClass.getName(), e.getMessage(), e);
+			throw new UnsupportedOperationException("cannont decode into " + decoderFilter.getCodedClass(), e);
 		}
 	}
 	
@@ -452,9 +451,8 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
 			String encodedEvent = this.encoder.writeValueAsString(event);
 			return encodedEvent;			
 		} catch (JsonProcessingException e) {
-			String error = "ENCODE-ERROR: "+ event + " IN " + this;
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, error);
-			throw new UnsupportedOperationException(error, e);
+			logger.error("{} cannot encode {} because of {}", this, event, e.getMessage(), e);
+			throw new UnsupportedOperationException("event cannot be encoded");
 		}
 	}
 
@@ -472,7 +470,11 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
  */
 class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 	
-	private static Logger  logger = FlexLogger.getLogger(GsonProtocolCoderToolset.class);
+	/**
+	 * Logger
+	 */
+	private static Logger  logger = LoggerFactory.getLogger(GsonProtocolCoderToolset.class);
+	
 	/**
 	 * Formatter for JSON encoding/decoding
 	 */
@@ -493,7 +495,8 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 			try {
 				return ZonedDateTime.parse(element.getAsString(), format);
 			} catch (Exception e) {
-				System.err.println(e);
+				logger.info("GsonUTCAdapter: cannot parse {} because of {}", 
+						    element, e.getMessage(), e);
 			}
 			return null;
 		}
@@ -577,16 +580,14 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 		DroolsController droolsController = 
 				DroolsController.factory.get(groupId, artifactId, "");
 		if (droolsController == null) {
-			String error = "NO-DROOLS-CONTROLLER for: " + json + " IN " + this;
-			logger.warn(error);
-			throw new IllegalStateException(error);
+			logger.warn("{}: no drools-controller to process {}", this, json);
+			throw new IllegalStateException("no drools-controller to process event");
 		}
 		
 		CoderFilters decoderFilter = filter(json);
 		if (decoderFilter == null) {
-			String error = "NO-DECODER for: " + json + " IN " + this;
-			logger.warn(error);
-			throw new UnsupportedOperationException(error);
+			logger.debug("{}: no decoder to process {}", this, json);
+			throw new UnsupportedOperationException("no decoder to process event");
 		}
 		
 		Class<?> decoderClass;
@@ -594,14 +595,13 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 			decoderClass = 
 					droolsController.fetchModelClass(decoderFilter.getCodedClass());
 			if (decoderClass ==  null) {
-				String error = "DECODE-ERROR FETCHING MODEL CLASS: " + ":" + json + ":" + this;
-				logger.error(error);
-				throw new IllegalStateException(error);				
+				logger.warn("{}: cannot fetch application class {}", this, decoderFilter.getCodedClass());
+				throw new IllegalStateException("cannot fetch application class " +  decoderFilter.getCodedClass());				
 			}
 		} catch (Exception e) {
-			String error = "DECODE-ERROR FETCHING MODEL CLASS: "+ e.getMessage() + ":" + json + ":" + this;
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, error);
-			throw new UnsupportedOperationException(error, e);
+			logger.warn("{}: cannot fetch application class {} because of {}", this, 
+				    decoderFilter.getCodedClass(), e.getMessage());
+			throw new UnsupportedOperationException("cannot fetch application class " +  decoderFilter.getCodedClass(), e);
 		}
 		
 		if (this.customCoder != null) {
@@ -615,20 +615,19 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 						                     	("fromJson", new Class[]{String.class, Class.class});
 				Object fact = fromJsonMethod.invoke(gsonObject, json, decoderClass);
 				return fact;
-			} catch (NoSuchFieldException | SecurityException | IllegalAccessException | 
-					 NoSuchMethodException | InvocationTargetException e) {
-				String error = "DECODE-ERROR-FROM-CUSTOM-CODER: " + e.getMessage() + ":" + json + ":" + this;
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, error);
-				throw new UnsupportedOperationException(error, e);
+			} catch (Exception e) {
+				logger.warn("{}: cannot fetch application class {} because of {}", this, 
+					        decoderFilter.getCodedClass(), e.getMessage());
+				throw new UnsupportedOperationException("cannot fetch application class " +  decoderFilter.getCodedClass(), e);
 			}			
 		} else {
 			try {
 				Object fact = this.decoder.fromJson(json, decoderClass);
 				return fact;
 			} catch (Exception e) {
-				String error = "DECODE-ERROR FROM PDP-D FRAMEWORK: "+ json + ":" + e.getMessage() + ":" + this;
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, error);
-				throw new UnsupportedOperationException(error, e);
+				logger.warn("{} cannot decode {} into {} because of {}",
+					    this, json, decoderClass.getName(), e.getMessage(), e);
+				throw new UnsupportedOperationException("cannont decode into " + decoderFilter.getCodedClass(), e);
 			}			
 		}
 	}
@@ -645,9 +644,11 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 		DroolsController droolsController = 
 				DroolsController.factory.get(groupId, artifactId, "");
 		if (droolsController == null) {
-			String error = "NO-DROOLS-CONTROLLER for: " + event + " IN " + this;
-			logger.warn(error);
-			throw new IllegalStateException(error);
+			logger.info("{}: no drools-controller to process {} (continue)", this, event);
+			if (this.customCoder != null) {
+				logger.warn("{}: no drools-controller to process {}", this, event);
+				throw new IllegalStateException("custom-coder but no drools-controller");
+			}
 		}
 		
 		if (this.customCoder != null) {
@@ -661,20 +662,17 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 						                     	("toJson", new Class[]{Object.class});
 				String encodedJson = (String) toJsonMethod.invoke(gsonObject, event);
 				return encodedJson;
-			} catch (NoSuchFieldException | SecurityException | IllegalAccessException | 
-					 NoSuchMethodException | InvocationTargetException e) {
-				String error = "DECODE-ERROR-FROM-CUSTOM-CODER: " + e.getMessage() + ":" + event + ":" + this;
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, error);
-				throw new UnsupportedOperationException(error, e);
+			} catch (Exception e) {
+				logger.warn("{} cannot custom-encode {} because of {}", this, event, e.getMessage(), e);
+				throw new UnsupportedOperationException("event cannot be encoded", e);
 			}			
 		} else {
 			try {
 				String encodedEvent = this.encoder.toJson(event);
 				return encodedEvent;			
 			} catch (Exception e) {
-				String error = "ENCODE-ERROR: "+ event + " IN " + this;
-				logger.error(MessageCodes.EXCEPTION_ERROR, e, error);
-				throw new UnsupportedOperationException(error, e);
+				logger.warn("{} cannot encode {} because of {}", this, event, e.getMessage(), e);
+				throw new UnsupportedOperationException("event cannot be encoded", e);
 			}		
 		}
 	}

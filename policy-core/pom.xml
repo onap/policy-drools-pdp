@@ -58,17 +58,6 @@
        <artifactId>policy-utils</artifactId>
        <version>${project.version}</version>  
      </dependency>
-     <dependency>
-      <groupId>org.openecomp.policy.common</groupId>
-      <artifactId>ECOMP-Logging</artifactId>
-      <version>${common-modules.version}</version>  
-    </dependency>
-    <dependency>
-      <groupId>org.mariadb.jdbc</groupId>
-      <artifactId>mariadb-java-client</artifactId>
-      <version>1.2.3</version>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

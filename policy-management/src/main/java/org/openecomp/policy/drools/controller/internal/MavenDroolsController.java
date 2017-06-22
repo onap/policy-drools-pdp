@@ -32,9 +32,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.core.PolicySession;
@@ -61,7 +60,7 @@ public class MavenDroolsController implements DroolsController {
 	/**
 	 * logger 
 	 */
-	private static Logger  logger = FlexLogger.getLogger(MavenDroolsController.class);
+	private static Logger  logger = LoggerFactory.getLogger(MavenDroolsController.class);
 	
 	/**
 	 * Policy Container, the access object to the policy-core layer
@@ -423,16 +422,14 @@ public class MavenDroolsController implements DroolsController {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
-		
-		if (logger.isInfoEnabled())
-			logger.info(this + "SHUTDOWN");
+	public void shutdown() throws IllegalStateException {		
+		logger.info("{}: SHUTDOWN", this);
 		
 		try {
 			this.stop();
 			this.removeCoders();
 		} catch (Exception e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "stop", this.toString());
+			logger.error("{} SHUTDOWN FAILED because of {}", this, e.getMessage(), e);
 		} finally {
 			this.policyContainer.shutdown();
 		}
@@ -445,14 +442,13 @@ public class MavenDroolsController implements DroolsController {
 	 */
 	@Override
 	public void halt() throws IllegalStateException {
-		if (logger.isInfoEnabled())
-			logger.info(this + "SHUTDOWN");
+		logger.info("{}: HALT", this);
 		
 		try {
 			this.stop();
 			this.removeCoders();
 		} catch (Exception e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "halt", this.toString());
+			logger.error("{} HALT FAILED because of {}", this, e.getMessage(), e);
 		} finally {
 			this.policyContainer.destroy();
 		}	
@@ -462,20 +458,18 @@ public class MavenDroolsController implements DroolsController {
 	 * removes this drools controllers and encoders and decoders from operation
 	 */
 	protected void removeCoders() {
-		
-		if (logger.isInfoEnabled())
-			logger.info(this + "REMOVE-CODERS");
+		logger.info("{}: REMOVE-CODERS", this);
 		
 		try {
 			this.removeDecoders();
 		} catch (IllegalArgumentException e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "removeDecoders", this.toString());
+			logger.error("{} REMOVE-DECODERS FAILED because of {}", this, e.getMessage(), e);
 		}
 		
 		try {
 			this.removeEncoders();
 		} catch (IllegalArgumentException e) {
-			logger.error(MessageCodes.EXCEPTION_ERROR, e, "removeEncoders", this.toString());
+			logger.error("{} REMOVE-ENCODERS FAILED because of {}", this, e.getMessage(), e);
 		}
 	}
 
@@ -492,9 +486,7 @@ public class MavenDroolsController implements DroolsController {
 	 */
 	@Override
 	public boolean offer(String topic, String event) {
-
-		if (logger.isInfoEnabled())
-			logger.info("OFFER: " + topic + ":" + event + " INTO " + this);
+		logger.debug("{}: OFFER: {} <- {}", this, topic, event);
 		
 		if (this.locked)
 			return true;
@@ -515,8 +507,8 @@ public class MavenDroolsController implements DroolsController {
 				                                              this.getArtifactId(), 
 				                                              topic)) {
 			
-			logger.warn("DECODING-UNSUPPORTED: " + ":" + this.getGroupId() + 
-					          ":" + this.getArtifactId() + ":" + topic + " IN " + this);
+			logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", this, 
+					    topic, this.getGroupId(), this.getArtifactId());
 			return true;
 		}
 		
@@ -529,12 +521,12 @@ public class MavenDroolsController implements DroolsController {
 					                                      topic, 
 					                                      event);
 		} catch (UnsupportedOperationException uoe) {
-			if (logger.isInfoEnabled())
-				logger.info("DECODE:"+ this + ":" + topic + ":" + event);
+			logger.info("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 
+					    event, uoe.getMessage(), uoe);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("DECODE:"+ this + ":" + topic + ":" + event);
+			logger.warn("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 
+				        event, e.getMessage(), e);
 			return true;
 		}
 		

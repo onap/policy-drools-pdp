@@ -27,9 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSinkFactory;
 import org.openecomp.policy.drools.properties.PolicyProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.att.nsa.cambria.client.CambriaClientBuilders;
 import com.att.nsa.cambria.client.CambriaConsumer;
@@ -62,6 +63,7 @@ public interface BusConsumer {
 	 * Cambria based consumer
 	 */
 	public static class CambriaConsumerWrapper implements BusConsumer {
+		
 		/**
 		 * Cambria client
 		 */
@@ -154,7 +156,9 @@ public interface BusConsumer {
 	/**
 	 * MR based consumer
 	 */
-	public abstract class DmaapConsumerWrapper implements BusConsumer {
+	public abstract class DmaapConsumerWrapper implements BusConsumer {	
+		
+		private static Logger logger = LoggerFactory.getLogger(DmaapConsumerWrapper.class);
 		
 		protected int fetchTimeout;
 		protected Object closeCondition = new Object();
@@ -206,18 +210,29 @@ public interface BusConsumer {
 		 */
 		public Iterable<String> fetch() throws Exception {
 			MRConsumerResponse response = this.consumer.fetchWithReturnConsumerResponse();
-
-			if (PolicyLogger.isDebugEnabled() && response != null)
-				PolicyLogger.debug(DmaapConsumerWrapper.class.getName(), "DMaaP consumer received " + response.getResponseCode() + ": " + response.getResponseMessage());
-
-			if (response.getResponseCode() == null || !response.getResponseCode().equals("200")) {
-				if (response.getResponseCode() == null)
-					PolicyLogger.error(DmaapConsumerWrapper.class.getName(), "DMaaP consumer received response code null"); 
-				else
-					PolicyLogger.error(DmaapConsumerWrapper.class.getName(), "DMaaP consumer received " + response.getResponseCode() + ": " + response.getResponseMessage());
+			if (response == null) {
+				logger.warn("{}: DMaaP NULL response received", this);
 				
 				synchronized (closeCondition) {
 					closeCondition.wait(fetchTimeout);
+				}
+				return new ArrayList<String>();
+			} else {
+				logger.debug("DMaaP consumer received {} : {}" + 
+		                      response.getResponseCode(), 
+					          response.getResponseMessage());
+				
+				if (response.getResponseCode() == null || 
+					!response.getResponseCode().equals("200")) {
+					
+					logger.error("DMaaP consumer received: {} : {}", 
+							     response.getResponseCode(), 
+							     response.getResponseMessage());
+					
+					synchronized (closeCondition) {
+						closeCondition.wait(fetchTimeout);
+					}
+					/* fall through */
 				}
 			}
 			
@@ -257,6 +272,9 @@ public interface BusConsumer {
 	 * MR based consumer
 	 */
 	public static class DmaapAafConsumerWrapper extends DmaapConsumerWrapper {
+		
+		private static Logger logger = LoggerFactory.getLogger(DmaapAafConsumerWrapper.class);
+		
 		private Properties props;
 		
 		/**
@@ -306,7 +324,7 @@ public interface BusConsumer {
 			}
 
 			this.consumer.setProps(props);
-			PolicyLogger.info(DmaapConsumerWrapper.class.getName(), "CREATION: " + this);
+			logger.info("{}: CREATION", this);
 		}
 		
 		@Override
@@ -327,6 +345,9 @@ public interface BusConsumer {
 	}
 	
 	public static class DmaapDmeConsumerWrapper extends DmaapConsumerWrapper {
+		
+		private static Logger logger = LoggerFactory.getLogger(DmaapDmeConsumerWrapper.class);
+		
 		private Properties props;
 		
 		public DmaapDmeConsumerWrapper(List<String> servers, String topic, 
@@ -425,7 +446,7 @@ public interface BusConsumer {
 			MRClientFactory.prop = props;
 			this.consumer.setProps(props);
 			
-			PolicyLogger.info(DmaapConsumerWrapper.class.getName(), "CREATION: " + this);
+			logger.info("{}: CREATION", this);
 		}
 	}
 }

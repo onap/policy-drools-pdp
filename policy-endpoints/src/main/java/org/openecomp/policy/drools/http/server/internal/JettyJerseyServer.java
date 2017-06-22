@@ -24,8 +24,8 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import io.swagger.jersey.config.JerseyJaxrsConfig;
 
@@ -67,7 +67,7 @@ public class JettyJerseyServer extends JettyServletServer {
 	/**
 	 * Logger
 	 */
-	protected static Logger logger = FlexLogger.getLogger(JettyJerseyServer.class);
+	protected static Logger logger = LoggerFactory.getLogger(JettyJerseyServer.class);
 	
 	/**
 	 * Container for servlets
@@ -112,7 +112,7 @@ public class JettyJerseyServer extends JettyServletServer {
 			try {
 				hostname = InetAddress.getLocalHost().getHostName();
 			} catch (UnknownHostException e) {
-				logger.warn("can't resolve connector's hostname: " + this);
+				logger.warn("{}: can't resolve connector's hostname: ", this);
 				hostname = "localhost";
 			}
 		}
@@ -125,7 +125,7 @@ public class JettyJerseyServer extends JettyServletServer {
 		swaggerServlet.setInitOrder(2);
 		
         if (logger.isDebugEnabled())
-        	logger.debug(this + "Swagger Servlet has been attached: " + swaggerServlet.dump());
+        	logger.debug("{}: Swagger Servlet has been attached: {}", this, swaggerServlet.dump());
 	}	
 	
 	/**
@@ -165,7 +165,7 @@ public class JettyJerseyServer extends JettyServletServer {
 		String initClasses = 
 				jerseyServlet.getInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME);
 		if (initClasses != null && !initClasses.isEmpty())
-			logger.warn("Both packages and classes are used in Jetty+Jersey Configuration: " + restPackage);
+			logger.warn("Both packages and classes are used in Jetty+Jersey Configuration: {}", restPackage);
 		
 		String initPackages = 
 				jerseyServlet.getInitParameter(JERSEY_INIT_PACKAGES_PARAM_NAME);
@@ -188,7 +188,7 @@ public class JettyJerseyServer extends JettyServletServer {
         jerseyServlet.setInitParameter(JERSEY_INIT_PACKAGES_PARAM_NAME,  initPackages);
         
         if (logger.isDebugEnabled())
-        	logger.debug(this + "Added REST Package: " + jerseyServlet.dump());
+        	logger.debug("{}: added REST package: {}", this, jerseyServlet.dump());
 	}
 	
 	@Override
@@ -206,7 +206,7 @@ public class JettyJerseyServer extends JettyServletServer {
 		String initPackages = 
 				jerseyServlet.getInitParameter(JERSEY_INIT_PACKAGES_PARAM_NAME);
 		if (initPackages != null && !initPackages.isEmpty())
-			logger.warn("Both classes and packages are used in Jetty+Jersey Configuration: " + restClass);
+			logger.warn("Both classes and packages are used in Jetty+Jersey Configuration: {}", restClass);
 		
 		String initClasses = 
 				jerseyServlet.getInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME);
@@ -228,7 +228,7 @@ public class JettyJerseyServer extends JettyServletServer {
         jerseyServlet.setInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME, initClasses);
         
         if (logger.isDebugEnabled())
-        	logger.debug(this + "Added REST Class: " + jerseyServlet.dump());
+        	logger.debug("{}: added REST class: {}", this, jerseyServlet.dump());
 	}
 	
 	@Override

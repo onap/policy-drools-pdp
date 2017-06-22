@@ -42,8 +42,9 @@
 		<jersey.version>2.22.2</jersey.version>
 		<jersey.swagger.version>1.5.13</jersey.swagger.version>
 		<jackson.version>2.8.4</jackson.version>
-		<http.client>4.5</http.client>
-		<http.core>4.4.4</http.core>
+		<http.client.version>4.5</http.client.version>
+		<http.core.version>4.4.4</http.core.version>
+		<logback.version>1.2.3</logback.version>
   
 		<sonar.language>java</sonar.language>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -102,9 +103,8 @@
 		</site>
 	</distributionManagement>
 
-	<dependencies>
+	<dependencies/>
 
-	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -165,12 +165,17 @@
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>${http.client}</version>
+				<version>${http.client.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpcore</artifactId>
-				<version>${http.core}</version>
+				<version>${http.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

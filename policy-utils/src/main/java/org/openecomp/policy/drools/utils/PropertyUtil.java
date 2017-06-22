@@ -382,22 +382,4 @@ public class PropertyUtil
 	stopListening(new File(fileName), listener);
   }
 
-  /* ============================================================ */
-
-  // TEMPORARY - used to test callback interface
-  static public class Test implements Listener
-  {
-	String name;
-
-	public Test(String name)
-	  {
-		this.name = name;
-	  }
-
-	public void propertiesChanged(Properties properties, Set<String> changedKeys)
-	  {
-		System.out.println("Test(" + name + ")\nproperties = " + properties
-						   + "\nchangedKeys = " + changedKeys);
-	  }
-  }
 }

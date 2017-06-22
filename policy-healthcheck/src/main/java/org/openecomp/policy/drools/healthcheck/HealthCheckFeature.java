@@ -22,11 +22,18 @@ package org.openecomp.policy.drools.healthcheck;
 
 import org.openecomp.policy.drools.features.PolicyEngineFeatureAPI;
 import org.openecomp.policy.drools.system.PolicyEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This feature provides healthcheck verification of remotely associated RESTful components
  */
-public class HealthCheckFeature implements PolicyEngineFeatureAPI {
+public class HealthCheckFeature implements PolicyEngineFeatureAPI {	
+	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class); 
 	
 	/**
 	 * Properties Configuration Name
@@ -43,7 +50,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
 		try {
 			HealthCheck.monitor.start();
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			logger.error("Healthcheck Monitor cannot be started", e);
 		}
 		
 		return false;
@@ -54,7 +61,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
 		try {
 			HealthCheck.monitor.stop();
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			logger.error("Healthcheck Monitor cannot be stopped", e);
 		}
 		
 		return false;

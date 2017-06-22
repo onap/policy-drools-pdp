@@ -30,8 +30,8 @@ import org.openecomp.policy.drools.controller.internal.MavenDroolsController;
 import org.openecomp.policy.drools.controller.internal.NullDroolsController;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.Topic.CommInfrastructure;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.event.comm.TopicSource;
 import org.openecomp.policy.drools.event.comm.TopicSink;
 import org.openecomp.policy.drools.properties.PolicyProperties;
@@ -140,11 +140,11 @@ public interface DroolsControllerFactory {
  * Factory of Drools Controllers indexed by the Maven coordinates 
  */
 class IndexedDroolsControllerFactory implements DroolsControllerFactory {
-	
+
 	/**
 	 * logger 
 	 */
-	private static Logger logger = FlexLogger.getLogger(MavenDroolsController.class);
+	private static Logger logger = LoggerFactory.getLogger(MavenDroolsController.class);
 	
 	/**
 	 * Policy Controller Name Index
@@ -262,7 +262,8 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 				try {
 					customGsonCoder =  new CustomGsonCoder(customGson);
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					logger.warn("{}: cannot create custom-gson-coder {} because of {}", 
+							    this, customGson, e.getMessage(), e);
 				}
 			}
 			
@@ -276,7 +277,8 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 				try {
 					customJacksonCoder =  new CustomJacksonCoder(customJackson);
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					logger.warn("{}: cannot create custom-jackson-coder {} because of {}", 
+						        this, customJackson, e.getMessage(), e);
 				}
 			}
 			
@@ -535,6 +537,14 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		 List<DroolsController> controllers = 
 				 new ArrayList<DroolsController>(this.droolsControllers.values());
 		 return controllers;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IndexedDroolsControllerFactory [#droolsControllers=").append(droolsControllers.size())
+				.append("]");
+		return builder.toString();
 	}
 	
 }

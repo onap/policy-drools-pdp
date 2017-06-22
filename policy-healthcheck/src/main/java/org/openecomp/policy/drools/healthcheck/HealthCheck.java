@@ -30,6 +30,8 @@ import org.openecomp.policy.drools.http.server.HttpServletServer;
 import org.openecomp.policy.drools.persistence.SystemPersistence;
 import org.openecomp.policy.drools.properties.Startable;
 import org.openecomp.policy.drools.system.PolicyEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Healthcheck
@@ -120,6 +122,11 @@ public interface HealthCheck extends Startable {
 class HealthCheckMonitor implements HealthCheck {
 
 	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(HealthCheckMonitor.class);
+	
+	/**
 	 * attached http servers
 	 */
 	protected volatile ArrayList<HttpServletServer> servers = new ArrayList<>();
@@ -137,7 +144,7 @@ class HealthCheckMonitor implements HealthCheck {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Reports healthCheck() {
+	public Reports healthCheck() {	
 		Reports reports = new Reports();
 		reports.healthy = PolicyEngine.manager.isAlive();
 		
@@ -165,7 +172,7 @@ class HealthCheckMonitor implements HealthCheck {
 				try {
 					report.message = HttpClient.getBody(response, String.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warn("{}: cannot get body from http-client {}", this, client, e);
 				}
 			} catch (Exception e) {
 				report.healthy = false;
@@ -181,6 +188,7 @@ class HealthCheckMonitor implements HealthCheck {
 	 */
 	@Override
 	public boolean start() throws IllegalStateException {
+		
 		try {
 			this.healthCheckProperties = SystemPersistence.manager.getProperties(HealthCheckFeature.CONFIGURATION_PROPERTIES_NAME);
 			this.servers = HttpServletServer.factory.build(healthCheckProperties);
@@ -190,7 +198,7 @@ class HealthCheckMonitor implements HealthCheck {
 				try {
 					server.start();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warn("{}: cannot start http-server {}", this, server, e);
 				}
 			}
 		} catch (Exception e) {
@@ -205,11 +213,12 @@ class HealthCheckMonitor implements HealthCheck {
 	 */
 	@Override
 	public boolean stop() throws IllegalStateException {
+		
 		for (HttpServletServer server : servers) {
 			try {
 				server.stop();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.warn("{}: cannot stop http-server {}", this, server, e);
 			}
 		}
 		
@@ -217,7 +226,7 @@ class HealthCheckMonitor implements HealthCheck {
 			try {
 				client.stop();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.warn("{}: cannot stop http-client {}", this, client, e);
 			}
 		}
 		

@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSinkFactory;
 import org.openecomp.policy.drools.properties.PolicyProperties;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.att.nsa.cambria.client.CambriaBatchingPublisher;
@@ -62,6 +62,8 @@ public interface BusPublisher {
 	 * Cambria based library publisher
 	 */
 	public static class CambriaPublisherWrapper implements BusPublisher {
+		
+		private static Logger logger = LoggerFactory.getLogger(CambriaPublisherWrapper.class);
 
 		/**
 		 * The actual Cambria publisher
@@ -111,10 +113,8 @@ public interface BusPublisher {
 			try {
 				this.publisher.send(partitionId, message);
 			} catch (Exception e) {
-				PolicyLogger.warn(CambriaPublisherWrapper.class.getName(), 
-		                          "SEND of " + message + " IN " +
-		                          this + " cannot be performed because of " + 
-						          e.getMessage());
+				logger.warn("{}: SEND of {} cannot be performed because of {}",
+						    this, message, e.getMessage(), e);
 				return false;
 			}
 			return true;			
@@ -125,16 +125,13 @@ public interface BusPublisher {
 		 */
 		@Override
 		public void close() {
-			if (PolicyLogger.isInfoEnabled())
-				PolicyLogger.info(CambriaPublisherWrapper.class.getName(), 
-				                  "CREATION: " + this);
+			logger.info("{}: CLOSE", this);
 			
 			try {
 				this.publisher.close();
 			} catch (Exception e) {
-				PolicyLogger.warn(CambriaPublisherWrapper.class.getName(), 
-				                  "CLOSE on " + this + " FAILED because of " + 
-								  e.getMessage());
+				logger.warn("{}: CLOSE FAILED because of {}", 
+						    this, e.getMessage(),e);
 			}
 		}
 		
@@ -155,6 +152,9 @@ public interface BusPublisher {
 	 * DmaapClient library wrapper
 	 */
 	public abstract class DmaapPublisherWrapper implements BusPublisher {
+		
+		private static Logger logger = LoggerFactory.getLogger(DmaapPublisherWrapper.class);
+		
 		/**
 		 * MR based Publisher
 		 */		
@@ -175,9 +175,9 @@ public interface BusPublisher {
 				                     String password, boolean useHttps) throws IllegalArgumentException {
 
 			
-			if (topic == null || topic.isEmpty()) {
+			if (topic == null || topic.isEmpty())
 				throw new IllegalArgumentException("No topic for DMaaP");
-			}
+
 			
 			if (protocol == ProtocolTypeConstants.AAF_AUTH) {
 				if (servers == null || servers.isEmpty())
@@ -215,7 +215,6 @@ public interface BusPublisher {
 												build();
 				
 				this.publisher.setProtocolFlag(ProtocolTypeConstants.DME2.getValue());
-				
 			}
 			
 			this.publisher.logTo(LoggerFactory.getLogger(MRSimplerBatchPublisher.class.getName()));
@@ -225,14 +224,10 @@ public interface BusPublisher {
 			
 			props = new Properties();
 						
-			if(useHttps){
-				
+			if (useHttps) {				
 				props.setProperty("Protocol", "https");
-			}
-			else{
-				
+			} else {			
 				props.setProperty("Protocol", "http");
-				
 			}
 
 			props.setProperty("contenttype", "application/json");
@@ -246,13 +241,7 @@ public interface BusPublisher {
 			if (protocol == ProtocolTypeConstants.AAF_AUTH)
 				this.publisher.setHost(servers.get(0));
 			
-			if (PolicyLogger.isInfoEnabled()) {
-				PolicyLogger.info(DmaapPublisherWrapper.class.getName(), 
-						          "CREATION: " + this);
-				PolicyLogger.info(DmaapPublisherWrapper.class.getName(), 
-						"BusPublisher.DmaapPublisherWrapper using Protocol: " + protocol.getValue());
-			}
-			
+			logger.info("{}: CREATION: using protocol {}", this, protocol.getValue());
 		}
 
 		/**
@@ -260,16 +249,13 @@ public interface BusPublisher {
 		 */
 		@Override
 		public void close() {
-			if (PolicyLogger.isInfoEnabled())
-				PolicyLogger.info(DmaapPublisherWrapper.class.getName(), 
-				                  "CREATION: " + this);
+			logger.info("{}: CLOSE", this);
 			
 			try {
 				this.publisher.close(1, TimeUnit.SECONDS);
 			} catch (Exception e) {
-				PolicyLogger.warn(DmaapPublisherWrapper.class.getName(), 
-				                  "CLOSE: " + this + " because of " + 
-								  e.getMessage());
+				logger.warn("{}: CLOSE FAILED because of {}",
+						    this, e.getMessage(), e);
 			}
 		}
 		
@@ -285,15 +271,13 @@ public interface BusPublisher {
 			this.publisher.setPubResponse(new MRPublisherResponse());
 			this.publisher.send(partitionId, message);
 			MRPublisherResponse response = this.publisher.sendBatchWithResponse();
-			if (PolicyLogger.isDebugEnabled() && response != null) {
-				PolicyLogger.debug(DmaapPublisherWrapper.class.getName(),
-						"DMaaP publisher received " + response.getResponseCode() + ": "
-						+ response.getResponseMessage());
-				
+			if (response != null) {
+				logger.debug("DMaaP publisher received {} : {}",
+						     response.getResponseCode(), 
+						     response.getResponseMessage());
 			}
 
 			return true;
-			
 		}
 		
 		@Override

@@ -18,194 +18,140 @@
   ============LICENSE_END=========================================================
   -->
 
-<configuration scan="true" scanPeriod="3 seconds" debug="true">
-  <!--<jmxConfigurator /> -->
-  <!-- directory path for all other type logs -->
-  <property name="logDir" value="logs" />
-  
-  <!-- directory path for debugging type logs -->
-  <property name="debugDir" value="debug-logs" />
-  
-  <!--  specify the component name 
-    <ECOMP-component-name>::= "MSO" | "DCAE" | "ASDC " | "AAI" |"Policy" | "SDNC" | "AC"  -->
-  <property name="componentName" value="Policy"></property>
-  
-  <!--  log file names -->
-  <property name="errorLogName" value="error" />
-  <property name="metricsLogName" value="metrics" />
-  <property name="auditLogName" value="audit" />
-  <property name="debugLogName" value="debug" />
-  <!-- modified time stamp format -->
-  <property name="defaultPattern" value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
-  <property name="defaultMetricPattern" value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
-  <property name="defaultAuditPattern" value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
-  <property name="defaultErrorPattern" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%X{RequestId}|%thread|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{ErrorCategory}|%X{ErrorCode}|%X{ErrorDesciption}|%msg%n" />
-  
-  <property name="defaultPatternOld" value="%d{MM/dd-HH:mm:ss.SSS}|%logger|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServiceName}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}|%X{Timer}|%msg%n" />
-  
-   <property name="debugLoggerPattern" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%X{RequestId}|%X{ClassName}|%msg%n" />  
-<!--  <property name="debugLoggerPattern" value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{ServiceName}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" /> -->
- 
-  <property name="debugLoggerPatternOld" value="%d{MM/dd-HH:mm:ss.SSS}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServiceName}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ServerFQDN}|%X{RemoteHost}|%X{Timer}|[%caller{3}]|%msg%n" />
-  
-  <property name="logDirectory" value="${logDir}/${componentName}" />
-  <property name="debugLogDirectory" value="${logDir}/${componentName}" />
-  
-  
-  <!-- Example evaluator filter applied against console appender -->
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>${defaultPattern}</pattern>
-    </encoder>
-  </appender>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
 
-  <!-- ============================================================================ -->
-  <!-- EELF Appenders -->
-  <!-- ============================================================================ -->
+	<property name="logDir" value="logs" />
 
-  <!-- The EELFAppender is used to record events to the general application 
-    log -->
-    
-    
+	<property name="errorLog" value="error" />
+	<property name="metricLog" value="metric" />
+	<property name="auditLog" value="audit" />
+	<property name="debugLog" value="debug" />
+	<property name="networkLog" value="network" />
 
-  
-  <!-- EELF Audit Appender. This appender is used to record audit engine 
-    related logging events. The audit logger and appender are specializations 
-    of the EELF application root logger and appender. This can be used to segregate 
-    Policy engine events from other components, or it can be eliminated to record 
-    these events as part of the application root log. -->
-    
-  <appender name="EELFAudit"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${logDirectory}/${auditLogName}.log</file>
-    <rollingPolicy
-      class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>${logDirectory}/${auditLogName}.%i.log.zip
-      </fileNamePattern>
-      <minIndex>1</minIndex>
-      <maxIndex>9</maxIndex>
-    </rollingPolicy>
-    <triggeringPolicy
-      class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>5MB</maxFileSize>
-    </triggeringPolicy>
-    <encoder>
-         <pattern>${defaultAuditPattern}</pattern>
-    </encoder>
-  </appender>
-  <appender name="asyncEELFAudit" class="ch.qos.logback.classic.AsyncAppender">
-    <queueSize>256</queueSize>
-    <appender-ref ref="EELFAudit" />
-  </appender>
+	<property name="metricPattern"
+		value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
+	<property name="auditPattern"
+		value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
+	<property name="errorPattern"
+		value="%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%X{RequestId}|%thread|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{ErrorCategory}|%X{ErrorCode}|%X{ErrorDesciption}|%msg%n" />
 
-<appender name="EELFMetrics"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${logDirectory}/${metricsLogName}.log</file>
-    <rollingPolicy
-      class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>${logDirectory}/${metricsLogName}.%i.log.zip
-      </fileNamePattern>
-      <minIndex>1</minIndex>
-      <maxIndex>9</maxIndex>
-    </rollingPolicy>
-    <triggeringPolicy
-      class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>5MB</maxFileSize>
-    </triggeringPolicy>
-    <encoder>
-      <!-- <pattern>"%d{HH:mm:ss.SSS} [%thread] %-5level %logger{1024} - 
-        %msg%n"</pattern> -->
-      <pattern>${defaultMetricPattern}</pattern>
-    </encoder>
-  </appender>
-  
-  
-  <appender name="asyncEELFMetrics" class="ch.qos.logback.classic.AsyncAppender">
-    <queueSize>256</queueSize>
-    <appender-ref ref="EELFMetrics"/>
-  </appender>
-   
-  <appender name="EELFError"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${logDirectory}/${errorLogName}.log</file>
-    <rollingPolicy
-      class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>${logDirectory}/${errorLogName}.%i.log.zip
-      </fileNamePattern>
-      <minIndex>1</minIndex>
-      <maxIndex>9</maxIndex>
-    </rollingPolicy>
-    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-     <level>ERROR</level>
-     </filter>
-    <triggeringPolicy
-      class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>5MB</maxFileSize>
-    </triggeringPolicy>
-    <encoder>
-      <pattern>${defaultErrorPattern}</pattern>
-    </encoder>
-  </appender>
-  
-  <appender name="asyncEELFError" class="ch.qos.logback.classic.AsyncAppender">
-    <queueSize>256</queueSize>
-    <appender-ref ref="EELFError"/>
-  </appender>
-  
-   <appender name="EELFDebug"
-    class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${debugLogDirectory}/${debugLogName}.log</file>
-    <rollingPolicy
-      class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-      <fileNamePattern>${debugLogDirectory}/${debugLogName}.%i.log.zip
-      </fileNamePattern>
-      <minIndex>1</minIndex>
-      <maxIndex>9</maxIndex>
-    </rollingPolicy>
-    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-     <level>INFO</level>
-     </filter>
-    <triggeringPolicy
-      class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <maxFileSize>5MB</maxFileSize>
-    </triggeringPolicy>
-    <encoder>
-      <pattern>${debugLoggerPattern}</pattern>
-    </encoder>
-  </appender>
-  
-  <appender name="asyncEELFDebug" class="ch.qos.logback.classic.AsyncAppender">
-    <queueSize>256</queueSize>
-    <appender-ref ref="EELFDebug" />
-    <includeCallerData>true</includeCallerData>
-  </appender>
- 
-  
-  <!-- ============================================================================ -->
-  <!--  EELF loggers -->
-  <!-- ============================================================================ -->
- 
-  <logger name="com.att.eelf.audit" level="info" additivity="false">
-    <appender-ref ref="asyncEELFAudit" />
-  </logger>
-  
-  <logger name="com.att.eelf.metrics" level="info" additivity="false">
-        <appender-ref ref="asyncEELFMetrics" />
-  </logger>
- 
-    <logger name="com.att.eelf.error" level="error" additivity="false">
-  <appender-ref ref="asyncEELFError" />
-  </logger>
-  
-   <logger name="com.att.eelf.debug" level="info" additivity="false">
-        <appender-ref ref="asyncEELFDebug" />
-  </logger>
-  
-  
-  
-  <root level="INFO">
-        <appender-ref ref="asyncEELFDebug" />
-        <appender-ref ref="asyncEELFError" />
-  </root>
+	<property name="debugPattern" value="[%date|%level|%logger{0}|%thread] %msg%n" />
+	<property name="networkPattern" value="[%d|%t]%m%n" />
+
+	<appender name="AuditOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDir}/${auditLog}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${logDir}/${auditLog}.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>9</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${auditPattern}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="AsyncAuditOut" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="AuditOut" />
+	</appender>
+
+	<appender name="MetricOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDir}/${metricLog}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${logDir}/${metricLog}.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>9</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${metricPattern}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="AsyncMetricOut" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="MetricOut" />
+	</appender>
+
+	<appender name="ErrorOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDir}/${errorLog}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${logDir}/${errorLog}.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>9</maxIndex>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>15MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${errorPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="AsyncErrorOut" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="ErrorOut" />
+	</appender>
+	
+	<appender name="DebugOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDir}/${debugLog}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${logDir}/${debugLog}.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>9</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>20MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${debugPattern}</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="AsyncDebugOut" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="DebugOut" />
+	</appender>
+
+	<appender name="NetworkOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDir}/${networkLog}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>logs/network.log.%i.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>9</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>15MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${networkPattern}</pattern>
+		</encoder>		
+	</appender>
+	
+	<appender name="AsyncNetworkOut" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="NetworkOut" />
+	</appender>
+	
+ 	<logger name="com.att.eelf.audit" level="INFO">
+		<appender-ref ref="AsyncAuditOut" />
+	</logger>
+
+	<logger name="com.att.eelf.metrics" level="INFO">
+		<appender-ref ref="AsyncMetricOut" />
+	</logger>
+
+	<logger name="network" level="INFO" additivity="false">
+		<appender-ref ref="AsyncNetworkOut" />		
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="AsyncDebugOut" />
+		<appender-ref ref="AsyncErrorOut" />
+	</root>
 
 </configuration>

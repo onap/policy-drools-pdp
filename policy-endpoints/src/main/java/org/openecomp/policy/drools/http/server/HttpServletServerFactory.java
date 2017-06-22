@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.http.server.internal.JettyJerseyServer;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
@@ -95,7 +95,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	/**
 	 * logger
 	 */
-	protected static Logger logger = FlexLogger.getLogger(IndexedHttpServletServerFactory.class);	
+	protected static Logger logger = LoggerFactory.getLogger(IndexedHttpServletServerFactory.class);	
 	
 	/**
 	 * servers index
@@ -126,7 +126,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 		
 		String serviceNames = properties.getProperty(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES);
 		if (serviceNames == null || serviceNames.isEmpty()) {
-			logger.warn("No topic for HTTP Service " + properties);
+			logger.warn("No topic for HTTP Service: {}", properties);
 			return serviceList;
 		}
 		
@@ -142,13 +142,13 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 			try {
 				if (servicePortString == null || servicePortString.isEmpty()) {
 					if (logger.isWarnEnabled())
-						logger.warn("No HTTP port for service in " + serviceName);
+						logger.warn("No HTTP port for service in {}", serviceName);
 					continue;
 				}
 				servicePort = Integer.parseInt(servicePortString);
 			} catch (NumberFormatException nfe) {
 				if (logger.isWarnEnabled())
-					logger.warn("No HTTP port for service in " + serviceName);
+					logger.warn("No HTTP port for service in {}", serviceName);
 				continue;
 			}
 			

@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.features.PolicyControllerFeatureAPI;
 import org.openecomp.policy.drools.protocol.configuration.DroolsConfiguration;
@@ -184,7 +184,7 @@ public interface PolicyControllerFactory {
  */
 class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	// get an instance of logger 
-	private static Logger  logger = FlexLogger.getLogger(PolicyControllerFactory.class);		
+	private static Logger  logger = LoggerFactory.getLogger(PolicyControllerFactory.class);		
 	
 	/**
 	 * Policy Controller Name Index

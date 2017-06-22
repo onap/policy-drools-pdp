@@ -27,7 +27,7 @@ import java.util.List;
  */
 public interface Topic {
 	
-	public static final String NETWORK_LOGGER = "networkLogger";
+	public static final String NETWORK_LOGGER = "network";
 	
 	/**
 	 * Underlying Communication infrastructure Types

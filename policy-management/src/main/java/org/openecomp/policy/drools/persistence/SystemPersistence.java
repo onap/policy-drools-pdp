@@ -28,10 +28,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
 import org.openecomp.policy.drools.utils.PropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface SystemPersistence {
 	
@@ -119,7 +118,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 	/**
 	 * logger 
 	 */
-	private static Logger logger = FlexLogger.getLogger(SystemPropertiesPersistence.class);
+	private static Logger logger = LoggerFactory.getLogger(SystemPropertiesPersistence.class);
 	
 	/**
 	 * backs up the properties-based controller configuration
@@ -142,8 +141,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 				Files.copy(controllerPropertiesPath, 
 						   controllerPropertiesBakPath, StandardCopyOption.REPLACE_EXISTING);
 			} catch (Exception e) {
-				logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-		                    controllerName, "SystemPersistenceProperties");
+				logger.warn("{}: cannot be backed up", controllerName, e);
 	    		return false;
 			}
 		} 
@@ -178,7 +176,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 					this.backupController(controllerName);
 				}
 			} catch (Exception e) {
-				logger.info("No existing Properties");
+				logger.info("{}: no existing Properties", controllerName);
 				// continue
 			}
     	}
@@ -188,8 +186,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 	    	FileWriter writer = new FileWriter(controllerPropertiesFile);
 	    	properties.store(writer, "Machine created Policy Controller Configuration");
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-	                    controllerName, "SystemPersistenceProperties");
+			logger.warn("{}: cannot be STORED", controllerName, e);
 			return false;
 		}
 		
@@ -217,8 +214,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 						   controllerPropertiesBakPath, 
 						   StandardCopyOption.REPLACE_EXISTING);
 			} catch (Exception e) {
-				logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-						    controllerName, "SystemPersistenceProperties");
+				logger.warn("{}: cannot be DELETED", controllerName, e);
 				return false;
 			}
 		} 
@@ -243,10 +239,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 		try {
 			return PropertyUtil.getProperties(propertiesPath.toFile());
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-					    name, "SystemPersistenceProperties can't retrieved properties for " + 
-			            propertiesPath);
-			e.printStackTrace();
+			logger.warn("{}: can't read properties @ {}", name, propertiesPath);
 			throw new IllegalArgumentException("can't read properties for " + 
 			                                   name + " @ " + 
 					                           propertiesPath);

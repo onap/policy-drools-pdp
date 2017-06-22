@@ -23,11 +23,9 @@ package org.openecomp.policy.drools.event.comm.bus.internal;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
-
 import org.openecomp.policy.drools.event.comm.bus.BusTopicSink;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * Transport Agnostic Bus Topic Sink to carry out the core functionality
@@ -37,16 +35,10 @@ import org.openecomp.policy.common.logging.eelf.MessageCodes;
 public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopicSink {
 	
 	/**
-	 * logger 
+	 * loggers
 	 */
-	private static org.openecomp.policy.common.logging.flexlogger.Logger logger = 
-										FlexLogger.getLogger(InlineBusTopicSink.class);
-	
-	/**
-	 * Not to be converted to PolicyLogger.
-	 * This will contain all in/out traffic and only that in a single file in a concise format.
-	 */
-	protected static final Logger networkLogger = Logger.getLogger(NETWORK_LOGGER);
+	private static Logger logger = LoggerFactory.getLogger(InlineBusTopicSink.class);
+	private static final Logger netLogger = LoggerFactory.getLogger(NETWORK_LOGGER);
 	
 	/**
 	 * The partition key to publish to
@@ -109,8 +101,7 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	@Override
 	public boolean start() throws IllegalStateException {
 		
-		if (logger.isInfoEnabled())
-			logger.info("START: " + this);
+		logger.info("{}: starting", this);
 		
 		synchronized(this) {
 			
@@ -144,11 +135,11 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 			try {
 				publisherCopy.close();
 			} catch (Exception e) {
-				logger.warn(MessageCodes.EXCEPTION_ERROR, e, "PUBLISHER.CLOSE", this.toString());
-				e.printStackTrace();
+				logger.warn("{}: cannot stop publisher because of {}", 
+						    this, e.getMessage(), e);
 			}
 		} else {
-			logger.warn("No publisher to close: " + this);
+			logger.warn("{}: there is no publisher", this);
 			return false;
 		}
 		
@@ -161,8 +152,7 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	@Override
 	public boolean lock() {
 		
-		if (logger.isInfoEnabled())
-			logger.info("LOCK: " + this);	
+		logger.info("{}: locking", this);	
 		
 		synchronized (this) {
 			if (this.locked)
@@ -180,8 +170,7 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	@Override
 	public boolean unlock() {
 		
-		if (logger.isInfoEnabled())
-			logger.info("UNLOCK: " + this);
+		logger.info("{}: unlocking", this);
 		
 		synchronized(this) {
 			if (!this.locked)
@@ -193,9 +182,8 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 		try {
 			return this.start();
 		} catch (Exception e) {
-			logger.warn("can't start after unlocking " + this + 
-					     " because of " + e.getMessage());
-			e.printStackTrace();
+			logger.warn("{}: cannot start after unlocking because of {}", 
+					    this, e.getMessage(), e);
 			return false;
 		}
 	}
@@ -235,17 +223,12 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 				this.recentEvents.add(message);
 			}
 			
-			if (networkLogger.isInfoEnabled()) {
-				networkLogger.info("[OUT|" + this.getTopicCommInfrastructure() + "|" + 
-			                       this.topic + "]:" + 
-			                       message);
-			}
+			netLogger.info("[OUT|{}|{}]{}{}", this.getTopicCommInfrastructure(), 
+			               this.topic, System.lineSeparator(), message);
 			
 			publisher.send(this.partitionId, message);
 		} catch (Exception e) {
-			logger.error("can't start after unlocking " + this + 
-				         " because of " + e.getMessage());
-			e.printStackTrace();
+			logger.warn("{}: cannot send because of {}", this, e.getMessage(), e);
 			return false;
 		}
 		

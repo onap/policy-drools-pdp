@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSink;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This implementation publishes events for the associated UEB topic,
@@ -35,8 +35,8 @@ public class InlineUebTopicSink extends InlineBusTopicSink implements UebTopicSi
 	/**
 	 * logger 
 	 */
-	private static org.openecomp.policy.common.logging.flexlogger.Logger logger = 
-										FlexLogger.getLogger(InlineUebTopicSink.class);
+	private static org.slf4j.Logger logger = 
+										LoggerFactory.getLogger(InlineUebTopicSink.class);
 	
 	/**
 	 * Argument-based UEB Topic Writer instantiation
@@ -74,8 +74,7 @@ public class InlineUebTopicSink extends InlineBusTopicSink implements UebTopicSi
 						                                 this.apiKey, 
 						                                 this.apiSecret,
 						                                 this.useHttps);
-		if (logger.isInfoEnabled())
-			logger.info("UEB SINK TOPIC created " + this);
+		logger.info("{}: UEB SINK created", this);
 	}
 	
 	@Override

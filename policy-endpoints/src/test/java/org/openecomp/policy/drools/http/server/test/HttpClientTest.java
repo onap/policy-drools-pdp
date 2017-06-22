@@ -31,12 +31,16 @@ import org.junit.Test;
 import org.openecomp.policy.drools.http.client.HttpClient;
 import org.openecomp.policy.drools.http.server.HttpServletServer;
 import org.openecomp.policy.drools.properties.PolicyProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpClientTest {
 	
+	private static Logger logger = LoggerFactory.getLogger(HttpClientTest.class);
+	
 	@Test
 	public void testHttpNoAuthClient() throws Exception {		
-		System.out.println("-- testHttpNoAuthClient() --");
+		logger.info("-- testHttpNoAuthClient() --");
 
 		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", false, true);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
@@ -57,7 +61,7 @@ public class HttpClientTest {
 	
 	@Test
 	public void testHttpAuthClient() throws Exception {		
-		System.out.println("-- testHttpAuthClient() --");
+		logger.info("-- testHttpAuthClient() --");
 
 		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", false, true);
 		server.setBasicAuthentication("x", "y", null);
@@ -79,7 +83,7 @@ public class HttpClientTest {
 	
 	@Test
 	public void testHttpAuthClient401() throws Exception {		
-		System.out.println("-- testHttpAuthClient401() --");
+		logger.info("-- testHttpAuthClient401() --");
 
 		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 6666, "/", false, true);
 		server.setBasicAuthentication("x", "y", null);
@@ -98,7 +102,7 @@ public class HttpClientTest {
 	
   //@Test 
    public void testHttpAuthClientHttps() throws Exception {                             
-		System.out.println("-- testHttpAuthClientHttps() --");
+	   logger.info("-- testHttpAuthClientHttps() --");
 
 		HttpClient client = HttpClient.factory.build("testHttpAuthClientHttps", true, true, "somehost.somewhere.com",
 				9091, "pap/test", "testpap", "alpha123", true);
@@ -116,7 +120,7 @@ public class HttpClientTest {
     
     //@Test
     public void testHttpAuthClientProps() throws Exception {
-		System.out.println("-- testHttpAuthClientProps() --");
+    	logger.info("-- testHttpAuthClientProps() --");
 		
 		Properties httpProperties = new Properties();
 		

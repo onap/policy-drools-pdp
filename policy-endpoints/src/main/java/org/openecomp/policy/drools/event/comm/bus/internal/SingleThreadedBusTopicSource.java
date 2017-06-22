@@ -24,12 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.openecomp.policy.drools.event.comm.TopicListener;
 import org.openecomp.policy.drools.event.comm.bus.BusTopicSource;
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 
 /**
  * This topic source implementation specializes in reading messages
@@ -39,12 +38,12 @@ public abstract class SingleThreadedBusTopicSource
        extends BusTopicBase
        implements Runnable, BusTopicSource {
 	   
-	private String className = SingleThreadedBusTopicSource.class.getName();
 	/**
 	 * Not to be converted to PolicyLogger.
 	 * This will contain all instract /out traffic and only that in a single file in a concise format.
 	 */
-	protected static final Logger networkLogger = Logger.getLogger(NETWORK_LOGGER);
+	private static Logger logger = LoggerFactory.getLogger(InlineBusTopicSink.class);
+	private static final Logger netLogger = LoggerFactory.getLogger(NETWORK_LOGGER);
 	
 	/**
 	 * Bus consumer group
@@ -165,7 +164,7 @@ public abstract class SingleThreadedBusTopicSource
 	public void register(TopicListener topicListener) 
 		throws IllegalArgumentException {		
 		
-		PolicyLogger.info(className,"REGISTER: " + topicListener + " INTO " + this);
+		logger.info("{}: registering {}", this, topicListener);
 		
 		synchronized(this) {
 			if (topicListener == null)
@@ -185,8 +184,8 @@ public abstract class SingleThreadedBusTopicSource
 		try {
 			this.start();
 		} catch (Exception e) {
-			PolicyLogger.info(className, "new registration of " + topicListener +  
-					          ",but can't start source because of " + e.getMessage());
+			logger.warn("{}: cannot start after registration of because of: {}",
+		                this, topicListener, e.getMessage(), e);
 		}
 	}
 
@@ -196,7 +195,7 @@ public abstract class SingleThreadedBusTopicSource
 	@Override
 	public void unregister(TopicListener topicListener) {
 		
-		PolicyLogger.info(className, "UNREGISTER: " + topicListener + " FROM " + this);
+		logger.info("{}: unregistering {}", this, topicListener);
 		
 		boolean stop = false;
 		synchronized (this) {
@@ -217,7 +216,8 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	@Override
 	public boolean lock() {	
-		PolicyLogger.info(className, "LOCK: " + this);
+
+		logger.info("{}: locking", this);
 		
 		synchronized (this) {
 			if (this.locked)
@@ -233,8 +233,8 @@ public abstract class SingleThreadedBusTopicSource
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean unlock() {
-		PolicyLogger.info(className, "UNLOCK: " + this);
+	public boolean unlock() {		
+		logger.info("{}: unlocking", this);
 		
 		synchronized(this) {
 			if (!this.locked)
@@ -246,8 +246,7 @@ public abstract class SingleThreadedBusTopicSource
 		try {
 			return this.start();
 		} catch (Exception e) {
-			PolicyLogger.warn("can't start after unlocking " + this + 
-					          " because of " + e.getMessage());
+			logger.warn("{}: cannot after unlocking because of {}", this, e.getMessage(), e);
 			return false;
 		}
 	}
@@ -256,19 +255,16 @@ public abstract class SingleThreadedBusTopicSource
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean start() throws IllegalStateException {
-		
-		PolicyLogger.info(className, "START: " + this);
+	public boolean start() throws IllegalStateException {		
+		logger.info("{}: starting", this);
 		
 		synchronized(this) {
 			
-			if (alive) {
+			if (alive)
 				return true;
-			}
 			
-			if (locked) {
+			if (locked)
 				throw new IllegalStateException(this + " is locked.");
-			}
 			
 			if (this.busPollerThread == null || 
 				!this.busPollerThread.isAlive() || 
@@ -281,7 +277,7 @@ public abstract class SingleThreadedBusTopicSource
 					this.busPollerThread.setName(this.getTopicCommInfrastructure() + "-source-" + this.getTopic());
 					busPollerThread.start();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.warn("{}: cannot start because of {}", this, e.getMessage(), e);
 					throw new IllegalStateException(e);
 				}
 			}
@@ -295,7 +291,7 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	@Override
 	public boolean stop() {
-		PolicyLogger.info(className, "STOP: " + this);
+		logger.info("{}: stopping", this);
 		
 		synchronized(this) {
 			BusConsumer consumerCopy = this.consumer;
@@ -307,7 +303,7 @@ public abstract class SingleThreadedBusTopicSource
 				try {
 					consumerCopy.close();
 				} catch (Exception e) {
-					PolicyLogger.warn(MessageCodes.EXCEPTION_ERROR, e, "CONSUMER.CLOSE", this.toString());
+					logger.warn("{}: stop failed because of {}", this, e.getMessage(), e);
 				}
 			}
 		}
@@ -341,8 +337,8 @@ public abstract class SingleThreadedBusTopicSource
 			try {
 				topicListener.onTopicEvent(this.getTopicCommInfrastructure(), this.topic, message);
 			} catch (Exception e) {
-				PolicyLogger.warn(this.className, "ERROR notifying " + topicListener.toString() + 
-						          " because of " + e.getMessage() + " @ " + this.toString());
+				logger.warn("{}: notification error @ {} because of {}", 
+						    this, topicListener, e.getMessage(), e);
 				success = false;
 			}
 		}
@@ -372,24 +368,21 @@ public abstract class SingleThreadedBusTopicSource
 						this.recentEvents.add(event);
 					}
 					
-					if (networkLogger.isInfoEnabled()) {
-						networkLogger.info("IN[" + this.getTopicCommInfrastructure() + "|" + 
-						                   this.topic + "]:" + 
-						                   event);
-					}
+					netLogger.info("[IN|{}|{}]{}{}",
+						           this.getTopicCommInfrastructure(), this.topic, 
+						           System.lineSeparator(), event);
 					
-					PolicyLogger.info(className, this.topic + " <-- " + event);
 					broadcast(event);
 					
 					if (!this.alive)
 						break;
 				}
 			} catch (Exception e) {
-				PolicyLogger.error( MessageCodes.EXCEPTION_ERROR, className, e, "CONSUMER.FETCH", this.toString());
+				logger.error("{}: cannot fetch because of ", this, e.getMessage(), e);
 			}
 		}
 		
-		PolicyLogger.warn(this.className, "Exiting: " + this);
+		logger.info("{}: exiting thread", this);
 	}
 	
 	/**
@@ -397,8 +390,6 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	@Override
 	public boolean offer(String event) {
-		PolicyLogger.info(className, "OFFER: " + event + " TO " + this);
-		
 		if (!this.alive) {
 			throw new IllegalStateException(this + " is not alive.");
 		}
@@ -407,11 +398,8 @@ public abstract class SingleThreadedBusTopicSource
 			this.recentEvents.add(event);
 		}
 		
-		if (networkLogger.isInfoEnabled()) {
-			networkLogger.info("IN[" + this.getTopicCommInfrastructure() + "|" + 
-			                    this.topic + "]:" + 
-			                    event);
-		}
+		netLogger.info("[IN|{}|{}]{}{}",this.getTopicCommInfrastructure(),this.topic, 
+				       System.lineSeparator(), event);
 		
 		
 		return broadcast(event);

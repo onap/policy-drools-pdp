@@ -20,6 +20,7 @@
 
 package org.openecomp.policy.drools.server.restful;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +43,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.event.comm.TopicEndpoint;
 import org.openecomp.policy.drools.event.comm.TopicSink;
@@ -65,7 +63,10 @@ import org.openecomp.policy.drools.protocol.configuration.ControllerConfiguratio
 import org.openecomp.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.openecomp.policy.drools.system.PolicyController;
 import org.openecomp.policy.drools.system.PolicyEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -101,7 +102,7 @@ public class RestManager {
 	/**
 	 * Logger
 	 */
-	private static Logger  logger = FlexLogger.getLogger(RestManager.class);  
+	private static Logger logger = LoggerFactory.getLogger(RestManager.class);  
 	
     @GET
     @Path("engine")
@@ -125,8 +126,7 @@ public class RestManager {
     	try {
 			PolicyEngine.manager.shutdown();
 		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-					          "shutdown: " + PolicyEngine.manager);
+			logger.error("{}: cannot shutdown {} because of {}", this, PolicyEngine.manager, e.getMessage(), e);
     		return Response.status(Response.Status.BAD_REQUEST).
 			        entity(PolicyEngine.manager).
 			        build();
@@ -211,8 +211,7 @@ public class RestManager {
 			success = PolicyEngine.manager.configure(configuration);
 		} catch (Exception e) {
 			success = false;
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              "PolicyEngine", this.toString());
+			logger.info("{}: cannot configure {} because of {}", this, PolicyEngine.manager, e.getMessage(), e);
 		}
     	
 		if (!success)
@@ -260,8 +259,7 @@ public class RestManager {
 			PolicyEngine.manager.activate();
 		} catch (Exception e) {
 			success = false;
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              "PolicyEngine", this.toString());
+			logger.info("{}: cannot activate {} because of {}", this, PolicyEngine.manager, e.getMessage(), e);
 		}
     	
 		if (!success)
@@ -285,8 +283,7 @@ public class RestManager {
 			PolicyEngine.manager.deactivate();
 		} catch (Exception e) {
 			success = false;
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              "PolicyEngine", this.toString());
+			logger.info("{}: cannot deactivate {} because of {}", this, PolicyEngine.manager, e.getMessage(), e);
 		}
     	
 		if (!success)
@@ -406,8 +403,7 @@ public class RestManager {
 		} catch (IllegalArgumentException e) {
 			// This is OK
 		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              controllerName, this.toString());
+			logger.info("{}: cannot get policy-controller because of {}", this, e.getMessage(), e);
 			return Response.status(Response.Status.NOT_ACCEPTABLE).
                             entity(new Error(controllerName + " not found")).build();
 		}
@@ -416,8 +412,7 @@ public class RestManager {
 			controller = PolicyEngine.manager.createPolicyController
 					(config.getProperty(PolicyProperties.PROPERTY_CONTROLLER_NAME), config);
 		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			                  controllerName, this.toString());
+			logger.warn("{}: cannot create policy-controller because of {}", this, e.getMessage(), e);
     		return Response.status(Response.Status.BAD_REQUEST).
 							        entity(new Error(e.getMessage())).
 							        build();
@@ -426,13 +421,12 @@ public class RestManager {
     	try {
 			boolean success = controller.start();
 			if (!success) {
-				logger.warn("Can't start " + controllerName + ": " + controller.toString());
+				logger.info("{}: cannot start {}", this, controller);
 				return Response.status(Response.Status.PARTIAL_CONTENT).
                                        entity(new Error(controllerName + " can't be started")).build();
 			}
 		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                    controllerName, this.toString());
+			logger.info("{}: cannot start {} because of {}", this, controller, e.getMessage(), e);;
 			return Response.status(Response.Status.PARTIAL_CONTENT).
                                    entity(controller).build();
 		}
@@ -547,14 +541,12 @@ public class RestManager {
 	    				        entity(new Error(controllerName + "  does not exist")).
 	    				        build();
 		} catch (IllegalArgumentException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			                  controllerName, this.toString());
+			logger.info("{}: cannot get policy-controller {} because of {}", this, controllerName, e.getMessage(), e);
 			return Response.status(Response.Status.BAD_REQUEST).
 							        entity(new Error(controllerName +  " not found: " + e.getMessage())).
 							        build();
 		} catch (IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              controllerName, this.toString());
+			logger.info("{}: cannot get policy-controller {} because of {}", this, controllerName, e.getMessage(), e);
 			return Response.status(Response.Status.NOT_ACCEPTABLE).
                                    entity(new Error(controllerName + " not acceptable")).build();
 		}
@@ -562,8 +554,7 @@ public class RestManager {
     	try {
 			PolicyEngine.manager.removePolicyController(controllerName);
 		} catch (IllegalArgumentException | IllegalStateException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			                  controllerName + controller);
+			logger.info("{}: cannot remove policy-controller {} because of {}", this, controllerName, e.getMessage(), e);
     		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).
 							       entity(new Error(e.getMessage())).
 							       build();
@@ -647,14 +638,12 @@ public class RestManager {
 	    				        entity(new Error(controllerName + "  does not exist")).
 	    				        build();
 		} catch (IllegalArgumentException e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-			                  controllerName, this.toString());
+			logger.info("{}: cannot update policy-controller {} because of {}", this, controllerName, e.getMessage(), e);
 			return Response.status(Response.Status.BAD_REQUEST).
 							        entity(new Error(controllerName +  " not found: " + e.getMessage())).
 							        build();
 		} catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e, 
-                              controllerName, this.toString());
+			logger.info("{}: cannot update policy-controller {} because of {}", this, controllerName, e.getMessage(), e);
 			return Response.status(Response.Status.NOT_ACCEPTABLE).
                                    entity(new Error(controllerName + " not acceptable")).build();
 		}
@@ -2182,6 +2171,91 @@ public class RestManager {
 		        build();
     }
     
+    @GET
+    @Path("engine/tools/loggers")
+    @ApiOperation(
+        	value="all active loggers", 
+            responseContainer="List"
+    )
+    @ApiResponses(value = { 
+		@ApiResponse(code=500, message="logging misconfiguration")
+    })
+    public Response loggers() { 
+    	List<String> names = new ArrayList<String>();
+    	if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
+    		logger.warn("The SLF4J logger factory is not configured for logback");
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).
+    				        entity(names).build();
+    	}
+    		
+    	LoggerContext context = 
+    			(LoggerContext) LoggerFactory.getILoggerFactory();
+    	for (Logger logger: context.getLoggerList()) {
+    		names.add(logger.getName());
+    	}
+    	
+		return Response.status(Status.OK).
+		        entity(names).
+		        build();
+    }
+    
+    @GET
+    @Path("engine/tools/loggers/{logger}")
+    @ApiOperation(
+        	value="logging level of a logger"
+    )
+    @ApiResponses(value = { 
+    	@ApiResponse(code=500, message="logging misconfiguration"),
+		@ApiResponse(code=404, message="logger not found")
+    })
+    public Response loggerName(@ApiParam(value="Logger Name", required=true) 
+                               @PathParam("logger") String loggerName) { 
+    	if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
+    		logger.warn("The SLF4J logger factory is not configured for logback");
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    	}
+    	
+    	LoggerContext context = 
+    			(LoggerContext) LoggerFactory.getILoggerFactory();
+    	ch.qos.logback.classic.Logger logger = context.getLogger(loggerName);
+    	if (logger == null) {
+    		return Response.status(Status.NOT_FOUND).build();
+    	}
+    	
+    	String loggerLevel = (logger.getLevel() != null) ? logger.getLevel().toString() : "";   	
+		return Response.status(Status.OK).entity(loggerLevel).build();
+    }
+    
+    @PUT
+    @Path("engine/tools/loggers/{logger}/{level}")
+    @ApiOperation(
+        	value="sets the logger level", 
+        	notes="Please use the SLF4J logger levels"
+    )
+    @ApiResponses(value = { 
+        	@ApiResponse(code=500, message="logging misconfiguration"),
+    		@ApiResponse(code=404, message="logger not found")
+    })
+    public Response loggerName(@ApiParam(value="Logger Name", required=true) 
+                               @PathParam("logger") String loggerName,
+                               @ApiParam(value="Logger Level", required=true) 
+                               @PathParam("level") String loggerLevel) { 
+    	if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
+    		logger.warn("The SLF4J logger factory is not configured for logback");
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    	}
+    		
+    	LoggerContext context = 
+    			(LoggerContext) LoggerFactory.getILoggerFactory();
+    	ch.qos.logback.classic.Logger logger = context.getLogger(loggerName);
+    	if (logger == null) {
+    		return Response.status(Status.NOT_FOUND).build();
+    	}
+    	
+    	logger.setLevel(ch.qos.logback.classic.Level.toLevel(loggerLevel));
+		return Response.status(Status.OK).entity(logger.getLevel().toString()).build();
+    }
+    
     /**
      * gets the underlying drools controller from the named policy controller
      * @param controllerName the policy controller name
@@ -2204,6 +2278,13 @@ public class RestManager {
      * Helper classes for aggregation of results
      */
 	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("rest-telemetry-api []");
+		return builder.toString();
+	}
+
 	/**
 	 * Coding/Encoding Results Aggregation Helper class 
 	 */

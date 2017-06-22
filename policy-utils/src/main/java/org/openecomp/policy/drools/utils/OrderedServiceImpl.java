@@ -27,12 +27,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class is a template for building a sorted list of service instances,
  * which are discovered and created using 'ServiceLoader'. 
  */
 public class OrderedServiceImpl<T extends OrderedService>
 {
+  // logger
+  private static Logger  logger = LoggerFactory.getLogger(OrderedServiceImpl.class); 
+  
   // sorted list of instances implementing the service
   private List<T> implementers = null;
 
@@ -113,7 +119,7 @@ public class OrderedServiceImpl<T extends OrderedService>
 
 	// create an unmodifiable version of this list
 	implementers = Collections.unmodifiableList(tmp);
-	System.out.println("***** OrderedServiceImpl implementers:\n" + implementers);
+	logger.info("***** OrderedServiceImpl implementers:\n {}", implementers);
 	return(implementers);
   }
 

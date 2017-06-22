@@ -23,22 +23,23 @@ package org.openecomp.policy.drools.event.comm.bus.internal;
 import java.util.List;
 import java.util.Map;
 
-import org.openecomp.policy.common.logging.eelf.PolicyLogger;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This topic reader implementation specializes in reading messages
  * over DMAAP topic and notifying its listeners
  */
 public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
-                                            implements DmaapTopicSource, Runnable {
-	
+                                            implements DmaapTopicSource, Runnable {	
 
+	private static Logger logger = LoggerFactory.getLogger(SingleThreadedDmaapTopicSource.class);
+	
 	protected boolean allowSelfSignedCerts;
 	protected final String userName;
 	protected final String password;
-	private String className = SingleThreadedDmaapTopicSource.class.getName();
 	
 	protected String environment = null;
 	protected String aftEnvironment = null;
@@ -98,7 +99,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 		try {
 			this.init();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("ERROR during init of topic {}", this.topic);
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -135,7 +136,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 		try {
 			this.init();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("dmaap-source: cannot create topic {} because of {}", topic, e.getMessage(), e);
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -154,29 +155,29 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 								                           this.consumerGroup, this.consumerInstance,
 								                           this.fetchTimeout, this.fetchLimit,
 								                           this.useHttps, this.allowSelfSignedCerts);
-			} else if ((this.environment == null    || this.environment.isEmpty()) &&
-					   (this.aftEnvironment == null || this.aftEnvironment.isEmpty()) &&
-					   (this.latitude == null	   || this.latitude.isEmpty()) &&
-					   (this.longitude == null	   || this.longitude.isEmpty()) &&
-					   (this.partner == null 	   || this.partner.isEmpty())) {
-				this.consumer =
-						new BusConsumer.DmaapAafConsumerWrapper(this.servers, this.topic, 
-								                            this.apiKey, this.apiSecret,
-								                            this.userName, this.password,
-								                            this.consumerGroup, this.consumerInstance,
-								                            this.fetchTimeout, this.fetchLimit, this.useHttps);
-			} else {
-				this.consumer =
-						new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic, 
-								                            this.apiKey, this.apiSecret,
-								                            this.userName, this.password,
-								                            this.consumerGroup, this.consumerInstance,
-								                            this.fetchTimeout, this.fetchLimit,
-								                            this.environment, this.aftEnvironment, this.partner,
-								                            this.latitude, this.longitude, this.additionalProps, this.useHttps);
-			}
+		} else if ((this.environment == null    || this.environment.isEmpty()) &&
+				   (this.aftEnvironment == null || this.aftEnvironment.isEmpty()) &&
+				   (this.latitude == null	   || this.latitude.isEmpty()) &&
+				   (this.longitude == null	   || this.longitude.isEmpty()) &&
+				   (this.partner == null 	   || this.partner.isEmpty())) {
+			this.consumer =
+					new BusConsumer.DmaapAafConsumerWrapper(this.servers, this.topic, 
+							                            this.apiKey, this.apiSecret,
+							                            this.userName, this.password,
+							                            this.consumerGroup, this.consumerInstance,
+							                            this.fetchTimeout, this.fetchLimit, this.useHttps);
+		} else {
+			this.consumer =
+					new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic, 
+							                            this.apiKey, this.apiSecret,
+							                            this.userName, this.password,
+							                            this.consumerGroup, this.consumerInstance,
+							                            this.fetchTimeout, this.fetchLimit,
+							                            this.environment, this.aftEnvironment, this.partner,
+							                            this.latitude, this.longitude, this.additionalProps, this.useHttps);
+		}
 			
-		PolicyLogger.info(className, "CREATION: " + this);
+		logger.info("{}: INITTED", this);
 	}
 	
 	/**

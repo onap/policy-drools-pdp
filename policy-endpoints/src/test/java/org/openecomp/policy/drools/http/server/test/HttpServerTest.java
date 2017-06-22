@@ -29,15 +29,19 @@ import java.util.UUID;
 
 import org.junit.Test;
 import org.openecomp.policy.drools.http.server.HttpServletServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * HttpServletServer JUNIT tests
  */
 public class HttpServerTest {
+	
+	private static Logger logger = LoggerFactory.getLogger(HttpServerTest.class);
 
 	@Test
 	public void testSingleServer() throws Exception {
-		System.out.println("-- testSingleServer() --");
+		logger.info("-- testSingleServer() --");
 		
 		HttpServletServer server = HttpServletServer.factory.build("echo", "localhost", 5678, "/", false, true);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
@@ -48,7 +52,6 @@ public class HttpServerTest {
 		String echo = "hello";
 		URL url = new URL("http://localhost:5678/junit/echo/" + echo);
 		String response = response(url);
-		System.out.println("Received .. " + response);
 		assertTrue(response.equals(echo));
 	
 		String responseSwagger =  null;
@@ -67,7 +70,7 @@ public class HttpServerTest {
 	
 	@Test
 	public void testMultipleServers() throws Exception {
-		System.out.println("-- testMultipleServers() --");
+		logger.info("-- testMultipleServers() --");
 		
 		HttpServletServer server1 = HttpServletServer.factory.build("echo-1", "localhost", 5678, "/", true, true);
 		server1.addServletPackage("/*", this.getClass().getPackage().getName());
@@ -84,18 +87,14 @@ public class HttpServerTest {
 		
 		URL url1 = new URL("http://localhost:5678/junit/echo/" + echo);
 		String response1 = response(url1);
-		System.out.println("Received .. " + response1);
 		assertTrue(response1.equals(echo));
 		
 		URL urlSwagger = new URL("http://localhost:5678/swagger.json");
-		String responseSwagger = response(urlSwagger);
-		
-		System.out.println("Received .. " + responseSwagger);		
+		String responseSwagger = response(urlSwagger);	
 		assertTrue(responseSwagger != null);
 		
 		URL url2 = new URL("http://localhost:5679/junit/echo/" + echo);
 		String response2 = response(url2);
-		System.out.println("Received .. " + response2);
 		assertTrue(response2.equals(echo));
 		
 		String responseSwagger2 =  null;
@@ -105,8 +104,6 @@ public class HttpServerTest {
 		} catch(IOException ioe) {
 			// Expected
 		}
-		
-		System.out.println("Received .. " + responseSwagger2);		
 		assertTrue(responseSwagger2 == null);
 		
 		HttpServletServer.factory.destroy();		
@@ -115,7 +112,7 @@ public class HttpServerTest {
 	
 	@Test
 	public void testMultiServicePackage() throws Exception {
-		System.out.println("-- testMultiServicePackage() --");
+		logger.info("-- testMultiServicePackage() --");
 		
 		String randomName = UUID.randomUUID().toString();
 		
@@ -128,12 +125,10 @@ public class HttpServerTest {
 		String echo = "hello";
 		URL urlService1 = new URL("http://localhost:5678/junit/echo/" + echo);
 		String responseService1 = response(urlService1);
-		System.out.println("Received .. " + responseService1);
 		assertTrue(responseService1.equals(echo));
 		
 		URL urlService2 = new URL("http://localhost:5678/junit/endpoints/http/servers");
 		String responseService2 = response(urlService2);
-		System.out.println("Received .. " + responseService2);
 		assertTrue(responseService2.contains(randomName));
 		
 		HttpServletServer.factory.destroy();		
@@ -142,7 +137,7 @@ public class HttpServerTest {
 	
 	@Test
 	public void testServiceClass() throws Exception {
-		System.out.println("-- testServiceClass() --");
+		logger.info("-- testServiceClass() --");
 		String randomName = UUID.randomUUID().toString();
 		
 		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
@@ -154,7 +149,6 @@ public class HttpServerTest {
 		String echo = "hello";
 		URL urlService1 = new URL("http://localhost:5678/junit/echo/" + echo);
 		String responseService1 = response(urlService1);
-		System.out.println("Received .. " + responseService1);
 		assertTrue(responseService1.equals(echo));
 		
 		HttpServletServer.factory.destroy();		
@@ -163,7 +157,7 @@ public class HttpServerTest {
 	
 	@Test
 	public void testMultiServiceClass() throws Exception {
-		System.out.println("-- testMultiServiceClass() --");
+		logger.info("-- testMultiServiceClass() --");
 		
 		String randomName = UUID.randomUUID().toString();
 		
@@ -177,12 +171,10 @@ public class HttpServerTest {
 		String echo = "hello";
 		URL urlService1 = new URL("http://localhost:5678/junit/echo/" + echo);
 		String responseService1 = response(urlService1);
-		System.out.println("Received .. " + responseService1);
 		assertTrue(responseService1.equals(echo));
 		
 		URL urlService2 = new URL("http://localhost:5678/junit/endpoints/http/servers");
 		String responseService2 = response(urlService2);
-		System.out.println("Received .. " + responseService2);
 		assertTrue(responseService2.contains(randomName));
 		
 		HttpServletServer.factory.destroy();		
@@ -200,8 +192,6 @@ public class HttpServerTest {
 		while ((line = ioReader.readLine()) != null) {
 			response += line; 
 		}
-		
-		System.out.println("R is " + response);
 		ioReader.close();
 		return response;
 	}

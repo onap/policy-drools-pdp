@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.openecomp.policy.drools.event.comm.bus.internal.SingleThreadedDmaapTopicSource;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
 /**
@@ -208,10 +208,13 @@ public interface DmaapTopicSourceFactory {
  */
 
 class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
-	// get an instance of logger 
-	private static Logger  logger = FlexLogger.getLogger(IndexedDmaapTopicSourceFactory.class);		
 	/**
-	 * UEB Topic Name Index
+	 * Logger 
+	 */
+	private static Logger logger = LoggerFactory.getLogger(IndexedDmaapTopicSourceFactory.class);	
+	
+	/**
+	 * DMaaP Topic Name Index
 	 */
 	protected HashMap<String, DmaapTopicSource> dmaapTopicSources =
 			new HashMap<String, DmaapTopicSource>();
@@ -318,7 +321,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 		
 		String readTopics = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS);
 		if (readTopics == null || readTopics.isEmpty()) {
-			logger.warn("No topic for UEB Source " + properties);
+			logger.info("{}: no topic for DMaaP Source", this);
 			return new ArrayList<DmaapTopicSource>();
 		}
 		List<String> readTopicList = new ArrayList<String>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
@@ -426,7 +429,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 				
 				if (servers == null || servers.isEmpty()) {
 
-					logger.error("No DMaaP servers or DME2 ServiceName provided");
+					logger.error("{}: no DMaaP servers or DME2 ServiceName provided", this);
 					continue;
 				}
 				
@@ -435,7 +438,8 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 					try {
 						fetchTimeout = Integer.parseInt(fetchTimeoutString);
 					} catch (NumberFormatException nfe) {
-						logger.warn("Fetch Timeout in invalid format for topic " + topic + ": " + fetchTimeoutString);
+						logger.warn("{}: fetch timeout {} is in invalid format for topic {} ", 
+								    this, fetchTimeoutString, topic);
 					}
 				}
 					
@@ -447,7 +451,8 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 					try {
 						fetchLimit = Integer.parseInt(fetchLimitString);
 					} catch (NumberFormatException nfe) {
-						logger.warn("Fetch Limit in invalid format for topic " + topic + ": " + fetchLimitString);
+						logger.warn("{}: fetch limit {} is in invalid format for topic {} ", 
+							        this, fetchLimitString, topic);
 					}
 				}
 				
@@ -581,6 +586,12 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 		synchronized(this) {
 			this.dmaapTopicSources.clear();
 		}
+	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IndexedDmaapTopicSourceFactory []");
+		return builder.toString();
 	}
 	
 }

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.event.comm.bus.internal.InlineDmaapTopicSink;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
@@ -171,8 +171,10 @@ public interface DmaapTopicSinkFactory {
  * Factory of DMAAP Reader Topics indexed by topic name
  */
 class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
-	// get an instance of logger 
-	private static Logger  logger = FlexLogger.getLogger(IndexedDmaapTopicSinkFactory.class);	
+	/**
+	 * Logger
+	 */
+	private static Logger logger = LoggerFactory.getLogger(IndexedDmaapTopicSinkFactory.class);	
 	
 	/**
 	 * DMAAP Topic Name Index
@@ -279,7 +281,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		
 		String writeTopics = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS);
 		if (writeTopics == null || writeTopics.isEmpty()) {
-			logger.warn("No topic for DMAAP Sink " + properties);
+			logger.info("{}: no topic for DMaaP Sink", this);
 			return new ArrayList<DmaapTopicSink>();
 		}
 		
@@ -377,7 +379,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 					dme2AdditionalProps.put(DME2_SESSION_STICKINESS_REQUIRED_PROPERTY, dme2SessionStickinessRequired);
 
 				if (servers == null || servers.isEmpty()) {
-					logger.error("No DMaaP servers or DME2 ServiceName provided");
+					logger.error("{}: no DMaaP servers or DME2 ServiceName provided", this);
 					continue;
 				}
 				
@@ -485,6 +487,13 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		 List<DmaapTopicSink> writers = 
 				 new ArrayList<DmaapTopicSink>(this.dmaapTopicWriters.values());
 		 return writers;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IndexedDmaapTopicSinkFactory []");
+		return builder.toString();
 	}
 	
 }

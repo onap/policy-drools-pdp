@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openecomp.policy.drools.event.comm.bus.internal.InlineUebTopicSink;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.openecomp.policy.drools.properties.PolicyProperties;
 
 /**
@@ -120,8 +120,11 @@ public interface UebTopicSinkFactory {
  * Factory of UEB Reader Topics indexed by topic name
  */
 class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
-	// get an instance of logger 
-	private static Logger  logger = FlexLogger.getLogger(IndexedUebTopicSinkFactory.class);		
+	/**
+	 * Logger 
+	 */
+	private static Logger logger = LoggerFactory.getLogger(IndexedUebTopicSinkFactory.class);	
+	
 	/**
 	 * UEB Topic Name Index
 	 */
@@ -184,7 +187,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		
 		String writeTopics = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS);
 		if (writeTopics == null || writeTopics.isEmpty()) {
-			logger.warn("No topic for UEB Sink " + properties);
+			logger.info("{}: no topic for UEB Sink", this);
 			return new ArrayList<UebTopicSink>();
 		}
 		
@@ -201,7 +204,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 				                                        topic + 
 				                                        PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				if (servers == null || servers.isEmpty()) {
-					logger.error("No UEB servers provided in " + properties);
+					logger.error("{}: no UEB servers configured for sink {}", this, topic);
 					continue;
 				}
 				
@@ -318,6 +321,14 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		 List<UebTopicSink> writers = 
 				 new ArrayList<UebTopicSink>(this.uebTopicSinks.values());
 		 return writers;
+	}
+
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("IndexedUebTopicSinkFactory []");
+		return builder.toString();
 	}
 	
 }

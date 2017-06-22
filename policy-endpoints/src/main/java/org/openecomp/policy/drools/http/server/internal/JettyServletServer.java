@@ -28,11 +28,9 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
-
-import org.openecomp.policy.common.logging.eelf.MessageCodes;
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
 import org.openecomp.policy.drools.http.server.HttpServletServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -41,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class JettyServletServer implements HttpServletServer, Runnable {
 	
-	private static Logger logger = FlexLogger.getLogger(JettyServletServer.class);
+	private static Logger logger = LoggerFactory.getLogger(JettyServletServer.class);
 
 	protected final String name;
 
@@ -141,11 +139,13 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	 */
 	@Override
 	public void run() {
-        try {        	
-        	if (logger.isInfoEnabled())
-        		logger.info(this + " STARTING " + this.jettyServer.dump());
+        try {
+        	logger.info("{}: STARTING", this);
         	
             this.jettyServer.start();
+            
+            if (logger.isInfoEnabled()) 
+            	logger.info("{}: STARTED: {}", this, this.jettyServer.dump());
             
         	synchronized(this.startCondition) {
         		this.startCondition.notifyAll();
@@ -153,13 +153,13 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
         	
             this.jettyServer.join();
         } catch (Exception e) {
-			logger.warn(MessageCodes.EXCEPTION_ERROR, e,  
-	                    "Error found while running management server", this.toString());
+			logger.error("{}: error found while bringing up server", this, e);
 		} 
 	}
 	
 	@Override
 	public boolean waitedStart(long maxWaitTime) throws IllegalArgumentException {
+		logger.info("{}: WAITED-START", this);
 		
 		if (maxWaitTime < 0)
 			throw new IllegalArgumentException("max-wait-time cannot be negative");
@@ -184,15 +184,13 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 					long endTs = System.currentTimeMillis();
 					pendingWaitTime = pendingWaitTime - (endTs - startTs);
 					
-					if (logger.isInfoEnabled())
-						logger.info(this + "Pending time is " + pendingWaitTime + 
-								    " ms.");
+					logger.info("{}: pending time is {} ms.", this, pendingWaitTime);
 					
 					if (pendingWaitTime <= 0)
 						return false;
 					
 				} catch (InterruptedException e) {
-					logger.warn("waited-start has been interrupted");
+					logger.warn("{}: waited-start has been interrupted", this);
 					return false;			
 				}
 			}
@@ -206,8 +204,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	 */
 	@Override
 	public boolean start() throws IllegalStateException {
-		if (logger.isDebugEnabled())
-			logger.debug(this + "START");
+		logger.info("{}: STARTING", this);
 		
 		synchronized(this) {			
 			if (jettyThread == null || 
@@ -227,7 +224,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	 */
 	@Override
 	public boolean stop() throws IllegalStateException {
-		logger.info(this + "STOP");
+		logger.info("{}: STOPPING", this);
 		
 		synchronized(this) {
 			if (jettyThread == null) {
@@ -241,16 +238,13 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 			try {
 				this.connector.stop();
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e,  
-				           "Error while stopping management server", this.toString());
-				e.printStackTrace();
+				logger.error("{}: error while stopping management server", this, e);
 			}
 			
 			try {
 				this.jettyServer.stop();
 			} catch (Exception e) {
-				logger.error(MessageCodes.EXCEPTION_ERROR, e,  
-						           "Error while stopping management server", this.toString());
+				logger.error("{}: error while stopping management server", this, e);
 				return false;
 			}
 			
@@ -265,7 +259,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	 */
 	@Override
 	public void shutdown() throws IllegalStateException {
-		logger.info(this + "SHUTDOWN");
+		logger.info("{}: SHUTTING DOWN", this);
 		
 		this.stop();
 		
@@ -278,15 +272,14 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 			try {
 				jettyThreadCopy.join(1000L);
 			} catch (InterruptedException e) {
-				logger.warn(MessageCodes.EXCEPTION_ERROR, e,  
-				                  "Error while shutting down management server", this.toString());
+				logger.warn("{}: error while shutting down management server", this);
 			}
 			if (!jettyThreadCopy.isInterrupted()) {
 				try {
 					jettyThreadCopy.interrupt();
 				} catch(Exception e) {
 					// do nothing
-					logger.warn("exception while shutting down (OK)");
+					logger.warn("{}: exception while shutting down (OK)", this);
 				}
 			}
 		}

@@ -25,8 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.persistence.SystemPersistence;
 import org.openecomp.policy.drools.utils.PropertyUtil;
@@ -35,13 +35,57 @@ import org.openecomp.policy.drools.utils.PropertyUtil;
  * Programmatic entry point to the management layer
  */
 public class Main {
+
+	/**
+	 * logback configuration file system property
+	 */
+	public static final String LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY = "logback.configurationFile";
 	
 	/**
-	 * logger
+	 * logback configuration file system property
 	 */
-	private static Logger  logger = FlexLogger.getLogger(Main.class, true);  
+	public static final String LOGBACK_CONFIGURATION_FILE_DEFAULT = "config/logback.xml";
 	
+	/**
+	 * EELF logback configuration path system property
+	 */
+	public static final String EELF_LOGBACK_PATH_SYSTEM_PROPERTY = "com.att.eelf.logging.file";
+	
+	/**
+	 * EELF logback configuration path value
+	 */
+	public static final String EELF_LOGBACK_PATH_DEFAULT = "config";
+	
+	/**
+	 * EELF logback configuration file system property
+	 */
+	public static final String EELF_LOGBACK_FILE_SYSTEM_PROPERTY = "com.att.eelf.logging.path";
+	
+	/**
+	 * EELF logback configuration file default value
+	 */
+	public static final String EELF_LOGBACK_FILE_DEFAULT = "logback.xml";
+	
+	
+	/**
+	 * main
+	 * 
+	 * @param args program arguments
+	 */
 	public static void main(String args[]) {
+		
+		/* logging defaults */
+		
+		if (System.getProperty(LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY) == null)
+			System.setProperty(LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, LOGBACK_CONFIGURATION_FILE_DEFAULT);
+		
+		if (System.getProperty(EELF_LOGBACK_PATH_SYSTEM_PROPERTY) == null)
+			System.setProperty(EELF_LOGBACK_PATH_SYSTEM_PROPERTY, EELF_LOGBACK_PATH_DEFAULT);
+		
+		if (System.getProperty(EELF_LOGBACK_FILE_SYSTEM_PROPERTY) == null)
+			System.setProperty(EELF_LOGBACK_FILE_SYSTEM_PROPERTY, EELF_LOGBACK_FILE_DEFAULT);
+		
+		Logger logger = LoggerFactory.getLogger(Main.class);
 		
 		File configDir = new File(SystemPersistence.CONFIG_DIR_NAME);
 		
@@ -57,9 +101,7 @@ public class Main {
 		try {
 			PolicyContainer.globalInit(args);
 		} catch (Exception e) {
-			System.out.println("policy-core startup failed");
-			logger.warn("policy-core startup failed");
-			e.printStackTrace();
+			logger.warn("Main: cannot init policy-container because of {}", e.getMessage(), e);
 		}
 		
 		/* 1. Configure the Engine */
@@ -69,9 +111,7 @@ public class Main {
 			Properties properties = PropertyUtil.getProperties(policyEnginePath.toFile());
 			PolicyEngine.manager.configure(properties);
 		} catch (Exception e) {
-			String msg = "Policy Engine cannot be configured with properties: " + e.getMessage() + " : " + PolicyEngine.manager;
-			System.out.println(msg);
-			logger.warn(msg);
+			logger.warn("Main: cannot initialize {} because of {}", PolicyEngine.manager, e.getMessage(), e);
 		}
 		
 		/* 2. Start the Engine with the basic services only (no Policy Controllers) */
@@ -79,17 +119,12 @@ public class Main {
 		try {
 			boolean success = PolicyEngine.manager.start();
 			if (!success) {
-				System.out.println("Policy Engine found some problems starting some components: " + PolicyEngine.manager);
-				logger.warn("Policy Engine is in an invalid state: " + PolicyEngine.manager);				
+				logger.warn("Main: {} has been partially started", PolicyEngine.manager);		
 			}
 		} catch (IllegalStateException e) {
-			String msg = "Policy Engine is starting in an unexpected state: " + e.getMessage() + " : " + PolicyEngine.manager;
-			System.out.println(msg);
-			logger.warn(msg);
+			logger.warn("Main: cannot start {} (bad state) because of {}", PolicyEngine.manager, e.getMessage(), e);
 		} catch (Exception e) {
-			String msg = "Unexpected Situation.  Policy Engine cannot be started: " + e.getMessage() + " : " + PolicyEngine.manager;
-			System.out.println(msg);
-			e.printStackTrace();
+			logger.warn("Main: cannot start {} because of {}", PolicyEngine.manager, e.getMessage(), e);
 			System.exit(1);
 		}
 		
@@ -117,13 +152,10 @@ public class Main {
 					PolicyController controller = PolicyEngine.manager.createPolicyController(name, properties);
 					controller.start();
 				} catch (Exception e) {
-					System.out.println("can't instantiate Policy Controller based on properties file: " + 
-				                       config + " with message " + e.getMessage());
-					e.printStackTrace();
-				} catch (LinkageError le) {
-					System.out.println("can't instantiate Policy Controller based on properties file: " + 
-		                       config + ". A Linkage Error has been encountered: " + le.getMessage());
-					le.printStackTrace();					
+					logger.error("Main: cannot instantiate policy-controller {} because of {}", name, e.getMessage(), e);
+				} catch (LinkageError e) {
+					logger.warn("Main: cannot instantiate policy-controller {} (linkage) because of {}", 
+							    name, e.getMessage(), e);
 				}
 			}
 		}

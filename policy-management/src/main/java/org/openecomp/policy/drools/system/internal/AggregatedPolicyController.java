@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.openecomp.policy.common.logging.flexlogger.FlexLogger;
-import org.openecomp.policy.common.logging.flexlogger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.controller.DroolsController;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.TopicEndpoint;
@@ -50,7 +50,7 @@ public class AggregatedPolicyController implements PolicyController,
 	/**
 	 * Logger
 	 */
-	private static Logger  logger = FlexLogger.getLogger(AggregatedPolicyController.class); 
+	private static Logger logger = LoggerFactory.getLogger(AggregatedPolicyController.class); 
 	
 	/**
 	 * identifier for this policy controller
@@ -144,10 +144,7 @@ public class AggregatedPolicyController implements PolicyController,
 			// Register with drools infrastructure
 			this.droolsController = DroolsController.factory.build(properties, sources, sinks);
 		} catch (Exception | LinkageError e) {
-			logger.error("BUILD-INIT-DROOLS: " + e.getMessage());
-			e.printStackTrace();
-			
-			// throw back exception as input properties cause problems
+			logger.error("{}: cannot init-drools because of {}", this, e.getMessage(), e);
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -177,8 +174,8 @@ public class AggregatedPolicyController implements PolicyController,
 		if (oldDroolsConfiguration.getGroupId().equalsIgnoreCase(newDroolsConfiguration.getGroupId()) &&
 			oldDroolsConfiguration.getArtifactId().equalsIgnoreCase(newDroolsConfiguration.getArtifactId()) &&
 			oldDroolsConfiguration.getVersion().equalsIgnoreCase(newDroolsConfiguration.getVersion())) {
-			logger.warn("UPDATE-DROOLS: nothing to do: identical configuration: " + oldDroolsConfiguration +
-					    " <=> " + newDroolsConfiguration);
+			logger.warn("{}: cannot update-drools: identical configuration {} vs {}", 
+					    this, oldDroolsConfiguration, newDroolsConfiguration);
 			return true;
 		}
 		
@@ -208,8 +205,7 @@ public class AggregatedPolicyController implements PolicyController,
 				this.droolsController.stop();
 			
 		} catch (IllegalArgumentException e) {
-			logger.warn("INIT-DROOLS: " + e.getMessage());
-			e.printStackTrace();
+			logger.error("{}: cannot update-drools because of {}", this, e.getMessage(), e);
 			return false;
 		}	
 		
@@ -228,17 +224,16 @@ public class AggregatedPolicyController implements PolicyController,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean start() throws IllegalStateException {
-		
-		if (logger.isInfoEnabled())
-			logger.info("START: " +  this);
+	public boolean start() throws IllegalStateException {		
+		logger.info("{}: start", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeStart(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-start failure because of {}",  
+			                 this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -264,8 +259,8 @@ public class AggregatedPolicyController implements PolicyController,
 			try {
 				sink.start();
 			} catch (Exception e) {
-				logger.warn("can't start sink: " + sink + " because of " + e.getMessage());
-				e.printStackTrace();
+				logger.error("{}: cannot start {} because of {}",  
+		                     this, sink, e.getMessage(), e);
 			}
 		}
 		
@@ -274,7 +269,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterStart(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-start failure because of {}",  
+		                     this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -286,16 +282,15 @@ public class AggregatedPolicyController implements PolicyController,
 	 */
 	@Override
 	public boolean stop() {
-		
-		if (logger.isInfoEnabled())
-			logger.info("STOP: " + this);
+		logger.info("{}: stop", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeStop(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-stop failure because of {}",  
+		                     this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -321,7 +316,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterStop(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-stop failure because of {}",  
+	                         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -333,15 +329,15 @@ public class AggregatedPolicyController implements PolicyController,
 	 */
 	@Override
 	public void shutdown() throws IllegalStateException {
-		if (logger.isInfoEnabled())
-			logger.info("SHUTDOWN: " + this);
+		logger.info("{}: shutdown", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeShutdown(this))
 					return;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-shutdown failure because of {}",  
+	                         this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -354,7 +350,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterShutdown(this))
 					return;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-shutdown failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 	}
@@ -364,15 +361,15 @@ public class AggregatedPolicyController implements PolicyController,
 	 */
 	@Override
 	public void halt() throws IllegalStateException {
-		if (logger.isInfoEnabled())
-			logger.info("HALT: " + this);
+		logger.info("{}: halt", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeHalt(this))
 					return;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-halt failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -385,7 +382,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterHalt(this))
 					return;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-halt failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 	}
@@ -398,14 +396,15 @@ public class AggregatedPolicyController implements PolicyController,
 			                    String topic, String event) {
 
 		if (logger.isDebugEnabled())
-			logger.debug("EVENT NOTIFICATION: " + commType + ":" + topic + ":" + event +  " INTO " + this);
+			logger.debug("{}: event offered from {}:{}: {}", this, commType, topic, event);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeOffer(this, commType, topic, event))
 					return;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-offer failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -422,7 +421,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterOffer(this, commType, topic, event, success))
 					return;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-offer failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 	}
@@ -437,14 +437,15 @@ public class AggregatedPolicyController implements PolicyController,
                UnsupportedOperationException {	
 		
 		if (logger.isDebugEnabled())
-			logger.debug("DELIVER: " + commType + ":" + topic + ":" + event +  " FROM " + this);
+			logger.debug("{}: deliver event to {}:{}: {}", this, commType, topic, event);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeDeliver(this, commType, topic, event))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-deliver failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -461,9 +462,9 @@ public class AggregatedPolicyController implements PolicyController,
 			throw new IllegalStateException("Policy Engine is locked");
 		
 		if (!this.topic2Sinks.containsKey(topic)) {
-			logger.error("UNDELIVERED: " + commType + ":" + topic + ":" + event +  " FROM " + this);
-			throw new IllegalArgumentException
-					("Unsuported topic " + topic + " for delivery");
+			logger.warn("{}: cannot deliver event because the sink {}:{} is not registered: {}", 
+					     this, commType, topic, event);
+			throw new IllegalArgumentException("Unsuported topic " + topic + " for delivery");
 		}
 		
 		boolean success = this.droolsController.deliver(this.topic2Sinks.get(topic), event);
@@ -473,7 +474,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterDeliver(this, commType, topic, event, success))
 					return success;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-deliver failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -493,15 +495,15 @@ public class AggregatedPolicyController implements PolicyController,
 	 */
 	@Override
 	public boolean lock() {
-		if (logger.isInfoEnabled())
-			logger.info("LOCK: " + this);
+		logger.info("{}: lock", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeLock(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-lock failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -522,7 +524,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterLock(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-lock failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -535,15 +538,15 @@ public class AggregatedPolicyController implements PolicyController,
 	@Override
 	public boolean unlock() {
 		
-		if (logger.isInfoEnabled())
-			logger.info("UNLOCK: " + this);
+		logger.info("{}: unlock", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			try {
 				if (feature.beforeUnlock(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} before-unlock failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
@@ -561,7 +564,8 @@ public class AggregatedPolicyController implements PolicyController,
 				if (feature.afterUnlock(this))
 					return true;
 			} catch (Exception e) {
-				logger.warn("ERROR: Feature API: " + feature.getClass().getName() + e.getMessage(), e);
+				logger.error("{}: feature {} after-unlock failure because of {}",  
+                             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
 		
