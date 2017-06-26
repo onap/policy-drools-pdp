@@ -25,11 +25,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.persistence.SystemPersistence;
 import org.openecomp.policy.drools.utils.PropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Programmatic entry point to the management layer
@@ -47,25 +46,9 @@ public class Main {
 	public static final String LOGBACK_CONFIGURATION_FILE_DEFAULT = "config/logback.xml";
 	
 	/**
-	 * EELF logback configuration path system property
+	 * constructor (hides public default one)
 	 */
-	public static final String EELF_LOGBACK_PATH_SYSTEM_PROPERTY = "com.att.eelf.logging.file";
-	
-	/**
-	 * EELF logback configuration path value
-	 */
-	public static final String EELF_LOGBACK_PATH_DEFAULT = "config";
-	
-	/**
-	 * EELF logback configuration file system property
-	 */
-	public static final String EELF_LOGBACK_FILE_SYSTEM_PROPERTY = "com.att.eelf.logging.path";
-	
-	/**
-	 * EELF logback configuration file default value
-	 */
-	public static final String EELF_LOGBACK_FILE_DEFAULT = "logback.xml";
-	
+	private Main() {}	
 	
 	/**
 	 * main
@@ -79,11 +62,9 @@ public class Main {
 		if (System.getProperty(LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY) == null)
 			System.setProperty(LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, LOGBACK_CONFIGURATION_FILE_DEFAULT);
 		
-		if (System.getProperty(EELF_LOGBACK_PATH_SYSTEM_PROPERTY) == null)
-			System.setProperty(EELF_LOGBACK_PATH_SYSTEM_PROPERTY, EELF_LOGBACK_PATH_DEFAULT);
+		/* 0. boot */
 		
-		if (System.getProperty(EELF_LOGBACK_FILE_SYSTEM_PROPERTY) == null)
-			System.setProperty(EELF_LOGBACK_FILE_SYSTEM_PROPERTY, EELF_LOGBACK_FILE_DEFAULT);
+		PolicyEngine.manager.boot(args);
 		
 		Logger logger = LoggerFactory.getLogger(Main.class);
 		
@@ -93,15 +74,6 @@ public class Main {
 			throw new IllegalArgumentException
 						("config directory: " + configDir.getAbsolutePath() + 
 						 " not found");
-		}
-		
-		
-		/* 0. Start the CORE layer first */
-
-		try {
-			PolicyContainer.globalInit(args);
-		} catch (Exception e) {
-			logger.warn("Main: cannot init policy-container because of {}", e.getMessage(), e);
 		}
 		
 		/* 1. Configure the Engine */

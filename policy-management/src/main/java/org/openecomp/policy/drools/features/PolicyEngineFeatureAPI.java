@@ -33,6 +33,24 @@ import org.openecomp.policy.drools.utils.OrderedServiceImpl;
 public interface PolicyEngineFeatureAPI extends OrderedService {
 	
 	  /**
+	   * intercept before the Policy Engine is commanded to boot.
+	   * 
+	   * @return true if this feature intercepts and takes ownership
+	   * of the operation preventing the invocation of 
+	   * lower priority features.   False, otherwise.
+	   */
+	  public default boolean beforeBoot(PolicyEngine engine, String cliArgs[]) {return false;};
+	  
+	  /**
+	   * intercept after the Policy Engine is booted.
+	   * 
+	   * @return true if this feature intercepts and takes ownership
+	   * of the operation preventing the invocation of 
+	   * lower priority features.   False, otherwise.
+	   */
+	  public default boolean afterBoot(PolicyEngine engine) {return false;};
+	
+	  /**
 	   * intercept before the Policy Engine is configured.
 	   * 
 	   * @return true if this feature intercepts and takes ownership
@@ -180,5 +198,5 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * Feature providers implementing this interface
 	   */
 	  public static final OrderedServiceImpl<PolicyEngineFeatureAPI> providers = 
-			  						new OrderedServiceImpl<PolicyEngineFeatureAPI>(PolicyEngineFeatureAPI.class);
+			  						new OrderedServiceImpl<>(PolicyEngineFeatureAPI.class);
 }

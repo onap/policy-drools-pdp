@@ -521,8 +521,8 @@ public class MavenDroolsController implements DroolsController {
 					                                      topic, 
 					                                      event);
 		} catch (UnsupportedOperationException uoe) {
-			logger.info("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 
-					    event, uoe.getMessage(), uoe);
+			logger.debug("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 
+					     event, uoe.getMessage(), uoe);
 			return true;
 		} catch (Exception e) {
 			logger.warn("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 

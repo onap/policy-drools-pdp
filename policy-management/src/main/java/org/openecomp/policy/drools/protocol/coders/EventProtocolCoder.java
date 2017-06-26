@@ -937,7 +937,7 @@ abstract class GenericEventProtocolCoder  {
 			if (event != null)
 				return event;
 		} catch (Exception e) {
-			logger.info("{}, cannot decode {}", this, json, e);
+			logger.debug("{}, cannot decode {}", this, json, e);
 		}
 		
 		if (multipleToolsetRetries) {
