@@ -77,6 +77,12 @@
 			<version>${project.version}</version>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+			<groupId>org.openecomp.policy.drools-pdp</groupId>
+			<artifactId>feature-eelf</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
 	</dependencies>
 
 </project>

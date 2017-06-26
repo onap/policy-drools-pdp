@@ -27,6 +27,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.openecomp.policy.drools.controller.DroolsController;
+import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.core.jmx.PdpJmxListener;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.Topic.CommInfrastructure;
@@ -81,6 +82,13 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * Default Config Server Hostname
 	 */
 	public static final String CONFIG_SERVER_DEFAULT_HOST = "localhost";
+	
+	/**
+	 * Boot the engine
+	 * 
+	 * @param cliArgs command line arguments
+	 */
+	public void boot(String cliArgs[]);
 	
 	/**
 	 * configure the policy engine according to the given properties
@@ -318,7 +326,7 @@ class PolicyEngineManager implements PolicyEngine {
 	/**
 	 * logger
 	 */
-	private static Logger  logger = LoggerFactory.getLogger(PolicyEngineManager.class);  	
+	private static Logger logger = LoggerFactory.getLogger(PolicyEngineManager.class);  	
 	
 	/**
 	 * Is the Policy Engine running?
@@ -354,6 +362,40 @@ class PolicyEngineManager implements PolicyEngine {
 	 * gson parser to decode configuration requests
 	 */
 	protected Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
+	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public synchronized void boot(String cliArgs[]) {
+		
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeBoot(this, cliArgs))
+					return;
+			} catch (Exception e) {
+				logger.error("{}: feature {} before-boot failure because of {}",  
+				             this, feature.getClass().getName(), e.getMessage(), e);
+			}
+		}
+		
+		try {
+			PolicyContainer.globalInit(cliArgs);
+		} catch (Exception e) {
+			logger.error("{}: cannot init policy-container because of {}", this, e.getMessage(), e);
+		}
+		
+		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterBoot(this))
+					return;
+			} catch (Exception e) {
+				logger.error("{}: feature {} after-boot failure because of {}",  
+				             this, feature.getClass().getName(), e.getMessage(), e);
+			}
+		}
+	}
 	
 	/**
 	 * {@inheritDoc}

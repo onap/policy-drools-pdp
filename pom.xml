@@ -65,6 +65,7 @@
 		<module>policy-endpoints</module>
 		<module>policy-management</module>
 		<module>policy-healthcheck</module>
+		<module>feature-eelf</module>
 		<module>packages</module>
 	</modules>
 
