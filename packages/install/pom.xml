@@ -73,7 +73,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openecomp.policy.drools-pdp</groupId>
-			<artifactId>policy-healthcheck</artifactId>
+			<artifactId>feature-healthcheck</artifactId>
 			<version>${project.version}</version>
 			<type>zip</type>
 		</dependency>

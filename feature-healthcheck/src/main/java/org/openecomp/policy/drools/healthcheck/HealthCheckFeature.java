@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-healthcheck
+ * feature-healthcheck
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -38,7 +38,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
 	/**
 	 * Properties Configuration Name
 	 */
-	public static final String CONFIGURATION_PROPERTIES_NAME = "policy-healthcheck";
+	public static final String CONFIGURATION_PROPERTIES_NAME = "feature-healthcheck";
 
 	@Override
 	public int getSequenceNumber() {

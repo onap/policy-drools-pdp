@@ -38,7 +38,7 @@
 			<directory>target</directory>
 			<outputDirectory>lib/opt</outputDirectory>
 			<includes>
-				<include>policy-healthcheck-${project.version}.jar</include>
+				<include>feature-healthcheck-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
