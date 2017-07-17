@@ -562,8 +562,8 @@ public class PolicySession
 			{
 			  kieSession.fireUntilHalt();
 
-			  // if we fall through, it means 'KieSession.halt()' was called
-			  repeat = false;
+			  // if we fall through, it means 'KieSession.halt()' was called,
+			  // but this may be a result of 'KieScanner' doing an update
 			}
 		  catch (Throwable e)
 			{

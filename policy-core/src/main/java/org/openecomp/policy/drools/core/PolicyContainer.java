@@ -124,7 +124,11 @@ public class PolicyContainer implements Startable
 		}
 		containers.add(this);
 	  }
-	startScanner(releaseId);
+	// 'startScanner(releaseId)' was called at this point, but we have seen
+	// at least one case where the Drools container was repeatedly updated
+	// every 60 seconds. It isn't clear what conditions resulted in this
+	// behavior, so the call was removed. If needed, it can be explicitly
+	// called from a feature.
   }
 
   /**
