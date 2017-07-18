@@ -35,30 +35,39 @@
 	<fileSets>
 		<fileSet>
 			<directory>target</directory>
-			<outputDirectory>lib/opt</outputDirectory>
+			<outputDirectory>lib/feature</outputDirectory>
 			<includes>
 				<include>feature-eelf-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/assembly/</directory>
-			<outputDirectory>.</outputDirectory>
-			<excludes/>
-		</fileSet>
-		<fileSet>
-			<directory>.</directory>
-			<outputDirectory>lib</outputDirectory>
+			<directory>target/assembly/lib</directory>
+			<outputDirectory>lib/dependencies</outputDirectory>
 			<includes>
 				<include>*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>src/main/install/config</directory>
+			<directory>src/main/feature/config</directory>
 			<outputDirectory>config</outputDirectory>
+			<fileMode>0644</fileMode>
+			<excludes/>
 		</fileSet>
 		<fileSet>
-			<directory>src/main/install/bin</directory>
+			<directory>src/main/feature/bin</directory>
 			<outputDirectory>bin</outputDirectory>
+			<fileMode>0744</fileMode>
+			<excludes/>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/feature/db</directory>
+			<outputDirectory>db</outputDirectory>
+			<fileMode>0744</fileMode>
+			<excludes/>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/feature/install</directory>
+			<outputDirectory>install</outputDirectory>
 			<fileMode>0744</fileMode>
 			<excludes/>
 		</fileSet>

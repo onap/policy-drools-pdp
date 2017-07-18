@@ -48,7 +48,7 @@ public class EElfTest {
 	/**
 	 * logback configuration location
 	 */
-	public final static String LOGBACK_CONFIGURATION_FILE_DEFAULT = "src/main/install/config/logback.xml";
+	public final static String LOGBACK_CONFIGURATION_FILE_DEFAULT = "src/main/feature/config/logback-eelf.xml";
 	
 	/**
 	 * SLF4J Logger
@@ -73,15 +73,15 @@ public class EElfTest {
 	/**
 	 * Assert Log Levels are the same between an EELF Logger and an SLF4J Logger
 	 * 
-	 * @param eelfAuditLogger
-	 * @param slf4jAuditLogger
+	 * @param eelfLogger EELF Logger
+	 * @param slf4jLogger SLF4J Logger
 	 */
-	protected void assertLogLevels(EELFLogger eelfAuditLogger, Logger slf4jAuditLogger) {
-		assertTrue(slf4jAuditLogger.isDebugEnabled() == eelfAuditLogger.isDebugEnabled());
-		assertTrue(slf4jAuditLogger.isInfoEnabled() == eelfAuditLogger.isInfoEnabled());
-		assertTrue(slf4jAuditLogger.isErrorEnabled() == eelfAuditLogger.isErrorEnabled());
-		assertTrue(slf4jAuditLogger.isWarnEnabled() == eelfAuditLogger.isWarnEnabled());
-		assertTrue(slf4jAuditLogger.isTraceEnabled() == eelfAuditLogger.isTraceEnabled());
+	protected void assertLogLevels(EELFLogger eelfLogger, Logger slf4jLogger) {
+		assertTrue(slf4jLogger.isDebugEnabled() == eelfLogger.isDebugEnabled());
+		assertTrue(slf4jLogger.isInfoEnabled() == eelfLogger.isInfoEnabled());
+		assertTrue(slf4jLogger.isErrorEnabled() == eelfLogger.isErrorEnabled());
+		assertTrue(slf4jLogger.isWarnEnabled() == eelfLogger.isWarnEnabled());
+		assertTrue(slf4jLogger.isTraceEnabled() == eelfLogger.isTraceEnabled());
 	}
 	
 	@Test
@@ -117,14 +117,22 @@ public class EElfTest {
 		EELFLogger eelfAuditLogger = EELFManager.getInstance().getAuditLogger();
 		Logger slf4jAuditLogger = org.slf4j.LoggerFactory.getLogger(Configuration.AUDIT_LOGGER_NAME);
 		org.openecomp.policy.common.logging.flexlogger.Logger flexLogger = 
-												FlexLogger.getLogger(EElfTest.class);
+												FlexLogger.getLogger(EElfTest.class, true);
 		
-		/* generate an audit entry through both logs */
+		/* generate an error entry */
+		
+		Exception testException = new IllegalStateException("exception test");
+		flexLogger.error("flex-logger exception", testException);
+		EELFManager.getInstance().getErrorLogger().error("eelf-logger exception", testException);
+		org.slf4j.LoggerFactory.getLogger(Configuration.ERROR_LOGGER_NAME).error("slf4j-logger", testException);
+
+		
+		/* generate an audit entry through all logs */
 		
 		flexLogger.audit("flexlogger audit");
 		eelfAuditLogger.info("eelf audit");
 		slf4jAuditLogger.info("slf4j audit");
-
+		
 		/* check log levels in eelf and standard slf4j  change in both directions */
 		
 		/* eelf initiated */

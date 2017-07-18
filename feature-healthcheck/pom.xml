@@ -82,8 +82,9 @@
               <useRepositoryLayout>false</useRepositoryLayout>
               <addParentPoms>false</addParentPoms>
               <copyPom>false</copyPom>
-              <excludeGroupIds>org.opendaylight,com.brocade.odl</excludeGroupIds>
-              <excludeScope>provided</excludeScope>
+			  <includeScope>runtime</includeScope>
+			  <excludeScope>provided</excludeScope>
+			  <excludeTransitive>true</excludeTransitive>
             </configuration>
           </execution>
         </executions>

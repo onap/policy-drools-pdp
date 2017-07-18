@@ -1,6 +1,8 @@
+#! /bin/bash
+
 ###
 # ============LICENSE_START=======================================================
-# policy-management
+# ONAP POLICY
 # ================================================================================
 # Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
@@ -16,23 +18,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============LICENSE_END=========================================================
-###
+##
 
-# system properties passed to controller
+if [[ "${DEBUG}" == "y" ]]; then
+	set -x
+fi
 
-# jmx
+SYSTEM_PROPS="${POLICY_HOME}"/config/system.properties
 
-com.sun.management.jmxremote.port = 9991
-com.sun.management.jmxremote.authenticate = false
-com.sun.management.jmxremote.ssl = false
-
-# certs
-
-javax.net.ssl.keyStore=/opt/app/policy/etc/ssl/policy-keystore
-javax.net.ssl.keyStorePassword = ${{KEYSTORE_PASSWD}}
-javax.net.ssl.trustStore=/opt/app/policy/etc/ssl/policy-keystore
-javax.net.ssl.trustStorePassword = ${{KEYSTORE_PASSWD}}
-
-# standard logging
-
-logback.configurationFile=config/logback.xml
+if [[ -f ${SYSTEM_PROPS} && -r ${SYSTEM_PROPS} ]]; then
+	if grep -q "^logback.configurationFile=.*$" "${SYSTEM_PROPS}"; then
+		sed -i -e "s|^logback.configurationFile=.*$|logback.configurationFile=config/logback-eelf.xml|" "${SYSTEM_PROPS}"
+	else
+		echo "logback.configurationFile=config/logback-eelf.xml" >> "${SYSTEM_PROPS}"
+	fi
+fi

@@ -1,0 +1,640 @@
+#! /bin/bash
+
+###
+# ============LICENSE_START=======================================================
+# ONAP POLICY
+# ================================================================================
+# Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+# ================================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ============LICENSE_END=========================================================
+##
+
+# #############################################################
+# Features Directory Layout:
+#
+# POLICY_HOME/
+#   └── features/
+#        └── <feature-name>*/
+#            └── [config]/
+#            │   └── <config-file>*
+#            └── lib/
+#            │   └── [dependencies]/
+#            │   │   └── <dependent-jar>*
+#            │   └── feature/
+#            │       └── <feature-jar>
+#            └── [install]
+#                └── [enable]
+#                └── [disable]
+#                └── [other-future-operations]
+#                └── [other-files]
+#
+#   <feature-name> directory should not have the "feature-" prefix.
+#   <config-file> preferable with "feature-" prefix.
+#
+# Example:
+#
+# POLICY_HOME/
+#   └── features/
+#        ├── eelf/
+#        │   ├── config/
+#        │   │   ├── logback-eelf.xml
+#        │   └── lib/
+#        │   │   └── dependencies/
+#        │   │   │   └── ECOMP-Logging-1.1.0-SNAPSHOT.jar
+#        │   │   │   └── eelf-core-1.0.0.jar
+#        │   │   └── feature/
+#        │   │       └── feature-eelf-1.1.0-SNAPSHOT.jar
+#        │   └── install/
+#        │       └── enable
+#        │       └── disable
+#        └── healthcheck/
+#            ├── config/
+#            │   └── feature-healthcheck.properties
+#            └── lib/
+#                └── feature/
+#                    └── feature-healthcheck-1.1.0-SNAPSHOT.jar
+# #############################################################
+
+if [[ ${DEBUG} == y ]]; then
+	echo "-- MAIN --"
+	set -x
+fi
+	
+# The directories at play
+
+LIB=${POLICY_HOME}/lib
+CONFIG=${POLICY_HOME}/config
+FEATURES=${POLICY_HOME}/features
+
+if [[ ! ( -d "${LIB}" && -x "${LIB}" ) ]]; then
+	echo "ERROR: no ${LIB} directory"
+	exit 1
+fi
+
+if [[ ! ( -d "${CONFIG}" && -x "${CONFIG}" ) ]]; then
+	echo "ERROR: no ${CONFIG} directory"
+	exit 2
+fi
+
+if [[ ! ( -d "${FEATURES}" && -x "${FEATURES}" ) ]]; then
+	echo "ERROR: no ${FEATURES} directory"
+	exit 3
+fi
+
+# relative per Feature Directory Paths
+
+FEATURE_DEPS="lib/dependencies"
+FEATURE_LIB="lib/feature"
+FEATURE_CONFIG="config"
+FEATURE_INSTALL="install"
+
+featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
+if [[ -z ${featureJars} ]]; then
+	echo "no features"
+	usage
+	exit 0
+fi
+
+# default field lengths
+nameLength=20
+versionLength=15
+
+# update field lengths, if needed
+for jar in ${featureJars} ; do
+	# get file name without 'jar' suffix
+	tmp="${jar%\.jar}"
+
+	# remove feature prefix
+	tmp="${tmp#feature-}"
+		
+	# get feature name by removing the version portion
+	name="${tmp%%-[0-9]*}"
+
+	# extract version portion of name
+	version="${tmp#${name}-}"
+
+	# grow the size of the name/version field, if needed
+	if (( "${#name}" > nameLength )) ; then
+		nameLength="${#name}"
+	fi
+	if (( "${#version}" > versionLength )) ; then
+		versionLength="${#version}"
+	fi
+done
+
+# ##########################################################
+# usage: usage information
+# ##########################################################
+function usage
+{
+		# print out usage information
+		cat >&2 <<-'EOF'
+		Usage:  features status
+		            Get enabled/disabled status on all features
+		        features enable <feature> ...
+		            Enable the specified feature
+		        features disable <feature> ...
+		            Disable the specified feature
+		EOF
+}
+
+# ##########################################################
+# status: dump out status information
+# ##########################################################
+function status
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local tmp name version status
+	local format="%-${nameLength}s %-${versionLength}s %s\n"
+	
+	printf "${format}" "name" "version" "status"
+	printf "${format}" "----" "-------" "------"
+	
+	for jar in ${featureJars} ; do
+		# get file name without 'jar' suffix
+		tmp="${jar%\.jar}"
+		
+		# remove feature prefix
+		tmp="${tmp#feature-}"
+
+		# get feature name by removing the version portion
+		name="${tmp%%-[0-9]*}"
+
+		# extract version portion of name
+		version="${tmp#${name}-}"
+
+		# determine status
+		status=disabled
+		if [[ -e "${LIB}/${jar}" ]] ; then
+			status=enabled
+		fi
+		printf "${format}" "${name}" "${version}" "${status}"
+	done
+}
+
+# ##########################################################
+# depEnableAnalysis(featureName):  
+#                   reports on potential dependency conflicts
+#   featureName: name of the feature
+# ##########################################################
+function depEnableAnalysis()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureDepJars featureDepJarPath depJarName multiVersionJars
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureDepJars=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DEPS}"/*.jar 2> /dev/null)
+	for featureDepJarPath in ${featureDepJars}; do
+		depJarName=$(basename "${featureDepJarPath}")
+		
+		# it could be a base jar
+
+		if [[ -f "${LIB}"/"${depJarName}" ]]; then
+			echo "WARN: dependency ${depJarName} already in use"
+			continue
+		fi
+		
+		# it could be a link from another feature
+
+		if [[ -L "${LIB}"/"${depJarName}" ]]; then
+			continue
+		fi
+		
+		# unadvisable if multiple versions exist
+
+		multiVersionJars=$(ls "${LIB}"/"${depJarName%%-[0-9]*.jar}"-*.jar 2> /dev/null)
+		if [[ -n "${multiVersionJars}" ]]; then
+			echo "WARN: other version of library ${depJarName} present: ${multiVersionJars}"
+			return 2
+		fi
+	done
+}
+
+# ##########################################################
+# configEnableAnalysis(featureName):  
+#                   reports on potential dependency conflicts
+#   featureName: name of the feature
+# ##########################################################
+function configEnableAnalysis()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureConfigs configPath configFileName
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureConfigs=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ 2> /dev/null)
+	for configPath in ${featureConfigs}; do
+		configFileName=$(basename "${configPath}")
+		if [[ -e "${LIB}"/"${configFileName}" ]]; then
+			echo "ERROR: a config file of the same name is already in the base: ${configFileName}"
+			return 2
+		fi
+	done
+}
+
+# ##########################################################
+# enableFeatureDeps(featureName):  
+#                               enables feature dependencies
+#   featureName: name of the feature
+# ##########################################################
+function enableFeatureDeps()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureDeps featureDepPath depJarName
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureDeps=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DEPS}"/*.jar 2> /dev/null)
+	for featureDepPath in ${featureDeps}; do
+		depJarName=$(basename "${featureDepPath}")
+		if [[ ! -f "${LIB}"/"${depJarName}" ]]; then
+			ln -s -f "${featureDepPath}" "${LIB}/"
+		fi
+	done
+}
+
+# ##########################################################
+# enableFeatureConfig(featureName):  
+#                               enables feature configuration
+#   featureName: name of the feature
+# ##########################################################
+function enableFeatureConfig()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureConfigs featureConfigPath
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureConfigs=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ -type f -maxdepth 1 2> /dev/null)
+	for featureConfigPath in ${featureConfigs}; do
+		ln -s -f "${featureConfigPath}" "${CONFIG}/"
+	done 
+}
+
+# ##########################################################
+# enableFeatureOp(featureName): 'enable' feature operation
+#   featureName: name of the feature
+# ##########################################################
+function enableFeatureOp()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	enableScript="${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"/enable
+	if [[ -f ${enableScript} ]]; then
+		(
+			cd "${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"
+			chmod u+x enable
+			./enable
+		)
+	fi
+}
+
+# ##########################################################
+# enableFeature(featureName, featureJar):  enables a feature
+#   featureName: name of the feature
+#   featureJar:  path to feature jar implementation
+# ##########################################################
+function enableFeature()
+{
+	if [[ $DEBUG == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureJar="$2"
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	if [[ -z ${featureJar} ]]; then
+		echo "WARN: no feature jar"
+		return 2
+	fi
+	
+	if ! depEnableAnalysis "${featureName}"; then
+		return 3
+	fi
+	
+	if ! configEnableAnalysis "${featureName}"; then
+		return 4
+	fi
+	
+	# enable feature itself
+
+	ln -s -f "${featureJar}" "${LIB}/"
+		
+	# enable dependent libraries if any
+	
+	enableFeatureDeps "${featureName}"
+	
+	# enable configuration
+
+	enableFeatureConfig "${featureName}" 
+	
+	# TODO: run feature install DB scripts if any
+
+	# run custom enable if any
+
+	enableFeatureOp "${featureName}"
+}
+
+# ##########################################################
+# disableFeatureDeps(featureName):  
+#			disables feature dependencies
+# ##########################################################
+function disableFeatureDeps()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local xDepsEnabledMap featureBaseDirs aFeatureDir aFeatureName
+	local featureDeps aFeatureDep 
+	local depJarPath depJarName depJarRealPath
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	declare -A xDepsEnabledMap
+	
+	featureBaseDirs=$(ls -d "${FEATURES}"/*/ 2> /dev/null)
+	for aFeatureDir in ${featureBaseDirs}; do 
+		aFeatureName=$(basename "${aFeatureDir}")
+		if [[ "${aFeatureName}" == "${featureName}" ]]; then
+			continue
+		fi
+		
+		depJarPaths=$(ls "${aFeatureDir}"/"${FEATURE_DEPS}"/*.jar 2> /dev/null)
+		for depJarPath in ${depJarPaths}; do
+			if [[ "$?" == 0 ]] ; then
+				depJarName=$(basename "${depJarPath}")
+				xDepsEnabledMap[${depJarName}]="${depJarPath}"
+			fi
+		done
+	done
+	
+	if [[ ${DEBUG} == y ]]; then
+		echo "${!xDepsEnabledMap[@]}"
+		echo "${xDepsEnabledMap[@]}"
+	fi
+	
+	featureDeps=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DEPS}"/*.jar 2> /dev/null)
+	for aFeatureDep in ${featureDeps}; do
+		depJarName=$(basename "${aFeatureDep}")
+		if [[ -L "${LIB}"/"${depJarName}" ]]; then
+			depJarRealPath=$(readlink -f "${LIB}"/"${depJarName}")
+			if [[ "${depJarRealPath}" == "${aFeatureDep}" ]]; then
+				rm -f "${LIB}"/"${depJarName}"
+				
+				# case there were multiple features using this library
+				# re-enable link fron an enabled feature
+		
+				if [[ -n ${xDepsEnabledMap[${depJarName}]} ]]; then
+					ln -s -f "${xDepsEnabledMap[${depJarName}]}" "${LIB}/"
+				fi
+			fi
+		fi		
+	done
+}
+
+# ##########################################################
+# disableFeatureConfig(featureName):  
+#                               disables feature configuration
+#   featureName: name of the feature
+# ##########################################################
+function disableFeatureConfig()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureConfigs featureConfigPath
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureConfigs=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ -type f -maxdepth 1 2> /dev/null)
+	for featureConfigPath in ${featureConfigs}; do
+		configFileName=$(basename "${featureConfigPath}")
+		rm -f "${CONFIG}"/"${configFileName}" 2> /dev/null
+	done 
+}
+
+# ##########################################################
+# disableFeatureOp(featureName): 'enable' feature operation
+#   featureName: name of the feature
+# ##########################################################
+function disableFeatureOp()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	disableScript="${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"/disable
+	if [[ -f ${disableScript} ]]; then
+		(
+			cd "${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"
+			chmod u+x disable
+			./disable
+		)
+	fi
+}
+
+# ##########################################################
+# disableFeature(featureName, featureJar):  enables a feature
+#   featureName: name of the feature
+# ##########################################################
+function disableFeature()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return
+	fi
+	
+	# disable feature itself
+
+	(
+	cd "${LIB}"
+	rm -f feature-"${featureName}"-[0-9]*.jar 2> /dev/null
+	)
+		
+	# disable dependencies if any
+
+	disableFeatureDeps "${featureName}"
+	
+	# disable configuration if any
+
+	disableFeatureConfig "${featureName}"
+	
+	# run feature uninstall DB scripts if any
+	# TODO: future
+
+	# run custom disable if any
+	disableFeatureOp "${featureName}"
+}
+
+case "$1" in
+	status)
+	{
+		# dump out status information
+		status
+	};;
+
+	enable)
+	{
+		if [[ -f "${POLICY_HOME}"/PID ]]; then
+			echo "ERROR: enable: not allowed when policy is running .."
+			echo
+			status
+			exit 10
+		fi
+		
+		# enable the specified options
+		shift
+		match=
+		for name in "$@" ; do
+			# look for matches - 'file' has the full path name
+			file=$(ls "${FEATURES}"/"${name}"/"${FEATURE_LIB}"/feature-"${name}"-[0-9]*.jar 2> /dev/null)
+			if [[ "$?" != 0 ]] ; then
+				# no matching file
+				echo "${name}:  no such option"
+			else
+				# make sure there is only one feature jar
+				countFeatureJars=$(echo "${file}" | wc -w)
+				if [[ ${countFeatureJars} != 1 ]]; then
+					echo "WARNING: skipping ${name},  ${countFeatureJars} feature libraries found"
+					continue
+				fi			
+				
+				# found a match (handle multiple matches, just in case)
+				match=true
+				
+				enableFeature "${name}" "${file}"
+			fi
+		done
+		if [[ "${match}" ]] ; then
+			echo
+			status
+		fi
+	};;
+
+	disable)
+	{
+		if [[ -f "${POLICY_HOME}"/PID ]]; then
+			echo "ERROR: disable: not allowed when policy is running .."
+			echo
+			status
+			exit 11
+		fi
+		
+		# disable the specified options
+		shift
+		match=
+		for name in "$@" ; do
+			# look for matches -- 'file' has the last segment of the path name
+			file=$(ls "${FEATURES}"/"${name}"/"${FEATURE_LIB}"/feature-"${name}"-[0-9]*.jar 2> /dev/null)
+			if [[ "$?" != 0 ]] ; then
+				echo "${name}:  no such option"
+			else
+				# found a match (handle multiple matches, just in case)
+				match=true
+				
+				disableFeature "${name}"
+			fi
+		done
+		if [[ "${match}" ]] ; then
+			echo
+			status
+		fi
+	};;
+
+	*)
+	{
+		usage
+	};;
+esac
+exit
