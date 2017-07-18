@@ -24,61 +24,51 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>runtime</id>
+	<id>feature-healthcheck-package</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 
-	<!-- we want "system" and related files right at the root level as this 
-		file is suppose to be unzip on top of a karaf distro. -->
 	<includeBaseDirectory>false</includeBaseDirectory>
 
 	<fileSets>
 		<fileSet>
 			<directory>target</directory>
-			<outputDirectory>lib/opt</outputDirectory>
+			<outputDirectory>lib/feature</outputDirectory>
 			<includes>
 				<include>feature-healthcheck-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>target/assembly/</directory>
-			<outputDirectory>.</outputDirectory>
-			<excludes>
-			</excludes>
-		</fileSet>
-		<fileSet>
-			<directory>.</directory>
-			<outputDirectory>lib</outputDirectory>
+			<directory>target/assembly/lib</directory>
+			<outputDirectory>lib/dependencies</outputDirectory>
 			<includes>
 				<include>*.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>src/main/server-gen/bin</directory>
-			<outputDirectory>bin</outputDirectory>
-			<fileMode>0744</fileMode>
-			<excludes>
-			</excludes>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/server/bin</directory>
-			<outputDirectory>bin</outputDirectory>
-			<fileMode>0744</fileMode>
-			<excludes>
-			</excludes>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/server-gen/scripts</directory>
-			<outputDirectory>scripts</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/server/scripts</directory>
-			<outputDirectory>scripts</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/server/config</directory>
+			<directory>src/main/feature/config</directory>
 			<outputDirectory>config</outputDirectory>
+			<fileMode>0644</fileMode>
+			<excludes/>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/feature/bin</directory>
+			<outputDirectory>bin</outputDirectory>
+			<fileMode>0744</fileMode>
+			<excludes/>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/feature/db</directory>
+			<outputDirectory>db</outputDirectory>
+			<fileMode>0744</fileMode>
+			<excludes/>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/feature/install</directory>
+			<outputDirectory>install</outputDirectory>
+			<fileMode>0744</fileMode>
+			<excludes/>
 		</fileSet>
 	</fileSets>
 
