@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openecomp.policy.drools.controller.DroolsController;
+import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.event.comm.TopicSink;
 import org.openecomp.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
@@ -152,7 +153,7 @@ public class NullDroolsController implements DroolsController {
 	@Override
 	public boolean deliver(TopicSink sink, Object event)
 			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
-		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
+		throw new IllegalStateException(this.getClass().getCanonicalName() + " invoked");
 	}
 
 	/**
@@ -161,6 +162,14 @@ public class NullDroolsController implements DroolsController {
 	@Override
 	public Object[] getRecentSourceEvents() {
 		return new String[0];
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PolicyContainer getContainer() {
+		return null;
 	}
 
 	/**
@@ -176,7 +185,7 @@ public class NullDroolsController implements DroolsController {
 	 */
 	@Override
 	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) throws IllegalStateException {
-		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
+		throw new IllegalStateException(this.getClass().getCanonicalName() + " invoked");
 	}
 
 	/**
@@ -250,5 +259,4 @@ public class NullDroolsController implements DroolsController {
 			                      boolean delete, Object... queryParams) {
 		return new ArrayList<Object>();
 	}
-
 }
