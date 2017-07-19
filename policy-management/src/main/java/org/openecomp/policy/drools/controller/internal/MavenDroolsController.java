@@ -28,6 +28,8 @@ import java.util.Map;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.drools.core.ClassObjectFilter;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Query;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
@@ -649,11 +651,10 @@ public class MavenDroolsController implements DroolsController {
 	}
 	
 	/**
-	 * gets the policy container
-	 * @return the underlying container
+	 * {@inheritDoc}
 	 */
 	@JsonIgnore
-	protected PolicyContainer getContainer() {
+	public PolicyContainer getContainer() {
 		return this.policyContainer;
 	}
 	
@@ -824,6 +825,17 @@ public class MavenDroolsController implements DroolsController {
 		PolicySession session = getSession(sessionName);
 		KieSession kieSession = session.getKieSession();
 		
+		boolean found = false;
+		for (KiePackage kiePackage : kieSession.getKieBase().getKiePackages()) {
+			for (Query q : kiePackage.getQueries()) {
+				if (q.getName() != null && q.getName().equals(queryName)) {
+					found = true;
+				}
+			}
+		}
+		if (!found)
+			throw new IllegalArgumentException("Invalid Query Name: " + queryName);
+        
 		List<Object> factObjects = new ArrayList<>();
 		
 		QueryResults queryResults = kieSession.getQueryResults(queryName, queryParams);

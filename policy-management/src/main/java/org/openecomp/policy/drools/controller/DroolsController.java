@@ -23,6 +23,7 @@ package org.openecomp.policy.drools.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.openecomp.policy.drools.core.PolicyContainer;
 import org.openecomp.policy.drools.event.comm.TopicSink;
 import org.openecomp.policy.drools.properties.Lockable;
 import org.openecomp.policy.drools.properties.Startable;
@@ -120,6 +121,11 @@ public interface DroolsController extends Startable, Lockable {
 	 * @return the most recent delivered events 
 	 */
 	public String[] getRecentSinkEvents();
+	
+	/**
+	 * @return the underlying policy container
+	 */
+	public PolicyContainer getContainer();
 	
 	/**
 	 * Supports this encoder?
