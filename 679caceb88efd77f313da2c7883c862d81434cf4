@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a202591_1b464324",
+        "filename": "policy-management/src/main/java/org/openecomp/policy/drools/controller/internal/NullDroolsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-07-20T07:54:50Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this either return \u0027null\u0027, or throw a non-null exception?",
+      "revId": "679caceb88efd77f313da2c7883c862d81434cf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
