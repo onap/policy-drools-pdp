@@ -62,9 +62,12 @@ public class HttpServerTest {
 			// Expected
 		}
 		
-		assertTrue(responseSwagger == null);	
+		assertTrue(responseSwagger == null);
 		
-		HttpServletServer.factory.destroy();
+		assertTrue(HttpServletServer.factory.get(5678).isAlive());
+		assertTrue(HttpServletServer.factory.inventory().size() == 1);
+		
+		HttpServletServer.factory.destroy(5678);	
 		assertTrue(HttpServletServer.factory.inventory().size() == 0);
 	}
 	
