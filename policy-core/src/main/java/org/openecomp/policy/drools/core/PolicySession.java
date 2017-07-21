@@ -565,7 +565,7 @@ public class PolicySession
 			  // if we fall through, it means 'KieSession.halt()' was called,
 			  // but this may be a result of 'KieScanner' doing an update
 			}
-		  catch (Throwable e)
+		  catch (Exception | LinkageError e)
 			{
 			  logger.error("startThread error in kieSession.fireUntilHalt", e);						
 			}

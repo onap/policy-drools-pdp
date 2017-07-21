@@ -642,13 +642,10 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 			throws IllegalArgumentException, UnsupportedOperationException {	
 		
 		DroolsController droolsController = 
-				DroolsController.factory.get(groupId, artifactId, "");
+				DroolsController.factory.get(groupId, artifactId, null);
 		if (droolsController == null) {
 			logger.info("{}: no drools-controller to process {} (continue)", this, event);
-			if (this.customCoder != null) {
-				logger.warn("{}: no drools-controller to process {}", this, event);
-				throw new IllegalStateException("custom-coder but no drools-controller");
-			}
+			throw new IllegalStateException("custom-coder but no drools-controller");
 		}
 		
 		if (this.customCoder != null) {

@@ -352,8 +352,14 @@ public class PolicyContainer implements Startable
 
 	if(name == null){
 		logger.warn("adoptKieSession:input name is null");
+		throw(new IllegalArgumentException
+				  ("KieSession input name is null "
+				   + getName()));
 	}else if(kieSession == null){
 		logger.warn("adoptKieSession:input kieSession is null");
+		throw(new IllegalArgumentException
+				  ("KieSession '" + name + "' is null "
+				   + getName()));
 	}else {
 		logger.info("adoptKieSession:name: " + name + " kieSession: " + kieSession);
 	}

@@ -189,7 +189,7 @@ public class JsonProtocolFilter {
 		}
 		
 		try {
-			if (json == null || !json.isJsonObject()) {
+			if (!json.isJsonObject()) {
 				return false;
 			}
 			
