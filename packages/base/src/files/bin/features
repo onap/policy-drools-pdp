@@ -51,7 +51,7 @@
 #        │   │   ├── logback-eelf.xml
 #        │   └── lib/
 #        │   │   └── dependencies/
-#        │   │   │   └── ECOMP-Logging-1.1.0-SNAPSHOT.jar
+#        │   │   │   └── ONAP-Logging-1.1.0-SNAPSHOT.jar
 #        │   │   │   └── eelf-core-1.0.0.jar
 #        │   │   └── feature/
 #        │   │       └── feature-eelf-1.1.0-SNAPSHOT.jar

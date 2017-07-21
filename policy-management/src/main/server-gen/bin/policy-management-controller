@@ -22,7 +22,7 @@
 
 SNAME="Policy Management"
 PNAME=policy-management
-CLASS=org.openecomp.policy.drools.system.Main
+CLASS=org.onap.policy.drools.system.Main
 
 
 function start() {
