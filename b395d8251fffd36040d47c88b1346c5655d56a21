@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Pamela Dragosh <pdragosh@research.att.com>
+Code-Review+1: Ralph Straubs <rs8887@att.com>
+Submitted-by: Jorge Hernandez <jh1730@att.com>
+Submitted-at: Mon, 24 Jul 2017 16:30:20 +0000
+Reviewed-on: http://gerrit.onap.org/r/6181
+Project: policy/drools-pdp
+Branch: refs/heads/master
