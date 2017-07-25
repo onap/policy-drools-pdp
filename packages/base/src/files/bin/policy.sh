@@ -50,15 +50,14 @@ function policy_op() {
 	
 	cd $POLICY_HOME
 	echo "[drools-pdp-controllers]"
-	for binScript in bin/*-controller; do
-		if check_x_file "${binScript}"; then
-			trap "rm -f /tmp/out$$" EXIT
-			${binScript} ${operation} >/tmp/out$$
-			echo " L [${controller}]: $(sed ':a;N;$!ba;s/\n/ /g' /tmp/out$$)"
-		else
-			echo "	L [${controller}]: -"
-		fi
-	done
+	binScript="bin/policy-management-controller"
+	if check_x_file "${binScript}"; then
+		trap "rm -f /tmp/out$$" EXIT
+		${binScript} ${operation} >/tmp/out$$
+		echo " L [${controller}]: $(sed ':a;N;$!ba;s/\n/ /g' /tmp/out$$)"
+	else
+		echo "	L [${controller}]: -"
+	fi
 }
 
 function policy_status() {
