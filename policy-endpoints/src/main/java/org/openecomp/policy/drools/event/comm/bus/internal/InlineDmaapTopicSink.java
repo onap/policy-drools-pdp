@@ -91,8 +91,6 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 		this.longitude = longitude;
 		
 		this.additionalProps = additionalProps;
-		
-		this.init();
 	}
 	
 	public InlineDmaapTopicSink(List<String> servers, String topic, 

@@ -20,22 +20,20 @@
 
 package org.openecomp.policy.drools.event.comm;
 
-import org.openecomp.policy.drools.properties.Lockable;
-import org.openecomp.policy.drools.properties.Startable;
-
 /**
  * Marks a given Topic Endpoint as able to send messages over a topic
  */
-public interface TopicSink extends Topic, Startable, Lockable {
+public interface TopicSink extends Topic {
 	
 	/**
 	 * Sends a string message over this Topic Endpoint
 	 * 
 	 * @param message message to send
+	 * 
 	 * @return true if the send operation succeeded, false otherwise
 	 * @throws IllegalArgumentException an invalid message has been provided
 	 * @throws IllegalStateException the entity is in an state that prevents
-	 * it from sending messages, for example, locked or stopped.
+	 *         it from sending messages, for example, locked or stopped.
 	 */
 	public boolean send(String message) throws IllegalArgumentException, IllegalStateException;
 

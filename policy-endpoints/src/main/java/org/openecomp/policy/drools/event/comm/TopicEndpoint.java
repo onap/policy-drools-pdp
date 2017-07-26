@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.DmaapTopicSource;
+import org.openecomp.policy.drools.event.comm.bus.NoopTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSink;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSource;
 import org.slf4j.LoggerFactory;
@@ -181,6 +182,19 @@ public interface TopicEndpoint extends Startable, Lockable {
 			throws IllegalStateException, IllegalArgumentException;
 	
 	/**
+	 * get the no-op Topic Sink for the given topic name
+	 * 
+	 * @param topicName the topic name
+	 * 
+	 * @return the Topic Source
+	 * @throws IllegalStateException if the entity is in an invalid state, for
+	 * example multiple TopicReaders for a topic name and communication infrastructure
+	 * @throws IllegalArgumentException if invalid parameters are present
+	 */
+	public NoopTopicSink getNoopTopicSink(String topicName)
+			throws IllegalStateException, IllegalArgumentException;
+	
+	/**
 	 * get the DMAAP Topic Source for the given topic name
 	 * 
 	 * @param topicName the topic name
@@ -222,6 +236,12 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * @return the DMAAP Topic Sink List
 	 */
 	public List<DmaapTopicSink> getDmaapTopicSinks();
+	
+	/**
+	 * gets only the NOOP Topic Sinks
+	 * @return the NOOP Topic Sinks List
+	 */
+	public List<NoopTopicSink> getNoopTopicSinks();
 	
 	/**
 	 * singleton for global access
@@ -287,6 +307,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		
 		sinks.addAll(UebTopicSink.factory.build(properties));
 		sinks.addAll(DmaapTopicSink.factory.build(properties));
+		sinks.addAll(NoopTopicSink.factory.build(properties));
 		
 		if (this.isLocked()) {
 			for (TopicSink sink : sinks) {
@@ -321,6 +342,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		
 		sinks.addAll(UebTopicSink.factory.inventory());
 		sinks.addAll(DmaapTopicSink.factory.inventory());
+		sinks.addAll(NoopTopicSink.factory.inventory());
 		
 		return sinks;
 	}
@@ -359,6 +381,15 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 	@Override
 	public List<DmaapTopicSink> getDmaapTopicSinks() {
 		return DmaapTopicSink.factory.inventory();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@JsonIgnore
+	@Override
+	public List<NoopTopicSink> getNoopTopicSinks() {
+		return NoopTopicSink.factory.inventory();
 	}
 
 	/**
@@ -688,6 +719,11 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 	@Override
 	public DmaapTopicSink getDmaapTopicSink(String topicName) throws IllegalStateException, IllegalArgumentException {
 		return DmaapTopicSink.factory.get(topicName);
+	}
+
+	@Override
+	public NoopTopicSink getNoopTopicSink(String topicName) throws IllegalStateException, IllegalArgumentException {
+		return NoopTopicSink.factory.get(topicName);
 	}
 	
 }

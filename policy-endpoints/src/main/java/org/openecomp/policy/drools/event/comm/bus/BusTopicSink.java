@@ -25,7 +25,7 @@ import org.openecomp.policy.drools.event.comm.TopicSink;
 /**
  * Topic Sink over Bus Infrastructure (DMAAP/UEB)
  */
-public interface BusTopicSink extends BusTopic, TopicSink {
+public interface BusTopicSink extends ApiKeyEnabled, TopicSink {
 	/**
 	 * Log Failures after X number of retries
 	 */

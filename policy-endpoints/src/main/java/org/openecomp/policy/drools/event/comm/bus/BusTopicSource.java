@@ -26,7 +26,7 @@ import org.openecomp.policy.drools.event.comm.TopicSource;
  * Generic Topic Source for UEB/DMAAP Communication Infrastructure
  *
  */
-public interface BusTopicSource extends BusTopic, TopicSource {
+public interface BusTopicSource extends ApiKeyEnabled, TopicSource {
 	
 	/**
 	 * Default Consumer Instance Value
