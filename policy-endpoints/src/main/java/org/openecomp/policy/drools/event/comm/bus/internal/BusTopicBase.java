@@ -22,22 +22,32 @@ package org.openecomp.policy.drools.event.comm.bus.internal;
 
 import java.util.List;
 
-import org.apache.commons.collections4.queue.CircularFifoQueue;
-import org.openecomp.policy.drools.event.comm.Topic;
-import org.openecomp.policy.drools.event.comm.bus.BusTopic;
+import org.openecomp.policy.drools.event.comm.bus.ApiKeyEnabled;
 
-public abstract class BusTopicBase implements BusTopic, Topic {
+/**
+ * Bus Topic Base
+ */
+public abstract class BusTopicBase extends TopicBase implements ApiKeyEnabled {
 	
-	protected List<String> servers;
-
-	protected String topic;
-	
+	/**
+	 * API Key
+	 */
 	protected String apiKey;
-	protected String apiSecret;
-	protected boolean useHttps;
-	protected boolean allowSelfSignedCerts;
 	
-	protected CircularFifoQueue<String> recentEvents = new CircularFifoQueue<String>(10);
+	/**
+	 * API Secret
+	 */
+	protected String apiSecret;
+	
+	/**
+	 * Use https
+	 */
+	protected boolean useHttps;
+	
+	/**
+	 * allow self signed certificates
+	 */
+	protected boolean allowSelfSignedCerts;
 	
 	/**
 	 * Instantiates a new Bus Topic Base
@@ -60,16 +70,7 @@ public abstract class BusTopicBase implements BusTopic, Topic {
 						  boolean allowSelfSignedCerts) 
 	throws IllegalArgumentException {
 		
-		if (servers == null || servers.isEmpty()) {
-			throw new IllegalArgumentException("UEB Server(s) must be provided");
-		}
-		
-		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("An UEB Topic must be provided");
-		}
-		
-		this.servers = servers;
-		this.topic = topic;
+		super(servers, topic);
 		
 		this.apiKey = apiKey;
 		this.apiSecret = apiSecret;
@@ -77,73 +78,35 @@ public abstract class BusTopicBase implements BusTopic, Topic {
 		this.allowSelfSignedCerts = allowSelfSignedCerts;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTopic() {
-		return topic;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<String> getServers() {
-		return servers;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getApiKey() {
 		return apiKey;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getApiSecret() {
 		return apiSecret;
 	}
 	
 	/**
-	 * @return useHttps
+	 * @return if using https
 	 */
 	public boolean isUseHttps(){
 		return useHttps;
 	}
 
 	/**
-	 * @return allowSelfSignedCerts
+	 * @return if self signed certificates are allowed
 	 */
 	public boolean isAllowSelfSignedCerts(){
 		return allowSelfSignedCerts;
-	}
-	
-	/**
-	 * @return the recentEvents
-	 */
-	@Override
-	public synchronized String[] getRecentEvents() {
-		String[] events = new String[recentEvents.size()];
-		return recentEvents.toArray(events);
 	}
 
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("UebTopicBase [servers=").append(servers)
-			.append(", topic=").append(topic)
-			.append(", apiKey=").append(apiKey)
-			.append(", apiSecret=").append(apiSecret)
-			.append(", useHttps=").append(useHttps)
-			.append(", allowSelfSignedCerts=").append(allowSelfSignedCerts)
-			.append("]");
-		return builder.toString();
+		return "BusTopicBase [apiKey=" + apiKey + ", apiSecret=" + apiSecret + ", useHttps=" + useHttps
+				+ ", allowSelfSignedCerts=" + allowSelfSignedCerts + ", toString()=" + super.toString() + "]";
 	}
 
 }

@@ -26,7 +26,7 @@ package org.openecomp.policy.drools.event.comm.bus;
 public interface UebTopicSink extends BusTopicSink {
 	
 	/**
-	 * Factory of UebTopicWriter for instantiation and management purposes
+	 * Factory of UEB Topic Sinks for instantiation and management purposes
 	 */
 	public static final UebTopicSinkFactory factory = new IndexedUebTopicSinkFactory();
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import org.openecomp.policy.drools.event.comm.Topic;
 import org.openecomp.policy.drools.event.comm.bus.UebTopicSink;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * This implementation publishes events for the associated UEB topic,
@@ -35,8 +36,7 @@ public class InlineUebTopicSink extends InlineBusTopicSink implements UebTopicSi
 	/**
 	 * logger 
 	 */
-	private static org.slf4j.Logger logger = 
-										LoggerFactory.getLogger(InlineUebTopicSink.class);
+	private static Logger logger = LoggerFactory.getLogger(InlineUebTopicSink.class);
 	
 	/**
 	 * Argument-based UEB Topic Writer instantiation

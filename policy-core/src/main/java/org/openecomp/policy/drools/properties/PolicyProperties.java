@@ -73,6 +73,8 @@ public interface PolicyProperties {
 	public static final String PROPERTY_DMAAP_DME2_SUB_CONTEXT_PATH_SUFFIX = ".dme2.subContextPath";
 	public static final String PROPERTY_DMAAP_DME2_SESSION_STICKINESS_REQUIRED_SUFFIX = ".dme2.sessionStickinessRequired";
 	
+	public static final String PROPERTY_NOOP_SINK_TOPICS = "noop.sink.topics";
+	
 	/* HTTP Server Properties */
 	
 	public static final String PROPERTY_HTTP_SERVER_SERVICES = "http.server.services";

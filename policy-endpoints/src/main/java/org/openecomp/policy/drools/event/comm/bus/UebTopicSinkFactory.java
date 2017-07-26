@@ -46,7 +46,7 @@ public interface UebTopicSinkFactory {
 	 * @param partitionKey Consumer Group
 	 * @param managed is this sink endpoint managed?
 	 * 
-	 * @return an UEB Topic Writer
+	 * @return an UEB Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
 	public UebTopicSink build(List<String> servers, 

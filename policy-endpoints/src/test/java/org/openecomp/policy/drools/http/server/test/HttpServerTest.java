@@ -37,6 +37,9 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpServerTest {
 	
+	/**
+	 * Logger
+	 */
 	private static Logger logger = LoggerFactory.getLogger(HttpServerTest.class);
 
 	@Test
