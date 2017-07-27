@@ -20,7 +20,17 @@
 
 package org.openecomp.policy.drools.event.comm.bus;
 
-public interface BusTopic {
+/**
+ * API
+ */
+public interface ApiKeyEnabled {
+	/**
+	 * @return api key
+	 */
 	public String getApiKey();
+	
+	/**
+	 * @return api secret
+	 */
 	public String getApiSecret();
 }

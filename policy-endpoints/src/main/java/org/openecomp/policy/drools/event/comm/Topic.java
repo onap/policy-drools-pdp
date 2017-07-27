@@ -22,11 +22,17 @@ package org.openecomp.policy.drools.event.comm;
 
 import java.util.List;
 
+import org.openecomp.policy.drools.properties.Lockable;
+import org.openecomp.policy.drools.properties.Startable;
+
 /**
  * Essential Topic Data
  */
-public interface Topic {
+public interface Topic extends TopicRegisterable, Startable, Lockable {
 	
+	/**
+	 * network logger
+	 */
 	public static final String NETWORK_LOGGER = "network";
 	
 	/**
@@ -41,6 +47,10 @@ public interface Topic {
 		 * DMAAP Communication Infrastructure
 		 */		
 		DMAAP,
+		/**
+		 * NOOP for internal use only
+		 */
+		NOOP,
 		/**
 		 * REST Communication Infrastructure
 		 */				

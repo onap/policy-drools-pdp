@@ -20,14 +20,11 @@
 
 package org.openecomp.policy.drools.event.comm;
 
-import org.openecomp.policy.drools.properties.Lockable;
-import org.openecomp.policy.drools.properties.Startable;
-
 /**
  * Marker for a Topic Entity, indicating that the entity is able to read
  * over a topic
  */
-public interface TopicSource extends TopicRegisterable, Topic, Startable, Lockable {
+public interface TopicSource extends Topic {
 	
 	/**
 	 * pushes an event into the source programatically
