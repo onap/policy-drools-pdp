@@ -696,7 +696,7 @@ class PolicyEngineManager implements PolicyEngine {
 		
 		for (HttpServletServer httpServer: this.httpServers) {
 			try {
-				if (!httpServer.start())
+				if (!httpServer.waitedStart(5 * 1000L))
 					success = false;
 			} catch (Exception e) {
 				logger.error("{}: cannot start http-server {} because of {}", this, 
