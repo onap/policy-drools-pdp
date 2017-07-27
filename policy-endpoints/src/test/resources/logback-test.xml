@@ -7,8 +7,10 @@
             </Pattern>
         </encoder>
     </appender>
+    
+    <logger name="org.openecomp.policy.drools.http.server.test" level="INFO"/>
 
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="STDOUT"/>
     </root>
 
