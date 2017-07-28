@@ -1,0 +1,6 @@
+CREATE TABLE StateManagementEntity (id BIGINT NOT NULL, adminState VARCHAR(20) NOT NULL, availStatus VARCHAR(20) NOT NULL, created_Date TIMESTAMP, modifiedDate TIMESTAMP NOT NULL, opState VARCHAR(20) NOT NULL, resourceName VARCHAR(100) NOT NULL UNIQUE, standbyStatus VARCHAR(20) NOT NULL, PRIMARY KEY (id))
+CREATE TABLE ForwardProgressEntity (forwardProgressId BIGINT NOT NULL, created_date TIMESTAMP, fpc_count BIGINT NOT NULL, last_updated TIMESTAMP, resourceName VARCHAR(100) NOT NULL UNIQUE, PRIMARY KEY (forwardProgressId))
+CREATE TABLE ResourceRegistrationEntity (ResourceRegistrationId BIGINT NOT NULL, created_date TIMESTAMP, last_updated TIMESTAMP, nodeType VARCHAR(50), resourceName VARCHAR(100) NOT NULL UNIQUE, resourceUrl VARCHAR(255) NOT NULL UNIQUE, site VARCHAR(50), PRIMARY KEY (ResourceRegistrationId))
+CREATE TABLE IntegrityAuditEntity (id BIGINT NOT NULL, createdDate TIMESTAMP, designated BOOLEAN, jdbcDriver VARCHAR NOT NULL, jdbcPassword VARCHAR NOT NULL, jdbcUrl VARCHAR NOT NULL, jdbcUser VARCHAR NOT NULL, lastUpdated TIMESTAMP, nodeType VARCHAR, persistenceUnit VARCHAR NOT NULL, resourceName VARCHAR NOT NULL UNIQUE, site VARCHAR, PRIMARY KEY (id))
+CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT NUMERIC(38), PRIMARY KEY (SEQ_NAME))
+INSERT INTO SEQUENCE(SEQ_NAME, SEQ_COUNT) values ('SEQ_GEN', 0)

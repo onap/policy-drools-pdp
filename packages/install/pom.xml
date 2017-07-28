@@ -83,6 +83,36 @@
 			<version>${project.version}</version>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+			<groupId>org.openecomp.policy.drools-pdp</groupId>
+			<artifactId>policy-persistence</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openecomp.policy.drools-pdp</groupId>
+			<artifactId>active-standby-management</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openecomp.policy.drools-pdp</groupId>
+			<artifactId>active-standby-management-api</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openecomp.policy.drools-pdp</groupId>
+			<artifactId>state-management</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.openecomp.policy.drools-pdp</groupId>
+			<artifactId>state-management-api</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
 	</dependencies>
 
 </project>

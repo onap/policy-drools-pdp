@@ -1,0 +1,497 @@
+[INFO] Scanning for projects...
+[INFO] Inspecting build with total of 1 modules...
+[INFO] Installing Nexus Staging features:
+[INFO]   ... total of 1 executions of maven-deploy-plugin replaced with nexus-staging-maven-plugin
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building active-standby-management 1.1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ active-standby-management ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 4 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:compile (default-compile) @ active-standby-management ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ active-standby-management ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:testCompile (default-testCompile) @ active-standby-management ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ active-standby-management ---
+[INFO] Surefire report directory: C:\Users\KM097D\workspace\repo\onap\policy\drools-pdp\active-standby-management\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running org.openecomp.policy.drools.controller.test.IntegrityAuditIntegrationTest
+14:32:42,511 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+14:32:42,511 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+14:32:42,511 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/test-classes/logback.xml]
+14:32:42,512 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs multiple times on the classpath.
+14:32:42,512 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/test-classes/logback.xml]
+14:32:42,512 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [jar:file:/C:/Users/KM097D/.m2/repository/org/openecomp/policy/common/integrity-audit/1.1.0-SNAPSHOT/integrity-audit-1.1.0-SNAPSHOT.jar!/logback.xml]
+14:32:42,512 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [jar:file:/C:/Users/KM097D/.m2/repository/org/openecomp/policy/common/integrity-monitor/1.1.0-SNAPSHOT/integrity-monitor-1.1.0-SNAPSHOT.jar!/logback.xml]
+14:32:42,589 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - Will scan for changes in [file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/test-classes/logback.xml] 
+14:32:42,589 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - Setting ReconfigureOnChangeTask scanning period to 3 seconds
+14:32:42,593 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+14:32:42,597 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+14:32:42,602 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+14:32:42,628 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+14:32:42,631 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [EELFAudit]
+14:32:42,637 |-INFO in ch.qos.logback.core.rolling.FixedWindowRollingPolicy@e874448 - Will use zip compression
+14:32:42,641 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+14:32:42,642 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFAudit] - Active log file name: testingLogs/drools-pdp/policy-management/audit.log
+14:32:42,642 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFAudit] - File property is set to [testingLogs/drools-pdp/policy-management/audit.log]
+14:32:42,643 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+14:32:42,646 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [asyncEELFAudit]
+14:32:42,647 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [EELFAudit] to ch.qos.logback.classic.AsyncAppender[asyncEELFAudit]
+14:32:42,647 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFAudit] - Attaching appender named [EELFAudit] to AsyncAppender.
+14:32:42,647 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFAudit] - Setting discardingThreshold to 51
+14:32:42,647 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+14:32:42,648 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [EELFMetrics]
+14:32:42,648 |-INFO in ch.qos.logback.core.rolling.FixedWindowRollingPolicy@1a3869f4 - Will use zip compression
+14:32:42,649 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+14:32:42,649 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFMetrics] - Active log file name: testingLogs/drools-pdp/policy-management/metrics.log
+14:32:42,649 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFMetrics] - File property is set to [testingLogs/drools-pdp/policy-management/metrics.log]
+14:32:42,650 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+14:32:42,650 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [asyncEELFMetrics]
+14:32:42,651 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [EELFMetrics] to ch.qos.logback.classic.AsyncAppender[asyncEELFMetrics]
+14:32:42,651 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFMetrics] - Attaching appender named [EELFMetrics] to AsyncAppender.
+14:32:42,651 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFMetrics] - Setting discardingThreshold to 51
+14:32:42,651 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+14:32:42,651 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [EELFError]
+14:32:42,652 |-INFO in ch.qos.logback.core.rolling.FixedWindowRollingPolicy@a38d7a3 - Will use zip compression
+14:32:42,653 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+14:32:42,654 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFError] - Active log file name: testingLogs/drools-pdp/policy-management/error.log
+14:32:42,654 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFError] - File property is set to [testingLogs/drools-pdp/policy-management/error.log]
+14:32:42,655 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+14:32:42,655 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [asyncEELFError]
+14:32:42,655 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [EELFError] to ch.qos.logback.classic.AsyncAppender[asyncEELFError]
+14:32:42,655 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFError] - Attaching appender named [EELFError] to AsyncAppender.
+14:32:42,655 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFError] - Setting discardingThreshold to 51
+14:32:42,655 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+14:32:42,656 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [EELFDebug]
+14:32:42,656 |-INFO in ch.qos.logback.core.rolling.FixedWindowRollingPolicy@6121c9d6 - Will use zip compression
+14:32:42,657 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+14:32:42,657 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFDebug] - Active log file name: testingLogs/drools-pdp/policy-management/debug.log
+14:32:42,657 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[EELFDebug] - File property is set to [testingLogs/drools-pdp/policy-management/debug.log]
+14:32:42,658 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+14:32:42,658 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [asyncEELFDebug]
+14:32:42,658 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [EELFDebug] to ch.qos.logback.classic.AsyncAppender[asyncEELFDebug]
+14:32:42,658 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFDebug] - Attaching appender named [EELFDebug] to AsyncAppender.
+14:32:42,658 |-INFO in ch.qos.logback.classic.AsyncAppender[asyncEELFDebug] - Setting discardingThreshold to 51
+14:32:42,659 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [com.att.eelf.audit] to INFO
+14:32:42,659 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [com.att.eelf.audit] to false
+14:32:42,659 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [asyncEELFAudit] to Logger[com.att.eelf.audit]
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [com.att.eelf.metrics] to INFO
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [com.att.eelf.metrics] to false
+14:32:42,660 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [asyncEELFMetrics] to Logger[com.att.eelf.metrics]
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [com.att.eelf.error] to ERROR
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [com.att.eelf.error] to false
+14:32:42,660 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [asyncEELFError] to Logger[com.att.eelf.error]
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [com.att.eelf.debug] to DEBUG
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [com.att.eelf.debug] to false
+14:32:42,660 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [asyncEELFDebug] to Logger[com.att.eelf.debug]
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to DEBUG
+14:32:42,660 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [asyncEELFDebug] to Logger[ROOT]
+14:32:42,660 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [asyncEELFError] to Logger[ROOT]
+14:32:42,660 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+14:32:42,661 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@1060b431 - Registering current configuration as safe fallback point
+*********************** POLICY-507I
+*********************** Service Name: {0}:Executing rule: {1}
+FlexLogger:properties => {audit.level=ON, timer.delay.time=1000, metricsLogger.level=ON, concurrentHashMap.limit=5000, stop.check.point=2500, error.level=ON, event.expired.time=86400, logger.type=LOG4J, debugLogger.level=DEBUG, check.interval=30000}
+FlexLogger:overrideLogbackLevel => null
+FlexLogger.logger_Type value: LOG4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.ia.IntegrityAudit
+create instance of Logger4J
+[EL Info]: 2017-07-28 14:32:43.832--ServerSession(877898962)--EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
+[EL Info]: connection: 2017-07-28 14:32:44.097--ServerSession(877898962)--/file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/test-classes/_junitDroolsPU_url=jdbc:h2:file:./sql/drools_user=sa login successful
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.statemanagement.StateManagementFeature
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.im.IntegrityMonitor
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.statemanagement.DbAudit
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.statemanagement.RepositoryAudit
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,202][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: Entering and invoking PropertyUtil.getProperties() on 'src/test/server/config'
+[DEV: 2017-Jul-28 14:32:44,203][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: loading consolidatedProperties
+[DEV: 2017-Jul-28 14:32:44,203][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: PDP_INSTANCE_ID=pdp1
+[DEV: 2017-Jul-28 14:32:44,203][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: DB_URL=jdbc:h2:file:./sql/xacml
+[DEV: 2017-Jul-28 14:32:44,203][INFO ][main      ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|dependency groups property = []
+[DEV: 2017-Jul-28 14:32:44,205][INFO ][main      ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|IntegerityMonitor - jmx url=service:jmx:rmi:///jndi/rmi://ILCDTL01KM097D.ITServices.sbc.com:9980/jmxrmi
+[EL Info]: 2017-07-28 14:32:44.241--ServerSession(1685820260)--EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
+[EL Info]: connection: 2017-07-28 14:32:44.259--ServerSession(1685820260)--/file:/C:/Users/KM097D/.m2/repository/org/openecomp/policy/common/integrity-monitor/1.1.0-SNAPSHOT/integrity-monitor-1.1.0-SNAPSHOT.jar_operationalPU_url=jdbc:h2:file:./sql/xacml_user=sa login successful
+[DEV: 2017-Jul-28 14:32:44,278][INFO ][main      ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|Resource pdp1 exists and will be updated - old fpc=0, lastUpdated=Fri Jul 28 14:31:32 CDT 2017
+[DEV: 2017-Jul-28 14:32:44,281][INFO ][main      ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|Resource pdp1 exists and will be updated - old url=service:jmx:rmi:///jndi/rmi://ILCDTL01KM097D.ITServices.sbc.com:9980/jmxrmi, createdDate=Fri Jul 28 14:31:32 CDT 2017
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.im.StateManagement
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,286][INFO ][main      ]8f969843-0e42-4601-b7a9-a972d1ae0781|org.openecomp.policy.common.im.StateManagement|resourceName = pdp1
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.im.StateTransition
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,294][INFO ][main      ]Registering ECOMP_POLICY_COMP:name=pdp1 MBean
+[DEV: 2017-Jul-28 14:32:44,295][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: New DroolsPDPIntegrityMonitor instantiated, hostPort=0.0.0.0:57692
+[DEV: 2017-Jul-28 14:32:44,295][INFO ][Thread-9  ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|FPManager thread running
+[DEV: 2017-Jul-28 14:32:44,295][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: Starting HTTP server, addr=/0.0.0.0:57692
+init: Started server on hostPort=0.0.0.0:57692
+[DEV: 2017-Jul-28 14:32:44,298][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: Exiting and returning DroolsPDPIntegrityMonitor
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.statemanagement.DroolsPersistenceProperties
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,299][INFO ][main      ]d0ce612a-663e-43a5-a234-19ce0c1298ba|org.openecomp.policy.drools.statemanagement.DroolsPersistenceProperties|DroolsPersistenceProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:44,299][INFO ][main      ]d0ce612a-663e-43a5-a234-19ce0c1298ba|org.openecomp.policy.drools.statemanagement.DroolsPersistenceProperties|
+
+DroolsPersistenceProperties.initProperties: Properties = 
+{javax.persistence.jdbc.driver=org.h2.Driver, javax.persistence.jdbc.password=, hibernate.dataSource=org.mariadb.jdbc.MySQLDataSource, javax.persistence.jdbc.url=jdbc:h2:file:./sql/drools, persistenceDisabled=false, javax.persistence.jdbc.user=sa}
+
+
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.statemanagement.StateManagementProperties
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,300][INFO ][main      ]96a65977-52cf-438d-b24e-e784b840e60e|org.openecomp.policy.drools.statemanagement.StateManagementProperties|IntegrityMonitorProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:44,300][INFO ][main      ]96a65977-52cf-438d-b24e-e784b840e60e|org.openecomp.policy.drools.statemanagement.StateManagementProperties|
+
+IntegrityMonitorProperties.initProperties: Properties = 
+{repository.audit.ignore.errors=true, write_fpc_interval=5, hostPort=0.0.0.0:57692, resource.name=pdp1, pdp.updateInterval=1000, test_trans_interval=10, node_type=pdp_drools, failed_counter_threshold=3, fp_monitor_interval=30, db.audit.is.active=false, integrity_audit_period_seconds=600, dependency_groups=, site_name=pdp_1, repository.audit.is.active=false, pdp.timeout=15000, pdp.checkInterval=1500, pdp.initialWait=20000}
+
+
+[DEV: 2017-Jul-28 14:32:44,300][INFO ][main      ]164d982b-78de-4b2c-9453-7c38bcd90e3e|org.openecomp.policy.drools.statemanagement.StateManagementFeature|initializePersistence: resourceName=pdp1
+[DEV: 2017-Jul-28 14:32:44,300][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|getInstance() called
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.ActiveStandbyFeature
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.DroolsPersistenceProperties
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,305][INFO ][main      ]2ba4bf49-1434-4784-95aa-e6559a71a39d|org.openecomp.policy.drools.activestandby.DroolsPersistenceProperties|DroolsPersistenceProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:44,305][INFO ][main      ]2ba4bf49-1434-4784-95aa-e6559a71a39d|org.openecomp.policy.drools.activestandby.DroolsPersistenceProperties|
+
+DroolsPersistenceProperties.initProperties: Properties = 
+{javax.persistence.jdbc.driver=org.h2.Driver, javax.persistence.jdbc.password=, hibernate.dataSource=org.mariadb.jdbc.MySQLDataSource, javax.persistence.jdbc.url=jdbc:h2:file:./sql/drools, persistenceDisabled=false, javax.persistence.jdbc.user=sa}
+
+
+[DEV: 2017-Jul-28 14:32:44,305][INFO ][main      ]910bcf10-5c05-42c0-b07c-75a77dff37b0|org.openecomp.policy.drools.activestandby.ActiveStandbyFeature|initializePersistence: DroolsPersistenceProperties success
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.ActiveStandbyProperties
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,306][INFO ][main      ]fee86c92-07a7-4098-82ea-1325a3156090|org.openecomp.policy.drools.activestandby.ActiveStandbyProperties|ActiveStandbyProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:44,306][INFO ][main      ]fee86c92-07a7-4098-82ea-1325a3156090|org.openecomp.policy.drools.activestandby.ActiveStandbyProperties|
+
+ActiveStandbyProperties.initProperties: Properties = 
+{repository.audit.ignore.errors=true, write_fpc_interval=5, hostPort=0.0.0.0:57692, resource.name=pdp1, pdp.updateInterval=1000, test_trans_interval=10, node_type=pdp_drools, failed_counter_threshold=3, fp_monitor_interval=30, db.audit.is.active=false, integrity_audit_period_seconds=600, dependency_groups=, site_name=pdp_1, repository.audit.is.active=false, pdp.timeout=15000, pdp.checkInterval=1500, pdp.initialWait=20000}
+
+
+[DEV: 2017-Jul-28 14:32:44,306][INFO ][main      ]910bcf10-5c05-42c0-b07c-75a77dff37b0|org.openecomp.policy.drools.activestandby.ActiveStandbyFeature|initializePersistence: resourceName=pdp1
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.JpaDroolsPdpsConnector
+create instance of Logger4J
+[EL Info]: 2017-07-28 14:32:44.349--ServerSession(1736238361)--EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
+[EL Info]: connection: 2017-07-28 14:32:44.352--ServerSession(1736238361)--/file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/classes/_activeStandbyPU_url=jdbc:h2:file:./sql/drools_user=sa login successful
+[DEV: 2017-Jul-28 14:32:44,354][ERROR][main      ]c7ebf56d-2ccc-47c2-9902-e5d7b37952b7|org.openecomp.policy.drools.activestandby.JpaDroolsPdpsConnector|getPdp: PDP=pdp1 not found!?
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,359][INFO ][main      ]910bcf10-5c05-42c0-b07c-75a77dff37b0|org.openecomp.policy.drools.activestandby.ActiveStandbyFeature|startIntegrityAudit: Entering, configDir='src/test/server/config'
+[DEV: 2017-Jul-28 14:32:44,359][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|Constructor: Entering and checking for nulls
+[DEV: 2017-Jul-28 14:32:44,360][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|Constructor: Exiting
+[DEV: 2017-Jul-28 14:32:44,360][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|startAuditThread: Entering
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.ia.AuditThread
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.ia.DbDAO
+create instance of Logger4J
+[EL Info]: 2017-07-28 14:32:44.411--ServerSession(2022290617)--EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
+[EL Info]: connection: 2017-07-28 14:32:44.415--ServerSession(2022290617)--/file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/test-classes/_auditDroolsPU_url=jdbc:h2:file:./sql/drools_user=sa login successful
+[DEV: 2017-Jul-28 14:32:44,419][INFO ][main      ]c4a664b3-4f81-456c-a91b-1bf063a7faba|org.openecomp.policy.common.ia.DbDAO|Adding resource pdp1 with PersistenceUnit: auditDroolsPU to IntegrityAuditEntity table
+[DEV: 2017-Jul-28 14:32:44,427][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|startAuditThread: Audit started and will run every 600 seconds
+[DEV: 2017-Jul-28 14:32:44,428][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|startAuditThread: Exiting
+
+
+This controller is a standby, waiting to be chosen as primary...
+
+
+[DEV: 2017-Jul-28 14:32:44,428][INFO ][main      ]910bcf10-5c05-42c0-b07c-75a77dff37b0|org.openecomp.policy.drools.activestandby.ActiveStandbyFeature|
+
+This controller is a standby, waiting to be chosen as primary...
+
+
+[DEV: 2017-Jul-28 14:32:44,428][INFO ][Thread-12 ]a73ff133-8582-4134-8e6a-ea934c479a38|org.openecomp.policy.common.ia.AuditThread|AuditThread.run: Entering
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.im.StateChangeNotifier
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier
+create instance of Logger4J
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.ia.DbAudit
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:44,432][INFO ][Thread-12 ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|setThreadInitialized: Setting isThreadInitialized=true
+[DEV: 2017-Jul-28 14:32:44,435][INFO ][Thread-12 ]c4a664b3-4f81-456c-a91b-1bf063a7faba|org.openecomp.policy.common.ia.DbDAO|Resource: pdp1 with PersistenceUnit: auditDroolsPU exists and lastUpdated be updated
+[DEV: 2017-Jul-28 14:32:44,438][INFO ][Thread-12 ]482d860c-89d3-4abe-8d4c-dc2b0889a087|org.openecomp.policy.common.ia.DbAudit|dbAuditSimulate: Starting audit simulation for resourceName=pdp1, persistenceUnit=auditDroolsPU
+[DEV: 2017-Jul-28 14:32:44,439][INFO ][Thread-12 ]c4a664b3-4f81-456c-a91b-1bf063a7faba|org.openecomp.policy.common.ia.DbDAO|Resource: pdp1 with PersistenceUnit: auditDroolsPU exists and lastUpdated be updated
+[DEV: 2017-Jul-28 14:32:44,440][INFO ][Thread-12 ]482d860c-89d3-4abe-8d4c-dc2b0889a087|org.openecomp.policy.common.ia.DbAudit|dbAuditSimulate: i=0, sleeping 5000ms
+[DEV: 2017-Jul-28 14:32:44,458][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:44,460][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:44 CDT 2017
+[DEV: 2017-Jul-28 14:32:44,460][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[DEV: 2017-Jul-28 14:32:45,958][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:45,965][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:45 CDT 2017
+[DEV: 2017-Jul-28 14:32:45,966][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[DEV: 2017-Jul-28 14:32:47,010][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|
+
+DesignatedWaiter.run: PDP pdp1 is NOT designated but IS current and has a standbystatus=null
+[DEV: 2017-Jul-28 14:32:47,010][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run: PDP pdp1 going to setDesignated = false and calling stateManagement.demote
+[DEV: 2017-Jul-28 14:32:47,013][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:47,013][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[null], actionName=[demote]
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.common.im.StateElement
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:47,021][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:47,023][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:47,023][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:47,023][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STANDBY || COLD_STANDBY no delayActivationTimer existed.
+[DEV: 2017-Jul-28 14:32:47,099][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|INFO: DesignatedWaiter.run: PDP=pdp1 is not designated but is hotstandby and designated PDP has failed.  standbyStatus=hotstandby
+[DEV: 2017-Jul-28 14:32:47,099][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run: Designating PDP=pdp1
+[DEV: 2017-Jul-28 14:32:47,102][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:47,102][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[hotstandby], actionName=[promote]
+[DEV: 2017-Jul-28 14:32:47,103][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:47,103][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:47,103][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; controllers must be unlocked.
+[DEV: 2017-Jul-28 14:32:47,103][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation= false
+[DEV: 2017-Jul-28 14:32:47,103][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:47,103][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE no delayActivationTimer existed.
+[DEV: 2017-Jul-28 14:32:47,104][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE scheduling delayActivationTimer in 4000 ms
+[DEV: 2017-Jul-28 14:32:47,104][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) waitTimerLastRunDate = Fri Jul 28 14:32:47 CDT 2017
+[DEV: 2017-Jul-28 14:32:47,458][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:47,460][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:47 CDT 2017
+[DEV: 2017-Jul-28 14:32:47,460][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[DEV: 2017-Jul-28 14:32:48,008][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) waitTimerLastRunDate = Fri Jul 28 14:32:48 CDT 2017
+[DEV: 2017-Jul-28 14:32:48,958][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:48,963][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:48 CDT 2017
+[DEV: 2017-Jul-28 14:32:48,963][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[DEV: 2017-Jul-28 14:32:49,008][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) waitTimerLastRunDate = Fri Jul 28 14:32:49 CDT 2017
+[DEV: 2017-Jul-28 14:32:49,432][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|stopAuditThread: Entering
+[DEV: 2017-Jul-28 14:32:49,432][INFO ][main      ]b18ced6f-c761-4cb0-aa35-7021e742663d|org.openecomp.policy.common.ia.IntegrityAudit|stopAuditThread: Exiting
+[DEV: 2017-Jul-28 14:32:49,433][ERROR][Thread-12 ]a73ff133-8582-4134-8e6a-ea934c479a38|org.openecomp.policy.common.ia.AuditThread|MessageCodes :EXCEPTION_ERROR[Ljava.lang.String;@49801f9c
+[DEV: 2017-Jul-28 14:32:50,008][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) waitTimerLastRunDate = Fri Jul 28 14:32:50 CDT 2017
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.029 sec
+Running org.openecomp.policy.drools.controller.test.StandbyStateManagementTest
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.controller.test.StandbyStateManagementTest
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:50,459][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:50,463][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:50 CDT 2017
+[DEV: 2017-Jul-28 14:32:50,463][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[EL Info]: 2017-07-28 14:32:50.485--ServerSession(345142475)--EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
+[EL Info]: connection: 2017-07-28 14:32:50.488--ServerSession(345142475)--/file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/test-classes/_junitXacmlPU_url=jdbc:h2:file:./sql/xacml_user=sa login successful
+[EL Info]: 2017-07-28 14:32:50.549--ServerSession(1436218006)--EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
+[EL Info]: connection: 2017-07-28 14:32:50.551--ServerSession(1436218006)--/file:/C:/Users/KM097D/workspace/repo/onap/policy/drools-pdp/active-standby-management/target/classes/_junitDroolsPU_url=jdbc:h2:file:./sql/drools_user=sa login successful
+[DEV: 2017-Jul-28 14:32:50,562][INFO ][main      ]fee86c92-07a7-4098-82ea-1325a3156090|org.openecomp.policy.drools.activestandby.ActiveStandbyProperties|ActiveStandbyProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:50,562][INFO ][main      ]fee86c92-07a7-4098-82ea-1325a3156090|org.openecomp.policy.drools.activestandby.ActiveStandbyProperties|
+
+ActiveStandbyProperties.initProperties: Properties = 
+{repository.audit.ignore.errors=true, write_fpc_interval=5, hostPort=0.0.0.0:57692, resource.name=pdp1, pdp.updateInterval=1000, test_trans_interval=10, node_type=pdp_drools, failed_counter_threshold=3, fp_monitor_interval=30, db.audit.is.active=false, integrity_audit_period_seconds=600, dependency_groups=, site_name=pdp_1, repository.audit.is.active=false, pdp.timeout=15000, pdp.checkInterval=1500, pdp.initialWait=20000}
+
+
+[DEV: 2017-Jul-28 14:32:50,562][INFO ][main      ]2ba4bf49-1434-4784-95aa-e6559a71a39d|org.openecomp.policy.drools.activestandby.DroolsPersistenceProperties|DroolsPersistenceProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:50,562][INFO ][main      ]2ba4bf49-1434-4784-95aa-e6559a71a39d|org.openecomp.policy.drools.activestandby.DroolsPersistenceProperties|
+
+DroolsPersistenceProperties.initProperties: Properties = 
+{javax.persistence.jdbc.driver=org.h2.Driver, javax.persistence.jdbc.password=, hibernate.dataSource=org.mariadb.jdbc.MySQLDataSource, javax.persistence.jdbc.url=jdbc:h2:file:./sql/drools, persistenceDisabled=false, javax.persistence.jdbc.user=sa}
+
+
+FlexLogger:getLogger : loggerType = LOG4J
+getClassContext()[3].getName() org.openecomp.policy.drools.activestandby.XacmlPersistenceProperties
+create instance of Logger4J
+[DEV: 2017-Jul-28 14:32:50,563][INFO ][main      ]a5c356f4-28bc-46bd-9810-acb599c1aaae|org.openecomp.policy.drools.activestandby.XacmlPersistenceProperties|XacmlPersistenceProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:50,564][INFO ][main      ]a5c356f4-28bc-46bd-9810-acb599c1aaae|org.openecomp.policy.drools.activestandby.XacmlPersistenceProperties|
+
+XacmlPersistenceProperties.initProperties: Properties = 
+{javax.persistence.jdbc.driver=org.h2.Driver, javax.persistence.jdbc.password=, hibernate.dataSource=org.mariadb.jdbc.MySQLDataSource, javax.persistence.jdbc.url=jdbc:h2:file:./sql/xacml, persistenceDisabled=false, javax.persistence.jdbc.user=sa}
+
+
+[DEV: 2017-Jul-28 14:32:50,590][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: Entering and invoking PropertyUtil.getProperties() on 'src/test/server/config'
+[DEV: 2017-Jul-28 14:32:50,591][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: loading consolidatedProperties
+[DEV: 2017-Jul-28 14:32:50,592][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: PDP_INSTANCE_ID=pdp1
+[DEV: 2017-Jul-28 14:32:50,592][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|init: DB_URL=jdbc:h2:file:./sql/xacml
+[DEV: 2017-Jul-28 14:32:50,592][ERROR][main      ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|IM object exists and only one instance allowed
+[DEV: 2017-Jul-28 14:32:50,592][ERROR][main      ]164d982b-78de-4b2c-9453-7c38bcd90e3e|org.openecomp.policy.drools.statemanagement.StateManagementFeature|MessageCodes :EXCEPTION_ERROR[Ljava.lang.String;@4b195203
+[DEV: 2017-Jul-28 14:32:50,592][INFO ][main      ]d0ce612a-663e-43a5-a234-19ce0c1298ba|org.openecomp.policy.drools.statemanagement.DroolsPersistenceProperties|DroolsPersistenceProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:50,593][INFO ][main      ]d0ce612a-663e-43a5-a234-19ce0c1298ba|org.openecomp.policy.drools.statemanagement.DroolsPersistenceProperties|
+
+DroolsPersistenceProperties.initProperties: Properties = 
+{javax.persistence.jdbc.driver=org.h2.Driver, javax.persistence.jdbc.password=, hibernate.dataSource=org.mariadb.jdbc.MySQLDataSource, javax.persistence.jdbc.url=jdbc:h2:file:./sql/drools, persistenceDisabled=false, javax.persistence.jdbc.user=sa}
+
+
+[DEV: 2017-Jul-28 14:32:50,593][INFO ][main      ]96a65977-52cf-438d-b24e-e784b840e60e|org.openecomp.policy.drools.statemanagement.StateManagementProperties|IntegrityMonitorProperties.initProperties(Properties): entry
+[DEV: 2017-Jul-28 14:32:50,593][INFO ][main      ]96a65977-52cf-438d-b24e-e784b840e60e|org.openecomp.policy.drools.statemanagement.StateManagementProperties|
+
+IntegrityMonitorProperties.initProperties: Properties = 
+{repository.audit.ignore.errors=true, write_fpc_interval=5, hostPort=0.0.0.0:57692, resource.name=pdp1, pdp.updateInterval=1000, test_trans_interval=10, node_type=pdp_drools, failed_counter_threshold=3, fp_monitor_interval=30, db.audit.is.active=false, integrity_audit_period_seconds=600, dependency_groups=, site_name=pdp_1, repository.audit.is.active=false, pdp.timeout=15000, pdp.checkInterval=1500, pdp.initialWait=20000}
+
+
+[DEV: 2017-Jul-28 14:32:50,593][INFO ][main      ]164d982b-78de-4b2c-9453-7c38bcd90e3e|org.openecomp.policy.drools.statemanagement.StateManagementFeature|initializePersistence: resourceName=pdp1
+[DEV: 2017-Jul-28 14:32:50,594][INFO ][main      ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|getInstance() called
+[DEV: 2017-Jul-28 14:32:50,595][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:50,595][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[null], actionName=[lock]
+[DEV: 2017-Jul-28 14:32:50,598][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='null'
+[DEV: 2017-Jul-28 14:32:50,599][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus is null; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,599][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: null:  cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:50,599][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: null no delayActivationTimer existed.
+[DEV: 2017-Jul-28 14:32:50,600][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='null'
+[DEV: 2017-Jul-28 14:32:50,601][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus is null; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,601][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: null:  cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:50,601][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:50,601][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[locked], opState=[enabled], availStatus=[null], standbyStatus=[null], actionName=[unlock]
+[DEV: 2017-Jul-28 14:32:50,603][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='null'
+[DEV: 2017-Jul-28 14:32:50,604][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus is null; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,604][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='null'
+[DEV: 2017-Jul-28 14:32:50,605][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus is null; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,605][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:50,605][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[null], actionName=[demote]
+[DEV: 2017-Jul-28 14:32:50,606][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:50,607][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,607][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:50,607][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STANDBY || COLD_STANDBY no delayActivationTimer existed.
+[DEV: 2017-Jul-28 14:32:50,607][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:50,608][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,608][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.
+hotstandby_or_coldstandby
+[DEV: 2017-Jul-28 14:32:50,608][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:50,608][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[hotstandby], actionName=[lock]
+[DEV: 2017-Jul-28 14:32:50,610][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='coldstandby'
+[DEV: 2017-Jul-28 14:32:50,610][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=coldstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,610][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='coldstandby'
+[DEV: 2017-Jul-28 14:32:50,611][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=coldstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,611][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:50,611][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[locked], opState=[enabled], availStatus=[null], standbyStatus=[coldstandby], actionName=[unlock]
+[DEV: 2017-Jul-28 14:32:50,612][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:50,613][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,613][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:50,613][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,614][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:50,614][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[hotstandby], actionName=[promote]
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; controllers must be unlocked.
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation= false
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE no delayActivationTimer existed.
+[DEV: 2017-Jul-28 14:32:50,615][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE scheduling delayActivationTimer in 4000 ms
+[DEV: 2017-Jul-28 14:32:50,616][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:50,616][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:50,616][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; controllers must be unlocked.
+[DEV: 2017-Jul-28 14:32:50,616][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation= false
+[DEV: 2017-Jul-28 14:32:50,616][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:50,616][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE scheduling delayActivationTimer in 4000 ms
+[DEV: 2017-Jul-28 14:32:51,002][WARN ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|WARNING: DesignatedWaiter.run: No viable PDP found to be Designated. designatedPdp still null.
+[DEV: 2017-Jul-28 14:32:51,003][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = Fri Jul 28 14:32:51 CDT 2017
+[DEV: 2017-Jul-28 14:32:51,958][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:51,965][ERROR][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run caught an unexpected exception: javax.persistence.EntityNotFoundException: Entity no longer exists in the database: org.openecomp.policy.drools.activestandby.DroolsPdpEntity@19d3a53d.
+Fri Jul 28 14:32:51 CDT 2017 TimerUpdateClass.run caught an unexpected exception
+[DEV: 2017-Jul-28 14:32:52,001][WARN ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|WARNING: DesignatedWaiter.run: No viable PDP found to be Designated. designatedPdp still null.
+[DEV: 2017-Jul-28 14:32:52,002][ERROR][Timer-1   ]c7ebf56d-2ccc-47c2-9902-e5d7b37952b7|org.openecomp.policy.drools.activestandby.JpaDroolsPdpsConnector|setDesignated: PDP=pdp1 not in DB; cannot update designation
+[DEV: 2017-Jul-28 14:32:52,002][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = Fri Jul 28 14:32:52 CDT 2017
+[DEV: 2017-Jul-28 14:32:53,002][WARN ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|WARNING: DesignatedWaiter.run: No viable PDP found to be Designated. designatedPdp still null.
+[DEV: 2017-Jul-28 14:32:53,003][ERROR][Timer-1   ]c7ebf56d-2ccc-47c2-9902-e5d7b37952b7|org.openecomp.policy.drools.activestandby.JpaDroolsPdpsConnector|setDesignated: PDP=pdp1 not in DB; cannot update designation
+[DEV: 2017-Jul-28 14:32:53,003][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = Fri Jul 28 14:32:53 CDT 2017
+[DEV: 2017-Jul-28 14:32:53,458][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:53,459][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:53 CDT 2017
+[DEV: 2017-Jul-28 14:32:53,459][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[DEV: 2017-Jul-28 14:32:54,005][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|
+
+DesignatedWaiter.run: PDP pdp1 is NOT designated but IS current and has a standbystatus=providingservice
+[DEV: 2017-Jul-28 14:32:54,005][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run: PDP pdp1 going to setDesignated = false and calling stateManagement.demote
+[DEV: 2017-Jul-28 14:32:54,007][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:54,008][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[providingservice], actionName=[demote]
+[DEV: 2017-Jul-28 14:32:54,015][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:54,017][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:54,018][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:54,019][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:54,023][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|INFO: DesignatedWaiter.run: PDP=pdp1 is not designated but is hotstandby and designated PDP has failed.  standbyStatus=hotstandby
+[DEV: 2017-Jul-28 14:32:54,023][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run: Designating PDP=pdp1
+[DEV: 2017-Jul-28 14:32:54,034][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:54,035][INFO ][Timer-1   ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[hotstandby], actionName=[promote]
+[DEV: 2017-Jul-28 14:32:54,036][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:54,038][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:54,038][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; controllers must be unlocked.
+[DEV: 2017-Jul-28 14:32:54,038][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation= true
+[DEV: 2017-Jul-28 14:32:54,038][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation = true
+[DEV: 2017-Jul-28 14:32:54,038][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE delayActivationTimer is waiting for activation.
+[DEV: 2017-Jul-28 14:32:54,039][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:54,039][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:54,039][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; controllers must be unlocked.
+[DEV: 2017-Jul-28 14:32:54,039][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation= true
+[DEV: 2017-Jul-28 14:32:54,040][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE isWaitingForActivation = true
+[DEV: 2017-Jul-28 14:32:54,040][INFO ][Timer-1   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: PROVIDING_SERVICE delayActivationTimer is waiting for activation.
+[DEV: 2017-Jul-28 14:32:54,040][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) waitTimerLastRunDate = Fri Jul 28 14:32:54 CDT 2017
+[DEV: 2017-Jul-28 14:32:54,302][ERROR][Thread-9  ]058daaf9-6734-470f-865d-5aed1030836c|org.openecomp.policy.common.im.IntegrityMonitor|writeFpc DB table commit failed with exception: java.lang.Exception: FP entry not found in database for resource pdp1
+[DEV: 2017-Jul-28 14:32:54,302][INFO ][Thread-9  ]5a356288-bf21-4316-9811-cd4741c243c5|org.openecomp.policy.drools.statemanagement.DroolsPDPIntegrityMonitor|DroolsPDPIntegrityMonitor.subsystemTest called
+[DEV: 2017-Jul-28 14:32:54,302][INFO ][Thread-9  ]26e13e50-95ac-4690-a36f-e2c1735298a5|org.openecomp.policy.drools.statemanagement.DbAudit|Running 'DbAudit.invoke'
+[DEV: 2017-Jul-28 14:32:54,303][INFO ][Thread-9  ]26e13e50-95ac-4690-a36f-e2c1735298a5|org.openecomp.policy.drools.statemanagement.DbAudit|DbAudit.invoke: exiting because isActive = false
+[DEV: 2017-Jul-28 14:32:54,303][INFO ][Thread-9  ]f2a55fdf-e638-42bc-b261-03d796cc62a0|org.openecomp.policy.drools.statemanagement.RepositoryAudit|Running 'RepositoryAudit.invoke'
+[DEV: 2017-Jul-28 14:32:54,303][INFO ][Thread-9  ]f2a55fdf-e638-42bc-b261-03d796cc62a0|org.openecomp.policy.drools.statemanagement.RepositoryAudit|RepositoryAudit.invoke: exiting because isActive = false
+[DEV: 2017-Jul-28 14:32:54,615][INFO ][Timer-3   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|DelayActivateClass.run: entry
+[DEV: 2017-Jul-28 14:32:54,615][INFO ][Timer-3   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|DelayActivateClass.run.exit
+[DEV: 2017-Jul-28 14:32:54,616][INFO ][Timer-4   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|DelayActivateClass.run: entry
+[DEV: 2017-Jul-28 14:32:54,616][INFO ][Timer-4   ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|DelayActivateClass.run.exit
+[DEV: 2017-Jul-28 14:32:54,958][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: entry
+[DEV: 2017-Jul-28 14:32:54,963][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run: updateWorkerLastRunDate = Fri Jul 28 14:32:54 CDT 2017
+[DEV: 2017-Jul-28 14:32:54,963][INFO ][Timer-0   ]3a5bea7c-b076-4634-84ec-689ec367a24f|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler|TimerUpdateClass.run.exit
+[DEV: 2017-Jul-28 14:32:55,007][INFO ][Timer-1   ]3c10e006-79a0-4bfe-b4b9-97e4e76c46ba|org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler$DesignationWaiter|DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) waitTimerLastRunDate = Fri Jul 28 14:32:55 CDT 2017
+[DEV: 2017-Jul-28 14:32:55,618][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:55,619][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[providingservice], actionName=[promote]
+[DEV: 2017-Jul-28 14:32:55,621][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:55,622][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,622][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='providingservice'
+[DEV: 2017-Jul-28 14:32:55,623][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=providingservice; scheduling activation of PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,624][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:55,624][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[providingservice], actionName=[lock]
+[DEV: 2017-Jul-28 14:32:55,625][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='coldstandby'
+[DEV: 2017-Jul-28 14:32:55,626][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=coldstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,626][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:55,627][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='coldstandby'
+[DEV: 2017-Jul-28 14:32:55,627][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=coldstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,627][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: HOT_STNDBY || COLD_STANDBY:  cancelling delayActivationTimer.
+[DEV: 2017-Jul-28 14:32:55,628][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:55,628][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[locked], opState=[enabled], availStatus=[null], standbyStatus=[coldstandby], actionName=[unlock]
+[DEV: 2017-Jul-28 14:32:55,630][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:55,630][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,631][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='adminState', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:55,632][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,632][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|getEndingState
+[DEV: 2017-Jul-28 14:32:55,633][INFO ][main      ]77d7dca1-efe7-4e7b-842a-f2767530dfcd|org.openecomp.policy.common.im.StateTransition|adminState=[unlocked], opState=[enabled], availStatus=[null], standbyStatus=[hotstandby], actionName=[demote]
+[DEV: 2017-Jul-28 14:32:55,634][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:55,635][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+[DEV: 2017-Jul-28 14:32:55,636][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: Entering, message='standbyStatus', standbyStatus='hotstandby'
+[DEV: 2017-Jul-28 14:32:55,636][INFO ][main      ]5ed9d470-558d-480b-a5ae-6181703d1439|org.openecomp.policy.drools.activestandby.PMStandbyStateChangeNotifier|handleStateChange: standbyStatus=hotstandby; standing down PDP=pdp1
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.194 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 16.671 s
+[INFO] Finished at: 2017-07-28T14:32:55-05:00
+[INFO] Final Memory: 26M/981M
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,50 @@
+/*-
+ * ============LICENSE_START=======================================================
+ * policy-persistence
+ * ================================================================================
+ * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * ================================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=========================================================
+ */
+
+package org.openecomp.policy.drools.persistence;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+/**
+ * Generates the schema DDL files.
+ */
+public class GenSchemaTest {
+	
+	private EntityManagerFactory emf;
+	
+
+//	@Test
+	public void generate() throws Exception {
+		Map<String, Object> propMap = new HashMap<String, Object>();
+
+		propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
+		propMap.put("javax.persistence.jdbc.url",
+						"jdbc:h2:mem:TestJpaDroolsSessionConnector");
+		
+		emf = Persistence.createEntityManagerFactory(
+								"schemaDroolsPU", propMap);
+		
+		emf.close();
+	}
+}

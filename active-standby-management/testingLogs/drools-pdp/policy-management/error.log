@@ -1,0 +1,190 @@
+2017-07-27T22:54:38.034Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.STATEMANAGEMENT.STATEMANAGEMENTFEATURE.GLOBALINIT(STATEMANAGEMENTFEATURE.JAVA:80)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.statemanagement.StateManagementFeature.globalInit(StateManagementFeature.java:80)
+    ... 30 more frames
+
+2017-07-27T22:54:38.039Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.STATEMANAGEMENT.STATEMANAGEMENTFEATURE.GLOBALINIT(STATEMANAGEMENTFEATURE.JAVA:101)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.statemanagement.StateManagementFeature.globalInit(StateManagementFeature.java:101)
+    ... 30 more frames
+
+2017-07-27T22:54:38.043Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.ACTIVESTANDBY.DROOLSPDPSELECTIONHANDLER.<INIT>(DROOLSPDPSELECTIONHANDLER.JAVA:74)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler.<init>(DroolsPdpsElectionHandler.java:74)
+    ... 30 more frames
+
+2017-07-27T22:54:38.043Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.ACTIVESTANDBY.DROOLSPDPSELECTIONHANDLER.<INIT>(DROOLSPDPSELECTIONHANDLER.JAVA:82)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler.<init>(DroolsPdpsElectionHandler.java:82)
+    ... 30 more frames
+
+2017-07-27T22:55:40.665Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.STATEMANAGEMENT.STATEMANAGEMENTFEATURE.GLOBALINIT(STATEMANAGEMENTFEATURE.JAVA:80)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.statemanagement.StateManagementFeature.globalInit(StateManagementFeature.java:80)
+    ... 30 more frames
+
+2017-07-27T22:55:40.671Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.STATEMANAGEMENT.STATEMANAGEMENTFEATURE.GLOBALINIT(STATEMANAGEMENTFEATURE.JAVA:101)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.statemanagement.StateManagementFeature.globalInit(StateManagementFeature.java:101)
+    ... 30 more frames
+
+2017-07-27T22:55:40.674Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.ACTIVESTANDBY.DROOLSPDPSELECTIONHANDLER.<INIT>(DROOLSPDPSELECTIONHANDLER.JAVA:74)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler.<init>(DroolsPdpsElectionHandler.java:74)
+    ... 30 more frames
+
+2017-07-27T22:55:40.675Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.ACTIVESTANDBY.DROOLSPDPSELECTIONHANDLER.<INIT>(DROOLSPDPSELECTIONHANDLER.JAVA:82)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.activestandby.DroolsPdpsElectionHandler.<init>(DroolsPdpsElectionHandler.java:82)
+    ... 30 more frames
+
+2017-07-27T22:56:44.067Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.STATEMANAGEMENT.STATEMANAGEMENTFEATURE.GLOBALINIT(STATEMANAGEMENTFEATURE.JAVA:80)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.statemanagement.StateManagementFeature.globalInit(StateManagementFeature.java:80)
+    ... 30 more frames
+
+2017-07-27T22:56:44.072Z|||main||||ERROR|||||com.att.eelf.error||EELF9998E RESOURCE ID [EXCEPTION_ERROR] CANNOT BE FORMATTED - NO RESOURCE WITH THAT ID EXISTS!
+REQUEST FOR RESOURCE WAS MADE FROM:
+    AT COM.ATT.EELF.I18N.EELFRESOURCEMANAGER.FORMAT(EELFRESOURCEMANAGER.JAVA:326)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.WRITETOLOG(SLF4JWRAPPER.JAVA:815)
+    AT COM.ATT.EELF.CONFIGURATION.SLF4JWRAPPER.ERROR(SLF4JWRAPPER.JAVA:908)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.EELF.POLICYLOGGER.ERROR(POLICYLOGGER.JAVA:575)
+    AT ORG.OPENECOMP.POLICY.COMMON.LOGGING.FLEXLOGGER.EELFLOGGER.ERROR(EELFLOGGER.JAVA:425)
+    AT ORG.OPENECOMP.POLICY.DROOLS.STATEMANAGEMENT.STATEMANAGEMENTFEATURE.GLOBALINIT(STATEMANAGEMENTFEATURE.JAVA:101)
+    ... 30 MORE FRAMES
+ EELF9998E Resource id [EXCEPTION_ERROR] cannot be formatted - no resource with that id exists!
+Request for resource was made from:
+    at com.att.eelf.i18n.EELFResourceManager.format(EELFResourceManager.java:326)
+    at com.att.eelf.configuration.SLF4jWrapper.writeToLog(SLF4jWrapper.java:815)
+    at com.att.eelf.configuration.SLF4jWrapper.error(SLF4jWrapper.java:908)
+    at org.openecomp.policy.common.logging.eelf.PolicyLogger.error(PolicyLogger.java:575)
+    at org.openecomp.policy.common.logging.flexlogger.EelfLogger.error(EelfLogger.java:425)
+    at org.openecomp.policy.drools.statemanagement.StateManagementFeature.globalInit(StateManagementFeature.java:101)
+    ... 30 more frames
+

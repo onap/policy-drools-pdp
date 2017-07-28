@@ -64,6 +64,11 @@
 		<module>policy-core</module>
 		<module>policy-endpoints</module>
 		<module>policy-management</module>
+		<module>policy-persistence</module>
+		<module>state-management-api</module>
+		<module>state-management</module>
+		<module>active-standby-management-api</module>
+		<module>active-standby-management</module>
 		<module>feature-healthcheck</module>
 		<module>feature-eelf</module>
 		<module>packages</module>

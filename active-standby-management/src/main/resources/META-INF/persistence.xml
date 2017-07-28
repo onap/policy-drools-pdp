@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  policy-persistence
+  ================================================================================
+  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="activeStandbyPU" transaction-type="RESOURCE_LOCAL">
+	<!-- This is for database access by non-drools methods -->
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.openecomp.policy.drools.activestandby.DroolsPdpEntity</class>
+		<class>org.openecomp.policy.common.ia.jpa.IntegrityAuditEntity</class>
+
+		<properties>
+			<!-- Properties are passed in -->
+        </properties>
+	</persistence-unit>
+	
+	<persistence-unit name="junitDroolsPU" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.openecomp.policy.drools.activestandby.DroolsPdpEntity</class>
+		<!-- <class>org.openecomp.policy.drools.persistence.DroolsSessionEntity</class>
+		<class>org.drools.persistence.info.SessionInfo</class>
+		<class>org.drools.persistence.info.WorkItemInfo</class> -->
+		<class>org.openecomp.policy.common.ia.jpa.IntegrityAuditEntity</class>
+		<properties>
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+			<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/> 
+            <property name="javax.persistence.schema-generation.scripts.create-target" value="./sql/generatedCreateDrools.ddl"/>
+            <property name="javax.persistence.schema-generation.scripts.drop-target" value="./sql/generatedDropDrools.ddl"/>
+        </properties>
+	</persistence-unit>
+	
+	<persistence-unit name="junitXacmlPU" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.openecomp.policy.common.im.jpa.StateManagementEntity</class>
+		<class>org.openecomp.policy.common.im.jpa.ForwardProgressEntity</class>
+		<class>org.openecomp.policy.common.im.jpa.ResourceRegistrationEntity</class>
+		<class>org.openecomp.policy.common.ia.jpa.IntegrityAuditEntity</class>
+		<properties>
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+			<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/> 
+            <property name="javax.persistence.schema-generation.scripts.create-target" value="./sql/generatedCreateXacml.ddl"/>
+            <property name="javax.persistence.schema-generation.scripts.drop-target" value="./sql/generatedDropXacml.ddl"/>
+        </properties>
+	</persistence-unit>
+		<!-- This is the PU used by IntegrityAudit to audit DB tables used by Drools PDP -->
+	<persistence-unit name="auditDroolsPU" transaction-type="RESOURCE_LOCAL">
+		<!-- This is for database access by non-drools methods -->
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.openecomp.policy.drools.persistence.DroolsPdpEntity</class>
+		<class>org.openecomp.policy.drools.persistence.DroolsSessionEntity</class>
+		<class>org.drools.persistence.info.SessionInfo</class>
+		<class>org.drools.persistence.info.WorkItemInfo</class>
+		<class>org.openecomp.policy.common.ia.jpa.IntegrityAuditEntity</class>
+		<properties>
+			<!-- Properties are passed in -->
+        </properties>
+	</persistence-unit>
+
+</persistence>
