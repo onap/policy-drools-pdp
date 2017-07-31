@@ -74,17 +74,17 @@
 
 	<repositories>
 		<repository>
-			<id>onap-snapshots</id>
+			<id>ecomp-snapshots</id>
 			<name>ONAP Snapshot Repository</name>
 			<url>${nexusproxy}/${snapshots.path}</url>
 		</repository>
 		<repository>
-			<id>onap-releases</id>
+			<id>ecomp-releases</id>
 			<name>ONAP Release Repository</name>
 			<url>${nexusproxy}/${releases.path}</url>
 		</repository>
 		<repository>
-			<id>onap-staging</id>
+			<id>ecomp-staging</id>
 			<name>ONAP Staging Repository</name>
 			<url>${nexusproxy}/${staging.path}</url>
 		</repository>
