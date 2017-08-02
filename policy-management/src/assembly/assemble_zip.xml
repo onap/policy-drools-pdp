@@ -24,7 +24,7 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>runtime</id>
+	<id>pdpd</id>
 	<formats>
 		<format>zip</format>
 	</formats>
@@ -42,8 +42,7 @@
 		<fileSet>
 			<directory>target/assembly/</directory>
 			<outputDirectory>.</outputDirectory>
-			<excludes>
-			</excludes>
+			<excludes/>
 		</fileSet>
 		<fileSet>
 			<directory>.</directory>
@@ -67,16 +66,12 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
-			<directory>src/main/server-gen/scripts</directory>
-			<outputDirectory>scripts</outputDirectory>
-		</fileSet>
-		<fileSet>
-			<directory>src/main/server/scripts</directory>
-			<outputDirectory>scripts</outputDirectory>
-		</fileSet>
-		<fileSet>
 			<directory>src/main/server/config</directory>
 			<outputDirectory>config</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/server/db</directory>
+			<outputDirectory>etc/db</outputDirectory>
 		</fileSet>
 	</fileSets>
 
