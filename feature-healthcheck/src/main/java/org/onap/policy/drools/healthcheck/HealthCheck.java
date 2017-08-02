@@ -172,9 +172,11 @@ class HealthCheckMonitor implements HealthCheck {
 				try {
 					report.message = HttpClient.getBody(response, String.class);
 				} catch (Exception e) {
-					logger.warn("{}: cannot get body from http-client {}", this, client, e);
+					logger.info("{}: cannot get body from http-client {}", this, client, e);
 				}
 			} catch (Exception e) {
+				logger.warn("{}: cannot contact http-client {}", this, client, e);
+				
 				report.healthy = false;
 				reports.healthy = false;
 			}
@@ -202,6 +204,7 @@ class HealthCheckMonitor implements HealthCheck {
 				}
 			}
 		} catch (Exception e) {
+			logger.warn("{}: cannot start {}", this, e);		
 			return false;
 		}
 		

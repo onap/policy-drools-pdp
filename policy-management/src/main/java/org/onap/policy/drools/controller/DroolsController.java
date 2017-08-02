@@ -164,7 +164,7 @@ public interface DroolsController extends Startable, Lockable {
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			List<TopicCoderFilterConfiguration> decoderConfigurations,
 			List<TopicCoderFilterConfiguration> encoderConfigurations)
-	throws IllegalArgumentException, LinkageError, Exception;
+	throws IllegalArgumentException, LinkageError;
 
 	/**
 	 * gets the classnames of facts as well as the current count

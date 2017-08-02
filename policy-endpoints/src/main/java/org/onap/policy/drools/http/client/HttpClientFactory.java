@@ -19,6 +19,8 @@
  */
 package org.onap.policy.drools.http.client;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,26 +32,52 @@ import org.onap.policy.drools.properties.PolicyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Http Client Factory
+ */
 public interface HttpClientFactory {
 	
+	/**
+	 * build and http client with the following parameters
+	 */
 	public HttpClient build(String name, boolean https, 
                             boolean selfSignedCerts,
                             String hostname, int port, 
                             String baseUrl, String userName,
                             String password, boolean managed) 
-    throws Exception;
+    throws KeyManagementException, NoSuchAlgorithmException;
 	
-	public ArrayList<HttpClient> build(Properties properties) throws Exception;
+	/**
+	 * build http client from properties
+	 */
+	public ArrayList<HttpClient> build(Properties properties) 
+			throws KeyManagementException, NoSuchAlgorithmException;
 	
+	/**
+	 * get http client
+	 * @param name the name
+	 * @return the http client
+	 */
 	public HttpClient get(String name);
 	
+	/**
+	 * list of http clients
+	 * @return http clients
+	 */
 	public List<HttpClient> inventory();
 	
+	/**
+	 * destroy by name
+	 * @param name name
+	 */
 	public void destroy(String name);
 	
 	public void destroy();
 }
 
+/**
+ * http client factory implementation indexed by name
+ */
 class IndexedHttpClientFactory implements HttpClientFactory {
 	
 	/**
@@ -64,7 +92,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 			                             String hostname, int port,
 			                             String baseUrl, String userName, String password,
 			                             boolean managed) 
-	throws Exception {
+	throws KeyManagementException, NoSuchAlgorithmException {
 		if (clients.containsKey(name))
 			return clients.get(name);
 		
@@ -78,7 +106,8 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 	}
 
 	@Override
-	public synchronized ArrayList<HttpClient> build(Properties properties) throws Exception {
+	public synchronized ArrayList<HttpClient> build(Properties properties) 
+	throws KeyManagementException, NoSuchAlgorithmException {
 		ArrayList<HttpClient> clientList = new ArrayList<HttpClient>();
 		
 		String clientNames = properties.getProperty(PolicyProperties.PROPERTY_HTTP_CLIENT_SERVICES);

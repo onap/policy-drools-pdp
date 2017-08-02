@@ -221,7 +221,7 @@ public class NullDroolsController implements DroolsController {
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			List<TopicCoderFilterConfiguration> decoderConfigurations,
 			List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws IllegalArgumentException, LinkageError, Exception {
+			throws IllegalArgumentException, LinkageError {
 		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
 	}
 

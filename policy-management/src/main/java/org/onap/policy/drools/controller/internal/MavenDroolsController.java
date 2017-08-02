@@ -172,7 +172,7 @@ public class MavenDroolsController implements DroolsController {
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			                    List<TopicCoderFilterConfiguration> decoderConfigurations,
 			                    List<TopicCoderFilterConfiguration> encoderConfigurations) 
-		throws IllegalArgumentException, LinkageError, Exception {
+		throws IllegalArgumentException, LinkageError {
 		
 		if (logger.isInfoEnabled())
 			logger.info("UPDATE-TO-VERSION: " +  this + " -> {" + newGroupId + ":" + newArtifactId + ":" + newVersion + "}");
@@ -722,7 +722,7 @@ public class MavenDroolsController implements DroolsController {
 		
 		List<PolicySession> sessions = this.getSessions();
 		for (PolicySession session : sessions) {
-			if (sessionName.equals(session.getName()) || sessionName.equals(session.getName()))
+			if (sessionName.equals(session.getName()) || sessionName.equals(session.getFullName()))
 				return session;				
 		}
 		
@@ -752,8 +752,7 @@ public class MavenDroolsController implements DroolsController {
 				else
 					classNames.put(className, 1);
 			} catch (Exception e) {
-				if (logger.isInfoEnabled())
-					logger.info("Object cannot be retrieved from fact: " + fact);
+				logger.warn("Object cannot be retrieved from fact {}", fact, e);
 			}			
 		}	
 		
@@ -800,8 +799,7 @@ public class MavenDroolsController implements DroolsController {
 				if (delete)
 					kieSession.delete(factHandle);					
 			} catch (Exception e) {
-				if (logger.isInfoEnabled())
-					logger.info("Object cannot be retrieved from fact: " + factHandle);
+				logger.warn("Object cannot be retrieved from fact {}", factHandle, e);
 			}
 		}		
 		
@@ -846,8 +844,7 @@ public class MavenDroolsController implements DroolsController {
 				if (delete)
 					kieSession.delete(row.getFactHandle(queriedEntity));
 			} catch (Exception e) {
-				if (logger.isInfoEnabled())
-					logger.info("Object cannot be retrieved from fact: " + row);
+				logger.warn("Object cannot be retrieved from row: {}", row, e);
 			}
 		}
 		

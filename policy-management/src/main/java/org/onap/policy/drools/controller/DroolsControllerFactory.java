@@ -58,12 +58,11 @@ public interface DroolsControllerFactory {
 	 * @return the instantiated Drools Controller
 	 * @throws IllegalArgumentException with invalid parameters
 	 * @throws LinkageError Failure to link rules and models in Drools Libraries
-	 * @throws Exception Exception from Drools Libraries
 	 */
 	public DroolsController build(Properties properties,
 								  List<? extends TopicSource> eventSources, 
 								  List<? extends TopicSink> eventSinks)
-			throws IllegalArgumentException, LinkageError, Exception;
+			throws IllegalArgumentException, LinkageError;
 	
 	/**
 	 * Explicit construction of a Drools Controller
@@ -77,14 +76,13 @@ public interface DroolsControllerFactory {
 	 * @return the instantiated Drools Controller
 	 * @throws IllegalArgumentException with invalid parameters
 	 * @throws LinkageError Failure to link rules and models in Drools Libraries
-	 * @throws Exception Exception from Drools Libraries
 	 */
 	public DroolsController build(String groupId, 
 			 					  String artifactId, 
 			 					  String version,
 			 					  List<TopicCoderFilterConfiguration> decoderConfigurations,
 			 					  List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws IllegalArgumentException, LinkageError, Exception;
+			throws IllegalArgumentException, LinkageError;
 	
 	/**
 	 * Releases the Drools Controller from operation
@@ -177,7 +175,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 	public DroolsController build(Properties properties,
 								  List<? extends TopicSource> eventSources,
 								  List<? extends TopicSink> eventSinks) 
-			throws IllegalArgumentException, LinkageError, Exception {
+			throws IllegalArgumentException, LinkageError {
 		
 		String groupId = properties.getProperty(PolicyProperties.RULES_GROUPID);
 		if (groupId == null || groupId.isEmpty())
@@ -380,7 +378,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 			                      String newVersion, 
 			                      List<TopicCoderFilterConfiguration> decoderConfigurations,
 			                      List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws IllegalArgumentException, LinkageError, Exception {
+			throws IllegalArgumentException, LinkageError {
 		
 		if (newGroupId == null || newArtifactId == null || newVersion == null ||
 			newGroupId.isEmpty() || newArtifactId.isEmpty() || newVersion.isEmpty()) {

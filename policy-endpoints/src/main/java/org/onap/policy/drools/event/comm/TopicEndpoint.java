@@ -564,7 +564,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (uebSource != null)
 					sources.add(uebSource);
 			} catch (Exception e) {
-				logger.info("No UEB source for topic: {}", topic);
+				logger.info("No UEB source for topic: {}", topic, e);
 			}
 			
 			try {
@@ -572,7 +572,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (dmaapSource != null)
 					sources.add(dmaapSource);
 			} catch (Exception e) {
-				logger.info("No DMAAP source for topic: {}", topic);
+				logger.info("No DMAAP source for topic: {}", topic, e);
 			}
 		}
 		return sources;
@@ -596,7 +596,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (uebSink != null)
 					sinks.add(uebSink);
 			} catch (Exception e) {
-				logger.info("No UEB sink for topic: {}", topic);
+				logger.info("No UEB sink for topic: {}", topic, e);
 			}
 			
 			try {
@@ -604,7 +604,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 				if (dmaapSink != null)
 					sinks.add(dmaapSink);
 			} catch (Exception e) {
-				logger.info("No DMAAP sink for topic: {}", topic);
+				logger.info("No DMAAP sink for topic: {}", topic, e);
 			}
 		}
 		return sinks;
@@ -682,13 +682,13 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		try {
 			sinks.add(this.getUebTopicSink(topicName));
 		} catch (Exception e) {
-			;
+			logger.debug("No sink for topic: {}", topicName, e);
 		}
 		
 		try {
 			sinks.add(this.getDmaapTopicSink(topicName));
 		} catch (Exception e) {
-			;
+			logger.debug("No sink for topic: {}", topicName, e);
 		}
 		
 		return sinks;

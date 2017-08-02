@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.event.comm.bus.internal;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -146,7 +147,7 @@ public abstract class SingleThreadedBusTopicSource
 	/**
 	 * Initialize the Bus client
 	 */
-	public abstract void init() throws Exception;
+	public abstract void init() throws MalformedURLException;
 	
 	@Override
 	public void register(TopicListener topicListener) 

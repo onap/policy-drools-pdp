@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.event.comm.bus.internal;
 
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 
@@ -146,7 +147,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	 * Initialize the Cambria or MR Client
 	 */
 	@Override
-	public void init() throws Exception {
+	public void init() throws MalformedURLException {
 		if (this.userName == null || this.userName.isEmpty() || 
 				this.password == null || this.password.isEmpty()) {
 				this.consumer =

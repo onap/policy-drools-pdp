@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.event.comm.bus.internal;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public interface BusConsumer {
 	 * @return list of messages
 	 * @throws Exception when error encountered by underlying libraries
 	 */
-	public Iterable<String> fetch() throws Exception;
+	public Iterable<String> fetch() throws InterruptedException, IOException;
 	
 	/**
 	 * close underlying library consumer
@@ -136,7 +137,7 @@ public interface BusConsumer {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Iterable<String> fetch() throws Exception {
+		public Iterable<String> fetch() throws IOException {
 			return this.consumer.fetch();
 		}
 		
@@ -208,7 +209,8 @@ public interface BusConsumer {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Iterable<String> fetch() throws Exception {
+		@Override
+		public Iterable<String> fetch() throws InterruptedException, IOException {
 			MRConsumerResponse response = this.consumer.fetchWithReturnConsumerResponse();
 			if (response == null) {
 				logger.warn("{}: DMaaP NULL response received", this);
@@ -245,6 +247,7 @@ public interface BusConsumer {
 		/**
 		 * {@inheritDoc}
 		 */
+		@Override
 		public void close() {
 			synchronized (closeCondition) {
 				closeCondition.notifyAll();

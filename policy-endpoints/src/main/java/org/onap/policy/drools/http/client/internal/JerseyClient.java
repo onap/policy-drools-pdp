@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.http.client.internal;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -67,7 +69,7 @@ public class JerseyClient implements HttpClient {
 			            String hostname, int port, 
 			            String basePath, String userName,
 			            String password) 
-	throws Exception {
+	throws KeyManagementException, NoSuchAlgorithmException {
 		
 		super();
 		
