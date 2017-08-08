@@ -27,20 +27,59 @@
 #   └── features/
 #        └── <feature-name>*/
 #            └── [config]/
-#            │   └── <config-file>*
+#            │   └── <config-file>+
 #            └── lib/
 #            │   └── [dependencies]/
-#            │   │   └── <dependent-jar>*
+#            │   │   └── <dependent-jar>+
 #            │   └── feature/
 #            │       └── <feature-jar>
+#            └── [db]/
+#            │   └── <db-name>/+
+#            │       └── sql/
+#            │           └── <sql-scripts>*
 #            └── [install]
 #                └── [enable]
 #                └── [disable]
-#                └── [other-future-operations]
-#                └── [other-files]
+#                └── [other-directories-or-files]
 #
-#   <feature-name> directory should not have the "feature-" prefix.
-#   <config-file> preferable with "feature-" prefix.
+# notes:  [] = optional , * = 0 or more , + = 1 or more
+#   <feature-name> directory without "feature-" prefix.
+#   [config]       feature configuration directory that contains all configuration
+#                  needed for this features
+#   [config]/<config-file>  preferable named with "feature-<feature-name>" prefix to
+#                  precisely match it against the exact features, source code, and 
+#                  associated wiki page for configuration details.
+#   lib            jar libraries needed by this features
+#   lib/[dependencies]  3rd party jar dependencies not provided by base installation
+#                  of pdp-d that are necessary for <feature-name> to operate
+#                  correctly.
+#   lib/feature    the single feature jar that implements the feature.
+#   [db]           database directory, if the feature contains sql.
+#   [db]/<db-name> database to which underlying sql scripts should be applied against.
+#                  ideally, <db-name> = <feature-name> so it is easily to associate
+#                  the db data with a feature itself.   Ideally, since a feature is
+#                  a somewhat independent isolated unit of functionality,the <db-name>
+#                  database ideally isolates all its data.
+#   [db]/<db-name>/sql  directory with all the sql scripts.
+#   [db]/<db-name>/sql/<sql-scripts>  for this featuresql scripts
+#                  upgrade scripts should be suffixed with ".upgrade.sql"
+#                  downgrade scripts should be suffixed with ".downgrade.sql"
+#   [install]      custom installation directory where custom enable or disable scripts
+#                  and other free form data is included to be used for the enable and 
+#                  and disable scripts.
+#   [install]/[enable] enable script executed when the enable operation is invoked in
+#                  the feature.
+#   [install]/[disable] disable script executed when the disable operation is invoked in
+#                  the feature.
+#   [install]/[other-directories-or-files] other executables, or data that can be used
+#                  by the feature for any of its operations.   The content is determined
+#                  by the feature designer.
+#  
+# Operations:
+#   enable : enables 1) dependencies, 2) configuration, 3) database, and 4) feature 
+#   disable: disables 1) dependencies, 2) configuration, and 3) feature 
+#               * note: no operation on the DB.
+#   status : status of a feature
 #
 # Example:
 #
@@ -75,6 +114,7 @@ fi
 
 LIB=${POLICY_HOME}/lib
 CONFIG=${POLICY_HOME}/config
+DB=${POLICY_HOME}/etc/db
 FEATURES=${POLICY_HOME}/features
 
 if [[ ! ( -d "${LIB}" && -x "${LIB}" ) ]]; then
@@ -92,12 +132,18 @@ if [[ ! ( -d "${FEATURES}" && -x "${FEATURES}" ) ]]; then
 	exit 3
 fi
 
+if [[ ! -d "${DB}" ]]; then
+	mkdir -p "${DB}"
+fi
+
 # relative per Feature Directory Paths
 
 FEATURE_DEPS="lib/dependencies"
 FEATURE_LIB="lib/feature"
 FEATURE_CONFIG="config"
 FEATURE_INSTALL="install"
+FEATURE_DB="db"
+FEATURE_SQL="sql"
 
 featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
 if [[ -z ${featureJars} ]]; then
@@ -188,11 +234,11 @@ function status
 }
 
 # ##########################################################
-# depEnableAnalysis(featureName):  
+# enableDepAnalysis (featureName):  
 #                   reports on potential dependency conflicts
 #   featureName: name of the feature
 # ##########################################################
-function depEnableAnalysis()
+function enableDepAnalysis ()
 {
 	if [[ ${DEBUG} == y ]]; then
 		echo "-- ${FUNCNAME[0]} $@ --"
@@ -235,11 +281,11 @@ function depEnableAnalysis()
 }
 
 # ##########################################################
-# configEnableAnalysis(featureName):  
+# enableConfigAnalysis (featureName):  
 #                   reports on potential dependency conflicts
 #   featureName: name of the feature
 # ##########################################################
-function configEnableAnalysis()
+function enableConfigAnalysis ()
 {
 	if [[ ${DEBUG} == y ]]; then
 		echo "-- ${FUNCNAME[0]} $@ --"
@@ -262,6 +308,58 @@ function configEnableAnalysis()
 			return 2
 		fi
 	done
+}
+
+# ##########################################################
+# enableDbAnalysis (featureName):  
+#                   reports on potential db access problems
+#   featureName: name of the feature
+# ##########################################################
+function enableDbAnalysis()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureSqls
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureSqls=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/sql/*.upgrade.sql 2> /dev/null)
+	if [[ -z ${featureSqls} ]]; then
+		return 0
+	fi
+	
+	source "${POLICY_HOME}"/etc/profile.d/base.conf
+	if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
+		echo "ERROR: not existing configuration to contact the database"
+		return 2
+	fi
+	
+	# check reachability
+	
+	if which mysqlshow; then
+		if ! mysqlshow -u"${SQL_USER}" -p"${SQL_PASSWORD}" -h"${SQL_HOST}" > /dev/null 2>&1; then
+			echo "ERROR: No DB connectivity to ${SQL_HOST} for ${SQL_USER}"
+			return 3
+		else
+			echo "OK: DB connect to ${SQL_HOST} connectivity for ${SQL_USER}"
+		fi
+	else 
+		if ! ping -c2 -W2 "${SQL_HOST}"; then
+			echo "ERROR: database ${SQL_HOST} not reachable"
+			return 4
+		else
+			echo "OK: ping ${SQL_HOST} connectivity"
+		fi
+	fi
+	
+	return 0
 }
 
 # ##########################################################
@@ -320,6 +418,81 @@ function enableFeatureConfig()
 }
 
 # ##########################################################
+# enableFeatureDbSchema(featureName):  
+#        enables feature DB Schema configuration
+#   featureName: name of the feature
+# ##########################################################
+function enableFeatureDbSchema()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureDbPath="$2"
+	local schemaName="$3"
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	if [[ -z ${featureDbPath} ]]; then
+		echo "WARN: no feature DB path"
+		return 2
+	fi
+	
+	if [[ -z ${schemaName} ]]; then
+		echo "WARN: no feature schema name"
+		return 3
+	fi
+	
+	sqlUpgradeScripts=$(ls "${featureDbPath%/}"/sql/*.upgrade.sql 2> /dev/null)
+	if [[ -z "${sqlUpgradeScripts}" ]]; then
+		return 0
+	fi
+	
+	for sqlUpgradeScript in ${sqlUpgradeScripts}; do
+		if [[ ! -d "${DB}"/"${schemaName}"/sql ]]; then
+			mkdir -p "${DB}"/"${schemaName}"/sql 2> /dev/null
+		fi		
+		ln -s -f "${sqlUpgradeScript}" "${DB}"/"${schemaName}"/sql/
+	done
+}
+
+# ##########################################################
+# enableFeatureDb(featureName):  
+#       enables DB feature configuration
+#   featureName: name of the feature
+# ##########################################################
+function enableFeatureDb()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	local featureDbs featureDbPath schemaName
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureDbs=$(ls -d "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/ 2> /dev/null)
+	for featureDbPath in ${featureDbs}; do
+		if [[ -z "$(ls "${featureDbPath%/}"/"${FEATURE_SQL}"/*.upgrade.sql 2> /dev/null)" ]]; then
+			continue
+		fi
+		schemaName=$(basename "${featureDbPath%/}")
+		enableFeatureDbSchema "${featureName}" "${featureDbPath%/}" "${schemaName}"
+	done
+}
+
+
+# ##########################################################
 # enableFeatureOp(featureName): 'enable' feature operation
 #   featureName: name of the feature
 # ##########################################################
@@ -372,12 +545,16 @@ function enableFeature()
 		return 2
 	fi
 	
-	if ! depEnableAnalysis "${featureName}"; then
-		return 3
+	if ! enableDepAnalysis  "${featureName}"; then
+		return "$?"
 	fi
 	
-	if ! configEnableAnalysis "${featureName}"; then
-		return 4
+	if ! enableConfigAnalysis  "${featureName}"; then
+		return "$?"
+	fi
+	
+	if ! enableDbAnalysis "${featureName}"; then
+		return "$?"
 	fi
 	
 	# enable feature itself
@@ -392,7 +569,9 @@ function enableFeature()
 
 	enableFeatureConfig "${featureName}" 
 	
-	# TODO: run feature install DB scripts if any
+	# enable db
+
+	enableFeatureDb "${featureName}"
 
 	# run custom enable if any
 
@@ -490,6 +669,36 @@ function disableFeatureConfig()
 }
 
 # ##########################################################
+# disableFeatureDb(featureName):  
+# 				disables feature db configuration
+#   featureName: name of the feature
+# ##########################################################
+function disableFeatureDb()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+
+	local featureName="$1"
+	local featureSqls sqlDir schemaDir schemaName
+	
+	if [[ -z ${featureName} ]]; then
+		echo "WARN: no feature name"
+		return 1
+	fi
+	
+	featureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/sql/*.upgrade.sql -type f -maxdepth 1 2> /dev/null)
+	for featureSql in ${featureSqls}; do
+		sqlName=$(basename "${featureSql}")
+		sqlDir=$(dirname "${featureSql}")
+		schemaDir=$(dirname "${sqlDir}")
+		schemaName=$(basename "${schemaDir}")
+		rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
+	done
+}
+
+# ##########################################################
 # disableFeatureOp(featureName): 'enable' feature operation
 #   featureName: name of the feature
 # ##########################################################
@@ -550,10 +759,12 @@ function disableFeature()
 
 	disableFeatureConfig "${featureName}"
 	
-	# run feature uninstall DB scripts if any
-	# TODO: future
+	# disable DB SQL scripts if any
+
+	disableFeatureDb "${featureName}"
 
 	# run custom disable if any
+
 	disableFeatureOp "${featureName}"
 }
 
