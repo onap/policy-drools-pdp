@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a1a2d67_6626b36a",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 2
+      },
+      "lineNbr": 792,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-08-09T14:42:54Z",
+      "side": 1,
+      "message": "Isn\u0027t it possible that the feature installation includes some files that reference ${{POLICY_HOME}}? It seems unnecessary for shell scripts, but there could be an XML file or some other type of data file that needs to include the full path name.\n\nIn any case, I was trying to duplicate the same behavior that would occur when features are installed as part of \u0027docker-install.sh\u0027.",
+      "parentUuid": "1a1a2d67_e602c3b3",
+      "revId": "ddf74042024778cf7ca90e9db7b5ae9b66758ec3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a1a2d67_a62ccb4b",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 2
