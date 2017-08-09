@@ -16,6 +16,23 @@
       "revId": "ddf74042024778cf7ca90e9db7b5ae9b66758ec3",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a1a2d67_a62ccb4b",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 2
+      },
+      "lineNbr": 812,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-09T14:27:40Z",
+      "side": 1,
+      "message": "/backup dir should be removed\n.conf duplicated",
+      "revId": "ddf74042024778cf7ca90e9db7b5ae9b66758ec3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
