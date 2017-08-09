@@ -127,10 +127,8 @@ if [[ ! ( -d "${CONFIG}" && -x "${CONFIG}" ) ]]; then
 	exit 2
 fi
 
-if [[ ! ( -d "${FEATURES}" && -x "${FEATURES}" ) ]]; then
-	echo "ERROR: no ${FEATURES} directory"
-	exit 3
-fi
+# ensure that the directory exists
+mkdir -p "${FEATURES}"
 
 if [[ ! -d "${DB}" ]]; then
 	mkdir -p "${DB}"
@@ -146,11 +144,6 @@ FEATURE_DB="db"
 FEATURE_SQL="sql"
 
 featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
-if [[ -z ${featureJars} ]]; then
-	echo "no features"
-	usage
-	exit 0
-fi
 
 # default field lengths
 nameLength=20
@@ -192,6 +185,10 @@ function usage
 		            Enable the specified feature
 		        features disable <feature> ...
 		            Disable the specified feature
+		        features install [ <feature> | <file-name> ] ...
+		            Install the specified feature
+		        features uninstall <feature> ...
+		            Uninstall the specified feature
 		EOF
 }
 
@@ -727,7 +724,7 @@ function disableFeatureOp()
 }
 
 # ##########################################################
-# disableFeature(featureName, featureJar):  enables a feature
+# disableFeature(featureName):  disables a feature
 #   featureName: name of the feature
 # ##########################################################
 function disableFeature()
@@ -766,6 +763,158 @@ function disableFeature()
 	# run custom disable if any
 
 	disableFeatureOp "${featureName}"
+}
+
+############################################################
+# configureComponent <config-file> <features-root-directory>
+#
+# This was copied from 'policy-drools/docker-install.sh'
+# in the 'docker' repository.
+############################################################
+function configure_component() {
+	if [[ $DEBUG == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+
+	local CONF_FILE COMPONENT_ROOT_DIR SED_LINE SED_FILES name value
+		
+	CONF_FILE=$1
+	COMPONENT_ROOT_DIR=$2
+	
+	SED_LINE="sed -i"
+	SED_LINE+=" -e 's!\${{POLICY_HOME}}!${POLICY_HOME}!g' "
+	SED_LINE+=" -e 's!\${{POLICY_USER}}!${POLICY_USER}!g' "
+	SED_LINE+=" -e 's!\${{POLICY_GROUP}}!${POLICY_GROUP}!g' "
+	SED_LINE+=" -e 's!\${{KEYSTORE_PASSWD}}!${KEYSTORE_PASSWD}!g' "
+	SED_LINE+=" -e 's!\${{JAVA_HOME}}!${JAVA_HOME}!g' "
+		
+	while read line || [ -n "${line}" ]; do
+		if [[ -n ${line} ]] && [[ ${line:0:1} != \# ]]; then
+			name=$(echo "${line%%=*}")
+			value=$(echo "${line#*=}")
+			# escape ampersand so that sed does not replace it with the search string
+			value=$(echo "${value}" | sed -e 's/[\/&]/\\&/g')
+			if [[ -z ${name} ]] || [[ -z ${value} ]]; then
+				echo "WARNING: ${line} missing name or value"
+			fi
+			SED_LINE+=" -e 's/\${{${name}}}/${value}/g' "
+		fi
+	done < "$CONF_FILE"
+	
+	SED_FILES=""
+	for sed_file in $(find "${COMPONENT_ROOT_DIR}" -path ${COMPONENT_ROOT_DIR}/backup -prune -o -name '*.xml' -o -name '*.sh' -o -name '*.properties' -o -name '*.json' -o -name '*.conf' -o -name '*.cfg' -o -name '*.template' -o -name '*.conf' -o -name '*.cron'); do
+		if fgrep -l '${{' ${sed_file} > /dev/null 2>&1; then
+			SED_FILES+="${sed_file} "
+		fi
+	done
+
+	if [[ -z ${SED_FILES} ]]; then
+		echo "WARNING: no xml, sh, properties, or conf files to perform configuration expansion"
+	else
+		SED_LINE+=${SED_FILES}
+		eval "${SED_LINE}"
+	fi
+}
+
+############################################################
+# installFeatures <feature-name-or-zip-file> ...
+#
+# This was copied from 'policy-drools/docker-install.sh'
+# in the 'docker' repository, and modified where needed.
+############################################################
+function installFeatures
+{
+	if [[ $DEBUG == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+
+	local name featureConf feature dir conf
+	
+	if [[ -d "${FEATURES}" && -x "${FEATURES}" ]]; then
+		SOURCE_DIR=$PWD
+		for feature in "$@" ; do
+			dir=
+			if [[ "${feature}" == feature-*.zip ||
+						"${feature}" == */feature-*.zip ]] ; then
+				# the ZIP file is specified -- find the name
+				name="${feature##*/}"
+				name="${name#feature-}"
+				name="${name%-[0-9]*\.zip}"
+
+				# if the ZIP file has a directory name component,
+				# set 'dir' accordingly
+				if [[ "${feature}" =~ / ]] ; then
+					dir="${feature%/*}"
+				fi
+			else
+				# Doesn't match the ZIP file name convention -- interpret
+				# this as a feature name, and try to locate a matching ZIP
+				# file. If there is more than one, choose the one with the
+				# highest version number.
+				name="${feature}"
+				feature=$(ls -v feature-${name}-[0-9]*.zip 2>/dev/null|tail -1)
+			fi
+			if [[ ! -f "${feature}" ]] ; then
+				# include the file name in the error message, unless we don't
+				# have one -- in this case, use the feature name
+				echo "ERROR: feature file ${feature:-for ${name}} not found"
+				continue
+			fi
+			if [[ -d "${FEATURES}/${name}" ]] ; then
+				echo "ERROR: feature ${name} has already been installed"
+				continue
+			fi
+
+			# extract contents of ZIP file in to feature directory
+			mkdir -p "${FEATURES}/${name}" > /dev/null 2>&1
+			(cd "${FEATURES}/${name}"; jar xf ${SOURCE_DIR}/${feature})
+
+			# if there is a configuration file available,
+			# use it to configure the feature
+			featureConf="${dir:+$dir/}feature-${name}.conf"
+			if [[ -r "${featureConf}" ]]; then
+				configure_component "${featureConf}" "${FEATURES}"
+				cp "${featureConf}" "${POLICY_HOME}"/etc/profile.d
+				echo "feature ${name} has been installed (configuration present)"
+			else
+				echo "feature ${name} has been installed (no configuration present)"
+			fi
+		done
+		
+		# check the current directory and the 'config' directory for a
+		# 'base.conf' file -- use the first one that is found
+		for conf in base.conf ${POLICY_HOME}/config/base.conf ; do
+			if [[ -f "${conf}" ]] ; then
+				echo "applying base configuration '${conf}' to features"
+				configure_component "${conf}" "${FEATURES}"
+				break
+			fi
+		done
+	else
+		echo "error: aborting -- ${FEATURES} is not accessible"
+		exit 1
+	fi
+}
+
+############################################################
+# uninstallFeatures <feature-name> ...
+############################################################
+function uninstallFeatures
+{
+	local name
+	local allFeatures=$'\n'$(cd ${FEATURES};ls)$'\n'
+	for name in "$@" ; do
+		# the following check takes care of potentially troublesome names
+		# like '.', '..', and names containing '/'
+		if [[ "${allFeatures}" =~ $'\n'${name}$'\n' ]] ; then
+			disableFeature "${name}"
+			rm -rf "${FEATURES}/${name}"
+		else
+			echo "feature ${name} not found"
+		fi
+	done
 }
 
 case "$1" in
@@ -841,6 +990,24 @@ case "$1" in
 			echo
 			status
 		fi
+	};;
+
+	install)
+	{
+		shift
+		installFeatures "$@"
+	};;
+
+	uninstall)
+	{
+		if [[ -f "${POLICY_HOME}"/PID ]]; then
+			echo "ERROR: uninstall: not allowed when policy is running .."
+			echo
+			status
+			exit 12
+		fi
+		shift
+		uninstallFeatures "$@"
 	};;
 
 	*)
