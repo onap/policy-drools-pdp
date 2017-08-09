@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a1a2d67_e602c3b3",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 2
+      },
+      "lineNbr": 792,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-09T14:23:27Z",
+      "side": 1,
+      "message": "I think no need to do these, I think it will be part of the base install and not necessary for features when they are installed.   I think they can be removed.",
+      "revId": "ddf74042024778cf7ca90e9db7b5ae9b66758ec3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
