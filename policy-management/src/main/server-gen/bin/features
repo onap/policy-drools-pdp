@@ -24,23 +24,23 @@
 # Features Directory Layout:
 #
 # POLICY_HOME/
-#   └── features/
-#        └── <feature-name>*/
-#            └── [config]/
-#            │   └── <config-file>+
-#            └── lib/
-#            │   └── [dependencies]/
-#            │   │   └── <dependent-jar>+
-#            │   └── feature/
-#            │       └── <feature-jar>
-#            └── [db]/
-#            │   └── <db-name>/+
-#            │       └── sql/
-#            │           └── <sql-scripts>*
-#            └── [install]
-#                └── [enable]
-#                └── [disable]
-#                └── [other-directories-or-files]
+#   L─ features/
+#        L─ <feature-name>*/
+#            L─ [config]/
+#            |   L─ <config-file>+
+#            L─ lib/
+#            |   L─ [dependencies]/
+#            |   |   L─ <dependent-jar>+
+#            │   L─ feature/
+#            │       L─ <feature-jar>
+#            L─ [db]/
+#            │   L─ <db-name>/+
+#            │       L─ sql/
+#            │           L─ <sql-scripts>*
+#            L─ [install]
+#                L─ [enable]
+#                L─ [disable]
+#                L─ [other-directories-or-files]
 #
 # notes:  [] = optional , * = 0 or more , + = 1 or more
 #   <feature-name> directory without "feature-" prefix.
@@ -61,7 +61,7 @@
 #                  a somewhat independent isolated unit of functionality,the <db-name>
 #                  database ideally isolates all its data.
 #   [db]/<db-name>/sql  directory with all the sql scripts.
-#   [db]/<db-name>/sql/<sql-scripts>  for this featuresql scripts
+#   [db]/<db-name>/sql/<sql-scripts>  for this feature sql scripts
 #                  upgrade scripts should be suffixed with ".upgrade.sql"
 #                  downgrade scripts should be suffixed with ".downgrade.sql"
 #   [install]      custom installation directory where custom enable or disable scripts
@@ -76,33 +76,59 @@
 #                  by the feature designer.
 #  
 # Operations:
-#   enable : enables 1) dependencies, 2) configuration, 3) database, and 4) feature 
-#   disable: disables 1) dependencies, 2) configuration, and 3) feature 
-#               * note: no operation on the DB.
+#   install: installs a feature
+#   uninstall: uninstalls a feature
+#   enable : enables 1) dependencies, 2) configuration, 3) database, 4) feature, 5) customization
+#   disable: disables 1) dependencies, 2) configuration, 3) database, 4) feature, 6) customization
 #   status : status of a feature
+#
+# 'enable' operation details:
+#  0. Validates current state before the operation is committed
+#  1. sets the symbolic link to the actual feature jar in pdp-d classpath ($POLICY_HOME/lib)
+#  2. sets symbolic links to feature dependencies in pdp-d classpath ($POLICY_HOME/lib)
+#  3. sets symbolic links to feature configuration in pdp-d configuration directory ($POLICY_HOME/config)
+#  4. sets symbolic links to feature upgrade scripts and removes links to downgrade scripts (if any) 
+#     in the pdp-d migration directory ($POLICY_HOME/etc/db/migration).
+#  5. cd to the feature 'install' directory an executes (if exists) the 'enable' script to allow for specific
+#     customizations for this feature.
+#
+# 'disable' operation details:
+#  0. Validates current state before the operation is committed
+#  1. removes the symbolic link to the actual feature jar in pdp-d classpath ($POLICY_HOME/lib)
+#  2. removes symbolic links to feature dependencies in pdp-d classpath ($POLICY_HOME/lib)
+#  3. removes symbolic links to feature configuration in pdp-d configuration directory ($POLICY_HOME/config)
+#  4. removes symbolic links to feature upgrade scripts and sets links to downgrade scripts (if any) 
+#     in the pdp-d migration directory ($POLICY_HOME/etc/db/migration).
+#  5. cd to the feature 'install' directory an executes (if exists) the 'disable' script to allow for specific
+#     customizations for this feature.
+# 
+# Notes for DB enabled features:
+# 	A. Upgrade/Downgrade SQL File Name Format:  
+# 			<VERSION>-<pdp|feature-name>[-description](.upgrade|.downgrade).sql
+#   B. See related tooling: db-migrator and policy
 #
 # Example:
 #
 # POLICY_HOME/
-#   └── features/
-#        ├── eelf/
-#        │   ├── config/
-#        │   │   ├── logback-eelf.xml
-#        │   └── lib/
-#        │   │   └── dependencies/
-#        │   │   │   └── ONAP-Logging-1.1.0-SNAPSHOT.jar
-#        │   │   │   └── eelf-core-1.0.0.jar
-#        │   │   └── feature/
-#        │   │       └── feature-eelf-1.1.0-SNAPSHOT.jar
-#        │   └── install/
-#        │       └── enable
-#        │       └── disable
-#        └── healthcheck/
-#            ├── config/
-#            │   └── feature-healthcheck.properties
-#            └── lib/
-#                └── feature/
-#                    └── feature-healthcheck-1.1.0-SNAPSHOT.jar
+#   L─ features/
+#        L── eelf/
+#        │   L── config/
+#        │   │   L── logback-eelf.xml
+#        │   L─ lib/
+#        │   │   L─ dependencies/
+#        │   │   │   L─ ONAP-Logging-1.1.0-SNAPSHOT.jar
+#        │   │   │   L─ eelf-core-1.0.0.jar
+#        │   │   L─ feature/
+#        │   │       L─ feature-eelf-1.1.0-SNAPSHOT.jar
+#        │   L─ install/
+#        │       L─ enable
+#        │       L─ disable
+#        L─ healthcheck/
+#            L── config/
+#            │   L─ feature-healthcheck.properties
+#            L─ lib/
+#                L─ feature/
+#                    L─ feature-healthcheck-1.1.0-SNAPSHOT.jar
 # #############################################################
 
 if [[ ${DEBUG} == y ]]; then
@@ -114,21 +140,21 @@ fi
 
 LIB=${POLICY_HOME}/lib
 CONFIG=${POLICY_HOME}/config
-DB=${POLICY_HOME}/etc/db
+DB=${POLICY_HOME}/etc/db/migration
 FEATURES=${POLICY_HOME}/features
 
 if [[ ! ( -d "${LIB}" && -x "${LIB}" ) ]]; then
-	echo "ERROR: no ${LIB} directory"
+	echo "error: no ${LIB} directory"
 	exit 1
 fi
 
 if [[ ! ( -d "${CONFIG}" && -x "${CONFIG}" ) ]]; then
-	echo "ERROR: no ${CONFIG} directory"
+	echo "error: no ${CONFIG} directory"
 	exit 2
 fi
 
 # ensure that the directory exists
-mkdir -p "${FEATURES}"
+mkdir -p "${FEATURES}" 2> /dev/null
 
 if [[ ! -d "${DB}" ]]; then
 	mkdir -p "${DB}"
@@ -142,6 +168,9 @@ FEATURE_CONFIG="config"
 FEATURE_INSTALL="install"
 FEATURE_DB="db"
 FEATURE_SQL="sql"
+
+UPGRADE_SQL_SUFFIX=".upgrade.sql"
+DOWNGRADE_SQL_SUFFIX=".downgrade.sql"
 
 featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
 
@@ -198,7 +227,7 @@ function usage
 function status
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} --"
 		set -x
 	fi
 	
@@ -228,6 +257,7 @@ function status
 		fi
 		printf "${format}" "${name}" "${version}" "${status}"
 	done
+	echo
 }
 
 # ##########################################################
@@ -238,7 +268,7 @@ function status
 function enableDepAnalysis ()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -246,7 +276,7 @@ function enableDepAnalysis ()
 	local featureDepJars featureDepJarPath depJarName multiVersionJars
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
@@ -257,7 +287,7 @@ function enableDepAnalysis ()
 		# it could be a base jar
 
 		if [[ -f "${LIB}"/"${depJarName}" ]]; then
-			echo "WARN: dependency ${depJarName} already in use"
+			echo "warning: dependency ${depJarName} already in use"
 			continue
 		fi
 		
@@ -271,7 +301,7 @@ function enableDepAnalysis ()
 
 		multiVersionJars=$(ls "${LIB}"/"${depJarName%%-[0-9]*.jar}"-*.jar 2> /dev/null)
 		if [[ -n "${multiVersionJars}" ]]; then
-			echo "WARN: other version of library ${depJarName} present: ${multiVersionJars}"
+			echo "warning: other version of library ${depJarName} present: ${multiVersionJars}"
 			return 2
 		fi
 	done
@@ -285,7 +315,7 @@ function enableDepAnalysis ()
 function enableConfigAnalysis ()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -293,7 +323,7 @@ function enableConfigAnalysis ()
 	local featureConfigs configPath configFileName
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
@@ -301,7 +331,7 @@ function enableConfigAnalysis ()
 	for configPath in ${featureConfigs}; do
 		configFileName=$(basename "${configPath}")
 		if [[ -e "${LIB}"/"${configFileName}" ]]; then
-			echo "ERROR: a config file of the same name is already in the base: ${configFileName}"
+			echo "error: a config file of the same name is already in the base: ${configFileName}"
 			return 2
 		fi
 	done
@@ -315,7 +345,7 @@ function enableConfigAnalysis ()
 function enableDbAnalysis()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -323,37 +353,28 @@ function enableDbAnalysis()
 	local featureSqls
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
-	featureSqls=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/sql/*.upgrade.sql 2> /dev/null)
+	featureSqls=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/${FEATURE_SQL}/*${UPGRADE_SQL_SUFFIX} 2> /dev/null)
 	if [[ -z ${featureSqls} ]]; then
 		return 0
 	fi
 	
 	source "${POLICY_HOME}"/etc/profile.d/base.conf
 	if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
-		echo "ERROR: not existing configuration to contact the database"
+		echo "error: not existing configuration to contact the database"
 		return 2
 	fi
 	
-	# check reachability
+	# check DB set up
 	
-	if which mysqlshow; then
-		if ! mysqlshow -u"${SQL_USER}" -p"${SQL_PASSWORD}" -h"${SQL_HOST}" > /dev/null 2>&1; then
-			echo "ERROR: No DB connectivity to ${SQL_HOST} for ${SQL_USER}"
-			return 3
-		else
-			echo "OK: DB connect to ${SQL_HOST} connectivity for ${SQL_USER}"
-		fi
-	else 
-		if ! ping -c2 -W2 "${SQL_HOST}"; then
-			echo "ERROR: database ${SQL_HOST} not reachable"
-			return 4
-		else
-			echo "OK: ping ${SQL_HOST} connectivity"
-		fi
+	source "${POLICY_HOME}"/etc/profile.d/base.conf
+	
+	if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
+		echo "error: database credentials do not exist" 
+		return 3
 	fi
 	
 	return 0
@@ -367,7 +388,7 @@ function enableDbAnalysis()
 function enableFeatureDeps()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -375,7 +396,7 @@ function enableFeatureDeps()
 	local featureDeps featureDepPath depJarName
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
@@ -396,7 +417,7 @@ function enableFeatureDeps()
 function enableFeatureConfig()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -404,7 +425,7 @@ function enableFeatureConfig()
 	local featureConfigs featureConfigPath
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
@@ -422,7 +443,7 @@ function enableFeatureConfig()
 function enableFeatureDbSchema()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -431,31 +452,46 @@ function enableFeatureDbSchema()
 	local schemaName="$3"
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
 	if [[ -z ${featureDbPath} ]]; then
-		echo "WARN: no feature DB path"
+		echo "warning: ${featureName} contains no DB path"
 		return 2
 	fi
 	
 	if [[ -z ${schemaName} ]]; then
-		echo "WARN: no feature schema name"
+		echo "warning: feature ${featureName} contains no schema name"
 		return 3
 	fi
 	
-	sqlUpgradeScripts=$(ls "${featureDbPath%/}"/sql/*.upgrade.sql 2> /dev/null)
-	if [[ -z "${sqlUpgradeScripts}" ]]; then
-		return 0
+	rc=0
+	sqlUpgradeScripts=$(ls "${featureDbPath%/}"/${FEATURE_SQL}/*${UPGRADE_SQL_SUFFIX} 2> /dev/null)
+	for sqlUpgradeScript in ${sqlUpgradeScripts}; do
+		if [[ ! -d "${DB}"/"${schemaName}"/${FEATURE_SQL} ]]; then
+			mkdir -p "${DB}"/"${schemaName}"/${FEATURE_SQL} 2> /dev/null
+		fi		
+		ln -s -f "${sqlUpgradeScript}" "${DB}"/"${schemaName}"/${FEATURE_SQL}/
+	done
+	
+	sqlDowngradeScripts=$(ls "${featureDbPath%/}"/${FEATURE_SQL}/*${DOWNGRADE_SQL_SUFFIX} 2> /dev/null)
+	for sqlDowngradeScript in ${sqlDowngradeScripts}; do
+		if [[ -d "${DB}"/"${schemaName}"/${FEATURE_SQL} ]]; then
+			sqlName=$(basename "${sqlDowngradeScript}")
+			rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
+		else
+			echo "warning: feature ${featureName} only contains downgrade scripts"
+			rc=4
+			break
+		fi
+	done
+	
+	if [[ -n ${sqlUpgradeScripts} || -n ${sqlDowngradeScripts} ]]; then
+		DEBUG=${DEBUG} db-migrator -s "${schemaName}" -o ok
 	fi
 	
-	for sqlUpgradeScript in ${sqlUpgradeScripts}; do
-		if [[ ! -d "${DB}"/"${schemaName}"/sql ]]; then
-			mkdir -p "${DB}"/"${schemaName}"/sql 2> /dev/null
-		fi		
-		ln -s -f "${sqlUpgradeScript}" "${DB}"/"${schemaName}"/sql/
-	done
+	return ${rc}
 }
 
 # ##########################################################
@@ -466,21 +502,22 @@ function enableFeatureDbSchema()
 function enableFeatureDb()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
 	local featureName="$1"
-	local featureDbs featureDbPath schemaName
+	local featureDbs featureDbPath schemaName sqls
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
 	featureDbs=$(ls -d "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/ 2> /dev/null)
 	for featureDbPath in ${featureDbs}; do
-		if [[ -z "$(ls "${featureDbPath%/}"/"${FEATURE_SQL}"/*.upgrade.sql 2> /dev/null)" ]]; then
+		sqls=$(ls "${featureDbPath%/}"/"${FEATURE_SQL}"/*.sql 2> /dev/null)
+		if [[ -z ${sqls} ]]; then
 			continue
 		fi
 		schemaName=$(basename "${featureDbPath%/}")
@@ -488,31 +525,40 @@ function enableFeatureDb()
 	done
 }
 
-
 # ##########################################################
-# enableFeatureOp(featureName): 'enable' feature operation
-#   featureName: name of the feature
+# customize(featureName): 
+#	executes customized script for an operation.
+#
+# featureName - feature name
+# operation - operation, ie. 
+#  'enable', 'disable', 'install', or 'uninstall'
 # ##########################################################
-function enableFeatureOp()
+function customOpScript()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
 	local featureName="$1"
+	local operation="$2"
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
-	enableScript="${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"/enable
-	if [[ -f ${enableScript} ]]; then
+	if [[ -z ${operation} ]]; then
+		echo "warning: ${featureName} : a custom operation script must be provided"
+		return 1
+	fi
+	
+	local customScript="${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"/"${operation}"
+	if [[ -f ${customScript} ]]; then
 		(
 			cd "${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"
-			chmod u+x enable
-			./enable
+			chmod u+x "${customScript}"
+			./"$(basename "${customScript}")"
 		)
 	fi
 }
@@ -525,7 +571,7 @@ function enableFeatureOp()
 function enableFeature()
 {
 	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -533,12 +579,12 @@ function enableFeature()
 	local featureJar="$2"
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
 	if [[ -z ${featureJar} ]]; then
-		echo "WARN: no feature jar"
+		echo "warning: no feature jar"
 		return 2
 	fi
 	
@@ -572,7 +618,7 @@ function enableFeature()
 
 	# run custom enable if any
 
-	enableFeatureOp "${featureName}"
+	customOpScript "${featureName}" "enable"
 }
 
 # ##########################################################
@@ -582,7 +628,7 @@ function enableFeature()
 function disableFeatureDeps()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -592,7 +638,7 @@ function disableFeatureDeps()
 	local depJarPath depJarName depJarRealPath
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
@@ -646,7 +692,7 @@ function disableFeatureDeps()
 function disableFeatureConfig()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
@@ -654,7 +700,7 @@ function disableFeatureConfig()
 	local featureConfigs featureConfigPath
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
@@ -666,6 +712,68 @@ function disableFeatureConfig()
 }
 
 # ##########################################################
+# disableFeatureDbSchema(featureName, featureDbPath, schemaName):  
+# 				disables feature db configuration for a schema
+#   featureName: name of the feature
+# ##########################################################
+function disableFeatureDbSchema()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+	
+	local featureName="$1" featureDbPath="$2" schemaName="$3"
+	local upgradeFeatureSqls downgradeFeatureSqls featureSql sqlDir sqlName schemaDir schemaName
+	
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+	
+	if [[ -z ${featureDbPath} ]]; then
+		echo "warning: ${featureName} contains no DB path"
+		return 2
+	fi
+	
+	if [[ -z ${schemaName} ]]; then
+		echo "warning: feature ${featureName} contains no schema name"
+		return 3
+	fi
+	
+	
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+	
+	upgradeFeatureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/"${schemaName}"/"${FEATURE_SQL}"/*"${UPGRADE_SQL_SUFFIX}" -type f -maxdepth 1 2> /dev/null)
+	for featureSql in ${upgradeFeatureSqls}; do
+		sqlName=$(basename "${featureSql}")
+		sqlDir=$(dirname "${featureSql}")
+		schemaDir=$(dirname "${sqlDir}")
+		schemaName=$(basename "${schemaDir}")
+		rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
+	done
+	
+	downgradeFeatureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/"${schemaName}"/"${FEATURE_SQL}"/*"${DOWNGRADE_SQL_SUFFIX}" -type f -maxdepth 1 2> /dev/null)
+	for featureSql in ${downgradeFeatureSqls}; do
+		sqlName=$(basename "${featureSql}")
+		sqlDir=$(dirname "${featureSql}")
+		schemaDir=$(dirname "${sqlDir}")
+		schemaName=$(basename "${schemaDir}")
+		if [[ ! -d "${DB}"/"${schemaName}"/${FEATURE_SQL} ]]; then
+			mkdir -p "${DB}"/"${schemaName}"/${FEATURE_SQL} 2> /dev/null
+		fi		
+		ln -s -f "${featureSql}" "${DB}"/"${schemaName}"/${FEATURE_SQL}/
+	done
+	
+	if [[ -n ${sqlUpgradeScripts} || -n ${sqlDowngradeScripts} ]]; then
+		DEBUG=${DEBUG} db-migrator -s "${schemaName}" -o ok
+	fi
+}
+
+# ##########################################################
 # disableFeatureDb(featureName):  
 # 				disables feature db configuration
 #   featureName: name of the feature
@@ -673,54 +781,26 @@ function disableFeatureConfig()
 function disableFeatureDb()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 
 	local featureName="$1"
-	local featureSqls sqlDir schemaDir schemaName
+	local featureDbPath featureDbs schemaName
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return 1
 	fi
 	
-	featureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/sql/*.upgrade.sql -type f -maxdepth 1 2> /dev/null)
-	for featureSql in ${featureSqls}; do
-		sqlName=$(basename "${featureSql}")
-		sqlDir=$(dirname "${featureSql}")
-		schemaDir=$(dirname "${sqlDir}")
-		schemaName=$(basename "${schemaDir}")
-		rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
+	featureDbs=$(ls -d "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/ 2> /dev/null)
+	for featureDbPath in ${featureDbs}; do
+		if [[ -z "$(ls "${featureDbPath%/}"/"${FEATURE_SQL}"/*${UPGRADE_SQL_SUFFIX} 2> /dev/null)" ]]; then
+			continue
+		fi
+		schemaName=$(basename "${featureDbPath%/}")
+		disableFeatureDbSchema "${featureName}" "${featureDbPath%/}" "${schemaName}"
 	done
-}
-
-# ##########################################################
-# disableFeatureOp(featureName): 'enable' feature operation
-#   featureName: name of the feature
-# ##########################################################
-function disableFeatureOp()
-{
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
-	
-	local featureName="$1"
-	
-	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
-		return 1
-	fi
-	
-	disableScript="${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"/disable
-	if [[ -f ${disableScript} ]]; then
-		(
-			cd "${FEATURES}"/"${featureName}"/"${FEATURE_INSTALL}"
-			chmod u+x disable
-			./disable
-		)
-	fi
 }
 
 # ##########################################################
@@ -730,14 +810,14 @@ function disableFeatureOp()
 function disableFeature()
 {
 	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 	
 	local featureName="$1"
 	
 	if [[ -z ${featureName} ]]; then
-		echo "WARN: no feature name"
+		echo "warning: no feature name"
 		return
 	fi
 	
@@ -762,58 +842,48 @@ function disableFeature()
 
 	# run custom disable if any
 
-	disableFeatureOp "${featureName}"
+	customOpScript "${featureName}" "disable"
 }
 
 ############################################################
-# configureComponent <config-file> <features-root-directory>
+# configureFeature <config-file> <features-root-directory>
 #
 # This was copied from 'policy-drools/docker-install.sh'
-# in the 'docker' repository.
+# in the 'docker' repository, and modified where needed.
 ############################################################
-function configure_component() {
+function configureFeature() 
+{
 	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 
-	local CONF_FILE COMPONENT_ROOT_DIR SED_LINE SED_FILES name value
-		
-	CONF_FILE=$1
-	COMPONENT_ROOT_DIR=$2
-	
-	SED_LINE="sed -i"
-	SED_LINE+=" -e 's!\${{POLICY_HOME}}!${POLICY_HOME}!g' "
-	SED_LINE+=" -e 's!\${{POLICY_USER}}!${POLICY_USER}!g' "
-	SED_LINE+=" -e 's!\${{POLICY_GROUP}}!${POLICY_GROUP}!g' "
-	SED_LINE+=" -e 's!\${{KEYSTORE_PASSWD}}!${KEYSTORE_PASSWD}!g' "
-	SED_LINE+=" -e 's!\${{JAVA_HOME}}!${JAVA_HOME}!g' "
+	local envConfig=$1 featureRoot=$2 
+	local sedLine="sed -i" 
+	local sedFiles="" nonBinaryFiles sedFile name value
 		
 	while read line || [ -n "${line}" ]; do
 		if [[ -n ${line} ]] && [[ ${line:0:1} != \# ]]; then
-			name=$(echo "${line%%=*}")
-			value=$(echo "${line#*=}")
-			# escape ampersand so that sed does not replace it with the search string
+			name="${line%%=*}"
+			value="${line#*=}"
 			value=$(echo "${value}" | sed -e 's/[\/&]/\\&/g')
 			if [[ -z ${name} ]] || [[ -z ${value} ]]; then
-				echo "WARNING: ${line} missing name or value"
+				echo "warning: ${line} missing name or value"
 			fi
-			SED_LINE+=" -e 's/\${{${name}}}/${value}/g' "
+			sedLine+=" -e 's/\${{${name}}}/${value}/g' "
 		fi
-	done < "$CONF_FILE"
+	done < "${envConfig}"
 	
-	SED_FILES=""
-	for sed_file in $(find "${COMPONENT_ROOT_DIR}" -path ${COMPONENT_ROOT_DIR}/backup -prune -o -name '*.xml' -o -name '*.sh' -o -name '*.properties' -o -name '*.json' -o -name '*.conf' -o -name '*.cfg' -o -name '*.template' -o -name '*.conf' -o -name '*.cron'); do
-		if fgrep -l '${{' ${sed_file} > /dev/null 2>&1; then
-			SED_FILES+="${sed_file} "
+	nonBinaryFiles=$(find "${featureRoot}" -type f -exec grep -Iq . {} \; -print 2> /dev/null)
+	for sedFile in ${nonBinaryFiles}; do
+		if fgrep -l '${{' ${sedFile} > /dev/null 2>&1; then
+			sedFiles+="${sedFile} "
 		fi
 	done
 
-	if [[ -z ${SED_FILES} ]]; then
-		echo "WARNING: no xml, sh, properties, or conf files to perform configuration expansion"
-	else
-		SED_LINE+=${SED_FILES}
-		eval "${SED_LINE}"
+	if [[ -n ${sedFiles} ]]; then
+		sedLine+=${sedFiles}
+		eval "${sedLine}"
 	fi
 }
 
@@ -826,7 +896,7 @@ function configure_component() {
 function installFeatures
 {
 	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
+		echo "-- ${FUNCNAME[0]} $* --"
 		set -x
 	fi
 
@@ -854,41 +924,43 @@ function installFeatures
 				# file. If there is more than one, choose the one with the
 				# highest version number.
 				name="${feature}"
-				feature=$(ls -v feature-${name}-[0-9]*.zip 2>/dev/null|tail -1)
+				feature=$(ls -v feature-"${name}"-[0-9]*.zip 2>/dev/null|tail -1)
 			fi
 			if [[ ! -f "${feature}" ]] ; then
 				# include the file name in the error message, unless we don't
 				# have one -- in this case, use the feature name
-				echo "ERROR: feature file ${feature:-for ${name}} not found"
+				echo "error: feature file ${feature:-for ${name}} not found"
 				continue
 			fi
 			if [[ -d "${FEATURES}/${name}" ]] ; then
-				echo "ERROR: feature ${name} has already been installed"
+				echo "error: feature ${name} has already been installed"
 				continue
 			fi
 
 			# extract contents of ZIP file in to feature directory
 			mkdir -p "${FEATURES}/${name}" > /dev/null 2>&1
-			(cd "${FEATURES}/${name}"; jar xf ${SOURCE_DIR}/${feature})
+			(cd "${FEATURES}/${name}"; jar xf "${SOURCE_DIR}"/"${feature}")
 
 			# if there is a configuration file available,
 			# use it to configure the feature
 			featureConf="${dir:+$dir/}feature-${name}.conf"
 			if [[ -r "${featureConf}" ]]; then
-				configure_component "${featureConf}" "${FEATURES}"
+				configureFeature "${featureConf}" "${FEATURES}"/"${name}"
 				cp "${featureConf}" "${POLICY_HOME}"/etc/profile.d
 				echo "feature ${name} has been installed (configuration present)"
 			else
 				echo "feature ${name} has been installed (no configuration present)"
 			fi
+					
+			customOpScript "${featureName}" "install"
 		done
 		
 		# check the current directory and the 'config' directory for a
 		# 'base.conf' file -- use the first one that is found
-		for conf in base.conf ${POLICY_HOME}/config/base.conf ; do
+		for conf in base.conf ${POLICY_HOME}/config/base.conf ${POLICY_HOME}/etc/profile.d/base.conf; do
 			if [[ -f "${conf}" ]] ; then
 				echo "applying base configuration '${conf}' to features"
-				configure_component "${conf}" "${FEATURES}"
+				configureFeature "${conf}" "${FEATURES}"
 				break
 			fi
 		done
@@ -898,19 +970,91 @@ function installFeatures
 	fi
 }
 
+# ##########################################################
+# uninstallFeatureDb(featureName):  
+# 				uninstalls the feature db configuration
+#   featureName: name of the feature
+# ##########################################################
+function uninstallFeatureDb()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+
+	local featureName="$1"
+	local featureSqls sqlDir sqlName schemaDir schemaName schemaNames leftSqls
+	
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+	
+	featureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/${FEATURE_SQL}/*.sql -type f -maxdepth 1 2> /dev/null)
+	for featureSql in ${featureSqls}; do
+		sqlName=$(basename "${featureSql}")
+		sqlDir=$(dirname "${featureSql}")
+		schemaDir=$(dirname "${sqlDir}")
+		schemaName=$(basename "${schemaDir}")
+		schemaNames+=${schemaName} 
+		rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
+	done
+	
+	for schemaName in ${schemaNames};
+	do
+		leftSqls=$(ls "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/*.sql 2> /dev/null)
+		if [[ -z ${leftSqls} ]]; then
+			if ! DEBUG=${DEBUG} db-migrator -s "${schemaName}" -o ok; then
+				echo -n "warning: ${featureName}: ${schemaName}: database data is leftover. "
+				echo -n "Consider cleaning left over data with 'db-migrator'."
+			fi
+		fi		
+	done
+}
+
+############################################################
+# uninstallFeature <feature-name> ...
+############################################################
+function uninstallFeature
+{
+	if [[ $DEBUG == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+	
+	local featureName="$1"
+	
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return
+	fi
+	
+	disableFeature "${featureName}"
+	uninstallFeatureDb "${featureName}"
+	customOpScript "${featureName}" "uninstall"
+	
+	if [[ -n ${FEATURES} && -n ${featureName} ]]; then
+		rm -rf "${FEATURES:-???}/${featureName}"
+	fi
+}
+
 ############################################################
 # uninstallFeatures <feature-name> ...
 ############################################################
 function uninstallFeatures
 {
+	if [[ $DEBUG == y ]]; then
+		echo "-- ${FUNCNAME[0]} --"
+		set -x
+	fi
+	
 	local name
 	local allFeatures=$'\n'$(cd ${FEATURES};ls)$'\n'
 	for name in "$@" ; do
 		# the following check takes care of potentially troublesome names
 		# like '.', '..', and names containing '/'
 		if [[ "${allFeatures}" =~ $'\n'${name}$'\n' ]] ; then
-			disableFeature "${name}"
-			rm -rf "${FEATURES}/${name}"
+			uninstallFeature "${name}"
 		else
 			echo "feature ${name} not found"
 		fi
@@ -927,7 +1071,7 @@ case "$1" in
 	enable)
 	{
 		if [[ -f "${POLICY_HOME}"/PID ]]; then
-			echo "ERROR: enable: not allowed when policy is running .."
+			echo "error: enable: not allowed when policy is running .."
 			echo
 			status
 			exit 10
@@ -946,7 +1090,7 @@ case "$1" in
 				# make sure there is only one feature jar
 				countFeatureJars=$(echo "${file}" | wc -w)
 				if [[ ${countFeatureJars} != 1 ]]; then
-					echo "WARNING: skipping ${name},  ${countFeatureJars} feature libraries found"
+					echo "warning: skipping ${name},  ${countFeatureJars} feature libraries found"
 					continue
 				fi			
 				
@@ -965,7 +1109,7 @@ case "$1" in
 	disable)
 	{
 		if [[ -f "${POLICY_HOME}"/PID ]]; then
-			echo "ERROR: disable: not allowed when policy is running .."
+			echo "error: disable: not allowed when policy is running .."
 			echo
 			status
 			exit 11
@@ -1001,7 +1145,7 @@ case "$1" in
 	uninstall)
 	{
 		if [[ -f "${POLICY_HOME}"/PID ]]; then
-			echo "ERROR: uninstall: not allowed when policy is running .."
+			echo "error: uninstall: not allowed when policy is running .."
 			echo
 			status
 			exit 12
