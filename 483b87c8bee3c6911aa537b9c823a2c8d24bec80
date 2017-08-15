@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_7518c084",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 1
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-08-15T11:35:15Z",
+      "side": 1,
+      "message": "For now, you might want to make this an error rather than a warning. Longer term, it might be reasonable to provide the option to interactively select which one to use. You can use \u0027ls -v\u0027 to sort by version to determine which one is the latest version (which is usually the best default).",
+      "revId": "483b87c8bee3c6911aa537b9c823a2c8d24bec80",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
