@@ -66,10 +66,21 @@ function policy_status() {
 		set -x
 	fi
 	
+	echo
 	policy_op "status"
 
 	NUM_CRONS=$(crontab -l 2> /dev/null | wc -l)
 	echo "	${NUM_CRONS} cron jobs installed."
+
+	echo
+	echo "[features]"
+	features status
+	
+	local databases=$(ls -d "${POLICY_HOME}"/etc/db/migration/*/ 2> /dev/null)
+	if [[ -n ${databases} ]]; then
+		echo "[migration]"
+		db-migrator -s ALL -o ok
+	fi
 	
 }
 
