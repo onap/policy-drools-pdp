@@ -83,7 +83,6 @@
               <addParentPoms>false</addParentPoms>
               <copyPom>false</copyPom>
 			  <includeScope>runtime</includeScope>
-			  <excludeScope>provided</excludeScope>
 			  <excludeTransitive>true</excludeTransitive>
             </configuration>
           </execution>

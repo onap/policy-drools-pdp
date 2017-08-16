@@ -86,7 +86,7 @@
 							<addParentPoms>false</addParentPoms>
 							<copyPom>false</copyPom>
 							<excludeGroupIds>javax.inject</excludeGroupIds>
-							<excludeScope>provided</excludeScope>
+							<includeScope>runtime</includeScope>
 						</configuration>
 					</execution>
 				</executions>
@@ -235,26 +235,32 @@
 		<version>4.1</version>
 	</dependency>
 	
-	<!-- This entry is necessary to support import "org.apache.commons.lang3.time.DateUtils" 
-		 reference in StandbyStateManagementTest.java -->
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-lang3</artifactId>
-		<version>3.4</version>
-	</dependency>
-	
 	<dependency>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-classic</artifactId>
 	</dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<scope>test</scope>
+	</dependency>
+	
+	<!--
+		The following dependencies are for features and drools
+		applications usage
+	 -->
+	 
+	<dependency>
+		<groupId>org.eclipse.persistence</groupId>
+		<artifactId>eclipselink</artifactId>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.mariadb.jdbc</groupId>
+	    <artifactId>mariadb-java-client</artifactId>
+	</dependency>
+	 
   </dependencies>
 
 </project>

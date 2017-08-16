@@ -301,7 +301,7 @@ function enableDepAnalysis ()
 
 		multiVersionJars=$(ls "${LIB}"/"${depJarName%%-[0-9]*.jar}"-*.jar 2> /dev/null)
 		if [[ -n "${multiVersionJars}" ]]; then
-			echo "warning: other version of library ${depJarName} present: ${multiVersionJars}"
+			echo "error: other version of library ${depJarName} present: ${multiVersionJars}"
 			return 2
 		fi
 	done

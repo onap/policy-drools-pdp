@@ -49,6 +49,10 @@
 		<http.client.version>4.5</http.client.version>
 		<http.core.version>4.4.4</http.core.version>
 		<logback.version>1.2.3</logback.version>
+		<junit.version>4.12</junit.version>
+		<eclipselink.version>2.6.4</eclipselink.version>
+		<mariadb.jdbc.version>2.1.0</mariadb.jdbc.version>
+		
 		<sonar.plugin.version>3.2</sonar.plugin.version>
 		<jacoco.plugin.version>0.7.9</jacoco.plugin.version>
   
@@ -166,6 +170,21 @@
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>eclipselink</artifactId>
+				<version>${eclipselink.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.mariadb.jdbc</groupId>
+			    <artifactId>mariadb-java-client</artifactId>
+			    <version>${mariadb.jdbc.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
