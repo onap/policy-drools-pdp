@@ -57,7 +57,7 @@ public class ReflectionUtil {
 					                        classLoader);
 			return aClass;
 		} catch (Exception e) {
-			logger.error("FETCHED-CLASS {} IN {} does NOT EXIST", className, classLoader);
+			logger.error("class {} fetched in {} does not exist", className, classLoader, e);
 		}
 		
 		return null;

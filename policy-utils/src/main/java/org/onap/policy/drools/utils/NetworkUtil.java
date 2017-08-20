@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-endpoints
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -18,21 +18,18 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.event.comm;
+package org.onap.policy.drools.utils;
 
 /**
- * Listener for event messages entering the Policy Engine
+ * Network Utilities
  */
-@FunctionalInterface
-public interface TopicListener {
+public class NetworkUtil {
 	
 	/**
-	 * Notification of a new Event over a given Topic
-	 * 
-	 * @param commType communication infrastructure type
-	 * @param topic topic name
-	 * @param event event message as a string
+	 * IPv4 Wildcard IP address
 	 */
-	public void onTopicEvent(Topic.CommInfrastructure commType, String topic, String event);
+	public static final String IPv4_WILDCARD_ADDRESS = "0.0.0.0";
+	
+	/* Other methods will be added as needed */
 
 }

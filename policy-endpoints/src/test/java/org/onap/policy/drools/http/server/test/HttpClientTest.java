@@ -41,7 +41,7 @@ public class HttpClientTest {
 	private static Logger logger = LoggerFactory.getLogger(HttpClientTest.class);
 	
 	@BeforeClass
-	public static void setUp() {
+	public static void setUp() throws InterruptedException {
 		logger.info("-- setup() --");
 		
 		/* echo server */

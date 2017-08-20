@@ -62,7 +62,7 @@ public interface DroolsControllerFactory {
 	public DroolsController build(Properties properties,
 								  List<? extends TopicSource> eventSources, 
 								  List<? extends TopicSink> eventSinks)
-			throws IllegalArgumentException, LinkageError;
+			throws LinkageError;
 	
 	/**
 	 * Explicit construction of a Drools Controller
@@ -82,7 +82,7 @@ public interface DroolsControllerFactory {
 			 					  String version,
 			 					  List<TopicCoderFilterConfiguration> decoderConfigurations,
 			 					  List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws IllegalArgumentException, LinkageError;
+			throws LinkageError;
 	
 	/**
 	 * Releases the Drools Controller from operation
@@ -121,8 +121,7 @@ public interface DroolsControllerFactory {
 	 */
 	public DroolsController get(String groupId, 
 							    String artifactId,
-								String version)
-			throws IllegalArgumentException;
+								String version);
 
 	/**
 	 * returns the current inventory of Drools Controllers
@@ -147,8 +146,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 	/**
 	 * Policy Controller Name Index
 	 */
-	protected HashMap<String, DroolsController> droolsControllers =
-									new HashMap<String, DroolsController>();
+	protected HashMap<String, DroolsController> droolsControllers = new HashMap<>();
 	
 	/**
 	 * Null Drools Controller
@@ -168,14 +166,11 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		}	
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public DroolsController build(Properties properties,
 								  List<? extends TopicSource> eventSources,
 								  List<? extends TopicSink> eventSinks) 
-			throws IllegalArgumentException, LinkageError {
+			throws LinkageError {
 		
 		String groupId = properties.getProperty(PolicyProperties.RULES_GROUPID);
 		if (groupId == null || groupId.isEmpty())
@@ -210,14 +205,12 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 	 * @throws IllegalArgumentException invalid input data
 	 */
 	protected List<TopicCoderFilterConfiguration> codersAndFilters
-					(Properties properties, List<? extends Topic> topicEntities) 
-				throws IllegalArgumentException {
+					(Properties properties, List<? extends Topic> topicEntities) {
 		
 		String PROPERTY_TOPIC_ENTITY_PREFIX;
 		
 		List<TopicCoderFilterConfiguration>
-			topics2DecodedClasses2Filters =
-					new ArrayList<TopicCoderFilterConfiguration>();
+			topics2DecodedClasses2Filters = new ArrayList<>();
 		
 		if (topicEntities.isEmpty())
 			return topics2DecodedClasses2Filters;
@@ -225,7 +218,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		for (Topic topic: topicEntities) {
 			
 			/* source or sink ? ueb or dmaap? */
-			boolean isSource = (topic instanceof TopicSource);
+			boolean isSource = topic instanceof TopicSource;
 			CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
 			if (commInfra == CommInfrastructure.UEB) {
 				if (isSource) {
@@ -295,10 +288,10 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 				continue;
 			}
 			
-			List<PotentialCoderFilter> classes2Filters = new ArrayList<PotentialCoderFilter>();
+			List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
 			
 			List<String> aTopicClasses = 
-					new ArrayList<String>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
+					new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
 			
 			for (String aClass: aTopicClasses) {
 				
@@ -312,7 +305,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 						 "." + aClass + 
 						 PolicyProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
 				
-				List<Pair<String,String>> filters = new ArrayList<Pair<String,String>>();
+				List<Pair<String,String>> filters = new ArrayList<>();
 				
 				if (filter == null || filter.isEmpty()) {
 					// 4. topic -> class -> with no filters
@@ -327,7 +320,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 				// There are filters associated with the applicability of
 				// this class for decoding.
 				List<String> listOfFilters = 
-						new ArrayList<String>(Arrays.asList(filter.split("\\s*,\\s*")));
+						new ArrayList<>(Arrays.asList(filter.split("\\s*,\\s*")));
 				
 				for (String nameValue: listOfFilters) {
 					String fieldName;
@@ -368,24 +361,22 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		return topics2DecodedClasses2Filters;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @param decoderConfiguration 
-	 */
 	@Override
 	public DroolsController build(String newGroupId, 
 			 					  String newArtifactId, 
 			                      String newVersion, 
 			                      List<TopicCoderFilterConfiguration> decoderConfigurations,
 			                      List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws IllegalArgumentException, LinkageError {
+			throws LinkageError {
 		
-		if (newGroupId == null || newArtifactId == null || newVersion == null ||
-			newGroupId.isEmpty() || newArtifactId.isEmpty() || newVersion.isEmpty()) {
-				throw new IllegalArgumentException("Missing maven coordinates: " + 
-						                           newGroupId + ":" + newArtifactId + ":" + 
-						                           newVersion);
-		}
+		if (newGroupId == null || newGroupId.isEmpty())
+				throw new IllegalArgumentException("Missing maven group-id coordinate");
+		
+		if (newArtifactId == null || newArtifactId.isEmpty())
+			throw new IllegalArgumentException("Missing maven artifact-id coordinate");
+		
+		if (newVersion == null || newVersion.isEmpty())
+			throw new IllegalArgumentException("Missing maven version coordinate");
 		
 		String controllerId = newGroupId + ":" + newArtifactId;
 		DroolsController controllerCopy = null;
@@ -430,18 +421,12 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		return controller;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void destroy(DroolsController controller) throws IllegalArgumentException {
+	public void destroy(DroolsController controller) {
 		unmanage(controller);
 		controller.halt();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void destroy() {
 		List<DroolsController> controllers = this.inventory();
@@ -461,7 +446,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	protected void unmanage(DroolsController controller) throws IllegalArgumentException {
+	protected void unmanage(DroolsController controller) {
 		if (controller == null) {
 			throw new IllegalArgumentException("No controller provided");
 		}
@@ -481,18 +466,12 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void shutdown(DroolsController controller) throws IllegalArgumentException {
+	public void shutdown(DroolsController controller) {
 		this.unmanage(controller);
 		controller.shutdown();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void shutdown() {
 		List<DroolsController> controllers = this.inventory();
@@ -505,14 +484,10 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public DroolsController get(String groupId, 
 			                    String artifactId, 
-			                    String version)
-			throws IllegalArgumentException, IllegalStateException {
+			                    String version) {
 		
 		if (groupId == null || artifactId == null ||
 			groupId.isEmpty() || artifactId.isEmpty()) {
@@ -532,13 +507,10 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<DroolsController> inventory() {
 		 List<DroolsController> controllers = 
-				 new ArrayList<DroolsController>(this.droolsControllers.values());
+				 new ArrayList<>(this.droolsControllers.values());
 		 return controllers;
 	}
 	

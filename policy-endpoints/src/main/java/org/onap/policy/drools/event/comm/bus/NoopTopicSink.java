@@ -52,12 +52,12 @@ public class NoopTopicSink extends TopicBase implements TopicSink {
 	 * @param topic topic
 	 * @throws IllegalArgumentException if an invalid argument has been passed in
 	 */
-	public NoopTopicSink(List<String> servers, String topic) throws IllegalArgumentException {
+	public NoopTopicSink(List<String> servers, String topic) {
 		super(servers, topic);
 	}
 
 	@Override
-	public boolean send(String message) throws IllegalArgumentException, IllegalStateException {
+	public boolean send(String message) {
 		
 		if (message == null || message.isEmpty())
 			throw new IllegalArgumentException("Message to send is empty");
@@ -88,7 +88,7 @@ public class NoopTopicSink extends TopicBase implements TopicSink {
 	}
 
 	@Override
-	public boolean start() throws IllegalStateException {
+	public boolean start() {
 		logger.info("{}: starting", this);
 		
 		synchronized(this) {
@@ -106,7 +106,7 @@ public class NoopTopicSink extends TopicBase implements TopicSink {
 	}
 
 	@Override
-	public boolean stop() throws IllegalStateException {
+	public boolean stop() {
 		synchronized(this) {
 			this.alive = false;
 		}
@@ -114,7 +114,7 @@ public class NoopTopicSink extends TopicBase implements TopicSink {
 	}
 
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		this.stop();
 	}
 
