@@ -97,7 +97,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * @throws IllegalArgumentException when invalid or insufficient 
 	 *         properties are provided
 	 */
-	public void configure(Properties properties)  throws IllegalArgumentException;
+	public void configure(Properties properties);
 
 	/**
 	 * registers a new Policy Controller with the Policy Engine
@@ -111,8 +111,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 *         this operation is not permitted.
 	 * @return the newly instantiated Policy Controller
 	 */
-	public PolicyController createPolicyController(String name, Properties properties)
-		throws IllegalArgumentException, IllegalStateException;
+	public PolicyController createPolicyController(String name, Properties properties);
 	
 	/**
 	 * updates the Policy Engine with the given configuration
@@ -122,8 +121,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * @throws IllegalArgumentException if invalid argument provided
 	 * @throws IllegalStateException if the system is in an invalid state
 	 */
-	public boolean configure(PdpdConfiguration configuration)
-		throws IllegalArgumentException, IllegalStateException;
+	public boolean configure(PdpdConfiguration configuration);
 	
 	/**
 	 * updates a set of Policy Controllers with configuration information
@@ -133,8 +131,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	public List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configuration)
-		throws IllegalArgumentException, IllegalStateException;
+	public List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configuration);
 	
 	/**
 	 * updates an already existing Policy Controller with configuration information
@@ -146,8 +143,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * @throws IllegalStateException if the controller is in a bad state
 	 * @throws Exception any other reason
 	 */
-	public PolicyController updatePolicyController(ControllerConfiguration configuration)
-		throws Exception;
+	public PolicyController updatePolicyController(ControllerConfiguration configuration);
 
 	/**
 	 * removes the Policy Controller identified by its name from the Policy Engine
@@ -364,9 +360,6 @@ class PolicyEngineManager implements PolicyEngine {
 	protected Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
 	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized void boot(String cliArgs[]) {
 		
@@ -397,11 +390,8 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public synchronized void configure(Properties properties) throws IllegalArgumentException {
+	public synchronized void configure(Properties properties) {
 		
 		if (properties == null) {
 			logger.warn("No properties provided");
@@ -456,9 +446,6 @@ class PolicyEngineManager implements PolicyEngine {
 		return;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized PolicyController createPolicyController(String name, Properties properties) 
 			throws IllegalArgumentException, IllegalStateException {
@@ -507,11 +494,8 @@ class PolicyEngineManager implements PolicyEngine {
 	}
 	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean configure(PdpdConfiguration config) throws IllegalArgumentException, IllegalStateException {
+	public boolean configure(PdpdConfiguration config) {
 	
 		if (config == null)
 			throw new IllegalArgumentException("No configuration provided");
@@ -541,9 +525,6 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configControllers)
 			throws IllegalArgumentException, IllegalStateException {
@@ -567,12 +548,8 @@ class PolicyEngineManager implements PolicyEngine {
 		return policyControllers;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public PolicyController updatePolicyController(ControllerConfiguration configController) 
-		   throws Exception {
+	public PolicyController updatePolicyController(ControllerConfiguration configController) {
 		
 		if (configController == null) 
 			throw new IllegalArgumentException("No controller configuration has been provided");
@@ -595,7 +572,7 @@ class PolicyEngineManager implements PolicyEngine {
 				policyController = PolicyController.factory.get(controllerName);
 			} catch (IllegalArgumentException e) {
 				// not found
-				logger.warn("Policy Controller " + controllerName + " not found");
+				logger.warn("Policy Controller " + controllerName + " not found", e);
 			}
 			
 			if (policyController == null) {
@@ -669,11 +646,8 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public synchronized boolean start() throws IllegalStateException {
+	public synchronized boolean start() {
 		
 		/* policy-engine dispatch pre start hook */
 		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
@@ -770,9 +744,6 @@ class PolicyEngineManager implements PolicyEngine {
 		return success;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean stop() {
 		
@@ -858,11 +829,8 @@ class PolicyEngineManager implements PolicyEngine {
 		return success;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public synchronized void shutdown() throws IllegalStateException {
+	public synchronized void shutdown() {
 		
 		/* policy-engine dispatch pre shutdown hook */
 		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
@@ -948,17 +916,11 @@ class PolicyEngineManager implements PolicyEngine {
 		}).start();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean isAlive() {
 		return this.alive;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean lock() {
 		
@@ -1006,9 +968,6 @@ class PolicyEngineManager implements PolicyEngine {
 		return success;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean unlock() {
 		
@@ -1056,42 +1015,27 @@ class PolicyEngineManager implements PolicyEngine {
 		return success;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean isLocked() {
 		return this.locked;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removePolicyController(String name) {
 		PolicyController.factory.destroy(name);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void removePolicyController(PolicyController controller) {
 		PolicyController.factory.destroy(controller);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
 	@Override
 	public List<PolicyController> getPolicyControllers() {
 		return PolicyController.factory.inventory();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonProperty("controllers")
 	@Override
 	public List<String> getPolicyControllerIds() {
@@ -1102,9 +1046,6 @@ class PolicyEngineManager implements PolicyEngine {
 		return controllerNames;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	@JsonIgnore
 	public Properties getProperties() {
@@ -1112,36 +1053,23 @@ class PolicyEngineManager implements PolicyEngine {
 	}
 	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TopicSource> getSources() {
 		return (List<TopicSource>) this.sources;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TopicSink> getSinks() {
 		return (List<TopicSink>) this.sinks;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<HttpServletServer> getHttpServers() {
 		return this.httpServers;
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<String> getFeatures() {
 		List<String> features = new ArrayList<String>();
@@ -1150,21 +1078,15 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 		return features;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
 	@JsonIgnore
 	@Override
 	public List<PolicyEngineFeatureAPI> getFeatureProviders() {
 		return PolicyEngineFeatureAPI.providers.getList();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public PolicyEngineFeatureAPI getFeatureProvider(String featureName) throws IllegalArgumentException {
+	public PolicyEngineFeatureAPI getFeatureProvider(String featureName) {
 		if (featureName == null || featureName.isEmpty())
 			throw new IllegalArgumentException("A feature name must be provided");
 		
@@ -1176,9 +1098,6 @@ class PolicyEngineManager implements PolicyEngine {
 		throw new IllegalArgumentException("Invalid Feature Name: " + featureName);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onTopicEvent(CommInfrastructure commType, String topic, String event) {
 		/* configuration request */
@@ -1191,9 +1110,6 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean deliver(String topic, Object event) 
 			throws IllegalArgumentException, IllegalStateException {
@@ -1224,9 +1140,6 @@ class PolicyEngineManager implements PolicyEngine {
 				            topic, event);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean deliver(String busType, String topic, Object event) 
 			throws IllegalArgumentException, IllegalStateException,
@@ -1270,9 +1183,6 @@ class PolicyEngineManager implements PolicyEngine {
 				            topic, event);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean deliver(Topic.CommInfrastructure busType, 
 			               String topic, Object event) 
@@ -1323,9 +1233,6 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean deliver(Topic.CommInfrastructure busType, 
 			               String topic, String event) 
@@ -1361,9 +1268,6 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized void activate() {
 		
@@ -1406,9 +1310,6 @@ class PolicyEngineManager implements PolicyEngine {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized void deactivate() {
 		

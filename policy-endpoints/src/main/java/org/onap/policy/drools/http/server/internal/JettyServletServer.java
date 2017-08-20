@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-endpoints
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -39,28 +39,77 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public abstract class JettyServletServer implements HttpServletServer, Runnable {
 	
+	/**
+	 * Logger
+	 */
 	private static Logger logger = LoggerFactory.getLogger(JettyServletServer.class);
 
+	/**
+	 * server name
+	 */
 	protected final String name;
 
+	/**
+	 * server host address
+	 */
 	protected final String host;
+	
+	/**
+	 * server port to bind
+	 */
 	protected final int port;
 	
+	/**
+	 * server auth user name
+	 */
 	protected String user;
+	
+	/**
+	 * server auth password name
+	 */
 	protected String password;
 	
+	/**
+	 * server base context path
+	 */
 	protected final String contextPath;
 	
+	/**
+	 * embedded jetty server
+	 */
 	protected final Server jettyServer;
+	
+	/**
+	 * servlet context
+	 */
 	protected final ServletContextHandler context;
+	
+	/**
+	 * jetty connector
+	 */
 	protected final ServerConnector connector;
 	
+	/**
+	 * jetty thread
+	 */
 	protected volatile Thread jettyThread;
 	
+	/**
+	 * start condition
+	 */
 	protected Object startCondition = new Object();
 	
-	public JettyServletServer(String name, String host, int port, String contextPath) 
-		   throws IllegalArgumentException {
+	/**
+	 * constructor
+	 * 
+	 * @param name server name
+	 * @param host server host
+	 * @param port server port
+	 * @param contextPath context path
+	 * 
+	 * @throws IllegalArgumentException if invalid parameters are passed in
+	 */
+	public JettyServletServer(String name, String host, int port, String contextPath) {
 			
 		if (name == null || name.isEmpty())
 			name = "http-" + port;
@@ -96,9 +145,6 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
         this.jettyServer.setHandler(context);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setBasicAuthentication(String user, String password, String servletPath) {
         if (user == null || user.isEmpty() || password == null || password.isEmpty()) 
@@ -135,7 +181,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	}
 	
 	/**
-	 * Jetty Server Execution
+	 * jetty server execution
 	 */
 	@Override
 	public void run() {
@@ -158,7 +204,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	}
 	
 	@Override
-	public boolean waitedStart(long maxWaitTime) throws IllegalArgumentException {
+	public boolean waitedStart(long maxWaitTime) throws InterruptedException {
 		logger.info("{}: WAITED-START", this);
 		
 		if (maxWaitTime < 0)
@@ -191,7 +237,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 					
 				} catch (InterruptedException e) {
 					logger.warn("{}: waited-start has been interrupted", this);
-					return false;			
+					throw e;		
 				}
 			}
 			
@@ -199,11 +245,8 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean start() throws IllegalStateException {
+	public boolean start() {
 		logger.info("{}: STARTING", this);
 		
 		synchronized(this) {			
@@ -219,11 +262,8 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean stop() throws IllegalStateException {
+	public boolean stop() {
 		logger.info("{}: STOPPING", this);
 		
 		synchronized(this) {
@@ -254,11 +294,8 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		logger.info("{}: SHUTTING DOWN", this);
 		
 		this.stop();
@@ -270,16 +307,17 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 
 		if (jettyThreadCopy.isAlive()) {
 			try {
-				jettyThreadCopy.join(1000L);
+				jettyThreadCopy.join(2000L);
 			} catch (InterruptedException e) {
 				logger.warn("{}: error while shutting down management server", this);
+				Thread.currentThread().interrupt();
 			}
 			if (!jettyThreadCopy.isInterrupted()) {
 				try {
 					jettyThreadCopy.interrupt();
 				} catch(Exception e) {
 					// do nothing
-					logger.warn("{}: exception while shutting down (OK)", this);
+					logger.warn("{}: exception while shutting down (OK)", this, e);
 				}
 			}
 		}
@@ -287,9 +325,6 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 		this.jettyServer.destroy();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isAlive() {
 		if (this.jettyThread != null)

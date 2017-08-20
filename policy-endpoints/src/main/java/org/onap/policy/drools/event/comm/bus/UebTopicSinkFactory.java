@@ -56,8 +56,7 @@ public interface UebTopicSinkFactory {
 								String partitionKey,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts)
-			throws IllegalArgumentException;
+								boolean allowSelfSignedCerts);
 	
 	/**
 	 * Creates an UEB Topic Writer based on properties files
@@ -67,8 +66,7 @@ public interface UebTopicSinkFactory {
 	 * @return an UEB Topic Writer
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<UebTopicSink> build(Properties properties)
-			throws IllegalArgumentException;
+	public List<UebTopicSink> build(Properties properties);
 	
 	/**
 	 * Instantiates a new UEB Topic Writer
@@ -79,8 +77,7 @@ public interface UebTopicSinkFactory {
 	 * @return an UEB Topic Writer
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public UebTopicSink build(List<String> servers, String topic)
-			throws IllegalArgumentException;
+	public UebTopicSink build(List<String> servers, String topic);
 	
 	/**
 	 * Destroys an UEB Topic Writer based on a topic
@@ -99,8 +96,7 @@ public interface UebTopicSinkFactory {
 	 * @throws IllegalStateException if the UEB Topic Reader is 
 	 * an incorrect state
 	 */
-	public UebTopicSink get(String topic)
-			   throws IllegalArgumentException, IllegalStateException;
+	public UebTopicSink get(String topic);
 	
 	/**
 	 * Provides a snapshot of the UEB Topic Writers
@@ -131,9 +127,6 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	protected HashMap<String, UebTopicSink> uebTopicSinks =
 			new HashMap<String, UebTopicSink>();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public UebTopicSink build(List<String> servers, 
 								String topic, 
@@ -142,8 +135,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 								String partitionKey,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts) 
-			throws IllegalArgumentException {
+								boolean allowSelfSignedCerts) {
 		
 		if (servers == null || servers.isEmpty()) {
 			throw new IllegalArgumentException("UEB Server(s) must be provided");
@@ -170,29 +162,23 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	}
 	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public UebTopicSink build(List<String> servers, String topic) throws IllegalArgumentException {	
+	public UebTopicSink build(List<String> servers, String topic) {	
 		return this.build(servers, topic, null, null, null, true, false, false);
 	}
 	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<UebTopicSink> build(Properties properties) throws IllegalArgumentException {
+	public List<UebTopicSink> build(Properties properties) {
 		
 		String writeTopics = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS);
 		if (writeTopics == null || writeTopics.isEmpty()) {
 			logger.info("{}: no topic for UEB Sink", this);
-			return new ArrayList<UebTopicSink>();
+			return new ArrayList<>();
 		}
 		
-		List<String> writeTopicList = new ArrayList<String>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
-		List<UebTopicSink> newUebTopicSinks = new ArrayList<UebTopicSink>();
+		List<String> writeTopicList = new ArrayList<>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
+		List<UebTopicSink> newUebTopicSinks = new ArrayList<>();
 		synchronized(this) {
 			for (String topic: writeTopicList) {
 				if (this.uebTopicSinks.containsKey(topic)) {
@@ -208,7 +194,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 					continue;
 				}
 				
-				List<String> serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				List<String> serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + 
 						                               "." + topic + 
@@ -255,12 +241,8 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void destroy(String topic) 
-		   throws IllegalArgumentException {
+	public void destroy(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -278,9 +260,6 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		uebTopicWriter.shutdown();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void destroy() {
 		List<UebTopicSink> writers = this.inventory();
@@ -293,12 +272,8 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public UebTopicSink get(String topic) 
-			throws IllegalArgumentException, IllegalStateException {
+	public UebTopicSink get(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -313,13 +288,10 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized List<UebTopicSink> inventory() {
 		 List<UebTopicSink> writers = 
-				 new ArrayList<UebTopicSink>(this.uebTopicSinks.values());
+				 new ArrayList<>(this.uebTopicSinks.values());
 		 return writers;
 	}
 

@@ -93,6 +93,9 @@ public class PolicyEngineTest {
 		PolicyController testController = PolicyController.factory.get("unnamed");
 		assertFalse(testController.getDrools().isAlive());
 		assertFalse(testController.getDrools().isLocked());
+		
+		PolicyEngine.manager.removePolicyController("unnamed");
+		assertTrue(PolicyController.factory.inventory().isEmpty());
 	}
 
 }

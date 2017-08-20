@@ -69,11 +69,11 @@ public interface SystemPersistence {
 	 * 
 	 * @param controllerName the controller name
 	 * @param configuration object containing the configuration
+	 * 
 	 * @return true if storage is succesful, false otherwise
 	 * @throws IllegalArgumentException if the configuration cannot be handled by the persistence manager
 	 */
-	public boolean storeController(String controllerName, Object configuration)
-		throws IllegalArgumentException;
+	public boolean storeController(String controllerName, Object configuration);
 	
 	/**
 	 * delete controller configuration
@@ -88,19 +88,20 @@ public interface SystemPersistence {
 	 * 
 	 * @param controllerName controller name
 	 * @return properties for this controller
+	 * 
 	 * @throws IllegalArgumentException if the controller name does not lead to a properties configuration
 	 */
-	public Properties getControllerProperties(String controllerName)
-			throws IllegalArgumentException;
+	public Properties getControllerProperties(String controllerName);
 	
 	/**
 	 * get properties by name
 	 * 
 	 * @param name 
 	 * @return properties 
+	 * 
 	 * @throws IllegalArgumentException if the name does not lead to a properties configuration
 	 */
-	public Properties getProperties(String name) throws IllegalArgumentException;
+	public Properties getProperties(String name);
 	
 	/**
 	 * Persistence Manager.   For now it is a file-based properties management,
@@ -196,6 +197,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 	/**
 	 * deletes properties-based controller configuration
 	 * @param controllerName the controller name
+	 * 
 	 * @return true if the properties has been deleted from disk, false otherwise
 	 */
 	@Override
@@ -223,12 +225,12 @@ class SystemPropertiesPersistence implements SystemPersistence {
 	}
 
 	@Override
-	public Properties getControllerProperties(String controllerName) throws IllegalArgumentException {
+	public Properties getControllerProperties(String controllerName) {
 	   	return this.getProperties(controllerName + CONTROLLER_SUFFIX_IDENTIFIER);
 	}
 	
 	@Override
-	public Properties getProperties(String name) throws IllegalArgumentException {
+	public Properties getProperties(String name) {
 	   	Path propertiesPath = 
 	   			Paths.get(CONFIG_DIR_NAME, name + ".properties");
 	   	
@@ -242,7 +244,7 @@ class SystemPropertiesPersistence implements SystemPersistence {
 			logger.warn("{}: can't read properties @ {}", name, propertiesPath);
 			throw new IllegalArgumentException("can't read properties for " + 
 			                                   name + " @ " + 
-					                           propertiesPath);
+					                           propertiesPath, e);
 		}
 	}
 }
