@@ -1,0 +1,251 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_7da65ac3",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. Please add the exception value in the logger message.",
+      "range": {
+        "startLine": 171,
+        "startChar": 3,
+        "endLine": 171,
+        "endChar": 41
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5dab9689",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. Please add the exception value in the logger message.",
+      "range": {
+        "startLine": 293,
+        "startChar": 3,
+        "endLine": 294,
+        "endChar": 20
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_3db0d2f3",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "please log the exception",
+      "range": {
+        "startLine": 465,
+        "startChar": 4,
+        "endLine": 465,
+        "endChar": 15
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_fd912a53",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Please log exception",
+      "range": {
+        "startLine": 669,
+        "startChar": 3,
+        "endLine": 669,
+        "endChar": 16
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_dd9e6663",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 819,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. Please add the exception value in the logger message.",
+      "range": {
+        "startLine": 819,
+        "startChar": 4,
+        "endLine": 819,
+        "endChar": 30
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9d88de23",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 869,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. Please add the exception value in the logger message.",
+      "range": {
+        "startLine": 869,
+        "startChar": 6,
+        "endLine": 869,
+        "endChar": 32
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_bd9ba271",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 879,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. Please add the exception value in the logger message.",
+      "range": {
+        "startLine": 879,
+        "startChar": 5,
+        "endLine": 879,
+        "endChar": 33
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_7d8d3a31",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/GenSchemaTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. please remove",
+      "range": {
+        "startLine": 47,
+        "startChar": 44,
+        "endLine": 47,
+        "endChar": 58
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5d827601",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/JpaDroolsSessionConnectorTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will flag this. Please remove.",
+      "range": {
+        "startLine": 48,
+        "startChar": 44,
+        "endLine": 48,
+        "endChar": 58
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_3d87b211",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/PersistenceFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Missing license header",
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1d7cee1f",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/PersistenceFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-21T16:12:45Z",
+      "side": 1,
+      "message": "Sonar will report on common strings like this. Use final static String to define these constants.",
+      "range": {
+        "startLine": 706,
+        "startChar": 24,
+        "endLine": 706,
+        "endChar": 44
+      },
+      "revId": "359f54ef3f68cd43ca10020cb195d50594c6b712",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
