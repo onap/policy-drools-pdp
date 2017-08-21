@@ -1,6 +1,6 @@
 <!--
   ============LICENSE_START=======================================================
-  feature-healthcheck
+  feature-session-persistence
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -24,11 +24,13 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>feature-healthcheck-package</id>
+	<id>session-persistence</id>
 	<formats>
 		<format>zip</format>
 	</formats>
 
+	<!-- we want "system" and related files right at the root level as this 
+		file is suppose to be unzip on top of a karaf distro. -->
 	<includeBaseDirectory>false</includeBaseDirectory>
 
 	<fileSets>
@@ -36,7 +38,7 @@
 			<directory>target</directory>
 			<outputDirectory>lib/feature</outputDirectory>
 			<includes>
-				<include>feature-healthcheck-${project.version}.jar</include>
+				<include>feature-session-persistence-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
@@ -71,5 +73,4 @@
 			<excludes/>
 		</fileSet>
 	</fileSets>
-
 </assembly>
