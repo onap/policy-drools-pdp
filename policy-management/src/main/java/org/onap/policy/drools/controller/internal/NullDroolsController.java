@@ -35,178 +35,111 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
  */
 public class NullDroolsController implements DroolsController {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean start() throws IllegalStateException {
+	public boolean start() {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean stop() throws IllegalStateException {
+	public boolean stop() {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		return;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void halt() throws IllegalStateException {
+	public void halt() {
 		return;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isAlive() {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean lock() {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean unlock() {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isLocked() {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getGroupId() {
 		return NO_GROUP_ID;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getArtifactId() {
 		return NO_ARTIFACT_ID;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getVersion() {
 		return NO_VERSION;
 	}	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<String> getSessionNames() {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<String> getCanonicalSessionNames() {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean offer(String topic, String event) {
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean deliver(TopicSink sink, Object event)
-			throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+	public boolean deliver(TopicSink sink, Object event) throws UnsupportedOperationException {
 		throw new IllegalStateException(this.getClass().getCanonicalName() + " invoked");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Object[] getRecentSourceEvents() {
 		return new String[0];
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public PolicyContainer getContainer() {
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String[] getRecentSinkEvents() {
 		return new String[0];
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) throws IllegalStateException {
+	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
 		throw new IllegalStateException(this.getClass().getCanonicalName() + " invoked");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public Class<?> fetchModelClass(String className) throws IllegalArgumentException {
+	public Class<?> fetchModelClass(String className) {
 		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isBrained() {
 		return false;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -214,9 +147,6 @@ public class NullDroolsController implements DroolsController {
 		return builder.toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			List<TopicCoderFilterConfiguration> decoderConfigurations,
@@ -225,38 +155,26 @@ public class NullDroolsController implements DroolsController {
 		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Map<String, Integer> factClassNames(String sessionName) 
 		   throws IllegalArgumentException {
 		return new HashMap<String,Integer>();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public long factCount(String sessionName) throws IllegalArgumentException {
+	public long factCount(String sessionName) {
 		return 0;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<Object> facts(String sessionName, String className, boolean delete) {
-		return new ArrayList<Object>();
+		return new ArrayList<>();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<Object> factQuery(String sessionName, String queryName, 
 			                      String queriedEntity, 
 			                      boolean delete, Object... queryParams) {
-		return new ArrayList<Object>();
+		return new ArrayList<>();
 	}
 }

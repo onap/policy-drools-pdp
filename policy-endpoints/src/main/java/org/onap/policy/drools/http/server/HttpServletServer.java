@@ -46,22 +46,22 @@ public interface HttpServletServer extends Startable {
 	 * 
 	 * @param servletPath servlet path
 	 * @param restClass JAX-RS API Class
+	 * 
 	 * @throws IllegalArgumentException unable to process because of invalid input
 	 * @throws IllegalStateException unable to process because of invalid state
 	 */
-	public void addServletClass(String servletPath, String restClass) 
-			throws IllegalArgumentException, IllegalStateException;
+	public void addServletClass(String servletPath, String restClass);
 
 	/**
 	 * adds a package containing JAX-RS classes to serve REST requests
 	 * 
 	 * @param servletPath servlet path
 	 * @param restPackage JAX-RS package to scan
+	 * 
 	 * @throws IllegalArgumentException unable to process because of invalid input
 	 * @throws IllegalStateException unable to process because of invalid state
 	 */
-	public void addServletPackage(String servletPath, String restPackage) 
-			throws IllegalArgumentException, IllegalStateException;
+	public void addServletPackage(String servletPath, String restPackage);
 	
 	/**
 	 * blocking start of the http server
@@ -70,8 +70,9 @@ public interface HttpServletServer extends Startable {
 	 * @return true if start was successful
 	 * 
 	 * @throws IllegalArgumentException if arguments are invalid
+	 * @throws InterruptedException if the blocking operation is interrupted
 	 */
-	public boolean waitedStart(long maxWaitTime) throws IllegalArgumentException;
+	public boolean waitedStart(long maxWaitTime) throws InterruptedException;
 	
 	
 	/**

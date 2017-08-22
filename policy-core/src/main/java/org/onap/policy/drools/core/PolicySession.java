@@ -526,7 +526,7 @@ public class PolicySession
 		}
 	  catch (Exception e)
 		{
-		  logger.error("stopThread in thread.join error");
+		  logger.error("stopThread in thread.join error", e);
 		}
 	}
 

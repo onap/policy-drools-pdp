@@ -42,8 +42,7 @@ public interface NoopTopicSinkFactory {
 	 * @return a noop topic sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<NoopTopicSink> build(Properties properties) 
-			throws IllegalArgumentException;
+	public List<NoopTopicSink> build(Properties properties);
 
 	/**
 	 * builds a noop sink
@@ -54,8 +53,7 @@ public interface NoopTopicSinkFactory {
 	 * @return a noop topic sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public NoopTopicSink build(List<String> servers, String topic, boolean managed) 
-			throws IllegalArgumentException;
+	public NoopTopicSink build(List<String> servers, String topic, boolean managed);
 	
 	/**
 	 * Destroys a sink based on the topic
@@ -73,8 +71,7 @@ public interface NoopTopicSinkFactory {
 	 * @throws IllegalArgumentException if an invalid topic is provided
 	 * @throws IllegalStateException if the sink is in an incorrect state
 	 */
-	public NoopTopicSink get(String topic)
-			   throws IllegalArgumentException, IllegalStateException;
+	public NoopTopicSink get(String topic);
 	
 	/**
 	 * Provides a snapshot of the UEB Topic Writers
@@ -102,18 +99,18 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 	/**
 	 * noop topic sinks map
 	 */
-	protected HashMap<String, NoopTopicSink> noopTopicSinks = new HashMap<String, NoopTopicSink>();
+	protected HashMap<String, NoopTopicSink> noopTopicSinks = new HashMap<>();
 
 	@Override
-	public List<NoopTopicSink> build(Properties properties) throws IllegalArgumentException {
+	public List<NoopTopicSink> build(Properties properties) {
 		
 		String sinkTopics = properties.getProperty(PolicyProperties.PROPERTY_NOOP_SINK_TOPICS);
 		if (sinkTopics == null || sinkTopics.isEmpty()) {
 			logger.info("{}: no topic for noop sink", this);
-			return new ArrayList<NoopTopicSink>();
+			return new ArrayList<>();
 		}
 		
-		List<String> sinkTopicList = new ArrayList<String>(Arrays.asList(sinkTopics.split("\\s*,\\s*")));
+		List<String> sinkTopicList = new ArrayList<>(Arrays.asList(sinkTopics.split("\\s*,\\s*")));
 		List<NoopTopicSink> newSinks = new ArrayList<NoopTopicSink>();
 		synchronized(this) {
 			for (String topic: sinkTopicList) {
@@ -129,7 +126,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 				if (servers == null || servers.isEmpty()) 
 					servers = "noop";
 				
-				List<String> serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				List<String> serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				
 				String managedString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic +
 						                                      PolicyProperties.PROPERTY_MANAGED_SUFFIX);
@@ -146,7 +143,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 	}
 
 	@Override
-	public NoopTopicSink build(List<String> servers, String topic, boolean managed) throws IllegalArgumentException {
+	public NoopTopicSink build(List<String> servers, String topic, boolean managed) {
 		if (servers == null) {
 			servers = new ArrayList<>();
 		}
@@ -205,7 +202,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 	}
 
 	@Override
-	public NoopTopicSink get(String topic) throws IllegalArgumentException, IllegalStateException {
+	public NoopTopicSink get(String topic) {
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
 		}

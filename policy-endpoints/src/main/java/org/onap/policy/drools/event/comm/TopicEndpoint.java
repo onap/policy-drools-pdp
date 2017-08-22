@@ -49,8 +49,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * @return a generic Topic Source
 	 * @throws IllegalArgumentException when invalid arguments are provided
 	 */
-	public List<? extends TopicSource> addTopicSources(Properties properties) 
-		   throws IllegalArgumentException;
+	public List<TopicSource> addTopicSources(Properties properties);
 
 	/**
 	 * Add Topic Sinks to the communication infrastructure initialized per
@@ -60,14 +59,13 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * @return a generic Topic Sink
 	 * @throws IllegalArgumentException when invalid arguments are provided
 	 */
-	public List<? extends TopicSink> addTopicSinks(Properties properties) 
-			   throws IllegalArgumentException;
+	public List<TopicSink> addTopicSinks(Properties properties);
 	
 	/**
 	 * gets all Topic Sources
 	 * @return the Topic Source List
 	 */
-	List<? extends TopicSource> getTopicSources();
+	List<TopicSource> getTopicSources();
 	
 	/**
 	 * get the Topic Sources for the given topic name
@@ -78,8 +76,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * @throws IllegalStateException if the entity is in an invalid state
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<? extends TopicSource> getTopicSources(List<String> topicNames) 
-			throws IllegalStateException, IllegalArgumentException;
+	public List<TopicSource> getTopicSources(List<String> topicNames);
 	
 	/**
 	 * gets the Topic Source for the given topic name and 
@@ -96,8 +93,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 */
 	public TopicSource getTopicSource(Topic.CommInfrastructure commType, 
 			                          String topicName) 
-			throws IllegalStateException, IllegalArgumentException, 
-			       UnsupportedOperationException;
+			throws UnsupportedOperationException;
 	
 	/**
 	 * get the UEB Topic Source for the given topic name
@@ -109,8 +105,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * example multiple TopicReaders for a topic name and communication infrastructure
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public UebTopicSource getUebTopicSource(String topicName)
-			throws IllegalStateException, IllegalArgumentException;
+	public UebTopicSource getUebTopicSource(String topicName);
 	
 	/**
 	 * get the DMAAP Topic Source for the given topic name
@@ -122,8 +117,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * example multiple TopicReaders for a topic name and communication infrastructure
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public DmaapTopicSource getDmaapTopicSource(String topicName)
-			throws IllegalStateException, IllegalArgumentException;
+	public DmaapTopicSource getDmaapTopicSource(String topicName);
 	
 	/**
 	 * get the Topic Sinks for the given topic name
@@ -133,8 +127,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * @throws IllegalStateException
 	 * @throws IllegalArgumentException
 	 */
-	public List<? extends TopicSink> getTopicSinks(List<String> topicNames) 
-			throws IllegalStateException, IllegalArgumentException;
+	public List<TopicSink> getTopicSinks(List<String> topicNames);
 	
 	/**
 	 * get the Topic Sinks for the given topic name and 
@@ -150,8 +143,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 */
 	public TopicSink getTopicSink(Topic.CommInfrastructure commType, 
 			                      String topicName) 
-			throws IllegalStateException, IllegalArgumentException,
-			       UnsupportedOperationException;
+			throws UnsupportedOperationException;
 	
 	/**
 	 * get the Topic Sinks for the given topic name and 
@@ -165,8 +157,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * example multiple TopicWriters for a topic name and communication infrastructure
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<? extends TopicSink> getTopicSinks(String topicName) 
-			throws IllegalStateException, IllegalArgumentException;
+	public List<TopicSink> getTopicSinks(String topicName);
 	
 	/**
 	 * get the UEB Topic Source for the given topic name
@@ -178,8 +169,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * example multiple TopicReaders for a topic name and communication infrastructure
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public UebTopicSink getUebTopicSink(String topicName)
-			throws IllegalStateException, IllegalArgumentException;
+	public UebTopicSink getUebTopicSink(String topicName);
 	
 	/**
 	 * get the no-op Topic Sink for the given topic name
@@ -191,8 +181,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * example multiple TopicReaders for a topic name and communication infrastructure
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public NoopTopicSink getNoopTopicSink(String topicName)
-			throws IllegalStateException, IllegalArgumentException;
+	public NoopTopicSink getNoopTopicSink(String topicName);
 	
 	/**
 	 * get the DMAAP Topic Source for the given topic name
@@ -204,8 +193,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * example multiple TopicReaders for a topic name and communication infrastructure
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public DmaapTopicSink getDmaapTopicSink(String topicName)
-			throws IllegalStateException, IllegalArgumentException;
+	public DmaapTopicSink getDmaapTopicSink(String topicName);
 	
 	/**
 	 * gets only the UEB Topic Sources
@@ -223,7 +211,7 @@ public interface TopicEndpoint extends Startable, Lockable {
 	 * gets all Topic Sinks
 	 * @return the Topic Sink List
 	 */
-	public List<? extends TopicSink> getTopicSinks();
+	public List<TopicSink> getTopicSinks();
 	
 	/**
 	 * gets only the UEB Topic Sinks
@@ -272,16 +260,13 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 	 */
 	protected volatile boolean alive = false;
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSource> addTopicSources(Properties properties) throws IllegalArgumentException {
+	public List<TopicSource> addTopicSources(Properties properties) {
 		
 		// 1. Create UEB Sources
 		// 2. Create DMAAP Sources
 		
-		List<TopicSource> sources = new ArrayList<TopicSource>();	
+		List<TopicSource> sources = new ArrayList<>();	
 		
 		sources.addAll(UebTopicSource.factory.build(properties));
 		sources.addAll(DmaapTopicSource.factory.build(properties));
@@ -295,15 +280,12 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sources;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSink> addTopicSinks(Properties properties) throws IllegalArgumentException {
+	public List<TopicSink> addTopicSinks(Properties properties) {
 		// 1. Create UEB Sinks
 		// 2. Create DMAAP Sinks
 		
-		List<TopicSink> sinks = new ArrayList<TopicSink>();	
+		List<TopicSink> sinks = new ArrayList<>();	
 		
 		sinks.addAll(UebTopicSink.factory.build(properties));
 		sinks.addAll(DmaapTopicSink.factory.build(properties));
@@ -318,13 +300,10 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sinks;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSource> getTopicSources() {
+	public List<TopicSource> getTopicSources() {
 	
-		List<TopicSource> sources = new ArrayList<TopicSource>();
+		List<TopicSource> sources = new ArrayList<>();
 		
 		sources.addAll(UebTopicSource.factory.inventory());
 		sources.addAll(DmaapTopicSource.factory.inventory());
@@ -332,13 +311,10 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sources;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSink> getTopicSinks() {
+	public List<TopicSink> getTopicSinks() {
 		
-		List<TopicSink> sinks = new ArrayList<TopicSink>();	
+		List<TopicSink> sinks = new ArrayList<>();	
 		
 		sinks.addAll(UebTopicSink.factory.inventory());
 		sinks.addAll(DmaapTopicSink.factory.inventory());
@@ -347,56 +323,38 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sinks;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
 	@Override
 	public List<UebTopicSource> getUebTopicSources() {
 		return UebTopicSource.factory.inventory();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
 	@Override
 	public List<DmaapTopicSource> getDmaapTopicSources() {
 		return DmaapTopicSource.factory.inventory();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
 	@Override
 	public List<UebTopicSink> getUebTopicSinks() {
 		return UebTopicSink.factory.inventory();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
 	@Override
 	public List<DmaapTopicSink> getDmaapTopicSinks() {
 		return DmaapTopicSink.factory.inventory();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
 	@Override
 	public List<NoopTopicSink> getNoopTopicSinks() {
 		return NoopTopicSink.factory.inventory();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean start() throws IllegalStateException {
+	public boolean start() {
 		
 		synchronized (this) {
 			if (this.locked) {
@@ -426,11 +384,8 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 	}
 
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean stop() throws IllegalStateException {
+	public boolean stop() {
 		
 		/* 
 		 * stop regardless if it is locked, in other
@@ -462,7 +417,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 	 */
 	@JsonIgnore
 	protected List<Startable> getEndpoints() {
-		List<Startable> endpoints = new ArrayList<Startable>();
+		List<Startable> endpoints = new ArrayList<>();
 
 		endpoints.addAll(this.getTopicSources());
 		endpoints.addAll(this.getTopicSinks());
@@ -470,12 +425,8 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return endpoints;
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		UebTopicSource.factory.destroy();
 		UebTopicSink.factory.destroy();
 		
@@ -483,17 +434,11 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		DmaapTopicSink.factory.destroy();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isAlive() {
 		return this.alive;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean lock() {
 		
@@ -515,9 +460,6 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean unlock() {
 		synchronized (this) {
@@ -538,26 +480,19 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isLocked() {
 		return this.locked;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSource> getTopicSources(List<String> topicNames)
-			throws IllegalStateException, IllegalArgumentException {
+	public List<TopicSource> getTopicSources(List<String> topicNames) {
 		
 		if (topicNames == null) {
 			throw new IllegalArgumentException("must provide a list of topics");
 		}
 		
-		List<TopicSource> sources = new ArrayList<TopicSource>();
+		List<TopicSource> sources = new ArrayList<>();
 		for (String topic: topicNames) {
 			try {
 				TopicSource uebSource = this.getUebTopicSource(topic);
@@ -578,18 +513,14 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sources;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSink> getTopicSinks(List<String> topicNames)
-			throws IllegalStateException, IllegalArgumentException {
+	public List<TopicSink> getTopicSinks(List<String> topicNames) {
 		
 		if (topicNames == null) {
 			throw new IllegalArgumentException("must provide a list of topics");
 		}
 		
-		List<TopicSink> sinks = new ArrayList<TopicSink>();
+		List<TopicSink> sinks = new ArrayList<>();
 		for (String topic: topicNames) {
 			try {
 				TopicSink uebSink = this.getUebTopicSink(topic);
@@ -610,12 +541,9 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sinks;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public TopicSource getTopicSource(Topic.CommInfrastructure commType, String topicName)
-			throws IllegalStateException, IllegalArgumentException, UnsupportedOperationException {
+			throws UnsupportedOperationException {
 		
 		if (commType == null) {
 			throw new IllegalArgumentException
@@ -638,12 +566,9 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public TopicSink getTopicSink(Topic.CommInfrastructure commType, String topicName)
-			throws IllegalStateException, IllegalArgumentException, UnsupportedOperationException {
+			throws UnsupportedOperationException {
 		if (commType == null) {
 			throw new IllegalArgumentException
 				("Invalid parameter: a communication infrastructure required to fetch " + topicName);
@@ -665,19 +590,15 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<? extends TopicSink> getTopicSinks(String topicName) 
-			throws IllegalStateException, IllegalArgumentException {
+	public List<TopicSink> getTopicSinks(String topicName) {
 
 		if (topicName == null) {
 			throw new IllegalArgumentException
 				("Invalid parameter: a communication infrastructure required to fetch " + topicName);
 		}
 		
-		List<TopicSink> sinks = new ArrayList<TopicSink>();
+		List<TopicSink> sinks = new ArrayList<>();
 		
 		try {
 			sinks.add(this.getUebTopicSink(topicName));
@@ -694,35 +615,28 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
 		return sinks;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public UebTopicSource getUebTopicSource(String topicName) throws IllegalStateException, IllegalArgumentException {
+	public UebTopicSource getUebTopicSource(String topicName) {
 		return UebTopicSource.factory.get(topicName);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public UebTopicSink getUebTopicSink(String topicName) throws IllegalStateException, IllegalArgumentException {
+	public UebTopicSink getUebTopicSink(String topicName) {
 		return UebTopicSink.factory.get(topicName);
 	}
 
 	@Override
-	public DmaapTopicSource getDmaapTopicSource(String topicName)
-			throws IllegalStateException, IllegalArgumentException {
+	public DmaapTopicSource getDmaapTopicSource(String topicName) {
 		return DmaapTopicSource.factory.get(topicName);
 	}
 
 	@Override
-	public DmaapTopicSink getDmaapTopicSink(String topicName) throws IllegalStateException, IllegalArgumentException {
+	public DmaapTopicSink getDmaapTopicSink(String topicName) {
 		return DmaapTopicSink.factory.get(topicName);
 	}
 
 	@Override
-	public NoopTopicSink getNoopTopicSink(String topicName) throws IllegalStateException, IllegalArgumentException {
+	public NoopTopicSink getNoopTopicSink(String topicName) {
 		return NoopTopicSink.factory.get(topicName);
 	}
 	

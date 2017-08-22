@@ -127,25 +127,23 @@ public class MavenDroolsController implements DroolsController {
 								 String artifactId, 
 								 String version,
 								 List<TopicCoderFilterConfiguration> decoderConfigurations,
-								 List<TopicCoderFilterConfiguration> encoderConfigurations) 
-		   throws IllegalArgumentException {
+								 List<TopicCoderFilterConfiguration> encoderConfigurations) {
 		
-		if (logger.isInfoEnabled())
-			logger.info("DROOLS CONTROLLER: instantiation " +  this + 
-					    " -> {" + groupId + ":" + artifactId + ":" + version + "}");
+		logger.info("drools-controller instantiation [{}:{}:{}]", groupId, artifactId, version);
 		
-		if (groupId == null || artifactId == null || version == null ||
-			groupId.isEmpty() || artifactId.isEmpty() || version.isEmpty()) {
-			throw new IllegalArgumentException("Missing maven coordinates: " + 
-					                           groupId + ":" + artifactId + ":" + 
-					                           version);
-		}
+		if (groupId == null || groupId.isEmpty())
+			throw new IllegalArgumentException("Missing maven group-id coordinate");
+	
+		if (artifactId == null || artifactId.isEmpty())
+			throw new IllegalArgumentException("Missing maven artifact-id coordinate");
+		
+		if (version == null || version.isEmpty())
+			throw new IllegalArgumentException("Missing maven version coordinate");
 		
 		this.policyContainer= new PolicyContainer(groupId, artifactId, version);
 		this.init(decoderConfigurations, encoderConfigurations);
 		
-		if (logger.isInfoEnabled())
-			logger.info("DROOLS CONTROLLER: instantiation completed " +  this);
+		logger.debug("{}: instantiation completed ", this);
 	}
 	
 	/**
@@ -165,24 +163,22 @@ public class MavenDroolsController implements DroolsController {
 		this.modelClassLoaderHash = this.policyContainer.getClassLoader().hashCode();		
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			                    List<TopicCoderFilterConfiguration> decoderConfigurations,
 			                    List<TopicCoderFilterConfiguration> encoderConfigurations) 
-		throws IllegalArgumentException, LinkageError {
+		throws LinkageError {
 		
-		if (logger.isInfoEnabled())
-			logger.info("UPDATE-TO-VERSION: " +  this + " -> {" + newGroupId + ":" + newArtifactId + ":" + newVersion + "}");
+		logger.info("{}: updating version -> [{}:{}:{}]", newGroupId, newArtifactId, newVersion);
 		
-		if (newGroupId == null || newArtifactId == null || newVersion == null ||
-			newGroupId.isEmpty() || newArtifactId.isEmpty() || newVersion.isEmpty()) {
-				throw new IllegalArgumentException("Missing maven coordinates: " + 
-						                           newGroupId + ":" + newArtifactId + ":" + 
-						                           newVersion);
-		}
+		if (newGroupId == null || newGroupId.isEmpty())
+			throw new IllegalArgumentException("Missing maven group-id coordinate");
+	
+		if (newArtifactId == null || newArtifactId.isEmpty())
+			throw new IllegalArgumentException("Missing maven artifact-id coordinate");
+		
+		if (newVersion == null || newVersion.isEmpty())
+			throw new IllegalArgumentException("Missing maven version coordinate");
 		
 		if (newGroupId.equalsIgnoreCase(DroolsController.NO_GROUP_ID) || 
 			newArtifactId.equalsIgnoreCase(DroolsController.NO_ARTIFACT_ID) || 
@@ -234,8 +230,7 @@ public class MavenDroolsController implements DroolsController {
 	 * @param decoderConfiguration list of topic -> decoders -> filters mapping
 	 */
 	protected void initCoders(List<TopicCoderFilterConfiguration> coderConfigurations, 
-			                  boolean decoder) 
-	          throws IllegalArgumentException {
+			                  boolean decoder) {
 		
 		if (logger.isInfoEnabled())
 			logger.info("INIT-CODERS: " +  this);
@@ -318,8 +313,7 @@ public class MavenDroolsController implements DroolsController {
 	/**
 	 * remove decoders.
 	 */
-	protected void removeDecoders() 
-	          throws IllegalArgumentException {
+	protected void removeDecoders(){
 		if (logger.isInfoEnabled())
 			logger.info("REMOVE-DECODERS: " +  this);
 		
@@ -338,8 +332,7 @@ public class MavenDroolsController implements DroolsController {
 	/**
 	 * remove decoders.
 	 */
-	protected void removeEncoders() 
-	          throws IllegalArgumentException {
+	protected void removeEncoders() {
 		
 		if (logger.isInfoEnabled())
 			logger.info("REMOVE-ENCODERS: " +  this);
@@ -356,11 +349,8 @@ public class MavenDroolsController implements DroolsController {
 	}
 	
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) throws IllegalStateException {
+	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
 		if (!ReflectionUtil.isClass
 				(this.policyContainer.getClassLoader(), coderClass.getCanonicalName())) {
 			logger.error(this + coderClass.getCanonicalName() + " cannot be retrieved. ");
@@ -382,9 +372,6 @@ public class MavenDroolsController implements DroolsController {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean start() {
 		
@@ -401,9 +388,6 @@ public class MavenDroolsController implements DroolsController {
 		return this.policyContainer.start();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean stop() {
 		
@@ -419,12 +403,8 @@ public class MavenDroolsController implements DroolsController {
 		return this.policyContainer.stop();
 	}
 
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void shutdown() throws IllegalStateException {		
+	public void shutdown() {		
 		logger.info("{}: SHUTDOWN", this);
 		
 		try {
@@ -438,12 +418,8 @@ public class MavenDroolsController implements DroolsController {
 
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void halt() throws IllegalStateException {
+	public void halt() {
 		logger.info("{}: HALT", this);
 		
 		try {
@@ -475,17 +451,11 @@ public class MavenDroolsController implements DroolsController {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isAlive() {
 		return this.alive;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean offer(String topic, String event) {
 		logger.debug("{}: OFFER: {} <- {}", this, topic, event);
@@ -498,7 +468,7 @@ public class MavenDroolsController implements DroolsController {
 		
 		// 0. Check if the policy container has any sessions
 		
-		if (this.policyContainer.getPolicySessions().size() <= 0) {
+		if (this.policyContainer.getPolicySessions().isEmpty()) {
 			// no sessions
 			return true;
 		}
@@ -550,14 +520,9 @@ public class MavenDroolsController implements DroolsController {
 		return true;
 	}	
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean deliver(TopicSink sink, Object event) 
-			throws IllegalArgumentException, 
-			       IllegalStateException, 
-		           UnsupportedOperationException {
+			throws UnsupportedOperationException {
 		
 		if (logger.isInfoEnabled())
 			logger.info(this + "DELIVER: " +  event + " FROM " + this + " TO " + sink);
@@ -589,25 +554,16 @@ public class MavenDroolsController implements DroolsController {
 		
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getVersion() {
 		return this.policyContainer.getVersion();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getArtifactId() {
 		return this.policyContainer.getArtifactId();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getGroupId() {
 		return this.policyContainer.getGroupId();
@@ -620,9 +576,6 @@ public class MavenDroolsController implements DroolsController {
 		return modelClassLoaderHash;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean lock() {
 		logger.info("LOCK: " +  this);
@@ -631,9 +584,6 @@ public class MavenDroolsController implements DroolsController {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized boolean unlock() {
 		logger.info("UNLOCK: " +  this);
@@ -642,34 +592,23 @@ public class MavenDroolsController implements DroolsController {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isLocked() {
 		return this.locked;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonIgnore
+	@Override
 	public PolicyContainer getContainer() {
 		return this.policyContainer;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonProperty("sessions")
 	@Override
 	public List<String> getSessionNames() {
 		return getSessionNames(true);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@JsonProperty("sessionCoordinates")
 	@Override
 	public List<String> getCanonicalSessionNames() {
@@ -682,7 +621,7 @@ public class MavenDroolsController implements DroolsController {
 	 * @return session names
 	 */
 	protected List<String> getSessionNames(boolean abbreviated) {
-		List<String> sessionNames = new ArrayList<String>();
+		List<String> sessionNames = new ArrayList<>();
 		try {
 			for (PolicySession session: this.policyContainer.getPolicySessions()) {
 				if (abbreviated)
@@ -703,7 +642,7 @@ public class MavenDroolsController implements DroolsController {
 	 * @return the attached Policy Container
 	 */
 	protected List<PolicySession> getSessions() {
-		List<PolicySession> sessions = new ArrayList<PolicySession>();
+		List<PolicySession> sessions = new ArrayList<>();
 		sessions.addAll(this.policyContainer.getPolicySessions());
 		return sessions;
 	}
@@ -729,15 +668,11 @@ public class MavenDroolsController implements DroolsController {
 		throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public Map<String,Integer> factClassNames(String sessionName) throws IllegalArgumentException {		
+	public Map<String,Integer> factClassNames(String sessionName) {		
 		if (sessionName == null || sessionName.isEmpty())
 			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
-		
-		// List<String> classNames = new ArrayList<>();
+
 		Map<String,Integer> classNames = new HashMap<>();
 		
 		PolicySession session = getSession(sessionName);
@@ -759,11 +694,8 @@ public class MavenDroolsController implements DroolsController {
 		return classNames;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public long factCount(String sessionName) throws IllegalArgumentException {		
+	public long factCount(String sessionName) {		
 		if (sessionName == null || sessionName.isEmpty())
 			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
 		
@@ -771,9 +703,6 @@ public class MavenDroolsController implements DroolsController {
 		return session.getKieSession().getFactCount();	
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<Object> facts(String sessionName, String className, boolean delete) {		
 		if (sessionName == null || sessionName.isEmpty())
@@ -806,9 +735,6 @@ public class MavenDroolsController implements DroolsController {
 		return factObjects;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, boolean delete, Object... queryParams) {		
 		if (sessionName == null || sessionName.isEmpty())
@@ -851,11 +777,8 @@ public class MavenDroolsController implements DroolsController {
 		return factObjects;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public Class<?> fetchModelClass(String className) throws IllegalStateException {
+	public Class<?> fetchModelClass(String className) {
 		Class<?> modelClass = 
 			ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), className);
 		return modelClass;
@@ -883,10 +806,6 @@ public class MavenDroolsController implements DroolsController {
 		}
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean isBrained() {
 		return true;

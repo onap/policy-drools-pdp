@@ -473,21 +473,20 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 	/**
 	 * Logger
 	 */
-	private static Logger  logger = LoggerFactory.getLogger(GsonProtocolCoderToolset.class);
+	private static final Logger logger = LoggerFactory.getLogger(GsonProtocolCoderToolset.class);
 	
 	/**
 	 * Formatter for JSON encoding/decoding
 	 */
 	@JsonIgnore
-	public static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx");
+	public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx");
 	
 	@JsonIgnore
-	public static DateTimeFormatter zuluFormat = DateTimeFormatter.ISO_INSTANT;
+	public static final DateTimeFormatter zuluFormat = DateTimeFormatter.ISO_INSTANT;
 	
 	/**
 	 * Adapter for ZonedDateTime
 	 */
-
 	public static class GsonUTCAdapter implements JsonSerializer<ZonedDateTime>, JsonDeserializer<ZonedDateTime> {
 
 		public ZonedDateTime deserialize(JsonElement element, Type type, JsonDeserializationContext context)

@@ -107,8 +107,7 @@ public interface DmaapTopicSinkFactory {
 								String partitionKey,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts)
-			throws IllegalArgumentException;
+								boolean allowSelfSignedCerts);
 	
 	/**
 	 * Creates an DMAAP Topic Sink based on properties files
@@ -118,8 +117,7 @@ public interface DmaapTopicSinkFactory {
 	 * @return an DMAAP Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<DmaapTopicSink> build(Properties properties)
-			throws IllegalArgumentException;
+	public List<DmaapTopicSink> build(Properties properties);
 	
 	/**
 	 * Instantiates a new DMAAP Topic Sink
@@ -130,8 +128,7 @@ public interface DmaapTopicSinkFactory {
 	 * @return an DMAAP Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public DmaapTopicSink build(List<String> servers, String topic)
-			throws IllegalArgumentException;
+	public DmaapTopicSink build(List<String> servers, String topic);
 	
 	/**
 	 * Destroys an DMAAP Topic Sink based on a topic
@@ -150,8 +147,7 @@ public interface DmaapTopicSinkFactory {
 	 * @throws IllegalStateException if the DMAAP Topic Reader is 
 	 * an incorrect state
 	 */
-	public DmaapTopicSink get(String topic)
-			   throws IllegalArgumentException, IllegalStateException;
+	public DmaapTopicSink get(String topic);
 	
 	/**
 	 * Provides a snapshot of the DMAAP Topic Sinks
@@ -179,12 +175,8 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 	/**
 	 * DMAAP Topic Name Index
 	 */
-	protected HashMap<String, DmaapTopicSink> dmaapTopicWriters =
-			new HashMap<String, DmaapTopicSink>();
+	protected HashMap<String, DmaapTopicSink> dmaapTopicWriters = new HashMap<>();
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public DmaapTopicSink build(List<String> servers, 
 								String topic, 
@@ -201,8 +193,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 								Map<String,String> additionalProps,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts) 
-			throws IllegalArgumentException {
+								boolean allowSelfSignedCerts) {
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -227,9 +218,6 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public DmaapTopicSink build(List<String> servers, 
 								String topic, 
@@ -239,8 +227,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 								String password,
 								String partitionKey,
 								boolean managed,
-								boolean useHttps, boolean allowSelfSignedCerts) 
-			throws IllegalArgumentException {
+								boolean useHttps, boolean allowSelfSignedCerts) {
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -263,30 +250,22 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		}
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public DmaapTopicSink build(List<String> servers, String topic) throws IllegalArgumentException {
+	public DmaapTopicSink build(List<String> servers, String topic) {
 		return this.build(servers, topic, null, null, null, null, null, true, false, false);
 	}
 	
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public List<DmaapTopicSink> build(Properties properties) throws IllegalArgumentException {
+	public List<DmaapTopicSink> build(Properties properties) {
 		
 		String writeTopics = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS);
 		if (writeTopics == null || writeTopics.isEmpty()) {
 			logger.info("{}: no topic for DMaaP Sink", this);
-			return new ArrayList<DmaapTopicSink>();
+			return new ArrayList<>();
 		}
 		
-		List<String> writeTopicList = new ArrayList<String>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
-		List<DmaapTopicSink> newDmaapTopicSinks = new ArrayList<DmaapTopicSink>();
+		List<String> writeTopicList = new ArrayList<>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
+		List<DmaapTopicSink> newDmaapTopicSinks = new ArrayList<>();
 		synchronized(this) {
 			for (String topic: writeTopicList) {
 				if (this.dmaapTopicWriters.containsKey(topic)) {
@@ -298,7 +277,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 				                                        PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				
 				List<String> serverList;
-				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				else serverList = new ArrayList<>();
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
@@ -421,12 +400,8 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		}
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void destroy(String topic) 
-		   throws IllegalArgumentException {
+	public void destroy(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -444,9 +419,6 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		dmaapTopicWriter.shutdown();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void destroy() {
 		List<DmaapTopicSink> writers = this.inventory();
@@ -459,12 +431,8 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public DmaapTopicSink get(String topic) 
-			throws IllegalArgumentException, IllegalStateException {
+	public DmaapTopicSink get(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
@@ -479,13 +447,10 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized List<DmaapTopicSink> inventory() {
 		 List<DmaapTopicSink> writers = 
-				 new ArrayList<DmaapTopicSink>(this.dmaapTopicWriters.values());
+				 new ArrayList<>(this.dmaapTopicWriters.values());
 		 return writers;
 	}
 

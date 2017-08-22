@@ -23,6 +23,7 @@ package org.onap.policy.drools.event.comm;
 /**
  * Listener for event messages entering the Policy Engine
  */
+@FunctionalInterface
 public interface TopicListener {
 	
 	/**
