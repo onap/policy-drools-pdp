@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_30d114fc",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T19:27:05Z",
+      "side": 1,
+      "message": "Thanks, can you please do this change in network log to keep it consistent?\n\nCan you also do the same in other log file?",
+      "parentUuid": "9a437d4f_5046d824",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_5025b8a9",
         "filename": "policy-management/src/main/server/config/logback.xml",
         "patchSetId": 1
@@ -171,6 +189,24 @@
       "side": 1,
       "message": "Changed to 1MB.\n\nRegarding network.log, I wondered the same thing.  Note, however, that the \"access.log\" is a standard for all web servers.  As a result, that is where the average person would expect to find the information.",
       "parentUuid": "9a437d4f_5025b8a9",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_b09504e6",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T19:27:05Z",
+      "side": 1,
+      "message": "I\u0027m having trouble with the word \u0027access\u0027 and the  ambiguity it introduces with \u0027network\u0027 (log), in theory much of the \u0027network\u0027 traffic is \"access\" but none of that goes there, same thing within control loops same argument for other types of traffic.  PDP-D is not a web server, and different in nature, with http server functionality secondary and optional and with limited scope..   Traditional web servers will record all of incoming http requests in their access log, but in pdp-d most of the traffic will be reflected in network.log as it offers other networking endpoint alternatives currently preferred.\n\nIs it possible to come up with a name that nails down a little more semantically the reduced scope of what this log is logging?",
+      "parentUuid": "9a437d4f_1048502c",
       "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -241,6 +277,24 @@
       "side": 1,
       "message": "This seems dangerous to me for two reasons:\n1) If the async queue becomes full, then the async logger drops messages - something we want to avoid if there\u0027s an actual security event that we\u0027re trying to investigate\n2) If the JVM crashes (or is killed) while messages are still in the queue, then they will be lost - again, something we want to avoid where security logs are concerned",
       "parentUuid": "9a437d4f_f01cac6c",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_d02be892",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T19:27:05Z",
+      "side": 1,
+      "message": "OK, can you add the same \"AsyncAccessOut\" just to be consistent even and still point your logger to \"AccessOut\" (the synchronous one)?\n\nI think this may be a bigger general discussion not only applicable to this.   One could argue that if the queue for this logger, which should have very little traffic is full, chances are is that we\u0027ve been (D)DoS\u0027ed, and we are entertaining those requests on being dropped.   Not saying that you have a very valid point, in any case if you can leave an asynchronous entry as the other ones, so we can switch appender quickly if we want to.",
+      "parentUuid": "9a437d4f_900a00d1",
       "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
