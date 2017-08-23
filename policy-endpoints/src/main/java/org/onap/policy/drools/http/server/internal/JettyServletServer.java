@@ -25,6 +25,7 @@ import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.Slf4jRequestLog;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
@@ -134,6 +135,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
         this.context.setContextPath(contextPath);
         
         this.jettyServer = new Server();
+        this.jettyServer.setRequestLog(new Slf4jRequestLog());
         
         this.connector = new ServerConnector(this.jettyServer);
         this.connector.setName(name);

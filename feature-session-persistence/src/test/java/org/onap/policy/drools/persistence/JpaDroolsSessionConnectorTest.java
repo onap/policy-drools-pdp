@@ -22,12 +22,17 @@ package org.onap.policy.drools.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import org.junit.After;
@@ -85,6 +90,45 @@ public class JpaDroolsSessionConnectorTest {
 		
 		assertEquals("{name=nameY, id=20}",
 						conn.get("nameY").toString());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testGet_NewEx() {
+		EntityManagerFactory emf = mock(EntityManagerFactory.class);
+		EntityManager em = mock(EntityManager.class);
+		
+		when(emf.createEntityManager()).thenReturn(em);
+		when(em.getTransaction()).thenThrow(new RuntimeException("expected exception"));
+
+		conn = new JpaDroolsSessionConnector(emf);
+		conn.get("xyz");
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testGet_FindEx() {
+		EntityManagerFactory emf = mock(EntityManagerFactory.class);
+		EntityManager em = mock(EntityManager.class);
+		EntityTransaction tr = mock(EntityTransaction.class);
+		
+		when(emf.createEntityManager()).thenReturn(em);
+		when(em.getTransaction()).thenReturn(tr);
+		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
+
+		new JpaDroolsSessionConnector(emf).get("xyz");
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testGet_FindEx_CloseEx() {
+		EntityManagerFactory emf = mock(EntityManagerFactory.class);
+		EntityManager em = mock(EntityManager.class);
+		EntityTransaction tr = mock(EntityTransaction.class);
+		
+		when(emf.createEntityManager()).thenReturn(em);
+		when(em.getTransaction()).thenReturn(tr);
+		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
+		doThrow(new RuntimeException("expected exception #2")).when(em).close();
+
+		new JpaDroolsSessionConnector(emf).get("xyz");
 	}
 
 	@Test
