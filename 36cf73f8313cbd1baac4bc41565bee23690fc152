@@ -1,0 +1,8 @@
+Code-Review+1: Kevin McKiou <km097d@att.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Pamela Dragosh <pdragosh@research.att.com>
+Submitted-by: Pamela Dragosh <pdragosh@research.att.com>
+Submitted-at: Wed, 23 Aug 2017 07:12:22 +0000
+Reviewed-on: http://gerrit.onap.org/r/8039
+Project: policy/drools-pdp
+Branch: refs/heads/master
