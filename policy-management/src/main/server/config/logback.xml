@@ -25,10 +25,12 @@
 	<property name="errorLog" value="error" />
 	<property name="debugLog" value="debug" />
 	<property name="networkLog" value="network" />
+	<property name="accessLog" value="access" />
 
 	<property name="debugPattern" value="[%date|%level|%logger{0}|%thread] %msg%n" />
 	<property name="errorPattern" value="${debugPattern}" />
 	<property name="networkPattern" value="[%d|%t]%m%n" />
+	<property name="accessPattern" value="%msg%n" />
 
 	<appender name="ErrorOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${logDir}/${errorLog}.log</file>
@@ -87,12 +89,31 @@
 		</encoder>		
 	</appender>
 	
+	<appender name="AccessOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDir}/${accessLog}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${logDir}/${accessLog}.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>9</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>1MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>${accessPattern}</pattern>
+		</encoder>
+	</appender>
+	
 	<appender name="AsyncNetworkOut" class="ch.qos.logback.classic.AsyncAppender">
 		<appender-ref ref="NetworkOut" />
 	</appender>
 
 	<logger name="network" level="INFO" additivity="false">
 		<appender-ref ref="AsyncNetworkOut" />		
+	</logger>
+	
+	<logger name="org.eclipse.jetty.server.RequestLog" level="info" additivity="false">
+		<appender-ref ref="AccessOut" />
 	</logger>
 
 	<root level="INFO">
