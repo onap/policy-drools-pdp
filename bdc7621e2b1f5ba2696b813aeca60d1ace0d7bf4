@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_103730e5",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "see my comments in logback.xml",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_7009dc2b",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/http/server/internal/JettyServletServer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "hate to be picky, but I think is important to keep style consistency on a per file basis once started in a style, if you don\u0027t mind no \" \" for parameters provided that this file uses that approach everywhere else.",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_3013545e",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "Naming convention followed here is to have \"AccessOut\" , \"Out\" as a suffix for the appender",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_b02624b9",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "follow same convention in file name patterns .. either change this, or change all the other ones, note \"%i.log.zip\" vs \".log.%i.zip\"",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5025b8a9",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "this number should be \u003c than networkOut size, as the network.out populates all dmaap messages, and they are much more that the ones that would go through the embedded jetty servers.\n\nThis brings the question of the \"network.log\" should be used instead of \"access.log\" to log this kind of information.   I\u0027d like to hear your opinion on it.  Point being this is just additional network output, and very, very small in volume, and just for embedded jetty http servers\".\n\nOne alternative as well could be to have this log separated but with a more specific name, such http-server.log ..\n\nWhat are your thoughts?",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_303a34ce",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "can you attach a sample line of what the output would look like to get a feel on what it looks like?\n\nIn addition, if you don\u0027t mind to move this pattern to the top of the file to be consistent with other pattern arrangements in this file.",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f01cac6c",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "If you can follow same approach and have an \"Async\" logger similar to the other loggers",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f0338cf4",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-23T16:33:07Z",
+      "side": 1,
+      "message": "one question Jim for my own knowledge, does jetty server use by name this \"org.eclipse.jetty.server.RequestLog\" logger as its name, just if you know, not that important ..",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
