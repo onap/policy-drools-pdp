@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_10cbb073",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "See my replies in logback.xml",
+      "parentUuid": "9a437d4f_103730e5",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_7009dc2b",
         "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/http/server/internal/JettyServletServer.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-23T16:33:07Z",
       "side": 1,
       "message": "hate to be picky, but I think is important to keep style consistency on a per file basis once started in a style, if you don\u0027t mind no \" \" for parameters provided that this file uses that approach everywhere else.",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_903c4095",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/http/server/internal/JettyServletServer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_7009dc2b",
       "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_7041dc0a",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_3013545e",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_b02624b9",
         "filename": "policy-management/src/main/server/config/logback.xml",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-08-23T16:33:07Z",
       "side": 1,
       "message": "follow same convention in file name patterns .. either change this, or change all the other ones, note \"%i.log.zip\" vs \".log.%i.zip\"",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5046d824",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "It seems that the config file is inconsistent.  This name followed the pattern for the network log.  Nevertheless, the name is now modified to match the others - we may want to fix the name for the network log to be consistent.",
+      "parentUuid": "9a437d4f_b02624b9",
       "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_1048502c",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "Changed to 1MB.\n\nRegarding network.log, I wondered the same thing.  Note, however, that the \"access.log\" is a standard for all web servers.  As a result, that is where the average person would expect to find the information.",
+      "parentUuid": "9a437d4f_5025b8a9",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_303a34ce",
         "filename": "policy-management/src/main/server/config/logback.xml",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2017-08-23T16:33:07Z",
       "side": 1,
       "message": "can you attach a sample line of what the output would look like to get a feel on what it looks like?\n\nIn addition, if you don\u0027t mind to move this pattern to the top of the file to be consistent with other pattern arrangements in this file.",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_7058bcfa",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "Note: this follows the standard access.log format for all web servers, and it is literally hard-coded into the jetty Slf4jRequestLog class.\n\n127.0.0.1 - - [23/Aug/2017:17:22:49 +0000] \"GET //localhost:8080/ HTTP/1.1\" 200 22 \n127.0.0.1 - - [23/Aug/2017:17:22:49 +0000] \"GET //localhost:8080/favicon.ico HTTP/1.1\" 200 22 \n127.0.0.1 - - [23/Aug/2017:17:22:49 +0000] \"GET //localhost:8080/favicon.ico HTTP/1.1\" 200 22",
+      "parentUuid": "9a437d4f_303a34ce",
       "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_900a00d1",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "This seems dangerous to me for two reasons:\n1) If the async queue becomes full, then the async logger drops messages - something we want to avoid if there\u0027s an actual security event that we\u0027re trying to investigate\n2) If the JVM crashes (or is killed) while messages are still in the queue, then they will be lost - again, something we want to avoid where security logs are concerned",
+      "parentUuid": "9a437d4f_f01cac6c",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_f0338cf4",
         "filename": "policy-management/src/main/server/config/logback.xml",
         "patchSetId": 1
@@ -132,6 +258,24 @@
       "writtenOn": "2017-08-23T16:33:07Z",
       "side": 1,
       "message": "one question Jim for my own knowledge, does jetty server use by name this \"org.eclipse.jetty.server.RequestLog\" logger as its name, just if you know, not that important ..",
+      "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f06b8c83",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2017-08-23T17:45:03Z",
+      "side": 1,
+      "message": "Yes, that\u0027s the name that the jetty logger uses.",
+      "parentUuid": "9a437d4f_f0338cf4",
       "revId": "bdc7621e2b1f5ba2696b813aeca60d1ace0d7bf4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
