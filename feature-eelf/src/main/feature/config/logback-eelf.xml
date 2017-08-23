@@ -25,6 +25,7 @@
 	<property name="auditLogName" value="audit" />
 	<property name="debugLogName" value="debug" />
 	<property name="networkLogName" value="network" />
+	<property name="accessLogName" value="access" />
 
 	<property name="defaultPattern"
 		value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestId}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{AlertSeverity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
@@ -154,6 +155,24 @@
 		</encoder>
 	</appender>
 	
+	<appender name="Access"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${logDirectory}/${accessLogName}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${logDirectory}/${accessLogName}.%i.log.zip
+			</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>20MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+	</appender>
+	
 	<appender name="AsyncNetworkOut" class="ch.qos.logback.classic.AsyncAppender">
 		<appender-ref ref="NetworkOut" />
 	</appender>
@@ -176,6 +195,10 @@
 
 	<logger name="network" level="INFO" additivity="false">
 		<appender-ref ref="AsyncNetworkOut" />		
+	</logger>
+	
+	<logger name="org.eclipse.jetty.server.RequestLog" level="info" additivity="false">
+		<appender-ref ref="Access" />
 	</logger>
 	
 	<root level="INFO">
