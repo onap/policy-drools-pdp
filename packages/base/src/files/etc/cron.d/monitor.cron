@@ -1,1 +1,1 @@
-* * * * * export POLICY_HOME=${{POLICY_HOME}}; ${{POLICY_HOME}}/bin/monitor.sh >/dev/null 2>&1
+* * * * * export POLICY_HOME=${{POLICY_HOME}}; ${{POLICY_HOME}}/bin/monitor >/dev/null 2>&1

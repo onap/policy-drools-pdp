@@ -26,8 +26,6 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.junit.Test;
-
 /**
  * Generates the schema DDL files.
  */
