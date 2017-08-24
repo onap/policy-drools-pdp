@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_0daa7670",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-08-24T17:18:01Z",
+      "side": 0,
+      "message": "Do we need to remove this in all our project\u0027s parent pom.xml?",
+      "range": {
+        "startLine": 200,
+        "startChar": 4,
+        "endLine": 200,
+        "endChar": 28
+      },
+      "revId": "95dafe8eaedf270c639adf0e51481f0172d2b808",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
