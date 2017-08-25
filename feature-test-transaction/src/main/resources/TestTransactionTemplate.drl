@@ -1,0 +1,28 @@
+package org.openecomp.policy.drools.rules;
+
+import java.util.EventObject;
+
+declare ForwardProgress
+	counter : Long
+end
+
+rule "TT.SETUP"
+when
+then
+	ForwardProgress fp = new ForwardProgress();
+	fp.setCounter(0L);
+	insert(fp);
+end
+
+rule "TT"
+when 
+	$fp : ForwardProgress()
+	$tt : EventObject(source == "43868e59-d1f3-43c2-bd6f-86f89a61eea5")
+then
+	$fp.setCounter($fp.getCounter() + 1);
+	retract($tt);
+end
+
+query "TT.FPC"
+	ForwardProgress(counter >= 0, $ttc : counter)
+end
