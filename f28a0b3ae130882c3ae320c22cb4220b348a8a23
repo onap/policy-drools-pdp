@@ -1,0 +1,310 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_cf31fe0c",
+        "filename": "feature-test-transaction/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "change this configuration to match the same section in feature-healthcheck/pom/xml (better way to configure it)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_af36ba01",
+        "filename": "feature-test-transaction/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "this dependency should go away",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_6f40d256",
+        "filename": "feature-test-transaction/src/assembly/assemble_zip.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "name the id \"feature-test-transaction\"",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_4f250ec1",
+        "filename": "feature-test-transaction/src/assembly/assemble_zip.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "model after assemble_zip. xml from feature-healthcheck/",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_2f22cab9",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "I think you can add \"final\" marker here",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_0f2f06a3",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "\"final\" here too",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_cf18de86",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "\"final\" here",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_af1d9a75",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "I think you have to do here \"Thread.interrupt()\" on the current thread to set the \"interrupted\" flag in the thread internally.",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_8f12d660",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "replace if condition with:\n\ncontroller.getDrools().isBrained()",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_4f0cee42",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "replace this line with\n\nDroolsController drools \u003d controller.getDrools();",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_2b1abd6e",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "same, only one statement, use String.format syntax too:, ie ..  (\"{} .. {}\", a, b)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_6b10c54e",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "same, only one statement, use String.format syntax :, ie ..  (\"{} .. {}\", a, b)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_4b1d0166",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "same, only one statement, use String.format syntax too:, ie ..  (\"{} .. {}\", a, b)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_2f09aa31",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "not an error, just graceful termination, replace 2 statements with a single statement:\n\nlogger.info(\"{}: stopping ..\", this, e)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_cb09f12d",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "only 1 statement:\n\nlogger.error(\"{}: controller {} has not been enabled for testing: \", this,  controller.getName(), e.getMessage());",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_ab0ead32",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "same, only one statement, use String.format syntax too:, ie ..  (\"{} .. {}\", a, b)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_8b13e95b",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "use String.format syntax too:, ie ..  (\"{} .. {}\", a, b)",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_0b27f9b7",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-28T22:01:40Z",
+      "side": 1,
+      "message": "final",
+      "revId": "f28a0b3ae130882c3ae320c22cb4220b348a8a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
