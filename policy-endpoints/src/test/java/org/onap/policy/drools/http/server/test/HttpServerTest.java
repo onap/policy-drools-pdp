@@ -78,34 +78,34 @@ public class HttpServerTest {
 	public void testMultipleServers() throws Exception {
 		logger.info("-- testMultipleServers() --");
 		
-		HttpServletServer server1 = HttpServletServer.factory.build("echo-1", "localhost", 5678, "/", true, true);
+		HttpServletServer server1 = HttpServletServer.factory.build("echo-1", "localhost", 5688, "/", true, true);
 		server1.addServletPackage("/*", this.getClass().getPackage().getName());
 		server1.waitedStart(5000);
 		
-		HttpServletServer server2 = HttpServletServer.factory.build("echo-2", "localhost", 5679, "/", false, true);
+		HttpServletServer server2 = HttpServletServer.factory.build("echo-2", "localhost", 5689, "/", false, true);
 		server2.addServletPackage("/*", this.getClass().getPackage().getName());
 		server2.waitedStart(5000);
 		
-		assertTrue(HttpServletServer.factory.get(5678).isAlive());
-		assertTrue(HttpServletServer.factory.get(5679).isAlive());
+		assertTrue(HttpServletServer.factory.get(5688).isAlive());
+		assertTrue(HttpServletServer.factory.get(5689).isAlive());
 		
 		String echo = "hello";
 		
-		URL url1 = new URL("http://localhost:5678/junit/echo/" + echo);
+		URL url1 = new URL("http://localhost:5688/junit/echo/" + echo);
 		String response1 = response(url1);
 		assertTrue(response1.equals(echo));
 		
-		URL urlSwagger = new URL("http://localhost:5678/swagger.json");
+		URL urlSwagger = new URL("http://localhost:5688/swagger.json");
 		String responseSwagger = response(urlSwagger);	
 		assertTrue(responseSwagger != null);
 		
-		URL url2 = new URL("http://localhost:5679/junit/echo/" + echo);
+		URL url2 = new URL("http://localhost:5689/junit/echo/" + echo);
 		String response2 = response(url2);
 		assertTrue(response2.equals(echo));
 		
 		String responseSwagger2 =  null;
 		try {
-			URL urlSwagger2 = new URL("http://localhost:5679/swagger.json");
+			URL urlSwagger2 = new URL("http://localhost:5689/swagger.json");
 			responseSwagger2 = response(urlSwagger2);
 		} catch(IOException ioe) {
 			// Expected
@@ -122,18 +122,18 @@ public class HttpServerTest {
 		
 		String randomName = UUID.randomUUID().toString();
 		
-		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
+		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5668, "/", false, true);
 		server.addServletPackage("/*", this.getClass().getPackage().getName());
 		server.waitedStart(5000);
 		
-		assertTrue(HttpServletServer.factory.get(5678).isAlive());
+		assertTrue(HttpServletServer.factory.get(5668).isAlive());
 		
 		String echo = "hello";
-		URL urlService1 = new URL("http://localhost:5678/junit/echo/" + echo);
+		URL urlService1 = new URL("http://localhost:5668/junit/echo/" + echo);
 		String responseService1 = response(urlService1);
 		assertTrue(responseService1.equals(echo));
 		
-		URL urlService2 = new URL("http://localhost:5678/junit/endpoints/http/servers");
+		URL urlService2 = new URL("http://localhost:5668/junit/endpoints/http/servers");
 		String responseService2 = response(urlService2);
 		assertTrue(responseService2.contains(randomName));
 		
@@ -146,14 +146,14 @@ public class HttpServerTest {
 		logger.info("-- testServiceClass() --");
 		String randomName = UUID.randomUUID().toString();
 		
-		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
+		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5658, "/", false, true);
 		server.addServletClass("/*", RestEchoService.class.getCanonicalName());
 		server.waitedStart(5000);
 		
-		assertTrue(HttpServletServer.factory.get(5678).isAlive());
+		assertTrue(HttpServletServer.factory.get(5658).isAlive());
 		
 		String echo = "hello";
-		URL urlService1 = new URL("http://localhost:5678/junit/echo/" + echo);
+		URL urlService1 = new URL("http://localhost:5658/junit/echo/" + echo);
 		String responseService1 = response(urlService1);
 		assertTrue(responseService1.equals(echo));
 		
@@ -167,19 +167,19 @@ public class HttpServerTest {
 		
 		String randomName = UUID.randomUUID().toString();
 		
-		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5678, "/", false, true);
+		HttpServletServer server = HttpServletServer.factory.build(randomName, "localhost", 5648, "/", false, true);
 		server.addServletClass("/*", RestEchoService.class.getCanonicalName());
 		server.addServletClass("/*", RestEndpoints.class.getCanonicalName());
 		server.waitedStart(5000);
 		
-		assertTrue(HttpServletServer.factory.get(5678).isAlive());
+		assertTrue(HttpServletServer.factory.get(5648).isAlive());
 		
 		String echo = "hello";
-		URL urlService1 = new URL("http://localhost:5678/junit/echo/" + echo);
+		URL urlService1 = new URL("http://localhost:5648/junit/echo/" + echo);
 		String responseService1 = response(urlService1);
 		assertTrue(responseService1.equals(echo));
 		
-		URL urlService2 = new URL("http://localhost:5678/junit/endpoints/http/servers");
+		URL urlService2 = new URL("http://localhost:5648/junit/endpoints/http/servers");
 		String responseService2 = response(urlService2);
 		assertTrue(responseService2.contains(randomName));
 		

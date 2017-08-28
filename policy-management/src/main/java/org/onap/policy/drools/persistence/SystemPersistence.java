@@ -182,10 +182,9 @@ class SystemPropertiesPersistence implements SystemPersistence {
 			}
     	}
 	  	
-		try {
-	    	File controllerPropertiesFile = controllerPropertiesPath.toFile();
-	    	FileWriter writer = new FileWriter(controllerPropertiesFile);
-	    	properties.store(writer, "Machine created Policy Controller Configuration");
+		File controllerPropertiesFile = controllerPropertiesPath.toFile();
+		try (FileWriter writer = new FileWriter(controllerPropertiesFile)) {
+			properties.store(writer, "Machine created Policy Controller Configuration");
 		} catch (Exception e) {
 			logger.warn("{}: cannot be STORED", controllerName, e);
 			return false;

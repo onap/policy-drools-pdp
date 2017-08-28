@@ -45,6 +45,7 @@ import org.onap.policy.drools.properties.Startable;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
+import org.onap.policy.drools.server.restful.RestManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -71,17 +72,21 @@ import com.google.gson.GsonBuilder;
  * <br>
  * PolicyEngine 1 --- 1 ManagementServer
  */
-public interface PolicyEngine extends Startable, Lockable, TopicListener {
+public interface PolicyEngine extends Startable, Lockable, TopicListener {	
+	/**
+	 * Default Telemetry Server Port
+	 */
+	public static final int TELEMETRY_SERVER_DEFAULT_PORT = 9696;
 	
 	/**
-	 * Default Config Server Port
+	 * Default Telemetry Server Hostname
 	 */
-	public static final int CONFIG_SERVER_DEFAULT_PORT = 9696;
+	public static final String TELEMETRY_SERVER_DEFAULT_HOST = "localhost";
 	
 	/**
-	 * Default Config Server Hostname
+	 * Default Telemetry Server Name
 	 */
-	public static final String CONFIG_SERVER_DEFAULT_HOST = "localhost";
+	public static final String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
 	
 	/**
 	 * Boot the engine
@@ -89,7 +94,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * @param cliArgs command line arguments
 	 */
 	public void boot(String cliArgs[]);
-	
+
 	/**
 	 * configure the policy engine according to the given properties
 	 * 
@@ -308,6 +313,13 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 	 * Invoked when the host goes into the standby state.
 	 */
 	public void deactivate();
+		
+	/**
+	 * produces a default telemetry configuration
+	 * 
+	 * @return policy engine configuration
+	 */
+	public Properties defaultTelemetryConfig();
 	
 	/**
 	 * Policy Engine Manager
@@ -319,6 +331,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
  * Policy Engine Manager Implementation
  */
 class PolicyEngineManager implements PolicyEngine {
+	
 	/**
 	 * logger
 	 */
@@ -388,6 +401,41 @@ class PolicyEngineManager implements PolicyEngine {
 				             this, feature.getClass().getName(), e.getMessage(), e);
 			}
 		}
+	}
+	
+	
+	/**
+	 * produces a minimum configuration with the telemetry service enabled
+	 * 
+	 * @return policy engine configuration
+	 */
+	@Override
+	public final Properties defaultTelemetryConfig() {
+		Properties defaultConfig = new Properties();
+		
+		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES, "TELEMETRY");
+		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
+									TELEMETRY_SERVER_DEFAULT_NAME +
+									PolicyProperties.PROPERTY_HTTP_HOST_SUFFIX, 
+									TELEMETRY_SERVER_DEFAULT_HOST);
+		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
+									TELEMETRY_SERVER_DEFAULT_NAME +
+									PolicyProperties.PROPERTY_HTTP_PORT_SUFFIX,
+									"" + TELEMETRY_SERVER_DEFAULT_PORT);
+		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
+								   TELEMETRY_SERVER_DEFAULT_NAME +
+									PolicyProperties.PROPERTY_HTTP_REST_PACKAGES_SUFFIX,
+									RestManager.class.getPackage().getName());
+		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
+								   TELEMETRY_SERVER_DEFAULT_NAME +
+									PolicyProperties.PROPERTY_HTTP_SWAGGER_SUFFIX,
+									true);
+		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
+						   TELEMETRY_SERVER_DEFAULT_NAME +
+							PolicyProperties.PROPERTY_MANAGED_SUFFIX,
+							false);
+		
+		return defaultConfig;
 	}
 	
 	@Override
@@ -813,7 +861,7 @@ class PolicyEngineManager implements PolicyEngine {
 				logger.error("{}: cannot start http-server {} because of {}", this, 
 						     httpServer, e.getMessage(), e);
 			}
-		}		
+		}	
 		
 		/* policy-engine dispatch pre stop hook */
 		for (PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {

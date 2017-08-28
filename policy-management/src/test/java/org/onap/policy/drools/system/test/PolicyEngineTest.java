@@ -22,15 +22,19 @@ package org.onap.policy.drools.system.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
-
-import javax.ws.rs.core.Response;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.onap.policy.drools.http.client.HttpClient;
-import org.onap.policy.drools.http.server.HttpServletServer;
+import org.junit.runners.MethodSorters;
+import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -39,63 +43,192 @@ import org.slf4j.LoggerFactory;
 /**
  * PolicyEngine unit tests
  */
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PolicyEngineTest {
+	/**
+	 * Default Telemetry port for JUnits
+	 */
+	public static final int DEFAULT_TELEMETRY_PORT = 9698;
+	
+	/**
+	 * Test JUnit Controller Name
+	 */
+	public static final String TEST_CONTROLLER_NAME = "unnamed";
+	
+	/**
+	 * Controller Configuration File
+	 */
+	public static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
+	
+	/**
+	 * Controller Configuration Backup File
+	 */
+	public static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_NAME + "-controller.properties.bak";
+	
+	/**
+	 * logger
+	 */
 	private static Logger logger = LoggerFactory.getLogger(PolicyEngineTest.class);
 	
+	/**
+	 * clean up working directory
+	 */
+	protected static void cleanUpWorkingDir() {
+		Path testControllerPath = Paths.get(SystemPersistence.CONFIG_DIR_NAME, TEST_CONTROLLER_FILE);
+		try {
+			Files.deleteIfExists(testControllerPath);
+		} catch (Exception e) {
+			logger.info("Problem cleaning {}", testControllerPath, e);
+		}
+		
+		Path testControllerBakPath = Paths.get(SystemPersistence.CONFIG_DIR_NAME, TEST_CONTROLLER_FILE_BAK);
+		try {
+			Files.deleteIfExists(testControllerBakPath);
+		} catch (Exception e) {
+			logger.info("Problem cleaning {}", testControllerBakPath, e);
+		}
+	}
+	
 	@BeforeClass
-	public static void startUp() {
-		logger.info("----- TEST: startUp() ---------");
+	public static void startUp() throws IOException {
+		logger.info("enter");
 		
-		Properties engineProperties = new Properties();
-		engineProperties.put("http.server.services", "CONFIG");
-		engineProperties.put("http.server.services.CONFIG.host", "0.0.0.0");
-		engineProperties.put("http.server.services.CONFIG.port", "9696");
-		engineProperties.put("http.server.services.CONFIG.restPackages", "org.onap.policy.drools.server.restful");
+		cleanUpWorkingDir();
 		
-		assertFalse(PolicyEngine.manager.isAlive());
-		
-		PolicyEngine.manager.configure(engineProperties);		
-		assertFalse(PolicyEngine.manager.isAlive());
-		
-		PolicyEngine.manager.start();
-		assertTrue(PolicyEngine.manager.isAlive());
-		assertFalse(PolicyEngine.manager.isLocked());
-		assertTrue(HttpServletServer.factory.get(9696).isAlive());
+		/* ensure presence of config directory */
+		Path configDir = Paths.get(SystemPersistence.CONFIG_DIR_NAME);
+		if (Files.notExists(configDir))
+			Files.createDirectories(configDir);
 	}
 	
 	@AfterClass
-	public static void tearDown() {	
-		logger.info("----- TEST: tearDown() ---------");
-		
-		PolicyEngine.manager.stop();
-		assertFalse(PolicyEngine.manager.isAlive());
+	public static void tearDown() throws IOException {	
+		logger.info("enter");		
+		cleanUpWorkingDir();
 	}
 	
 	@Test
-	public void addController() throws Exception {
-		logger.info("----- TEST: addController() ---------");
+	public void test100Configure() {
+		logger.info("enter");
+		
+		Properties engineProps = PolicyEngine.manager.defaultTelemetryConfig();
+		
+		/* override default port */
+		engineProps.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
+						PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME +
+						PolicyProperties.PROPERTY_HTTP_PORT_SUFFIX,
+						""+DEFAULT_TELEMETRY_PORT);
+		
+		assertFalse(PolicyEngine.manager.isAlive());	
+		PolicyEngine.manager.configure(engineProps);	
+		assertFalse(PolicyEngine.manager.isAlive());
+		
+		logger.info("policy-engine {} has configuration {}", PolicyEngine.manager, engineProps);
+	}
+	
+	@Test
+	public void test200Start() {
+		logger.info("enter");
+		
+		PolicyEngine.manager.start();
+		
+		assertTrue(PolicyEngine.manager.isAlive());
+		assertFalse(PolicyEngine.manager.isLocked());
+		assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
+		assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+	}
+	
+	@Test
+	public void test300Lock() {
+		logger.info("enter");
+		
+		PolicyEngine.manager.lock();
+		
+		assertTrue(PolicyEngine.manager.isAlive());
+		assertTrue(PolicyEngine.manager.isLocked());
+		assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
+		assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+	}
+	
+	@Test
+	public void test301Unlock() {
+		logger.info("enter");
+		
+		PolicyEngine.manager.unlock();
+		
+		assertTrue(PolicyEngine.manager.isAlive());
+		assertFalse(PolicyEngine.manager.isLocked());
+		assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
+		assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+	}
+	
+	@Test
+	public void test400ControllerAdd() throws Exception {
+		logger.info("enter");
 		
 		Properties controllerProperties = new Properties();
-		controllerProperties.put("controller.name", "unnamed");
+		controllerProperties.put(PolicyProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);		
+		PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
 		
-		PolicyEngine.manager.createPolicyController("unnamed", controllerProperties);
 		assertTrue(PolicyController.factory.inventory().size() == 1);
+	}
+	
+	@Test
+	public void test401ControllerVerify() {
+		logger.info("enter");
 		
-		HttpClient client = HttpClient.factory.build("telemetry", false, false, 
-                                                     "localhost", 9696, "policy/pdp", 
-                                                      null, null, false);
-		Response response = client.get("engine");
-		Object body = HttpClient.getBody(response, Object.class);
-		logger.info("policy-engine: {}", body);
+		PolicyController testController = PolicyController.factory.get(TEST_CONTROLLER_NAME);
 		
-		assertTrue(response.getStatus() == 200);
+		assertFalse(testController.isAlive());
+		assertFalse(testController.isLocked());	
+
+		testController.start();
 		
-		PolicyController testController = PolicyController.factory.get("unnamed");
-		assertFalse(testController.getDrools().isAlive());
-		assertFalse(testController.getDrools().isLocked());
+		assertTrue(testController.isAlive());
+		assertFalse(testController.isLocked());	
+	}
+	
+	@Test
+	public void test500Deactivate() throws Exception {
+		logger.info("enter");
 		
-		PolicyEngine.manager.removePolicyController("unnamed");
+		PolicyEngine.manager.deactivate();
+		
+		PolicyController testController = PolicyController.factory.get(TEST_CONTROLLER_NAME);		
+		assertFalse(testController.isAlive());
+		assertTrue(testController.isLocked());	
+		assertTrue(PolicyEngine.manager.isLocked());
+		assertTrue(PolicyEngine.manager.isAlive());
+	}
+	
+	@Test
+	public void test501Activate() throws Exception {
+		logger.info("enter");
+		
+		PolicyEngine.manager.activate();
+		
+		PolicyController testController = PolicyController.factory.get(TEST_CONTROLLER_NAME);		
+		assertTrue(testController.isAlive());
+		assertFalse(testController.isLocked());	
+		assertFalse(PolicyEngine.manager.isLocked());
+		assertTrue(PolicyEngine.manager.isAlive());
+	}
+	
+	@Test
+	public void test900ControllerRemove() throws Exception {
+		logger.info("enter");
+		
+		PolicyEngine.manager.removePolicyController(TEST_CONTROLLER_NAME);		
 		assertTrue(PolicyController.factory.inventory().isEmpty());
+	}
+	
+	@Test
+	public void test901Stop() {
+		logger.info("enter");
+		
+		PolicyEngine.manager.stop();
+		assertFalse(PolicyEngine.manager.isAlive());
 	}
 
 }
