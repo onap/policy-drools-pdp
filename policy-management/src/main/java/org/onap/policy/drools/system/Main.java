@@ -21,6 +21,8 @@
 package org.onap.policy.drools.system;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -54,8 +56,24 @@ public class Main {
 	 * main
 	 * 
 	 * @param args program arguments
+	 * @throws IOException 
 	 */
 	public static void main(String args[]) {
+		
+		/* make sure the configuration directory exists */
+		
+		Path configDir = Paths.get(SystemPersistence.CONFIG_DIR_NAME);
+		if (Files.notExists(configDir)) {
+			try {
+				Files.createDirectories(configDir);
+			} catch (IOException e) {
+				throw new IllegalStateException("cannot create " + SystemPersistence.CONFIG_DIR_NAME, e);
+			}
+		}
+		
+		if (!Files.isDirectory(configDir))
+			throw new IllegalStateException
+						("config directory: " + configDir + " is not a directory");
 		
 		/* logging defaults */
 		
@@ -66,24 +84,23 @@ public class Main {
 		
 		PolicyEngine.manager.boot(args);
 		
-		Logger logger = LoggerFactory.getLogger(Main.class);
+		/* start logger */
 		
-		File configDir = new File(SystemPersistence.CONFIG_DIR_NAME);
-		
-		if (!configDir.isDirectory()) {
-			throw new IllegalArgumentException
-						("config directory: " + configDir.getAbsolutePath() + 
-						 " not found");
-		}
+		Logger logger = LoggerFactory.getLogger(Main.class);		
 		
 		/* 1. Configure the Engine */
-
+		
+		Path policyEnginePath = Paths.get(configDir.toString(), SystemPersistence.PROPERTIES_FILE_ENGINE);
 		try {
-			Path policyEnginePath = Paths.get(configDir.toPath().toString(), SystemPersistence.PROPERTIES_FILE_ENGINE);
-			Properties properties = PropertyUtil.getProperties(policyEnginePath.toFile());
-			PolicyEngine.manager.configure(properties);
+			if (Files.exists(policyEnginePath))
+				PolicyEngine.manager.configure(PropertyUtil.getProperties(policyEnginePath.toFile()));
+			else
+				PolicyEngine.manager.configure(PolicyEngine.manager.defaultTelemetryConfig());
 		} catch (Exception e) {
-			logger.warn("Main: cannot initialize {} because of {}", PolicyEngine.manager, e.getMessage(), e);
+			logger.warn("Main: {} could not find custom configuration in {}.", 
+					    PolicyEngine.manager, SystemPersistence.PROPERTIES_FILE_ENGINE, e);
+			
+			/* continue without telemetry or other custom components - this is OK */
 		}
 		
 		/* 2. Start the Engine with the basic services only (no Policy Controllers) */
@@ -102,7 +119,7 @@ public class Main {
 		
 		/* 3. Create and start the controllers */
 		
-		File[] controllerFiles = configDir.listFiles();
+		File[] controllerFiles = configDir.toFile().listFiles();
 		for (File config : controllerFiles) {
 
 			if (config.getName().endsWith(SystemPersistence.PROPERTIES_FILE_CONTROLLER_SUFFIX)) {

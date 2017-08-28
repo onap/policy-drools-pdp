@@ -10,7 +10,7 @@
     
     <logger name="org.onap.policy.drools.system.test" level="INFO"/>
 
-    <root level="warn">
+    <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>
 
