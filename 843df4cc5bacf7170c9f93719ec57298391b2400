@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_ce7c5f75",
+        "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-08-29T08:09:23Z",
+      "side": 1,
+      "message": "Isn\u0027t \u0027ioReader.close()\u0027 still needed, perhaps in a \u0027finally\u0027 block?",
+      "revId": "843df4cc5bacf7170c9f93719ec57298391b2400",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_8e965793",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/persistence/SystemPersistence.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-08-29T08:09:23Z",
+      "side": 1,
+      "message": "Should \u0027writer.close()\u0027 be called somewhere?",
+      "revId": "843df4cc5bacf7170c9f93719ec57298391b2400",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
