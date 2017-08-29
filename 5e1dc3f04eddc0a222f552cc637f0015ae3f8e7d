@@ -2,6 +2,91 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a437d4f_7fce3b5c",
+        "filename": "feature-test-transaction/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "feature instead of policy",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1fb72fda",
+        "filename": "feature-test-transaction/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "correct indentation",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_bfb5c3ce",
+        "filename": "feature-test-transaction/src/assembly/assemble_zip.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "this fileSet entry does not seem right to me, the lib/opt dir, verify with feature-healthcheck for example",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5fdb771b",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "feature instead of policy",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5fc4973f",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "indentation",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_1fa28fae",
         "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
         "patchSetId": 6
@@ -13,6 +98,142 @@
       "writtenOn": "2017-08-29T22:02:01Z",
       "side": 1,
       "message": "stopping ...\", this, e);   - note \"+\" instead of \",\"",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_3fd8b31c",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "feature instead of policy",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_3fc1d32e",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "remove the javadoc {@inheritDoc} I believe it will inherit by default.   I think only needed if editing document from superclass.   This is a general comment in this file.",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1fde0f12",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "return false meaning \"don\u0027t intercept\"",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_ffe22bd4",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "return false meaning \"don\u0027t intercept\"",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_dfe767e3",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "return false meaning \"don\u0027t intercept\"",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_bfeca3c8",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransactionFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "return 1000 instead of 100 (lower priority feature)",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9fd1dffd",
+        "filename": "feature-test-transaction/src/main/resources/TestTransactionTemplate.drl",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "rename package to \"onap\"",
+      "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1f05ef79",
+        "filename": "feature-test-transaction/src/main/resources/TestTransactionTemplate.drl",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-29T22:17:28Z",
+      "side": 1,
+      "message": "Add license header at the very beginning before package",
       "revId": "5e1dc3f04eddc0a222f552cc637f0015ae3f8e7d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
