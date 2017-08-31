@@ -2299,6 +2299,7 @@ public class RestManager {
     
     @GET
     @Path("engine/tools/loggers/{logger}")
+    @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
         	value="logging level of a logger"
     )
@@ -2326,6 +2327,8 @@ public class RestManager {
     
     @PUT
     @Path("engine/tools/loggers/{logger}/{level}")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.TEXT_PLAIN)
     @ApiOperation(
         	value="sets the logger level", 
         	notes="Please use the SLF4J logger levels"
