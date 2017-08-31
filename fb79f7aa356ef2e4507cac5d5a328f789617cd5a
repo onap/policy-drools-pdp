@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_4d23cc05",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-08-31T11:25:49Z",
+      "side": 1,
+      "message": "\u0027String.valueOf(true)\u0027 seems cleaner",
+      "revId": "fb79f7aa356ef2e4507cac5d5a328f789617cd5a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_0d1dc4bd",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-08-31T11:25:49Z",
+      "side": 1,
+      "message": "\u0027String.valueOf(false)\u0027 seems cleaner",
+      "revId": "fb79f7aa356ef2e4507cac5d5a328f789617cd5a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
