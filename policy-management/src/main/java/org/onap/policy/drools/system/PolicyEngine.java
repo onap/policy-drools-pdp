@@ -429,11 +429,11 @@ class PolicyEngineManager implements PolicyEngine {
 		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
 								   TELEMETRY_SERVER_DEFAULT_NAME +
 									PolicyProperties.PROPERTY_HTTP_SWAGGER_SUFFIX,
-									true);
+									"" + Boolean.TRUE);
 		defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
 						   TELEMETRY_SERVER_DEFAULT_NAME +
 							PolicyProperties.PROPERTY_MANAGED_SUFFIX,
-							false);
+							"" + Boolean.FALSE);
 		
 		return defaultConfig;
 	}
