@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_8a0e3a33",
+        "filename": "feature-test-transaction/src/assembly/assemble_zip.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-31T00:04:35Z",
+      "side": 1,
+      "message": "remove this comment",
+      "revId": "ca5aaf029408e83498adc342023397fb1cbc9271",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_6a13165d",
+        "filename": "feature-test-transaction/src/assembly/assemble_zip.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-08-31T00:04:35Z",
+      "side": 1,
+      "message": "fix indentation",
+      "revId": "ca5aaf029408e83498adc342023397fb1cbc9271",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
