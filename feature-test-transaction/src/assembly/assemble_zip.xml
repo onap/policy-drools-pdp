@@ -34,13 +34,13 @@
      <includeBaseDirectory>false</includeBaseDirectory>
 
      <fileSets>
-          <fileSet>
-               <directory>target</directory>
-               <outputDirectory>lib/feature</outputDirectory>
-               <includes>
-                    <include>feature-test-transaction-${project.version}.jar</include>
-               </includes>
-          </fileSet>
+		<fileSet>
+			<directory>target</directory>
+            <outputDirectory>lib/feature</outputDirectory>
+            <includes>
+				<include>feature-test-transaction-${project.version}.jar</include>
+			</includes>
+        </fileSet>
 		<fileSet>
 			<directory>target/assembly/lib</directory>
 			<outputDirectory>lib/dependencies</outputDirectory>
@@ -72,7 +72,5 @@
 			<fileMode>0744</fileMode>
 			<excludes/>
 		</fileSet>
-
      </fileSets>
-
 </assembly>
