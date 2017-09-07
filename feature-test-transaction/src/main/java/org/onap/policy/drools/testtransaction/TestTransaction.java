@@ -89,6 +89,7 @@ class TTImpl implements TestTransaction {
  *
  */
 class TTControllerTask implements Runnable {
+
   // get an instance of logger
   private static final Logger logger = LoggerFactory.getLogger(TTControllerTask.class);
 
@@ -184,9 +185,10 @@ class TTControllerTask implements Runnable {
       }
     } catch (final InterruptedException e) {
       logger.info("{}: stopping ...", this, e);
+      return;
     } catch (final IllegalArgumentException e) {
       logger.error("{}: controller {} has not been enabled for testing: ", this,
-          this.controller.getName(), e.getMessage());
+          this.controller.getName(), e.getMessage(), e);
     } catch (final Exception e) {
       logger.error("Controller: {} is not testable - TestTransaction caught exception: {} ",
           this.controller.getName(), e.getMessage());
@@ -209,5 +211,4 @@ class TTControllerTask implements Runnable {
     builder.append("]");
     return builder.toString();
   }
-
 }
