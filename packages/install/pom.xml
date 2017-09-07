@@ -89,6 +89,12 @@
 			<version>${project.version}</version>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+			<groupId>org.onap.policy.drools-pdp</groupId>
+			<artifactId>feature-test-transaction</artifactId>
+			<version>${project.version}</version>
+			<type>zip</type>
+		</dependency>
 	</dependencies>
 
 </project>
