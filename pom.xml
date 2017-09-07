@@ -33,7 +33,7 @@
 	<artifactId>drools-pdp</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Policy Engine - Drools PDP</name>
+	<name>policy-drools-pdp</name>
 
 	<description>The ONAP Policy Engine drools-based PDP Project</description>
 
@@ -73,6 +73,8 @@
 		<module>feature-eelf</module>
 		<module>feature-session-persistence</module>
 		<module>feature-test-transaction</module>
+		<module>api-state-management</module>
+		<module>feature-state-management</module>
 		<module>packages</module>
 	</modules>
 
