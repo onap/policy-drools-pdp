@@ -22,6 +22,30 @@
       "revId": "f6679d84b20e79e8f9753fbdea08ecd20b913e75",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_709ace64",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-07T12:20:13Z",
+      "side": 1,
+      "message": "I have created POLICY-213 for Drew to handle sonars, there are 3 blocker/critical sonars introduced with this feature.   I just changed a couple lines of code, and the automated formatting with the code style from ONAP did the rest.",
+      "parentUuid": "9a437d4f_d05dfa16",
+      "range": {
+        "startLine": 188,
+        "startChar": 6,
+        "endLine": 192,
+        "endChar": 52
+      },
+      "revId": "f6679d84b20e79e8f9753fbdea08ecd20b913e75",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
