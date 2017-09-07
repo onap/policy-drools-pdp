@@ -197,9 +197,10 @@ class TTControllerTask implements Runnable {
 			}
 		} catch (InterruptedException e) {
 			logger.info("{}: stopping ...", this, e);
+			return;
 		} 
 		catch (IllegalArgumentException e) {
-			logger.error("{}: controller {} has not been enabled for testing: ", this, controller.getName(), e.getMessage());
+			logger.error("{}: controller {} has not been enabled for testing: ", this, controller.getName(), e.getMessage(), e);
 		} catch (Exception e) {
 			logger.error("Controller: {} is not testable - TestTransaction caught exception: {} ",
 					controller.getName(),
