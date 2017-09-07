@@ -1,6 +1,6 @@
 <!--
   ============LICENSE_START=======================================================
-  feature-test-transaction
+  ONAP Policy Engine - Drools PDP
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -16,23 +16,28 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   ============LICENSE_END=========================================================
--->
- 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         
   <modelVersion>4.0.0</modelVersion>
+  
   <parent>
     <groupId>org.onap.policy.drools-pdp</groupId>
     <artifactId>drools-pdp</artifactId>
     <version>1.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>feature-test-transaction</artifactId>
-    
-    <name>feature-test-transaction</name>
-    <description>Separately loadable module which sends test transaction through system</description>
+  
+  <artifactId>api-state-management</artifactId>
+  
+  <name>api-state-management</name>
+  <description>Separately loadable module for state management APIe</description>
 
   <properties>
           <maven.compiler.source>1.8</maven.compiler.source>
           <maven.compiler.target>1.8</maven.compiler.target>
+          <swagger.version>1.5.0</swagger.version>
   </properties>
 
   <build>
@@ -58,6 +63,9 @@
           </execution>
         </executions>
       </plugin>
+<!-- This currently copies different dependencies from the open-source version,
+     which causes incompatibility issues. Let's skip this for now, because we
+     already get the dependencies of the open-source version.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -78,25 +86,27 @@
               <useRepositoryLayout>false</useRepositoryLayout>
               <addParentPoms>false</addParentPoms>
               <copyPom>false</copyPom>
-			  <includeScope>runtime</includeScope>
-			  <excludeTransitive>true</excludeTransitive>
+              <excludeGroupIds>javax.inject</excludeGroupIds>
+              <excludeScope>provided</excludeScope>
             </configuration>
           </execution>
         </executions>
       </plugin>
+-->
     </plugins>
   </build>
+
   <dependencies>
     <dependency>
       <groupId>org.onap.policy.drools-pdp</groupId>
-      <artifactId>policy-management</artifactId>
+      <artifactId>policy-core</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-    	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<scope>test</scope>
-	</dependency>
-  </dependencies>
+    <dependency>
+      <groupId>org.onap.policy.common</groupId>
+      <artifactId>integrity-monitor</artifactId>
+      <version>${common-modules.version}</version>
+    </dependency>
+   </dependencies>
 </project>
