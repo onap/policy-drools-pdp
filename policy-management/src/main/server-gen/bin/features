@@ -142,6 +142,7 @@ LIB=${POLICY_HOME}/lib
 CONFIG=${POLICY_HOME}/config
 DB=${POLICY_HOME}/etc/db/migration
 FEATURES=${POLICY_HOME}/features
+PROFILED=${POLICY_HOME}/etc/profile.d
 
 if [[ ! ( -d "${LIB}" && -x "${LIB}" ) ]]; then
 	echo "error: no ${LIB} directory"
@@ -171,6 +172,7 @@ FEATURE_SQL="sql"
 
 UPGRADE_SQL_SUFFIX=".upgrade.sql"
 DOWNGRADE_SQL_SUFFIX=".downgrade.sql"
+ENVIRONMENT_SUFFIX=".environment"
 
 featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
 
@@ -422,6 +424,7 @@ function enableFeatureConfig()
 	fi
 	
 	local featureName="$1"
+	local featureInstallConf=feature-"${featureName}".conf
 	local featureConfigs featureConfigPath
 	
 	if [[ -z ${featureName} ]]; then
@@ -432,7 +435,11 @@ function enableFeatureConfig()
 	featureConfigs=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ -type f -maxdepth 1 2> /dev/null)
 	for featureConfigPath in ${featureConfigs}; do
 		ln -s -f "${featureConfigPath}" "${CONFIG}/"
-	done 
+	done
+	
+	if [[ -f "${PROFILED}"/"${featureInstallConf}" ]]; then
+		ln -s -f "${PROFILED}"/"${featureInstallConf}" "${CONFIG}"/"${featureInstallConf}""${ENVIRONMENT_SUFFIX}"
+	fi
 }
 
 # ##########################################################
@@ -697,6 +704,7 @@ function disableFeatureConfig()
 	fi
 	
 	local featureName="$1"
+	local featureInstallConf=feature-"${featureName}".conf
 	local featureConfigs featureConfigPath
 	
 	if [[ -z ${featureName} ]]; then
@@ -708,7 +716,9 @@ function disableFeatureConfig()
 	for featureConfigPath in ${featureConfigs}; do
 		configFileName=$(basename "${featureConfigPath}")
 		rm -f "${CONFIG}"/"${configFileName}" 2> /dev/null
-	done 
+	done
+
+	rm -f "${CONFIG}"/"${featureInstallConf}""${ENVIRONMENT_SUFFIX}" 2> /dev/null
 }
 
 # ##########################################################
