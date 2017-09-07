@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_fbf1ffcd",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-07T15:08:03Z",
+      "side": 1,
+      "message": "Really?",
+      "range": {
+        "startLine": 188,
+        "startChar": 6,
+        "endLine": 188,
+        "endChar": 13
+      },
+      "revId": "b3e905af34124d312fabca1a5ff5de614cbad116",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
