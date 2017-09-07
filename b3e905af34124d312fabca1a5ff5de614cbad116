@@ -94,6 +94,30 @@
       "revId": "b3e905af34124d312fabca1a5ff5de614cbad116",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9b64334a",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2017-09-07T16:12:21Z",
+      "side": 1,
+      "message": "I\u0027ll put it back to how it was originally and make a comment on the sonar issue. There is also a sonar blocker for this class that is a false positive and will have to be closed manually.",
+      "parentUuid": "9a437d4f_bbded70f",
+      "range": {
+        "startLine": 188,
+        "startChar": 6,
+        "endLine": 188,
+        "endChar": 13
+      },
+      "revId": "b3e905af34124d312fabca1a5ff5de614cbad116",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
