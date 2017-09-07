@@ -22,6 +22,30 @@
       "revId": "b3e905af34124d312fabca1a5ff5de614cbad116",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5bafeb94",
+        "filename": "feature-test-transaction/src/main/java/org/onap/policy/drools/testtransaction/TestTransaction.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2017-09-07T15:15:33Z",
+      "side": 1,
+      "message": "Sonar flagged this and the recommendation was to interrupt the method or rethrow the exception. I figured the return should cause the logic to fall to the \"finally\" where we set the status of the thread to false and log that we are exiting.",
+      "parentUuid": "9a437d4f_fbf1ffcd",
+      "range": {
+        "startLine": 188,
+        "startChar": 6,
+        "endLine": 188,
+        "endChar": 13
+      },
+      "revId": "b3e905af34124d312fabca1a5ff5de614cbad116",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
