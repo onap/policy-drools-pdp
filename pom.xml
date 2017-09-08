@@ -73,6 +73,8 @@
 		<module>feature-eelf</module>
 		<module>feature-session-persistence</module>
 		<module>feature-test-transaction</module>
+		<module>api-state-management</module>
+		<module>feature-state-management</module>
 		<module>packages</module>
 	</modules>
 
