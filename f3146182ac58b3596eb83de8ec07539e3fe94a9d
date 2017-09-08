@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_4914c043",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/IntegrityMonitorRestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-08T16:22:19Z",
+      "side": 1,
+      "message": "We\u0027ll need to log the exception so sonar doesn\u0027t complain.",
+      "range": {
+        "startLine": 79,
+        "startChar": 6,
+        "endLine": 79,
+        "endChar": 26
+      },
+      "revId": "f3146182ac58b3596eb83de8ec07539e3fe94a9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_091eb863",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-08T16:22:19Z",
+      "side": 1,
+      "message": "Append the exception to avoid sonar",
+      "range": {
+        "startLine": 141,
+        "startChar": 3,
+        "endLine": 142,
+        "endChar": 88
+      },
+      "revId": "f3146182ac58b3596eb83de8ec07539e3fe94a9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_e9181477",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-08T16:22:19Z",
+      "side": 1,
+      "message": "Remove - Sonar will flag this",
+      "range": {
+        "startLine": 153,
+        "startChar": 49,
+        "endLine": 153,
+        "endChar": 57
+      },
+      "revId": "f3146182ac58b3596eb83de8ec07539e3fe94a9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_a92a0c7c",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-08T16:22:19Z",
+      "side": 1,
+      "message": "I believe you could write this as try-with-resources to auto close it.",
+      "range": {
+        "startLine": 293,
+        "startChar": 1,
+        "endLine": 301,
+        "endChar": 4
+      },
+      "revId": "f3146182ac58b3596eb83de8ec07539e3fe94a9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_892188a1",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-08T16:22:19Z",
+      "side": 1,
+      "message": "Not sure - but will an exception get thrown if it can\u0027t find the file? Would sonar flag this?",
+      "range": {
+        "startLine": 335,
+        "startChar": 2,
+        "endLine": 338,
+        "endChar": 14
+      },
+      "revId": "f3146182ac58b3596eb83de8ec07539e3fe94a9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_29361ce8",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-08T16:22:19Z",
+      "side": 1,
+      "message": "Remove any system.out messages",
+      "range": {
+        "startLine": 94,
+        "startChar": 3,
+        "endLine": 94,
+        "endChar": 27
+      },
+      "revId": "f3146182ac58b3596eb83de8ec07539e3fe94a9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
