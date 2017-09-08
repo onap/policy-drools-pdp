@@ -51,10 +51,4 @@ WORKITEMBYTEARRAY BLOB,
 PRIMARY KEY (WORKITEMID)
 );
 
-CREATE TABLE IF NOT EXISTS sessionpersistence.SESSIONINFO_ID_SEQ (next_val bigint) engine=MyISAM;
-INSERT INTO sessionpersistence.SESSIONINFO_ID_SEQ (next_val) SELECT 1 WHERE NOT EXISTS (SELECT * FROM sessionpersistence.SESSIONINFO_ID_SEQ);
-
-CREATE TABLE IF NOT EXISTS sessionpersistence.WORKITEMINFO_ID_SEQ (next_val bigint) engine=MyISAM;
-INSERT INTO sessionpersistence.WORKITEMINFO_ID_SEQ (next_val) SELECT 1 WHERE NOT EXISTS (SELECT * FROM sessionpersistence.WORKITEMINFO_ID_SEQ);
-
 set foreign_key_checks=1;
