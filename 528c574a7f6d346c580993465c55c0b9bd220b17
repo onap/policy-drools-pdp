@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_3b5e5077",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/ReflectionUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-12T19:25:08Z",
+      "side": 1,
+      "message": "this is a \"fail\" junit statement if it hits here, shouldn\u0027t it?",
+      "revId": "528c574a7f6d346c580993465c55c0b9bd220b17",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
