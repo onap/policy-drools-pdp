@@ -93,28 +93,33 @@
 
   <dependencies>
 	<dependency>
-	  <groupId>io.swagger</groupId>
-	  <artifactId>swagger-jersey2-jaxrs</artifactId>
-	  <scope>provided</scope>
+		<groupId>io.swagger</groupId>
+		<artifactId>swagger-jersey2-jaxrs</artifactId>
+		<scope>provided</scope>
 	</dependency>
-    <dependency>
-      <groupId>org.onap.policy.drools-pdp</groupId>
-      <artifactId>policy-core</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.onap.policy.drools-pdp</groupId>
-      <artifactId>policy-endpoints</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.onap.policy.drools-pdp</groupId>
-      <artifactId>policy-management</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
+	<dependency>
+	       <groupId>org.onap.policy.drools-pdp</groupId>
+	       <artifactId>policy-core</artifactId>
+	       <version>${project.version}</version>
+	       <scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.onap.policy.drools-pdp</groupId>
+		<artifactId>policy-endpoints</artifactId>
+		<version>${project.version}</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.onap.policy.drools-pdp</groupId>
+		<artifactId>policy-management</artifactId>
+		<version>${project.version}</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<scope>test</scope>
+	</dependency>
   </dependencies>
 
 </project>
