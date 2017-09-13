@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_66167cf3",
+        "filename": "api-state-management/.gitignore",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-13T21:53:23Z",
+      "side": 1,
+      "message": "Agreed.  Removed\n\nDone",
+      "parentUuid": "9a437d4f_42d5adb7",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_47581732",
         "filename": "api-state-management/pom.xml",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-13T13:00:02Z",
       "side": 1,
       "message": "delete commented code",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_e6e14cff",
+        "filename": "api-state-management/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-13T21:53:23Z",
+      "side": 1,
+      "message": "Agreed.  I also removed the assembly plugin.\n\nDone",
+      "parentUuid": "9a437d4f_47581732",
       "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_c6e888e4",
+        "filename": "api-state-management/src/assembly/assemble_zip.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-13T21:53:23Z",
+      "side": 1,
+      "message": "Agreed. Also removed the plugin from the pom.xml\n\nDone",
+      "parentUuid": "9a437d4f_275bd32f",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_07420f3e",
         "filename": "feature-state-management/pom.xml",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2017-09-13T13:00:02Z",
       "side": 1,
       "message": "I think you mentioned first time I looked at the code internally, can you remind me again why this is needed?   We are standardize in slf4j + logback",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_a6e34404",
+        "filename": "feature-state-management/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-13T21:53:23Z",
+      "side": 1,
+      "message": "It is needed by IntegrityMonitor. Since we must include any dependency which is not provided, I needed to add it here so it would be included in the assembly zip file.\n\nDone",
+      "parentUuid": "9a437d4f_07420f3e",
       "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
