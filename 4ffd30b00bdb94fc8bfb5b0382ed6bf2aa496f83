@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_42d5adb7",
+        "filename": "api-state-management/.gitignore",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-13T13:00:02Z",
+      "side": 1,
+      "message": "is this file really needed, should be picked up from ../.gitignore",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_47581732",
+        "filename": "api-state-management/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-13T13:00:02Z",
+      "side": 1,
+      "message": "delete commented code",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_275bd32f",
+        "filename": "api-state-management/src/assembly/assemble_zip.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-13T13:00:02Z",
+      "side": 1,
+      "message": "can it be removed the assembly part and featurish like mechanisms as we discussed for api projects in the other review?",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_07420f3e",
+        "filename": "feature-state-management/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-13T13:00:02Z",
+      "side": 1,
+      "message": "I think you mentioned first time I looked at the code internally, can you remind me again why this is needed?   We are standardize in slf4j + logback",
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
