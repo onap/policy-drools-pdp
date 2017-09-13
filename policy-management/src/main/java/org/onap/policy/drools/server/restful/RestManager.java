@@ -49,6 +49,7 @@ import org.onap.policy.drools.event.comm.TopicSink;
 import org.onap.policy.drools.event.comm.TopicSource;
 import org.onap.policy.drools.event.comm.bus.DmaapTopicSink;
 import org.onap.policy.drools.event.comm.bus.DmaapTopicSource;
+import org.onap.policy.drools.event.comm.bus.NoopTopicSink;
 import org.onap.policy.drools.event.comm.bus.UebTopicSink;
 import org.onap.policy.drools.event.comm.bus.UebTopicSource;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
@@ -1645,7 +1646,7 @@ public class RestManager {
   @Path("engine/topics/sinks/ueb")
   @ApiOperation(value = "Retrieves the UEB managed topic sinks",
       notes = "UEB Topic Sinks Agregation", responseContainer = "List",
-      response = UebTopicSource.class)
+      response = UebTopicSink.class)
   public Response uebSinks() {
     return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSinks())
         .build();
@@ -1759,6 +1760,36 @@ public class RestManager {
   public Response dmaapSinkEvents(@PathParam("topic") String topic) {
     return Response.status(Status.OK)
         .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSink(topic).getRecentEvents()))
+        .build();
+  }
+
+  @GET
+  @Path("engine/topics/sinks/noop")
+  @ApiOperation(value = "Retrieves the NOOP managed topic sinks",
+      notes = "NOOP Topic Sinks Agregation", responseContainer = "List",
+      response = NoopTopicSink.class)
+  public Response noopSinks() {
+    return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSinks())
+        .build();
+  }
+
+  @GET
+  @Path("engine/topics/sinks/noop/{topic}")
+  @ApiOperation(value = "Retrieves a NOOP managed topic sink",
+      notes = "NOOP is an dev/null Network Communicaton Sink", response = NoopTopicSink.class)
+  public Response noopSinkTopic(
+      @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
+    return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSink(topic))
+        .build();
+  }
+
+  @GET
+  @Path("engine/topics/sinks/noop/{topic}/events")
+  @ApiOperation(value = "Retrieves the latest events send through a NOOP topic",
+      notes = "NOOP is an dev/null Network Communicaton Sink", responseContainer = "List")
+  public Response noopSinkEvents(@PathParam("topic") String topic) {
+    return Response.status(Status.OK)
+        .entity(Arrays.asList(TopicEndpoint.manager.getNoopTopicSink(topic).getRecentEvents()))
         .build();
   }
 
