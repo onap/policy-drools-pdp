@@ -457,10 +457,19 @@ public class PolicyContainer implements Startable
        logger.info("updateToVersion:releaseId " + releaseId.toString());
     }
 
-	// notify all 'PolicySession' instances
-	Results results = kieContainer.updateToVersion(releaseId);
+	// stop all session threads
 	for (PolicySession session : sessions.values())
 	  {
+		session.stopThread();
+	  }
+
+	// update the version
+	Results results = kieContainer.updateToVersion(releaseId);
+
+	// restart all session threads, and notify the sessions
+	for (PolicySession session : sessions.values())
+	  {
+		session.startThread();
 		session.updated();
 	  }
 
