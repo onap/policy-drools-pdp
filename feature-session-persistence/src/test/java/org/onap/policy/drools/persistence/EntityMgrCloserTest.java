@@ -31,19 +31,17 @@ import org.junit.Test;
 import org.onap.policy.drools.persistence.EntityMgrCloser;
 
 public class EntityMgrCloserTest {
-	
+
 	private EntityManager mgr;
-	
 
 	@Before
 	public void setUp() throws Exception {
 		mgr = mock(EntityManager.class);
 	}
 
-
 	/**
-	 * Verifies that the constructor does not do anything extra before
-	 * being closed.
+	 * Verifies that the constructor does not do anything extra before being
+	 * closed.
 	 */
 	@Test
 	public void testEntityMgrCloser() {
@@ -51,19 +49,19 @@ public class EntityMgrCloserTest {
 
 		// verify not closed yet
 		verify(mgr, never()).close();
-		
+
 		c.close();
 	}
-	
+
 	/**
 	 * Verifies that the manager gets closed when close() is invoked.
 	 */
 	@Test
 	public void testClose() {
 		EntityMgrCloser c = new EntityMgrCloser(mgr);
-		
+
 		c.close();
-		
+
 		// should be closed
 		verify(mgr).close();
 	}
@@ -73,10 +71,10 @@ public class EntityMgrCloserTest {
 	 */
 	@Test
 	public void testClose_TryWithoutExcept() {
-		try(EntityMgrCloser c = new EntityMgrCloser(mgr)) {
-			
+		try (EntityMgrCloser c = new EntityMgrCloser(mgr)) {
+
 		}
-		
+
 		verify(mgr).close();
 	}
 
@@ -87,13 +85,13 @@ public class EntityMgrCloserTest {
 	@Test
 	public void testClose_TryWithExcept() {
 		try {
-			try(EntityMgrCloser c = new EntityMgrCloser(mgr)) {
+			try (EntityMgrCloser c = new EntityMgrCloser(mgr)) {
 				throw new Exception("expected exception");
 			}
-			
+
 		} catch (Exception e) {
 		}
-		
+
 		verify(mgr).close();
 	}
 
