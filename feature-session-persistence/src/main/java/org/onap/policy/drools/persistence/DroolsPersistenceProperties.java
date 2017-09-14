@@ -25,10 +25,9 @@ public class DroolsPersistenceProperties {
 	 * feature-session-persistence.properties parameter key values
 	 */
 	public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
-	public static final String DB_DATA_SOURCE = "hibernate.dataSource";
 	public static final String DB_URL = "javax.persistence.jdbc.url";
 	public static final String DB_USER = "javax.persistence.jdbc.user";
 	public static final String DB_PWD = "javax.persistence.jdbc.password";
-	public static final String DB_SESSIONINFO_TIMEOUT =
-									"persistence.sessioninfo.timeout";
+	public static final String DB_SESSIONINFO_TIMEOUT = "persistence.sessioninfo.timeout";
+	public static final String JTA_OBJECTSTORE_DIR = "persistence.objectstore.dir";
 }
