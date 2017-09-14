@@ -70,6 +70,30 @@
       "revId": "be47945dd381cdaaa964eba4452e45f113d71161",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_381d2974",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeature.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-14T23:38:32Z",
+      "side": 1,
+      "message": "If SonarCube flags it as a Blocker or Critical, I\u0027ll fix it.  Keep in mind that SonarCube has not yet been run on feature-state-management or feature-active-standby-management.  So, I think I have to wait for them to be merged.",
+      "parentUuid": "9a437d4f_d87dfd1d",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 20
+      },
+      "revId": "be47945dd381cdaaa964eba4452e45f113d71161",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
