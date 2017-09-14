@@ -165,6 +165,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_1746b87c",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-14T14:35:34Z",
+      "side": 1,
+      "message": "It should be set to true.  I changed it so it will default to true.",
+      "parentUuid": "9a437d4f_a51343b7",
+      "range": {
+        "startLine": 109,
+        "startChar": 3,
+        "endLine": 110,
+        "endChar": 5
+      },
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_e5202bf9",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 2
@@ -176,6 +200,30 @@
       "writtenOn": "2017-09-14T11:52:54Z",
       "side": 1,
       "message": "What should timeoutInSeconds be set to if the exception is thrown?",
+      "range": {
+        "startLine": 141,
+        "startChar": 0,
+        "endLine": 148,
+        "endChar": 6
+      },
+      "revId": "4ffd30b00bdb94fc8bfb5b0382ed6bf2aa496f83",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f73fb4d4",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-14T14:35:34Z",
+      "side": 1,
+      "message": "It is defaulted to 60 sec a few lines up.",
+      "parentUuid": "9a437d4f_e5202bf9",
       "range": {
         "startLine": 141,
         "startChar": 0,
