@@ -46,6 +46,30 @@
       "revId": "be47945dd381cdaaa964eba4452e45f113d71161",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_d87dfd1d",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeature.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-14T21:47:06Z",
+      "side": 1,
+      "message": "Yes, I made the comment internally, that generic exceptions should not be thrown, that will give sonar issue.  Kevin, indicated me that he will fix them with POLICY-195.  I saw them here:   https://gerrit.onap.org/r/#/c/11155/4/feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java.  FYI.",
+      "parentUuid": "9a437d4f_9dae4784",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 20
+      },
+      "revId": "be47945dd381cdaaa964eba4452e45f113d71161",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
