@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_7d72834a",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-14T18:42:26Z",
+      "side": 1,
+      "message": "I think the original code, or some modified version of this may be needed.   Let me add Ralph to check, he knows this code well.  There may be some unusual Runtime exceptions such as LinkageException, or others from within the control looops, when the logic is faulty, I think I have seen in the past, NullPointerExceptions from the \"java helpers\" etc .. , may be unusual LinkageExceptions that leak all the way up to here, when the drools application has some bugs. It hink it may need to be tolerated in that loop so not to so rules are kept been evaluated.",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_fd9d535a",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1001,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-14T18:42:26Z",
+      "side": 1,
+      "message": "oh, I just marked this sonar as a false positive, since line 1004, next line below exists the process.   This is fine too though.",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
