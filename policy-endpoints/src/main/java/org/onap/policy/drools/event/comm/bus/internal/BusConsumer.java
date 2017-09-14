@@ -26,7 +26,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Properties; 
 
 import org.onap.policy.drools.event.comm.bus.DmaapTopicSinkFactory;
 import org.onap.policy.drools.properties.PolicyProperties;
