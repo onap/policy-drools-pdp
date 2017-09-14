@@ -73,6 +73,8 @@
 		<module>feature-eelf</module>
 		<module>feature-session-persistence</module>
 		<module>feature-test-transaction</module>
+		<module>api-active-standby-management</module>
+		<module>feature-active-standby-management</module>
 		<module>packages</module>
 	</modules>
 
