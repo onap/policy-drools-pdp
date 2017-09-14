@@ -22,6 +22,30 @@
       "revId": "be47945dd381cdaaa964eba4452e45f113d71161",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9dae4784",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeature.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-14T18:44:24Z",
+      "side": 1,
+      "message": "I have see complaints about throwing a generic exception, but not catching generic exception. If so, it has to be way down the priority list.\n\nSince I am looking at these issues in POLICY-195, I will keep an eye out for this particular issue.\n\nDone",
+      "parentUuid": "9a437d4f_72a63255",
+      "range": {
+        "startLine": 79,
+        "startChar": 9,
+        "endLine": 79,
+        "endChar": 20
+      },
+      "revId": "be47945dd381cdaaa964eba4452e45f113d71161",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
