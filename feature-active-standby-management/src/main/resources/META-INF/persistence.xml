@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ============LICENSE_START=======================================================
-  feature-session-persistence
+  feature-active-standby-management
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -18,29 +19,15 @@
   ============LICENSE_END=========================================================
   -->
 
-<!-- Controls the output of logs for JUnit tests -->
-
-<configuration>
-
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
-			</Pattern>
-		</encoder>
-	</appender>
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>logs/debug.log</file>
-		<encoder>
-			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
-			</Pattern>
-		</encoder>
-	</appender>
-	
-	<root level="debug">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-	</root>
-
-</configuration>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="activeStandbyPU" transaction-type="RESOURCE_LOCAL">
+	<!-- This is for database access by non-drools methods -->
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.onap.policy.drools.activestandby.DroolsPdpEntity</class>
+		<properties>
+			<!-- Properties are passed in -->
+        </properties>
+	</persistence-unit>
+</persistence>

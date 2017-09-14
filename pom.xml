@@ -75,6 +75,8 @@
 		<module>feature-test-transaction</module>
 		<module>api-state-management</module>
 		<module>feature-state-management</module>
+		<module>api-active-standby-management</module>
+		<module>feature-active-standby-management</module>
 		<module>packages</module>
 	</modules>
 
