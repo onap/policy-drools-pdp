@@ -306,7 +306,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 			hostName = fact.getHostName();
 
 		} catch (UnknownHostException e) {
-			throw new RuntimeException("cannot determine local hostname", e);
+			throw new PersistenceFeatureException("cannot determine local hostname", e);
 		}
 	}
 
@@ -732,7 +732,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * before firing rules again.  This is a "half" time, so that
 		 * we can multiply it by two without overflowing the word size.
 		 */
-		long halfMaxSleepTime = 5000 / 2;
+		long halfMaxSleepTime = 5000L / 2L;
 
 		/**
 		 * Constructor - initialize variables and create thread
@@ -819,6 +819,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				
 			} catch (InterruptedException e) {
 				logger.error("stopThread exception: ", e);
+				Thread.currentThread().interrupt();
 			}
 			
 			// verify that it's done
@@ -879,6 +880,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 					
 				} catch (InterruptedException e) {
 					logger.error("startThread exception: ", e);
+					Thread.currentThread().interrupt();
 					break;
 				}
 			}

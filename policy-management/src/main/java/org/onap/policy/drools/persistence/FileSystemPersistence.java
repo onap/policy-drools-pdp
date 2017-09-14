@@ -164,7 +164,7 @@ public class FileSystemPersistence implements SystemPersistence {
           this.backupController(controllerName);
         }
       } catch (final Exception e) {
-        logger.info("{}: no existing {} properties", this, controllerName);
+        logger.warn("{}: no existing {} properties", this, controllerName, e);
         // continue
       }
     }

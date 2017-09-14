@@ -742,7 +742,7 @@ public class PersistenceFeatureTest {
 		verify(bitcfg).setServerId("myhost");
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = PersistenceFeatureException.class)
 	public void testInitHostName_Ex() throws Exception {
 		when(fact.getHostName())
 				.thenThrow(
