@@ -732,7 +732,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * before firing rules again.  This is a "half" time, so that
 		 * we can multiply it by two without overflowing the word size.
 		 */
-		long halfMaxSleepTime = 5000 / 2;
+		long halfMaxSleepTime = 5000L / 2L;
 
 		/**
 		 * Constructor - initialize variables and create thread
@@ -819,6 +819,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				
 			} catch (InterruptedException e) {
 				logger.error("stopThread exception: ", e);
+				Thread.currentThread().interrupt();
 			}
 			
 			// verify that it's done
@@ -866,11 +867,9 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 						// no rules fired -- increase poll delay
 						sleepTime = 2 * Math.min(halfMaxSleepTime, sleepTime);
 					}
-					
-				} catch (Throwable e) {
-					logger.error("startThread exception: ", e);
-				}
-				
+				} catch (Exception | LinkageError e) {
+					logger.error("Exception during kieSession.fireAllRules", e);
+				}				
 			
 				try {
 					if(stopped.await(sleepTime, TimeUnit.MILLISECONDS)) {
@@ -879,6 +878,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 					
 				} catch (InterruptedException e) {
 					logger.error("startThread exception: ", e);
+					Thread.currentThread().interrupt();
 					break;
 				}
 			}

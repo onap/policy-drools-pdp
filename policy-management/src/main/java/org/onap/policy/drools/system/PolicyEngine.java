@@ -998,6 +998,7 @@ class PolicyEngineManager implements PolicyEngine {
           Thread.sleep(5000L);
         } catch (final InterruptedException e) {
           logger.warn("{}: interrupted-exception while shutting down management server: ", this);
+          Thread.currentThread().interrupt();
         }
 
         System.exit(0);
