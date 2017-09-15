@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_82914354",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-09-15T13:22:29Z",
+      "side": 1,
+      "message": "Originally, the code was only catching \u0027Exception\u0027, but we ran into cases where the Drools session worked for a while, but then just stopped processing altogether. If I remember correctly, there was a version mismatch on a dependency that resulted in a \u0027NoSuchMethodError\u0027, at which point we changed \u0027Exception\u0027 to \u0027Throwable\u0027.\n\nJorge has since changed \u0027PolicySession\u0027 to use \u0027Exception | LinkageError\u0027 instead of \u0027Throwable\u0027. This still handles cases like \u0027NoSuchMethodError\u0027 without intercepting the more severe system errors. I think \u0027Exception | LinkageError\u0027 should also be used here.",
+      "parentUuid": "9a437d4f_ddcbaf51",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_fd9d535a",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
         "patchSetId": 1
