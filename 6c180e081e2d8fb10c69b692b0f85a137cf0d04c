@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_e0e127ff",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-15T19:36:18Z",
+      "side": 1,
+      "message": "Delete @Ignore",
+      "revId": "6c180e081e2d8fb10c69b692b0f85a137cf0d04c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_80c93b7a",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-15T19:36:18Z",
+      "side": 1,
+      "message": "I think it is better to remove lines 153-160.   I don\u0027t think it will add junit coverage, and it is junitted quite a bit in policy-endpoints.   My concern is because the sleep() interval may be sufficient in some cases, others not, depending on the jenkins server load, so may cause some junit failures once in a while.   Do you know if the jenkins failures you got before are related to this?   I can access older logs (have been deleted).",
+      "revId": "6c180e081e2d8fb10c69b692b0f85a137cf0d04c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_00df8b3c",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-15T19:36:18Z",
+      "side": 1,
+      "message": "use something similar to this to make sure that fout is automatically closed:\n\n    final File controllerPropertiesFile \u003d controllerPropertiesPath.toFile();\n    try (FileWriter writer \u003d new FileWriter(controllerPropertiesFile)) {\n      properties.store(writer, \"Machine created Policy Controller Configuration\");\n    } catch (final Exception e) {\n      logger.warn(\"{}: {} cannot be saved\", this, controllerName, e);\n      return false;\n    }\n\nfrom\n\nhttps://git.onap.org/policy/drools-pdp/tree/policy-management/src/main/java/org/onap/policy/drools/persistence/FileSystemPersistence.java\n\nnote the try-with-resources usage",
+      "revId": "6c180e081e2d8fb10c69b692b0f85a137cf0d04c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
