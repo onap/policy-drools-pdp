@@ -1,6 +1,6 @@
 <!--
   ============LICENSE_START=======================================================
-  feature-session-persistence
+  feature-state-management
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -24,7 +24,7 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-	<id>feature-session-persistence</id>
+	<id>feature-state-management</id>
 	<formats>
 		<format>zip</format>
 	</formats>
@@ -38,7 +38,7 @@
 			<directory>target</directory>
 			<outputDirectory>lib/feature</outputDirectory>
 			<includes>
-				<include>feature-session-persistence-${project.version}.jar</include>
+				<include>feature-state-management-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
