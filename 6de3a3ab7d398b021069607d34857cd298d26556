@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_c29d0b5b",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-15T13:33:47Z",
+      "side": 1,
+      "message": "Ok - so bring back the try-catch (Exception | LinkageError)",
+      "parentUuid": "9a437d4f_82914354",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_fd9d535a",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
         "patchSetId": 1
