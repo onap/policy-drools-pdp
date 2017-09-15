@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_a24c4743",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-15T12:46:47Z",
+      "side": 1,
+      "message": "I\u0027m just fixing sonar here. I can change it to what you think is correct if you want. Or defer to another JIRA being created to address it. Just let me know what you would like.",
+      "parentUuid": "9a437d4f_4fa9447a",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_7d72834a",
         "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2017-09-15T08:27:16Z",
       "side": 1,
       "message": "There is similar code at the end of \u0027PolicySession.java\u0027, where the \u0027DefaultThreadModel\u0027 class is defined. That one is using \u0027catch (Exception | LinkageError e)\u0027. If I remember correctly, you fixed this one a while back due to a Sonar complaint -- it had \u0027Throwable\u0027 as well.",
+      "parentUuid": "9a437d4f_7d72834a",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_ddcbaf51",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-15T12:46:47Z",
+      "side": 1,
+      "message": "Yes I was wondering about it. Maybe just catching Exception can handle it and remove blocker? If not, I\u0027ll put it back and mark as not going to fix.",
       "parentUuid": "9a437d4f_7d72834a",
       "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
@@ -83,6 +119,24 @@
       "side": 1,
       "message": "Won\u0027t the interrupt terminate this thread, keeping \u0027System.exit(0)\u0027 from being called? If so, that seems like the wrong thing to do.",
       "parentUuid": "9a437d4f_fd9d535a",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_c2450b18",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1001,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-15T12:46:47Z",
+      "side": 1,
+      "message": "Not according to Sonar recommendations. Take a look at why they want this done. I thought it weird, but didn\u0027t seem like any harm was to be done on it. The interrupt is already being caught right here, so System.exit(0) doesn\u0027t even matter anyway. The interrupt flag is off. They are simply recommending turning it back on.",
+      "parentUuid": "9a437d4f_afcb1052",
       "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
