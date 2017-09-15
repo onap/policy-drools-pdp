@@ -310,7 +310,7 @@ public interface BusConsumer {
           consumerInstance, fetchTimeout, fetchLimit, useHttps);
 
       // super constructor sets servers = {""} if empty to avoid errors when using DME2
-      if ((servers.size() == 1 && servers.get(0).equals("")) || (servers == null)
+      if ((servers.size() == 1 && ("".equals(servers.get(0)))) || (servers == null)
           || (servers.isEmpty())) {
         throw new IllegalArgumentException("Must provide at least one host for HTTP AAF");
       }
