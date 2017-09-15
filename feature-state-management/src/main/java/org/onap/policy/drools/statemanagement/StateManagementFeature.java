@@ -24,14 +24,13 @@ import java.io.IOException;
 import java.util.Observer;
 import java.util.Properties;
 
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.onap.policy.common.im.StandbyStatusException;
 import org.onap.policy.common.im.StateManagement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
 import org.onap.policy.drools.utils.PropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * If this feature is supported, there is a single instance of it.
@@ -100,14 +99,12 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 				}
 			}
 		} catch (Exception e1) {
-			String msg = "  \n";
 			if(logger.isDebugEnabled()){
 				logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
 					+ " initialization failed with exception:", e1);
 			}
 			logger.error("DroolsPDPIntegrityMonitor.init(): StateManagementFeature startup failed "
 					+ "to get DroolsPDPIntegrityMonitor instance:", e1);
-			e1.printStackTrace();
 		}
 	}
 	

@@ -35,14 +35,13 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.onap.policy.drools.statemanagement.StateManagementProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StateManagementTest {
 		

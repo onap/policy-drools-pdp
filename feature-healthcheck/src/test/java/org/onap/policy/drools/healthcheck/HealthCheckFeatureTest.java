@@ -22,28 +22,20 @@ package org.onap.policy.drools.healthcheck;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.onap.policy.drools.healthcheck.HealthCheck.Report;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
-import org.onap.policy.drools.http.client.HttpClient;
-import org.onap.policy.drools.http.server.HttpServletServer;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.system.PolicyEngine;

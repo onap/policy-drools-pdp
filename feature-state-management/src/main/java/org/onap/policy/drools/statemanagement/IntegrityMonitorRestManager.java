@@ -77,8 +77,6 @@ public class IntegrityMonitorRestManager {
 						im = DroolsPDPIntegrityMonitor.getInstance();
 					} catch (Exception e) {
 						logger.error("IntegrityMonitorRestManager: test() interface caught an exception", e);
-						e.printStackTrace();
-						
 						body.append("\nException: " + e + "\n");
 						responseValue = 500;
 					}

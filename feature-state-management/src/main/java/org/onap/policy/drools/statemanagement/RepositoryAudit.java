@@ -335,11 +335,17 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		// place output in 'fileContents' (replacing the Return characters
 		// with Newline)
 		byte[] outputData = new byte[(int)output.length()];
-		FileInputStream fis = new FileInputStream(output);
-		fis.read(outputData);
-		String fileContents = new String(outputData).replace('\r','\n');
-		fis.close();
-
+		String fileContents;
+		try (FileInputStream fis = new FileInputStream(output)) {
+			//
+			// Ideally this should be in a loop or even better use
+			// Java 8 nio functionality.
+			//
+			int bytesRead = fis.read(outputData);
+			logger.info("fileContents read {} bytes", bytesRead);
+			fileContents = new String(outputData).replace('\r','\n');
+		}
+		
 		// generate log messages from 'Downloading' and 'Downloaded'
 		// messages within the 'mvn' output
 		int index = 0;
