@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_208def31",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2017-09-15T19:49:53Z",
+      "side": 1,
+      "message": "I had looked at the logs for the previous build failures. The first was due to my code, the subsequent failures all failed in the policy-endpoints module.",
+      "parentUuid": "9a437d4f_80c93b7a",
+      "revId": "6c180e081e2d8fb10c69b692b0f85a137cf0d04c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_00df8b3c",
         "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
         "patchSetId": 3
