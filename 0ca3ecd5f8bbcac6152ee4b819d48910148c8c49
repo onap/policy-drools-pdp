@@ -16,6 +16,24 @@
       "revId": "0ca3ecd5f8bbcac6152ee4b819d48910148c8c49",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_60a9b77a",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2017-09-15T20:14:20Z",
+      "side": 1,
+      "message": "A fail here wouldn\u0027t be appropriate. By default, each Reports object contains a Report on the status of the PDP-D. Which in this junit is not alive because we don\u0027t need to test it. When we iterate onto the Report object for the PDP-D we just want to ignore it, not fail the junit.\n\nThis is what the Reports string looks like during the junit:\nReports [healthy\u003dfalse, details\u003d[\n  Report \n   [name\u003dPDP-D, url\u003dself, healthy\u003dfalse,\n    code\u003d500, message\u003dnot alive],\n  Report \n   [name\u003dHEALTHCHECK, \n    url\u003dhttp://localhost:7777/healthcheck/test,\n    healthy\u003dtrue, code\u003d200, message\u003dAll Alive]\n   ]\n  ]",
+      "parentUuid": "9a437d4f_2094cf35",
+      "revId": "0ca3ecd5f8bbcac6152ee4b819d48910148c8c49",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
