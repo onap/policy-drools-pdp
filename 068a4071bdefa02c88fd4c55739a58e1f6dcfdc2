@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_25286185",
+        "filename": "api-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeatureAPI.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 137
+      },
+      "writtenOn": "2017-09-15T14:38:27Z",
+      "side": 1,
+      "message": "redundant modifier. Methods defined in Interface are by default public",
+      "range": {
+        "startLine": 38,
+        "startChar": 1,
+        "endLine": 38,
+        "endChar": 7
+      },
+      "revId": "068a4071bdefa02c88fd4c55739a58e1f6dcfdc2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_e52139a0",
+        "filename": "api-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeatureAPI.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 137
+      },
+      "writtenOn": "2017-09-15T14:38:27Z",
+      "side": 1,
+      "message": "use spaces instead of tab",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "068a4071bdefa02c88fd4c55739a58e1f6dcfdc2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_052b1d83",
+        "filename": "api-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeatureAPI.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 137
+      },
+      "writtenOn": "2017-09-15T14:38:27Z",
+      "side": 1,
+      "message": "remove trailing space",
+      "range": {
+        "startLine": 44,
+        "startChar": 3,
+        "endLine": 44,
+        "endChar": 4
+      },
+      "revId": "068a4071bdefa02c88fd4c55739a58e1f6dcfdc2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
