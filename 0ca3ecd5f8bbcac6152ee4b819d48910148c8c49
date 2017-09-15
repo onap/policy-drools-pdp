@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_2094cf35",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-15T20:01:19Z",
+      "side": 1,
+      "message": "I missed this, in the else case, you may want to add a fail statement",
+      "revId": "0ca3ecd5f8bbcac6152ee4b819d48910148c8c49",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
