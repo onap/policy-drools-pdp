@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_5bb5822f",
+        "filename": ".gitignore",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-15T22:26:39Z",
+      "side": 1,
+      "message": "An unfortunate delete. I\u0027ll put it back in my next commit.",
+      "revId": "18253e5bfbccc53baaa58e485704e9cb87855ac4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
