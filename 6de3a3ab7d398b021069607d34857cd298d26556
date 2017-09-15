@@ -212,6 +212,24 @@
       "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_222df7fe",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1001,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-09-15T13:41:53Z",
+      "side": 1,
+      "message": "This thread was created as part of a \u0027shutdown\u0027 call, and the last step is to sleep 5 seconds, and terminate the process. If this thread now receives another \u0027InterruptedException\u0027, won\u0027t the thread terminate, so it never calls \u0027System.exit(0)\u0027? The \u0027try\u0027 block has already terminated, we are now in the \u0027catch\u0027 block, and there is no outer \u0027try\u0027.",
+      "parentUuid": "9a437d4f_c2450b18",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
