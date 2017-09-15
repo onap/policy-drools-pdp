@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_a2a447a6",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-15T13:34:55Z",
+      "side": 1,
+      "message": "This was introduced in Kevin M. review.   Ralph, if you can discuss with Kevin,  if something has to change here, we can open another ticket if necessary.",
+      "parentUuid": "9a437d4f_a24c4743",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_7d72834a",
         "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
         "patchSetId": 1
@@ -119,6 +137,24 @@
       "writtenOn": "2017-09-15T13:33:47Z",
       "side": 1,
       "message": "Ok - so bring back the try-catch (Exception | LinkageError)",
+      "parentUuid": "9a437d4f_82914354",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_02943335",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-15T13:34:55Z",
+      "side": 1,
+      "message": "Let\u0027s do this change then Pam, restore the catch and add \"Exception | LinkageError\" to the clause",
       "parentUuid": "9a437d4f_82914354",
       "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
