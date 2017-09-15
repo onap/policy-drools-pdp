@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a437d4f_4fa9447a",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 735,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-09-15T08:27:16Z",
+      "side": 1,
+      "message": "I don\u0027t know why \u0027halfMaxSleepTime\u0027 exists -- the original code had \u0027maxSleepTime\u0027, and this may have been introduced to fix a perceived problem. It looks ugly to me -- somehow, we missed this during the code inspection.",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_7d72834a",
         "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
         "patchSetId": 1
@@ -19,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_ef835802",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/PersistenceFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-09-15T08:27:16Z",
+      "side": 1,
+      "message": "There is similar code at the end of \u0027PolicySession.java\u0027, where the \u0027DefaultThreadModel\u0027 class is defined. That one is using \u0027catch (Exception | LinkageError e)\u0027. If I remember correctly, you fixed this one a while back due to a Sonar complaint -- it had \u0027Throwable\u0027 as well.",
+      "parentUuid": "9a437d4f_7d72834a",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_fd9d535a",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
         "patchSetId": 1
@@ -30,6 +65,24 @@
       "writtenOn": "2017-09-14T18:42:26Z",
       "side": 1,
       "message": "oh, I just marked this sonar as a false positive, since line 1004, next line below exists the process.   This is fine too though.",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_afcb1052",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1001,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2017-09-15T08:27:16Z",
+      "side": 1,
+      "message": "Won\u0027t the interrupt terminate this thread, keeping \u0027System.exit(0)\u0027 from being called? If so, that seems like the wrong thing to do.",
+      "parentUuid": "9a437d4f_fd9d535a",
       "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
