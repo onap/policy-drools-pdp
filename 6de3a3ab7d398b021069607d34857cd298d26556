@@ -230,6 +230,24 @@
       "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_021793a4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngine.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1001,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-15T13:45:43Z",
+      "side": 1,
+      "message": "No it already caught it and is exiting. Its just resetting the flag, not throwing the interrupt.",
+      "parentUuid": "9a437d4f_222df7fe",
+      "revId": "6de3a3ab7d398b021069607d34857cd298d26556",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
