@@ -1,0 +1,15 @@
+.DS_Store
+.project
+.settings
+.classpath
+.jupiter
+.pydevproject
+*.swp
+*.log
+*.out
+.metadata/
+target/
+*/logs/
+*/sql/
+*/testingLogs/
+*/config/

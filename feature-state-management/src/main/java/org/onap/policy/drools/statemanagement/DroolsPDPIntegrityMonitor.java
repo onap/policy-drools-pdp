@@ -20,20 +20,17 @@
 
 package org.onap.policy.drools.statemanagement;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import org.onap.policy.common.im.IntegrityMonitor;
 import org.onap.policy.common.im.IntegrityMonitorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.http.server.HttpServletServer;
 import org.onap.policy.drools.properties.Startable;
 import org.onap.policy.drools.utils.PropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class extends 'IntegrityMonitor' for use in the 'Drools PDP'
@@ -351,10 +348,11 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 					try {
 						server.waitedStart(5);
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error("Exception waiting for servers to start: ", e);
 					}
 				}
 			} catch (Exception e) {
+				logger.error("Exception building servers", e);
 				return false;
 			}
 			
@@ -366,7 +364,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 			try {
 				server.stop();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Exception during stop", e);
 			}
 			
 			return true;

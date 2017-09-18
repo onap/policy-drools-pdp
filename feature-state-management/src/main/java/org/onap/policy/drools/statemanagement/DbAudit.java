@@ -44,6 +44,9 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   // invoked -- doing this avoids the need to create the table in advance.
   static private boolean createTableNeeded = true;
 
+  synchronized private static void setCreateTableNeeded(boolean b) {
+		DbAudit.createTableNeeded = b;
+	}
   /**
    * @return the single 'DbAudit' instance
    */
@@ -98,26 +101,17 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	String user = properties.getProperty(StateManagementProperties.DB_USER);
 	String password = properties.getProperty(StateManagementProperties.DB_PWD);
 
-	// connection to DB
-	Connection connection = null;
-
-	// supports SQL operations
-	PreparedStatement statement = null;
-	ResultSet rs = null;
-
 	// operation phase currently running -- used to construct an error
 	// message, if needed
 	String phase = null;
 
-	try
+	// create connection to DB
+	phase = "creating connection";
+	if(logger.isDebugEnabled()){
+		logger.debug("DbAudit: Creating connection to {}", url);
+	}
+	try (Connection connection = DriverManager.getConnection(url, user, password))
 	  {
-		// create connection to DB
-		phase = "creating connection";
-		if(logger.isDebugEnabled()){
-			logger.debug("DbAudit: Creating connection to {}", url);
-		}
-
-		connection = DriverManager.getConnection(url, user, password);
 
 		// create audit table, if needed
 		if (createTableNeeded)
@@ -126,93 +120,68 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			if(logger.isDebugEnabled()){
 				logger.info("DbAudit: Creating 'Audit' table, if needed");
 			}
-			statement = connection.prepareStatement
+			try (PreparedStatement statement = connection.prepareStatement
 			  ("CREATE TABLE IF NOT EXISTS Audit (\n"
 			   + " name varchar(64) DEFAULT NULL,\n"
 			   + " UNIQUE KEY name (name)\n"
-			   + ") DEFAULT CHARSET=latin1;");
-			statement.execute();
-			statement.close();
-			createTableNeeded = false;
+			   + ") DEFAULT CHARSET=latin1;")) {
+				statement.execute();
+				DbAudit.setCreateTableNeeded(false);
+			} catch (Exception e) {
+				throw e;
+			}
 		  }
 
 		// insert an entry into the table
 		phase = "insert entry";
 		String key = UUID.randomUUID().toString();
-		statement = connection.prepareStatement
-		  ("INSERT INTO Audit (name) VALUES (?)");
-		statement.setString(1, key);
-		statement.executeUpdate();
-		statement.close();
-
+		try (PreparedStatement statement = connection.prepareStatement
+		  ("INSERT INTO Audit (name) VALUES (?)")) {
+			statement.setString(1, key);
+			statement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}
+		
 		// fetch the entry from the table
 		phase = "fetch entry";
-		statement = connection.prepareStatement
-		  ("SELECT name FROM Audit WHERE name = ?");
-		statement.setString(1, key);
-		rs = statement.executeQuery();
-		if (rs.first())
-		  {
-			// found entry
-			if(logger.isDebugEnabled()){
-				logger.debug("DbAudit: Found key {}", rs.getString(1));
+		try (PreparedStatement statement = connection.prepareStatement
+		  ("SELECT name FROM Audit WHERE name = ?")) {
+			statement.setString(1, key);
+			try (ResultSet rs = statement.executeQuery()) {
+				if (rs.first())
+				  {
+					// found entry
+					if(logger.isDebugEnabled()){
+						logger.debug("DbAudit: Found key {}", rs.getString(1));
+					}
+				  }
+				else
+				  {
+					logger.error
+					  ("DbAudit: can't find newly-created entry with key {}", key);
+					setResponse("Can't find newly-created entry");
+				  }
+			} catch (Exception e) {
+				throw e;
 			}
-		  }
-		else
-		  {
-			logger.error
-			  ("DbAudit: can't find newly-created entry with key {}", key);
-			setResponse("Can't find newly-created entry");
-		  }
-		statement.close();
-
+		}
 		// delete entries from table
 		phase = "delete entry";
-		statement = connection.prepareStatement
-		  ("DELETE FROM Audit WHERE name = ?");
-		statement.setString(1, key);
-		statement.executeUpdate();
-		statement.close();
-		statement = null;
-	  }
+		try (PreparedStatement statement = connection.prepareStatement
+		  ("DELETE FROM Audit WHERE name = ?")) {
+			statement.setString(1, key);
+			statement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 	catch (Exception e)
 	  {
 		String message = "DbAudit: Exception during audit, phase = " + phase;
 		logger.error(message, e);
 		setResponse(message);
 	  }
-	finally
-	  {
-		if (rs != null)
-		  {
-			try
-			  {
-				rs.close();
-			  }
-			catch (Exception e)
-			  {
-			  }
-		  }
-		if (statement != null)
-		  {
-			try
-			  {
-				statement.close();
-			  }
-			catch (Exception e)
-			  {
-			  }
-		  }
-		if (connection != null)
-		  {
-			try
-			  {
-				connection.close();
-			  }
-			catch (Exception e)
-			  {
-			  }
-		  }
-	  }
   }
+
 }
