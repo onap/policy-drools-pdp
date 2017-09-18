@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_9b2645cd",
+        "filename": ".gitignore",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-18T14:57:14Z",
+      "side": 1,
+      "message": "Wow, did we miss this file being removed ?",
+      "revId": "5622d33ddb975fa23e915a09f4d28def191b597d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
