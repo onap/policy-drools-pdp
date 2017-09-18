@@ -30,6 +30,57 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
+  <build>
+    <plugins>
+
+      <!--
+        'maven-invoker-plugin' is used to build and install two versions of a
+        Drools artifact, both of which are used in Junit tests. These Maven
+        projects are invisible to Sonar and SonarQube, so there are no
+        complaints about multiple projects with the same artifact, and they
+        don't show up in the list of files or code line counts.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+
+          <execution>
+            <id>drools-artifact-1.1</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <pom>drools-artifact-1.1/pom.xml</pom>
+              <goals>
+                <goal>install</goal>
+              </goals>
+              <streamLogs>true</streamLogs>
+            </configuration>
+          </execution>          
+
+          <execution>
+            <id>drools-artifact-1.2</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <pom>drools-artifact-1.2/pom.xml</pom>
+              <goals>
+                <goal>install</goal>
+              </goals>
+              <streamLogs>true</streamLogs>
+            </configuration>
+          </execution>          
+
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -61,5 +112,5 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies>  
+  </dependencies>
 </project>

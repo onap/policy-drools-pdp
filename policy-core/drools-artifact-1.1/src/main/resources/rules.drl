@@ -1,0 +1,30 @@
+package org.onap.policy.drools.core.test;
+
+rule "Initialization"
+	when
+	then
+	{
+	  System.out.println("Initialization rule running");
+	}
+end
+
+rule "Add elements of an int array"
+	when
+		$object : Object()
+	then
+	{
+	  if ($object instanceof int[])
+		{
+		  int[] array = (int[])($object);
+
+		  System.out.println("Received array of length " + array.length);
+		  int sum = 0;
+		  for (int i = 1 ; i < array.length ; i += 1)
+			{
+			  sum += array[i];
+			}
+		  array[0] = sum;
+		  retract($object);
+		}
+	}
+end
