@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_bbf7c9f4",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/DroolsContainerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-18T12:12:43Z",
+      "side": 1,
+      "message": "remove due to sonar",
+      "range": {
+        "startLine": 327,
+        "startChar": 40,
+        "endLine": 327,
+        "endChar": 46
+      },
+      "revId": "8a7418680524edbb1ffa27a048211ad93feee1aa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_5be8dd0f",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/TestPolicySessionFeatureAPI.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-18T12:12:43Z",
+      "side": 1,
+      "message": "remove due to sonar",
+      "range": {
+        "startLine": 47,
+        "startChar": 41,
+        "endLine": 47,
+        "endChar": 47
+      },
+      "revId": "8a7418680524edbb1ffa27a048211ad93feee1aa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
