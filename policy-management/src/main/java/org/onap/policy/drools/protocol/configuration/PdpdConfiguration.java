@@ -67,9 +67,9 @@ public class PdpdConfiguration {
      * 
      */
     @JsonProperty("controllers")
-    private List<ControllerConfiguration> controllers = new ArrayList<ControllerConfiguration>();
+    private List<ControllerConfiguration> controllers = new ArrayList<>();
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
     protected final static Object NOT_FOUND_VALUE = new Object();
 
     /**
@@ -77,6 +77,7 @@ public class PdpdConfiguration {
      * 
      */
     public PdpdConfiguration() {
+    	// Empty
     }
 
     /**
@@ -201,21 +202,21 @@ public class PdpdConfiguration {
         switch (name) {
             case "requestID":
                 if (value instanceof String) {
-                    setRequestID(((String) value));
+                    setRequestID((String) value);
                 } else {
                     throw new IllegalArgumentException(("property \"requestID\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
                 }
                 return true;
             case "entity":
                 if (value instanceof String) {
-                    setEntity(((String) value));
+                    setEntity((String) value);
                 } else {
                     throw new IllegalArgumentException(("property \"entity\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
                 }
                 return true;
             case "controllers":
                 if (value instanceof List) {
-                    setControllers(((List<ControllerConfiguration> ) value));
+                    setControllers((List<ControllerConfiguration> ) value);
                 } else {
                     throw new IllegalArgumentException(("property \"controllers\" is of type \"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", but got "+ value.getClass().toString()));
                 }
@@ -244,21 +245,21 @@ public class PdpdConfiguration {
     public<T >T get(String name) {
         Object value = declaredPropertyOrNotFound(name, PdpdConfiguration.NOT_FOUND_VALUE);
         if (PdpdConfiguration.NOT_FOUND_VALUE!= value) {
-            return ((T) value);
+            return (T) value;
         } else {
-            return ((T) getAdditionalProperties().get(name));
+            return (T) getAdditionalProperties().get(name);
         }
     }
 
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, ((Object) value));
+            getAdditionalProperties().put(name, value);
         }
     }
 
     public PdpdConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, ((Object) value));
+            getAdditionalProperties().put(name, value);
         }
         return this;
     }
@@ -276,7 +277,7 @@ public class PdpdConfiguration {
         if ((other instanceof PdpdConfiguration) == false) {
             return false;
         }
-        PdpdConfiguration rhs = ((PdpdConfiguration) other);
+        PdpdConfiguration rhs = (PdpdConfiguration) other;
         return new EqualsBuilder().append(requestID, rhs.requestID).append(entity, rhs.entity).append(controllers, rhs.controllers).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 

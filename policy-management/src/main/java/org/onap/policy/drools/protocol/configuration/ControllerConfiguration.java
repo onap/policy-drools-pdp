@@ -67,7 +67,7 @@ public class ControllerConfiguration {
     @JsonProperty("drools")
     private DroolsConfiguration drools;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
     protected final static Object NOT_FOUND_VALUE = new Object();
 
     /**
@@ -75,6 +75,7 @@ public class ControllerConfiguration {
      * 
      */
     public ControllerConfiguration() {
+    	// Empty
     }
 
     /**

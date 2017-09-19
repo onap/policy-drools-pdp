@@ -63,7 +63,7 @@ public class DroolsConfiguration {
     @JsonProperty("version")
     private String version;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
     protected final static Object NOT_FOUND_VALUE = new Object();
 
     /**
@@ -71,6 +71,7 @@ public class DroolsConfiguration {
      * 
      */
     public DroolsConfiguration() {
+    	// Empty
     }
 
     /**
@@ -196,21 +197,21 @@ public class DroolsConfiguration {
         switch (name) {
             case "artifactId":
                 if (value instanceof String) {
-                    setArtifactId(((String) value));
+                    setArtifactId((String) value);
                 } else {
                     throw new IllegalArgumentException(("property \"artifactId\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
                 }
                 return true;
             case "groupId":
                 if (value instanceof String) {
-                    setGroupId(((String) value));
+                    setGroupId((String) value);
                 } else {
                     throw new IllegalArgumentException(("property \"groupId\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
                 }
                 return true;
             case "version":
                 if (value instanceof String) {
-                    setVersion(((String) value));
+                    setVersion((String) value);
                 } else {
                     throw new IllegalArgumentException(("property \"version\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
                 }
@@ -239,21 +240,21 @@ public class DroolsConfiguration {
     public<T >T get(String name) {
         Object value = declaredPropertyOrNotFound(name, DroolsConfiguration.NOT_FOUND_VALUE);
         if (DroolsConfiguration.NOT_FOUND_VALUE!= value) {
-            return ((T) value);
+            return (T) value;
         } else {
-            return ((T) getAdditionalProperties().get(name));
+            return (T) getAdditionalProperties().get(name);
         }
     }
 
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, ((Object) value));
+            getAdditionalProperties().put(name, value);
         }
     }
 
     public DroolsConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, ((Object) value));
+            getAdditionalProperties().put(name, value);
         }
         return this;
     }
