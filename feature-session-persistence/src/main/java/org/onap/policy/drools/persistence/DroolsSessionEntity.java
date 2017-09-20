@@ -35,53 +35,53 @@ import javax.persistence.TemporalType;
 public class DroolsSessionEntity implements Serializable, DroolsSession {
 
 	private static final long serialVersionUID = -5495057038819948709L;
-		
+
 	@Id
-	@Column(name="sessionName", nullable=false)
+	@Column(name = "sessionName", nullable = false)
 	private String sessionName = "-1";
-	
-	@Column(name="sessionId", nullable=false)
+
+	@Column(name = "sessionId", nullable = false)
 	private long sessionId = -1L;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="createdDate", nullable=false)
+	@Column(name = "createdDate", nullable = false)
 	private Date createdDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="updatedDate", nullable=false)
+	@Column(name = "updatedDate", nullable = false)
 	private Date updatedDate;
-	
-	
+
 	public DroolsSessionEntity() {
-		
+
 	}
-	
-	public DroolsSessionEntity(String sessionName,
-								long sessionId) {
+
+	public DroolsSessionEntity(String sessionName, long sessionId) {
 		this.sessionName = sessionName;
 		this.sessionId = sessionId;
-		
+
 	}
-	
+
 	@PrePersist
-	public void	prePersist() {
+	public void prePersist() {
 		this.createdDate = new Date();
 		this.updatedDate = new Date();
 	}
-	
+
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedDate = new Date();
 	}
-	
+
 	@Override
 	public String getSessionName() {
 		return sessionName;
 	}
+
 	@Override
 	public void setSessionName(String sessionName) {
 		this.sessionName = sessionName;
 	}
+
 	@Override
 	public long getSessionId() {
 		return sessionId;
@@ -91,37 +91,33 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
 	public void setSessionId(long sessionId) {
 		this.sessionId = sessionId;
 	}
-	
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
-
 
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
-
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
-
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
-
 	@Override
-	public boolean equals(Object other){
-		if(other instanceof DroolsSession){
+	public boolean equals(Object other) {
+		if (other instanceof DroolsSession) {
 			DroolsSession p = (DroolsSession) other;
 			return this.getSessionName().equals(p.getSessionName());
-		}else{
+		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -129,12 +125,10 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
 		result = prime * result + getSessionName().hashCode();
 		return result;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "{name=" + getSessionName()
-				+ ", id=" + getSessionId() + "}";
+		return "{name=" + getSessionName() + ", id=" + getSessionId() + "}";
 	}
-
 
 }

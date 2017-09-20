@@ -37,31 +37,35 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.persistence.DroolsSessionEntity;
 import org.onap.policy.drools.persistence.EntityMgrTrans;
 import org.onap.policy.drools.persistence.JpaDroolsSessionConnector;
 
 public class JpaDroolsSessionConnectorTest {
-	
+
 	private EntityManagerFactory emf;
 	private JpaDroolsSessionConnector conn;
-	
+
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "target/tm");
+		System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "target/tm");
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		Map<String, Object> propMap = new HashMap<>();
 
 		propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-		propMap.put("javax.persistence.jdbc.url",
-						"jdbc:h2:mem:JpaDroolsSessionConnectorTest");
-		
-		emf = Persistence.createEntityManagerFactory(
-								"junitDroolsSessionEntityPU", propMap);
-		
+		propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:JpaDroolsSessionConnectorTest");
+
+		emf = Persistence.createEntityManagerFactory("junitDroolsSessionEntityPU", propMap);
+
 		conn = new JpaDroolsSessionConnector(emf);
 	}
-	
+
 	@After
 	public void tearDown() {
 		// this will cause the memory db to be dropped
@@ -73,56 +77,53 @@ public class JpaDroolsSessionConnectorTest {
 		/*
 		 * Load up the DB with some data.
 		 */
-		
+
 		addSession("nameA", 10);
 		addSession("nameY", 20);
-		
-		
+
 		/*
 		 * Now test the functionality.
 		 */
-		
+
 		// not found
-		assertNull( conn.get("unknown"));
-		
-		assertEquals("{name=nameA, id=10}",
-						conn.get("nameA").toString());
-		
-		assertEquals("{name=nameY, id=20}",
-						conn.get("nameY").toString());
+		assertNull(conn.get("unknown"));
+
+		assertEquals("{name=nameA, id=10}", conn.get("nameA").toString());
+
+		assertEquals("{name=nameY, id=20}", conn.get("nameY").toString());
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testGet_NewEx() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class);
 		EntityManager em = mock(EntityManager.class);
-		
+
 		when(emf.createEntityManager()).thenReturn(em);
-		when(em.getTransaction()).thenThrow(new RuntimeException("expected exception"));
+		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
 
 		conn = new JpaDroolsSessionConnector(emf);
 		conn.get("xyz");
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testGet_FindEx() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class);
 		EntityManager em = mock(EntityManager.class);
 		EntityTransaction tr = mock(EntityTransaction.class);
-		
+
 		when(emf.createEntityManager()).thenReturn(em);
 		when(em.getTransaction()).thenReturn(tr);
 		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
 
 		new JpaDroolsSessionConnector(emf).get("xyz");
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testGet_FindEx_CloseEx() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class);
 		EntityManager em = mock(EntityManager.class);
 		EntityTransaction tr = mock(EntityTransaction.class);
-		
+
 		when(emf.createEntityManager()).thenReturn(em);
 		when(em.getTransaction()).thenReturn(tr);
 		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
@@ -134,70 +135,64 @@ public class JpaDroolsSessionConnectorTest {
 	@Test
 	public void testReplace_Existing() {
 		addSession("nameA", 10);
-		
-		DroolsSessionEntity sess =
-				new DroolsSessionEntity("nameA", 30);
-		
+
+		DroolsSessionEntity sess = new DroolsSessionEntity("nameA", 30);
+
 		conn.replace(sess);
 
 		// id should be changed
-		assertEquals(sess.toString(),
-						conn.get("nameA").toString());
+		assertEquals(sess.toString(), conn.get("nameA").toString());
 	}
 
 	@Test
 	public void testReplace_New() {
-		DroolsSessionEntity sess =
-				new DroolsSessionEntity("nameA", 30);
-		
+		DroolsSessionEntity sess = new DroolsSessionEntity("nameA", 30);
+
 		conn.replace(sess);
 
-		assertEquals(sess.toString(),
-						conn.get("nameA").toString());
+		assertEquals(sess.toString(), conn.get("nameA").toString());
 	}
 
 	@Test
 	public void testAdd() {
-		DroolsSessionEntity sess =
-				new DroolsSessionEntity("nameA", 30);
-		
+		DroolsSessionEntity sess = new DroolsSessionEntity("nameA", 30);
+
 		conn.replace(sess);
 
-		assertEquals(sess.toString(),
-						conn.get("nameA").toString());
+		assertEquals(sess.toString(), conn.get("nameA").toString());
 	}
 
 	@Test
 	public void testUpdate() {
 		addSession("nameA", 10);
-		
-		DroolsSessionEntity sess =
-				new DroolsSessionEntity("nameA", 30);
-		
+
+		DroolsSessionEntity sess = new DroolsSessionEntity("nameA", 30);
+
 		conn.replace(sess);
 
 		// id should be changed
-		assertEquals("{name=nameA, id=30}",
-						conn.get("nameA").toString());
+		assertEquals("{name=nameA, id=30}", conn.get("nameA").toString());
 	}
-
 
 	/**
 	 * Adds a session to the DB.
-	 * @param sessnm	session name
-	 * @param sessid	session id
+	 * 
+	 * @param sessnm
+	 *            session name
+	 * @param sessid
+	 *            session id
 	 */
 	private void addSession(String sessnm, int sessid) {
 		EntityManager em = emf.createEntityManager();
-		
-		try(EntityMgrTrans trans = new EntityMgrTrans(em)) {
+
+		try (EntityMgrTrans trans = new EntityMgrTrans(em)) {
 			DroolsSessionEntity ent = new DroolsSessionEntity();
-			
+
 			ent.setSessionName(sessnm);
 			ent.setSessionId(sessid);
-			
+
 			em.persist(ent);
-		
+
 			trans.commit();
 		}
 	}
