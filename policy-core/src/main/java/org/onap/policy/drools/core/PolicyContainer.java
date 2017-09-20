@@ -473,7 +473,7 @@ public class PolicyContainer implements Startable
 		session.updated();
 	  }
 
-	return(results);
+	return results;
   }
 
   /**
