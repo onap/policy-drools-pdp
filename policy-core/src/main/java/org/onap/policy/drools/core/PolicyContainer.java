@@ -51,11 +51,11 @@ public class PolicyContainer implements Startable
 
   // set of all 'PolicyContainer' instances
   static private HashSet<PolicyContainer> containers =
-	new HashSet<PolicyContainer>();
+	new HashSet<>();
 
   // maps feature objects to per-PolicyContainer data
   private ConcurrentHashMap<Object, Object> adjuncts =
-	new ConcurrentHashMap<Object, Object>();
+	new ConcurrentHashMap<>();
 
   // 'KieContainer' associated with this 'PolicyContainer'
   private KieContainer kieContainer;
@@ -66,7 +66,7 @@ public class PolicyContainer implements Startable
 
   // maps session name into the associated 'PolicySession' instance
   private HashMap<String, PolicySession> sessions =
-	new HashMap<String, PolicySession>();
+	new HashMap<>();
 
   // if not null, this is a 'KieScanner' looking for updates
   private KieScanner scanner = null;
@@ -104,21 +104,22 @@ public class PolicyContainer implements Startable
    */
   public PolicyContainer(ReleaseId releaseId)
   {
-	if (releaseId.getVersion().contains(","))
+	ReleaseId newReleaseId = releaseId;
+	if (newReleaseId.getVersion().contains(","))
 	  {
 		// this is actually a comma-separated list of release ids
-		releaseId = loadArtifact(releaseId.getGroupId(),
-								 releaseId.getArtifactId(),
-								 releaseId.getVersion());
+		newReleaseId = loadArtifact(newReleaseId.getGroupId(),
+								 newReleaseId.getArtifactId(),
+								 newReleaseId.getVersion());
 	  }
 	else
 	  {
-		kieContainer = kieServices.newKieContainer(releaseId);
+		kieContainer = kieServices.newKieContainer(newReleaseId);
 	  }
 	synchronized(containers)
 	  {
-		if(releaseId != null){
-		   logger.info("Add a new kieContainer in containers: releaseId: " + releaseId.toString());
+		if(newReleaseId != null){
+		   logger.info("Add a new kieContainer in containers: releaseId: " + newReleaseId.toString());
 		}else{
 		   logger.warn("input releaseId is null");
 		}
@@ -182,9 +183,9 @@ public class PolicyContainer implements Startable
 	  {
 		// all of the 'newKieContainer' invocations failed -- throw the
 		// most recent exception
-		throw(exception);
+		throw exception;
 	  }
-	return(releaseId);
+	return releaseId;
   }
 
   /**
@@ -198,7 +199,7 @@ public class PolicyContainer implements Startable
    */
   public String getName()
   {
-	return(kieContainer.getReleaseId().toString());
+	return kieContainer.getReleaseId().toString();
   }
 
   /**
@@ -206,7 +207,7 @@ public class PolicyContainer implements Startable
    */
   public KieContainer getKieContainer()
   {
-	return(kieContainer);
+	return kieContainer;
   }
 
   /**
@@ -214,7 +215,7 @@ public class PolicyContainer implements Startable
    */
   public ClassLoader getClassLoader()
   {
-	return(kieContainer.getClassLoader());
+	return kieContainer.getClassLoader();
   }
 
   /**
@@ -223,7 +224,7 @@ public class PolicyContainer implements Startable
    */
   public String getGroupId()
   {
-	return(kieContainer.getReleaseId().getGroupId());
+	return kieContainer.getReleaseId().getGroupId();
   }
 
   /**
@@ -232,7 +233,7 @@ public class PolicyContainer implements Startable
    */
   public String getArtifactId()
   {
-	return(kieContainer.getReleaseId().getArtifactId());
+	return kieContainer.getReleaseId().getArtifactId();
   }
 
   /**
@@ -241,7 +242,7 @@ public class PolicyContainer implements Startable
    */
   public String getVersion()
   {
-	return(kieContainer.getReleaseId().getVersion());
+	return kieContainer.getReleaseId().getVersion();
   }
 
   /**
@@ -253,7 +254,7 @@ public class PolicyContainer implements Startable
    */
   public PolicySession getPolicySession(String name)
   {
-	return(sessions.get(name));
+	return sessions.get(name);
   }
 
   /**
@@ -325,7 +326,7 @@ public class PolicyContainer implements Startable
 		logger.info("activatePolicySession:session - "
 						  + (session == null ? "null" : session.getFullName())
 						  + " is returned.");
-		return(session);
+		return session;
 	  }
   }
 
@@ -352,14 +353,14 @@ public class PolicyContainer implements Startable
 
 	if(name == null){
 		logger.warn("adoptKieSession:input name is null");
-		throw(new IllegalArgumentException
+		throw new IllegalArgumentException
 				  ("KieSession input name is null "
-				   + getName()));
+				   + getName());
 	}else if(kieSession == null){
 		logger.warn("adoptKieSession:input kieSession is null");
-		throw(new IllegalArgumentException
+		throw new IllegalArgumentException
 				  ("KieSession '" + name + "' is null "
-				   + getName()));
+				   + getName());
 	}else {
 		logger.info("adoptKieSession:name: " + name + " kieSession: " + kieSession);
 	}
@@ -381,17 +382,17 @@ public class PolicyContainer implements Startable
 	// default KieBase, if it exists
 	if (!match && kieBase != kieContainer.getKieBase())
 	  {
-		throw(new IllegalArgumentException
+		throw new IllegalArgumentException
 			  ("KieSession '" + name + "' does not reside within container "
-			   + getName()));
+			   + getName());
 	  }
 
 	synchronized (sessions)
 	  {
 		if (sessions.get(name) != null)
 		  {
-			throw(new IllegalStateException
-				  ("PolicySession '" + name + "' already exists"));
+			throw new IllegalStateException
+				  ("PolicySession '" + name + "' already exists");
 		  }
 
 		// create the new 'PolicySession', add it to the table,
@@ -415,7 +416,7 @@ public class PolicyContainer implements Startable
 							 + feature.getClass().getName(), e);
 			  }
 		  }
-		return(policySession);
+		return policySession;
 	  }
   }
 
@@ -437,8 +438,8 @@ public class PolicyContainer implements Startable
 								releaseId.getArtifactId(),
 								newVersion));
 
-	List<Message> messages = (results == null ? null : results.getMessages());
-	return(messages == null ? null : messages.toString());
+	List<Message> messages = results == null ? null : results.getMessages();
+	return messages == null ? null : messages.toString();
   }
 
   /**
@@ -473,7 +474,7 @@ public class PolicyContainer implements Startable
 		session.updated();
 	  }
 
-	return(results);
+	return results;
   }
 
   /**
@@ -483,7 +484,7 @@ public class PolicyContainer implements Startable
   {
 	synchronized(containers)
 	  {
-		return(new HashSet<PolicyContainer>(containers));
+		return new HashSet<>(containers);
 	  }
   }
 
@@ -495,7 +496,7 @@ public class PolicyContainer implements Startable
 	// KLUDGE WARNING: this is a temporary workaround -- if there are
 	// no features, we don't have persistence, and 'activate' is never
 	// called. In this case, make sure the container is started.
-	if (PolicySessionFeatureAPI.impl.getList().size() == 0)
+	if (PolicySessionFeatureAPI.impl.getList().isEmpty())
 	  {
 		start();
 	  }
@@ -503,7 +504,7 @@ public class PolicyContainer implements Startable
 	// return current set of PolicySessions
 	synchronized(sessions)
 	  {
-		return(new HashSet<PolicySession>(sessions.values()));
+		return new HashSet<>(sessions.values());
 	  }
   }
 
@@ -518,7 +519,7 @@ public class PolicyContainer implements Startable
   {
 	String version = releaseId.getVersion();
 	if (scannerStarted == false && scanner == null && version != null
-		&& (version.equals("LATEST") || version.equals("RELEASE")
+		&& ("LATEST".equals(version) || "RELEASE".equals(version)
 			|| version.endsWith("-SNAPSHOT")))
 	  {
 		// create the scanner, and poll at 60 second intervals
@@ -529,6 +530,7 @@ public class PolicyContainer implements Startable
 			// start this in a separate thread -- it can block for a long time
 			new Thread("Scanner Starter " + getName())
 			{
+			  @Override
 			  public void run()
 			  {
 				scanner = kieServices.newKieScanner(kieContainer);
@@ -562,10 +564,10 @@ public class PolicyContainer implements Startable
 		if (session != null)
 		  {
 			session.getKieSession().insert(object);
-			return(true);
+			return true;
 		  }
 	  }
-	return(false);
+	return false;
   }
 
   /**
@@ -586,7 +588,7 @@ public class PolicyContainer implements Startable
 			rval = true;
 		  }
 	  }
-	return(rval);
+	return rval;
   }
 
   /*************************/
@@ -596,6 +598,7 @@ public class PolicyContainer implements Startable
   /**
    * {@inheritDoc}
    */
+  @Override
   public synchronized boolean start()
   {
 	if (!isStarted)
@@ -619,12 +622,13 @@ public class PolicyContainer implements Startable
 		  }
 		isStarted = true;
 	  }
-	return(true);
+	return true;
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public synchronized boolean stop()
   {
 	if (isStarted)
@@ -634,7 +638,7 @@ public class PolicyContainer implements Startable
 		synchronized (sessions)
 		  {
 			// local set containing all of the sessions
-			localSessions = new HashSet<PolicySession>(sessions.values());
+			localSessions = new HashSet<>(sessions.values());
 
 			// clear the 'name->session' map in 'PolicyContainer'
 			sessions.clear();
@@ -664,12 +668,13 @@ public class PolicyContainer implements Startable
 		  }
 		isStarted = false;
 	  }
-	return(true);
+	return true;
   }
 
   /**
    * {@inheritDoc}
    */
+  @Override
   public synchronized void shutdown()
   {
 	// Note that this method does not call 'destroy' on the 'KieSession'
@@ -689,9 +694,10 @@ public class PolicyContainer implements Startable
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean isAlive()
   {
-	return(isStarted);
+	return isStarted;
   }
 
   /*************************/
@@ -710,7 +716,7 @@ public class PolicyContainer implements Startable
 	synchronized (sessions)
 	  {
 		// local set containing all of the sessions
-		localSessions = new HashSet<PolicySession>(sessions.values());
+		localSessions = new HashSet<>(sessions.values());
 
 		// clear the 'name->session' map in 'PolicyContainer'
 		sessions.clear();
@@ -831,7 +837,7 @@ public class PolicyContainer implements Startable
    */
   public Object getAdjunct(Object object)
   {
-	return(adjuncts.get(object));
+	return adjuncts.get(object);
   }
 
   /**

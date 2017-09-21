@@ -62,7 +62,7 @@ public class PolicySession
 
   // maps feature objects to per-PolicyContainer data
   private ConcurrentHashMap<Object, Object> adjuncts =
-	new ConcurrentHashMap<Object, Object>();
+	new ConcurrentHashMap<>();
 
   // associated 'KieSession' instance
   private KieSession kieSession;
@@ -72,7 +72,7 @@ public class PolicySession
 
   // supports 'getCurrentSession()' method
   static private ThreadLocal<PolicySession> policySession =
-	new ThreadLocal<PolicySession>();
+	new ThreadLocal<>();
 
   /**
    * Internal constructor - create a 'PolicySession' instance
@@ -96,7 +96,7 @@ public class PolicySession
    */
   public PolicyContainer getPolicyContainer()
   {
-	return(container);
+	return container;
   }
 
   /**
@@ -104,7 +104,7 @@ public class PolicySession
    */
   public KieSession getKieSession()
   {
-	return(kieSession);
+	return kieSession;
   }
 
   /**
@@ -114,7 +114,7 @@ public class PolicySession
    */
   public String getName()
   {
-	return(name);
+	return name;
   }
 
   /**
@@ -123,7 +123,7 @@ public class PolicySession
    */
   public String getFullName()
   {
-	return(container.getName() + ":" + name);
+	return container.getName() + ":" + name;
   }
 
   /**
@@ -204,7 +204,7 @@ public class PolicySession
    */
   public static PolicySession getCurrentSession()
   {
-	return(policySession.get());
+	return policySession.get();
   }
 	
   /**
@@ -218,7 +218,7 @@ public class PolicySession
    */
   public Object getAdjunct(Object object)
   {
-	return(adjuncts.get(object));
+	return adjuncts.get(object);
   }
 
   /**
@@ -555,19 +555,19 @@ public class PolicySession
 
 	  // We want to continue looping, despite any exceptions that occur
 	  // while rules are fired.
-	  KieSession kieSession = session.getKieSession();
+	  KieSession kieSession1 = session.getKieSession();
 	  while (repeat)
 		{
 		  try
 			{
-			  kieSession.fireUntilHalt();
+			  kieSession1.fireUntilHalt();
 
-			  // if we fall through, it means 'KieSession.halt()' was called,
+			  // if we fall through, it means 'kieSession1.halt()' was called,
 			  // but this may be a result of 'KieScanner' doing an update
 			}
 		  catch (Exception | LinkageError e)
 			{
-			  logger.error("startThread error in kieSession.fireUntilHalt", e);						
+			  logger.error("startThread error in kieSession1.fireUntilHalt", e);						
 			}
 		}
 	  logger.info("fireUntilHalt() returned");
