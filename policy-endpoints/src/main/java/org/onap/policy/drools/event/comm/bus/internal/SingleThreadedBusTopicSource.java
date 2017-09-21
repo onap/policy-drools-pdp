@@ -87,7 +87,7 @@ public abstract class SingleThreadedBusTopicSource
 	/**
 	 * All my subscribers for new message notifications
 	 */
-	protected final ArrayList<TopicListener> topicListeners = new ArrayList<TopicListener>();
+	protected final ArrayList<TopicListener> topicListeners = new ArrayList<>();
 	
 
 	/**
@@ -168,10 +168,10 @@ public abstract class SingleThreadedBusTopicSource
 
 	@Override
 	public void unregister(TopicListener topicListener) {
-		boolean stop = false;
+		boolean stop;
 		synchronized (this) {
 			super.unregister(topicListener);
-			stop = (this.topicListeners.isEmpty());
+			stop = this.topicListeners.isEmpty();
 		}
 		
 		if (stop) {		
