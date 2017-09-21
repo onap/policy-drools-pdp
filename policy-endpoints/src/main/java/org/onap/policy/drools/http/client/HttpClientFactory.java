@@ -85,7 +85,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 	 */
 	private static Logger logger = LoggerFactory.getLogger(IndexedHttpClientFactory.class);
 	
-	protected HashMap<String, HttpClient> clients = new HashMap<String, HttpClient>();
+	protected HashMap<String, HttpClient> clients = new HashMap<>();
 
 	@Override
 	public synchronized HttpClient build(String name, boolean https, boolean selfSignedCerts, 
@@ -108,7 +108,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 	@Override
 	public synchronized ArrayList<HttpClient> build(Properties properties) 
 	throws KeyManagementException, NoSuchAlgorithmException {
-		ArrayList<HttpClient> clientList = new ArrayList<HttpClient>();
+		ArrayList<HttpClient> clientList = new ArrayList<>();
 		
 		String clientNames = properties.getProperty(PolicyProperties.PROPERTY_HTTP_CLIENT_SERVICES);
 		if (clientNames == null || clientNames.isEmpty()) {
@@ -116,7 +116,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 		}
 		
 		List<String> clientNameList = 
-				new ArrayList<String>(Arrays.asList(clientNames.split("\\s*,\\s*")));
+				new ArrayList<>(Arrays.asList(clientNames.split("\\s*,\\s*")));
 		
 		for (String clientName : clientNameList) {
 			String httpsString = properties.getProperty(PolicyProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + 
@@ -189,7 +189,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 
 	@Override
 	public synchronized List<HttpClient> inventory() {
-		return new ArrayList<HttpClient>(this.clients.values());
+		return new ArrayList<>(this.clients.values());
 	}
 
 	@Override

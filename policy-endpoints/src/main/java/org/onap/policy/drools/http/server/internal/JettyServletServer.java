@@ -243,7 +243,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 				}
 			}
 			
-			return (this.jettyServer.isRunning());
+			return this.jettyServer.isRunning();
 		}
 	}
 
@@ -373,7 +373,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("JettyServer [name=").append(name).append(", host=").append(host).append(", port=").append(port)
-				.append(", user=").append(user).append(", password=").append((password != null)).append(", contextPath=")
+				.append(", user=").append(user).append(", password=").append(password != null).append(", contextPath=")
 				.append(contextPath).append(", jettyServer=").append(jettyServer).append(", context=").append(this.context)
 				.append(", connector=").append(connector).append(", jettyThread=").append(jettyThread)
 				.append("]");
