@@ -143,7 +143,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 			policyContainer.setAdjunct(this, rval);
 		}
 
-		return ((ContainerAdjunct) rval);
+		return (ContainerAdjunct) rval;
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	@Override
 	public int getSequenceNumber() {
-		return (1);
+		return 1;
 	}
 
 	/**
@@ -201,9 +201,9 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	public PolicySession.ThreadModel selectThreadModel(PolicySession session) {
 		PolicyContainer policyContainer = session.getPolicyContainer();
 		if (isPersistenceEnabled(policyContainer, session.getName())) {
-			return (new PersistentThreadModel(session, getProperties(policyContainer)));
+			return new PersistentThreadModel(session, getProperties(policyContainer));
 		}
-		return (null);
+		return null;
 	}
 
 	/**
@@ -372,8 +372,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 			KieSessionConfiguration kConf = kieSvcFact.newKieSessionConfiguration();
 
-			KieSession kieSession = (desiredSessionId >= 0 ? loadKieSession(kieBaseName, desiredSessionId, env, kConf)
-					: null);
+			KieSession kieSession = desiredSessionId >= 0 ? loadKieSession(kieBaseName, desiredSessionId, env, kConf)
+					: null;
 
 			if (kieSession == null) {
 				// loadKieSession() returned null or desiredSessionId < 0
@@ -609,7 +609,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	private long getSessionId(DroolsSessionConnector conn, String sessnm) {
 		DroolsSession sess = conn.get(sessnm);
-		return (sess != null ? sess.getSessionId() : -1);
+		return sess != null ? sess.getSessionId() : -1;
 	}
 
 	/**
@@ -650,10 +650,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		if (properties != null) {
 			// fetch the 'type' property
 			String type = getProperty(properties, sessionName, "type");
-			rval = ("auto".equals(type) || "native".equals(type));
+			rval = "auto".equals(type) || "native".equals(type);
 		}
 
-		return (rval);
+		return rval;
 	}
 
 	/**
@@ -665,10 +665,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	private Properties getProperties(PolicyContainer container) {
 		try {
-			return (fact.getPolicyContainer(container).getProperties());
+			return fact.getPolicyContainer(container).getProperties();
 		} catch (IllegalArgumentException e) {
 			logger.error("getProperties exception: ", e);
-			return (null);
+			return null;
 		}
 	}
 
@@ -694,7 +694,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 			value = properties.getProperty("persistence." + property);
 		}
 
-		return (value);
+		return value;
 	}
 
 	/* ============================================================ */
@@ -790,7 +790,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * @return the String to use as the thread name
 		 */
 		private String getThreadName() {
-			return ("Session " + session.getFullName() + " (persistent)");
+			return "Session " + session.getFullName() + " (persistent)";
 		}
 
 		/***************************/
