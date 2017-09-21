@@ -21,6 +21,8 @@
 package org.onap.policy.drools.persistence;
 
 public class DroolsPersistenceProperties {
+	private DroolsPersistenceProperties() {
+	}
 	/*
 	 * feature-session-persistence.properties parameter key values
 	 */
