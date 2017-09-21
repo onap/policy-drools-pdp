@@ -1,0 +1,268 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_947e0218",
+        "filename": "api-active-standby-management/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "Why have this here then?",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 10
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f4e42ee2",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "For this file there are multiple issues that will crop up with sonar.",
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_34a87676",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "This will result in sonar issues. Log the exception and add:\nThread.currentThread.Interrupt()",
+      "range": {
+        "startLine": 135,
+        "startChar": 5,
+        "endLine": 138,
+        "endChar": 4
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f4bd4eb8",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "Remove sonar will flag this",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 4
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_d4aeca80",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 161,
+        "startChar": 0,
+        "endLine": 161,
+        "endChar": 23
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_94ccc26b",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "Missing @Override ??",
+      "range": {
+        "startLine": 170,
+        "startChar": 0,
+        "endLine": 170,
+        "endChar": 0
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_34bf56ac",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "No more system.out messages or print stack trace. Sonar flags these. They should not be necessary. Please add the e to the logger message.",
+      "range": {
+        "startLine": 357,
+        "startChar": 0,
+        "endLine": 364,
+        "endChar": 29
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_14e0d2cb",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "Re-write this to avoid multiple sonar issues.",
+      "range": {
+        "startLine": 426,
+        "startChar": 0,
+        "endLine": 435,
+        "endChar": 10
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_b401066c",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "Again with this file there are so many issues I just stopped.",
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_34d636f2",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 41
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1407b283",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "missing logging the exception itself",
+      "range": {
+        "startLine": 140,
+        "startChar": 5,
+        "endLine": 143,
+        "endChar": 6
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f40b0e8c",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:35:38Z",
+      "side": 1,
+      "message": "Remove sonar will flag this",
+      "range": {
+        "startLine": 153,
+        "startChar": 4,
+        "endLine": 153,
+        "endChar": 24
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
