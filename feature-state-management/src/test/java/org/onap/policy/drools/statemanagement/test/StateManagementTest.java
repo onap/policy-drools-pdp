@@ -39,12 +39,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.statemanagement.DbAudit;
 import org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager;
 import org.onap.policy.drools.statemanagement.RepositoryAudit;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeature;
 import org.onap.policy.drools.statemanagement.StateManagementProperties;
+import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,6 +110,7 @@ public class StateManagementTest {
 		logger.debug("testStateManagementOperation: Reading StateManagementProperties");
 
 		String configDir = "src/test/resources";
+		StateManagementFeature.configDir = configDir;
 		
 		DbAudit.isJunit = true;
 		
@@ -119,9 +121,10 @@ public class StateManagementTest {
 				.getProperty(StateManagementProperties.NODE_NAME);
 
 		StateManagementFeatureAPI stateManagementFeature = null;
+		PolicyEngine policyEngine = PolicyEngine.manager;
 		for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList())
 		{
-			((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+			((StateManagementFeature) feature).afterStart(policyEngine);
 			stateManagementFeature = feature;
 			logger.debug("testStateManagementOperation stateManagementFeature.getResourceName(): " + stateManagementFeature.getResourceName());
 			break;

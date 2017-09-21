@@ -23,14 +23,14 @@ package org.onap.policy.drools.statemanagement;
 import java.io.IOException;
 import java.util.Observer;
 import java.util.Properties;
-
 import org.onap.policy.common.im.StandbyStatusException;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
-import org.onap.policy.drools.utils.PropertyUtil;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.utils.PropertyUtil;
 
 /**
  * If this feature is supported, there is a single instance of it.
@@ -43,8 +43,7 @@ import org.slf4j.LoggerFactory;
  * a separate optional feature.
  */
 
-public class StateManagementFeature implements StateManagementFeatureAPI, 
-				PolicySessionFeatureAPI, PolicyEngineFeatureAPI
+public class StateManagementFeature implements StateManagementFeatureAPI,PolicyEngineFeatureAPI 
 {
 	// get an instance of logger
 	private static final Logger logger =
@@ -52,6 +51,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	
 	private DroolsPDPIntegrityMonitor droolsPdpIntegrityMonitor = null;
 	private StateManagement stateManagement = null;
+	public static String configDir = null;
 
 	/**************************/
 	/* 'FeatureAPI' interface */
@@ -63,12 +63,19 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @return 
+	 */
 	@Override
-	public void globalInit(String args[], String configDir)
-	{
-		// Initialization code associated with 'PolicyContainer'
+	public boolean afterStart(PolicyEngine policyEngine){
 		if(logger.isDebugEnabled()){
-			logger.debug("StateManagementFeature.globalInit({}) entry", configDir);
+			logger.debug("StateManagementFeature.afterStart({}) entry", configDir);
+		}
+		
+		if (configDir == null){
+			logger.error("StateManagementFeature.afterStart({}) configDir is null");
+			return false;
 		}
 
 		try
@@ -80,32 +87,40 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 			if(logger.isDebugEnabled()){
 				logger.debug("DroolsPDPIntegrityMonitor initialization exception: ", e);
 			}
-			logger.error("DroolsPDPIntegrityMonitor.init()", e);
+			logger.error("DroolsPDPIntegrityMonitor.init() threw exception:", e);
+			return false;
 		}
 
-		initializeProperties(configDir);
+		try{
+			initializeProperties(configDir);
+		}catch(IOException e1){
+			logger.error("initializeProperties(configDir) threw IOException: ", e1);
+			return false;
+		}
 
 		//At this point the DroolsPDPIntegrityMonitor instance must exist. Let's check it.
 		try {
 			droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
 			stateManagement = droolsPdpIntegrityMonitor.getStateManager();
 			if(logger.isDebugEnabled()){
-				logger.debug("StateManagementFeature.globalInit(): "
+				logger.debug("StateManagementFeature.afterStart(): "
 					+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
 			}
 			if(stateManagement == null){
-				if(logger.isDebugEnabled()){
-					logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
-				}
+				logger.error("StateManagementFeature.afterStart(): stateManagement is NULL!");
+				return false;
 			}
 		} catch (Exception e1) {
 			if(logger.isDebugEnabled()){
-				logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
+				logger.debug("StateManagementFeature.afterStart(): DroolsPDPIntegrityMonitor"
 					+ " initialization failed with exception:", e1);
 			}
-			logger.error("DroolsPDPIntegrityMonitor.init(): StateManagementFeature startup failed "
-					+ "to get DroolsPDPIntegrityMonitor instance:", e1);
+			logger.error("StateManagementFeature.afterStart(): Failed to get DroolsPDPIntegrityMonitor instance"
+					+ "or StateManagement instance.  Exception: ", e1);
+			return false;
 		}
+		//If you make it here, all has succeeded
+		return true;
 	}
 	
 	/**
@@ -256,8 +271,9 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 
 	/**
 	 * Read in the properties and initialize the StateManagementProperties.
+	 * @throws IOException 
 	 */
-	private static void initializeProperties(String configDir)
+	private static void initializeProperties(String configDir) throws IOException
 	{
 		//Get the state management properties 
 		try {
@@ -266,7 +282,8 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 			StateManagementProperties.initProperties(pIm);
 			logger.info("initializeProperties: resourceName= {}", StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME));
 		} catch (IOException e1) {
-			logger.error("initializeProperties", e1);
+			logger.error("initializeProperties caught exception from StateMaangement", e1);
+			throw new IOException(e1);
 		}
 	}
 }
