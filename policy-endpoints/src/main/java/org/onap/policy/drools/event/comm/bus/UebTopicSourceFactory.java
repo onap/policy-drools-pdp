@@ -153,7 +153,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 	 * UEB Topic Name Index
 	 */
 	protected HashMap<String, UebTopicSource> uebTopicSources =
-			new HashMap<String, UebTopicSource>();
+			new HashMap<>();
 
 	/**
 	 * {@inheritDoc}
@@ -209,9 +209,9 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 			logger.info("{}: no topic for UEB Source", this);
 			return new ArrayList<UebTopicSource>();
 		}
-		List<String> readTopicList = new ArrayList<String>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
+		List<String> readTopicList = new ArrayList<>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
 		
-		List<UebTopicSource> newUebTopicSources = new ArrayList<UebTopicSource>();
+		List<UebTopicSource> newUebTopicSources = new ArrayList<>();
 		synchronized(this) {
 			for (String topic: readTopicList) {
 				if (this.uebTopicSources.containsKey(topic)) {
@@ -228,7 +228,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 					continue;
 				}
 				
-				List<String> serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				List<String> serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + 
                         							   "." + topic + 
@@ -378,7 +378,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 	@Override
 	public synchronized List<UebTopicSource> inventory() {
 		 List<UebTopicSource> readers = 
-				 new ArrayList<UebTopicSource>(this.uebTopicSources.values());
+				 new ArrayList<>(this.uebTopicSources.values());
 		 return readers;
 	}
 

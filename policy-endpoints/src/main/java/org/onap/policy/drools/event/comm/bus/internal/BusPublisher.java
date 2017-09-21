@@ -183,7 +183,7 @@ public interface BusPublisher {
 				if (servers == null || servers.isEmpty())
 					throw new IllegalArgumentException("No DMaaP servers or DME2 partner provided");
 				
-				ArrayList<String> dmaapServers = new ArrayList<String>();
+				ArrayList<String> dmaapServers = new ArrayList<>();
 				if(useHttps){
 					for (String server: servers) {
 						dmaapServers.add(server + ":3905");
@@ -205,7 +205,7 @@ public interface BusPublisher {
 				
 				this.publisher.setProtocolFlag(ProtocolTypeConstants.AAF_AUTH.getValue());
 			} else if (protocol == ProtocolTypeConstants.DME2) {
-				ArrayList<String> dmaapServers = new ArrayList<String>();
+				ArrayList<String> dmaapServers = new ArrayList<>();
 				dmaapServers.add("0.0.0.0:3904");
 						
 				this.publisher = 
@@ -377,8 +377,9 @@ public interface BusPublisher {
 			props.setProperty("TransportType", "DME2");
 			props.setProperty("MethodType", "POST");
 			
-			for (String key : additionalProps.keySet()) {
-				String value = additionalProps.get(key);
+			for (Map.Entry<String,String> entry : additionalProps.keySet()) {
+				String key = entry.getKey();
+				String value = entry.getValue();
 				
 				if (value != null)
 					props.setProperty(key, value);
