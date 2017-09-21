@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_94fba2c0",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:07:15Z",
+      "side": 1,
+      "message": "Interesting that it doesn\u0027t flag this.",
+      "range": {
+        "startLine": 487,
+        "startChar": 21,
+        "endLine": 487,
+        "endChar": 36
+      },
+      "revId": "07fa407f9f68d981f46dc11abc151756bfce8cb8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_74f83ec3",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-09-21T12:07:15Z",
+      "side": 1,
+      "message": "or this.",
+      "range": {
+        "startLine": 507,
+        "startChar": 21,
+        "endLine": 507,
+        "endChar": 34
+      },
+      "revId": "07fa407f9f68d981f46dc11abc151756bfce8cb8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
