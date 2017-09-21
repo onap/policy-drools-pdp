@@ -217,7 +217,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	 * DMaaP Topic Name Index
 	 */
 	protected HashMap<String, DmaapTopicSource> dmaapTopicSources =
-			new HashMap<String, DmaapTopicSource>();
+			new HashMap<>();
 	
 	/**
 	 * {@inheritDoc}
@@ -322,11 +322,11 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 		String readTopics = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS);
 		if (readTopics == null || readTopics.isEmpty()) {
 			logger.info("{}: no topic for DMaaP Source", this);
-			return new ArrayList<DmaapTopicSource>();
+			return new ArrayList<>();
 		}
-		List<String> readTopicList = new ArrayList<String>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
+		List<String> readTopicList = new ArrayList<>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
 		
-		List<DmaapTopicSource> dmaapTopicSource_s = new ArrayList<DmaapTopicSource>();
+		List<DmaapTopicSource> dmaapTopicSource_s = new ArrayList<>();
 		synchronized(this) {
 			for (String topic: readTopicList) {
 				if (this.dmaapTopicSources.containsKey(topic)) {
@@ -339,7 +339,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
                                                         PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				
 				List<String> serverList;
-				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<String>(Arrays.asList(servers.split("\\s*,\\s*")));
+				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				else serverList = new ArrayList<>();
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + 
@@ -572,7 +572,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	@Override
 	public synchronized List<DmaapTopicSource> inventory() {
 		 List<DmaapTopicSource> readers = 
-				 new ArrayList<DmaapTopicSource>(this.dmaapTopicSources.values());
+				 new ArrayList<>(this.dmaapTopicSources.values());
 		 return readers;
 	}
 
