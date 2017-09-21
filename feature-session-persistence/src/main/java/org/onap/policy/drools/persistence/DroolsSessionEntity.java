@@ -91,22 +91,23 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
 	public void setSessionId(long sessionId) {
 		this.sessionId = sessionId;
 	}
-	
+
+	@Override	
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-
+	@Override
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
-
+	@Override
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
 
-
+	@Override
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}

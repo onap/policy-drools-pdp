@@ -87,7 +87,7 @@ public abstract class ProtocolCoderToolset {
 	/**
 	 * Protocols and associated Filters
 	 */
-	protected final List<CoderFilters> coders = new ArrayList<CoderFilters>();
+	protected final List<CoderFilters> coders = new ArrayList<>();
 	
 	/**
 	 * Tree model (instead of class model) generic parsing to be able to inspect elements
@@ -488,7 +488,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 	 * Adapter for ZonedDateTime
 	 */
 	public static class GsonUTCAdapter implements JsonSerializer<ZonedDateTime>, JsonDeserializer<ZonedDateTime> {
-
+		@Override
 		public ZonedDateTime deserialize(JsonElement element, Type type, JsonDeserializationContext context)
 				throws JsonParseException {
 			try {
@@ -500,6 +500,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
 			return null;
 		}
 
+		@Override
 		public JsonElement serialize(ZonedDateTime datetime, Type type, JsonSerializationContext context) {
 			return new JsonPrimitive(datetime.format(format));
 		}	
