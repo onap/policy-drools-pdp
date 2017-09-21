@@ -670,13 +670,13 @@ abstract class GenericEventProtocolCoder  {
 	 * and consequently the second value will be the less likely.
 	 */
 	protected final HashMap<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>> coders = 
-			new HashMap<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+			new HashMap<>();
 	
 	/**
 	 * Mapping topic + classname -> Protocol Set 
 	 */
 	protected final HashMap<String, List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>> reverseCoders = 
-			new HashMap<String, List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>>();
+			new HashMap<>();
 	
 	protected boolean multipleToolsetRetries = false;
 	
@@ -735,7 +735,7 @@ abstract class GenericEventProtocolCoder  {
 							    this, reverseKey, key, toolsets.first());
 					
 					List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> reverseMappings =
-							new ArrayList<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+							new ArrayList<>();
 					reverseMappings.add(toolsets);
 					reverseCoders.put(reverseKey, reverseMappings);
 				}
@@ -767,7 +767,7 @@ abstract class GenericEventProtocolCoder  {
 			// are detected in the gson encoding
 			
 			Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = 
-					new Pair<ProtocolCoderToolset,ProtocolCoderToolset>(gsonCoderTools, 
+					new Pair<>(gsonCoderTools, 
 							                                            jacksonCoderTools);
 			
 			logger.info("{}: adding coders for new {}: {}", this, key, coderTools.first());
@@ -800,7 +800,7 @@ abstract class GenericEventProtocolCoder  {
 				}
 			} else {
 				List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> toolsets =
-					new ArrayList<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+					new ArrayList<>();
 				toolsets.add(coderTools);
 				
 				logger.info("{}: adding toolset for reverse key {}: {}", this, reverseKey, toolsets);
@@ -909,7 +909,7 @@ abstract class GenericEventProtocolCoder  {
 		
 		String key = this.codersKey(groupId, artifactId, topic);
 		synchronized(this) {
-			return (coders.containsKey(key));
+			return coders.containsKey(key);
 		}
 	}
 	
@@ -1102,7 +1102,7 @@ abstract class GenericEventProtocolCoder  {
 	protected List<DroolsController> droolsCreators(String topic, Object encodedClass)
 			throws IllegalStateException, IllegalArgumentException {
 		
-		List<DroolsController> droolsControllers = new ArrayList<DroolsController>();
+		List<DroolsController> droolsControllers = new ArrayList<>();
 		
 		String reverseKey = this.reverseCodersKey(topic, encodedClass.getClass().getCanonicalName());
 		if (!this.reverseCoders.containsKey(reverseKey)) {
@@ -1127,8 +1127,8 @@ abstract class GenericEventProtocolCoder  {
 			// figure out the right toolset
 			String groupId = encoderSet.first().getGroupId();
 			String artifactId = encoderSet.first().getArtifactId();
-			List<CoderFilters> coders = encoderSet.first().getCoders();
-			for (CoderFilters coder : coders) {
+			List<CoderFilters> coderFilters = encoderSet.first().getCoders();
+			for (CoderFilters coder : coderFilters) {
 				if (coder.getCodedClass().equals(encodedClass.getClass().getCanonicalName())) {
 					DroolsController droolsController = 
 							DroolsController.factory.get(groupId, artifactId, "");
@@ -1206,7 +1206,7 @@ abstract class GenericEventProtocolCoder  {
 		
 		String key = this.codersKey(groupId, artifactId, "");
 		
-		List<CoderFilters> codersFilters = new ArrayList<CoderFilters>();
+		List<CoderFilters> codersFilters = new ArrayList<>();
 		for (Map.Entry<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>> entry : coders.entrySet()) {
 			if (entry.getKey().startsWith(key)) {
 				codersFilters.addAll(entry.getValue().first().getCoders());
@@ -1235,7 +1235,7 @@ abstract class GenericEventProtocolCoder  {
 		
 		String key = this.codersKey(groupId, artifactId, "");
 		
-		List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> coderToolset = new ArrayList<Pair<ProtocolCoderToolset,ProtocolCoderToolset>>();
+		List<Pair<ProtocolCoderToolset,ProtocolCoderToolset>> coderToolset = new ArrayList<>();
 		for (Map.Entry<String, Pair<ProtocolCoderToolset,ProtocolCoderToolset>> entry : coders.entrySet()) {
 			if (entry.getKey().startsWith(key)) {
 				coderToolset.add(entry.getValue());
@@ -1293,12 +1293,12 @@ abstract class GenericEventProtocolCoder  {
 			throw new IllegalArgumentException("No Coder found for " + key);
 		
 		
-		List<CoderFilters> coders = new ArrayList<CoderFilters>();
+		List<CoderFilters> coderFilters = new ArrayList<>();
 		for (Pair<ProtocolCoderToolset,ProtocolCoderToolset> toolset: toolsets) {
 			coders.addAll(toolset.first().getCoders());
 		}
 		
-		return coders;
+		return coderFilters;
 	}
 	
 	/**
