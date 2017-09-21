@@ -375,6 +375,7 @@ public class RestManager {
       if (controller != null)
         return Response.status(Response.Status.NOT_MODIFIED).entity(controller).build();
     } catch (final IllegalArgumentException e) {
+    	logger.trace("OK ", e);
       // This is OK
     } catch (final IllegalStateException e) {
       logger.info("{}: cannot get policy-controller because of {}", this, e.getMessage(), e);
