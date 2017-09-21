@@ -87,62 +87,62 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	if (resourceName == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'resource.name'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'resource.name'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'resource.name'");
 	  }
 	if (hostPort == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'hostPort'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'hostPort'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'hostPort'");
 	  }
 	if (fpMonitorInterval == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'fp_monitor_interval'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'fp_monitor_interval'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'fp_monitor_interval'");
 	  }	
 	if (failedCounterThreshold == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'failed_counter_threshold'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'failed_counter_threshold'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'failed_counter_threshold'");
 	  }	
 	if (testTransInterval == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'test_trans_interval'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'test_trans_interval'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'test_trans_interval'");
 	  }	
 	if (writeFpcInterval == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'write_fpc_interval'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'write_fpc_interval'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'write_fpc_interval'");
 	  }	
 	if (siteName == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'site_name'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'site_name'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'site_name'");
 	  }	
 	if (nodeType == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'node_type'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'node_type'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'node_type'");
 	  }	
 	if (dependencyGroups == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'dependency_groups'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'dependency_groups'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'dependency_groups'");
 	  }	
 	if (javaxPersistenceJdbcDriver == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.driver for xacml DB'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.driver for xacml DB'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.driver for xacml DB'");
 	  }		
 	if (javaxPersistenceJdbcUrl == null)
 	  {
@@ -153,14 +153,14 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	if (javaxPersistenceJdbcUser == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.user for xacml DB'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.user for xacml DB'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.user for xacml DB'");
 	  }			
 	if (javaxPersistenceJdbcPassword == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.password for xacml DB'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.password'  for xacml DB'"));
+		throw new Exception
+			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.password'  for xacml DB'");
 	  }		
 
 	// Now that we've validated the properties, create Drools Integrity Monitor
@@ -300,7 +300,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	 */
 	public String getName()
 	{
-	  return(name);
+	  return name;
 	}
 
 	/**
@@ -308,7 +308,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	 */
 	public String getResponse()
 	{
-	  return(response);
+	  return response;
 	}
 
 	/**

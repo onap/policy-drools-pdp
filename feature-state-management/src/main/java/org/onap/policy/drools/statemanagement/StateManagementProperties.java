@@ -38,6 +38,9 @@ public class StateManagementProperties {
 	public static final String DB_PWD = "javax.persistence.jdbc.password";
 	
 	private static Properties properties = null;
+
+	private StateManagementProperties(){
+	}
 	/*
 	 * Initialize the parameter values from the feature-state-management.properties file values
 	 * 
