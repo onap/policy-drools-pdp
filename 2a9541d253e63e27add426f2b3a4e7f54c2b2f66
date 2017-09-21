@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_2b2ed4fb",
+        "filename": "feature-session-persistence/src/main/feature/config/feature-session-persistence.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "one picky comment, let\u0027s use \"-\" transaction-manager.   We use \"-\" for word separator throughout pdp-d instead of \"_\".\n\nAnother question about the logs directory, does not seem like a good home for it, probably better under a ${POLICY_HOME}/etc/data (?) .. Want to know Ralph\u0027s opinion as well.",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_cb8628db",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "I think the SystemException leg may never be hit (since it is a RuntimeException, it will be caught above, assuming java processes exception in linear order they appear in the code.",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_eb81ecc3",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "sonar recommendation and I think it makes sense is not to throw generic exceptions, change it to an specific one IllegalStateException of something of that sort.",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_ab6f642a",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "use non-generic exception",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_abdd24e2",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "use non-generic exception",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_8bda60e6",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "use non-generic exception",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_6bfa9c44",
+        "filename": "feature-session-persistence/src/test/resources/feature-session-persistence.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-21T16:41:41Z",
+      "side": 1,
+      "message": "\"_\" vs \"-\"",
+      "revId": "2a9541d253e63e27add426f2b3a4e7f54c2b2f66",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
