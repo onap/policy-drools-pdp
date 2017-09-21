@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_de7a6476",
+        "filename": "api-active-standby-management/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "Removed it\n\nDone",
+      "parentUuid": "9a437d4f_947e0218",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 10
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_f4e42ee2",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
         "patchSetId": 2
@@ -59,6 +83,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_3e8bb069",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_2bbff462",
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_34a87676",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
         "patchSetId": 2
@@ -70,6 +112,30 @@
       "writtenOn": "2017-09-21T12:35:38Z",
       "side": 1,
       "message": "This will result in sonar issues. Log the exception and add:\nThread.currentThread.Interrupt()",
+      "range": {
+        "startLine": 135,
+        "startChar": 5,
+        "endLine": 138,
+        "endChar": 4
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_de56e4cd",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "This was old code that is no longer used.  I removed it.\n\nDone",
+      "parentUuid": "9a437d4f_34a87676",
       "range": {
         "startLine": 135,
         "startChar": 5,
@@ -105,6 +171,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_9e74dc68",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_f4bd4eb8",
+      "range": {
+        "startLine": 145,
+        "startChar": 0,
+        "endLine": 151,
+        "endChar": 4
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_d4aeca80",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
         "patchSetId": 2
@@ -116,6 +206,30 @@
       "writtenOn": "2017-09-21T12:35:38Z",
       "side": 1,
       "message": "remove",
+      "range": {
+        "startLine": 161,
+        "startChar": 0,
+        "endLine": 161,
+        "endChar": 23
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_7e713875",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "I removed all println references - whether a comment or active code.\n\nDone",
+      "parentUuid": "9a437d4f_d4aeca80",
       "range": {
         "startLine": 161,
         "startChar": 0,
@@ -151,6 +265,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_3e6730b9",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "Yep. Evidently, no complaint from Eclipse.\n\nI added the annotation.\n\nDone",
+      "parentUuid": "9a437d4f_94ccc26b",
+      "range": {
+        "startLine": 170,
+        "startChar": 0,
+        "endLine": 170,
+        "endChar": 0
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_0bc430f3",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
         "patchSetId": 2
@@ -168,6 +306,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_7ec37889",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_0bc430f3",
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_34bf56ac",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
         "patchSetId": 2
@@ -179,6 +335,30 @@
       "writtenOn": "2017-09-21T12:35:38Z",
       "side": 1,
       "message": "No more system.out messages or print stack trace. Sonar flags these. They should not be necessary. Please add the e to the logger message.",
+      "range": {
+        "startLine": 357,
+        "startChar": 0,
+        "endLine": 364,
+        "endChar": 29
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_fe0c08ef",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "All gone.\n\nDone",
+      "parentUuid": "9a437d4f_34bf56ac",
       "range": {
         "startLine": 357,
         "startChar": 0,
@@ -214,6 +394,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_3e717044",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "I rewrote this and all the other blocks that are similar.\n\nDone",
+      "parentUuid": "9a437d4f_14e0d2cb",
+      "range": {
+        "startLine": 426,
+        "startChar": 0,
+        "endLine": 435,
+        "endChar": 10
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_cbb9887a",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
         "patchSetId": 2
@@ -225,6 +429,24 @@
       "writtenOn": "2017-09-21T16:55:16Z",
       "side": 1,
       "message": "remove System.out and e.printStackTace",
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9ea5fca3",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1080,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "I removed this and all other similar blocks.\n\nDone",
+      "parentUuid": "9a437d4f_cbb9887a",
       "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -271,6 +493,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_1e07cc83",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a437d4f_34d636f2",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 114,
+        "endChar": 41
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_1407b283",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
         "patchSetId": 2
@@ -294,6 +540,30 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_3eedf0b7",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "I added the exception to every log message where an exception is caught.\n\nDone",
+      "parentUuid": "9a437d4f_1407b283",
+      "range": {
+        "startLine": 140,
+        "startChar": 5,
+        "endLine": 143,
+        "endChar": 6
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_f40b0e8c",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
         "patchSetId": 2
@@ -305,6 +575,30 @@
       "writtenOn": "2017-09-21T12:35:38Z",
       "side": 1,
       "message": "Remove sonar will flag this",
+      "range": {
+        "startLine": 153,
+        "startChar": 4,
+        "endLine": 153,
+        "endChar": 24
+      },
+      "revId": "c1b638ca69c07655c72c57157385a1242bca47a2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_1e2eacfb",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/PMStandbyStateChangeNotifier.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-21T20:04:02Z",
+      "side": 1,
+      "message": "I removed all stacktrace prints as well as all println.\n\nDone",
+      "parentUuid": "9a437d4f_f40b0e8c",
       "range": {
         "startLine": 153,
         "startChar": 4,
