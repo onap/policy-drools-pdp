@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -208,7 +209,7 @@ public class FileSystemPersistence implements SystemPersistence {
   @Override
   public List<Properties> getControllerProperties() {
     final List<Properties> controllers = new ArrayList<>();
-    final File[] controllerFiles = this.configurationDirectory.toFile().listFiles();
+    final File[] controllerFiles = this.sortedListFiles();
     for (final File controllerFile : controllerFiles) {
       if (controllerFile.getName().endsWith(PROPERTIES_FILE_CONTROLLER_SUFFIX)) {
         final int idxSuffix = controllerFile.getName().indexOf(PROPERTIES_FILE_CONTROLLER_SUFFIX);
@@ -262,7 +263,7 @@ public class FileSystemPersistence implements SystemPersistence {
   @Override
   public List<Properties> getEnvironmentProperties() {
     final List<Properties> envs = new ArrayList<>();
-    final File[] envFiles = this.configurationDirectory.toFile().listFiles();
+    final File[] envFiles = this.sortedListFiles();
     for (final File envFile : envFiles) {
       if (envFile.getName().endsWith(ENV_SUFFIX)) {
         final String name = envFile.getName().substring(0, envFile.getName().indexOf(ENV_SUFFIX));
@@ -288,6 +289,15 @@ public class FileSystemPersistence implements SystemPersistence {
     } catch (final Exception e) {
       throw new IllegalArgumentException("cannot read environment " + name, e);
     }
+  }
+
+  /**
+   * provides a list of files sorted by name in ascending order in the configuration directory
+   */
+  protected File[] sortedListFiles() {
+    final File[] dirFiles = this.configurationDirectory.toFile().listFiles();
+    Arrays.sort(dirFiles, (a, b) -> a.getName().compareTo(b.getName()));
+    return dirFiles;
   }
 
   @Override
