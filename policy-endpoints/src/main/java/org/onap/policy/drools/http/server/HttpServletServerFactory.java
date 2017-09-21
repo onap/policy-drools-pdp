@@ -100,7 +100,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	/**
 	 * servers index
 	 */
-	protected HashMap<Integer, HttpServletServer> servers = new HashMap<Integer, HttpServletServer>();
+	protected HashMap<Integer, HttpServletServer> servers = new HashMap<>();
 
 	@Override
 	public synchronized HttpServletServer build(String name, String host, int port, 
@@ -122,7 +122,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	public synchronized ArrayList<HttpServletServer> build(Properties properties) 
 		throws IllegalArgumentException {	
 		
-		ArrayList<HttpServletServer> serviceList = new ArrayList<HttpServletServer>();
+		ArrayList<HttpServletServer> serviceList = new ArrayList<>();
 		
 		String serviceNames = properties.getProperty(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES);
 		if (serviceNames == null || serviceNames.isEmpty()) {
@@ -131,7 +131,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 		}
 		
 		List<String> serviceNameList = 
-				new ArrayList<String>(Arrays.asList(serviceNames.split("\\s*,\\s*")));
+				new ArrayList<>(Arrays.asList(serviceNames.split("\\s*,\\s*")));
 		
 		for (String serviceName : serviceNameList) {
 			String servicePortString = properties.getProperty(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
@@ -206,14 +206,14 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 			
 			if (restClasses != null && !restClasses.isEmpty()) {
 				List<String> restClassesList = 
-						new ArrayList<String>(Arrays.asList(restClasses.split("\\s*,\\s*")));
+						new ArrayList<>(Arrays.asList(restClasses.split("\\s*,\\s*")));
 				for (String restClass : restClassesList)
 					service.addServletClass(restUriPath, restClass);
 			}
 			
 			if (restPackages != null && !restPackages.isEmpty()) {
 				List<String> restPackageList = 
-						new ArrayList<String>(Arrays.asList(restPackages.split("\\s*,\\s*")));
+						new ArrayList<>(Arrays.asList(restPackages.split("\\s*,\\s*")));
 				for (String restPackage : restPackageList)
 					service.addServletPackage(restUriPath, restPackage);
 			}
@@ -236,7 +236,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 
 	@Override
 	public synchronized List<HttpServletServer> inventory() {
-		 return new ArrayList<HttpServletServer>(this.servers.values());
+		 return new ArrayList<>(this.servers.values());
 	}
 	
 	@Override
@@ -252,8 +252,8 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 
 	@Override
 	public synchronized void destroy() throws IllegalArgumentException, IllegalStateException {
-		List<HttpServletServer> servers = this.inventory();
-		for (HttpServletServer server: servers) {
+		List<HttpServletServer> httpServletServers = this.inventory();
+		for (HttpServletServer server: httpServletServers) {
 			server.shutdown();
 		}
 		
