@@ -31,16 +31,21 @@ public class PdpJmx implements PdpJmxMBean  {
 	public static PdpJmx getInstance() {
 		return instance;
 	}
-	
+
+	@Override	
 	public long getUpdates(){
 		return updates.longValue();
 	}
+
+	@Override
 	public long getRulesFired(){
 		return actions.longValue();
 	}
+
 	public void updateOccured(){
 		updates.incrementAndGet();
 	}
+
 	public void ruleFired(){
 		actions.incrementAndGet();
 	}

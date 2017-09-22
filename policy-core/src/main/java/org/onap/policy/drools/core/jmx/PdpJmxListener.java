@@ -36,7 +36,10 @@ import org.slf4j.LoggerFactory;
 public class PdpJmxListener {
 
 	public static final Logger logger = LoggerFactory.getLogger(PdpJmxListener.class);
-	
+
+	private PdpJmxListener() {
+	}
+
 	public static void stop() {
 		final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 		try {
