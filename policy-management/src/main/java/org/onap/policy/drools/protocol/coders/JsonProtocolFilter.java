@@ -119,7 +119,7 @@ public class JsonProtocolFilter {
 	/**
 	 * all the filters to be applied
 	 */
-	protected List<FilterRule> rules = new ArrayList<FilterRule>();
+	protected List<FilterRule> rules = new ArrayList<>();
 	
 	/**
 	 * 
@@ -134,7 +134,7 @@ public class JsonProtocolFilter {
 			throw new IllegalArgumentException("No raw filters provided");
 		}
 		
-		List<FilterRule> filters = new ArrayList<FilterRule>();
+		List<FilterRule> filters = new ArrayList<>();
 		for (Pair<String, String> filterPair: rawFilters) {
 			if  (filterPair.first() == null || filterPair.first().isEmpty()) {
 				continue;
