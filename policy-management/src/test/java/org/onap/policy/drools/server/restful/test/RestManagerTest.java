@@ -28,7 +28,9 @@ import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -36,11 +38,15 @@ import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RestManagerTest {
     
 
@@ -117,11 +123,85 @@ public class RestManagerTest {
 
     }
     
-    
-    @Test
-    public void GETTest() throws ClientProtocolException, IOException, InterruptedException {
-        assertTrue(PolicyEngine.manager.isAlive());
 
+    @Test
+    public void putDeleteTest() throws ClientProtocolException, IOException, InterruptedException {
+        HttpPut httpPut;
+        HttpDelete httpDelete;
+        CloseableHttpResponse response;
+        
+        httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
+        httpPut.addHeader("Content-Type", "text/plain");
+        httpPut.addHeader("Accept", "application/json");
+        httpPut.setEntity(new StringEntity("FOOOO"));
+        response = client.execute(httpPut);
+        logger.info("/engine/topics/sources/ueb/{}/events response code: {}", UEB_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();        
+        
+        httpPut = new HttpPut(HOST_URL + "/engine/topics/switches/lock");
+        response = client.execute(httpPut);
+        logger.info("/engine/topics/switches/lock response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();
+        
+        httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
+        httpPut.addHeader("Content-Type", "text/plain");
+        httpPut.addHeader("Accept", "application/json");
+        httpPut.setEntity(new StringEntity("FOOOO"));
+        response = client.execute(httpPut);
+        logger.info("/engine/topics/sources/ueb/{}/events response code: {}", UEB_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(406, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();  
+        
+        httpDelete = new HttpDelete(HOST_URL + "/engine/topics/switches/lock");
+        response = client.execute(httpDelete);
+        logger.info("/engine/topics/switches/lock response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpDelete.releaseConnection();
+        
+        httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches/lock");
+        response = client.execute(httpPut);
+        logger.info("/engine/topics/sources/ueb/{}/switches/lock: {}", UEB_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();
+        
+        httpDelete = new HttpDelete(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches/lock");
+        response = client.execute(httpDelete);
+        logger.info("/engine/topics/sources/ueb/{}/switches/lock: {}", UEB_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpDelete.releaseConnection();
+        
+        httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/switches/lock");
+        response = client.execute(httpPut);
+        logger.info("/engine/topics/sources/dmaap/{}/switches/lock: {}", DMAAP_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();
+        
+        httpDelete = new HttpDelete(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/switches/lock");
+        response = client.execute(httpDelete);
+        logger.info("/engine/topics/sources/dmaap/{}/switches/lock: {}", DMAAP_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpDelete.releaseConnection();
+        
+        httpPut = new HttpPut(HOST_URL + "/engine/switches/activation");
+        response = client.execute(httpPut);
+        logger.info("/engine/switches/activation response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();
+        
+        httpDelete = new HttpDelete(HOST_URL + "/engine/switches/activation");
+        response = client.execute(httpDelete);
+        logger.info("/engine/switches/activation response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpDelete.releaseConnection();
+
+    }
+    
+
+    @Test
+    public void getTest() throws ClientProtocolException, IOException, InterruptedException {
+      
         HttpGet httpGet;
         CloseableHttpResponse response;
         String responseBody;
@@ -558,6 +638,12 @@ public class RestManagerTest {
         httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers");
         response = client.execute(httpGet);
         logger.info("engine/tools/loggers response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers/ROOT");
+        response = client.execute(httpGet);
+        logger.info("engine/tools/loggers/ROOT response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
         
