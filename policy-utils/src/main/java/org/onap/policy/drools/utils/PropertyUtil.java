@@ -56,7 +56,7 @@ public class PropertyUtil
 
 		// load properties (may throw an IOException)
 		rval.load(fis);
-		return(rval);
+		return rval;
 	  }
 	finally
 	  {
@@ -75,7 +75,7 @@ public class PropertyUtil
    */
   static public Properties getProperties(String fileName) throws IOException
   {
-	return(getProperties(new File(fileName)));
+	return getProperties(new File(fileName));
   }
 
   /* ============================================================ */
@@ -87,6 +87,7 @@ public class PropertyUtil
    * This is the callback interface, used for sending notifications of
    * changes in the properties file.
    */
+  @FunctionalInterface
   public interface Listener
   {
 	/**
@@ -100,7 +101,7 @@ public class PropertyUtil
 
   // this table maps canonical file into a 'ListenerRegistration' instance
   static private HashMap<File, ListenerRegistration> registrations =
-	new HashMap<File, ListenerRegistration>();
+	new HashMap<>();
 
   /**
    * This is an internal class - one instance of this exists for each
@@ -141,7 +142,7 @@ public class PropertyUtil
 	  properties = getProperties(file);
 
 	  // no listeners yet
-	  listeners = new LinkedList<Listener>();
+	  listeners = new LinkedList<>();
 
 	  // add to static table, so this instance can be shared
 	  registrations.put(file, this);
@@ -163,6 +164,7 @@ public class PropertyUtil
 	  // create and schedule the timer task, so this is periodically polled
 	  timerTask = new TimerTask()
 		{
+		  @Override
 		  public void run()
 		  {
 			try
@@ -186,7 +188,7 @@ public class PropertyUtil
 	synchronized Properties addListener(Listener listener)
 	{
 	  listeners.add(listener);
-	  return((Properties)properties.clone());
+	  return (Properties)properties.clone();
 	}
 
 	/**
@@ -203,7 +205,7 @@ public class PropertyUtil
 	  // one is being removed.
 	  synchronized(registrations)
 		{
-		  if (listeners.size() == 0)
+		  if (listeners.isEmpty())
 			{
 			  timerTask.cancel();
 			  registrations.remove(file);
@@ -226,7 +228,7 @@ public class PropertyUtil
 		  // Save old set, and initial set of changed properties.
 		  Properties oldProperties = properties;
 		  HashSet<String> changedProperties =
-			new HashSet<String>(oldProperties.stringPropertyNames());
+			new HashSet<>(oldProperties.stringPropertyNames());
 
 		  // Fetch the list of listeners that we will potentially notify,
 		  // and the new properties. Note that this is in a 'synchronized'
@@ -259,7 +261,7 @@ public class PropertyUtil
 			}
 
 		  // 'changedProperties' should be correct at this point
-		  if (changedProperties.size() != 0)
+		  if (!changedProperties.isEmpty())
 			{
 			  // there were changes - notify everyone in 'listeners'
 			  for (final Listener notify : listeners)
@@ -269,12 +271,13 @@ public class PropertyUtil
 				  final Properties tmpProperties =
 					(Properties)(properties.clone());
 				  final HashSet<String> tmpChangedProperties =
-					new HashSet<String>(changedProperties);
+					new HashSet<>(changedProperties);
 
 				  // Do the notification in a separate thread, so blocking
 				  // won't cause any problems.
 				  new Thread()
 				  {
+					@Override
 					public void run()
 					{
 					  notify.propertiesChanged
@@ -309,7 +312,7 @@ public class PropertyUtil
 	if (listener == null)
 	  {
 		// no listener specified -- just fetch the properties
-		return(getProperties(file));
+		return getProperties(file);
 	  }
 
 	// Convert the file to a canonical form in order to avoid the situation
@@ -327,7 +330,7 @@ public class PropertyUtil
 			// a new registration is needed
 			reg = new ListenerRegistration(file);
 		  }
-		return(reg.addListener(listener));
+		return reg.addListener(listener);
 	  }
   }
 
@@ -350,7 +353,7 @@ public class PropertyUtil
   static public Properties getProperties(String fileName, Listener listener)
 	throws IOException
   {
-	return(getProperties(new File(fileName), listener));
+	return getProperties(new File(fileName), listener);
   }
 
   /**

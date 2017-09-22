@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public class ReflectionUtil {
 	
 	protected final static Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
+
+	private ReflectionUtil(){
+	}
 	
 	/**
 	 * returns (if exists) a class fetched from a given classloader
@@ -82,7 +85,7 @@ public class ReflectionUtil {
 	 * @return
 	 */
 	public static boolean isSubclass(Class<?> parent, Class<?> presumedSubclass) {		
-		return (parent.isAssignableFrom(presumedSubclass));
+		return parent.isAssignableFrom(presumedSubclass);
 	}
 
 }
