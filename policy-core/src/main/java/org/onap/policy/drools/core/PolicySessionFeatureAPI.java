@@ -39,7 +39,7 @@ public interface PolicySessionFeatureAPI extends OrderedService
    * implementing the 'FeatureAPI' interface.
    */
   static public OrderedServiceImpl<PolicySessionFeatureAPI> impl =
-	new OrderedServiceImpl<PolicySessionFeatureAPI>(PolicySessionFeatureAPI.class);
+	new OrderedServiceImpl<>(PolicySessionFeatureAPI.class);
 
   /**
    * This method is called during initialization at a point right after
@@ -68,7 +68,7 @@ public interface PolicySessionFeatureAPI extends OrderedService
   default public KieSession activatePolicySession
 	(PolicyContainer policyContainer, String name, String kieBaseName)
   {
-	return(null);
+	return null;
   }
 
   /**
@@ -86,7 +86,7 @@ public interface PolicySessionFeatureAPI extends OrderedService
   default public PolicySession.ThreadModel selectThreadModel
 	(PolicySession session)
   {
-	return(null);
+	return null;
   }
 
   /**
