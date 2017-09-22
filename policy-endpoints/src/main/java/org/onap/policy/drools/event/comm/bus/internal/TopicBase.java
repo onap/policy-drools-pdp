@@ -49,7 +49,7 @@ public abstract class TopicBase implements Topic {
 	/**
 	 * event cache
 	 */
-	protected CircularFifoQueue<String> recentEvents = new CircularFifoQueue<String>(10);
+	protected CircularFifoQueue<String> recentEvents = new CircularFifoQueue<>(10);
 		
 	/**
 	 * Am I running?
@@ -71,7 +71,7 @@ public abstract class TopicBase implements Topic {
 	/**
 	 * All my subscribers for new message notifications
 	 */
-	protected final ArrayList<TopicListener> topicListeners = new ArrayList<TopicListener>();
+	protected final ArrayList<TopicListener> topicListeners = new ArrayList<>();
 	
 	/**
 	 * Instantiates a new Topic Base
