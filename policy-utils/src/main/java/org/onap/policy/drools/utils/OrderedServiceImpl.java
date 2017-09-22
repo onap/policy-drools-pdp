@@ -67,7 +67,7 @@ public class OrderedServiceImpl<T extends OrderedService>
 	  {
 		rebuildList();
 	  }
-	return(implementers);
+	return implementers;
   }
 
   /**
@@ -85,7 +85,7 @@ public class OrderedServiceImpl<T extends OrderedService>
   public synchronized List<T> rebuildList()
   {
 	// build a list of all of the current implementors
-	List<T> tmp = new LinkedList<T>();
+	List<T> tmp = new LinkedList<>();
 	for (T service : serviceLoader)
 	  {
 		tmp.add((T)getSingleton(service));
@@ -93,8 +93,9 @@ public class OrderedServiceImpl<T extends OrderedService>
 
 	// Sort the list according to sequence number, and then alphabetically
 	// according to full class name.
-	Collections.sort(tmp, new Comparator<T>()
+	Collections.sort(tmp, new Comparator<>()
 					 {
+					   @Override
 					   public int compare(T o1, T o2)
 						 {
 						   int s1 = o1.getSequenceNumber();
@@ -111,7 +112,7 @@ public class OrderedServiceImpl<T extends OrderedService>
 						   else
 							 {
 							   rval = o1.getClass().getName().compareTo
-								 (o2.getClass().getName());
+								 o2.getClass().getName();
 							 }
 						   return(rval);
 						 }
@@ -120,7 +121,7 @@ public class OrderedServiceImpl<T extends OrderedService>
 	// create an unmodifiable version of this list
 	implementers = Collections.unmodifiableList(tmp);
 	logger.info("***** OrderedServiceImpl implementers:\n {}", implementers);
-	return(implementers);
+	return implementers;
   }
 
   // use this to ensure that we only use one unique instance of each class
@@ -151,6 +152,6 @@ public class OrderedServiceImpl<T extends OrderedService>
 		rval = service;
 		classToSingleton.put(service.getClass(), service);
 	  }
-	return(rval);
+	return rval;
   }
 }
