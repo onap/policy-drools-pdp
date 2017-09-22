@@ -190,13 +190,13 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * Policy Controller Name Index
 	 */
 	protected HashMap<String,PolicyController> policyControllers =
-			new HashMap<String,PolicyController>();
+			new HashMap<>();
 	
 	/**
 	 * Group/Artifact Ids Index
 	 */
 	protected HashMap<String,PolicyController> coordinates2Controller = 
-			new HashMap<String,PolicyController>();
+			new HashMap<>();
 	
 	/**
 	 * produces key for indexing controller names
@@ -479,7 +479,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	@Override
 	public List<PolicyController> inventory() {
 		 List<PolicyController> controllers = 
-				 new ArrayList<PolicyController>(this.policyControllers.values());
+				 new ArrayList<>(this.policyControllers.values());
 		 return controllers;
 	}
 	
@@ -488,7 +488,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 */
 	@Override 
 	public List<String> getFeatures() {
-		List<String> features = new ArrayList<String>();
+		List<String> features = new ArrayList<>();
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
 			features.add(feature.getName());
 		}

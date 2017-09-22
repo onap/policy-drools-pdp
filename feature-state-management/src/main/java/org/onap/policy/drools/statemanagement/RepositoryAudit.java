@@ -53,7 +53,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
    */
   static DroolsPDPIntegrityMonitor.AuditBase getInstance()
   {
-	return(instance);
+	return instance;
   }
 
   /**
@@ -123,8 +123,8 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	String repositoryPassword =
 	  StateManagementProperties.getProperty("repository.audit.password");
 	boolean upload =
-	  (repositoryId != null && repositoryUrl != null
-	   && repositoryUsername != null && repositoryPassword != null);
+	   repositoryId != null && repositoryUrl != null
+	   && repositoryUsername != null && repositoryPassword != null;
 
 	// used to incrementally construct response as problems occur
 	// (empty = no problems)
@@ -410,8 +410,8 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			 "curl",
 			 "--request", "DELETE",
 			 "--user", repositoryUsername + ":" + repositoryPassword,
-			 (repositoryUrl + "/" + groupId.replace('.', '/') + "/" +
-			  artifactId + "/" + version))
+			 repositoryUrl + "/" + groupId.replace('.', '/') + "/" +
+			  artifactId + "/" + version)
 			!= 0)
 		  {
 			logger.error
@@ -437,13 +437,15 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	  (dir,
 	   new SimpleFileVisitor<Path>()
 	   {
+		 @Override
 		 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
 		   {
 			 // logger.info("RepositoryAudit: Delete " + file);
 			 file.toFile().delete();
-			 return(FileVisitResult.CONTINUE);
+			 return FileVisitResult.CONTINUE;
 		   }
 
+		 @Override
 		 public FileVisitResult postVisitDirectory(Path file, IOException e)
 		   throws IOException
 		   {
@@ -451,11 +453,11 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			   {
 				 // logger.info("RepositoryAudit: Delete " + file);
 				 file.toFile().delete();
-				 return(FileVisitResult.CONTINUE);
+				 return FileVisitResult.CONTINUE;
 			   }
 			 else
 			   {
-				 throw(e);
+				 throw e;
 			   }
 		   }
 	   });
@@ -492,12 +494,12 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	if (process.waitFor(timeoutInSeconds, TimeUnit.SECONDS))
 	  {
 		// process terminated before the timeout
-		return(process.exitValue());
+		return process.exitValue();
 	  }
 	
 	// process timed out -- kill it, and return -1
 	process.destroyForcibly();
-	return(-1);
+	return -1;
   }
 
   /* ============================================================ */
@@ -538,21 +540,22 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	  String[] segments = artifact.split("/");
 	  if (segments.length != 4 && segments.length != 3)
 		{
-		  throw(new IllegalArgumentException("groupId/artifactId/version/type"));
+		  throw new IllegalArgumentException("groupId/artifactId/version/type");
 		}
 	  groupId = segments[0];
 	  artifactId = segments[1];
 	  version = segments[2];
-	  type = (segments.length == 4 ? segments[3] : "jar");
+	  type = segments.length == 4 ? segments[3] : "jar";
 	}
 
 	/**
 	 * @return the artifact id in the form:
 	 *		"<groupId>/<artifactId>/<version>/<type>"
 	 */
+	@Override
 	public String toString()
 	{
-	  return(groupId + "/" + artifactId + "/" + version + "/" + type);
+	  return groupId + "/" + artifactId + "/" + version + "/" + type;
 	}
   }
 }
