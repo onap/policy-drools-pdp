@@ -49,6 +49,35 @@ public class RestManagerTest {
     private static final String REST_MANAGER_PATH = "/policy/pdp";
     private static final String HOST_URL = "http://" + HOST + ":" + DEFAULT_TELEMETRY_PORT + REST_MANAGER_PATH;
     private static final String FOO_CONTROLLER = "foo-controller";
+    
+    private static final String UEB_TOPIC = "PDPD-CONFIGURATION";
+    private static final String DMAAP_TOPIC = "com.att.ecomp-policy.DCAE_CL_EVENT_TEST";
+    private static final String NOOP_TOPIC = "NOOP_TOPIC";
+    
+    private static final String UEB_SOURCE_SERVER_PROPERTY = PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS +
+            "." + UEB_TOPIC + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String UEB_SINK_SERVER_PROPERTY = PolicyProperties.PROPERTY_UEB_SINK_TOPICS +
+            "." + UEB_TOPIC + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String DMAAP_SOURCE_SERVER_PROPERTY = PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS +
+            "." + DMAAP_TOPIC + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String DMAAP_SINK_SERVER_PROPERTY = PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+            "." + DMAAP_TOPIC + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String UEB_SERVER = "uebsb91sfdc.it.att.com";
+    private static final String DMAAP_SERVER = "olsd005.wnsnet.attws.com";
+    private static final String DMAAP_MECHID = "m03822@ecomp-policy.att.com";
+    private static final String DMAAP_PASSWD = "Ec0mpP0l1cy";
+    
+    private static final String DMAAP_SOURCE_MECHID_KEY = PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + 
+            "." + DMAAP_TOPIC + PolicyProperties.PROPERTY_TOPIC_AAF_MECHID_SUFFIX;
+    private static final String DMAAP_SOURCE_PASSWD_KEY = PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + 
+            "." + DMAAP_TOPIC + PolicyProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX;
+    
+    private static final String DMAAP_SINK_MECHID_KEY = PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
+            "." + DMAAP_TOPIC + PolicyProperties.PROPERTY_TOPIC_AAF_MECHID_SUFFIX;
+    private static final String DMAAP_SINK_PASSWD_KEY = PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
+            "." + DMAAP_TOPIC + PolicyProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX;
+    
+    
     private static CloseableHttpClient client;
     
     private static final Logger logger = LoggerFactory.getLogger(RestManagerTest.class);
@@ -60,6 +89,21 @@ public class RestManagerTest {
         engineProps.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyProperties.PROPERTY_HTTP_PORT_SUFFIX,
                 "" + DEFAULT_TELEMETRY_PORT);
+        engineProps.put(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS, UEB_TOPIC);
+        engineProps.put(PolicyProperties.PROPERTY_UEB_SINK_TOPICS, UEB_TOPIC);
+        engineProps.put(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS, DMAAP_TOPIC);
+        engineProps.put(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS, DMAAP_TOPIC);
+        engineProps.put(UEB_SOURCE_SERVER_PROPERTY, UEB_SERVER);
+        engineProps.put(UEB_SINK_SERVER_PROPERTY, UEB_SERVER);
+        engineProps.put(DMAAP_SOURCE_SERVER_PROPERTY, DMAAP_SERVER);
+        engineProps.put(DMAAP_SINK_SERVER_PROPERTY, DMAAP_SERVER);
+        engineProps.put(DMAAP_SOURCE_MECHID_KEY, DMAAP_MECHID);
+        engineProps.put(DMAAP_SOURCE_PASSWD_KEY, DMAAP_PASSWD);
+        engineProps.put(DMAAP_SINK_MECHID_KEY, DMAAP_MECHID);
+        engineProps.put(DMAAP_SINK_PASSWD_KEY, DMAAP_PASSWD);
+        engineProps.put(PolicyProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+
+        
             PolicyEngine.manager.configure(engineProps);
             PolicyEngine.manager.start();
     
@@ -70,14 +114,14 @@ public class RestManagerTest {
     @AfterClass
     public static void tearDown() {
         PolicyEngine.manager.shutdown();
- 
+
     }
     
     
     @Test
     public void GETTest() throws ClientProtocolException, IOException, InterruptedException {
         assertTrue(PolicyEngine.manager.isAlive());
-        
+
         HttpGet httpGet;
         CloseableHttpResponse response;
         String responseBody;
@@ -324,6 +368,198 @@ public class RestManagerTest {
         assertEquals(404, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
         
+        httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/encoders");
+        response = client.execute(httpGet);
+        logger.info("/engine/controllers/controller/encoders response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/switches");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/switches response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/sources response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/sinks response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/sinks/ueb response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/sources/ueb response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/sources/dmaap response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap");
+        response = client.execute(httpGet);
+        logger.info("/engine/topics/sinks/dmaap response code: {}",response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC);
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/ueb/{} response code: {}", UEB_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/foobar");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/ueb/foobar response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC);
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/ueb/{} response code: {}", UEB_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/foobar");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/ueb/foobar response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC);
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/dmaap/{} response code: {}", DMAAP_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/foobar");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/dmaap/foobar response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/" + DMAAP_TOPIC);
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/dmaap/{} response code: {}", DMAAP_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/foobar");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/dmaap/foobar response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/ueb/{}/events response code: {}", UEB_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/foobar/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/ueb/foobar/events response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC + "/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/ueb/{}/events response code: {}", UEB_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/foobar/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/ueb/foobar/events response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/dmaap/{}/events response code: {}", DMAAP_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/foobar/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/dmaap/foobar/events response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/" + DMAAP_TOPIC + "/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/dmaap/{}/events response code: {}", DMAAP_TOPIC,response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/foobar/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/dmaap/foobar/events response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(500, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/noop response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC);
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/noop/{} response code: {}", NOOP_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC + "/events");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sinks/noop/{}/events response code: {}", NOOP_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/ueb/{}/switches response code: {}", UEB_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/switches");
+        response = client.execute(httpGet);
+        logger.info("engine/topics/sources/dmaap/{}/switches response code: {}", DMAAP_TOPIC, response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/tools/uuid");
+        response = client.execute(httpGet);
+        logger.info("engine/tools/uuid response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+        
+        httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers");
+        response = client.execute(httpGet);
+        logger.info("engine/tools/loggers response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
         
     }
 
