@@ -24,23 +24,27 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.ws.rs.core.Response;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
+import org.onap.policy.drools.statemanagement.DbAudit;
+import org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager;
+import org.onap.policy.drools.statemanagement.RepositoryAudit;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.onap.policy.drools.statemanagement.StateManagementProperties;
 
@@ -91,7 +95,7 @@ public class StateManagementTest {
 	public void tearDown() throws Exception {
 		
 	}
-
+	
 	
 	/*
 	 * Verifies that StateManagementFeature starts and runs successfully.
@@ -137,13 +141,9 @@ public class StateManagementTest {
 		String standby = stateManagementFeature.getStandbyStatus();
 		
 		logger.debug("admin = {}", admin);
-		System.out.println("admin = " + admin);
 		logger.debug("oper = {}", oper);
-		System.out.println("oper = " + oper);
 		logger.debug("avail = {}", avail);
-		System.out.println("avail = " + avail);
 		logger.debug("standby = {}", standby);
-		System.out.println("standby = " + standby);
 		
 		assertTrue("Admin state not unlocked after initialization", admin.equals(StateManagement.UNLOCKED));
 		assertTrue("Operational state not enabled after initialization", oper.equals(StateManagement.ENABLED));
@@ -152,7 +152,6 @@ public class StateManagementTest {
 			stateManagementFeature.disableFailed();
 		}catch(Exception e){
 			logger.error(e.getMessage());
-			System.out.println(e.getMessage());
 			assertTrue(e.getMessage(), false);
 		}
 		
@@ -164,15 +163,10 @@ public class StateManagementTest {
 		standby = stateManagementFeature.getStandbyStatus();
 		
 		logger.debug("after disableFailed()");
-		System.out.println("after disableFailed()");
 		logger.debug("admin = {}", admin);
-		System.out.println("admin = " + admin);
 		logger.debug("oper = {}", oper);
-		System.out.println("oper = " + oper);
 		logger.debug("avail = {}", avail);
-		System.out.println("avail = " + avail);
 		logger.debug("standby = {}", standby);
-		System.out.println("standby = " + standby);
 		
 		assertTrue("Operational state not disabled after disableFailed()", oper.equals(StateManagement.DISABLED));
 		assertTrue("Availability status not failed after disableFailed()", avail.equals(StateManagement.FAILED));
@@ -182,10 +176,9 @@ public class StateManagementTest {
 			stateManagementFeature.promote();
 		}catch(Exception e){
 			logger.debug(e.getMessage());
-			System.out.println(e.getMessage());
 		}
 		
-		Thread.sleep(interruptRecoveryTime);
+		Thread.sleep(interruptRecoveryTime+10);
 		
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();
@@ -193,18 +186,49 @@ public class StateManagementTest {
 		standby = stateManagementFeature.getStandbyStatus();
 		
 		logger.debug("after promote()");
-		System.out.println("after promote()");
 		logger.debug("admin = {}", admin);
-		System.out.println("admin = " + admin);
 		logger.debug("oper = {}", oper);
-		System.out.println("oper = " + oper);
 		logger.debug("avail = {}", avail);
-		System.out.println("avail = " + avail);
 		logger.debug("standby = {}", standby);
-		System.out.println("standby = " + standby);
 
 		assertTrue("Standby status not coldstandby after promote()", standby.equals(StateManagement.COLD_STANDBY));
-				
+
+		/**************Repository Audit Test**************/
+		logger.debug("\n\ntestStateManagementOperation: Repository Audit\n\n");
+		try{
+			RepositoryAudit repositoryAudit = (RepositoryAudit) RepositoryAudit.getInstance();
+			repositoryAudit.invoke(fsmProperties);
+		
+			//Should throw an IOException 
+			assertTrue(false);
+		}catch(IOException e){
+			assertTrue(true);
+			logger.debug("testSubsytemTest RepositoryAudit exception", e);
+		}
+
+		/*****************Db Audit Test***************/
+		logger.debug("\n\ntestStateManagementOperation: DB Audit\n\n");
+		try{
+			DbAudit dbAudit = (DbAudit) DbAudit.getInstance();
+			DbAudit.isJunit = true;
+			dbAudit.invoke(fsmProperties);
+		
+			assertTrue(true);
+		}catch(Exception e){
+			assertTrue(false);
+			logger.debug("testSubsytemTest DbAudit expected exception", e);
+		}
+
+		/*************IntegrityMonitorRestManager Test*************/
+		logger.debug("\n\ntestStateManagementOperation: IntegrityMonitorRestManager\n\n");
+		IntegrityMonitorRestManager integrityMonitorRestManager = new IntegrityMonitorRestManager();
+		
+		Response response = integrityMonitorRestManager.test();
+		logger.debug("\n\nIntegrityMonitorRestManager response: " + response.toString());
+		
+		assertTrue(response.toString().contains("status=500"));
+
+		//All done
 		logger.debug("\n\ntestStateManagementOperation: Exiting\n\n");
 	}	
 	

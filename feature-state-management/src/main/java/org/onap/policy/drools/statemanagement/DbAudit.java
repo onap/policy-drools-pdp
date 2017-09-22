@@ -43,11 +43,13 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   // This indicates if 'CREATE TABLE IF NOT EXISTS Audit ...' should be
   // invoked -- doing this avoids the need to create the table in advance.
   static private boolean createTableNeeded = true;
+  
+  static public boolean isJunit = false;
 
   /**
    * @return the single 'DbAudit' instance
    */
-  static DroolsPDPIntegrityMonitor.AuditBase getInstance()
+  public static DroolsPDPIntegrityMonitor.AuditBase getInstance()
   {
 	return(instance);
   }
@@ -70,6 +72,9 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   {
 	if(logger.isDebugEnabled()){
 		logger.debug("Running 'DbAudit.invoke'");
+	}
+	if(isJunit){
+		createTableNeeded = false;
 	}
 	boolean isActive = true;
 	String dbAuditIsActive = StateManagementProperties.getProperty("db.audit.is.active");
