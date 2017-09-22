@@ -144,6 +144,7 @@ class HealthCheckMonitor implements HealthCheck {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public Reports healthCheck() {	
 		Reports reports = new Reports();
 		reports.healthy = PolicyEngine.manager.isAlive();
@@ -152,8 +153,8 @@ class HealthCheckMonitor implements HealthCheck {
 		engineReport.healthy = PolicyEngine.manager.isAlive();
 		engineReport.name = "PDP-D";
 		engineReport.url = "self";
-		engineReport.code = (PolicyEngine.manager.isAlive()) ? 200 : 500;
-		engineReport.message = (PolicyEngine.manager.isAlive()) ? "alive" : "not alive";
+		engineReport.code = PolicyEngine.manager.isAlive() ? 200 : 500;
+		engineReport.message = PolicyEngine.manager.isAlive() ? "alive" : "not alive";
 		reports.details.add(engineReport);
 		
 		for (HttpClient client : clients) {
