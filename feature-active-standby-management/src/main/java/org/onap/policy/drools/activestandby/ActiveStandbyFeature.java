@@ -106,6 +106,10 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 			logger.error("ActiveStandbyFeature failed to initialize.  "
 					+ "Unable to get instance of StateManagementFeatureAPI "
 					+ "with resourceID: {}", myPdp.getPdpId());
+			//
+			// Cannot add observer since stateManagementFeature is null
+			//
+			return;
 		}
 
 
@@ -172,15 +176,13 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 
 				myPdp = new DroolsPdpImpl(resourceName,false,4,new Date());	
 			}
-			if(myPdp != null){
-				String site_name = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
-				if (site_name == null) {
-					site_name = "";
-				}else{
-					site_name = site_name.trim();
-				}
-				myPdp.setSiteName(site_name);
+			String site_name = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
+			if (site_name == null) {
+				site_name = "";
+			}else{
+				site_name = site_name.trim();
 			}
+			myPdp.setSiteName(site_name);
 			if(electionHandler == null){
 				electionHandler = new DroolsPdpsElectionHandler(conn,myPdp);
 			}
