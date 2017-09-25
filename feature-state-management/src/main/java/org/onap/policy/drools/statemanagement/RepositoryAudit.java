@@ -51,7 +51,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
   /**
    * @return the single 'RepositoryAudit' instance
    */
-  static DroolsPDPIntegrityMonitor.AuditBase getInstance()
+  public static DroolsPDPIntegrityMonitor.AuditBase getInstance()
   {
 	return instance;
   }
