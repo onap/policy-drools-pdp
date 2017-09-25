@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_90183b76",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-25T13:32:12Z",
+      "side": 1,
+      "message": "I think it is better to have multiple @Test methods instead of orchestrating everything from this main method.\n\nYou can use:\n\n@FixMethodOrder(MethodSorters.NAME_ASCENDING)\n\nto process test cases in alphabetical order and then the name methods in alphabetical order.   See for example:\n\nhttps://git.onap.org/policy/drools-pdp/tree/policy-management/src/test/java/org/onap/policy/drools/system/test/PolicyEngineTest.java",
+      "revId": "5e7d1e0108a219fd086b8154194fa5c04f061dd9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_70295789",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-25T13:32:12Z",
+      "side": 1,
+      "message": "Better to use consistency for word separation, and not use \"_\" to be consistent with overall Java naming convention so use instead:\n\nPutDeleteTest\nGetTest",
+      "revId": "5e7d1e0108a219fd086b8154194fa5c04f061dd9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
