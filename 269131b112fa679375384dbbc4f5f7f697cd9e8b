@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_338199fb",
+        "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-25T17:34:45Z",
+      "side": 1,
+      "message": "Fixed it\n\nDone",
+      "parentUuid": "9a437d4f_901b9bc9",
+      "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_707cb7ec",
         "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9a437d4f_f3a551a2",
+        "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-25T17:34:45Z",
+      "side": 1,
+      "message": "Yes. I was just experimenting and forgot to take it out.\nRemoved it.\n\nDone",
+      "parentUuid": "9a437d4f_707cb7ec",
+      "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a437d4f_90727b0f",
         "filename": "feature-state-management/src/test/resources/feature-state-management.properties",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2017-09-25T15:39:41Z",
       "side": 1,
       "message": "what\u0027s the time unit of work, seconds or millisecs?  if seconds does it get converted in the right place to millisecs, ie. 5 * 1000. ??",
+      "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_f3faf173",
+        "filename": "feature-state-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2017-09-25T17:34:45Z",
+      "side": 1,
+      "message": "Yes.  I it is in unit of seconds.  In the code, the internal variable it \"timeoutInSeconds\".  I added a comment in the properties file.\n\nDone",
+      "parentUuid": "9a437d4f_90727b0f",
       "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
