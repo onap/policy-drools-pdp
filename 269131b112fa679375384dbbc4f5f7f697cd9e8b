@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_901b9bc9",
+        "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-25T15:39:41Z",
+      "side": 1,
+      "message": "This is 1 second does not match previous comment",
+      "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_707cb7ec",
+        "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-25T15:39:41Z",
+      "side": 1,
+      "message": "This is increasing by 10 millisecs which is insignificant, when taking into account garbagge collection pauses, etc .. is this what you really intended?",
+      "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_90727b0f",
+        "filename": "feature-state-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-25T15:39:41Z",
+      "side": 1,
+      "message": "what\u0027s the time unit of work, seconds or millisecs?  if seconds does it get converted in the right place to millisecs, ie. 5 * 1000. ??",
+      "revId": "269131b112fa679375384dbbc4f5f7f697cd9e8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
