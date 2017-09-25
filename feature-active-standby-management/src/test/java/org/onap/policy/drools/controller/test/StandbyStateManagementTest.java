@@ -38,10 +38,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.onap.policy.common.im.AdministrativeStateException;
 import org.onap.policy.common.im.IntegrityMonitor;
 import org.onap.policy.common.im.StandbyStatusException;
@@ -57,6 +54,8 @@ import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.PMStandbyStateChangeNotifier;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * All JUnits are designed to run in the local development environment

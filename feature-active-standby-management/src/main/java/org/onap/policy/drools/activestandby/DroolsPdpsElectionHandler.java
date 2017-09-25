@@ -256,7 +256,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 										logger.error
 										("DesignatedWaiter.run: myPdp: {} "
 												+ "Caught Exception attempting to demote myPdp,"
-												+ "message= {}", myPdp.getPdpId(), e.getMessage());
+												+ "message= {}", myPdp.getPdpId(), e);
 									}
 								}else{
 									// Don't demote a remote PDP that is current.  It should catch itself
@@ -318,7 +318,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 									logger.error
 									("DesignatedWaiter.run: myPdp: {} Caught Exception "
 											+ "attempting to disableFail myPdp {}, message= {}",
-											myPdp.getPdpId(), myPdp.getPdpId(), e.getMessage());
+											myPdp.getPdpId(), myPdp.getPdpId(), e);
 								}
 							} else { //it is a remote PDP that is failed
 								if(logger.isDebugEnabled()){
@@ -336,7 +336,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 									logger.error
 									("DesignatedWaiter.run: for PDP {}  Caught Exception attempting to "
 											+ "disableFail({}), message= {}",
-											pdp.getPdpId(), pdp.getPdpId(), e.getMessage());
+											pdp.getPdpId(), pdp.getPdpId(), e);
 								}
 
 							}
@@ -378,7 +378,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 										logger.error
 										("DesignatedWaiter.run: myPdp: {} Caught Exception "
 												+ "attempting to demote myPdp {}, message = {}",  myPdp.getPdpId(),
-												myPdp.getPdpId(), e.getMessage());
+												myPdp.getPdpId(), e);
 									}
 
 								}
@@ -438,7 +438,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 										logger.error
 										("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
 												+ "disableFail myPdp {}, message= {}", 
-												 myPdp.getPdpId(), myPdp.getPdpId(), e.getMessage());
+												 myPdp.getPdpId(), myPdp.getPdpId(), e);
 									}
 								}else{//it is remote
 									if(logger.isDebugEnabled()){
@@ -455,7 +455,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 										logger.error
 										("DesignatedWaiter.run: for PDP {}" 
 												+ " Caught Exception attempting to disableFail({})"
-												+ ", message=", pdp.getPdpId(), pdp.getPdpId(), e.getMessage());
+												+ ", message=", pdp.getPdpId(), pdp.getPdpId(), e);
 									}
 								}
 							}
@@ -551,7 +551,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						} catch (Exception e) {
 							logger.error
 							("ERROR: DesignatedWaiter.run: Caught Exception attempting to promote PDP={}"
-									+ ", message=", myPdp.getPdpId(), e.getMessage());
+									+ ", message=", myPdp.getPdpId(), e);
 							myPdp.setDesignated(false);
 							pdpsConnector.setDesignated(myPdp,false);
 							isDesignated = false;
@@ -571,7 +571,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 								logger.error
 								("ERROR: DesignatedWaiter.run: Caught StandbyStatusException "
 										+ "attempting to promote then demote PDP={}, message=",
-										myPdp.getPdpId(), e1.getMessage());
+										myPdp.getPdpId(), e1);
 							}
 
 						} 
@@ -850,7 +850,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						logger.error
 						("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
 								+ "demote myPdp {} myPdp.getPdpId(), message= {}", myPdp.getPdpId(), 
-								e.getMessage());
+								e);
 					}
 				}
 			} //end: for(DroolsPdp pdp : listOfDesignated)

@@ -80,16 +80,16 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 	private long waitInterval;
 	private boolean isNowActivating;
 	private String previousStandbyStatus;
-	public static String NONE = "none";
-	public static String UNSUPPORTED = "unsupported";
-	public static String HOTSTANDBY_OR_COLDSTANDBY = "hotstandby_or_coldstandby";
+	public static final String NONE = "none";
+	public static final String UNSUPPORTED = "unsupported";
+	public static final String HOTSTANDBY_OR_COLDSTANDBY = "hotstandby_or_coldstandby";
 		
 	public PMStandbyStateChangeNotifier(){
 		pdpUpdateInterval = Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
 		isWaitingForActivation = false;
 		startTimeWaitingForActivationMs = new Date().getTime();
 		//delay the activate so the DesignatedWaiter can run twice - give it an extra 2 seconds
-		waitInterval = 2*pdpUpdateInterval + 2000;
+		waitInterval = 2*pdpUpdateInterval + 2000L;
 		isNowActivating=false;
 		previousStandbyStatus = PMStandbyStateChangeNotifier.NONE;
 	}
@@ -248,7 +248,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 						delayActivateTimer.cancel();
 					}catch(Exception e){
 						if(logger.isDebugEnabled()){
-							logger.debug("handleStateChange: PROVIDING_SERVICE no delayActivationTimer existed.");
+							logger.debug("handleStateChange: PROVIDING_SERVICE no delayActivationTimer existed.", e);
 						}
 						//If you end of here, there was no active timer
 					}
