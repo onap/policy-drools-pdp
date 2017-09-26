@@ -128,7 +128,12 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>[1.4.186,)</version>
+			<version>1.4.196</version>
+			<scope>test</scope>
+		</dependency>
+	    <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

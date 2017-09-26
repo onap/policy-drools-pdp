@@ -42,8 +42,18 @@ public interface TestTransaction {
 
   public static final TestTransaction manager = new TTImpl();
 
+  /**
+   * register a controller for monitoring test transactions
+   *
+   * @param controller policy controller
+   */
   public void register(PolicyController controller);
 
+  /**
+   * unregisters a controller for monitoring test transactions
+   *
+   * @param controller policy controller
+   */
   public void unregister(PolicyController controller);
 }
 

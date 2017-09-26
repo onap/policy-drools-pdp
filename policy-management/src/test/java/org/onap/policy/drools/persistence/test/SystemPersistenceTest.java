@@ -29,12 +29,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.onap.policy.drools.persistence.FileSystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.PolicyProperties;
@@ -44,6 +45,7 @@ import org.slf4j.LoggerFactory;
 /**
  * (File) System Persistence Tests
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SystemPersistenceTest {
 
   /**
@@ -59,7 +61,7 @@ public class SystemPersistenceTest {
   /**
    * Test JUnit Controller Name
    */
-  public static final String TEST_CONTROLLER_NAME = "blue";
+  public static final String TEST_CONTROLLER_NAME = "foo";
 
   /**
    * Test JUnit Controller Name
@@ -69,19 +71,27 @@ public class SystemPersistenceTest {
   /**
    * Test JUnit Controller Name Backup
    */
-  public static final String TEST_CONTROLLER_FILE_BAK =
-      TEST_CONTROLLER_NAME + "-controller.properties.bak";
-  
+  public static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
+
   /**
    * Test JUnit Environment/Engine properties
    */
   private static final String ENV_PROPS = "envProps";
   private static final String ENV_PROPS_FILE = ENV_PROPS + ".environment";
   private static final String POLICY_ENGINE_PROPERTIES_FILE = "policy-engine.properties";
-  
+
+  @BeforeClass
+  public static void setUp() throws IOException {
+    cleanUpWorkingDirs();
+  }
+
+  @AfterClass
+  public static void tearDown() throws IOException {
+    cleanUpWorkingDirs();
+  }
 
   @Test
-  public void nonDefaultConfigDir() throws IOException {
+  public void test1NonDefaultConfigDir() throws IOException {
     logger.info("enter");
 
     SystemPersistence.manager.setConfigurationDir(OTHER_CONFIG_DIR);
@@ -91,52 +101,44 @@ public class SystemPersistenceTest {
     SystemPersistence.manager.setConfigurationDir(null);
     assertTrue(SystemPersistence.manager.getConfigurationPath().toString()
         .equals(SystemPersistence.DEFAULT_CONFIGURATION_DIR));
-
-    this.engineConfiguration();
-    this.persistConfiguration();
-
-    cleanUpWorkingDirs();
   }
 
-  public void engineConfiguration() {      
-    SystemPersistence.manager.setConfigurationDir(OTHER_CONFIG_DIR);
-    final Path policyEnginePropsPath = Paths.get(OTHER_CONFIG_DIR + "/" + FileSystemPersistence.PROPERTIES_FILE_ENGINE);
-    final Path environmentPropertiesPath = Paths.get(OTHER_CONFIG_DIR + "/" + ENV_PROPS_FILE);
-      
-    Properties policyEnginePropsObject, emptyProps;
-    emptyProps = new Properties();
-    
-    List<Properties> envPropertesList = new ArrayList<>();
-    envPropertesList.add(emptyProps);
-    
-    policyEnginePropsObject = new Properties();
-    policyEnginePropsObject.setProperty("foo", "bar");
-    policyEnginePropsObject.setProperty("fiz", "buz");
-   
-    try { 
-        
-        if (Files.notExists(environmentPropertiesPath)) {
-            Files.createFile(environmentPropertiesPath);
-        }
-        
-        if (Files.notExists(policyEnginePropsPath)) {
-            OutputStream fout = new FileOutputStream(policyEnginePropsPath.toFile());
-            policyEnginePropsObject.store(fout, "");
-            fout.close();
-        } 
-    } catch (IOException e) {
-            logger.error("Problem creating {}", policyEnginePropsPath);
-    }
-    
-    assertEquals(SystemPersistence.manager.getEngineProperties(), policyEnginePropsObject);
-    assertEquals(SystemPersistence.manager.getEnvironmentProperties(ENV_PROPS), emptyProps);
-    assertEquals(SystemPersistence.manager.getEnvironmentProperties(), envPropertesList);
-    
-  }
-  
-  public void persistConfiguration() {
+  @Test
+  public void test2Engine() throws IOException {
     logger.info("enter");
-  
+
+    SystemPersistence.manager.setConfigurationDir(OTHER_CONFIG_DIR);
+
+    final Path policyEnginePropsPath =
+        Paths.get(SystemPersistence.manager.getConfigurationPath().toString(),
+            FileSystemPersistence.PROPERTIES_FILE_ENGINE);
+
+    final Properties engineProps = new Properties();
+    engineProps.setProperty("foo", "bar");
+    engineProps.setProperty("fiz", "buz");
+    if (Files.notExists(policyEnginePropsPath)) {
+      try (final OutputStream fout = new FileOutputStream(policyEnginePropsPath.toFile())) {
+        engineProps.store(fout, "");
+      }
+    }
+
+    assertEquals(SystemPersistence.manager.getEngineProperties(), engineProps);
+
+    final Path environmentPropertiesPath =
+        Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), ENV_PROPS_FILE);
+    if (Files.notExists(environmentPropertiesPath)) {
+      Files.createFile(environmentPropertiesPath);
+    }
+    assertTrue(SystemPersistence.manager.getEnvironmentProperties(ENV_PROPS).isEmpty());
+    assertTrue(SystemPersistence.manager.getEnvironmentProperties().size() == 1);
+  }
+
+  @Test
+  public void test3PersistConfiguration() {
+    logger.info("enter");
+
+    SystemPersistence.manager.setConfigurationDir(null);
+
     final Path controllerPath = Paths
         .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
 
@@ -164,26 +166,22 @@ public class SystemPersistenceTest {
     assertTrue(Files.notExists(controllerPath));
   }
 
-  @BeforeClass
   public static void cleanUpWorkingDirs() throws IOException {
+
+    SystemPersistence.manager.setConfigurationDir(null);
+
     final Path testControllerPath = Paths
         .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
-
     final Path testControllerBakPath = Paths
         .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
 
-    final Path policyEnginePath = Paths
-        .get(OTHER_CONFIG_DIR + "/" + POLICY_ENGINE_PROPERTIES_FILE);
-    
-    final Path environmentPath = Paths
-        .get(OTHER_CONFIG_DIR + "/" + ENV_PROPS_FILE);
-    
+    final Path policyEnginePath = Paths.get(OTHER_CONFIG_DIR, POLICY_ENGINE_PROPERTIES_FILE);
+    final Path environmentPath = Paths.get(OTHER_CONFIG_DIR, ENV_PROPS_FILE);
+
     Files.deleteIfExists(testControllerPath);
     Files.deleteIfExists(testControllerBakPath);
     Files.deleteIfExists(policyEnginePath);
     Files.deleteIfExists(environmentPath);
-    Files.deleteIfExists(Paths.get(OTHER_CONFIG_DIR));
-    
   }
 
 }
