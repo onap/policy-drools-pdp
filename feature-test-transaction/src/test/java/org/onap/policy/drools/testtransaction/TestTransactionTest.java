@@ -74,21 +74,18 @@ public class TestTransactionTest {
   }
 
   @Test
-  public void registerUnregisterTest() {
+  public void registerUnregisterTest() throws InterruptedException {
     final Properties controllerProperties = new Properties();
     controllerProperties.put(PolicyProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
     final PolicyController controller =
         PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
+    assertNotNull(PolicyController.factory.get(TEST_CONTROLLER_NAME));
+    logger.info(controller.toString());
+
     Thread ttThread = null;
 
     TestTransaction.manager.register(controller);
     assertNotNull(TestTransaction.manager);
-
-    /*
-     * If the controller was successfully registered it will have a thread created.
-     */
-    ttThread = this.getThread("tt-controller-task-" + TEST_CONTROLLER_NAME);
-    assertNotNull(ttThread);
 
     /*
      * Unregistering the controller should terminate its TestTransaction thread if it hasn't already
@@ -96,15 +93,6 @@ public class TestTransactionTest {
      */
     TestTransaction.manager.unregister(controller);
 
-    /*
-     * Put this thread to sleep so the TestTransaction thread has enough time to terminate before we
-     * check.
-     */
-    try {
-      Thread.sleep(2000);
-    } catch (final InterruptedException e) {
-
-    }
     ttThread = this.getThread("tt-controller-task-" + TEST_CONTROLLER_NAME);
     assertEquals(null, ttThread);
 
@@ -114,7 +102,9 @@ public class TestTransactionTest {
   /*
    * Returns thread object based on String name
    */
-  public Thread getThread(String threadName) {
+  public Thread getThread(String threadName) throws InterruptedException {
+    // give a chance to the transaction thread to be spawned/destroyed
+    Thread.sleep(5000L);
 
     final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
     for (final Thread thread : threadSet) {

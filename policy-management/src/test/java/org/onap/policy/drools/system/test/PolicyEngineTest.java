@@ -33,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.onap.policy.drools.event.comm.TopicEndpoint;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.system.PolicyController;
@@ -54,7 +55,7 @@ public class PolicyEngineTest {
   /**
    * Test JUnit Controller Name
    */
-  public static final String TEST_CONTROLLER_NAME = "unnamed";
+  public static final String TEST_CONTROLLER_NAME = "foo";
 
   /**
    * Controller Configuration File
@@ -64,8 +65,7 @@ public class PolicyEngineTest {
   /**
    * Controller Configuration Backup File
    */
-  public static final String TEST_CONTROLLER_FILE_BAK =
-      TEST_CONTROLLER_NAME + "-controller.properties.bak";
+  public static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
 
   /**
    * logger
@@ -226,10 +226,16 @@ public class PolicyEngineTest {
   }
 
   @Test
-  public void test901Stop() {
+  public void test901Stop() throws InterruptedException {
     logger.info("enter");
 
+    /* Shutdown managed resources */
+    PolicyController.factory.shutdown();
+    TopicEndpoint.manager.shutdown();
     PolicyEngine.manager.stop();
+
+    PolicyEngine.manager.stop();
+    Thread.sleep(10000L);
     assertFalse(PolicyEngine.manager.isAlive());
   }
 
