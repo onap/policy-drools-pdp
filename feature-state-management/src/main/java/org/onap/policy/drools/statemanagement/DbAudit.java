@@ -44,11 +44,21 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   // invoked -- doing this avoids the need to create the table in advance.
   static private boolean createTableNeeded = true;
   
-  static public boolean isJunit = false;
-
   synchronized private static void setCreateTableNeeded(boolean b) {
 		DbAudit.createTableNeeded = b;
-	}
+  }
+  
+  static private boolean isJunit = false;
+  
+  synchronized public static void setIsJunit(boolean b) {
+		DbAudit.isJunit = b;
+  }
+  
+  public static boolean isJunit(){
+	  return DbAudit.isJunit;
+  }
+  
+  
   /**
    * @return the single 'DbAudit' instance
    */

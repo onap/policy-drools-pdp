@@ -110,7 +110,7 @@ public class StateManagementTest {
 
 		String configDir = "src/test/resources";
 		
-		DbAudit.isJunit = true;
+		DbAudit.setIsJunit(true);
 		
 		Properties fsmProperties = new Properties();
 		fsmProperties.load(new FileInputStream(new File(
