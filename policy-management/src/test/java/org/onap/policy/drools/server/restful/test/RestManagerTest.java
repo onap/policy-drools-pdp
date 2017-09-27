@@ -21,7 +21,6 @@
 package org.onap.policy.drools.server.restful.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -129,8 +128,14 @@ public class RestManagerTest {
 
     PolicyEngine.manager.configure(engineProps);
     PolicyEngine.manager.start();
+    
+    Properties controllerProps = new Properties();
+    PolicyEngine.manager.createPolicyController(FOO_CONTROLLER, controllerProps);
 
+    
     client = HttpClients.createDefault();
+    
+
   }
 
   @AfterClass
@@ -143,26 +148,148 @@ public class RestManagerTest {
     client.close();
     cleanUpWorkingDirs();
   }
-
+  
+ 
   @Test
   public void putDeleteTest() throws ClientProtocolException, IOException, InterruptedException {
     HttpPut httpPut;
     HttpDelete httpDelete;
     CloseableHttpResponse response;
-
+    
+    /*
+     * DELETE:
+     *      /engine/controllers/controllerName/drools/facts/session/factType
+     *      
+     */
+    httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session/factType");
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+    
+    httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/controllerName/drools/facts/session/factType");
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(404, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+    
+    /*
+     * PUT:
+     *      /engine/switches/lock
+     *      /engine/controllers/controllername/switches/lock
+     * DELETE:
+     *      /engine/switches/lock
+     *      /engine/controllers/controllername  
+     */
+    httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(406, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+    
+    httpDelete = new HttpDelete(HOST_URL + "/engine/switches/lock");
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(406, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+    
+    httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/");
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+            response.getStatusLine().getStatusCode());
+    assertEquals(405, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+        
+    httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + null);
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+    response.getStatusLine().getStatusCode());
+    assertEquals(400, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+    
+    httpPut = new HttpPut(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/switches/lock");
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() +" response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(406, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+         
+    httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER);
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+    response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+  
+    httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+    
+    httpDelete = new HttpDelete(HOST_URL + "/engine/switches/lock");
+    response = client.execute(httpDelete);
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpDelete.releaseConnection();
+ 
+    /*
+     * PUT:
+     *      /engine/topics/sources/ueb/topic/events
+     *      /engine/topics/sources/dmaap/topic/events
+     *      /engine/topics/switches/lock
+     * DELETE:
+     *      /engine/topics/switches/lock
+     */
     httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
     httpPut.addHeader("Content-Type", "text/plain");
     httpPut.addHeader("Accept", "application/json");
     httpPut.setEntity(new StringEntity("FOOOO"));
     response = client.execute(httpPut);
-    logger.info("/engine/topics/sources/ueb/{}/events response code: {}", UEB_TOPIC,
+    logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-
+    
+    httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/events");
+    httpPut.addHeader("Content-Type", "text/plain");
+    httpPut.addHeader("Accept", "application/json");
+    httpPut.setEntity(new StringEntity("FOOOO"));
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+    
+    httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/fiznits/events");
+    httpPut.addHeader("Content-Type", "text/plain");
+    httpPut.addHeader("Accept", "application/json");
+    httpPut.setEntity(new StringEntity("FOOOO"));
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(406, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+    
+    httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/fiznits/events");
+    httpPut.addHeader("Content-Type", "text/plain");
+    httpPut.addHeader("Accept", "application/json");
+    httpPut.setEntity(new StringEntity("FOOOO"));
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(404, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+    
     httpPut = new HttpPut(HOST_URL + "/engine/topics/switches/lock");
     response = client.execute(httpPut);
-    logger.info("/engine/topics/switches/lock response code: {}",
+    logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
@@ -172,21 +299,39 @@ public class RestManagerTest {
     httpPut.addHeader("Accept", "application/json");
     httpPut.setEntity(new StringEntity("FOOOO"));
     response = client.execute(httpPut);
-    logger.info("/engine/topics/sources/ueb/{}/events response code: {}", UEB_TOPIC,
+    logger.info(httpPut.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(406, response.getStatusLine().getStatusCode());
+    httpPut.releaseConnection();
+    
+    httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/events");
+    httpPut.addHeader("Content-Type", "text/plain");
+    httpPut.addHeader("Accept", "application/json");
+    httpPut.setEntity(new StringEntity("FOOOO"));
+    response = client.execute(httpPut);
+    logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(406, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
 
     httpDelete = new HttpDelete(HOST_URL + "/engine/topics/switches/lock");
     response = client.execute(httpDelete);
-    logger.info("/engine/topics/switches/lock response code: {}",
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-
+    
+    /*
+     * PUT:
+     *      /engine/topics/sources/ueb/topic/switches/lock
+     *      /engine/topics/sources/dmaap/topic/switches/lock
+     * DELETE:
+     *      /engine/topics/sources/ueb/topic/switches/lock
+     *      /engine/topics/sources/dmaap/topic/switches/lock
+     */
     httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches/lock");
     response = client.execute(httpPut);
-    logger.info("/engine/topics/sources/ueb/{}/switches/lock: {}", UEB_TOPIC,
+    logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
@@ -194,7 +339,7 @@ public class RestManagerTest {
     httpDelete =
         new HttpDelete(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches/lock");
     response = client.execute(httpDelete);
-    logger.info("/engine/topics/sources/ueb/{}/switches/lock: {}", UEB_TOPIC,
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
@@ -202,7 +347,7 @@ public class RestManagerTest {
     httpPut =
         new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/switches/lock");
     response = client.execute(httpPut);
-    logger.info("/engine/topics/sources/dmaap/{}/switches/lock: {}", DMAAP_TOPIC,
+    logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
@@ -210,95 +355,104 @@ public class RestManagerTest {
     httpDelete =
         new HttpDelete(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/switches/lock");
     response = client.execute(httpDelete);
-    logger.info("/engine/topics/sources/dmaap/{}/switches/lock: {}", DMAAP_TOPIC,
-        response.getStatusLine().getStatusCode());
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    httpDelete.releaseConnection();
-
-    httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER);
-    response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
 
-    httpPut = new HttpPut(HOST_URL + "/engine/switches/activation");
+    /*
+     * PUT:
+     *     /engine/switches/activation
+     * DELETE:
+     *     /engine/switches/activation 
+     */
+   /* httpPut = new HttpPut(HOST_URL + "/engine/switches/activation");
     response = client.execute(httpPut);
-    logger.info("/engine/switches/activation response code: {}",
+    logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
 
     httpDelete = new HttpDelete(HOST_URL + "/engine/switches/activation");
     response = client.execute(httpDelete);
-    logger.info("/engine/switches/activation response code: {}",
+    logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
-    httpDelete.releaseConnection();
-
-    httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
+    httpDelete.releaseConnection();*/
+    
+    /*
+     * PUT:
+     *      /engine/tools/loggers/logger/level
+     */
+    httpPut = new HttpPut(HOST_URL + "/engine/tools/loggers/ROOT/debug");
     response = client.execute(httpPut);
-    logger.info("/engine/switches/activation response code: {}",
+    logger.info(httpPut.getRequestLine() + "response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-
-    httpDelete = new HttpDelete(HOST_URL + "/engine/switches/lock");
-    response = client.execute(httpDelete);
-    logger.info("/engine/switches/lock response code: {}",
-        response.getStatusLine().getStatusCode());
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    httpPut.releaseConnection();
+    
   }
-
+  
+  
   @Test
   public void getTest() throws ClientProtocolException, IOException, InterruptedException {
-
     HttpGet httpGet;
     CloseableHttpResponse response;
     String responseBody;
 
+    /*
+     * GET:
+     *      /engine
+     *      /engine/features
+     *      /engine/features/inventory
+     *      /engine/features/featurename
+     *      /engine/inputs
+     *      /engine/properties
+     *      /engine/environment
+     *      /engine/switches
+     *      /engine/controllers
+     */ 
     httpGet = new HttpGet(HOST_URL + "/engine");
     response = client.execute(httpGet);
-    logger.info("/engine response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/features");
     response = client.execute(httpGet);
-    logger.info("/engine/features response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/features/inventory");
     response = client.execute(httpGet);
-    logger.info("/engine/features/inventory response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/features/foobar");
     response = client.execute(httpGet);
-    logger.info("/engine/features/foobar response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/inputs");
     response = client.execute(httpGet);
-    logger.info("/engine/inputs response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/properties");
     response = client.execute(httpGet);
-    logger.info("/engine/properties response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/environment");
     response = client.execute(httpGet);
-    logger.info("/engine/environment response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
@@ -306,142 +460,164 @@ public class RestManagerTest {
     httpGet = new HttpGet(HOST_URL + "/engine/environment/foo");
     response = client.execute(httpGet);
     responseBody = this.getResponseBody(response);
-    logger.info("/engine/environment/foo response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
-    logger.info("/engine/environment/foo response body: {}", responseBody);
+    logger.info(httpGet.getRequestLine() + " response body: {}", responseBody);
     assertEquals(200, response.getStatusLine().getStatusCode());
     assertEquals("bar", responseBody);
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/switches");
     response = client.execute(httpGet);
-    logger.info("/engine/switches response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
-    final Properties controllerProps = new Properties();
-    PolicyEngine.manager.createPolicyController(FOO_CONTROLLER, controllerProps);
     httpGet = new HttpGet(HOST_URL + "/engine/controllers");
     response = client.execute(httpGet);
     responseBody = this.getResponseBody(response);
-    logger.info("/engine/controllers response code: {}", response.getStatusLine().getStatusCode());
-    logger.info("/engine/controllers response body: {}", responseBody);
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response body: {}", responseBody);
     assertEquals(200, response.getStatusLine().getStatusCode());
     assertEquals("[\"" + FOO_CONTROLLER + "\"]", responseBody);
     httpGet.releaseConnection();
 
+    /*
+     * GET:
+     *      /engine/controllers/inventory
+     *      /engine/controllers/features
+     *      /engine/controllers/features/inventory
+     *      /engine/controllers/features/featureName
+     *      /engine/controllers/controllerName
+     *      
+     */
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/inventory");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/inventory response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/features");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/features response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/features/inventory");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/features/inventory response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/features/dummy");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/features/dummy response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER);
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/ response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/nonexistantcontroller");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/nonexistantcontroller response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
+    /*
+     * GET:
+     *      /engine/controllers/controllerName/properties
+     *      /engine/controllers/controllerName/inputs
+     *      /engine/controllers/controllerName/switches
+     *      /engine/controllers/controllerName/drools
+     */
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/properties");
     response = client.execute(httpGet);
     responseBody = this.getResponseBody(response);
-    logger.info("/engine/controllers/contoller/properties response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
-    logger.info("/engine/controllers/contoller/properties response code: {}", responseBody);
+    logger.info(httpGet.getRequestLine() + " response code: {}", responseBody);
     assertEquals(200, response.getStatusLine().getStatusCode());
     assertEquals("{}", responseBody);
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/nonexistantcontroller/properties");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/nonexistantcontroller/properties response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/inputs");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/inputs response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/switches");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/switches response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/drools response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/nonexistantcontroller/drools");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/nonexistantcontroller/drools response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
+    /*
+     * GET:
+     *      /engine/controllers/controllerName/drools/facts
+     *      /engine/controllers/controllerName/drools/facts/session
+     *      /engine/controllers/controllerName/drools/facts/session/factType
+     *      /engine/controllers/controllerName/drools/facts/session/query/queriedEntity
+     *      
+     */
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/drools/facts response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/nonexistantcontroller/drools/facts");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/nonexistantcontroller/drools/facts response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet =
-        new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/dummy");
+        new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/drools/facts/fact response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(
-        HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/dummy/dummy");
+        HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session/factType");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/drools/facts/fact response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
@@ -449,43 +625,62 @@ public class RestManagerTest {
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER
         + "/drools/facts/session/query/queriedEntity");
     response = client.execute(httpGet);
-    logger.info(
-        "/engine/controllers/controller/drools/facts/session/query/queriedEntity response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
+    
+    httpGet = new HttpGet(HOST_URL + "/engine/controllers/dummy"
+            + "/drools/facts/session/query/queriedEntity");
+    response = client.execute(httpGet);
+    logger.info(httpGet.getRequestLine() + " response code: {}",
+            response.getStatusLine().getStatusCode());
+    assertEquals(404, response.getStatusLine().getStatusCode());
+    httpGet.releaseConnection();
 
+
+    /*
+     * GET:
+     *      /engine/controllers/controllerName/decoders
+     *      /engine/controllers/controllerName/decoders/filters
+     *      /engine/controllers/controllerName/decoders/topic
+     *      /engine/controllers/controllerName/decoders/topic/filters
+     *      /engine/controllers/controllerName/decoders/topic/filters/factType
+     *      /engine/controllers/controllerName/decoders/topic/filters/factType/rules
+     *      /engine/controllers/controllerName/decoders/topic/filtes/factType/rules/ruleName
+     *      /engine/controllers/controllerName/encoders
+     */
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/decoders response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/nonexistantcontroller/decoders");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/nonexistantcontroller/decoders response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/filters");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controllers/decoders/filters response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/nonexistantcontroller/decoders/filters");
     response = client.execute(httpGet);
-    logger.info("engine/controllers/nonexistantcontroller/decoders/filters response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controllers/decoders/topics response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
@@ -493,7 +688,7 @@ public class RestManagerTest {
     httpGet =
         new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic/filters");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controllers/decoders/topic/filters response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
@@ -501,7 +696,7 @@ public class RestManagerTest {
     httpGet = new HttpGet(
         HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic/filters/factType");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/decoders/topic/filters/factType response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
@@ -509,8 +704,7 @@ public class RestManagerTest {
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER
         + "/decoders/topic/filters/factType/rules");
     response = client.execute(httpGet);
-    logger.info(
-        "/engine/controllers/controllers/decoders/topic/filters/factType/rules response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
@@ -518,238 +712,271 @@ public class RestManagerTest {
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER
         + "/decoders/topic/filters/factType/rules/ruleName");
     response = client.execute(httpGet);
-    logger.info(
-        "/engine/controllers/controllers/decoders/topic/filters/factType/rules/ruleName response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/encoders");
     response = client.execute(httpGet);
-    logger.info("/engine/controllers/controller/encoders response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
+    /*
+     * GET:
+     *      /engine/topics
+     *      /engine/topics/switches
+     *      /engine/topics/sources
+     *      /engine/topics/sinks
+     *      /engine/topics/sinks/ueb
+     *      /engine/topics/sources/ueb
+     *      /engine/topics/sinks/dmaap
+     *      /engine/topics/sources/dmaap
+     *      /engine/topics/sinks/ueb/topic
+     *      /engine/topics/sources/ueb/topic
+     *      /engine/topics/sinks/dmaap/topic
+     *      /engine/topics/sources/dmaap/topic
+     *      /engine/topics/sinks/ueb/topic/events
+     *      /engine/topics/sources/ueb/topic/events
+     *      /engine/topics/sinks/dmaap/topic/events
+     *      /engine/topics/sources/dmaap/topic/events
+     *      /engine/topics/sources/ueb/topic/switches
+     *      /engine/topics/sources/dmaap/topic/switches
+     */
     httpGet = new HttpGet(HOST_URL + "/engine/topics");
     response = client.execute(httpGet);
-    logger.info("/engine/topics response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/switches");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/switches response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/sources response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/sinks response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/sinks/ueb response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/sources/ueb response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/sources/dmaap response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap");
     response = client.execute(httpGet);
-    logger.info("/engine/topics/sinks/dmaap response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC);
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/ueb/{} response code: {}", UEB_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/foobar");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/ueb/foobar response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC);
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/ueb/{} response code: {}", UEB_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/foobar");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/ueb/foobar response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC);
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/dmaap/{} response code: {}", DMAAP_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/foobar");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/dmaap/foobar response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/" + DMAAP_TOPIC);
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/dmaap/{} response code: {}", DMAAP_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/foobar");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/dmaap/foobar response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/ueb/{}/events response code: {}", UEB_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/foobar/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/ueb/foobar/events response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC + "/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/ueb/{}/events response code: {}", UEB_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/foobar/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/ueb/foobar/events response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/dmaap/{}/events response code: {}", DMAAP_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/foobar/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/dmaap/foobar/events response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/" + DMAAP_TOPIC + "/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/dmaap/{}/events response code: {}", DMAAP_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/dmaap/foobar/events");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/dmaap/foobar/events response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
-
-    httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop");
-    response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/noop response code: {}",
-        response.getStatusLine().getStatusCode());
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    httpGet.releaseConnection();
-
-    httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC);
-    response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/noop/{} response code: {}", NOOP_TOPIC,
-        response.getStatusLine().getStatusCode());
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    httpGet.releaseConnection();
-
-    httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC + "/events");
-    response = client.execute(httpGet);
-    logger.info("engine/topics/sinks/noop/{}/events response code: {}", NOOP_TOPIC,
-        response.getStatusLine().getStatusCode());
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    httpGet.releaseConnection();
-
+    
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/ueb/{}/switches response code: {}", UEB_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/switches");
     response = client.execute(httpGet);
-    logger.info("engine/topics/sources/dmaap/{}/switches response code: {}", DMAAP_TOPIC,
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
+    /*
+     * GET:
+     *      /engine/topics/sinks/noop
+     *      /engine/topics/sinks/noop/topic
+     *      /engine/topics/sinks/noop/topic/events
+     */
+    httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop");
+    response = client.execute(httpGet);
+    logger.info(httpGet.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpGet.releaseConnection();
+
+    httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC);
+    response = client.execute(httpGet);
+    logger.info(httpGet.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpGet.releaseConnection();
+
+    httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC + "/events");
+    response = client.execute(httpGet);
+    logger.info(httpGet.getRequestLine() + " response code: {}",
+        response.getStatusLine().getStatusCode());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    httpGet.releaseConnection();
+
+    /*
+     * GET:
+     *      /engine/tools/uuid
+     *      /engine/tools/loggers
+     *      /engine/tools/loggers/loggerName
+     */
     httpGet = new HttpGet(HOST_URL + "/engine/tools/uuid");
     response = client.execute(httpGet);
-    logger.info("engine/tools/uuid response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers");
     response = client.execute(httpGet);
-    logger.info("engine/tools/loggers response code: {}", response.getStatusLine().getStatusCode());
+    logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
 
     httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers/ROOT");
     response = client.execute(httpGet);
-    logger.info("engine/tools/loggers/ROOT response code: {}",
+    logger.info(httpGet.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
+  
   }
 
 
