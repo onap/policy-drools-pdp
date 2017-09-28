@@ -100,7 +100,7 @@ public class Main {
     if (engineProperties == null)
       engineProperties = PolicyEngine.manager.defaultTelemetryConfig();
 
-    PolicyEngine.manager.configure(PolicyEngine.manager.defaultTelemetryConfig());
+    PolicyEngine.manager.configure(engineProperties);
 
     /* 1.b. Load Installation Environment(s) */
 
