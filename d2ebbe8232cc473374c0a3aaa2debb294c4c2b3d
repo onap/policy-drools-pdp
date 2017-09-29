@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_aa672c4c",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "ONAP instead",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_4a56805d",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "Make sure there is no import warnings (unused imports, I dont see ControllerConfiguration class being used).",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_2a533c6c",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "don\u0027t see this being used neither",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_aace0c2c",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "In the next 3 lines, delete the comments, they just say the same thing, or MSO which is not relevant",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_0ae3d8a4",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "REGEX2a instead of REGEX2 to be consistent with naming convention in line 66-67 (REGEX3a and REGEX3b)",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_eadf74d4",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "unnecessary these 2 lines, they are always going to pass",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_caf03069",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "fix indentation, general comment",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_aaf5ec57",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "lete\u0027s not test toString(), it is not used for any real purpose other than description.  If toString() changes with a new field, etc .. or format will have to come here ..   This is a global comment for the whole file",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_8ae6a8ae",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-09-29T20:19:54Z",
+      "side": 1,
+      "message": "typo",
+      "revId": "d2ebbe8232cc473374c0a3aaa2debb294c4c2b3d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
