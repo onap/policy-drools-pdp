@@ -129,11 +129,9 @@ public class JsonProtocolFilter {
 	 */
 	public static JsonProtocolFilter fromRawFilters(List<Pair<String, String>> rawFilters) 
 		throws IllegalArgumentException {
-		
 		if (rawFilters == null) {
 			throw new IllegalArgumentException("No raw filters provided");
 		}
-		
 		List<FilterRule> filters = new ArrayList<>();
 		for (Pair<String, String> filterPair: rawFilters) {
 			if  (filterPair.first() == null || filterPair.first().isEmpty()) {
@@ -183,31 +181,44 @@ public class JsonProtocolFilter {
 		if (json == null) {
 			throw new IllegalArgumentException("no JSON provided");
 		}
-		
+		logger.info("mike 2");
 		if (rules.isEmpty()) {
 			return true;
 		}
-		
+		logger.info("mike json = " + json.toString());
 		try {
 			if (!json.isJsonObject()) {
+				logger.info("mike crap1");
 				return false;
 			}
 			
 			JsonObject event = json.getAsJsonObject();
+			logger.info("mike event = " + event.toString());
 			for (FilterRule filter: rules) {
+				logger.info("mike filter = " + filter.toString());
+				logger.info("mike filter.name = " + filter.name.toString());
+				logger.info("mike filter.regex = " + filter.regex.toString());
+				logger.info("mike in loop");
 				if (filter.regex == null || 
 					filter.regex.isEmpty() ||  
 					filter.regex.equals(".*")) {
 					
 					// Only check for presence
 					if (!event.has(filter.name)) {
+						logger.info("mike crap2");
 						return false;
 					}
 				} else {
+					logger.info("mike in loopb");
+					logger.info("mike filter.name = " + filter.name.toString());
 					JsonElement field = event.get(filter.name);
+	//				logger.info("mike filter.name = " + event.get(filter.name).toString());
+					
 					if (field == null) {
+						logger.info("mike crap3");
 						return false;
 					}
+					logger.info("mike field = " + field.toString());
 					
 					String fieldValue = field.getAsString();
 					if (!fieldValue.matches(filter.regex)) {
@@ -233,7 +244,7 @@ public class JsonProtocolFilter {
 		if (json == null || json.isEmpty()) {
 			throw new IllegalArgumentException("no JSON provided");
 		}
-		
+		logger.info("mike 1");
 		if (rules.isEmpty()) {
 			return true;
 		}
@@ -243,7 +254,7 @@ public class JsonProtocolFilter {
 			if (element == null || !element.isJsonObject()) {
 				return false;
 			}
-			
+			logger.info("mike element = " + element.toString());
 			return this.accept(element.getAsJsonObject());
 		} catch (IllegalArgumentException ile) {
 			throw ile;
@@ -301,7 +312,7 @@ public class JsonProtocolFilter {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("JsonProtocolFilter [rules=").append(rules).append("]");
+		builder.append(rules);
 		return builder.toString();
 	}
 
