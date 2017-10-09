@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * Configuration Test
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -25,23 +25,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
-
-import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter.FilterRule;
-
 import org.onap.policy.drools.utils.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class JsonProtocolFilterTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(JsonProtocolFilterTest.class);
 
     private static final String NAME1 = "name1";
     private static final String REGEX1 = "regex1";

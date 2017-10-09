@@ -34,8 +34,13 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.policy.drools.event.comm.TopicEndpoint;
+import org.onap.policy.drools.event.comm.TopicSink;
+import org.onap.policy.drools.event.comm.bus.NoopTopicSink;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.PolicyProperties;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
+import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -66,6 +71,26 @@ public class PolicyEngineTest {
    * Controller Configuration Backup File
    */
   public static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
+
+  /**
+   * Coder Group
+   */
+  private static final String ENCODER_GROUP = "foo";
+
+  /**
+   * Coder Artifact
+   */
+  private static final String ENCODER_ARTIFACT = "bar";
+
+  /**
+   * Coder Version
+   */
+  private static final String ENCODER_VERSION = null;
+
+  /**
+   * noop topic
+   */
+  private static final String NOOP_TOPIC = "JUNIT";
 
   /**
    * logger
@@ -163,6 +188,27 @@ public class PolicyEngineTest {
     assertFalse(PolicyEngine.manager.isLocked());
     assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
     assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+  }
+
+  @Test
+  public void test350TopicDeliver() {
+    final Properties noopSinkProperties = new Properties();
+    noopSinkProperties.put(PolicyProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+
+    TopicEndpoint.manager.addTopicSinks(noopSinkProperties).get(0).start();
+
+    EventProtocolCoder.manager.addEncoder(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC,
+        DroolsConfiguration.class.getCanonicalName(), new JsonProtocolFilter(), null, null,
+        DroolsConfiguration.class.getName().hashCode());
+
+    assertTrue(PolicyEngine.manager.deliver(NOOP_TOPIC,
+        new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION)));
+
+    final TopicSink sink = NoopTopicSink.factory.get(NOOP_TOPIC);
+    assertTrue(sink.getRecentEvents()[0].contains(ENCODER_GROUP));
+    assertTrue(sink.getRecentEvents()[0].contains(ENCODER_ARTIFACT));
+
+    EventProtocolCoder.manager.removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
   }
 
   @Test

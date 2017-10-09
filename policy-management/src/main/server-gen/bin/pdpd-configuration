@@ -40,7 +40,7 @@ function usage() {
 BUS_PORT=3904
 ENTITY=controller
 REQUEST_ID="7f5474ca-16a9-42ac-abc0-d86f62296fbc"
-TOPIC="PDPD_CONFIGURATION"
+TOPIC="PDPD-CONFIGURATION"
 
 # command line options parsing
 until [[ -z "$1" ]]; do

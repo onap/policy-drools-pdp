@@ -1054,19 +1054,15 @@ abstract class GenericEventProtocolCoder  {
 		if (topic == null || topic.isEmpty())
 			throw new IllegalArgumentException("Invalid topic");
 		
-		List<DroolsController> droolsControllers = droolsCreators(topic, event);
-		
-		if (droolsControllers.isEmpty())	
-			throw new IllegalArgumentException("no drools controller has been found");
-		
-		if (droolsControllers.size() > 1) {
-			logger.warn("{}: multiple drools-controller {} for {}:{} ", this, topic,
-						droolsControllers, event.getClass().getCanonicalName());		
-			// continue
-		}
-		
-		String key = codersKey(droolsControllers.get(0).getGroupId(), droolsControllers.get(0).getArtifactId(), topic);
-		return this.encodeInternal(key, event);
+        String reverseKey = this.reverseCodersKey(topic, event.getClass().getCanonicalName());
+        if (!this.reverseCoders.containsKey(reverseKey))
+            throw new IllegalArgumentException("no reverse coder has been found");
+        
+        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> 
+                            toolsets = this.reverseCoders.get(reverseKey);
+        
+        String key = codersKey(toolsets.get(0).first().getGroupId(), toolsets.get(0).first().getArtifactId(), topic);
+        return this.encodeInternal(key, event);
 	}
 	
 	/**
