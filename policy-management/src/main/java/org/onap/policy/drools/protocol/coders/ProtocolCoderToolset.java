@@ -540,7 +540,8 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
    */
   @JsonIgnore
   protected final Gson encoder = new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapter(ZonedDateTime.class, new GsonUTCAdapter()).create();
+      .registerTypeAdapter(ZonedDateTime.class, new GsonUTCAdapter())
+      .registerTypeAdapter(Instant.class, new GsonInstantAdapter()).create();
 
   /**
    * Toolset to encode/decode tools associated with a topic
