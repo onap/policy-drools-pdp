@@ -213,7 +213,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 					managed = Boolean.parseBoolean(managedString);
 				}
 				
-				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic +
+				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic +
 						PolicyProperties.PROPERTY_HTTP_HTTPS_SUFFIX);
 				
 				//default is to use HTTP if no https property exists
@@ -223,7 +223,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 				}
 				
 				
-				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic +
+				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic +
 						PolicyProperties.PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX);
 
 					//default is to disallow self-signed certs 
