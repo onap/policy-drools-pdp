@@ -485,10 +485,10 @@ until [[ -z "$1" ]]; do
 						MIGRATION_DIR=$1		
 						;;
 		-t|--target)    shift
-						TARGET_RELEASE=$1		
+						INPUT_TARGET_RELEASE=$1		
 						;;
 		-f|--from)      shift
-						CURRENT_RELEASE=$1		
+						INPUT_CURRENT_RELEASE=$1		
 						;;
 		-o|--operation) shift
 						OPERATION=$1		
@@ -555,6 +555,8 @@ for dbPath in ${SCHEMA_S}; do
 	UPGRADE_DIR="${MIGRATION_DIR}"/"${SCHEMA}"/sql
 	DOWNGRADE_DIR=${UPGRADE_DIR}
 	METADATA_HISTORY="${METADATA_DB}.\`${SCHEMA}_history\`"
+	TARGET_RELEASE=${INPUT_TARGET_RELEASE}
+	CURRENT_RELEASE=${INPUT_CURRENT_RELEASE}
 	
 	if is_upgrade && is_downgrade; then
 		echo "${SCHEMA}: failure: invalid configuration: ${UPGRADE_SQL_SUFFIX} and "\
