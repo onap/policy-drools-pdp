@@ -637,7 +637,7 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public PolicyController updatePolicyController(ControllerConfiguration configController) {
+  public synchronized PolicyController updatePolicyController(ControllerConfiguration configController) {
 
     if (configController == null)
       throw new IllegalArgumentException("No controller configuration has been provided");
@@ -920,6 +920,47 @@ class PolicyEngineManager implements PolicyEngine {
 
   @Override
   public synchronized void shutdown() {
+    
+    /* 
+     * shutdown activity even when underlying 
+     * subcomponents (features, topics, etc ..) are stuck 
+     * not returning controllers back
+     */
+    
+    Thread exitThread = new Thread(new Runnable() {    
+      private static final long SHUTDOWN_MAX_GRACE_TIME = 30000L;
+      
+      @Override
+      public void run() {
+        try {
+          Thread.sleep(SHUTDOWN_MAX_GRACE_TIME);
+          logger.warn("{}: abnormal termination - shutdown graceful time period expiration", 
+              PolicyEngineManager.this);
+        } catch (final InterruptedException e) {
+          /* courtesy to shutdown() to allow it to return  */
+          synchronized(PolicyEngineManager.this) {}
+          logger.info("{}: finishing a graceful shutdown ", 
+              PolicyEngineManager.this, e);
+        } finally {
+          /* 
+           * shut down Policy Engine's server the very last as it may be processing
+           * a shutdown request from the server itself
+           */
+          for (final HttpServletServer httpServer : PolicyEngineManager.this.getHttpServers()) {
+            try {
+              httpServer.shutdown();
+            } catch (final Exception e) {
+              logger.error("{}: cannot shutdown http-server {} because of {}", 
+                  PolicyEngineManager.this, httpServer, e.getMessage(), e);
+            }
+          }
+          
+          logger.info("{}: exit" , PolicyEngineManager.this);
+          System.exit(0);
+        }
+      }
+    });
+    exitThread.start();
 
     /* policy-engine dispatch pre shutdown hook */
     for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
@@ -973,37 +1014,9 @@ class PolicyEngineManager implements PolicyEngine {
             feature.getClass().getName(), e.getMessage(), e);
       }
     }
-
-
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          Thread.sleep(5000L);
-        } catch (final InterruptedException e) {
-          logger.warn("{}: interrupted-exception while shutting down management server: ", this);
-        }
-
-        /* shutdown all unmanaged http servers */
-        for (final HttpServletServer httpServer : PolicyEngineManager.this.getHttpServers()) {
-          try {
-            httpServer.shutdown();
-          } catch (final Exception e) {
-            logger.error("{}: cannot shutdown http-server {} because of {}", this, httpServer,
-                e.getMessage(), e);
-          }
-        }
-
-        try {
-          Thread.sleep(5000L);
-        } catch (final InterruptedException e) {
-          logger.warn("{}: interrupted-exception while shutting down management server: ", this);
-          Thread.currentThread().interrupt();
-        }
-
-        System.exit(0);
-      }
-    }).start();
+    
+    exitThread.interrupt();
+    logger.info("{}: normal termination" , this);
   }
 
   @Override
