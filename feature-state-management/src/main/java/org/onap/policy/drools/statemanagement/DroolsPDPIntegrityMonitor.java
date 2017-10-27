@@ -64,14 +64,15 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	// read in properties
 	Properties stateManagementProperties =
 	  PropertyUtil.getProperties(configDir + "/" + PROPERTIES_NAME);
-	
-	subsystemTestProperties = stateManagementProperties;
-	
-		// fetch and verify definitions of some properties
+	// fetch and verify definitions of some properties
 	// (the 'IntegrityMonitor' constructor does some additional verification)
-	
+	String testServices = stateManagementProperties.getProperty("http.server.services");
+	String testHost = stateManagementProperties.getProperty("http.server.services.TEST.host");
+	String testPort = stateManagementProperties.getProperty("http.server.services.TEST.port");
+	String testRestClasses = stateManagementProperties.getProperty("http.server.services.TEST.restClasses");
+	String testManaged = stateManagementProperties.getProperty("http.server.services.TEST.managed");
+	String testSwagger = stateManagementProperties.getProperty("http.server.services.TEST.swagger");
 	String resourceName = stateManagementProperties.getProperty("resource.name");
-	String hostPort = stateManagementProperties.getProperty("hostPort");
 	String fpMonitorInterval = stateManagementProperties.getProperty("fp_monitor_interval");
 	String failedCounterThreshold = stateManagementProperties.getProperty("failed_counter_threshold");
 	String testTransInterval = stateManagementProperties.getProperty("test_trans_interval");
@@ -84,17 +85,37 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	String javaxPersistenceJdbcUser = stateManagementProperties.getProperty("javax.persistence.jdbc.user");
 	String javaxPersistenceJdbcPassword = stateManagementProperties.getProperty("javax.persistence.jdbc.password");
 	
+	if (testServices == null) {
+		logger.info("init: Setting http.server.services = TEST");
+		stateManagementProperties.put("http.server.services", "TEST");
+	}
+	if (testHost == null){
+		logger.error("init: missing IntegrityMonitor property: http.server.services.TEST.host");
+		throw new Exception("init: missing IntegrityMonitor property: http.server.services.TEST.host");
+	}
+	if (testPort == null){
+		logger.error("init: missing IntegrityMonitor property: http.server.services.TEST.port");
+		throw new Exception("init: missing IntegrityMonitor property: http.server.services.TEST.port");
+	}
+	if (testRestClasses == null){
+		logger.info("init: Setting http.server.services.TEST.restClasses = "
+				+ "org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager");
+		stateManagementProperties.put("http.server.services.TEST.restClasses", 
+				"org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager");
+	}
+	if (testManaged == null){
+		logger.info("init: Setting http.server.services.TEST.managed = false");
+		stateManagementProperties.put("http.server.services.TEST.managed", "false"); 
+	}
+	if (testSwagger == null){
+		logger.info("init: Setting http.server.services.TEST.swagger = true");
+		stateManagementProperties.put("http.server.services.TEST.swagger", "true"); 
+	}
 	if (resourceName == null)
 	  {
 		logger.error("init: Missing IntegrityMonitor property: 'resource.name'");
 		throw new Exception
 			  ("Missing IntegrityMonitor property: 'resource.name'");
-	  }
-	if (hostPort == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'hostPort'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'hostPort'");
 	  }
 	if (fpMonitorInterval == null)
 	  {
@@ -161,42 +182,26 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.password for xacml DB'");
 		throw new Exception
 			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.password'  for xacml DB'");
-	  }		
+	  }
+	
+	subsystemTestProperties = stateManagementProperties;
 
 	// Now that we've validated the properties, create Drools Integrity Monitor
 	// with these properties.
 	im = new DroolsPDPIntegrityMonitor(resourceName,
 				stateManagementProperties);
-	logger.info("init: New DroolsPDPIntegrityMonitor instantiated, hostPort= {}", hostPort);
-
-	// determine host and port for HTTP server
-	int index = hostPort.lastIndexOf(':');
-	InetSocketAddress addr;
-
-	if (index < 0)
-	  {
-		addr = new InetSocketAddress(Integer.valueOf(hostPort));
-	  }
-	else
-	  {
-		addr = new InetSocketAddress
-		  (hostPort.substring(0, index),
-		   Integer.valueOf(hostPort.substring(index + 1)));
-	  }
+	logger.info("init: New DroolsPDPIntegrityMonitor instantiated, resourcName = ", resourceName);
 
 	// create http server
 	try {
-		logger.info("init: Starting HTTP server, addr= {}", addr);
+		logger.info("init: Starting HTTP server, addr= {}", testHost+":"+testPort);
 		IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
 		
 		server.init(stateManagementProperties);
-
-		System.out.println("init: Started server on hostPort=" + hostPort);
 	} catch (Exception e) {
-		logger.error("init: Caught Exception attempting to start server on hostPort= {}, message = {}",
-								hostPort, e.getMessage());
+		logger.error("init: Caught Exception attempting to start server on testPort= {}, message = {}",
+								testPort, e.getMessage());
 		throw e;
-
 	}
 	
 	logger.info("init: Exiting and returning DroolsPDPIntegrityMonitor");
