@@ -40,7 +40,6 @@
 	<properties>
 		<project.source.version>1.8</project.source.version>
 		<project.target.version>1.8</project.target.version>
-		<common-modules.version>1.1.0-SNAPSHOT</common-modules.version>
 		<dmaap.version>0.2.12</dmaap.version>
 		<cambria.version>0.0.1</cambria.version>
 		<jersey.version>2.25.1</jersey.version>
@@ -56,6 +55,7 @@
 		<hibernate.commons.annotations.version>5.0.1.Final</hibernate.commons.annotations.version>
 		<commons.io.version>2.5</commons.io.version>
 		<guava.version>23.0</guava.version>
+		<xml.apis.version>1.4.01</xml.apis.version>
 
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
 		<sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
@@ -204,25 +204,14 @@
 			    <artifactId>commons-io</artifactId>
 			    <version>${commons.io.version}</version>
 			</dependency>
+			<dependency>
+			    <groupId>xml-apis</groupId>
+			    <artifactId>xml-apis</artifactId>
+			    <version>${xml.apis.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	
-	<dependencies>
-		<dependency>
-			<groupId>org.onap.oparent</groupId>
-			<artifactId>version-check-maven-plugin</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -283,17 +272,6 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 			</plugin>	
 			
-			<plugin>
-				<groupId>org.onap.oparent</groupId>
-				<artifactId>version-check-maven-plugin</artifactId>
-				<executions>
-				     <execution>
-				       <id>version-check</id>
-				       <phase/>
-				     </execution>    
-				</executions>
-			</plugin>
-
 		</plugins>
 		<pluginManagement>
 			<plugins>
