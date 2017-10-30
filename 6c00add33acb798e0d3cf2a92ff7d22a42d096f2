@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a2f8d8d_17d93c83",
+        "filename": "feature-active-standby-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "Based on my comment in java file, you can just add a comment to say override defaults in DroolsPDPIntegrityMonitor.java here, just for host host and port.   No configuration is needed here.",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_d78bb466",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "Use constants from PolicyProperties in case the naming convention is changed, so this does not break.   See PolicyEngineManager.defaultTelemetryConfig as a reference.\n\nIn general, you can set appropriate default values and avoid the \"if\" statements below (which should not be throwing generic exceptions), for example:\n\n\tString testHost \u003d stateManagementProperties.getProperty(\"http.server.services.TEST.host\", \"0.0.0.0\");\n\tString testPort \u003d stateManagementProperties.getProperty(\"http.server.services.TEST.port\", 1234);\n\tString testRestClasses \u003d stateManagementProperties.getProperty(\"http.server.services.TEST.restClasses\", \"xxx\");\n....",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_b7ea680d",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "These can be deleted",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_b7d14859",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "sonar will flag generic exceptions",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_57cea4b5",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "It\u0027s safer to do IntegrityMonitorRestManager.class.getName(), there are some examples in junits for reference.",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_37c5588e",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "typo: resourcName",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a2f8d8d_17c01c7b",
+        "filename": "feature-state-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-10-30T14:21:11Z",
+      "side": 1,
+      "message": "same comments as in the non-test config file",
+      "revId": "6c00add33acb798e0d3cf2a92ff7d22a42d096f2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
