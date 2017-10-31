@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a2f8d8d_b264b622",
+        "filename": "feature-state-management/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-10-31T01:07:35Z",
+      "side": 1,
+      "message": "Should the same occur in policy/engine project? They hard code to the snapshot.",
+      "range": {
+        "startLine": 128,
+        "startChar": 3,
+        "endLine": 128,
+        "endChar": 40
+      },
+      "revId": "7b245f01d7228037c6a564f3768b306eed621d29",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
