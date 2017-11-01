@@ -30,6 +30,7 @@ public class StateManagementProperties {
 	private static final Logger  logger = LoggerFactory.getLogger(StateManagementProperties.class);
 		
 	public static final String NODE_NAME = "resource.name";
+	public static final String NODE_TYPE = "node_type";
 	public static final String SITE_NAME = "site_name";
 	
 	public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
@@ -37,6 +38,19 @@ public class StateManagementProperties {
 	public static final String DB_USER = "javax.persistence.jdbc.user";
 	public static final String DB_PWD = "javax.persistence.jdbc.password";
 	
+	public static final String TEST_SERVICES = "http.server.services";
+	public static final String TEST_HOST = "http.server.services.TEST.host";
+	public static final String TEST_PORT = "http.server.services.TEST.port";
+	public static final String TEST_REST_CLASSES = "http.server.services.TEST.restClasses";
+	public static final String TEST_MANAGED = "http.server.services.TEST.managed";
+	public static final String TEST_SWAGGER = "http.server.services.TEST.swagger";
+	public static final String RESOURCE_NAME = "resource.name";
+	public static final String FP_MONITOR_INTERVAL = "fp_monitor_interval";
+	public static final String FAILED_COUNTER_THRESHOLD = "failed_counter_threshold";
+	public static final String TEST_TRANS_INTERVAL = "test_trans_interval";
+	public static final String WRITE_FPC_INTERVAL = "write_fpc_interval";
+	public static final String DEPENDENCY_GROUPS = "dependency_groups";
+		
 	private static Properties properties = null;
 
 	private StateManagementProperties(){
