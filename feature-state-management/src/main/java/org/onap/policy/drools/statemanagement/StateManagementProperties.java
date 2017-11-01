@@ -22,6 +22,7 @@ package org.onap.policy.drools.statemanagement;
 
 import java.util.Properties;
 
+import org.onap.policy.drools.properties.PolicyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ public class StateManagementProperties {
 	private static final Logger  logger = LoggerFactory.getLogger(StateManagementProperties.class);
 		
 	public static final String NODE_NAME = "resource.name";
+	public static final String NODE_TYPE = "node_type";
 	public static final String SITE_NAME = "site_name";
 	
 	public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
@@ -37,6 +39,23 @@ public class StateManagementProperties {
 	public static final String DB_USER = "javax.persistence.jdbc.user";
 	public static final String DB_PWD = "javax.persistence.jdbc.password";
 	
+	public static final String TEST_SERVICES = PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES;
+	public static final String TEST_SERVICES_DEFAULT = "TEST";
+	public static final String TEST_HOST = TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyProperties.PROPERTY_HTTP_HOST_SUFFIX;
+	public static final String TEST_PORT = TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyProperties.PROPERTY_HTTP_PORT_SUFFIX;
+	public static final String TEST_REST_CLASSES = TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX;
+	public static final String TEST_REST_CLASSES_DEFAULT = IntegrityMonitorRestManager.class.getName(); 
+	public static final String TEST_MANAGED = TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyProperties.PROPERTY_MANAGED_SUFFIX;
+	public static final String TEST_MANAGED_DEFAULT = "false";
+	public static final String TEST_SWAGGER = TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyProperties.PROPERTY_HTTP_SWAGGER_SUFFIX;
+	public static final String TEST_SWAGGER_DEFAULT = "true";
+	public static final String RESOURCE_NAME = "resource.name";
+	public static final String FP_MONITOR_INTERVAL = "fp_monitor_interval";
+	public static final String FAILED_COUNTER_THRESHOLD = "failed_counter_threshold";
+	public static final String TEST_TRANS_INTERVAL = "test_trans_interval";
+	public static final String WRITE_FPC_INTERVAL = "write_fpc_interval";
+	public static final String DEPENDENCY_GROUPS = "dependency_groups";
+		
 	private static Properties properties = null;
 
 	private StateManagementProperties(){

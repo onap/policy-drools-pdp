@@ -20,7 +20,8 @@
 
 package org.onap.policy.drools.statemanagement;
 
-import java.net.InetSocketAddress;
+import org.onap.policy.drools.statemanagement.StateManagementProperties;
+
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -52,6 +53,19 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   static private Properties subsystemTestProperties = null;
 
   static private final String PROPERTIES_NAME = "feature-state-management.properties";
+  
+  static private void missingProperty(String prop) throws StateManagementPropertiesException{
+		String msg = "init: missing IntegrityMonitor property: ".concat(prop);
+		logger.error(msg);
+		throw new StateManagementPropertiesException(msg);
+  }
+  
+  static private void logPropertyValue(String prop, String val){
+	  if(logger.isInfoEnabled()){
+		  String msg = "\n\n    init: property: " + prop + " = " + val + "\n";
+		  logger.info(msg);
+	  }
+  }
   /**
    * Static initialization -- create Drools Integrity Monitor, and
    * an HTTP server to handle REST 'test' requests
@@ -64,139 +78,132 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	// read in properties
 	Properties stateManagementProperties =
 	  PropertyUtil.getProperties(configDir + "/" + PROPERTIES_NAME);
-	
-	subsystemTestProperties = stateManagementProperties;
-	
-		// fetch and verify definitions of some properties
+	// fetch and verify definitions of some properties
 	// (the 'IntegrityMonitor' constructor does some additional verification)
-	
-	String resourceName = stateManagementProperties.getProperty("resource.name");
-	String hostPort = stateManagementProperties.getProperty("hostPort");
-	String fpMonitorInterval = stateManagementProperties.getProperty("fp_monitor_interval");
-	String failedCounterThreshold = stateManagementProperties.getProperty("failed_counter_threshold");
-	String testTransInterval = stateManagementProperties.getProperty("test_trans_interval");
-	String writeFpcInterval = stateManagementProperties.getProperty("write_fpc_interval");
-	String siteName = stateManagementProperties.getProperty("site_name");
-	String nodeType = stateManagementProperties.getProperty("node_type");
-	String dependencyGroups = stateManagementProperties.getProperty("dependency_groups");
-	String javaxPersistenceJdbcDriver = stateManagementProperties.getProperty("javax.persistence.jdbc.driver");
-	String javaxPersistenceJdbcUrl = stateManagementProperties.getProperty("javax.persistence.jdbc.url");
-	String javaxPersistenceJdbcUser = stateManagementProperties.getProperty("javax.persistence.jdbc.user");
-	String javaxPersistenceJdbcPassword = stateManagementProperties.getProperty("javax.persistence.jdbc.password");
-	
-	if (resourceName == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'resource.name'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'resource.name'");
+	String testHost = stateManagementProperties.getProperty(StateManagementProperties.TEST_HOST);
+	String testPort = stateManagementProperties.getProperty(StateManagementProperties.TEST_PORT);
+	String testServices = stateManagementProperties.getProperty(StateManagementProperties.TEST_SERVICES,
+			StateManagementProperties.TEST_SERVICES_DEFAULT);
+	String testRestClasses = stateManagementProperties.getProperty(StateManagementProperties.TEST_REST_CLASSES, 
+			StateManagementProperties.TEST_REST_CLASSES_DEFAULT);
+	String testManaged = stateManagementProperties.getProperty(StateManagementProperties.TEST_MANAGED,
+			StateManagementProperties.TEST_MANAGED_DEFAULT);
+	String testSwagger = stateManagementProperties.getProperty(StateManagementProperties.TEST_SWAGGER,
+			StateManagementProperties.TEST_SWAGGER_DEFAULT);
+	String resourceName = stateManagementProperties.getProperty(StateManagementProperties.RESOURCE_NAME);
+	String fpMonitorInterval = stateManagementProperties.getProperty(StateManagementProperties.FP_MONITOR_INTERVAL);
+	String failedCounterThreshold = stateManagementProperties.getProperty(StateManagementProperties.FAILED_COUNTER_THRESHOLD);
+	String testTransInterval = stateManagementProperties.getProperty(StateManagementProperties.TEST_TRANS_INTERVAL);
+	String writeFpcInterval = stateManagementProperties.getProperty(StateManagementProperties.WRITE_FPC_INTERVAL);
+	String siteName = stateManagementProperties.getProperty(StateManagementProperties.SITE_NAME);
+	String nodeType = stateManagementProperties.getProperty(StateManagementProperties.NODE_TYPE);
+	String dependencyGroups = stateManagementProperties.getProperty(StateManagementProperties.DEPENDENCY_GROUPS);
+	String javaxPersistenceJdbcDriver = stateManagementProperties.getProperty(StateManagementProperties.DB_DRIVER);
+	String javaxPersistenceJdbcUrl = stateManagementProperties.getProperty(StateManagementProperties.DB_URL);
+	String javaxPersistenceJdbcUser = stateManagementProperties.getProperty(StateManagementProperties.DB_USER);
+	String javaxPersistenceJdbcPassword = stateManagementProperties.getProperty(StateManagementProperties.DB_PWD);
+
+	if (testHost == null){
+		missingProperty(StateManagementProperties.TEST_HOST);
+	}
+	if (testPort == null){
+		missingProperty(StateManagementProperties.TEST_PORT);
+	}
+	if (!testServices.equals(StateManagementProperties.TEST_SERVICES_DEFAULT)){
+		logger.error("init: property {} does not have the expected value of {}",
+				StateManagementProperties.TEST_SERVICES,
+				StateManagementProperties.TEST_SERVICES_DEFAULT);
+	}
+	if (!testRestClasses.equals(StateManagementProperties.TEST_REST_CLASSES_DEFAULT)){
+		logger.error("init: property {} does not have the expected value of {}",
+				StateManagementProperties.TEST_REST_CLASSES,
+				StateManagementProperties.TEST_REST_CLASSES_DEFAULT);
+	}
+	if (!testManaged.equals(StateManagementProperties.TEST_MANAGED_DEFAULT)){
+		logger.warn("init: property {} does not have the expected value of {}",
+				StateManagementProperties.TEST_MANAGED,
+				StateManagementProperties.TEST_MANAGED_DEFAULT);
+	}
+	if (!testSwagger.equals(StateManagementProperties.TEST_SWAGGER_DEFAULT)){
+		logger.warn("init: property {} does not have the expected value of {}",
+				StateManagementProperties.TEST_SWAGGER,
+				StateManagementProperties.TEST_SWAGGER_DEFAULT);
+	}
+	if (resourceName == null){
+		missingProperty(StateManagementProperties.RESOURCE_NAME);
 	  }
-	if (hostPort == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'hostPort'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'hostPort'");
+	if (fpMonitorInterval == null){
+		missingProperty(StateManagementProperties.FP_MONITOR_INTERVAL);
+	  }	
+	if (failedCounterThreshold == null){
+		missingProperty(StateManagementProperties.FAILED_COUNTER_THRESHOLD);
+	  }	
+	if (testTransInterval == null){
+		missingProperty(StateManagementProperties.TEST_TRANS_INTERVAL);
+	  }	
+	if (writeFpcInterval == null){
+		missingProperty(StateManagementProperties.WRITE_FPC_INTERVAL);
+	  }	
+	if (siteName == null){
+		missingProperty(StateManagementProperties.SITE_NAME);
+	  }	
+	if (nodeType == null){
+		missingProperty(StateManagementProperties.NODE_TYPE);
+	  }	
+	if (dependencyGroups == null){
+		missingProperty(StateManagementProperties.DEPENDENCY_GROUPS);
+	  }	
+	if (javaxPersistenceJdbcDriver == null){
+		missingProperty(StateManagementProperties.DB_DRIVER);
+	  }		
+	if (javaxPersistenceJdbcUrl == null){
+		missingProperty(StateManagementProperties.DB_URL);
+	  }			
+	if (javaxPersistenceJdbcUser == null){
+		missingProperty(StateManagementProperties.DB_USER);
+	  }			
+	if (javaxPersistenceJdbcPassword == null){
+		missingProperty(StateManagementProperties.DB_PWD);
 	  }
-	if (fpMonitorInterval == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'fp_monitor_interval'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'fp_monitor_interval'");
-	  }	
-	if (failedCounterThreshold == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'failed_counter_threshold'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'failed_counter_threshold'");
-	  }	
-	if (testTransInterval == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'test_trans_interval'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'test_trans_interval'");
-	  }	
-	if (writeFpcInterval == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'write_fpc_interval'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'write_fpc_interval'");
-	  }	
-	if (siteName == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'site_name'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'site_name'");
-	  }	
-	if (nodeType == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'node_type'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'node_type'");
-	  }	
-	if (dependencyGroups == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'dependency_groups'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'dependency_groups'");
-	  }	
-	if (javaxPersistenceJdbcDriver == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.driver for xacml DB'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.driver for xacml DB'");
-	  }		
-	if (javaxPersistenceJdbcUrl == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.url  for xacml DB'");
-		throw(new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.url  for xacml DB'"));
-	  }			
-	if (javaxPersistenceJdbcUser == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.user for xacml DB'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.user for xacml DB'");
-	  }			
-	if (javaxPersistenceJdbcPassword == null)
-	  {
-		logger.error("init: Missing IntegrityMonitor property: 'javax.persistence.jbdc.password for xacml DB'");
-		throw new Exception
-			  ("Missing IntegrityMonitor property: 'javax.persistence.jbdc.password'  for xacml DB'");
-	  }		
+	
+	//Log the values so we can diagnose any issues
+	logPropertyValue(StateManagementProperties.TEST_HOST,testHost);
+	logPropertyValue(StateManagementProperties.TEST_PORT,testPort);
+	logPropertyValue(StateManagementProperties.TEST_SERVICES,testServices);
+	logPropertyValue(StateManagementProperties.TEST_REST_CLASSES,testRestClasses);
+	logPropertyValue(StateManagementProperties.TEST_MANAGED,testManaged);
+	logPropertyValue(StateManagementProperties.TEST_SWAGGER,testSwagger);
+	logPropertyValue(StateManagementProperties.RESOURCE_NAME,resourceName);
+	logPropertyValue(StateManagementProperties.FP_MONITOR_INTERVAL,fpMonitorInterval);
+	logPropertyValue(StateManagementProperties.FAILED_COUNTER_THRESHOLD,failedCounterThreshold);
+	logPropertyValue(StateManagementProperties.TEST_TRANS_INTERVAL,testTransInterval);
+	logPropertyValue(StateManagementProperties.WRITE_FPC_INTERVAL,writeFpcInterval);
+	logPropertyValue(StateManagementProperties.SITE_NAME,siteName);
+	logPropertyValue(StateManagementProperties.NODE_TYPE,nodeType);
+	logPropertyValue(StateManagementProperties.DEPENDENCY_GROUPS,dependencyGroups);
+	logPropertyValue(StateManagementProperties.DB_DRIVER,javaxPersistenceJdbcDriver);
+	logPropertyValue(StateManagementProperties.DB_URL,javaxPersistenceJdbcUrl);
+	logPropertyValue(StateManagementProperties.DB_USER,javaxPersistenceJdbcUser);
+	logPropertyValue(StateManagementProperties.DB_PWD,javaxPersistenceJdbcPassword);
+		
+	subsystemTestProperties = stateManagementProperties;
 
 	// Now that we've validated the properties, create Drools Integrity Monitor
 	// with these properties.
 	im = new DroolsPDPIntegrityMonitor(resourceName,
 				stateManagementProperties);
-	logger.info("init: New DroolsPDPIntegrityMonitor instantiated, hostPort= {}", hostPort);
-
-	// determine host and port for HTTP server
-	int index = hostPort.lastIndexOf(':');
-	InetSocketAddress addr;
-
-	if (index < 0)
-	  {
-		addr = new InetSocketAddress(Integer.valueOf(hostPort));
-	  }
-	else
-	  {
-		addr = new InetSocketAddress
-		  (hostPort.substring(0, index),
-		   Integer.valueOf(hostPort.substring(index + 1)));
-	  }
+	logger.info("init: New DroolsPDPIntegrityMonitor instantiated, resourceName = ", resourceName);
 
 	// create http server
 	try {
-		logger.info("init: Starting HTTP server, addr= {}", addr);
+		logger.info("init: Starting HTTP server, addr= {}", testHost+":"+testPort);
 		IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
 		
 		server.init(stateManagementProperties);
-
-		System.out.println("init: Started server on hostPort=" + hostPort);
 	} catch (Exception e) {
-		logger.error("init: Caught Exception attempting to start server on hostPort= {}, message = {}",
-								hostPort, e.getMessage());
+		logger.error("init: Caught Exception attempting to start server on testPort= {} message:",
+								testPort, e);
 		throw e;
-
 	}
 	
 	logger.info("init: Exiting and returning DroolsPDPIntegrityMonitor");

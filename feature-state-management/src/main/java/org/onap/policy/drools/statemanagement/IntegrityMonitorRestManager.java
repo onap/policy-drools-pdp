@@ -61,7 +61,9 @@ public class IntegrityMonitorRestManager {
 		@GET
 		@Path("test")
 		public Response test() {
-			logger.error("integrity monitor /test accessed");
+			if(logger.isDebugEnabled()){
+				logger.debug("integrity monitor /test accessed");
+			}
 			// The responses are stored within the audit objects, so we need to
 			// invoke the audits and get responses before we handle another
 			// request.
