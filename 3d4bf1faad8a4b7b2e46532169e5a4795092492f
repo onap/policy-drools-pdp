@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a4e6583_6504867e",
+        "filename": "feature-active-standby-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-01T22:32:28Z",
+      "side": 1,
+      "message": "This is not provisionable",
+      "revId": "3d4bf1faad8a4b7b2e46532169e5a4795092492f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_8547824b",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-01T22:32:28Z",
+      "side": 1,
+      "message": "have to append \",e) at the end of log statement to avoid the sonar \"critical\".",
+      "revId": "3d4bf1faad8a4b7b2e46532169e5a4795092492f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4e6583_25e7aee6",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-01T22:32:28Z",
+      "side": 1,
+      "message": "The http properties should use the same names defined in the policy-core package, so if they change we only change them in one place, and more importantly so this functionality does not silently break.   See the PolicyEngineManager.defaultTelemetryConfig() for example.",
+      "revId": "3d4bf1faad8a4b7b2e46532169e5a4795092492f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
