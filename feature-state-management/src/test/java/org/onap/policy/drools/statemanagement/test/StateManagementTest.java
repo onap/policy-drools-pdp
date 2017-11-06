@@ -100,7 +100,6 @@ public class StateManagementTest {
 	 * Verifies that StateManagementFeature starts and runs successfully.
 	 */
 	 
-	//@Ignore
 	@Test
 	public void testStateManagementOperation() throws Exception {
 		
@@ -152,7 +151,7 @@ public class StateManagementTest {
 		try{
 			stateManagementFeature.disableFailed();
 		}catch(Exception e){
-			logger.error(e.getMessage());
+			logger.error("StateManagementTest threw: ",e);
 			assertTrue(e.getMessage(), false);
 		}
 		
@@ -176,7 +175,7 @@ public class StateManagementTest {
 		try{
 			stateManagementFeature.promote();
 		}catch(Exception e){
-			logger.debug(e.getMessage());
+			logger.error("StateManagementTest threw: ",e);
 		}
 		
 		Thread.sleep(interruptRecoveryTime);
@@ -197,6 +196,7 @@ public class StateManagementTest {
 		/**************Repository Audit Test**************/
 		logger.debug("\n\ntestStateManagementOperation: Repository Audit\n\n");
 		try{
+			StateManagementProperties.initProperties(fsmProperties);
 			RepositoryAudit repositoryAudit = (RepositoryAudit) RepositoryAudit.getInstance();
 			repositoryAudit.invoke(fsmProperties);
 		
@@ -205,10 +205,10 @@ public class StateManagementTest {
 		}catch(IOException e){
 			//Note: this catch is here because in a local environment mvn will not run in
 			//in the temp directory
-			logger.debug("testSubsytemTest RepositoryAudit IOException", e);
+			logger.warn("testSubsytemTest RepositoryAudit IOException", e);
 		}catch(InterruptedException e){
 			assertTrue(false);
-			logger.debug("testSubsytemTest RepositoryAudit InterruptedException", e);
+			logger.warn("testSubsytemTest RepositoryAudit InterruptedException", e);
 		}
 
 		/*****************Db Audit Test***************/
@@ -220,6 +220,7 @@ public class StateManagementTest {
 		
 			assertTrue(true);
 		}catch(Exception e){
+			logger.error("StateManagementTest threw: ",e);
 			assertTrue(false);
 			logger.debug("testSubsytemTest DbAudit exception", e);
 		}
