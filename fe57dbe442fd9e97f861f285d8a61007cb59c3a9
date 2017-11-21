@@ -209,6 +209,30 @@
     },
     {
       "key": {
+        "uuid": "da87b5cf_03f905c8",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 1759
+      },
+      "writtenOn": "2017-11-21T19:48:38Z",
+      "side": 1,
+      "message": "It is a syntax error with empty \u003c\u003e because of the anonymous class. Will leave as is.",
+      "parentUuid": "da87b5cf_c0755333",
+      "range": {
+        "startLine": 602,
+        "startChar": 28,
+        "endLine": 602,
+        "endChar": 32
+      },
+      "revId": "fe57dbe442fd9e97f861f285d8a61007cb59c3a9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da87b5cf_4099436d",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
