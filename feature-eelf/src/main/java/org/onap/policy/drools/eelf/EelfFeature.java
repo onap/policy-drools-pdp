@@ -36,7 +36,7 @@ import org.onap.policy.drools.system.PolicyEngine;
 public class EelfFeature implements PolicyEngineFeatureAPI {
 
 	@Override
-	public boolean beforeBoot(PolicyEngine engine, String cliArgs[]) {
+	final public boolean beforeBoot(PolicyEngine engine, String cliArgs[]) {
 		
 		String logback = System.getProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, 
 				                            Main.LOGBACK_CONFIGURATION_FILE_DEFAULT);		

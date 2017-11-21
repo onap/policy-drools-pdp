@@ -147,17 +147,14 @@ public class PropertyUtil
 	  // add to static table, so this instance can be shared
 	  registrations.put(file, this);
 
-	  if (timer == null)
+	  // still need to create a timer thread
+	  synchronized(PropertyUtil.class)
 		{
-		  // still need to create a timer thread
-		  synchronized(PropertyUtil.class)
+		  // an additional check is added inside the 'synchronized' block,
+		  // just in case someone beat us to it
+		  if (timer == null)
 			{
-			  // an additional check is added inside the 'synchronized' block,
-			  // just in case someone beat us to it
-			  if (timer == null)
-				{
-				  timer = new Timer("PropertyUtil-Timer", true);
-				}
+			  timer = new Timer("PropertyUtil-Timer", true);
 			}
 		}
 
