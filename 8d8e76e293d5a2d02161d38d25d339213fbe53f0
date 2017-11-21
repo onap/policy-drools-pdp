@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "da87b5cf_8dc78412",
+        "filename": "policy-core/drools-artifact-1.1/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-11-21T14:06:11Z",
+      "side": 1,
+      "message": "this should not be bumped - it is used for JUnit test only which interacts with nexus repo.",
+      "revId": "8d8e76e293d5a2d02161d38d25d339213fbe53f0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da87b5cf_adccc836",
+        "filename": "policy-core/drools-artifact-1.2/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-11-21T14:06:11Z",
+      "side": 1,
+      "message": "Again, should not have been bumped in version.",
+      "revId": "8d8e76e293d5a2d02161d38d25d339213fbe53f0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da87b5cf_6a878610",
         "filename": "version.properties",
         "patchSetId": 1
