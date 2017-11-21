@@ -40,7 +40,7 @@
 	<properties>
 		<project.source.version>1.8</project.source.version>
 		<project.target.version>1.8</project.target.version>
-		<dmaap.version>0.2.12</dmaap.version>
+		<dmaap.version>1.0.0</dmaap.version>
 		<cambria.version>0.0.1</cambria.version>
 		<jersey.version>2.25.1</jersey.version>
 		<jersey.swagger.version>1.5.16</jersey.swagger.version>

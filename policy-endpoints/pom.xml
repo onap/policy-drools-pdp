@@ -59,8 +59,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.att.nsa</groupId>
-			<artifactId>dmaapClient</artifactId>
+  			<groupId>org.onap.dmaap.messagerouter.dmaapclient</groupId>
+  			<artifactId>dmaapClient</artifactId>
 			<version>${dmaap.version}</version>
 			<exclusions>
 				<exclusion>
