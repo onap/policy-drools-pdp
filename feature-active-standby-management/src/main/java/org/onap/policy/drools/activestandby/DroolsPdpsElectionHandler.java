@@ -992,11 +992,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				long nowMs = now.getTime();
 				long waitTimerMs = waitTimerLastRunDate.getTime();
 
-				//give it 2 times leeway  
-				if((nowMs - waitTimerMs)  > 2*pdpUpdateInterval){
+				//give it 10 times leeway  
+				if((nowMs - waitTimerMs)  > 10*pdpUpdateInterval){
 					logger.error("checkWaitTimer: nowMs - waitTimerMs = {}" 
-							+ ", exceeds pdpUpdateInterval + 2000 = {}"
-							+ "Will reschedule waitTimer timer", (nowMs - waitTimerMs), (2*pdpUpdateInterval));
+							+ ", exceeds 10* pdpUpdateInterval = {}"
+							+ "Will reschedule waitTimer timer", (nowMs - waitTimerMs), (10*pdpUpdateInterval));
 
 					try{
 						// Recalculate since the thread could have been stalled on the synchronize()
