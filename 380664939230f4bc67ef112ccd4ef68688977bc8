@@ -45,6 +45,30 @@
       "revId": "380664939230f4bc67ef112ccd4ef68688977bc8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da87b5cf_e368a189",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1759
+      },
+      "writtenOn": "2017-11-21T19:48:38Z",
+      "side": 1,
+      "message": "Sure. I will use warn(String msg, Throwable t) for all of them.",
+      "parentUuid": "da87b5cf_43414d0a",
+      "range": {
+        "startLine": 152,
+        "startChar": 17,
+        "endLine": 152,
+        "endChar": 40
+      },
+      "revId": "380664939230f4bc67ef112ccd4ef68688977bc8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
