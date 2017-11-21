@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da87b5cf_e3bae109",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-11-21T19:40:38Z",
+      "side": 1,
+      "message": "add \u0027e\u0027 object to logger",
+      "range": {
+        "startLine": 122,
+        "startChar": 65,
+        "endLine": 122,
+        "endChar": 70
+      },
+      "revId": "380664939230f4bc67ef112ccd4ef68688977bc8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da87b5cf_43414d0a",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-11-21T19:40:38Z",
+      "side": 1,
+      "message": "Sorry - add the object e, else Sonar flags it.",
+      "range": {
+        "startLine": 152,
+        "startChar": 17,
+        "endLine": 152,
+        "endChar": 40
+      },
+      "revId": "380664939230f4bc67ef112ccd4ef68688977bc8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
