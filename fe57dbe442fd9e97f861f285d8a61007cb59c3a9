@@ -233,6 +233,30 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_60a1eca8",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 602,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-11-22T14:50:58Z",
+      "side": 1,
+      "message": "Ok no problem!",
+      "parentUuid": "da87b5cf_03f905c8",
+      "range": {
+        "startLine": 602,
+        "startChar": 28,
+        "endLine": 602,
+        "endChar": 32
+      },
+      "revId": "fe57dbe442fd9e97f861f285d8a61007cb59c3a9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da87b5cf_4099436d",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
