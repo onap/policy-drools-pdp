@@ -43,7 +43,12 @@ public class OrderedServiceImpl<T extends OrderedService>
   private List<T> implementers = null;
 
   // 'ServiceLoader' that is used to discover and create the services
-  private ServiceLoader<T> serviceLoader = null; //ServiceLoader.load(T.class);
+  private ServiceLoader<T> serviceLoader = null;
+
+  // use this to ensure that we only use one unique instance of each class
+  @SuppressWarnings("rawtypes")
+  private static HashMap<Class,OrderedService> classToSingleton =
+	new HashMap<>();
 
   /**
    * Constructor - create the 'ServiceLoader' instance
@@ -114,7 +119,7 @@ public class OrderedServiceImpl<T extends OrderedService>
 							   rval = o1.getClass().getName().compareTo
 								 (o2.getClass().getName());
 							 }
-						   return(rval);
+						   return rval;
 						 }
 					 });
 
@@ -123,11 +128,6 @@ public class OrderedServiceImpl<T extends OrderedService>
 	logger.info("***** OrderedServiceImpl implementers:\n {}", implementers);
 	return implementers;
   }
-
-  // use this to ensure that we only use one unique instance of each class
-  @SuppressWarnings("rawtypes")
-  static private HashMap<Class,OrderedService> classToSingleton =
-	new HashMap<>();
 
   /**
    * If a service implements multiple APIs managed by 'ServiceLoader', a
@@ -140,7 +140,7 @@ public class OrderedServiceImpl<T extends OrderedService>
    *	the object of this class that was initially created is returned
    *	instead.
    */
-  static private synchronized OrderedService
+  private static synchronized OrderedService
 	getSingleton(OrderedService service)
   {
 	// see if we already have an instance of this class

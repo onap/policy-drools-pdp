@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ReflectionUtil {
 	
-	protected final static Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
+	protected static final Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
 
 	private ReflectionUtil(){
 	}
@@ -55,10 +55,7 @@ public class ReflectionUtil {
 		                                       classLoader + " must be provided");
 		
 		try {
-			Class<?> aClass = Class.forName(className, 
-					                        true, 
-					                        classLoader);
-			return aClass;
+			return Class.forName(className, true, classLoader);
 		} catch (Exception e) {
 			logger.error("class {} fetched in {} does not exist", className, classLoader, e);
 		}
