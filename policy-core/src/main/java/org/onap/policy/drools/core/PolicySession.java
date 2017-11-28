@@ -71,7 +71,7 @@ public class PolicySession
   private ThreadModel threadModel = null;
 
   // supports 'getCurrentSession()' method
-  static private ThreadLocal<PolicySession> policySession =
+  private static ThreadLocal<PolicySession> policySession =
 	new ThreadLocal<>();
 
   /**
@@ -453,7 +453,7 @@ public class PolicySession
 	 * 'KieContainer.updateToVersion(...)' has been called (meaning the
 	 * full name of this session has changed).
 	 */
-	default public void updated() {}
+	public default void updated() {}
   }
 
   /* ============================================================ */
@@ -488,7 +488,7 @@ public class PolicySession
 	 */
 	private String getThreadName()
 	{
-	  return("Session " + session.getFullName());
+	  return "Session " + session.getFullName();
 	}
 
 	/***************************/

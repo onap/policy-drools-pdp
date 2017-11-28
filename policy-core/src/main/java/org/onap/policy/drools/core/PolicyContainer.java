@@ -47,10 +47,10 @@ public class PolicyContainer implements Startable
 	// get an instance of logger 
   private static Logger logger = LoggerFactory.getLogger(PolicyContainer.class);	
   // 'KieServices' singleton
-  static private KieServices kieServices = KieServices.Factory.get();
+  private static KieServices kieServices = KieServices.Factory.get();
 
   // set of all 'PolicyContainer' instances
-  static private HashSet<PolicyContainer> containers =
+  private static HashSet<PolicyContainer> containers =
 	new HashSet<>();
 
   // maps feature objects to per-PolicyContainer data
@@ -74,6 +74,8 @@ public class PolicyContainer implements Startable
   // indicates whether the scanner has been started
   // (it can block for a long time)
   private boolean scannerStarted = false;
+  
+  private static final String ERROR_STRING = "ERROR: Feature API: ";
 
   /**
    * uses 'groupId', 'artifactId' and 'version', and fetches the associated
@@ -288,7 +290,7 @@ public class PolicyContainer implements Startable
 				  }
 				catch (Exception e)
 				  {
-					logger.error("ERROR: Feature API: "
+					logger.error(ERROR_STRING
 								 + feature.getClass().getName(), e);
 				  }
 			  }
@@ -316,7 +318,7 @@ public class PolicyContainer implements Startable
 					  }
 					catch (Exception e)
 					  {
-						logger.error("ERROR: Feature API: "
+						logger.error(ERROR_STRING
 									 + feature.getClass().getName(), e);
 					  }
 				  }
@@ -412,7 +414,7 @@ public class PolicyContainer implements Startable
 			  }
 			catch (Exception e)
 			  {
-				logger.error("ERROR: Feature API: "
+				logger.error(ERROR_STRING
 							 + feature.getClass().getName(), e);
 			  }
 		  }
@@ -518,7 +520,7 @@ public class PolicyContainer implements Startable
   public synchronized void startScanner(ReleaseId releaseId)
   {
 	String version = releaseId.getVersion();
-	if (scannerStarted == false && scanner == null && version != null
+	if (!scannerStarted && scanner == null && version != null
 		&& ("LATEST".equals(version) || "RELEASE".equals(version)
 			|| version.endsWith("-SNAPSHOT")))
 	  {
@@ -661,7 +663,7 @@ public class PolicyContainer implements Startable
 				  }
 				catch (Exception e)
 				  {
-					logger.error("ERROR: Feature API: "
+					logger.error(ERROR_STRING
 								 + feature.getClass().getName(), e);
 				  }
 			  }
@@ -739,7 +741,7 @@ public class PolicyContainer implements Startable
 			  }
 			catch (Exception e)
 			  {
-				logger.error("ERROR: Feature API: "
+				logger.error(ERROR_STRING
 							 + feature.getClass().getName(), e);
 			  }
 		  }
@@ -758,7 +760,7 @@ public class PolicyContainer implements Startable
   /**
    * This method is called when the host goes from the 'standby->active' state.
    */
-  static public void activate()
+  public static void activate()
   {
 	// start all of the 'PolicyContainer' instances
 	for (PolicyContainer container : containers)
@@ -777,7 +779,7 @@ public class PolicyContainer implements Startable
   /**
    * This method is called when the host goes from the 'active->standby' state.
    */
-  static public void deactivate()
+  public static void deactivate()
   {
 	// deactivate all of the 'PolicyContainer' instances
 	for (PolicyContainer container : containers)
@@ -805,7 +807,7 @@ public class PolicyContainer implements Startable
    *
    * @param args standard 'main' arguments, which are currently ignored
    */
-  public static void globalInit(String args[])
+  public static void globalInit(String[] args)
   {
 	String configDir = "config";
 	logger.info("PolicyContainer.main: configDir=" + configDir);
@@ -820,7 +822,7 @@ public class PolicyContainer implements Startable
 		  }
 		catch (Exception e)
 		  {
-			logger.error("ERROR: Feature API: "
+			logger.error(ERROR_STRING
 						 + feature.getClass().getName(), e);
 		  }
 	  }
