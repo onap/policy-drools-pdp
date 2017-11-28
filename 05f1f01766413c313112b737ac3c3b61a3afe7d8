@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_b780988c",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-28T21:53:29Z",
+      "side": 1,
+      "message": "This should be PropertyUtil instead of NetworkUtil",
+      "revId": "05f1f01766413c313112b737ac3c3b61a3afe7d8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_d77d24b3",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-28T21:53:29Z",
+      "side": 1,
+      "message": "better warning, and at the same time something more significant giving context, and not generating string, for example  logger.warn(\"polling for properties changes\", e)",
+      "revId": "05f1f01766413c313112b737ac3c3b61a3afe7d8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
