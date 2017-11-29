@@ -46,15 +46,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
   // get an instance of logger
   private static Logger  logger = LoggerFactory.getLogger(RepositoryAudit.class);		
   // single global instance of this audit object
-  static private RepositoryAudit instance = new RepositoryAudit();
-
-  /**
-   * @return the single 'RepositoryAudit' instance
-   */
-  public static DroolsPDPIntegrityMonitor.AuditBase getInstance()
-  {
-	return instance;
-  }
+  private static RepositoryAudit instance = new RepositoryAudit();
 
   /**
    * Constructor - set the name to 'Repository'
@@ -62,6 +54,14 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
   private RepositoryAudit()
   {
 	super("Repository");
+  }
+
+  /**
+   * @return the single 'RepositoryAudit' instance
+   */
+  public static DroolsPDPIntegrityMonitor.AuditBase getInstance()
+  {
+	return instance;
   }
 
   /**
@@ -433,34 +433,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	/*
 	 * 7) Remove the temporary directory
 	 */
-	Files.walkFileTree
-	  (dir,
-	   new SimpleFileVisitor<Path>()
-	   {
-		 @Override
-		 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-		   {
-			 // logger.info("RepositoryAudit: Delete " + file);
-			 file.toFile().delete();
-			 return FileVisitResult.CONTINUE;
-		   }
-
-		 @Override
-		 public FileVisitResult postVisitDirectory(Path file, IOException e)
-		   throws IOException
-		   {
-			 if (e == null)
-			   {
-				 // logger.info("RepositoryAudit: Delete " + file);
-				 file.toFile().delete();
-				 return FileVisitResult.CONTINUE;
-			   }
-			 else
-			   {
-				 throw e;
-			   }
-		   }
-	   });
+	Files.walkFileTree(dir, new RecursivelyDeleteDirectory());
   }
 
   /**
@@ -502,7 +475,37 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	return -1;
   }
 
-  /* ============================================================ */
+  /**
+   * This class is used to recursively delete a directory and all of its
+   * contents.
+   */
+  private final class RecursivelyDeleteDirectory extends SimpleFileVisitor<Path> {
+	@Override
+	 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+	   {
+		 // logger.info("RepositoryAudit: Delete " + file);
+		 file.toFile().delete();
+		 return FileVisitResult.CONTINUE;
+	   }
+
+	@Override
+	 public FileVisitResult postVisitDirectory(Path file, IOException e)
+	   throws IOException
+	   {
+		 if (e == null)
+		   {
+			 // logger.info("RepositoryAudit: Delete " + file);
+			 file.toFile().delete();
+			 return FileVisitResult.CONTINUE;
+		   }
+		 else
+		   {
+			 throw e;
+		   }
+	   }
+  }
+
+/* ============================================================ */
 
   /**
    * An instance of this class exists for each artifact that we are trying
@@ -510,7 +513,10 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
    */
   static class Artifact
   {
-	String groupId, artifactId, version, type;
+	String groupId;
+	String artifactId;
+	String version;
+	String type;
 
 	/**
 	 * Constructor - populate the 'Artifact' instance

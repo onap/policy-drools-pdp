@@ -134,7 +134,7 @@ public class StateManagementTest {
 			logger.debug(msg);
 		}
 		
-		Thread.sleep(interruptRecoveryTime);
+//		Thread.sleep(interruptRecoveryTime);
 		
 		String admin = stateManagementFeature.getAdminState();
 		String oper = stateManagementFeature.getOpState();
@@ -156,7 +156,7 @@ public class StateManagementTest {
 			assertTrue(e.getMessage(), false);
 		}
 		
-		Thread.sleep(interruptRecoveryTime);
+//		Thread.sleep(interruptRecoveryTime);
 		
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();
@@ -179,7 +179,7 @@ public class StateManagementTest {
 			logger.debug(e.getMessage());
 		}
 		
-		Thread.sleep(interruptRecoveryTime);
+//		Thread.sleep(interruptRecoveryTime);
 		
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();
