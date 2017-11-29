@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_974f9c92",
+        "filename": "feature-state-management/src/main/feature/config/feature-state-management.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "As is, this will be unexpanded until docker corresponding changes are done, probably causing misfunctioning if this feature was enabled.\n\ndocker repo changes should include to support multiple nexus repos at installation time, so needs that companion review.",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_37448873",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "is it possible to align tabs?",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_5749148a",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "why not having the 2 logger.warn in one, passing the exception?",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f75dc049",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "Better to pull all these strings (\"repository.audit.ignore.errors) into static final String constants, so they don\u0027t need to be repeated, and can be changed and browsed in one single place.   I think it also comes back as sonars.",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_175b8c55",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "why not consolidate logging statements into single 1 statement?   This is a general comment in this file.",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b7573826",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "move to debug level, in general periodic operations out of a timer that work as expected, should be moved to debug so they don\u0027t dominate logging files and obscure perhaps some other valuable information.   It is well know all ok by the abence in the log of the previous logger.error statement. \n This is a general comment.",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_d7544423",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "debug level",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_7731b00a",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "debug level",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_9736bc02",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 532,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "debug level",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_373b28ed",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "set to debug, don\u0027t do \".toString()\" should automatically be handled internally by logger.info method if it has to (according to logging level), pass artifact as reference instead.   This is a general comment.",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_57403456",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-29T17:14:00Z",
+      "side": 1,
+      "message": "debug",
+      "revId": "468dcd5d08a05a1127cc54fb12e2931ce5b09597",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
