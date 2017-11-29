@@ -21,10 +21,7 @@
 package org.onap.policy.drools.persistence;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -35,8 +32,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.transaction.TransactionSynchronizationRegistry;
 
-import org.eclipse.persistence.config.PersistenceUnitProperties;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -52,11 +51,6 @@ import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.Configuration;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 /**
  * If this feature is supported, there is a single instance of it. It adds
  * persistence to Drools sessions. In addition, if an active-standby feature
@@ -71,26 +65,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	private static final Logger logger = LoggerFactory.getLogger(PersistenceFeature.class);
 
-
-	/**
-	 * Standard factory used to get various items.
-	 */
-	private static Factory stdFactory = new Factory();
-
-	/**
-	 * Factory used to get various items.
-	 */
-	private Factory fact = stdFactory;
-
 	/**
 	 * KieService factory.
 	 */
 	private KieServices kieSvcFact;
-
-	/**
-	 * Host name.
-	 */
-	private String hostName;
 
 	/**
 	 * Persistence properties.
@@ -112,16 +90,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 * Object used to serialize cleanup of sessioninfo table.
 	 */
 	private Object cleanupLock = new Object();
-
-	/**
-	 * Sets the factory to be used during junit testing.
-	 * 
-	 * @param fact
-	 *            factory to be used
-	 */
-	protected void setFactory(Factory fact) {
-		this.fact = fact;
-	}
 
 	/**
 	 * Lookup the adjunct for this feature that is associated with the specified
@@ -159,23 +127,17 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	@Override
 	public void globalInit(String args[], String configDir) {
-		
-		kieSvcFact = fact.getKieServices();
 
-		initHostName();
+		kieSvcFact = KieServices.Factory.get();
 
 		try {
-			persistProps = fact.loadProperties(configDir + "/feature-session-persistence.properties");
+			persistProps = loadProperties(configDir + "/feature-session-persistence.properties");
 
 		} catch (IOException e1) {
 			logger.error("initializePersistence: ", e1);
 		}
 
 		sessionInfoTimeoutMs = getPersistenceTimeout();
-
-		Configuration bitronixConfiguration = fact.getTransMgrConfig();
-		bitronixConfiguration.setJournal(null);
-		bitronixConfiguration.setServerId(hostName);
 	}
 
 	/**
@@ -199,6 +161,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	@Override
 	public PolicySession.ThreadModel selectThreadModel(PolicySession session) {
+
 		PolicyContainer policyContainer = session.getPolicyContainer();
 		if (isPersistenceEnabled(policyContainer, session.getName())) {
 			return new PersistentThreadModel(session, getProperties(policyContainer));
@@ -211,10 +174,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	@Override
 	public void disposeKieSession(PolicySession policySession) {
-		
+
 		ContainerAdjunct contAdj = (ContainerAdjunct) policySession.getPolicyContainer().getAdjunct(this);
-		if(contAdj != null) {
-			contAdj.disposeKieSession( policySession.getName());
+		if (contAdj != null) {
+			contAdj.disposeKieSession(policySession.getName());
 		}
 	}
 
@@ -225,8 +188,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	public void destroyKieSession(PolicySession policySession) {
 
 		ContainerAdjunct contAdj = (ContainerAdjunct) policySession.getPolicyContainer().getAdjunct(this);
-		if(contAdj != null) {
-			contAdj.destroyKieSession( policySession.getName());
+		if (contAdj != null) {
+			contAdj.destroyKieSession(policySession.getName());
 		}
 	}
 
@@ -291,23 +254,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		} catch (NumberFormatException e) {
 			logger.error("Invalid value for Drools persistence property persistence.sessioninfo.timeout: {}",
-					 timeoutString, e);
+					timeoutString, e);
 		}
 
 		return -1;
-	}
-
-	/**
-	 * Initializes {@link #hostName}.
-	 */
-	private void initHostName() {
-
-		try {
-			hostName = fact.getHostName();
-
-		} catch (UnknownHostException e) {
-			throw new RuntimeException("cannot determine local hostname", e);
-		}
 	}
 
 	/* ============================================================ */
@@ -322,11 +272,11 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * 'PolicyContainer' instance that this adjunct is extending.
 		 */
 		private PolicyContainer policyContainer;
-		
+
 		/**
 		 * Maps a KIE session name to its data source.
 		 */
-		private Map<String,PoolingDataSource> name2ds = new HashMap<>();
+		private Map<String, DsEmf> name2ds = new HashMap<>();
 
 		/**
 		 * Constructor - initialize a new 'ContainerAdjunct'
@@ -352,89 +302,48 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 */
 		private KieSession newPersistentKieSession(String name, String kieBaseName) {
 
-			long desiredSessionId;
+			configureSysProps();
 
-			DroolsSessionConnector conn = getDroolsSessionConnector("onapPU");
+			BasicDataSource ds = makeDataSource(getDataSourceProperties());
+			DsEmf dsemf = new DsEmf(ds);
 
-			desiredSessionId = getSessionId(conn, name);
+			try {
+				EntityManagerFactory emf = dsemf.emf;
+				DroolsSessionConnector conn = new JpaDroolsSessionConnector(emf);
 
-			logger.info("\n\nThis controller is primary... coming up with session {} \n\n", desiredSessionId);
+				long desiredSessionId = getSessionId(conn, name);
 
-			// session does not exist -- attempt to create one
-			logger.info("getPolicySession:session does not exist -- attempt to create one with name {}", name);
+				logger.info("\n\nThis controller is primary... coming up with session {} \n\n", desiredSessionId);
 
-			System.getProperties().put("java.naming.factory.initial", "bitronix.tm.jndi.BitronixInitialContextFactory");
+				// session does not exist -- attempt to create one
+				logger.info("getPolicySession:session does not exist -- attempt to create one with name {}", name);
 
-			Environment env = kieSvcFact.newEnvironment();
-			String dsName = loadDataSource(name);
+				Environment env = kieSvcFact.newEnvironment();
 
-			configureKieEnv(name, env, dsName);
+				configureKieEnv(env, emf);
 
-			KieSessionConfiguration kConf = kieSvcFact.newKieSessionConfiguration();
+				KieSessionConfiguration kConf = kieSvcFact.newKieSessionConfiguration();
 
-			KieSession kieSession = desiredSessionId >= 0 ? loadKieSession(kieBaseName, desiredSessionId, env, kConf)
-					: null;
+				KieSession kieSession = (desiredSessionId >= 0
+						? loadKieSession(kieBaseName, desiredSessionId, env, kConf) : null);
 
-			if (kieSession == null) {
-				// loadKieSession() returned null or desiredSessionId < 0
-				logger.info("LOADING We cannot load session {}. Going to create a new one", desiredSessionId);
+				if (kieSession == null) {
+					// loadKieSession() returned null or desiredSessionId < 0
+					logger.info("LOADING We cannot load session {}. Going to create a new one", desiredSessionId);
 
-				kieSession = newKieSession(kieBaseName, env);
+					kieSession = newKieSession(kieBaseName, env);
+				}
+
+				replaceSession(conn, name, kieSession);
+
+				name2ds.put(name, dsemf);
+
+				return kieSession;
+
+			} catch (RuntimeException e) {
+				dsemf.close();
+				throw e;
 			}
-
-			replaceSession(conn, name, kieSession);
-
-			return kieSession;
-		}
-
-		/**
-		 * Loads a data source into {@link #name2ds}, if one doesn't exist
-		 * yet.
-		 * @param sessName		session name
-		 * @return the unique data source name
-		 */
-		private String loadDataSource(String sessName) {
-			PoolingDataSource ds = name2ds.get(sessName);
-			
-			if(ds == null) {
-				Properties props = new Properties();
-				addOptProp(props, "URL", persistProps.getProperty(DroolsPersistenceProperties.DB_URL));
-				addOptProp(props, "user", persistProps.getProperty(DroolsPersistenceProperties.DB_USER));
-				addOptProp(props, "password", persistProps.getProperty(DroolsPersistenceProperties.DB_PWD));
-
-				ds = fact.makePoolingDataSource();
-				ds.setUniqueName("jdbc/BitronixJTADataSource/" + sessName);
-				ds.setClassName(persistProps.getProperty(DroolsPersistenceProperties.DB_DATA_SOURCE));
-				ds.setMaxPoolSize(3);
-				ds.setIsolationLevel("SERIALIZABLE");
-				ds.setAllowLocalTransactions(true);
-				ds.getDriverProperties().putAll(props);
-				ds.init();
-				
-				name2ds.put(sessName, ds);
-			}
-			
-			return ds.getUniqueName();
-		}
-
-		/**
-		 * Configures a Kie Environment
-		 * 
-		 * @param name
-		 * 				session name
-		 * @param env
-		 * 				environment to be configured
-		 * @param dsName 
-		 * 				data source name
-		 */
-		private void configureKieEnv(String name, Environment env, String dsName) {
-			Properties emfProperties = new Properties();
-			emfProperties.setProperty(PersistenceUnitProperties.JTA_DATASOURCE, dsName);
-			
-			EntityManagerFactory emfact = fact.makeEntMgrFact("onapsessionsPU", emfProperties);
-
-			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emfact);
-			env.set(EnvironmentName.TRANSACTION_MANAGER, fact.getTransMgr());
 		}
 
 		/**
@@ -487,7 +396,9 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Closes the data source associated with a session.
-		 * @param name	name of the session being destroyed
+		 * 
+		 * @param name
+		 *            name of the session being destroyed
 		 */
 		private void destroyKieSession(String name) {
 			closeDataSource(name);
@@ -495,7 +406,9 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Closes the data source associated with a session.
-		 * @param name	name of the session being disposed of
+		 * 
+		 * @param name
+		 *            name of the session being disposed of
 		 */
 		private void disposeKieSession(String name) {
 			closeDataSource(name);
@@ -503,17 +416,66 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Closes the data source associated with a session.
-		 * @param name	name of the session whose data source is to be closed
+		 * 
+		 * @param name
+		 *            name of the session whose data source is to be closed
 		 */
 		private void closeDataSource(String name) {
-			PoolingDataSource ds = name2ds.remove(name);
-			if(ds != null) {
+			DsEmf ds = name2ds.remove(name);
+			if (ds != null) {
 				ds.close();
 			}
 		}
 	}
 
 	/* ============================================================ */
+
+	/**
+	 * Configures java system properties for JPA/JTA.
+	 */
+	private void configureSysProps() {
+		System.setProperty("com.arjuna.ats.arjuna.coordinator.defaultTimeout", "60");
+		System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir",
+				persistProps.getProperty(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR));
+		System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir",
+				persistProps.getProperty(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR));
+	}
+
+	/**
+	 * Gets the data source properties.
+	 * 
+	 * @return the data source properties
+	 */
+	private Properties getDataSourceProperties() {
+		Properties props = new Properties();
+		props.put("driverClassName", persistProps.getProperty(DroolsPersistenceProperties.DB_DRIVER));
+		props.put("url", persistProps.getProperty(DroolsPersistenceProperties.DB_URL));
+		props.put("username", persistProps.getProperty(DroolsPersistenceProperties.DB_USER));
+		props.put("password", persistProps.getProperty(DroolsPersistenceProperties.DB_PWD));
+		props.put("maxActive", "3");
+		props.put("maxIdle", "1");
+		props.put("maxWait", "120000");
+		props.put("whenExhaustedAction", "2");
+		props.put("testOnBorrow", "false");
+		props.put("poolPreparedStatements", "true");
+
+		return props;
+	}
+
+	/**
+	 * Configures a Kie Environment
+	 * 
+	 * @param env
+	 *            environment to be configured
+	 * @param emf
+	 *            entity manager factory
+	 */
+	private void configureKieEnv(Environment env, EntityManagerFactory emf) {
+		env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+		env.set(EnvironmentName.TRANSACTION, com.arjuna.ats.jta.UserTransaction.userTransaction());
+		env.set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, getTransSyncReg());
+		env.set(EnvironmentName.TRANSACTION_MANAGER, com.arjuna.ats.jta.TransactionManager.transactionManager());
+	}
 
 	/**
 	 * Removes "old" Drools 'sessioninfo' records, so they aren't used to
@@ -534,21 +496,15 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				return;
 			}
 
-			// get DB connection properties
-			String url = persistProps.getProperty(DroolsPersistenceProperties.DB_URL);
-			String user = persistProps.getProperty(DroolsPersistenceProperties.DB_USER);
-			String password = persistProps.getProperty(DroolsPersistenceProperties.DB_PWD);
-
-			if (url == null || user == null || password == null) {
-				logger.error("Missing DB properties for clean up of sessioninfo table");
-				return;
-			}
-
 			// now do the record deletion
-			try (Connection connection = fact.makeDbConnection(url, user, password);
+			try (BasicDataSource ds = makeDataSource(getDataSourceProperties());
+					Connection connection = ds.getConnection();
 					PreparedStatement statement = connection.prepareStatement(
 							"DELETE FROM sessioninfo WHERE timestampdiff(second,lastmodificationdate,now()) > ?")) {
-				statement.setLong(1, sessionInfoTimeoutMs/1000);
+
+				connection.setAutoCommit(true);
+
+				statement.setLong(1, sessionInfoTimeoutMs / 1000);
 
 				int count = statement.executeUpdate();
 				logger.info("Cleaning up sessioninfo table -- {} records removed", count);
@@ -561,40 +517,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 			// (sessinfo.xxx)
 
 			sessInfoCleaned = true;
-		}
-	}
-
-	/**
-	 * Gets a connector for manipulating DroolsSession objects within the
-	 * persistent store.
-	 * 
-	 * @param pu
-	 * @return a connector for DroolsSession objects
-	 */
-	private DroolsSessionConnector getDroolsSessionConnector(String pu) {
-
-		Properties propMap = new Properties();
-		addOptProp(propMap, "javax.persistence.jdbc.driver",
-				persistProps.getProperty(DroolsPersistenceProperties.DB_DRIVER));
-		addOptProp(propMap, "javax.persistence.jdbc.url", persistProps.getProperty(DroolsPersistenceProperties.DB_URL));
-		addOptProp(propMap, "javax.persistence.jdbc.user",
-				persistProps.getProperty(DroolsPersistenceProperties.DB_USER));
-		addOptProp(propMap, "javax.persistence.jdbc.password",
-				persistProps.getProperty(DroolsPersistenceProperties.DB_PWD));
-
-		return fact.makeJpaConnector(pu, propMap);
-	}
-
-	/**
-	 * Adds an optional property to a set of properties.
-	 * @param propMap	map into which the property should be added
-	 * @param name		property name
-	 * @param value		property value, or {@code null} if it should not
-	 * 					be added
-	 */
-	private void addOptProp(Properties propMap, String name, String value) {
-		if (value != null) {
-			propMap.put(name, value);
 		}
 	}
 
@@ -613,8 +535,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	}
 
 	/**
-	 * Replaces a session within the persistent store, if it exists.  Adds
-	 * it otherwise.
+	 * Replaces a session within the persistent store, if it exists. Adds it
+	 * otherwise.
 	 * 
 	 * @param conn
 	 *            persistence connector
@@ -665,7 +587,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	private Properties getProperties(PolicyContainer container) {
 		try {
-			return fact.getPolicyContainer(container).getProperties();
+			return getPolicyContainer(container).getProperties();
 		} catch (IllegalArgumentException e) {
 			logger.error("getProperties exception: ", e);
 			return null;
@@ -705,7 +627,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 * compatible with persistence.
 	 */
 	public class PersistentThreadModel implements Runnable, PolicySession.ThreadModel {
-		
+
 		/**
 		 * Session associated with this persistent thread.
 		 */
@@ -715,22 +637,22 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * The session thread.
 		 */
 		private final Thread thread;
-		
+
 		/**
 		 * Used to indicate that processing should stop.
 		 */
 		private final CountDownLatch stopped = new CountDownLatch(1);
-		
+
 		/**
-		 * Minimum time, in milli-seconds, that the thread should sleep
-		 * before firing rules again.
+		 * Minimum time, in milli-seconds, that the thread should sleep before
+		 * firing rules again.
 		 */
 		long minSleepTime = 100;
-		
+
 		/**
-		 * Maximum time, in milli-seconds, that the thread should sleep
-		 * before firing rules again.  This is a "half" time, so that
-		 * we can multiply it by two without overflowing the word size.
+		 * Maximum time, in milli-seconds, that the thread should sleep before
+		 * firing rules again. This is a "half" time, so that we can multiply it
+		 * by two without overflowing the word size.
 		 */
 		long halfMaxSleepTime = 5000L / 2L;
 
@@ -745,11 +667,11 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		public PersistentThreadModel(PolicySession session, Properties properties) {
 			this.session = session;
 			this.thread = new Thread(this, getThreadName());
-			
+
 			if (properties == null) {
 				return;
 			}
-			
+
 			// extract 'minSleepTime' and/or 'maxSleepTime'
 			String name = session.getName();
 
@@ -782,8 +704,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				minSleepTime = maxSleepTime;
 				maxSleepTime = tmp;
 			}
-			
-			halfMaxSleepTime = Math.max(1, maxSleepTime/2);
+
+			halfMaxSleepTime = Math.max(1, maxSleepTime / 2);
 		}
 
 		/**
@@ -812,18 +734,18 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		public void stop() {
 			// tell the thread to stop
 			stopped.countDown();
-			
+
 			// wait up to 10 seconds for the thread to stop
 			try {
 				thread.join(10000);
-				
+
 			} catch (InterruptedException e) {
 				logger.error("stopThread exception: ", e);
 				Thread.currentThread().interrupt();
 			}
-			
+
 			// verify that it's done
-			if(thread.isAlive()) {
+			if (thread.isAlive()) {
 				logger.error("stopThread: still running");
 			}
 		}
@@ -847,7 +769,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		@Override
 		public void run() {
 			logger.info("PersistentThreadModel running");
-			
+
 			// set thread local variable
 			session.setPolicySession();
 
@@ -856,33 +778,34 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 			// We want to continue, despite any exceptions that occur
 			// while rules are fired.
-			
-			for(;;) {
-			
+
+			for (;;) {
+
 				try {
 					if (kieSession.fireAllRules() > 0) {
 						// some rules fired -- reduce poll delay
-						sleepTime = Math.max(minSleepTime, sleepTime/2);
+						sleepTime = Math.max(minSleepTime, sleepTime / 2);
 					} else {
 						// no rules fired -- increase poll delay
 						sleepTime = 2 * Math.min(halfMaxSleepTime, sleepTime);
 					}
+
 				} catch (Exception | LinkageError e) {
 					logger.error("Exception during kieSession.fireAllRules", e);
-				}				
-			
+				}
+
 				try {
-					if(stopped.await(sleepTime, TimeUnit.MILLISECONDS)) {
+					if (stopped.await(sleepTime, TimeUnit.MILLISECONDS)) {
 						break;
 					}
-					
+
 				} catch (InterruptedException e) {
 					logger.error("startThread exception: ", e);
 					Thread.currentThread().interrupt();
 					break;
 				}
 			}
-			
+
 			logger.info("PersistentThreadModel completed");
 		}
 	}
@@ -890,125 +813,129 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	/* ============================================================ */
 
 	/**
-	 * Factory for various items. Methods can be overridden for junit testing.
+	 * DataSource-EntityManagerFactory pair.
 	 */
-	protected static class Factory {
+	private class DsEmf {
+		private BasicDataSource bds;
+		private EntityManagerFactory emf;
 
 		/**
-		 * Gets the configuration for the transaction manager.
+		 * Makes an entity manager factory for the given data source.
 		 * 
-		 * @return the configuration for the transaction manager
+		 * @param bds
+		 *            pooled data source
 		 */
-		public Configuration getTransMgrConfig() {
-			return TransactionManagerServices.getConfiguration();
+		public DsEmf(BasicDataSource bds) {
+			try {
+				Map<String, Object> props = new HashMap<>();
+				props.put(org.hibernate.cfg.Environment.JPA_JTA_DATASOURCE, bds);
+
+				this.bds = bds;
+				this.emf = Persistence.createEntityManagerFactory("onapsessionsPU", props);
+
+			} catch (RuntimeException e) {
+				closeDataSource();
+				throw e;
+			}
 		}
 
 		/**
-		 * Gets the transaction manager.
-		 * 
-		 * @return the transaction manager
+		 * Closes the entity manager factory and the data source.
 		 */
-		public BitronixTransactionManager getTransMgr() {
-			return TransactionManagerServices.getTransactionManager();
+		public void close() {
+			try {
+				emf.close();
+
+			} catch (RuntimeException e) {
+				closeDataSource();
+				throw e;
+			}
+
+			closeDataSource();
 		}
 
 		/**
-		 * Gets the KIE services.
-		 * 
-		 * @return the KIE services
+		 * Closes the data source only.
 		 */
-		public KieServices getKieServices() {
-			return KieServices.Factory.get();
+		private void closeDataSource() {
+			try {
+				bds.close();
+
+			} catch (SQLException e) {
+				throw new PersistenceFeatureException(e);
+			}
+
 		}
+	}
+
+	private static class SingletonRegistry {
+		private static final TransactionSynchronizationRegistry transreg = new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple();
+	}
+
+	/**
+	 * Gets the transaction synchronization registry.
+	 * 
+	 * @return the transaction synchronization registry
+	 */
+	protected static TransactionSynchronizationRegistry getTransSyncReg() {
+		return SingletonRegistry.transreg;
+	}
+
+	/**
+	 * Gets the policy controller associated with a given policy container.
+	 * 
+	 * @param container
+	 *            container whose controller is to be retrieved
+	 * @return the container's controller
+	 */
+	protected static PolicyController getPolicyContainer(PolicyContainer container) {
+		return PolicyController.factory.get(container.getGroupId(), container.getArtifactId());
+	}
+
+	/**
+	 * Loads properties from a file.
+	 * 
+	 * @param filenm
+	 *            name of the file to load
+	 * @return properties, as loaded from the file
+	 * @throws IOException
+	 *             if an error occurs reading from the file
+	 */
+	protected static Properties loadProperties(String filenm) throws IOException {
+		return PropertyUtil.getProperties(filenm);
+	}
+
+	/**
+	 * Makes a Data Source.
+	 * 
+	 * @param dsProps
+	 *            data source properties
+	 * @return a new data source
+	 */
+	protected static BasicDataSource makeDataSource(Properties dsProps) {
+		try {
+			return BasicDataSourceFactory.createDataSource(dsProps);
+
+		} catch (Exception e) {
+			throw new PersistenceFeatureException(e);
+		}
+	}
+
+	/**
+	 * Runtime exceptions generated by this class. Wraps exceptions generated by
+	 * delegated operations, particularly when they are not, themselves, Runtime
+	 * exceptions.
+	 */
+	public static class PersistenceFeatureException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
 
 		/**
-		 * Gets the current host name.
 		 * 
-		 * @return the current host name, associated with the IP address of the
-		 *         local machine
-		 * @throws UnknownHostException
+		 * @param e
+		 *            exception to be wrapped
 		 */
-		public String getHostName() throws UnknownHostException {
-			return InetAddress.getLocalHost().getHostName();
-		}
-
-		/**
-		 * Loads properties from a file.
-		 * 
-		 * @param filenm
-		 *            name of the file to load
-		 * @return properties, as loaded from the file
-		 * @throws IOException
-		 *             if an error occurs reading from the file
-		 */
-		public Properties loadProperties(String filenm) throws IOException {
-			return PropertyUtil.getProperties(filenm);
-		}
-
-		/**
-		 * Makes a connection to the DB.
-		 * 
-		 * @param url
-		 *            DB URL
-		 * @param user
-		 *            user name
-		 * @param pass
-		 *            password
-		 * @return a new DB connection
-		 * @throws SQLException
-		 */
-		public Connection makeDbConnection(String url, String user, String pass) throws SQLException {
-
-			return DriverManager.getConnection(url, user, pass);
-		}
-
-		/**
-		 * Makes a new pooling data source.
-		 * 
-		 * @return a new pooling data source
-		 */
-		public PoolingDataSource makePoolingDataSource() {
-			return new PoolingDataSource();
-		}
-
-		/**
-		 * Makes a new JPA connector for drools sessions.
-		 * 
-		 * @param pu
-		 *            PU for the entity manager factory
-		 * @param propMap
-		 *            properties with which the factory should be configured
-		 * @return a new JPA connector for drools sessions
-		 */
-		public DroolsSessionConnector makeJpaConnector(String pu, Properties propMap) {
-
-			EntityManagerFactory emf = makeEntMgrFact(pu, propMap);
-
-			return new JpaDroolsSessionConnector(emf);
-		}
-
-		/**
-		 * Makes a new entity manager factory.
-		 * 
-		 * @param pu
-		 *            PU for the entity manager factory
-		 * @param propMap
-		 *            properties with which the factory should be configured
-		 * @return a new entity manager factory
-		 */
-		public EntityManagerFactory makeEntMgrFact(String pu, Properties propMap) {
-			return Persistence.createEntityManagerFactory(pu, propMap);
-		}
-
-		/**
-		 * Gets the policy controller associated with a given policy container.
-		 * 
-		 * @param container
-		 *            container whose controller is to be retrieved
-		 * @return the container's controller
-		 */
-		public PolicyController getPolicyContainer(PolicyContainer container) {
-			return PolicyController.factory.get(container.getGroupId(), container.getArtifactId());
+		public PersistenceFeatureException(Exception e) {
+			super(e);
 		}
 	}
 }

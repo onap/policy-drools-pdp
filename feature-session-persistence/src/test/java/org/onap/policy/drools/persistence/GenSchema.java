@@ -26,31 +26,44 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Generates the schema DDL files.
  */
-public class GenSchemaTest {
-	
-	private EntityManagerFactory emf;
-	
+public class GenSchema {
 
-	/*
-	 * This is a JUnit which is provided as a utility for producing a basic
-	 * ddl schema file in the sql directory.  
+	private static final Logger logger = LoggerFactory.getLogger(PersistenceFeatureTest.class);
+
+	private EntityManagerFactory emf;
+
+	/**
+	 * Opens the EMF, which generates the schema, as a side-effect.
 	 * 
-	 * To run this simple add @Test ahead of the method and then run this
-	 * as a JUnit.
+	 * @throws Exception
 	 */
-	public void generate() throws Exception {
+	private GenSchema() throws Exception {
 		Map<String, Object> propMap = new HashMap<>();
 
 		propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-		propMap.put("javax.persistence.jdbc.url",
-						"jdbc:h2:mem:JpaDroolsSessionConnectorTest");
-		
-		emf = Persistence.createEntityManagerFactory(
-								"schemaDroolsPU", propMap);
-		
+		propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:JpaDroolsSessionConnectorTest");
+
+		emf = Persistence.createEntityManagerFactory("schemaDroolsPU", propMap);
+
 		emf.close();
+	}
+
+	/**
+	 * This is is provided as a utility for producing a basic ddl schema file in
+	 * the sql directory.
+	 */
+	public static void main(String[] args) {
+		try {
+			new GenSchema();
+
+		} catch (Exception e) {
+			logger.error("failed to generate schema", e);
+		}
 	}
 }
