@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Observer;
 import java.util.Properties;
 
-import org.onap.policy.common.im.StandbyStatusException;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
@@ -64,7 +63,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	}
 	
 	@Override
-	public void globalInit(String args[], String configDir)
+	public void globalInit(String[] args, String configDir)
 	{
 		// Initialization code associated with 'PolicyContainer'
 		if(logger.isDebugEnabled()){
@@ -185,7 +184,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void promote() throws StandbyStatusException, Exception {
+	public void promote() throws Exception {
 		stateManagement.promote();		
 	}
 
@@ -241,12 +240,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	 */
 	@Override
 	public boolean isLocked(){
-		String admin = stateManagement.getAdminState();
-		if(admin.equals(StateManagement.LOCKED)){
-			return true;
-		}else{
-			return false;
-		}
+		return StateManagement.LOCKED.equals(stateManagement.getAdminState());
 	}
 	
 	@Override
