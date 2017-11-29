@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_e6baef09",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1713
+      },
+      "writtenOn": "2017-11-29T20:33:02Z",
+      "side": 1,
+      "message": "Jorge, this is the change I brought up and wasn\u0027t sure if I should do.",
+      "revId": "785b1b65d7431c1496532d7d56c8160c390c31fa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
