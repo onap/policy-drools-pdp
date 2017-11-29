@@ -23,16 +23,8 @@
 	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
-	<persistence-unit name="junitDroolsSessionEntityPU" transaction-type="RESOURCE_LOCAL">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-		<class>org.onap.policy.drools.persistence.DroolsSessionEntity</class>
-		<properties>
-			<property name="javax.persistence.schema-generation.database.action" value="create"/>
-        </properties>
-	</persistence-unit>
-	
-	<persistence-unit name="junitPersistenceFeaturePU" transaction-type="RESOURCE_LOCAL">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+	<persistence-unit name="junitDroolsSessionEntityPU" transaction-type="JTA">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>org.onap.policy.drools.persistence.DroolsSessionEntity</class>
 		<properties>
 			<property name="javax.persistence.schema-generation.database.action" value="create"/>

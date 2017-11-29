@@ -30,27 +30,24 @@ import javax.persistence.Persistence;
  * Generates the schema DDL files.
  */
 public class GenSchemaTest {
-	
+
 	private EntityManagerFactory emf;
-	
 
 	/*
-	 * This is a JUnit which is provided as a utility for producing a basic
-	 * ddl schema file in the sql directory.  
+	 * This is a JUnit which is provided as a utility for producing a basic ddl
+	 * schema file in the sql directory.
 	 * 
-	 * To run this simple add @Test ahead of the method and then run this
-	 * as a JUnit.
+	 * To run this simple add @Test ahead of the method and then run this as a
+	 * JUnit.
 	 */
 	public void generate() throws Exception {
 		Map<String, Object> propMap = new HashMap<>();
 
 		propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-		propMap.put("javax.persistence.jdbc.url",
-						"jdbc:h2:mem:JpaDroolsSessionConnectorTest");
-		
-		emf = Persistence.createEntityManagerFactory(
-								"schemaDroolsPU", propMap);
-		
+		propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:JpaDroolsSessionConnectorTest");
+
+		emf = Persistence.createEntityManagerFactory("schemaDroolsPU", propMap);
+
 		emf.close();
 	}
 }

@@ -21,7 +21,13 @@
 package org.onap.policy.drools.persistence;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 /**
  * Wrapper for an <i>EntityManager</i> that creates a transaction that is
@@ -32,7 +38,7 @@ public class EntityMgrTrans extends EntityMgrCloser {
 	/**
 	 * Transaction to be rolled back.
 	 */
-	private EntityTransaction trans;
+	private static UserTransaction userTrans = com.arjuna.ats.jta.UserTransaction.userTransaction();
 
 	/**
 	 * 
@@ -43,35 +49,73 @@ public class EntityMgrTrans extends EntityMgrCloser {
 		super(em);
 
 		try {
-			trans = em.getTransaction();
-			trans.begin();
+			userTrans.begin();
+			em.joinTransaction();
 
 		} catch (RuntimeException e) {
 			em.close();
 			throw e;
+
+		} catch (NotSupportedException | SystemException e) {
+			em.close();
+			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Gets the user transaction. For use by junit tests.
+	 * 
+	 * @return the user transaction
+	 */
+	protected static UserTransaction getUserTrans() {
+		return userTrans;
+	}
+
+	/**
+	 * Sets the user transaction. For use by junit tests.
+	 * 
+	 * @param userTrans
+	 *            the new user transaction
+	 */
+	protected static void setUserTrans(UserTransaction userTrans) {
+		EntityMgrTrans.userTrans = userTrans;
 	}
 
 	/**
 	 * Commits the transaction.
 	 */
 	public void commit() {
-		trans.commit();
+		try {
+			userTrans.commit();
+
+		} catch (SecurityException | IllegalStateException | RollbackException | HeuristicMixedException
+				| HeuristicRollbackException | SystemException e) {
+
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * Rolls back the transaction.
 	 */
 	public void rollback() {
-		trans.rollback();
+		try {
+			userTrans.rollback();
+
+		} catch (IllegalStateException | SecurityException | SystemException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void close() {
 		try {
-			if (trans.isActive()) {
-				trans.rollback();
+			if (userTrans.getStatus() == Status.STATUS_ACTIVE) {
+				userTrans.rollback();
 			}
+
+		} catch (IllegalStateException | SecurityException | SystemException e) {
+			throw new RuntimeException(e);
 
 		} finally {
 			super.close();
