@@ -115,7 +115,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 
     final List<String> sinkTopicList =
         new ArrayList<>(Arrays.asList(sinkTopics.split("\\s*,\\s*")));
-    final List<NoopTopicSink> newSinks = new ArrayList<NoopTopicSink>();
+    final List<NoopTopicSink> newSinks = new ArrayList<>();
     synchronized (this) {
       for (final String topic : sinkTopicList) {
         if (this.noopTopicSinks.containsKey(topic)) {
@@ -148,12 +148,14 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 
   @Override
   public NoopTopicSink build(List<String> servers, String topic, boolean managed) {
-    if (servers == null) {
-      servers = new ArrayList<>();
+    
+    List<String> noopSinkServers = servers;
+    if (noopSinkServers == null) {
+        noopSinkServers = new ArrayList<>();
     }
 
-    if (servers.isEmpty()) {
-      servers.add("noop");
+    if (noopSinkServers.isEmpty()) {
+        noopSinkServers.add("noop");
     }
 
     if (topic == null || topic.isEmpty()) {
@@ -165,7 +167,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
         return this.noopTopicSinks.get(topic);
       }
 
-      final NoopTopicSink sink = new NoopTopicSink(servers, topic);
+      final NoopTopicSink sink = new NoopTopicSink(noopSinkServers, topic);
 
       if (managed)
         this.noopTopicSinks.put(topic, sink);

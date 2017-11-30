@@ -207,7 +207,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 		String readTopics = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS);
 		if (readTopics == null || readTopics.isEmpty()) {
 			logger.info("{}: no topic for UEB Source", this);
-			return new ArrayList<UebTopicSource>();
+			return new ArrayList<>();
 		}
 		List<String> readTopicList = new ArrayList<>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
 		

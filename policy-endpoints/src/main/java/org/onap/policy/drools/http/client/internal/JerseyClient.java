@@ -91,7 +91,7 @@ public class JerseyClient implements HttpClient {
 		this.password = password;
 		this.selfSignedCerts = selfSignedCerts;
 		
-		StringBuffer tmpBaseUrl = new StringBuffer();
+		StringBuilder tmpBaseUrl = new StringBuilder();
 		if (this.https) {
 			tmpBaseUrl.append("https://");
 			ClientBuilder clientBuilder;
@@ -195,6 +195,7 @@ public class JerseyClient implements HttpClient {
 		return hostname;
 	}
 
+	@Override
 	public int getPort() {
 		return port;
 	}

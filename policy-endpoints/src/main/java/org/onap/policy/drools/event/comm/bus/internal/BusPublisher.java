@@ -302,7 +302,7 @@ public interface BusPublisher {
 		/**
 		 * MR based Publisher
 		 */		
-		protected MRSimplerBatchPublisher publisher;
+		protected MRSimplerBatchPublisher simplerBatchPublisher;
 		
 		public DmaapAafPublisherWrapper(List<String> servers, String topic,
 				                     String aafLogin,

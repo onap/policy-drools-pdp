@@ -111,37 +111,40 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	 * @throws IllegalArgumentException if invalid parameters are passed in
 	 */
 	public JettyServletServer(String name, String host, int port, String contextPath) {
-			
-		if (name == null || name.isEmpty())
-			name = "http-" + port;
+		String srvName = name;
+		String srvHost = host;
+		String ctxtPath = contextPath;
+		
+		if (srvName == null || srvName.isEmpty())
+			srvName = "http-" + port;
 		
 		if (port <= 0 && port >= 65535)
 			throw new IllegalArgumentException("Invalid Port provided: " + port);
 		
-		if (host == null || host.isEmpty())
-			host = "localhost";
+		if (srvHost == null || srvHost.isEmpty())
+		    srvHost = "localhost";
 		
-		if (contextPath == null || contextPath.isEmpty())
-			contextPath = "/";
+		if (ctxtPath == null || ctxtPath.isEmpty())
+		    ctxtPath = "/";
 		
-		this.name = name;
+		this.name = srvName;
 		
-		this.host = host;
+		this.host = srvHost;
 		this.port = port;
 
-		this.contextPath = contextPath;
+		this.contextPath = ctxtPath;
 		
         this.context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        this.context.setContextPath(contextPath);
+        this.context.setContextPath(ctxtPath);
         
         this.jettyServer = new Server();
         this.jettyServer.setRequestLog(new Slf4jRequestLog());
         
         this.connector = new ServerConnector(this.jettyServer);
-        this.connector.setName(name);
+        this.connector.setName(srvName);
         this.connector.setReuseAddress(true);
         this.connector.setPort(port);
-        this.connector.setHost(host);    
+        this.connector.setHost(srvHost);    
         
         this.jettyServer.addConnector(this.connector);       
         this.jettyServer.setHandler(context);
@@ -149,11 +152,13 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
 	
 	@Override
 	public void setBasicAuthentication(String user, String password, String servletPath) {
-        if (user == null || user.isEmpty() || password == null || password.isEmpty()) 
+        String srvltPath = servletPath;
+        
+	    if (user == null || user.isEmpty() || password == null || password.isEmpty()) 
         	throw new IllegalArgumentException("Missing user and/or password");
         
-        if (servletPath == null || servletPath.isEmpty())
-        	servletPath = "/*";
+        if (srvltPath == null || srvltPath.isEmpty())
+            srvltPath = "/*";
         	     	
     	HashLoginService hashLoginService = new HashLoginService();
         hashLoginService.putUser(user, 
@@ -168,7 +173,7 @@ public abstract class JettyServletServer implements HttpServletServer, Runnable 
          
         ConstraintMapping constraintMapping = new ConstraintMapping();
         constraintMapping.setConstraint(constraint);
-        constraintMapping.setPathSpec(servletPath);
+        constraintMapping.setPathSpec(srvltPath);
         
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
         securityHandler.setAuthenticator(new BasicAuthenticator());

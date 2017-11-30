@@ -237,7 +237,7 @@ public interface BusConsumer {
         logger.debug("DMaaP consumer received {} : {}" + response.getResponseCode(),
             response.getResponseMessage());
 
-        if (response.getResponseCode() == null || !response.getResponseCode().equals("200")) {
+        if (response.getResponseCode() == null || !"200".equals(response.getResponseCode())) {
 
           logger.error("DMaaP consumer received: {} : {}", response.getResponseCode(),
               response.getResponseMessage());
@@ -450,8 +450,8 @@ public interface BusConsumer {
       props.setProperty("contenttype", "application/json");
 
       if (additionalProps != null) {
-        for (final String key : additionalProps.keySet())
-          props.put(key, additionalProps.get(key));
+        for (Map.Entry<String, String> entry : additionalProps.entrySet())
+              props.put(entry.getKey(), entry.getValue());
       }
 
       MRClientFactory.prop = props;
