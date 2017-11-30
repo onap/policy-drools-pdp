@@ -139,10 +139,7 @@ public interface BusPublisher {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append("CambriaPublisherWrapper [").
-			append("publisher.getPendingMessageCount()=").
-			append(publisher.getPendingMessageCount()).
-			append("]");
+			builder.append("CambriaPublisherWrapper []");
 			return builder.toString();
 		}
 		
@@ -289,7 +286,6 @@ public interface BusPublisher {
 			append(", publisher.getHost()=").append(publisher.getHost()).
 			append(", publisher.getProtocolFlag()=").append(publisher.getProtocolFlag()).
 			append(", publisher.getUsername()=").append(publisher.getUsername()).
-			append(", publisher.getPendingMessageCount()=").append(publisher.getPendingMessageCount()).
 			append("]");
 			return builder.toString();
 		}
