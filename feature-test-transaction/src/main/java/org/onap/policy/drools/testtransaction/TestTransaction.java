@@ -64,7 +64,7 @@ public interface TestTransaction {
  */
 class TTImpl implements TestTransaction {
 
-  final protected Map<String, TTControllerTask> controllers = new HashMap<>();
+  protected final Map<String, TTControllerTask> controllers = new HashMap<>();
 
   @Override
   public synchronized void register(PolicyController controller) {
@@ -158,34 +158,7 @@ class TTControllerTask implements Runnable {
       while (this.controller.isAlive() && !this.controller.isLocked() && drools.isBrained()
           && this.alive) {
 
-        for (final String session : sessions) {
-          final List<Object> facts = this.controller.getDrools().factQuery(session,
-              TestTransaction.TT_FPC, TestTransaction.TT_COUNTER, false);
-          if (facts == null || facts.size() != 1) {
-            /*
-             * unexpected something wrong here, can't expect to recover note this exception is
-             * caught right below at the exit of run()
-             */
-            logger.error(
-                "Controller: {}, with rules artifact: (group) {}, (artifact) {}, (version) {} - FPC query failed after EventObject insertion! ",
-                this.controller.getName(), this.controller.getDrools().getGroupId(),
-                this.controller.getDrools().getArtifactId(),
-                this.controller.getDrools().getVersion());
-            break;
-          }
-          logger.debug("Facts: {}", facts);
-
-          final long fpc = (Long) facts.get(0);
-          if (fpc != fpcs.get(session))
-            logger.info("Controller: {} , session {}  - Forward progress successful: {} -> {}",
-                this.controller.getName(), session, fpcs.get(session), fpc);
-          else
-            logger.error("Controller: {}, session {} - Forward progress failure: {}",
-                this.controller.getName(), session, fpc);
-
-          fpcs.put(session, fpc);
-          drools.getContainer().insert(session, new EventObject(TestTransaction.TT_UUID));
-        }
+        injectTxIntoSessions(sessions, fpcs, drools);
 
         if (!this.alive)
           return;
@@ -208,7 +181,41 @@ class TTControllerTask implements Runnable {
       this.alive = false;
     }
   }
+  
+  private void injectTxIntoSessions(List<String> sessions, HashMap<String, Long> fpcs, DroolsController drools) {
 
+      for (final String session : sessions) {
+        final List<Object> facts = this.controller.getDrools().factQuery(session,
+            TestTransaction.TT_FPC, TestTransaction.TT_COUNTER, false);
+        if (facts == null || facts.size() != 1) {
+          /*
+           * unexpected something wrong here, can't expect to recover note this exception is
+           * caught right below at the exit of run()
+           */
+          logger.error(
+              "Controller: {}, with rules artifact: (group) {}, (artifact) {}, (version) {} - FPC query failed after EventObject insertion! ",
+              this.controller.getName(), this.controller.getDrools().getGroupId(),
+              this.controller.getDrools().getArtifactId(),
+              this.controller.getDrools().getVersion());
+          break;
+        }
+        logger.debug("Facts: {}", facts);
+
+        final long fpc = (Long) facts.get(0);
+        if (fpc != fpcs.get(session))
+          logger.info("Controller: {} , session {}  - Forward progress successful: {} -> {}",
+              this.controller.getName(), session, fpcs.get(session), fpc);
+        else
+          logger.error("Controller: {}, session {} - Forward progress failure: {}",
+              this.controller.getName(), session, fpc);
+
+        fpcs.put(session, fpc);
+        drools.getContainer().insert(session, new EventObject(TestTransaction.TT_UUID));
+      }
+      
+  }
+  
+  
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder();

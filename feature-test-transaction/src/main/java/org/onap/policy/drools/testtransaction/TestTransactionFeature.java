@@ -33,7 +33,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
 
     // get an instance of logger 
 	private static final Logger logger = LoggerFactory.getLogger(TestTransactionFeature.class); 
-
+	
     @Override
     public boolean afterStart(PolicyController controller){
         
@@ -49,7 +49,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
     
     @Override
     public boolean afterLock(PolicyController controller) {
-        logger.info("CONTROLLER " + controller.getName() + " LOCKED");
+        logger.info("controller {} locked", controller.getName());
         
         TestTransaction.manager.unregister(controller);
         return false;
@@ -57,7 +57,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
     
     @Override
     public boolean afterUnlock(PolicyController controller) {
-        logger.info("CONTROLLER " + controller.getName() + " UNLOCKED");
+        logger.info("controller {} unlocked", controller.getName());
         
         if (controller.isAlive() &&
         	!controller.isLocked() && 
@@ -69,7 +69,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
 
     @Override
     public boolean beforeStop(PolicyController controller) {
-        logger.info("CONTROLLER " + controller.getName() + " ABOUT TO STOP");
+        logger.info("controller {} stopping", controller.getName());
         
         TestTransaction.manager.unregister(controller);
         
