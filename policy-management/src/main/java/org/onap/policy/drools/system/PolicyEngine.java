@@ -357,12 +357,12 @@ class PolicyEngineManager implements PolicyEngine {
   /**
    * Is the Policy Engine running?
    */
-  protected boolean alive = false;
+  protected volatile boolean alive = false;
 
   /**
    * Is the engine locked?
    */
-  protected boolean locked = false;
+  protected volatile boolean locked = false;
 
   /**
    * Properties used to initialize the engine
@@ -1018,7 +1018,7 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public synchronized boolean isAlive() {
+  public boolean isAlive() {
     return this.alive;
   }
 
@@ -1117,7 +1117,7 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public synchronized boolean isLocked() {
+  public boolean isLocked() {
     return this.locked;
   }
 
