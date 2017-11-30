@@ -16,6 +16,24 @@
       "revId": "785b1b65d7431c1496532d7d56c8160c390c31fa",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_46fe436d",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T02:37:03Z",
+      "side": 1,
+      "message": "Yeah I see what you mean, I guess sonar will complain if says same literal string repeated, just cosmetics but will probably silent sonar.",
+      "parentUuid": "5a93c517_e6baef09",
+      "revId": "785b1b65d7431c1496532d7d56c8160c390c31fa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
