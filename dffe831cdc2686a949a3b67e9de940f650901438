@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_4683a3cc",
+        "filename": "feature-session-persistence/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "Not sure the transitive dependencies that these libraries bring into the picture.   Just checking if you can verify that all \"necessary\n transitive dependencies are packaged with the feature.   I guess you should know if something is missing when installing it and starting pdp-d.",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_066d9b32",
+        "filename": "feature-session-persistence/src/main/feature/config/feature-session-persistence.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "there is an \"$POLICY_HOME/etc/db\" dir for storage kind of stuff.   Should it be stored there rather than in logs/ that is more volatile?   Other possibility under the existing $POLICY_HOME/features/feature-session-persistence/ may be create a data dir under there so all is together?\n\nCan you also change transaction_manager to transaction-manager, all installed files currently follow \"-\" over \"_\" as word separator, so just for consistency.\n\nAnother comment on the name is perhaps to say something that relate it to session persistence, not very obvious with transaction_manager.",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_266a171b",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "this is going to give us a sonar to throw a non-generic exception",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c676d306",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "same comment apply here",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_e673cf13",
+        "filename": "feature-session-persistence/src/main/java/org/onap/policy/drools/persistence/EntityMgrTrans.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "same",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a665c746",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/EntityMgrCloserTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "generic exceptions are flagged by sonar",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_8660cb36",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/EntityMgrCloserTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "this will give a sonar to avoid it, just log exception, even though is a sucess case",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_465ac384",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/GenSchemaTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "can this be placed in a \"main\" method provided it is not a pure junit test?",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_0654bb52",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/PersistenceFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "this will be flagged by sonar, add logging statement, you can set it to debug or trace level to avoid printing it",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_2651b762",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/PersistenceFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "same",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c64d73c6",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/PersistenceFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 876,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-11-30T04:57:56Z",
+      "side": 1,
+      "message": "same",
+      "revId": "dffe831cdc2686a949a3b67e9de940f650901438",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
