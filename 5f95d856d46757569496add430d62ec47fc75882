@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_a9791895",
+        "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2017-11-30T13:52:00Z",
+      "side": 1,
+      "message": "Yes this will generate another sonar message!!",
+      "parentUuid": "5a93c517_86ee8b8a",
+      "revId": "5f95d856d46757569496add430d62ec47fc75882",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_a6f38772",
         "filename": "feature-state-management/src/test/java/org/onap/policy/drools/statemanagement/test/StateManagementTest.java",
         "patchSetId": 3
