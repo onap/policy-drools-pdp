@@ -69,8 +69,8 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
    * 'FeatureAPI.impl.getList()' returns an ordered list of objects
    * implementing the 'FeatureAPI' interface.
    */
-  static public OrderedServiceImpl<StateManagementFeatureAPI> impl =
-	new OrderedServiceImpl<StateManagementFeatureAPI>(StateManagementFeatureAPI.class);
+  public static OrderedServiceImpl<StateManagementFeatureAPI> impl =
+	new OrderedServiceImpl<>(StateManagementFeatureAPI.class);
 
   /**
    * This method is called to add an Observer to receive notifications of state changes
