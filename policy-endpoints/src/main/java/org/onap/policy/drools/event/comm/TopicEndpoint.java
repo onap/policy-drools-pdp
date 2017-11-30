@@ -570,7 +570,6 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
         return this.getUebTopicSource(topicName);
       case DMAAP:
         return this.getDmaapTopicSource(topicName);
-      case REST:
       default:
         throw new UnsupportedOperationException("Unsupported " + commType.name());
     }
@@ -596,7 +595,6 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
         return this.getDmaapTopicSink(topicName);
       case NOOP:
         return this.getNoopTopicSink(topicName);
-      case REST:
       default:
         throw new UnsupportedOperationException("Unsupported " + commType.name());
     }
