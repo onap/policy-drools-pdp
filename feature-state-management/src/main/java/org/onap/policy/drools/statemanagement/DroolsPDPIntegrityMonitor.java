@@ -40,27 +40,43 @@ import org.slf4j.LoggerFactory;
 public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 {
 	
-	// get an instance of logger 
+	private static final String INVALID_PROPERTY_VALUE = "init: property {} does not have the expected value of {}";
+
+// get an instance of logger 
   private static final Logger  logger = LoggerFactory.getLogger(DroolsPDPIntegrityMonitor.class);	
 
   // static global instance
-  static private DroolsPDPIntegrityMonitor im = null;
+  private static DroolsPDPIntegrityMonitor im = null;
 
   // list of audits to run
-  static private AuditBase[] audits =
+  private static AuditBase[] audits =
 	new AuditBase[]{DbAudit.getInstance(), RepositoryAudit.getInstance()};
   
-  static private Properties subsystemTestProperties = null;
+  private static Properties subsystemTestProperties = null;
 
-  static private final String PROPERTIES_NAME = "feature-state-management.properties";
+  private static final String PROPERTIES_NAME = "feature-state-management.properties";
+
+  /**
+   * Constructor - pass arguments to superclass, but remember properties
+   * @param resourceName unique name of this Integrity Monitor
+   * @param url the JMX URL of the MBean server
+   * @param properties properties used locally, as well as by
+   *	'IntegrityMonitor'
+   * @throws Exception (passed from superclass)
+   */
+	private DroolsPDPIntegrityMonitor(String resourceName,
+			Properties consolidatedProperties
+			) throws Exception {
+	super(resourceName, consolidatedProperties);
+  }
   
-  static private void missingProperty(String prop) throws StateManagementPropertiesException{
+  private static void missingProperty(String prop) throws StateManagementPropertiesException{
 		String msg = "init: missing IntegrityMonitor property: ".concat(prop);
 		logger.error(msg);
 		throw new StateManagementPropertiesException(msg);
   }
   
-  static private void logPropertyValue(String prop, String val){
+  private static void logPropertyValue(String prop, String val){
 	  if(logger.isInfoEnabled()){
 		  String msg = "\n\n    init: property: " + prop + " = " + val + "\n";
 		  logger.info(msg);
@@ -70,7 +86,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
    * Static initialization -- create Drools Integrity Monitor, and
    * an HTTP server to handle REST 'test' requests
    */
-  static public DroolsPDPIntegrityMonitor init(String configDir) throws Exception
+  public static DroolsPDPIntegrityMonitor init(String configDir) throws Exception
   {
 	  	  
 	logger.info("init: Entering and invoking PropertyUtil.getProperties() on '{}'", configDir);
@@ -110,22 +126,22 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		missingProperty(StateManagementProperties.TEST_PORT);
 	}
 	if (!testServices.equals(StateManagementProperties.TEST_SERVICES_DEFAULT)){
-		logger.error("init: property {} does not have the expected value of {}",
+		logger.error(INVALID_PROPERTY_VALUE,
 				StateManagementProperties.TEST_SERVICES,
 				StateManagementProperties.TEST_SERVICES_DEFAULT);
 	}
 	if (!testRestClasses.equals(StateManagementProperties.TEST_REST_CLASSES_DEFAULT)){
-		logger.error("init: property {} does not have the expected value of {}",
+		logger.error(INVALID_PROPERTY_VALUE,
 				StateManagementProperties.TEST_REST_CLASSES,
 				StateManagementProperties.TEST_REST_CLASSES_DEFAULT);
 	}
 	if (!testManaged.equals(StateManagementProperties.TEST_MANAGED_DEFAULT)){
-		logger.warn("init: property {} does not have the expected value of {}",
+		logger.warn(INVALID_PROPERTY_VALUE,
 				StateManagementProperties.TEST_MANAGED,
 				StateManagementProperties.TEST_MANAGED_DEFAULT);
 	}
 	if (!testSwagger.equals(StateManagementProperties.TEST_SWAGGER_DEFAULT)){
-		logger.warn("init: property {} does not have the expected value of {}",
+		logger.warn(INVALID_PROPERTY_VALUE,
 				StateManagementProperties.TEST_SWAGGER,
 				StateManagementProperties.TEST_SWAGGER_DEFAULT);
 	}
@@ -211,20 +227,6 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   }
 
   /**
-   * Constructor - pass arguments to superclass, but remember properties
-   * @param resourceName unique name of this Integrity Monitor
-   * @param url the JMX URL of the MBean server
-   * @param properties properties used locally, as well as by
-   *	'IntegrityMonitor'
-   * @throws Exception (passed from superclass)
-   */
-	private DroolsPDPIntegrityMonitor(String resourceName,
-			Properties consolidatedProperties
-			) throws Exception {
-	super(resourceName, consolidatedProperties);
-  }
-
-  /**
    * Run tests (audits) unique to Drools PDP VM (Database + Repository)
    */
   @Override
@@ -284,7 +286,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   /**
    * This is the base class for audits invoked in 'subsystemTest'
    */
-  static public abstract class AuditBase
+  public abstract static class AuditBase
   {
 	// name of the audit
 	protected String name;
@@ -345,18 +347,14 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   		}
   		
   		@Override
-		public boolean start() throws IllegalStateException {
+		public boolean start() {
 			try {
 				ArrayList<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
 				
 				if (!servers.isEmpty()) {
 					server = servers.get(0);
 					
-					try {
-						server.waitedStart(5);
-					} catch (Exception e) {
-						logger.error("Exception waiting for servers to start: ", e);
-					}
+					waitServerStart();
 				}
 			} catch (Exception e) {
 				logger.error("Exception building servers", e);
@@ -366,8 +364,16 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 			return true;
 		}
 
+		private void waitServerStart() {
+			try {
+				server.waitedStart(5);
+			} catch (Exception e) {
+				logger.error("Exception waiting for servers to start: ", e);
+			}
+		}
+
   		@Override
-		public boolean stop() throws IllegalStateException {
+		public boolean stop() {
 			try {
 				server.stop();
 			} catch (Exception e) {
@@ -378,7 +384,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		}
 
 		@Override
-		public void shutdown() throws IllegalStateException {
+		public void shutdown() {
 			this.stop();
 		}
 		

@@ -53,12 +53,6 @@ public class StateManagementTest {
 	// get an instance of logger 
 	private static Logger  logger = LoggerFactory.getLogger(StateManagementTest.class);	
 	
-	/*
-	 * Sleep after each test to allow interrupt (shutdown) recovery.
-	 */
-	 
-	private long interruptRecoveryTime = 1500L;
-	
 	StateManagementFeatureAPI stateManagementFeature;
 	
 	/*
@@ -134,8 +128,6 @@ public class StateManagementTest {
 			logger.debug(msg);
 		}
 		
-		Thread.sleep(interruptRecoveryTime);
-		
 		String admin = stateManagementFeature.getAdminState();
 		String oper = stateManagementFeature.getOpState();
 		String avail = stateManagementFeature.getAvailStatus();
@@ -155,9 +147,7 @@ public class StateManagementTest {
 			logger.error(e.getMessage());
 			assertTrue(e.getMessage(), false);
 		}
-		
-		Thread.sleep(interruptRecoveryTime);
-		
+				
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();
 		avail = stateManagementFeature.getAvailStatus();
@@ -178,8 +168,6 @@ public class StateManagementTest {
 		}catch(Exception e){
 			logger.debug(e.getMessage());
 		}
-		
-		Thread.sleep(interruptRecoveryTime);
 		
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();

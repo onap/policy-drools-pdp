@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -38,19 +39,27 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	// get an instance of logger 
   private static Logger  logger = LoggerFactory.getLogger(DbAudit.class);	
   // single global instance of this audit object
-  final static private DbAudit instance = new DbAudit();
+  private static final DbAudit instance = new DbAudit();
 
   // This indicates if 'CREATE TABLE IF NOT EXISTS Audit ...' should be
   // invoked -- doing this avoids the need to create the table in advance.
-  static private boolean createTableNeeded = true;
+  private static boolean createTableNeeded = true;
   
-  synchronized private static void setCreateTableNeeded(boolean b) {
+  private static boolean isJunit = false;
+
+  /**
+   * Constructor - set the name to 'Database'
+   */
+  private DbAudit()
+  {
+	super("Database");
+  }
+  
+  private static synchronized void setCreateTableNeeded(boolean b) {
 		DbAudit.createTableNeeded = b;
   }
   
-  static private boolean isJunit = false;
-  
-  synchronized public static void setIsJunit(boolean b) {
+  public static synchronized void setIsJunit(boolean b) {
 		DbAudit.isJunit = b;
   }
   
@@ -64,15 +73,7 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
    */
   public static DroolsPDPIntegrityMonitor.AuditBase getInstance()
   {
-	return(instance);
-  }
-
-  /**
-   * Constructor - set the name to 'Database'
-   */
-  private DbAudit()
-  {
-	super("Database");
+	return instance;
   }
 
   /**
@@ -132,64 +133,19 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		if (createTableNeeded)
 		  {
 			phase = "create table";
-			if(logger.isDebugEnabled()){
-				logger.info("DbAudit: Creating 'Audit' table, if needed");
-			}
-			try (PreparedStatement statement = connection.prepareStatement
-			  ("CREATE TABLE IF NOT EXISTS Audit (\n"
-			   + " name varchar(64) DEFAULT NULL,\n"
-			   + " UNIQUE KEY name (name)\n"
-			   + ") DEFAULT CHARSET=latin1;")) {
-				statement.execute();
-				DbAudit.setCreateTableNeeded(false);
-			} catch (Exception e) {
-				throw e;
-			}
+			createTable(connection);
 		  }
 
 		// insert an entry into the table
 		phase = "insert entry";
 		String key = UUID.randomUUID().toString();
-		try (PreparedStatement statement = connection.prepareStatement
-		  ("INSERT INTO Audit (name) VALUES (?)")) {
-			statement.setString(1, key);
-			statement.executeUpdate();
-		} catch (Exception e) {
-			throw e;
-		}
+		insertEntry(connection, key);
 		
-		// fetch the entry from the table
 		phase = "fetch entry";
-		try (PreparedStatement statement = connection.prepareStatement
-		  ("SELECT name FROM Audit WHERE name = ?")) {
-			statement.setString(1, key);
-			try (ResultSet rs = statement.executeQuery()) {
-				if (rs.first())
-				  {
-					// found entry
-					if(logger.isDebugEnabled()){
-						logger.debug("DbAudit: Found key {}", rs.getString(1));
-					}
-				  }
-				else
-				  {
-					logger.error
-					  ("DbAudit: can't find newly-created entry with key {}", key);
-					setResponse("Can't find newly-created entry");
-				  }
-			} catch (Exception e) {
-				throw e;
-			}
-		}
-		// delete entries from table
+		findEntry(connection, key);
+		
 		phase = "delete entry";
-		try (PreparedStatement statement = connection.prepareStatement
-		  ("DELETE FROM Audit WHERE name = ?")) {
-			statement.setString(1, key);
-			statement.executeUpdate();
-		} catch (Exception e) {
-			throw e;
-		}
+		deleteEntry(connection, key);
 	}
 	catch (Exception e)
 	  {
@@ -197,6 +153,92 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		logger.error(message, e);
 		setResponse(message);
 	  }
+  }
+
+  /**
+   * Creates the table.
+   * @param connection
+   * @throws SQLException
+   */
+  private void createTable(Connection connection) throws SQLException {
+	if(logger.isDebugEnabled()){
+		logger.info("DbAudit: Creating 'Audit' table, if needed");
+	}
+	try (PreparedStatement statement = connection.prepareStatement
+	  ("CREATE TABLE IF NOT EXISTS Audit (\n"
+	   + " name varchar(64) DEFAULT NULL,\n"
+	   + " UNIQUE KEY name (name)\n"
+	   + ") DEFAULT CHARSET=latin1;")) {
+		statement.execute();
+		DbAudit.setCreateTableNeeded(false);
+	}
+  }
+
+  /**
+   * Inserts an entry.
+   * @param connection
+   * @param key
+   * @throws SQLException
+   */
+  private void insertEntry(Connection connection, String key) throws SQLException {
+	try (PreparedStatement statement = connection.prepareStatement
+	  ("INSERT INTO Audit (name) VALUES (?)")) {
+		statement.setString(1, key);
+		statement.executeUpdate();
+	}
+  }
+
+  /**
+   * Finds an entry.
+   * @param connection
+   * @param key
+   * @throws SQLException
+   */
+  private void findEntry(Connection connection, String key) throws SQLException {
+	try (PreparedStatement statement = connection.prepareStatement
+	  ("SELECT name FROM Audit WHERE name = ?")) {
+		statement.setString(1, key);
+		getEntry(statement, key);
+	}
+  }
+
+  /**
+   * Executes the query to determine if the entry exists.  Sets the response
+   * if it fails.
+   * @param statement
+   * @param key
+   * @throws SQLException
+   */
+  private void getEntry(PreparedStatement statement, String key) throws SQLException {
+	try (ResultSet rs = statement.executeQuery()) {
+		if (rs.first())
+		  {
+			// found entry
+			if(logger.isDebugEnabled()){
+				logger.debug("DbAudit: Found key {}", rs.getString(1));
+			}
+		  }
+		else
+		  {
+			logger.error
+			  ("DbAudit: can't find newly-created entry with key {}", key);
+			setResponse("Can't find newly-created entry");
+		  }
+	}
+  }
+
+  /**
+   * Deletes an entry.
+   * @param connection
+   * @param key
+   * @throws SQLException
+   */
+  private void deleteEntry(Connection connection, String key) throws SQLException {
+	try (PreparedStatement statement = connection.prepareStatement
+	  ("DELETE FROM Audit WHERE name = ?")) {
+		statement.setString(1, key);
+		statement.executeUpdate();
+	}
   }
 
 }
