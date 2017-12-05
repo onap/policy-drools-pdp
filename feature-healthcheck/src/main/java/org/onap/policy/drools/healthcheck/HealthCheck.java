@@ -21,6 +21,7 @@
 package org.onap.policy.drools.healthcheck;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.ws.rs.core.Response;
@@ -45,63 +46,119 @@ public interface HealthCheck extends Startable {
 		/**
 		 * Named Entity in the report
 		 */
-		public String name;
+		private String name;
 		
 		/**
 		 * URL queried
 		 */
-		public String url;
+		private String url;
 		
 		/**
 		 * healthy?
 		 */
-		public boolean healthy;
+		private boolean healthy;
 		
 		/**
 		 * return code
 		 */
-		public int code;
+		private int code;
 		
 		/**
 		 * Message from remote entity
 		 */
-		public String message;
+		private String message;
 		
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("Report [name=");
-			builder.append(name);
+			builder.append(getName());
 			builder.append(", url=");
-			builder.append(url);
+			builder.append(getUrl());
 			builder.append(", healthy=");
-			builder.append(healthy);
+			builder.append(isHealthy());
 			builder.append(", code=");
-			builder.append(code);
+			builder.append(getCode());
 			builder.append(", message=");
-			builder.append(message);
+			builder.append(getMessage());
 			builder.append("]");
 			return builder.toString();
 		}
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public boolean isHealthy() {
+            return healthy;
+        }
+
+        public void setHealthy(boolean healthy) {
+            this.healthy = healthy;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
 	}
 	
 	/**
 	 * Report aggregation
 	 */
 	public static class Reports {
-		public boolean healthy;
-		public ArrayList<Report> details = new ArrayList<>();
+		private boolean healthy;
+		private List<Report> details = new ArrayList<>();
 		
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("Reports [healthy=");
-			builder.append(healthy);
+			builder.append(isHealthy());
 			builder.append(", details=");
-			builder.append(details);
+			builder.append(getDetails());
 			builder.append("]");
 			return builder.toString();
 		}
+
+        public boolean isHealthy() {
+            return healthy;
+        }
+
+        public void setHealthy(boolean healthy) {
+            this.healthy = healthy;
+        }
+
+        public List<Report> getDetails() {
+            return details;
+        }
+
+        public void setDetails(ArrayList<Report> details) {
+            this.details = details;
+        }
 	}
 	
 	/**
@@ -147,41 +204,37 @@ class HealthCheckMonitor implements HealthCheck {
 	@Override
 	public Reports healthCheck() {	
 		Reports reports = new Reports();
-		reports.healthy = PolicyEngine.manager.isAlive();
+		reports.setHealthy(PolicyEngine.manager.isAlive());
 		
 		HealthCheck.Report engineReport = new Report();
-		engineReport.healthy = PolicyEngine.manager.isAlive();
-		engineReport.name = "PDP-D";
-		engineReport.url = "self";
-		engineReport.code = PolicyEngine.manager.isAlive() ? 200 : 500;
-		engineReport.message = PolicyEngine.manager.isAlive() ? "alive" : "not alive";
-		reports.details.add(engineReport);
+		engineReport.setHealthy(PolicyEngine.manager.isAlive());
+		engineReport.setName("PDP-D");
+		engineReport.setUrl("self");
+		engineReport.setCode(PolicyEngine.manager.isAlive() ? 200 : 500);
+		engineReport.setMessage(PolicyEngine.manager.isAlive() ? "alive" : "not alive");
+		reports.getDetails().add(engineReport);
 		
 		for (HttpClient client : clients) {
 			HealthCheck.Report report = new Report();
-			report.name = client.getName();
-			report.url = client.getBaseUrl();
-			report.healthy = true;
+			report.setName(client.getName());
+			report.setUrl(client.getBaseUrl());
+			report.setHealthy(true);
 			try {
 				Response response = client.get();
-				report.code = response.getStatus();
-				if (report.code != 200) {
-					report.healthy = false;
-					reports.healthy = false;
+				report.setCode(response.getStatus());
+				if (report.getCode() != 200) {
+					report.setHealthy(false);
+					reports.setHealthy(false);
 				}
-					
-				try {
-					report.message = HttpClient.getBody(response, String.class);
-				} catch (Exception e) {
-					logger.info("{}: cannot get body from http-client {}", this, client, e);
-				}
+        
+				report.setMessage(getHttpBody(response, client));
 			} catch (Exception e) {
 				logger.warn("{}: cannot contact http-client {}", this, client, e);
 				
-				report.healthy = false;
-				reports.healthy = false;
+				report.setHealthy(false);
+				reports.setHealthy(false);
 			}
-			reports.details.add(report);
+			reports.getDetails().add(report);
 		}
 		return reports;
 	}
@@ -198,11 +251,7 @@ class HealthCheckMonitor implements HealthCheck {
 			this.clients = HttpClient.factory.build(healthCheckProperties);
 			
 			for (HttpServletServer server : servers) {
-				try {
-					server.start();
-				} catch (Exception e) {
-					logger.warn("{}: cannot start http-server {}", this, server, e);
-				}
+			    startServer(server);
 			}
 		} catch (Exception e) {
 			logger.warn("{}: cannot start {}", this, e);		
@@ -256,15 +305,36 @@ class HealthCheckMonitor implements HealthCheck {
 	/**
 	 * @return list of attached Http Servers
 	 */
-	public ArrayList<HttpServletServer> getServers() {
+	public List<HttpServletServer> getServers() {
 		return this.servers;
 	}
 	
 	/**
 	 * @return list of attached Http Clients
 	 */
-	public ArrayList<HttpClient> getClients() {
+	public List<HttpClient> getClients() {
 		return this.clients;
+	}
+	
+	public String getHttpBody(Response response, HttpClient client) {
+        
+	    String body = null;
+        try {
+            body = HttpClient.getBody(response, String.class);
+        } catch (Exception e) {
+            logger.info("{}: cannot get body from http-client {}", this,
+                    client, e);
+        }
+        
+        return body;
+	}
+	
+	public void startServer(HttpServletServer server) {
+        try {
+            server.start();
+        } catch (Exception e) {
+            logger.warn("{}: cannot start http-server {}", this, server, e);
+        }
 	}
 
 	@Override

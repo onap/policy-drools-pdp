@@ -131,11 +131,11 @@ public class HealthCheckFeatureTest {
 		
 		Reports reports = HealthCheck.monitor.healthCheck();
 		
-		for (Report rpt : reports.details) {
-		    if (rpt.name == "HEALTHCHECK") {
-		        assertTrue(rpt.healthy);
-		        assertEquals(200,rpt.code);
-		        assertEquals("All Alive", rpt.message);
+		for (Report rpt : reports.getDetails()) {
+		    if (rpt.getName() == "HEALTHCHECK") {
+		        assertTrue(rpt.isHealthy());
+		        assertEquals(200,rpt.getCode());
+		        assertEquals("All Alive", rpt.getMessage());
 		        break;
 		    }
 		}
