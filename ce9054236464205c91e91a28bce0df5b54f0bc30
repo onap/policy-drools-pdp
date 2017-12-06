@@ -16,6 +16,24 @@
       "revId": "ce9054236464205c91e91a28bce0df5b54f0bc30",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_915d5eec",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusPublisher.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2017-12-06T14:16:42Z",
+      "side": 1,
+      "message": "The actual sonar issue is:\n\n\"\u0027publisher\u0027 is the name of a field in \u0027DmaapPublisherWrapper\u0027.\"\n\nBut I did a check and there are no references to this variable so it can probably be removed.",
+      "parentUuid": "5a93c517_91cf9eb0",
+      "revId": "ce9054236464205c91e91a28bce0df5b54f0bc30",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
