@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_91cf9eb0",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusPublisher.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-12-06T13:46:03Z",
+      "side": 1,
+      "message": "I think the sonar that you get here probably was to remove unused variable rather than renaming it.   So, unless I\u0027m missing something this probably should be removed.",
+      "revId": "ce9054236464205c91e91a28bce0df5b54f0bc30",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
