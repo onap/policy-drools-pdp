@@ -34,6 +34,24 @@
       "revId": "ce9054236464205c91e91a28bce0df5b54f0bc30",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_74e8c07c",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusPublisher.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-12-07T04:06:49Z",
+      "side": 1,
+      "message": "Right, I agree, I think this should be removed since it hides the parent class variable of the same name (and type).",
+      "parentUuid": "5a93c517_915d5eec",
+      "revId": "ce9054236464205c91e91a28bce0df5b54f0bc30",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
