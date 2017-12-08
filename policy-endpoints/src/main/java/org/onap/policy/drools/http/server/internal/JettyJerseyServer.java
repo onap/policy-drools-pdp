@@ -93,7 +93,7 @@ public class JettyJerseyServer extends JettyServletServer {
 	/**
 	 * Container for servlets
 	 */
-	protected HashMap<String, ServletHolder> servlets = new HashMap<String, ServletHolder>();
+	protected HashMap<String, ServletHolder> servlets = new HashMap<>();
 	
 	/**
 	 * Swagger ID
@@ -171,14 +171,14 @@ public class JettyJerseyServer extends JettyServletServer {
 	
 	@Override
 	public synchronized void addServletPackage(String servletPath, String restPackage) {
-		
+		String servPath = servletPath;
     	if (restPackage == null || restPackage.isEmpty())
 			throw new IllegalArgumentException("No discoverable REST package provided");
     	
-    	if (servletPath == null || servletPath.isEmpty())
-    		servletPath = "/*";
+    	if (servPath == null || servPath.isEmpty())
+    	    servPath = "/*";
 		
-		ServletHolder jerseyServlet = this.getServlet(servletPath);
+		ServletHolder jerseyServlet = this.getServlet(servPath);
 		
 		String initClasses = 
 				jerseyServlet.getInitParameter(JERSEY_INIT_CLASSNAMES_PARAM_NAME);

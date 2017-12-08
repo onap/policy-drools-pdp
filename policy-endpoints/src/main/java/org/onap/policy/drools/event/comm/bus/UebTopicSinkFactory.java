@@ -125,7 +125,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	 * UEB Topic Name Index
 	 */
 	protected HashMap<String, UebTopicSink> uebTopicSinks =
-			new HashMap<String, UebTopicSink>();
+			new HashMap<>();
 
 	@Override
 	public UebTopicSink build(List<String> servers, 

@@ -298,8 +298,6 @@ public interface BusPublisher {
 		/**
 		 * MR based Publisher
 		 */		
-		protected MRSimplerBatchPublisher publisher;
-		
 		public DmaapAafPublisherWrapper(List<String> servers, String topic,
 				                     String aafLogin,
 				                     String aafPassword, boolean useHttps) {
