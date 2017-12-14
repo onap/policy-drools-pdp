@@ -77,6 +77,7 @@
 		<module>feature-state-management</module>
 		<module>api-active-standby-management</module>
 		<module>feature-active-standby-management</module>
+		<module>feature-simulators</module>
 		<module>packages</module>
 	</modules>
 
