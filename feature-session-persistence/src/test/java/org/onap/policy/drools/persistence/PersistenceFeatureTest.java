@@ -622,12 +622,12 @@ public class PersistenceFeatureTest {
 
 	@Test
 	public void testBeforeShutdown() {
-		assertFalse( feat.beforeShutdown(null));
+		assertFalse( feat.beforeShutdown());
 	}
 
 	@Test
 	public void testAfterShutdown() {
-		assertFalse( feat.afterShutdown(null));
+		assertFalse( feat.afterShutdown());
 	}
 
 	@Test
@@ -682,12 +682,12 @@ public class PersistenceFeatureTest {
 
 	@Test
 	public void testBeforeUnlock() {
-		assertFalse( feat.beforeUnlock(null));
+		assertFalse( feat.beforeUnlock());
 	}
 
 	@Test
 	public void testAfterUnlock() {
-		assertFalse( feat.afterUnlock(null));
+		assertFalse( feat.afterUnlock());
 	}
 
 	@Test

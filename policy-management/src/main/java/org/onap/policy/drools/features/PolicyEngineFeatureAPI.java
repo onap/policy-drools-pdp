@@ -165,7 +165,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public default boolean beforeUnlock(PolicyEngine engine) {return false;};
+	  public default boolean beforeUnlock() {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is locked
@@ -174,7 +174,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public default boolean afterUnlock(PolicyEngine engine) {return false;};
+	  public default boolean afterUnlock() {return false;};
 	  
 	  /**
 	   * intercept the Policy Engine is shut down
@@ -183,7 +183,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise..
 	   */
-	  public default boolean beforeShutdown(PolicyEngine engine){return false;};
+	  public default boolean beforeShutdown(){return false;};
 	  
 	  /**
 	   * called after the Policy Engine is shut down
@@ -192,7 +192,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public default boolean afterShutdown(PolicyEngine engine) {return false;};
+	  public default boolean afterShutdown() {return false;};
 	  
 	  /**
 	   * Feature providers implementing this interface

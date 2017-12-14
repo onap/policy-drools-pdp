@@ -140,7 +140,7 @@ public class HealthCheckFeatureTest {
 		    }
 		}
 		
-		feature.afterShutdown(PolicyEngine.manager);
+		feature.afterShutdown();
 	
 	}
 
