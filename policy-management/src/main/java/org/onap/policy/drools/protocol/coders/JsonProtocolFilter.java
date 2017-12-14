@@ -197,7 +197,7 @@ public class JsonProtocolFilter {
 			for (FilterRule filter: rules) {
 				if (filter.regex == null || 
 					filter.regex.isEmpty() ||  
-					filter.regex.equals(".*")) {
+					".*".equals(filter.regex)) {
 					
 					// Only check for presence
 					if (!event.has(filter.name)) {

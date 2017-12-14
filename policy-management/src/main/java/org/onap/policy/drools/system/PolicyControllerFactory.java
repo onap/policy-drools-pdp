@@ -349,18 +349,19 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * @throws IllegalArgumentException
 	 */
 	protected void unmanage(PolicyController controller) throws IllegalArgumentException {
-		if (controller == null) {
+	    PolicyController tempController = controller;
+		if (tempController == null) {
 			throw new IllegalArgumentException("Invalid Controller");
 		}
 		
 		synchronized(this) {
-			if (!this.policyControllers.containsKey(controller.getName())) {
+			if (!this.policyControllers.containsKey(tempController.getName())) {
 				return;
 			}
-			controller = this.policyControllers.remove(controller.getName());
+			tempController = this.policyControllers.remove(tempController.getName());
 			
-			String coordinates = toKey(controller.getDrools().getGroupId(),
-                                       controller.getDrools().getArtifactId());
+			String coordinates = toKey(tempController.getDrools().getGroupId(),
+			        tempController.getDrools().getArtifactId());
 			this.coordinates2Controller.remove(coordinates);
 		}
 	}

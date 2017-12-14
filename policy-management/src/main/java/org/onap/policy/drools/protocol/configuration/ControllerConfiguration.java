@@ -198,25 +198,13 @@ public class ControllerConfiguration {
     protected boolean declaredProperty(String name, Object value) {
         switch (name) {
             case "name":
-                if (value instanceof String) {
-                    setName(((String) value));
-                } else {
-                    throw new IllegalArgumentException(("property \"name\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetName(value);
                 return true;
             case "operation":
-                if (value instanceof String) {
-                    setOperation(((String) value));
-                } else {
-                    throw new IllegalArgumentException(("property \"operation\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetOperation(value);
                 return true;
             case "drools":
-                if (value instanceof DroolsConfiguration) {
-                    setDrools(((DroolsConfiguration) value));
-                } else {
-                    throw new IllegalArgumentException(("property \"drools\" is of type \"org.onap.policy.drools.protocol.configuration.Drools\", but got "+ value.getClass().toString()));
-                }
+                callSetDrools(value);
                 return true;
             default:
                 return false;
@@ -250,13 +238,13 @@ public class ControllerConfiguration {
 
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, ((Object) value));
+            getAdditionalProperties().put(name, (Object) value);
         }
     }
 
     public ControllerConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, ((Object) value));
+            getAdditionalProperties().put(name, (Object) value);
         }
         return this;
     }
@@ -276,6 +264,30 @@ public class ControllerConfiguration {
         }
         ControllerConfiguration rhs = ((ControllerConfiguration) other);
         return new EqualsBuilder().append(name, rhs.name).append(operation, rhs.operation).append(drools, rhs.drools).append(additionalProperties, rhs.additionalProperties).isEquals();
+    }
+    
+    public void callSetName(Object value) {
+        if (value instanceof String) {
+            setName((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"name\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }
+    }
+    
+    public void callSetOperation(Object value) {
+        if (value instanceof String) {
+            setOperation((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"operation\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }
+    }
+    
+    public void callSetDrools(Object value) {
+        if (value instanceof DroolsConfiguration) {
+            setDrools((DroolsConfiguration) value);
+        } else {
+            throw new IllegalArgumentException("property \"drools\" is of type \"org.onap.policy.drools.protocol.configuration.Drools\", but got "+ value.getClass().toString());
+        }
     }
 
 }

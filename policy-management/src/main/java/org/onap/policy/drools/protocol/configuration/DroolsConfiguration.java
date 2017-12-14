@@ -196,25 +196,13 @@ public class DroolsConfiguration {
     protected boolean declaredProperty(String name, Object value) {
         switch (name) {
             case "artifactId":
-                if (value instanceof String) {
-                    setArtifactId((String) value);
-                } else {
-                    throw new IllegalArgumentException(("property \"artifactId\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetArtifactId(value);
                 return true;
             case "groupId":
-                if (value instanceof String) {
-                    setGroupId((String) value);
-                } else {
-                    throw new IllegalArgumentException(("property \"groupId\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetGroupId(value);
                 return true;
             case "version":
-                if (value instanceof String) {
-                    setVersion((String) value);
-                } else {
-                    throw new IllegalArgumentException(("property \"version\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetVersion(value);
                 return true;
             default:
                 return false;
@@ -275,5 +263,28 @@ public class DroolsConfiguration {
         DroolsConfiguration rhs = ((DroolsConfiguration) other);
         return new EqualsBuilder().append(artifactId, rhs.artifactId).append(groupId, rhs.groupId).append(version, rhs.version).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
+    
+    public void callSetArtifactId(Object value) {
+        if (value instanceof String) {
+            setArtifactId((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"artifactId\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }
+    }
 
+    public void callSetGroupId(Object value) {
+        if (value instanceof String) {
+            setGroupId((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"groupId\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }
+    }
+
+    public void callSetVersion(Object value) {
+        if (value instanceof String) {
+            setVersion((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"version\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }
+    }
 }
