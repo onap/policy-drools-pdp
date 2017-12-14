@@ -57,7 +57,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
 	}
 
 	@Override
-	public boolean afterShutdown(PolicyEngine engine) {
+	public boolean afterShutdown() {
 		try {
 			HealthCheck.monitor.stop();
 		} catch (IllegalStateException e) {

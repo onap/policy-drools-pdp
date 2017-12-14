@@ -74,7 +74,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 */
 	@JsonIgnore
 	protected final HashMap<String, TopicSink> topic2Sinks =
-		new HashMap<String, TopicSink>();
+		new HashMap<>();
 	
 	/**
 	 * Is this Policy Controller running (alive) ?

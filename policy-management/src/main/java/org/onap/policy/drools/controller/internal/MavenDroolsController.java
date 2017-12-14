@@ -100,12 +100,12 @@ public class MavenDroolsController implements DroolsController {
 	/**
 	 * recent source events processed
 	 */
-	protected final CircularFifoQueue<Object> recentSourceEvents = new CircularFifoQueue<Object>(10);
+	protected final CircularFifoQueue<Object> recentSourceEvents = new CircularFifoQueue<>(10);
 	
 	/**
 	 * recent sink events processed
 	 */
-	protected final CircularFifoQueue<String> recentSinkEvents = new CircularFifoQueue<String>(10);
+	protected final CircularFifoQueue<String> recentSinkEvents = new CircularFifoQueue<>(10);
 	
 	/**
 	 * original Drools Model/Rules classloader hash

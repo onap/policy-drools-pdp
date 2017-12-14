@@ -1507,15 +1507,15 @@ public class RestManager {
     }
 
     final CodingResult result = new CodingResult();
-    result.decoding = false;
-    result.encoding = false;
-    result.jsonEncoding = null;
+    result.setDecoding(false);
+    result.setEncoding(false);
+    result.setJsonEncoding(null);
 
     Object event;
     try {
       event = EventProtocolCoder.manager.decode(policyController.getDrools().getGroupId(),
           policyController.getDrools().getArtifactId(), topic, json);
-      result.decoding = true;
+      result.setDecoding(true);
     } catch (final Exception e) {
       logger.debug("{}: cannot get policy-controller {} topic {} because of {}", this,
           controllerName, topic, e.getMessage(), e);
@@ -1523,8 +1523,8 @@ public class RestManager {
     }
 
     try {
-      result.jsonEncoding = EventProtocolCoder.manager.encode(topic, event);
-      result.encoding = true;
+      result.setJsonEncoding(EventProtocolCoder.manager.encode(topic, event));
+      result.setEncoding(true);
     } catch (final Exception e) {
       // continue so to propagate decoding results ..
       logger.debug("{}: cannot encode for policy-controller {} topic {} because of {}", this,
@@ -1978,15 +1978,15 @@ public class RestManager {
   @ApiOperation(value = "all active loggers", responseContainer = "List")
   @ApiResponses(value = {@ApiResponse(code = 500, message = "logging misconfiguration")})
   public Response loggers() {
-    final List<String> names = new ArrayList<String>();
+    final List<String> names = new ArrayList<>();
     if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
       logger.warn("The SLF4J logger factory is not configured for logback");
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(names).build();
     }
 
     final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-    for (final Logger logger : context.getLoggerList()) {
-      names.add(logger.getName());
+    for (final Logger lgr : context.getLoggerList()) {
+      names.add(lgr.getName());
     }
 
     return Response.status(Status.OK).entity(names).build();
@@ -2006,12 +2006,12 @@ public class RestManager {
     }
 
     final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-    final ch.qos.logback.classic.Logger logger = context.getLogger(loggerName);
-    if (logger == null) {
+    final ch.qos.logback.classic.Logger lgr = context.getLogger(loggerName);
+    if (lgr == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    final String loggerLevel = (logger.getLevel() != null) ? logger.getLevel().toString() : "";
+    final String loggerLevel = (lgr.getLevel() != null) ? lgr.getLevel().toString() : "";
     return Response.status(Status.OK).entity(loggerLevel).build();
   }
 
@@ -2081,27 +2081,59 @@ public class RestManager {
      * serialized output
      */
 
-    public String jsonEncoding;
+    private String jsonEncoding;
     /**
      * encoding result
      */
 
-    public Boolean encoding;
+    private Boolean encoding;
 
     /**
      * decoding result
      */
-    public Boolean decoding;
+    private Boolean decoding;
+
+    public String getJsonEncoding() {
+        return jsonEncoding;
+    }
+
+    public void setJsonEncoding(String jsonEncoding) {
+        this.jsonEncoding = jsonEncoding;
+    }
+
+    public Boolean getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(Boolean encoding) {
+        this.encoding = encoding;
+    }
+
+    public Boolean getDecoding() {
+        return decoding;
+    }
+
+    public void setDecoding(Boolean decoding) {
+        this.decoding = decoding;
+    }
   }
 
   /**
    * Generic Error Reporting class
    */
   public static class Error {
-    public String error;
+    private String error;
 
     public Error(String error) {
-      this.error = error;
+      this.setError(error);
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
   }
 
