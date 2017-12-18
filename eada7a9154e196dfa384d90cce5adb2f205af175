@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_a474c8cf",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/PolicyEngineFeatureAPI.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2017-12-18T19:30:46Z",
+      "side": 1,
+      "message": "I don\u0027t think it should be removed in some places but not others the PolicyEngine callback parameters, as it would be up to the observer to use it or not.   I suspect you get an unused parameter of something of that sort technical debt issue on callback receivers (?).  If that is the case, should look for alternative solution, or mark it false positive.",
+      "revId": "eada7a9154e196dfa384d90cce5adb2f205af175",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
