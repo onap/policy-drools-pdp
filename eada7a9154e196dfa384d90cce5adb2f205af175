@@ -16,6 +16,24 @@
       "revId": "eada7a9154e196dfa384d90cce5adb2f205af175",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b51dd411",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/PolicyEngineFeatureAPI.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2017-12-19T17:58:03Z",
+      "side": 1,
+      "message": "I will put the parameter back and consider it a false positive.",
+      "parentUuid": "5a93c517_a474c8cf",
+      "revId": "eada7a9154e196dfa384d90cce5adb2f205af175",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
