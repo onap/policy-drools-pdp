@@ -158,7 +158,7 @@ public class NullDroolsController implements DroolsController {
 	@Override
 	public Map<String, Integer> factClassNames(String sessionName) 
 		   throws IllegalArgumentException {
-		return new HashMap<String,Integer>();
+		return new HashMap<>();
 	}
 
 	@Override

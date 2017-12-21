@@ -201,25 +201,13 @@ public class PdpdConfiguration {
 	protected boolean declaredProperty(String name, Object value) {
         switch (name) {
             case "requestID":
-                if (value instanceof String) {
-                    setRequestID((String) value);
-                } else {
-                    throw new IllegalArgumentException(("property \"requestID\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetRequestId(value);
                 return true;
             case "entity":
-                if (value instanceof String) {
-                    setEntity((String) value);
-                } else {
-                    throw new IllegalArgumentException(("property \"entity\" is of type \"java.lang.String\", but got "+ value.getClass().toString()));
-                }
+                callSetEntity(value);
                 return true;
             case "controllers":
-                if (value instanceof List) {
-                    setControllers((List<ControllerConfiguration> ) value);
-                } else {
-                    throw new IllegalArgumentException(("property \"controllers\" is of type \"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", but got "+ value.getClass().toString()));
-                }
+                callSetControllers(value);
                 return true;
             default:
                 return false;
@@ -280,5 +268,28 @@ public class PdpdConfiguration {
         PdpdConfiguration rhs = (PdpdConfiguration) other;
         return new EqualsBuilder().append(requestID, rhs.requestID).append(entity, rhs.entity).append(controllers, rhs.controllers).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
+    
+    public void callSetRequestId(Object value) {
+        if (value instanceof String) {
+            setRequestID((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"requestID\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }       
+    }
+    
+    public void callSetEntity(Object value) {
+        if (value instanceof String) {
+            setEntity((String) value);
+        } else {
+            throw new IllegalArgumentException("property \"entity\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+        }       
+    }
 
+    public void callSetControllers(Object value) {
+        if (value instanceof List) {
+            setControllers((List<ControllerConfiguration> ) value);
+        } else {
+            throw new IllegalArgumentException("property \"controllers\" is of type \"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", but got "+ value.getClass().toString());
+        }        
+    }
 }

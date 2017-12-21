@@ -387,7 +387,7 @@ class PolicyEngineManager implements PolicyEngine {
   /**
    * Policy Engine HTTP Servers
    */
-  protected List<HttpServletServer> httpServers = new ArrayList<HttpServletServer>();
+  protected List<HttpServletServer> httpServers = new ArrayList<>();
 
   /**
    * gson parser to decode configuration requests
@@ -459,7 +459,7 @@ class PolicyEngineManager implements PolicyEngine {
         TELEMETRY_SERVER_DEFAULT_HOST);
     defaultConfig.put(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
         + TELEMETRY_SERVER_DEFAULT_NAME + PolicyProperties.PROPERTY_HTTP_PORT_SUFFIX,
-        "" + TELEMETRY_SERVER_DEFAULT_PORT);
+        "" +  Integer.toString(TELEMETRY_SERVER_DEFAULT_PORT));
     defaultConfig.put(
         PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
             + PolicyProperties.PROPERTY_HTTP_REST_PACKAGES_SUFFIX,
@@ -534,24 +534,25 @@ class PolicyEngineManager implements PolicyEngine {
   public synchronized PolicyController createPolicyController(String name, Properties properties)
       throws IllegalArgumentException, IllegalStateException {
 
+    String tempName = name;
     // check if a PROPERTY_CONTROLLER_NAME property is present
     // if so, override the given name
 
     final String propertyControllerName =
         properties.getProperty(PolicyProperties.PROPERTY_CONTROLLER_NAME);
     if (propertyControllerName != null && !propertyControllerName.isEmpty()) {
-      if (!propertyControllerName.equals(name)) {
-        throw new IllegalStateException("Proposed name (" + name + ") and properties name ("
+      if (!propertyControllerName.equals(tempName)) {
+        throw new IllegalStateException("Proposed name (" + tempName + ") and properties name ("
             + propertyControllerName + ") don't match");
       }
-      name = propertyControllerName;
+      tempName = propertyControllerName;
     }
 
     PolicyController controller;
     for (final PolicyControllerFeatureAPI controllerFeature : PolicyControllerFeatureAPI.providers
         .getList()) {
       try {
-        controller = controllerFeature.beforeCreate(name, properties);
+        controller = controllerFeature.beforeCreate(tempName, properties);
         if (controller != null)
           return controller;
       } catch (final Exception e) {
@@ -560,7 +561,7 @@ class PolicyEngineManager implements PolicyEngine {
       }
     }
 
-    controller = PolicyController.factory.build(name, properties);
+    controller = PolicyController.factory.build(tempName, properties);
     if (this.isLocked())
       controller.lock();
 
@@ -589,22 +590,8 @@ class PolicyEngineManager implements PolicyEngine {
     final String entity = config.getEntity();
 
     switch (entity) {
-      case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:
-        /* only this one supported for now */
-        final List<ControllerConfiguration> configControllers = config.getControllers();
-        if (configControllers == null || configControllers.isEmpty()) {
-          if (logger.isInfoEnabled())
-            logger.info("No controller configuration provided: " + config);
-          return false;
-        }
-        final List<PolicyController> policyControllers =
-            this.updatePolicyControllers(config.getControllers());
-        if (policyControllers == null || policyControllers.isEmpty())
-          return false;
-        else if (policyControllers.size() == configControllers.size())
-          return true;
-
-        return false;
+      case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:          
+        return controllerConfig(config);
       default:
         final String msg = "Configuration Entity is not supported: " + entity;
         logger.warn(msg);
@@ -617,7 +604,7 @@ class PolicyEngineManager implements PolicyEngine {
       List<ControllerConfiguration> configControllers)
       throws IllegalArgumentException, IllegalStateException {
 
-    final List<PolicyController> policyControllers = new ArrayList<PolicyController>();
+    final List<PolicyController> policyControllers = new ArrayList<>();
     if (configControllers == null || configControllers.isEmpty()) {
       if (logger.isInfoEnabled())
         logger.info("No controller configuration provided: " + configControllers);
@@ -677,14 +664,14 @@ class PolicyEngineManager implements PolicyEngine {
         logger.warn("controller " + controllerName + " does not exist.  "
             + "Attempting recovery from disk");
 
-        final Properties properties =
+        final Properties controllerProperties =
             SystemPersistence.manager.getControllerProperties(controllerName);
 
         /*
          * returned properties cannot be null (per implementation) assert (properties != null)
          */
 
-        if (properties == null) {
+        if (controllerProperties == null) {
           throw new IllegalArgumentException(controllerName + " is invalid");
         }
 
@@ -695,11 +682,11 @@ class PolicyEngineManager implements PolicyEngine {
          * try to bring up bad controller in brainless mode, after having it working, apply the new
          * create/update operation.
          */
-        properties.setProperty(PolicyProperties.RULES_GROUPID, DroolsController.NO_GROUP_ID);
-        properties.setProperty(PolicyProperties.RULES_ARTIFACTID, DroolsController.NO_ARTIFACT_ID);
-        properties.setProperty(PolicyProperties.RULES_VERSION, DroolsController.NO_VERSION);
+        controllerProperties.setProperty(PolicyProperties.RULES_GROUPID, DroolsController.NO_GROUP_ID);
+        controllerProperties.setProperty(PolicyProperties.RULES_ARTIFACTID, DroolsController.NO_ARTIFACT_ID);
+        controllerProperties.setProperty(PolicyProperties.RULES_VERSION, DroolsController.NO_VERSION);
 
-        policyController = PolicyEngine.manager.createPolicyController(controllerName, properties);
+        policyController = PolicyEngine.manager.createPolicyController(controllerName, controllerProperties);
 
         /* fall through to do brain update operation */
       }
@@ -1140,7 +1127,7 @@ class PolicyEngineManager implements PolicyEngine {
   @JsonProperty("controllers")
   @Override
   public List<String> getPolicyControllerIds() {
-    final List<String> controllerNames = new ArrayList<String>();
+    final List<String> controllerNames = new ArrayList<>();
     for (final PolicyController controller : PolicyController.factory.inventory()) {
       controllerNames.add(controller.getName());
     }
@@ -1173,7 +1160,7 @@ class PolicyEngineManager implements PolicyEngine {
 
   @Override
   public List<String> getFeatures() {
-    final List<String> features = new ArrayList<String>();
+    final List<String> features = new ArrayList<>();
     for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
       features.add(feature.getName());
     }
@@ -1231,12 +1218,12 @@ class PolicyEngineManager implements PolicyEngine {
     if (this.isLocked())
       throw new IllegalStateException("Policy Engine is locked");
 
-    final List<? extends TopicSink> sinks = TopicEndpoint.manager.getTopicSinks(topic);
-    if (sinks == null || sinks.isEmpty() || sinks.size() > 1)
+    final List<? extends TopicSink> topicSinks = TopicEndpoint.manager.getTopicSinks(topic);
+    if (topicSinks == null || topicSinks.isEmpty() || topicSinks.size() > 1)
       throw new IllegalStateException(
-          "Cannot ensure correct delivery on topic " + topic + ": " + sinks);
+          "Cannot ensure correct delivery on topic " + topic + ": " + topicSinks);
 
-    return this.deliver(sinks.get(0).getTopicCommInfrastructure(), topic, event);
+    return this.deliver(topicSinks.get(0).getTopicCommInfrastructure(), topic, event);
   }
 
   @Override
@@ -1417,10 +1404,7 @@ class PolicyEngineManager implements PolicyEngine {
     for (final PolicyController policyController : this.getPolicyControllers()) {
       try {
         policyController.stop();
-      } catch (final Exception e) {
-        logger.error("{}: cannot deactivate (stop) policy-controller {} because of {}", this,
-            policyController, e.getMessage(), e);
-      } catch (final LinkageError e) {
+      } catch (final Exception | LinkageError e) {
         logger.error("{}: cannot deactivate (stop) policy-controller {} because of {}", this,
             policyController, e.getMessage(), e);
       }
@@ -1436,6 +1420,24 @@ class PolicyEngineManager implements PolicyEngine {
             feature.getClass().getName(), e.getMessage(), e);
       }
     }
+  }
+  
+  public boolean controllerConfig(PdpdConfiguration config) {
+      /* only this one supported for now */
+      final List<ControllerConfiguration> configControllers = config.getControllers();
+      if (configControllers == null || configControllers.isEmpty()) {
+        if (logger.isInfoEnabled())
+          logger.info("No controller configuration provided: " + config);
+        return false;
+      }
+      final List<PolicyController> policyControllers =
+          this.updatePolicyControllers(config.getControllers());
+      if (policyControllers == null || policyControllers.isEmpty())
+        return false;
+      else if (policyControllers.size() == configControllers.size())
+        return true;
+
+      return false;      
   }
 
   @Override

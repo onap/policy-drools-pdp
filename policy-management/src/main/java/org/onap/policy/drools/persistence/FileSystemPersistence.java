@@ -80,13 +80,15 @@ public class FileSystemPersistence implements SystemPersistence {
 
   @Override
   public void setConfigurationDir(String configDir) {
-    if (configDir == null) {
-      configDir = DEFAULT_CONFIGURATION_DIR;
+    String tempConfigDir = configDir;
+    
+    if (tempConfigDir == null) {
+        tempConfigDir = DEFAULT_CONFIGURATION_DIR;
       this.configurationDirectory = Paths.get(DEFAULT_CONFIGURATION_DIR);
     }
 
-    if (!configDir.equals(DEFAULT_CONFIGURATION_DIR))
-      this.configurationDirectory = Paths.get(configDir);
+    if (!tempConfigDir.equals(DEFAULT_CONFIGURATION_DIR))
+      this.configurationDirectory = Paths.get(tempConfigDir);
 
     if (Files.notExists(this.configurationDirectory)) {
       try {
