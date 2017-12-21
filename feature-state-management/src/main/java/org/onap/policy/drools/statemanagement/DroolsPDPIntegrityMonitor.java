@@ -20,11 +20,8 @@
 
 package org.onap.policy.drools.statemanagement;
 
-import org.onap.policy.drools.statemanagement.StateManagementProperties;
-
 import java.util.ArrayList;
 import java.util.Properties;
-
 import org.onap.policy.common.im.IntegrityMonitor;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.drools.http.server.HttpServletServer;
@@ -82,6 +79,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		  logger.info(msg);
 	  }
   }
+  
   /**
    * Static initialization -- create Drools Integrity Monitor, and
    * an HTTP server to handle REST 'test' requests
@@ -221,7 +219,6 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 								testPort, e);
 		throw e;
 	}
-	
 	logger.info("init: Exiting and returning DroolsPDPIntegrityMonitor");
 	return im;
   }

@@ -22,6 +22,9 @@ package org.onap.policy.drools.statemanagement;
 
 import java.util.Observer;
 
+import javax.validation.constraints.NotNull;
+
+import org.onap.policy.common.im.AllSeemsWellException;
 import org.onap.policy.common.im.StandbyStatusException;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.properties.Lockable;
@@ -64,6 +67,9 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
 	  public static final String AVAILABLE_STATUS= StateManagement.AVAILABLE_STATUS;
 	  public static final String STANDBY_STATUS  = StateManagement.STANDBY_STATUS;
 	  
+	  static public final Boolean ALLSEEMSWELL = Boolean.TRUE;
+	  static public final Boolean ALLNOTWELL = Boolean.FALSE;
+	  
 	  public static final int SEQ_NUM = 0;
   /**
    * 'FeatureAPI.impl.getList()' returns an ordered list of objects
@@ -72,6 +78,29 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
   public static OrderedServiceImpl<StateManagementFeatureAPI> impl =
 	new OrderedServiceImpl<>(StateManagementFeatureAPI.class);
 
+  /**
+   * ALL SEEMS/NOT WELL
+   * This interface is used to support the concept of All Seems/Not Well.  It provides
+   * a way for client code to indicate to the DroolsPDPIntegrityMonitor that an event 
+   * has occurred which is disabling (or enabling) for the Drools PDP.  The call is
+   * actually implemented in the common modules IntegrityMonitor where it will cause
+   * the testTransaction to fail if any module has set the value ALLNOTWELL, stopping
+   * the forward progress counter and eventually causing the operational state to 
+   * become disabled.
+   * 
+   * ALLSEEMSWELL is passed to the method when the client is healthy
+   * ALLNOTWELL is passed to the method when the client is disabled
+   * 
+   * @param key - This should be a unique identifier for the entity making the call (e.g., class name)
+   * @param asw - This is the indicator of health. See constants: ALLSEEMSWELL or ALLNOTWELL
+   * @param msg - A message is required.  It should indicate why all is not well or a message indicating
+   * that a component has been restored to health (perhaps indicating the problem that has resolved).
+   * @throws IllegalArgumentException
+   * @throws AllSeemsWellException
+   */
+  public void allSeemsWell(@NotNull String key, @NotNull Boolean asw, @NotNull String msg)
+		  throws IllegalArgumentException, AllSeemsWellException;
+  
   /**
    * This method is called to add an Observer to receive notifications of state changes
    * 

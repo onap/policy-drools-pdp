@@ -35,8 +35,6 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 	// get an instance of logger 
 	private final static Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);	
 	private DroolsPdpsConnector pdpsConnector;
-	private Object pdpsConnectorLock = new Object();
-	private Object checkUpdateWorkerLock = new Object();
 	private Object checkWaitTimerLock = new Object();
 	private Object designationWaiterLock = new Object();
 	
@@ -49,18 +47,42 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 	private DesignationWaiter designationWaiter;
 	private Timer updateWorker;
 	private Timer waitTimer;
-	private Date updateWorkerLastRunDate;
 	private Date waitTimerLastRunDate;
+	
+	// The interval between checks of the DesignationWaiter to be sure it is running.
 	private int pdpCheckInterval;
+	
+	// The interval between runs of the DesignationWaiter
 	private int pdpUpdateInterval;
+	
 	private volatile boolean isDesignated;
 
 	private String pdpdNowActive;
 	private String pdpdLastActive;
 	
+	private Boolean allSeemsWell=true;
+	
 	private StateManagementFeatureAPI stateManagementFeature;
 	
+	private static boolean isUnitTesting = false;
+	public static void setIsUnitTesting(boolean val){
+		isUnitTesting = val;
+	}
+	private static boolean isStalled = false;
+	public static void setIsStalled(boolean val){
+		isStalled = val;
+	}
+	
 	public DroolsPdpsElectionHandler(DroolsPdpsConnector pdps, DroolsPdp myPdp){
+		if (pdps == null) {
+			logger.error("DroolsPdpsElectinHandler(): pdpsConnector==null");
+			throw new IllegalArgumentException("DroolsPdpsElectinHandler(): pdpsConnector==null");
+		}
+		if (myPdp == null){
+			logger.error("DroolsPdpsElectinHandler(): droolsPdp==null");
+			throw new IllegalArgumentException("DroolsPdpsElectinHandler(): DroolsPdp==null");
+		}
+
 		pdpdNowActive = null;
 		pdpdLastActive = null;
 		this.pdpsConnector = pdps;
@@ -71,14 +93,14 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 			pdpCheckInterval = Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_CHECK_INVERVAL));
 		}catch(Exception e){
 			logger.error
-			("Could not get pdpCheckInterval property. Using default", e);
+			("Could not get pdpCheckInterval property. Using default {}",pdpCheckInterval, e);
 		}
 		pdpUpdateInterval = 2000;
 		try{
 			pdpUpdateInterval = Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
 		}catch(Exception e){
 			logger.error
-			("Could not get pdpUpdateInterval property. Using default", e);
+			("Could not get pdpUpdateInterval property. Using default {} ", pdpUpdateInterval, e);
 		}	
 
 		Date now = new Date();
@@ -90,11 +112,10 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		// This is the heartbeat 
 		updateWorker = new Timer();
 
-		// Schedule the heartbeat to start in 100 ms and run at pdpCheckInterval ms thereafter
+		// Schedule the TimerUpdateClass to run at 100 ms and run at pdpCheckInterval ms thereafter
 		// NOTE: The first run of the TimerUpdateClass results in myPdp being added to the 
 		// drools droolsPdpEntity table.
 		updateWorker.scheduleAtFixedRate(new TimerUpdateClass(), 100, pdpCheckInterval);
-		updateWorkerLastRunDate = new Date(nowMs + 100);
 
 		// Create the timer which will run the election algorithm
 		waitTimer = new Timer();
@@ -151,13 +172,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					("DesignatedWaiter.run: Entering");
 				}
 				
-				// just here initially so code still works
-				if (pdpsConnector == null) {
-					waitTimerLastRunDate = new Date();
+				//This is for testing the checkWaitTimer
+				if(isUnitTesting && isStalled){
 					if(logger.isDebugEnabled()){
-						logger.debug("DesignatedWaiter.run (pdpsConnector==null) waitTimerLastRunDate = {}", waitTimerLastRunDate);
+						logger.debug("DesignatedWaiter.run: isUnitTesting = {} isStalled = {}", isUnitTesting, isStalled);
 					}
-					
 					return;
 				}
 
@@ -168,8 +187,6 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						("DesignatedWaiter.run: Entering synchronized block");
 					}
 
-					checkUpdateWorkerTimer();
-					
 					//It is possible that multiple PDPs are designated lead.  So, we will make a list of all designated
 					//PDPs and then decide which one really should be designated at the end.
 					ArrayList<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
@@ -519,6 +536,8 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						if(logger.isDebugEnabled()){
 							logger.debug("DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = {}", waitTimerLastRunDate);
 						}
+						myPdp.setUpdatedDate(waitTimerLastRunDate);
+						pdpsConnector.update(myPdp);
 						
 						return;
 						
@@ -580,6 +599,8 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 							logger.debug("DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) "
 								+ "waitTimerLastRunDate = " + waitTimerLastRunDate);
 						}
+						myPdp.setUpdatedDate(waitTimerLastRunDate);
+						pdpsConnector.update(myPdp);
 
 						return;
 					}
@@ -598,6 +619,8 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				}
 				
 				waitTimerLastRunDate = tmpDate;
+				myPdp.setUpdatedDate(waitTimerLastRunDate);
+				pdpsConnector.update(myPdp);
 				
 			}catch(Exception e){
 				logger.error("DesignatedWaiter.run caught an unexpected exception: ", e);
@@ -896,90 +919,17 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					logger.debug("TimerUpdateClass.run: entry");
 				}
 				checkWaitTimer();
-				synchronized(pdpsConnectorLock){
-					
-					myPdp.setUpdatedDate(new Date());
-					/*
-					Redundant with DesignationWaiter and this updates the date every
-					cycle instead of just when the state changes.			
-					if(myPdp.isDesignated()){
-						myPdp.setDesignatedDate(new Date());
-					}
- 					*/					
-					pdpsConnector.update(myPdp);
-					
-					Date tmpDate = new Date();
-					if(logger.isDebugEnabled()){
-						logger.debug("TimerUpdateClass.run: updateWorkerLastRunDate = {}", tmpDate);
-					}
-					
-					updateWorkerLastRunDate = tmpDate;
-				}
-				if(logger.isDebugEnabled()){
-					logger.debug("TimerUpdateClass.run.exit");
-				}
 			}catch(Exception e){
 				logger.error("TimerUpdateClass.run caught an unexpected exception: ", e);
+			}
+			if(logger.isDebugEnabled()){
+				logger.debug("TimerUpdateClass.run.exit");
 			}
 		}
 	}
 	@Override
 	public void checkThreadStatus() {
-		checkUpdateWorkerTimer();
 		checkWaitTimer();
-	}
-
-	private void checkUpdateWorkerTimer(){
-		synchronized(checkUpdateWorkerLock){
-			try{
-				if(logger.isDebugEnabled()){
-					logger.debug("checkUpdateWorkerTimer: entry");
-				}
-				Date now = new Date();
-				long nowMs = now.getTime();
-				long updateWorkerMs = updateWorkerLastRunDate.getTime();
-				//give it 2 second cushion
-				if((nowMs - updateWorkerMs)  > pdpCheckInterval + 2000){
-					logger.error("checkUpdateWorkerTimer: nowMs - updateWorkerMs = {} " 
-							+ ", exceeds pdpCheckInterval + 2000 = {} "
-							+ "Will reschedule updateWorker timer",(nowMs - updateWorkerMs), (pdpCheckInterval + 2000));
-
-					try{
-						updateWorker.cancel();
-						// Recalculate the time because this is a synchronized section and the thread could have
-						// been blocked.
-						now = new Date();
-						nowMs = now.getTime();
-						updateWorker = new Timer();
-						// reset the updateWorkerLastRunDate
-						updateWorkerLastRunDate = new Date(nowMs + 100);
-						//execute the first time in 100 ms
-						updateWorker.scheduleAtFixedRate(new TimerUpdateClass(), 100, pdpCheckInterval);
-						if(logger.isDebugEnabled()){
-							logger.debug("checkUpdateWorkerTimer: Scheduling updateWorker timer to start in 100 ms ");
-						}
-					}catch(Exception e){
-						logger.error("checkUpdateWorkerTimer: Caught unexpected Exception: ", e);
-						// Recalculate the time because this is a synchronized section and the thread could have
-						// been blocked.
-						now = new Date();
-						nowMs = now.getTime();
-						updateWorker = new Timer();
-						updateWorkerLastRunDate = new Date(nowMs + 100);
-						updateWorker.scheduleAtFixedRate(new TimerUpdateClass(), 100, pdpCheckInterval);
-						if(logger.isDebugEnabled()){
-							logger.debug("checkUpdateWorkerTimer: Attempting to schedule updateWorker timer in 100 ms");
-						}
-					}
-
-				}
-				if(logger.isDebugEnabled()){
-					logger.debug("checkUpdateWorkerTimer: exit");
-				}
-			}catch(Exception e){
-				logger.error("checkUpdateWorkerTimer: caught unexpected exception: ", e);
-			}
-		}
 	}
 
 	private void checkWaitTimer(){
@@ -994,38 +944,24 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 				//give it 10 times leeway  
 				if((nowMs - waitTimerMs)  > 10*pdpUpdateInterval){
+					if(allSeemsWell){
+						allSeemsWell = false;
+						if(logger.isDebugEnabled()){
+							logger.debug("checkWaitTimer: calling allSeemsWell with ALLNOTWELL param");
+						}
+						stateManagementFeature.allSeemsWell(this.getClass().getName(), 
+								StateManagementFeatureAPI.ALLNOTWELL,
+								"DesignationWaiter/ElectionHandler has STALLED");
+					}
 					logger.error("checkWaitTimer: nowMs - waitTimerMs = {}" 
 							+ ", exceeds 10* pdpUpdateInterval = {}"
-							+ "Will reschedule waitTimer timer", (nowMs - waitTimerMs), (10*pdpUpdateInterval));
-
-					try{
-						// Recalculate since the thread could have been stalled on the synchronize()
-						nowMs = (new Date()).getTime();
-						// Time to the start of the next pdpUpdateInterval multiple
-						long startMs = getDWaiterStartMs();
-						waitTimer.cancel();
-						designationWaiter = new DesignationWaiter();
-						waitTimer = new Timer();
-						waitTimerLastRunDate = new Date(nowMs + startMs);
-						waitTimer.scheduleAtFixedRate(designationWaiter, startMs, pdpUpdateInterval);
-						if(logger.isDebugEnabled()){
-							logger.debug("checkWaitTimer: Scheduling waitTimer timer to start in {} ms", startMs);
-						}
-					}catch(Exception e){
-						logger.error("checkWaitTimer: Caught unexpected Exception: ", e);
-						// Recalculate since the thread could have been stalled on the synchronize()
-						nowMs = (new Date()).getTime();
-						// Time to the start of the next pdpUpdateInterval multiple
-						long startMs = getDWaiterStartMs();
-						designationWaiter = new DesignationWaiter();
-						waitTimer = new Timer();
-						waitTimerLastRunDate = new Date(nowMs + startMs);
-						waitTimer.scheduleAtFixedRate(designationWaiter, startMs, pdpUpdateInterval);
-						if(logger.isDebugEnabled()){
-							logger.debug("checkWaitTimer: Scheduling waitTimer timer in {} ms", startMs);
-						}
-					}
-
+							+ " DesignationWaiter is STALLED!", (nowMs - waitTimerMs), (10*pdpUpdateInterval));
+				}else if(!allSeemsWell){
+					allSeemsWell = true;
+					stateManagementFeature.allSeemsWell(this.getClass().getName(), 
+							StateManagementFeatureAPI.ALLSEEMSWELL,
+							"DesignationWaiter/ElectionHandler has RESUMED");
+					logger.info("DesignationWaiter/ElectionHandler has RESUMED");
 				}
 				if(logger.isDebugEnabled()){
 					logger.debug("checkWaitTimer: exit");

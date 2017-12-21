@@ -38,6 +38,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.onap.policy.common.im.AdministrativeStateException;
 import org.onap.policy.common.im.IntegrityMonitor;
@@ -71,23 +72,23 @@ import org.slf4j.LoggerFactory;
 public class StandbyStateManagementTest {
 	private static final Logger  logger = LoggerFactory.getLogger(StandbyStateManagementTest.class);
 	/*
-	 * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every ten seconds, starting 
-	 * at ten seconds after the minute boundary (e.g. 13:05:10). So, an 80 second sleep should be 
-	 * sufficient to ensure that we wait for the DesignationWaiter to do its job, before 
-	 * checking the results.
+	 * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting 
+	 * at the start of the next multiple of pdpUpdateInterval, but with a minimum of 5 sec cushion
+	 * to ensure that we wait for the DesignationWaiter to do its job, before 
+	 * checking the results. Add a few seconds for safety
 	 */ 
 	 
-	long sleepTime = 80000;
+	long sleepTime = 10000;
 	
 	/*
-	 * DroolsPdpsElectionHandler runs every ten seconds, so a 15 second sleep should be 
+	 * DroolsPdpsElectionHandler runs every 1 seconds, so a 6 second sleep should be 
 	 * plenty to ensure it has time to re-promote this PDP.
 	 */
 	 
-	long electionWaitSleepTime = 15000;
+	long electionWaitSleepTime = 6000;
 	
 	/*
-	 * Sleep 5 seconds after each test to allow interrupt (shutdown) recovery.
+	 * Sleep 1 seconds after each test to allow interrupt (shutdown) recovery.
 	 */
 	 
 	long interruptRecoveryTime = 5000;

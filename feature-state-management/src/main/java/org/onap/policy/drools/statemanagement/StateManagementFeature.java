@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Observer;
 import java.util.Properties;
 
+import org.onap.policy.common.im.AllSeemsWellException;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
@@ -262,5 +263,13 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 		} catch (IOException e1) {
 			logger.error("initializeProperties", e1);
 		}
+	}
+
+	@Override
+	public void allSeemsWell(String key, Boolean asw, String msg)
+			throws IllegalArgumentException, AllSeemsWellException {
+
+		droolsPdpIntegrityMonitor.allSeemsWell(key, asw, msg);
+		
 	}
 }
