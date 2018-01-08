@@ -60,7 +60,12 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 	private String pdpdNowActive;
 	private String pdpdLastActive;
 	
-	private Boolean allSeemsWell=true;
+	/*
+	 * Start allSeemsWell with a value of null so that, on the first run
+	 * of the checkWaitTimer it will set the value in IntegrityMonitor
+	 * regardless of whether it needs to be set to true or false.
+	 */
+	private Boolean allSeemsWell=null;
 	
 	private StateManagementFeatureAPI stateManagementFeature;
 	
@@ -944,7 +949,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 				//give it 10 times leeway  
 				if((nowMs - waitTimerMs)  > 10*pdpUpdateInterval){
-					if(allSeemsWell){
+					if(allSeemsWell==null || allSeemsWell){
 						allSeemsWell = false;
 						if(logger.isDebugEnabled()){
 							logger.debug("checkWaitTimer: calling allSeemsWell with ALLNOTWELL param");
@@ -956,7 +961,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					logger.error("checkWaitTimer: nowMs - waitTimerMs = {}" 
 							+ ", exceeds 10* pdpUpdateInterval = {}"
 							+ " DesignationWaiter is STALLED!", (nowMs - waitTimerMs), (10*pdpUpdateInterval));
-				}else if(!allSeemsWell){
+				}else if(allSeemsWell==null || !allSeemsWell){
 					allSeemsWell = true;
 					stateManagementFeature.allSeemsWell(this.getClass().getName(), 
 							StateManagementFeatureAPI.ALLSEEMSWELL,
