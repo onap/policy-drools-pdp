@@ -96,14 +96,10 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	// (the 'IntegrityMonitor' constructor does some additional verification)
 	String testHost = stateManagementProperties.getProperty(StateManagementProperties.TEST_HOST);
 	String testPort = stateManagementProperties.getProperty(StateManagementProperties.TEST_PORT);
-	String testServices = stateManagementProperties.getProperty(StateManagementProperties.TEST_SERVICES,
-			StateManagementProperties.TEST_SERVICES_DEFAULT);
-	String testRestClasses = stateManagementProperties.getProperty(StateManagementProperties.TEST_REST_CLASSES, 
-			StateManagementProperties.TEST_REST_CLASSES_DEFAULT);
-	String testManaged = stateManagementProperties.getProperty(StateManagementProperties.TEST_MANAGED,
-			StateManagementProperties.TEST_MANAGED_DEFAULT);
-	String testSwagger = stateManagementProperties.getProperty(StateManagementProperties.TEST_SWAGGER,
-			StateManagementProperties.TEST_SWAGGER_DEFAULT);
+    String testServices = stateManagementProperties.getProperty(StateManagementProperties.TEST_SERVICES);
+    String testRestClasses = stateManagementProperties.getProperty(StateManagementProperties.TEST_REST_CLASSES);
+    String testManaged = stateManagementProperties.getProperty(StateManagementProperties.TEST_MANAGED);
+    String testSwagger = stateManagementProperties.getProperty(StateManagementProperties.TEST_SWAGGER);
 	String resourceName = stateManagementProperties.getProperty(StateManagementProperties.RESOURCE_NAME);
 	String fpMonitorInterval = stateManagementProperties.getProperty(StateManagementProperties.FP_MONITOR_INTERVAL);
 	String failedCounterThreshold = stateManagementProperties.getProperty(StateManagementProperties.FAILED_COUNTER_THRESHOLD);
@@ -123,6 +119,22 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	if (testPort == null){
 		missingProperty(StateManagementProperties.TEST_PORT);
 	}
+    if (testServices == null) {
+        testServices = StateManagementProperties.TEST_SERVICES_DEFAULT;
+        stateManagementProperties.put(StateManagementProperties.TEST_SERVICES, testServices);
+    }
+    if (testRestClasses == null) {
+        testRestClasses = StateManagementProperties.TEST_REST_CLASSES_DEFAULT;
+        stateManagementProperties.put(StateManagementProperties.TEST_REST_CLASSES, testRestClasses);
+    }
+    if (testManaged == null) {
+        testManaged = StateManagementProperties.TEST_MANAGED_DEFAULT;
+        stateManagementProperties.put(StateManagementProperties.TEST_MANAGED, testManaged);
+    }
+    if (testSwagger == null) {
+        testSwagger = StateManagementProperties.TEST_SWAGGER_DEFAULT;
+        stateManagementProperties.put(StateManagementProperties.TEST_SWAGGER, testSwagger);
+    }
 	if (!testServices.equals(StateManagementProperties.TEST_SERVICES_DEFAULT)){
 		logger.error(INVALID_PROPERTY_VALUE,
 				StateManagementProperties.TEST_SERVICES,
