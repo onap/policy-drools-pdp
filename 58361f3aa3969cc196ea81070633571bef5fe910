@@ -34,6 +34,24 @@
       "revId": "58361f3aa3969cc196ea81070633571bef5fe910",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_cc49c4d1",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1621
+      },
+      "writtenOn": "2018-01-23T19:10:19Z",
+      "side": 0,
+      "message": "Jorge,\nThey are used below in lines 122-137 on the \"changed\" side of the page.  Is that what you meant or was it something else?\n - Kevin",
+      "parentUuid": "5a93c517_ac86b863",
+      "revId": "58361f3aa3969cc196ea81070633571bef5fe910",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
