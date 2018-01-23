@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_0c400ca4",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-01-23T19:09:55Z",
+      "side": 1,
+      "message": "Jorge, the deleted properties you asked about in the original version of this class are still used in the if statements below.",
+      "revId": "9e2820c5820b3904e03cb7a4cb4292e864b1ca2b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}

@@ -16,6 +16,24 @@
       "revId": "58361f3aa3969cc196ea81070633571bef5fe910",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_6c399040",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-01-23T19:09:55Z",
+      "side": 0,
+      "message": "These default properties are used below in lines 122-137 of my pull request. See my comment in the most recent version of this class.",
+      "parentUuid": "5a93c517_ac86b863",
+      "revId": "58361f3aa3969cc196ea81070633571bef5fe910",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
