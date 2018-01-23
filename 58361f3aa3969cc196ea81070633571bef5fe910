@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_ac86b863",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-01-23T16:45:46Z",
+      "side": 0,
+      "message": "Are these deleted properties from here used somewhere else?\n\nStateManagementProperties.TEST_SERVICES_DEFAULT\nStateManagementProperties.TEST_SWAGGER_DEFAULT\nStateManagementProperties.TEST_MANAGED_DEFAULT\n\nIf they are not used everywhere else (since they are removed here), this will generate unused variable sonars?\n\nCan you confirm that these are used somewhere else to avoid introducing potential sonars with this change?",
+      "revId": "58361f3aa3969cc196ea81070633571bef5fe910",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
