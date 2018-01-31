@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_36a3c5b3",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-01-31T19:02:49Z",
+      "side": 1,
+      "message": "2018",
+      "range": {
+        "startLine": 5,
+        "startChar": 20,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "72a7addec6c579e73771165356a296d3ca72b515",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_56a691c2",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-01-31T19:02:49Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "72a7addec6c579e73771165356a296d3ca72b515",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f6ac7da2",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsControllerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-01-31T19:02:49Z",
+      "side": 1,
+      "message": "2018",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "72a7addec6c579e73771165356a296d3ca72b515",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
