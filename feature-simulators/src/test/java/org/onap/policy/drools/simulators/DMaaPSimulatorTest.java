@@ -63,7 +63,7 @@ public class DMaaPSimulatorTest {
     public static void tearDownSimulator() {
         HttpServletServer.factory.destroy();
     }
-    
+
     @Test
     public void testGetNoData() {
         int timeout = 1000;
@@ -72,7 +72,7 @@ public class DMaaPSimulatorTest {
         assertNotNull(response.a);
         assertEquals("No topic", response.b);
     }
-    
+
     @Test
     public void testSinglePost() {
         String myTopic = "myTopicSinglePost";
@@ -81,13 +81,13 @@ public class DMaaPSimulatorTest {
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(testData, response.b);
     }
-    
+
     @Test
     public void testOneTopicMultiPost() {
         String[] data = {"data point 1", "data point 2", "something random"};
@@ -96,121 +96,121 @@ public class DMaaPSimulatorTest {
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapPost(myTopic, data[1]);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapPost(myTopic, data[2]);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[0], response.b);
-        
+
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[1], response.b);
-        
+
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[2], response.b);
     }
-    
+
     @Test
     public void testMultiTopic() {
         String[][] data = {{"Topic one message one", "Topic one message two"}, {"Topic two message one", "Topic two message two"}};
         String[] topics = {"topic1", "topic2"};
-        
+
         Pair<Integer, String> response = dmaapPost(topics[0], data[0][0]);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[0][0], response.b);
-        
+
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals("No topic", response.b);
-        
+
         response = dmaapPost(topics[1], data[1][0]);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapPost(topics[1], data[1][1]);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapPost(topics[0], data[0][1]);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[1][0], response.b);
-        
+
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[0][1], response.b);
-        
+
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals(data[1][1], response.b);
-        
+
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
         assertNotNull(response.a);
         assertEquals("No Data", response.b);
     }
-    
+
     @Test
     public void testResponseCode() {
         Pair<Integer, String> response = dmaapPost("myTopic", "myTopicData");
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = setStatus(503);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapGet("myTopic", 500);
         assertNotNull(response);
         assertEquals(503, response.a.intValue());
         assertEquals("You got response code: 503", response.b);
-        
+
         response = setStatus(202);
         assertNotNull(response);
         assertNotNull(response.a);
         assertNotNull(response.b);
-        
+
         response = dmaapGet("myTopic", 500);
         assertNotNull(response);
         assertEquals(202, response.a.intValue());
         assertEquals("myTopicData", response.b);
     }
-    
+
     private static Pair<Integer, String> dmaapGet (String topic, int timeout) {
         return dmaapGet(topic, "1", "1", timeout);
     }
-    
+
     private static Pair<Integer, String> dmaapGet (String topic, String consumerGroup, String consumerId, int timeout) {
         String url = "http://localhost:" + DMAAPSIM_SERVER_PORT + "/events/" + topic + "/" + consumerGroup + "/" + consumerId + "?timeout=" + timeout;
         try {
@@ -252,10 +252,10 @@ public class DMaaPSimulatorTest {
         catch (Exception e) {
         	fail("we got an exception" + e);
         }
-        
+
         return null;
     }
-    
+
     private static Pair<Integer, String> dmaapPost (String topic, String data) {
         String url = "http://localhost:" + DMAAPSIM_SERVER_PORT + "/events/" + topic;
         byte[] postData = data.getBytes(StandardCharsets.UTF_8);
@@ -307,7 +307,7 @@ public class DMaaPSimulatorTest {
         }
         return null;
     }
-    
+
     private static Pair<Integer, String> setStatus (int status) {
         String url = "http://localhost:" + DMAAPSIM_SERVER_PORT + "/events/setStatus?statusCode=" + status;
         try {
@@ -351,11 +351,11 @@ public class DMaaPSimulatorTest {
         }
         return null;
     }
-    
+
     private static class Pair<A, B> {
 		public final A a;
 		public final B b;
-		
+
 		public Pair(A a, B b) {
 			this.a = a;
 			this.b = b;

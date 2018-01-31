@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,50 +39,50 @@ import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
  *
  */
 public interface PolicyController extends Startable, Lockable {
-	
+
 	/**
 	 * name of this Policy Controller
 	 */
 	public String getName();
-	
+
 	/**
 	 * Get the topic readers of interest for this controller
 	 */
 	public List<? extends TopicSource> getTopicSources();
-	
+
 	/**
 	 * Get the topic readers of interest for this controller
 	 */
 	public List<? extends TopicSink> getTopicSinks();
-	
+
 	/**
 	 * Get the Drools Controller
 	 */
 	public DroolsController getDrools();
-	
+
 	/**
 	 * update maven configuration
-	 * 
+	 *
 	 * @param newDroolsConfiguration new drools configuration
 	 * @return true if the update was successful, false otherwise
-	 */	
+	 */
 	public boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
-	
+
 	/**
 	 * Get the Properties
 	 */
 	public Properties getProperties();
-	
+
 	/**
-	 * Attempts delivering of an String over communication 
+	 * Attempts delivering of an String over communication
 	 * infrastructure "busType"
-	 * 
+	 *
 	 * @param eventBus Communication infrastructure identifier
 	 * @param topic topic
 	 * @param event the event object to send
-	 * 
+	 *
 	 * @return true if successful, false if a failure has occurred.
-	 * @throws IllegalArgumentException when invalid or insufficient 
+	 * @throws IllegalArgumentException when invalid or insufficient
 	 *         properties are provided
 	 * @throws IllegalStateException when the engine is in a state where
 	 *         this operation is not permitted (ie. locked or stopped).
@@ -90,21 +90,21 @@ public interface PolicyController extends Startable, Lockable {
 	 *         to the functionality missing (ie. communication infrastructure
 	 *         not supported.
 	 */
-	public boolean deliver(CommInfrastructure busType, String topic, 
+	public boolean deliver(CommInfrastructure busType, String topic,
 			               Object event)
-			throws IllegalArgumentException, IllegalStateException, 
+			throws IllegalArgumentException, IllegalStateException,
 			       UnsupportedOperationException;
-	
+
 	/**
 	 * halts and permanently releases all resources
 	 * @throws IllegalStateException
 	 */
 	public void halt() throws IllegalStateException;
-	
+
 	/**
 	 * Factory that tracks and manages Policy Controllers
 	 */
 	public static PolicyControllerFactory factory =
 						new IndexedPolicyControllerFactory();
-	
+
 }

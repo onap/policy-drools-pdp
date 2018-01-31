@@ -36,9 +36,9 @@ public interface NoopTopicSinkFactory {
 
   /**
    * Creates noop topic sinks based on properties files
-   * 
+   *
    * @param properties Properties containing initialization values
-   * 
+   *
    * @return a noop topic sink
    * @throws IllegalArgumentException if invalid parameters are present
    */
@@ -46,7 +46,7 @@ public interface NoopTopicSinkFactory {
 
   /**
    * builds a noop sink
-   * 
+   *
    * @param servers list of servers
    * @param topic topic name
    * @param managed is this sink endpoint managed?
@@ -57,7 +57,7 @@ public interface NoopTopicSinkFactory {
 
   /**
    * Destroys a sink based on the topic
-   * 
+   *
    * @param topic topic name
    * @throws IllegalArgumentException if invalid parameters are present
    */
@@ -65,9 +65,9 @@ public interface NoopTopicSinkFactory {
 
   /**
    * gets a sink based on topic name
-   * 
+   *
    * @param topic the topic name
-   * 
+   *
    * @return a sink with topic name
    * @throws IllegalArgumentException if an invalid topic is provided
    * @throws IllegalStateException if the sink is in an incorrect state
@@ -76,7 +76,7 @@ public interface NoopTopicSinkFactory {
 
   /**
    * Provides a snapshot of the UEB Topic Writers
-   * 
+   *
    * @return a list of the UEB Topic Writers
    */
   public List<NoopTopicSink> inventory();
@@ -148,7 +148,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
 
   @Override
   public NoopTopicSink build(List<String> servers, String topic, boolean managed) {
-    
+
     List<String> noopSinkServers = servers;
     if (noopSinkServers == null) {
         noopSinkServers = new ArrayList<>();

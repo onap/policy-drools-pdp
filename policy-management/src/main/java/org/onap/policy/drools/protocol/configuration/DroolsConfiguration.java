@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Maven Related Information
- * 
+ *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DroolsConfiguration {
@@ -44,21 +44,21 @@ public class DroolsConfiguration {
     /**
      * Maven Artifact ID
      * (Required)
-     * 
+     *
      */
     @JsonProperty("artifactId")
     private String artifactId;
     /**
      * Maven Group ID
      * (Required)
-     * 
+     *
      */
     @JsonProperty("groupId")
     private String groupId;
     /**
      * Maven Version
      * (Required)
-     * 
+     *
      */
     @JsonProperty("version")
     private String version;
@@ -68,14 +68,14 @@ public class DroolsConfiguration {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public DroolsConfiguration() {
     	// Empty
     }
 
     /**
-     * 
+     *
      * @param groupId
      * @param artifactId
      * @param version
@@ -89,7 +89,7 @@ public class DroolsConfiguration {
     /**
      * Maven Artifact ID
      * (Required)
-     * 
+     *
      * @return
      *     The artifactId
      */
@@ -101,7 +101,7 @@ public class DroolsConfiguration {
     /**
      * Maven Artifact ID
      * (Required)
-     * 
+     *
      * @param artifactId
      *     The artifactId
      */
@@ -118,7 +118,7 @@ public class DroolsConfiguration {
     /**
      * Maven Group ID
      * (Required)
-     * 
+     *
      * @return
      *     The groupId
      */
@@ -130,7 +130,7 @@ public class DroolsConfiguration {
     /**
      * Maven Group ID
      * (Required)
-     * 
+     *
      * @param groupId
      *     The groupId
      */
@@ -147,7 +147,7 @@ public class DroolsConfiguration {
     /**
      * Maven Version
      * (Required)
-     * 
+     *
      * @return
      *     The version
      */
@@ -159,7 +159,7 @@ public class DroolsConfiguration {
     /**
      * Maven Version
      * (Required)
-     * 
+     *
      * @param version
      *     The version
      */
@@ -263,7 +263,7 @@ public class DroolsConfiguration {
         DroolsConfiguration rhs = ((DroolsConfiguration) other);
         return new EqualsBuilder().append(artifactId, rhs.artifactId).append(groupId, rhs.groupId).append(version, rhs.version).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
-    
+
     public void callSetArtifactId(Object value) {
         if (value instanceof String) {
             setArtifactId((String) value);

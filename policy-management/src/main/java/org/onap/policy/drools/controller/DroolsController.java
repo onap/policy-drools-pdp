@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,8 +33,8 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
  * Drools Controller is the abstractions that wraps the
  * drools layer (policy-core)
  */
-public interface DroolsController extends Startable, Lockable {	
-	
+public interface DroolsController extends Startable, Lockable {
+
 	/**
 	 * No Group ID identifier
 	 */
@@ -44,24 +44,24 @@ public interface DroolsController extends Startable, Lockable {
 	 * No Artifact ID identifier
 	 */
 	public static final String NO_ARTIFACT_ID = "NO-ARTIFACT-ID";
-	
+
 	/**
 	 * No version identifier
 	 */
 	public static final String NO_VERSION = "NO-VERSION";
-	
+
 	/**
 	 * get group id
 	 * @return group id
 	 */
 	public String getGroupId();
-	
+
 	/**
 	 * get artifact id
 	 * @return artifact id
-	 */	
+	 */
 	public String getArtifactId();
-	
+
 	/**
 	 * get version
 	 * @return version
@@ -70,35 +70,35 @@ public interface DroolsController extends Startable, Lockable {
 
 	/**
 	 * return the policy session names
-	 * 
+	 *
 	 * @return policy session
 	 */
-	public List<String> getSessionNames();	
-	
+	public List<String> getSessionNames();
+
 	/**
 	 * return the policy full session names
-	 * 
+	 *
 	 * @return policy session
 	 */
 	public List<String> getCanonicalSessionNames();
-	
+
 	/**
 	 * offers an event to this controller for processing
-	 * 
+	 *
 	 * @param topic topic associated with the event
 	 * @param event the event
-	 * 
+	 *
 	 * @return true if the operation was successful
 	 */
 	public boolean offer(String topic, String event);
-	
+
 	/**
 	 * delivers "event" to "sink"
-	 * 
+	 *
 	 * @param sink destination
-	 * @param event 
+	 * @param event
 	 * @return true if successful, false if a failure has occurred.
-	 * @throws IllegalArgumentException when invalid or insufficient 
+	 * @throws IllegalArgumentException when invalid or insufficient
 	 *         properties are provided
 	 * @throws IllegalStateException when the engine is in a state where
 	 *         this operation is not permitted (ie. locked or stopped).
@@ -107,56 +107,56 @@ public interface DroolsController extends Startable, Lockable {
 	 *         not supported.
 	 */
 	public boolean deliver(TopicSink sink, Object event)
-			throws IllegalArgumentException, IllegalStateException, 
+			throws IllegalArgumentException, IllegalStateException,
 		           UnsupportedOperationException;
-	
+
 	/**
-	 * 
+	 *
 	 * @return the most recent received events
 	 */
 	public Object[] getRecentSourceEvents();
 
 	/**
-	 * 
-	 * @return the most recent delivered events 
+	 *
+	 * @return the most recent delivered events
 	 */
 	public String[] getRecentSinkEvents();
-	
+
 	/**
 	 * @return the underlying policy container
 	 */
 	public PolicyContainer getContainer();
-	
+
 	/**
 	 * Supports this encoder?
-	 * 
+	 *
 	 * @param encodedObject
 	 * @return
 	 */
 	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) throws IllegalStateException;
-	
+
 	/**
 	 * fetches a class from the model
-	 * 
+	 *
 	 * @param className the class to fetch
 	 * @return the actual class object, or null if not found
 	 */
 	public Class<?> fetchModelClass(String className) throws IllegalArgumentException;
-	
+
 	/**
 	 * is this controller Smart?
 	 */
 	public boolean isBrained();
-	
+
 	/**
 	 * update the new version of the maven jar rules file
-	 * 
+	 *
 	 * @param newGroupId - new group id
 	 * @param newArtifactId - new artifact id
 	 * @param newVersion - new version
 	 * @param decoderConfigurations - decoder configurations
 	 * @param encoderConfigurations - encoder configurations
-	 * 
+	 *
 	 * @throws Exception from within drools libraries
 	 * @throws LinkageError from within drools libraries
 	 * @throws ArgumentException bad parameter passed in
@@ -171,19 +171,19 @@ public interface DroolsController extends Startable, Lockable {
 	 * @param sessionName the session name
 	 * @return map of class to count
 	 */
-	public Map<String,Integer> factClassNames(String sessionName) throws IllegalArgumentException;	
-	
+	public Map<String,Integer> factClassNames(String sessionName) throws IllegalArgumentException;
+
 	/**
 	 * gets the count of facts for a given session
 	 * @param sessionName the session name
-	 * @return the fact count 
+	 * @return the fact count
 	 * @throws IllegalArgumentException
 	 */
 	public long factCount(String sessionName) throws IllegalArgumentException;
-	
+
 	/**
 	 * gets all the facts of a given class for a given session
-	 *  
+	 *
 	 * @param sessionName the session identifier
 	 * @param className the class type
 	 * @param delete retract from drools the results of the query?
@@ -193,7 +193,7 @@ public interface DroolsController extends Startable, Lockable {
 
 	/**
 	 * gets the facts associated with a query for a give session for a given queried entity
-	 * 
+	 *
 	 * @param sessionName the session
 	 * @param queryName the query identifier
 	 * @param queriedEntity the queried entity
@@ -201,18 +201,18 @@ public interface DroolsController extends Startable, Lockable {
 	 * @param queryParams query parameters
 	 * @return list of facts returned by the query
 	 */
-	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, 
+	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity,
 			                      boolean delete, Object... queryParams);
-	
+
 	/**
 	 * halts and permanently releases all resources
 	 * @throws IllegalStateException
 	 */
 	public void halt() throws IllegalStateException;
-	
+
 	/**
 	 * Factory to track and manage drools controllers
 	 */
-	public static final DroolsControllerFactory factory = 
+	public static final DroolsControllerFactory factory =
 									new IndexedDroolsControllerFactory();
 }

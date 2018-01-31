@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,12 +36,12 @@ import com.google.gson.JsonParser;
  * passes its filters.
  */
 public class JsonProtocolFilter {
-	
+
 	/**
 	 * Logger
 	 */
 	private static Logger logger = LoggerFactory.getLogger(JsonProtocolFilter.class);
-	
+
 	/**
 	 * Helper class to collect Filter information
 	 */
@@ -50,15 +50,15 @@ public class JsonProtocolFilter {
 		 * Field name
 		 */
 		protected String name;
-		
+
 		/**
 		 * Field Value regex
 		 */
 		protected String regex;
-		
+
 		/**
 		 * Filter Constructor
-		 * 
+		 *
 		 * @param name field name
 		 * @param regex field regex value
 		 */
@@ -76,7 +76,7 @@ public class JsonProtocolFilter {
 
 		/**
 		 * gets name
-		 * 
+		 *
 		 * @return
 		 */
 		public String getName() {
@@ -85,7 +85,7 @@ public class JsonProtocolFilter {
 
 		/**
 		 * gets regex
-		 * 
+		 *
 		 * @return
 		 */
 		public String getRegex() {
@@ -115,47 +115,47 @@ public class JsonProtocolFilter {
 			return builder.toString();
 		}
 	}
-	
+
 	/**
 	 * all the filters to be applied
 	 */
 	protected List<FilterRule> rules = new ArrayList<>();
-	
+
 	/**
-	 * 
+	 *
 	 * @param rawFilters raw filter initialization
-	 * 
+	 *
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
-	public static JsonProtocolFilter fromRawFilters(List<Pair<String, String>> rawFilters) 
+	public static JsonProtocolFilter fromRawFilters(List<Pair<String, String>> rawFilters)
 		throws IllegalArgumentException {
-		
+
 		if (rawFilters == null) {
 			throw new IllegalArgumentException("No raw filters provided");
 		}
-		
+
 		List<FilterRule> filters = new ArrayList<>();
 		for (Pair<String, String> filterPair: rawFilters) {
 			if  (filterPair.first() == null || filterPair.first().isEmpty()) {
 				continue;
 			}
-			
+
 			filters.add(new FilterRule(filterPair.first(), filterPair.second()));
 		}
 		return new JsonProtocolFilter(filters);
 	}
-	
+
 	/**
 	 * Create a Protocol Filter
-	 * 
+	 *
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
 	public JsonProtocolFilter() throws IllegalArgumentException {}
-	
+
 	/**
-	 * 
+	 *
 	 * @param rawFilters raw filter initialization
-	 * 
+	 *
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
 	public JsonProtocolFilter(List<FilterRule> filters) throws IllegalArgumentException {
@@ -164,7 +164,7 @@ public class JsonProtocolFilter {
 
 	/**
 	 * are there any filters?
-	 * 
+	 *
 	 * @return true if there are filters, false otherwise
 	 */
 	public boolean isRules() {
@@ -173,32 +173,32 @@ public class JsonProtocolFilter {
 
 	/**
 	 * accept a JSON string as conformant it if passes all filters
-	 * 
+	 *
 	 * @param json json is a JSON object
 	 * @return true if json string is conformant
-	 * 
+	 *
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
 	public synchronized boolean accept(JsonElement json) throws IllegalArgumentException {
 		if (json == null) {
 			throw new IllegalArgumentException("no JSON provided");
 		}
-		
+
 		if (rules.isEmpty()) {
 			return true;
 		}
-		
+
 		try {
 			if (!json.isJsonObject()) {
 				return false;
 			}
-			
+
 			JsonObject event = json.getAsJsonObject();
 			for (FilterRule filter: rules) {
-				if (filter.regex == null || 
-					filter.regex.isEmpty() ||  
+				if (filter.regex == null ||
+					filter.regex.isEmpty() ||
 					".*".equals(filter.regex)) {
-					
+
 					// Only check for presence
 					if (!event.has(filter.name)) {
 						return false;
@@ -208,7 +208,7 @@ public class JsonProtocolFilter {
 					if (field == null) {
 						return false;
 					}
-					
+
 					String fieldValue = field.getAsString();
 					if (!fieldValue.matches(filter.regex)) {
 						return false;
@@ -220,37 +220,37 @@ public class JsonProtocolFilter {
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
 	/**
 	 * accept a JSON string as conformant it if passes all filters
-	 * 
+	 *
 	 * @param json json string
 	 * @return true if json string is conformant
-	 * 
+	 *
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
 	public synchronized boolean accept(String json) throws IllegalArgumentException {
 		if (json == null || json.isEmpty()) {
 			throw new IllegalArgumentException("no JSON provided");
 		}
-		
+
 		if (rules.isEmpty()) {
 			return true;
 		}
-		
+
 		try {
 			JsonElement element = new JsonParser().parse(json);
 			if (element == null || !element.isJsonObject()) {
 				return false;
 			}
-			
+
 			return this.accept(element.getAsJsonObject());
 		} catch (IllegalArgumentException ile) {
 			throw ile;
 		} catch (Exception e) {
-			logger.info("{}: cannot accept {} because of {}", 
+			logger.info("{}: cannot accept {} because of {}",
 					    this, json, e.getMessage(), e);
-			throw new IllegalArgumentException(e);			
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class JsonProtocolFilter {
 	public synchronized void setRules(List<FilterRule> rulesFilters) {
 		this.rules = rulesFilters;
 	}
-	
+
 	public synchronized void deleteRules(String name) {
 		for (FilterRule rule : new ArrayList<>(this.rules)) {
 		    if (rule.name.equals(name)) {
@@ -269,7 +269,7 @@ public class JsonProtocolFilter {
 		    }
 		}
 	}
-	
+
 	public List<FilterRule> getRules(String name) {
 		ArrayList<FilterRule> temp = new ArrayList<>();
 		for (FilterRule rule : new ArrayList<>(this.rules)) {
@@ -279,7 +279,7 @@ public class JsonProtocolFilter {
 		}
 		return temp;
 	}
-	
+
 	public synchronized void deleteRule(String name, String regex) {
 		for (FilterRule rule : new ArrayList<>(this.rules)) {
 		    if (rule.name.equals(name) && rule.regex.equals(regex)) {
@@ -287,14 +287,14 @@ public class JsonProtocolFilter {
 		    }
 		}
 	}
-	
+
 	public synchronized void addRule(String name, String regex) {
 		for (FilterRule rule : new ArrayList<>(this.rules)) {
 		    if (rule.name.equals(name) && rule.regex.equals(regex)) {
 		    	return;
 		    }
 		}
-		
+
 		this.rules.add(new FilterRule(name,regex));
 	}
 

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,8 +51,8 @@ import org.slf4j.LoggerFactory;
 public class PolicySession
   implements AgendaEventListener, RuleRuntimeEventListener
 {
-	// get an instance of logger 
-  private static Logger  logger = LoggerFactory.getLogger(PolicySession.class);		
+	// get an instance of logger
+  private static Logger  logger = LoggerFactory.getLogger(PolicySession.class);
   // name of the 'PolicySession' and associated 'KieSession'
   private String name;
 
@@ -151,7 +151,7 @@ public class PolicySession
 				logger.error("ERROR: Feature API: "
 							 + feature.getClass().getName(), e);
 			  }
-		  }		
+		  }
 		if (threadModel == null)
 		  {
 			// no feature created a ThreadModel -- select the default
@@ -206,7 +206,7 @@ public class PolicySession
   {
 	return policySession.get();
   }
-	
+
   /**
    * Fetch the adjunct object associated with a given feature
    *
@@ -513,7 +513,7 @@ public class PolicySession
 	{
 	  repeat = false;
 
-	  // this should cause the thread to exit		
+	  // this should cause the thread to exit
 	  session.getKieSession().halt();
 	  try
 		{
@@ -567,7 +567,7 @@ public class PolicySession
 			}
 		  catch (Exception | LinkageError e)
 			{
-			  logger.error("startThread error in kieSession1.fireUntilHalt", e);						
+			  logger.error("startThread error in kieSession1.fireUntilHalt", e);
 			}
 		}
 	  logger.info("fireUntilHalt() returned");

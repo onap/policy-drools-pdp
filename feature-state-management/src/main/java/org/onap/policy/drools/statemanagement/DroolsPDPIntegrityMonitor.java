@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,11 +36,11 @@ import org.slf4j.LoggerFactory;
  */
 public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 {
-	
+
 	private static final String INVALID_PROPERTY_VALUE = "init: property {} does not have the expected value of {}";
 
-// get an instance of logger 
-  private static final Logger  logger = LoggerFactory.getLogger(DroolsPDPIntegrityMonitor.class);	
+// get an instance of logger
+  private static final Logger  logger = LoggerFactory.getLogger(DroolsPDPIntegrityMonitor.class);
 
   // static global instance
   private static DroolsPDPIntegrityMonitor im = null;
@@ -48,7 +48,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   // list of audits to run
   private static AuditBase[] audits =
 	new AuditBase[]{DbAudit.getInstance(), RepositoryAudit.getInstance()};
-  
+
   private static Properties subsystemTestProperties = null;
 
   private static final String PROPERTIES_NAME = "feature-state-management.properties";
@@ -66,29 +66,29 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 			) throws Exception {
 	super(resourceName, consolidatedProperties);
   }
-  
+
   private static void missingProperty(String prop) throws StateManagementPropertiesException{
 		String msg = "init: missing IntegrityMonitor property: ".concat(prop);
 		logger.error(msg);
 		throw new StateManagementPropertiesException(msg);
   }
-  
+
   private static void logPropertyValue(String prop, String val){
 	  if(logger.isInfoEnabled()){
 		  String msg = "\n\n    init: property: " + prop + " = " + val + "\n";
 		  logger.info(msg);
 	  }
   }
-  
+
   /**
    * Static initialization -- create Drools Integrity Monitor, and
    * an HTTP server to handle REST 'test' requests
    */
   public static DroolsPDPIntegrityMonitor init(String configDir) throws Exception
   {
-	  	  
+	  
 	logger.info("init: Entering and invoking PropertyUtil.getProperties() on '{}'", configDir);
-		
+
 	// read in properties
 	Properties stateManagementProperties =
 	  PropertyUtil.getProperties(configDir + "/" + PROPERTIES_NAME);
@@ -160,38 +160,38 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	  }
 	if (fpMonitorInterval == null){
 		missingProperty(StateManagementProperties.FP_MONITOR_INTERVAL);
-	  }	
+	  }
 	if (failedCounterThreshold == null){
 		missingProperty(StateManagementProperties.FAILED_COUNTER_THRESHOLD);
-	  }	
+	  }
 	if (testTransInterval == null){
 		missingProperty(StateManagementProperties.TEST_TRANS_INTERVAL);
-	  }	
+	  }
 	if (writeFpcInterval == null){
 		missingProperty(StateManagementProperties.WRITE_FPC_INTERVAL);
-	  }	
+	  }
 	if (siteName == null){
 		missingProperty(StateManagementProperties.SITE_NAME);
-	  }	
+	  }
 	if (nodeType == null){
 		missingProperty(StateManagementProperties.NODE_TYPE);
-	  }	
+	  }
 	if (dependencyGroups == null){
 		missingProperty(StateManagementProperties.DEPENDENCY_GROUPS);
-	  }	
+	  }
 	if (javaxPersistenceJdbcDriver == null){
 		missingProperty(StateManagementProperties.DB_DRIVER);
-	  }		
+	  }
 	if (javaxPersistenceJdbcUrl == null){
 		missingProperty(StateManagementProperties.DB_URL);
-	  }			
+	  }
 	if (javaxPersistenceJdbcUser == null){
 		missingProperty(StateManagementProperties.DB_USER);
-	  }			
+	  }
 	if (javaxPersistenceJdbcPassword == null){
 		missingProperty(StateManagementProperties.DB_PWD);
 	  }
-	
+
 	//Log the values so we can diagnose any issues
 	logPropertyValue(StateManagementProperties.TEST_HOST,testHost);
 	logPropertyValue(StateManagementProperties.TEST_PORT,testPort);
@@ -211,7 +211,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	logPropertyValue(StateManagementProperties.DB_URL,javaxPersistenceJdbcUrl);
 	logPropertyValue(StateManagementProperties.DB_USER,javaxPersistenceJdbcUser);
 	logPropertyValue(StateManagementProperties.DB_PWD,javaxPersistenceJdbcPassword);
-		
+
 	subsystemTestProperties = stateManagementProperties;
 
 	// Now that we've validated the properties, create Drools Integrity Monitor
@@ -224,7 +224,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	try {
 		logger.info("init: Starting HTTP server, addr= {}", testHost+":"+testPort);
 		IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
-		
+
 		server.init(stateManagementProperties);
 	} catch (Exception e) {
 		logger.error("init: Caught Exception attempting to start server on testPort= {} message:",
@@ -267,7 +267,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 			  }
 		  }
 	  }
-	
+
 	  // will contain list of subsystems where the audit failed
 	  String responseMsg = "";
 
@@ -279,12 +279,12 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		  String response = audit.getResponse();
 		  if (response != null)
 			{
-			  // the audit has failed -- add subsystem and 
+			  // the audit has failed -- add subsystem and
 			  // and 'responseValue' with the new information
 			  responseMsg = responseMsg.concat("\n" + audit.getName() + ": " + response);
 			}
 		}
-	  
+
 	  if(!responseMsg.isEmpty()){
 		  throw new IntegrityMonitorException(responseMsg);
 	  }
@@ -345,31 +345,31 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	 */
 	abstract void invoke(Properties persistenceProperties) throws Exception;
   }
-  
+
   	public static class IntegrityMonitorRestServer implements Startable {
   		protected volatile HttpServletServer server = null;
   		protected volatile Properties integrityMonitorRestServerProperties = null;
-  		
+  
   		public void init(Properties props) {
 			this.integrityMonitorRestServerProperties = props;
 			this.start();
   		}
-  		
+  
   		@Override
 		public boolean start() {
 			try {
 				ArrayList<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
-				
+
 				if (!servers.isEmpty()) {
 					server = servers.get(0);
-					
+
 					waitServerStart();
 				}
 			} catch (Exception e) {
 				logger.error("Exception building servers", e);
 				return false;
 			}
-			
+
 			return true;
 		}
 
@@ -388,7 +388,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 			} catch (Exception e) {
 				logger.error("Exception during stop", e);
 			}
-			
+
 			return true;
 		}
 
@@ -396,7 +396,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		public void shutdown() {
 			this.stop();
 		}
-		
+
 		@Override
 		public synchronized boolean isAlive() {
 			return this.integrityMonitorRestServerProperties != null;

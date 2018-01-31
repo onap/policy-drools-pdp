@@ -35,11 +35,11 @@ public class RestEndpoints {
     @GET
     @Path("http/servers")
     @Produces(MediaType.TEXT_PLAIN)
-    public String httpServers() {   
-    	List<HttpServletServer> servers = 
+    public String httpServers() {
+    	List<HttpServletServer> servers =
     			HttpServletServer.factory.inventory();
     	return servers.toString();
     }
-    
-    
+
+
 }

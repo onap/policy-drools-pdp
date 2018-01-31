@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
   private static final long DEFAULT_TIMEOUT = 60;	// timeout in 60 seconds
 
   // get an instance of logger
-  private static Logger  logger = LoggerFactory.getLogger(RepositoryAudit.class);		
+  private static Logger  logger = LoggerFactory.getLogger(RepositoryAudit.class);
   // single global instance of this audit object
   private static RepositoryAudit instance = new RepositoryAudit();
 
@@ -73,18 +73,18 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	public void invoke(Properties properties)
 	throws IOException, InterruptedException
   {
-	if(logger.isDebugEnabled()){  
+	if(logger.isDebugEnabled()){
 		logger.debug("Running 'RepositoryAudit.invoke'");
 	}
-	
+
 	boolean isActive = true;
 	boolean ignoreErrors = true;		// ignore errors by default
 	String repoAuditIsActive = StateManagementProperties.getProperty("repository.audit.is.active");
 	String repoAuditIgnoreErrors =
 	  StateManagementProperties.getProperty("repository.audit.ignore.errors");
-	logger.debug("RepositoryAudit.invoke: repoAuditIsActive = {}" 
+	logger.debug("RepositoryAudit.invoke: repoAuditIsActive = {}"
 				 + ", repoAuditIgnoreErrors = {}",repoAuditIsActive, repoAuditIgnoreErrors);
-	
+
 	if (repoAuditIsActive != null) {
 		try {
 			isActive = Boolean.parseBoolean(repoAuditIsActive.trim());
@@ -92,7 +92,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.is.active = {}", repoAuditIsActive);
 		}
 	}
-	
+
 	if(!isActive){
 		logger.info("RepositoryAudit.invoke: exiting because isActive = {}", isActive);
 		return;
@@ -232,7 +232,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	 * 3) create 'pom.xml' file in temporary directory
 	 */
 	artifacts.add(new Artifact("org.apache.maven/maven-embedder/3.2.2"));
-	
+
 	StringBuilder sb = new StringBuilder();
 	sb.append
 	  ("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
@@ -345,7 +345,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			logger.info("fileContents read {} bytes", bytesRead);
 			fileContents = new String(outputData).replace('\r','\n');
 		}
-		
+
 		// generate log messages from 'Downloading' and 'Downloaded'
 		// messages within the 'mvn' output
 		int index = 0;
@@ -469,7 +469,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		// process terminated before the timeout
 		return process.exitValue();
 	  }
-	
+
 	// process timed out -- kill it, and return -1
 	process.destroyForcibly();
 	return -1;

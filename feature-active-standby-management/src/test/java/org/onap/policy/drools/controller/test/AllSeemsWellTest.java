@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,29 +53,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * Testing the allSeemsWell interface to verify that it correctly affects the 
+ * Testing the allSeemsWell interface to verify that it correctly affects the
  * operational state.
- */ 
- 
+ */
+
 public class AllSeemsWellTest {
 	private static final Logger  logger = LoggerFactory.getLogger(AllSeemsWellTest.class);
 	/*
-	 * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting 
+	 * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting
 	 * at the start of the next multiple of pdpUpdateInterval, but with a minimum of 5 sec cushion
-	 * to ensure that we wait for the DesignationWaiter to do its job, before 
+	 * to ensure that we wait for the DesignationWaiter to do its job, before
 	 * checking the results. Add a few seconds for safety
-	 */ 
-	 
+	 */
+
 	long sleepTime = 10000;
-	
+
 	/*
 	 * DroolsPdpsElectionHandler runs every 1 seconds, so it takes 10 seconds for the
 	 * checkWaitTimer() method to time out and call allSeemsWell which then requires
 	 * the forward progress counter to go stale which should add an additional 5 sec.
 	 */
-	 
+
 	long stalledElectionHandlerSleepTime = 15000;
-	
+
 	/*
 	 * As soon as the election hander successfully runs, it will resume the forward progress.
 	 * If the election handler runs ever 1 sec and test transaction is run every 1 sec and
@@ -83,22 +83,22 @@ public class AllSeemsWellTest {
 	 * take a total of 5 sec to recognize the resumption of progress.  So, add 1 for safety.
 	 */
 	long resumedElectionHandlerSleepTime = 6000;
-	
+
 	private static EntityManagerFactory emfx;
 	private static EntityManagerFactory emfd;
 	private static EntityManager emx;
 	private static EntityManager emd;
 	private static EntityTransaction et;
-	
+
 	private final String configDir = "src/test/resources/asw";
 
 	/*
 	 * See the IntegrityMonitor.getJmxUrl() method for the rationale behind this jmx related processing.
 	 */
-	 
+
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		
+
 		String userDir = System.getProperty("user.dir");
 		logger.debug("setUpClass: userDir={}", userDir);
 		System.setProperty("com.sun.management.jmxremote.port", "9980");
@@ -120,7 +120,7 @@ public class AllSeemsWellTest {
 
 		// Create an entity manager to use the DB
 		emx = emfx.createEntityManager();
-		
+
 		//Create the data access for drools db
 		Properties activeStandbyProperties = new Properties();
 		activeStandbyProperties.load(new FileInputStream(new File(
@@ -130,18 +130,18 @@ public class AllSeemsWellTest {
 
 		// Create an entity manager to use the DB
 		emd = emfd.createEntityManager();
-		
+
 		DroolsPdpsElectionHandler.setIsUnitTesting(true);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-				
+
 	}
-	
+
 	public void cleanXacmlDb(){
 		et = emx.getTransaction();
-		
+
 		et.begin();
 		// Make sure we leave the DB clean
 		emx.createQuery("DELETE FROM StateManagementEntity").executeUpdate();
@@ -150,28 +150,28 @@ public class AllSeemsWellTest {
 		emx.flush();
 		et.commit();
 	}
-	
+
 	public void cleanDroolsDb(){
 		et = emd.getTransaction();
-		
+
 		et.begin();
 		// Make sure we leave the DB clean
 		emd.createQuery("DELETE FROM DroolsPdpEntity").executeUpdate();
 		emd.flush();
 		et.commit();
 	}
-	
+
 
 	// Tests hot standby when there is only one PDP.
-	 
+
 	//@Ignore
 	@Test
 	public void testAllSeemsWell() throws Exception {
-	
+
 		logger.debug("\n\ntestAllSeemsWell: Entering\n\n");
 		cleanXacmlDb();
 		cleanDroolsDb();
-		
+
 		logger.debug("testAllSeemsWell: Reading stateManagementProperties");
 		Properties stateManagementProperties = new Properties();
 		stateManagementProperties.load(new FileInputStream(new File(
@@ -180,7 +180,7 @@ public class AllSeemsWellTest {
 		logger.debug("testAllSeemsWell: Creating emfXacml");
 		EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
 				"junitXacmlPU", stateManagementProperties);
-		
+
 		logger.debug("testAllSeemsWell: Reading activeStandbyProperties");
 		Properties activeStandbyProperties = new Properties();
 		activeStandbyProperties.load(new FileInputStream(new File(
@@ -191,18 +191,18 @@ public class AllSeemsWellTest {
 		logger.debug("testAllSeemsWell: Creating emfDrools");
 		EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
 				"junitDroolsPU", activeStandbyProperties);
-		
+
 		DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfDrools);
-		
+
 		logger.debug("testAllSeemsWell: Cleaning up tables");
 		conn.deleteAllPdps();
-					
+
 		/*
-		 * Insert this PDP as not designated.  Initial standby state will be 
+		 * Insert this PDP as not designated.  Initial standby state will be
 		 * either null or cold standby.   Demoting should transit state to
 		 * hot standby.
 		 */
-		 
+
 		logger.debug("testAllSeemsWell: Inserting PDP={} as not designated", thisPdpId);
 		Date yesterday = DateUtils.addDays(new Date(), -1);
 		DroolsPdpImpl pdp = new DroolsPdpImpl(thisPdpId, false, 4, yesterday);
@@ -211,12 +211,12 @@ public class AllSeemsWellTest {
 		logger.debug("testAllSeemsWell: After insertion, PDP={} has DESIGNATED={}",
 				thisPdpId, droolsPdpEntity.isDesignated());
 		assertTrue(droolsPdpEntity.isDesignated() == false);
-		
+
 		logger.debug("testAllSeemsWell: Instantiating stateManagement object");
 		StateManagement sm = new StateManagement(emfXacml, "dummy");
 		sm.deleteAllStateManagementEntities();
-		
-		
+
+
 		// Now we want to create a StateManagementFeature and initialize it.  It will be
 		// discovered by the ActiveStandbyFeature when the election handler initializes.
 
@@ -236,7 +236,7 @@ public class AllSeemsWellTest {
 					+ "Unable to get instance of StateManagementFeatureAPI "
 					+ "with resourceID: {}", thisPdpId);
 		}
-		
+
 		// Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
 		// that has been created.
 		ActiveStandbyFeatureAPI activeStandbyFeature = null;
@@ -255,20 +255,20 @@ public class AllSeemsWellTest {
 					+ "Unable to get instance of ActiveStandbyFeatureAPI "
 					+ "with resourceID: {}", thisPdpId);
 		}
-		
+
 
 		logger.debug("testAllSeemsWell: Demoting PDP={}", thisPdpId);
 		// demoting should cause state to transit to hotstandby
 		smf.demote();
-		
-				
+
+
 		logger.debug("testAllSeemsWell: Sleeping {} ms, to allow JpaDroolsPdpsConnector "
 				+ "time to check droolspdpentity table", sleepTime);
 		Thread.sleep(sleepTime);
-		
-		
+
+
 		// Verify that this formerly un-designated PDP in HOT_STANDBY is now designated and providing service.
-		 
+
 		droolsPdpEntity = conn.getPdp(thisPdpId);
 		logger.debug("testAllSeemsWell: After sm.demote() invoked, DESIGNATED= {} "
 				+ "for PDP= {}", droolsPdpEntity.isDesignated(), thisPdpId);
@@ -277,12 +277,12 @@ public class AllSeemsWellTest {
 		logger.debug("testAllSeemsWell: After demotion, PDP= {} "
 				+ "has standbyStatus= {}", thisPdpId, standbyStatus);
 		assertTrue(standbyStatus != null  &&  standbyStatus.equals(StateManagement.PROVIDING_SERVICE));
-		
+
 		//Now we want to stall the election handler and see the if AllSeemsWell will make the
 		//standbystatus = coldstandby
-		
+
 		DroolsPdpsElectionHandler.setIsStalled(true);
-		
+
 		logger.debug("testAllSeemsWell: Sleeping {} ms, to allow checkWaitTimer to recognize "
 				+ "the election handler has stalled and for the testTransaction to fail to "
 				+ "increment forward progress and for the lack of forward progress to be recognized.",
@@ -293,20 +293,20 @@ public class AllSeemsWellTest {
 		//and that just stops forward progress counter.  So, the fp monitor must then run to determine
 		//if the fpc has stalled.  That will take about another 5 sec.
 		Thread.sleep(stalledElectionHandlerSleepTime);
-		
+
 		logger.debug("testAllSeemsWell: After isStalled=true, PDP= {} "
 				+ "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
-		
+
 		assertTrue(smf.getStandbyStatus().equals(StateManagement.COLD_STANDBY));
-		
+
 		//Now lets resume the election handler
 		DroolsPdpsElectionHandler.setIsStalled(false);
-		
+
 		Thread.sleep(resumedElectionHandlerSleepTime);
-		
+
 		logger.debug("testAllSeemsWell: After isStalled=false, PDP= {} "
 				+ "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
-		
+
 		assertTrue(smf.getStandbyStatus().equals(StateManagement.PROVIDING_SERVICE));
 
 		//resumedElectionHandlerSleepTime = 5000;

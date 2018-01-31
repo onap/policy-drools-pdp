@@ -43,11 +43,11 @@ import org.slf4j.LoggerFactory;
 
 @Path("/events")
 public class DMaaPSimulatorJaxRs {
-	
+
 	private static final Map<String, BlockingQueue<String>> queues = new ConcurrentHashMap<>();
 	private static final Logger logger = LoggerFactory.getLogger(DMaaPSimulatorJaxRs.class);
 	private static int responseCode = 200;
-	
+
 	@GET
 	@Path("/{topicName}/{consumeGroup}/{consumerId}")
 	public String subscribe(@DefaultValue("0") @QueryParam("timeout") int timeout, @PathParam("topicName") String topicName,
@@ -61,7 +61,7 @@ public class DMaaPSimulatorJaxRs {
             logger.error("flushBuffer threw: ", e);
             return "Got an error";
         }
-        
+
 	    if (currentRespCode < 200 || currentRespCode >= 300)
 	    {
 	        return "You got response code: " + currentRespCode;
@@ -96,11 +96,11 @@ public class DMaaPSimulatorJaxRs {
 		}
 		return "No topic";
 	}
-	
+
 	@POST
 	@Path("/{topicName}")
 	@Consumes(MediaType.TEXT_PLAIN)
-	public String publish(@PathParam("topicName") String topicName, String body) { 
+	public String publish(@PathParam("topicName") String topicName, String body) {
 		if (queues.containsKey(topicName)) {
 			BlockingQueue<String> queue = queues.get(topicName);
 			queue.offer(body);
@@ -110,10 +110,10 @@ public class DMaaPSimulatorJaxRs {
 			queue.offer(body);
 			queues.put(topicName, queue);
 		}
-		
+
 		return "";
 	}
-	
+
 	@POST
 	@Path("/setStatus")
 	public String setStatus(@QueryParam("statusCode") int statusCode) {

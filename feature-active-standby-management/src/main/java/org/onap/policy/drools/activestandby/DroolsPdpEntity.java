@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,34 +43,34 @@ import org.onap.policy.drools.activestandby.DroolsPdpObject;
 public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@Column(name="pdpId", nullable=false)
 	private String pdpId="-1";
-	
+
 	@Column(name="designated", nullable=false)
 	private boolean designated=false;
-	
+
 	@Column(name="priority", nullable=false)
 	private int priority=0;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="updatedDate", nullable=false)
 	private Date updatedDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="designatedDate",nullable=false)
 	private Date designatedDate;
-	
+
 	@Column(name="site", nullable=true, length = 50)
 	private String site;
-	
-	
+
+
 	public DroolsPdpEntity(){
 		updatedDate = new Date();
 		//When this is translated to a TimeStamp in MySQL, it assumes the date is relative
 		//to the local timezone.  So, a value of Date(0) is actually Dec 31 18:00:00 CST 1969
-		//which is an invalid value for the MySql TimeStamp 
+		//which is an invalid value for the MySql TimeStamp
 		designatedDate = new Date(864000000);
 	}
 
@@ -78,11 +78,11 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 	public String getPdpId() {
 		return this.pdpId;
 	}
-	
+
 	public void setPdpId(String pdpId) {
 		this.pdpId = pdpId;
 	}
-	
+
 	@Override
 	public boolean isDesignated() {
 		return this.designated;
@@ -103,8 +103,8 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 	}
 
 	@Override
-	public void setDesignated(boolean isDesignated) {		
-		this.designated=isDesignated;		
+	public void setDesignated(boolean isDesignated) {
+		this.designated=isDesignated;
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 		this.updatedDate=updatedDate;
 	}
 
-	
+
 	@Override
 	public String getSiteName() {
 		return site;
@@ -121,7 +121,7 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 	@Override
 	public void setSiteName(String siteName) {
 		site = siteName;
-		
+
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 
 	@Override
 	public void setDesignatedDate(Date designatedDate) {
-		this.designatedDate = designatedDate;		
+		this.designatedDate = designatedDate;
 	}
 
 }

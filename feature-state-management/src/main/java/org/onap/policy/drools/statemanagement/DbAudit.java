@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,15 +36,15 @@ import org.slf4j.LoggerFactory;
  */
 public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 {
-	// get an instance of logger 
-  private static Logger  logger = LoggerFactory.getLogger(DbAudit.class);	
+	// get an instance of logger
+  private static Logger  logger = LoggerFactory.getLogger(DbAudit.class);
   // single global instance of this audit object
   private static final DbAudit instance = new DbAudit();
 
   // This indicates if 'CREATE TABLE IF NOT EXISTS Audit ...' should be
   // invoked -- doing this avoids the need to create the table in advance.
   private static boolean createTableNeeded = true;
-  
+
   private static boolean isJunit = false;
 
   /**
@@ -54,20 +54,20 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   {
 	super("Database");
   }
-  
+
   private static synchronized void setCreateTableNeeded(boolean b) {
 		DbAudit.createTableNeeded = b;
   }
-  
+
   public static synchronized void setIsJunit(boolean b) {
 		DbAudit.isJunit = b;
   }
-  
+
   public static boolean isJunit(){
 	  return DbAudit.isJunit;
   }
-  
-  
+
+
   /**
    * @return the single 'DbAudit' instance
    */
@@ -95,7 +95,7 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	if(logger.isDebugEnabled()){
 		logger.debug("DbAudit.invoke: dbAuditIsActive = {}", dbAuditIsActive);
 	}
-	
+
 	if (dbAuditIsActive != null) {
 		try {
 			isActive = Boolean.parseBoolean(dbAuditIsActive.trim());
@@ -103,13 +103,13 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 			logger.warn("DbAudit.invoke: Ignoring invalid property: db.audit.is.active = {}", dbAuditIsActive);
 		}
 	}
-	
+
 	if(!isActive){
-		
+
 		logger.info("DbAudit.invoke: exiting because isActive = {}", isActive);
 		return;
 	}
-	
+
 	// fetch DB properties from properties file -- they are already known
 	// to exist, because they were verified by the 'IntegrityMonitor'
 	// constructor
@@ -140,10 +140,10 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 		phase = "insert entry";
 		String key = UUID.randomUUID().toString();
 		insertEntry(connection, key);
-		
+
 		phase = "fetch entry";
 		findEntry(connection, key);
-		
+
 		phase = "delete entry";
 		deleteEntry(connection, key);
 	}

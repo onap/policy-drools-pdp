@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,24 +31,24 @@ public class TopicCoderFilterConfiguration {
 	public static abstract class CustomCoder {
 		protected String className;
 		protected String staticCoderField;
-		
+
 		/**
 		 * create custom coder from raw string in the following format
 		 * (typically embedded in a property file):
-		 * 
+		 *
 		 * Note this is to support decoding/encoding of partial structures that are
 		 * only known by the model.
-		 * 
+		 *
 		 * @param rawCustomCoder with format: <class-containing-custom-coder>,<static-coder-field>
 		 */
-		public CustomCoder(String rawCustomCoder) throws IllegalArgumentException {			
+		public CustomCoder(String rawCustomCoder) throws IllegalArgumentException {
 			if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
-				
+
 				this.className = rawCustomCoder.substring(0,rawCustomCoder.indexOf(","));
 				if (this.className == null || this.className.isEmpty()) {
 					throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
 				}
-				
+
 				this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(",")+1);
 				if (this.staticCoderField == null || this.staticCoderField.isEmpty()) {
 					throw new IllegalArgumentException
@@ -66,13 +66,13 @@ public class TopicCoderFilterConfiguration {
 			if (className == null || className.isEmpty()) {
 				throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
 			}
-			
+
 			if (staticCoderField == null || staticCoderField.isEmpty()) {
 				throw new IllegalArgumentException
 					("No staticCoderField to create CustomCoder cannot be created for class " +
 					 className);
 			}
-			
+
 			this.className = className;
 			this.staticCoderField = staticCoderField;
 		}
@@ -113,9 +113,9 @@ public class TopicCoderFilterConfiguration {
 			return builder.toString();
 		}
 	}
-	
+
 	public static class CustomGsonCoder extends CustomCoder {
-	
+
 		public CustomGsonCoder(String className, String staticCoderField) {
 				super(className, staticCoderField);
 		}
@@ -132,17 +132,17 @@ public class TopicCoderFilterConfiguration {
 		}
 
 	}
-	
+
 	public static class CustomJacksonCoder extends CustomCoder {
-		
+
 		public CustomJacksonCoder(String className, String staticCoderField) {
 				super(className, staticCoderField);
 		}
-		
+
 		public CustomJacksonCoder(String customJackson) throws IllegalArgumentException {
 			super(customJackson);
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -161,19 +161,19 @@ public class TopicCoderFilterConfiguration {
 	public static class PotentialCoderFilter {
 
 		/**
-		 * decoder class (pending from being able to be fetched and found 
+		 * decoder class (pending from being able to be fetched and found
 		 * in some class loader)
 		 */
 		protected String codedClass;
-		
+
 		/**
 		 * filters to apply to the selection of the decodedClass;
 		 */
 		protected JsonProtocolFilter filter;
-		
+
 		/**
 		 * constructor
-		 * 
+		 *
 		 * @param codedClass decoder class
 		 * @param filter filters to apply
 		 */
@@ -218,35 +218,35 @@ public class TopicCoderFilterConfiguration {
 			return builder.toString();
 		}
 	}
-	
+
 	/**
 	 * the source topic
 	 */
 	protected final String topic;
-	
+
 	/**
 	 * List of decoder -> filters
 	 */
 	protected final List<PotentialCoderFilter> coderFilters;
-	
+
 	/**
 	 * custom gson coder that this controller prefers to use instead of the framework ones
 	 */
 	protected CustomGsonCoder customGsonCoder;
-	
+
 	/**
 	 * custom jackson coder that this controller prefers to use instead of the framework ones
 	 */
 	protected CustomJacksonCoder customJacksonCoder;
 
 	/**
-	 * Constructor 
-	 * 
+	 * Constructor
+	 *
 	 * @param decoderFilters list of decoders and associated filters
 	 * @param topic the topic
 	 */
 	public TopicCoderFilterConfiguration(String topic, List<PotentialCoderFilter> decoderFilters,
-                                         CustomGsonCoder customGsonCoder, 
+                                         CustomGsonCoder customGsonCoder,
                                          CustomJacksonCoder customJacksonCoder) {
 		this.coderFilters = decoderFilters;
 		this.topic = topic;
@@ -267,7 +267,7 @@ public class TopicCoderFilterConfiguration {
 	public List<PotentialCoderFilter> getCoderFilters() {
 		return coderFilters;
 	}
-	
+
 	/**
 	 * @return the customGsonCoder
 	 */

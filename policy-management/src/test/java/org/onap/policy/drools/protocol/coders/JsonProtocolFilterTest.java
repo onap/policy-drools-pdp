@@ -46,11 +46,11 @@ public class JsonProtocolFilterTest {
     private static final String NAME4 = "name4";
     private static final String REGEX4a = "regex4a";
     private static final String REGEX4b = "regex4b";
-    
+
 
     @Test
     public void test() {
-        
+
         //      ********************   D E F I N E   f i l t e r R u l e   O b j e c t s   ***************************
         //      DEFINE one (1) filterRule object (using constructor without parms passed; instead use set methods
         FilterRule filterRule1 = new FilterRule();
@@ -86,7 +86,7 @@ public class JsonProtocolFilterTest {
         rawFiltersA.add(new Pair<String,String>(filterRule2.getName(), filterRule2.getRegex()));
 
         //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      DEFINE filtersA 
+        //      DEFINE filtersA
         List<FilterRule> filtersA = new ArrayList<>();
         for (Pair<String, String> filterPair: rawFiltersA) {
             if  (filterPair.first() == null || filterPair.first().isEmpty()) {

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,7 +49,7 @@ public class NullDroolsController implements DroolsController {
 	public void shutdown() {
 		return;
 	}
-	
+
 	@Override
 	public void halt() {
 		return;
@@ -88,7 +88,7 @@ public class NullDroolsController implements DroolsController {
 	@Override
 	public String getVersion() {
 		return NO_VERSION;
-	}	
+	}
 
 	@Override
 	public List<String> getSessionNames() {
@@ -114,7 +114,7 @@ public class NullDroolsController implements DroolsController {
 	public Object[] getRecentSourceEvents() {
 		return new String[0];
 	}
-	
+
 	@Override
 	public PolicyContainer getContainer() {
 		return null;
@@ -134,12 +134,12 @@ public class NullDroolsController implements DroolsController {
 	public Class<?> fetchModelClass(String className) {
 		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
 	}
-	
+
 	@Override
 	public boolean isBrained() {
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -156,7 +156,7 @@ public class NullDroolsController implements DroolsController {
 	}
 
 	@Override
-	public Map<String, Integer> factClassNames(String sessionName) 
+	public Map<String, Integer> factClassNames(String sessionName)
 		   throws IllegalArgumentException {
 		return new HashMap<>();
 	}
@@ -172,8 +172,8 @@ public class NullDroolsController implements DroolsController {
 	}
 
 	@Override
-	public List<Object> factQuery(String sessionName, String queryName, 
-			                      String queriedEntity, 
+	public List<Object> factQuery(String sessionName, String queryName,
+			                      String queriedEntity,
 			                      boolean delete, Object... queryParams) {
 		return new ArrayList<>();
 	}

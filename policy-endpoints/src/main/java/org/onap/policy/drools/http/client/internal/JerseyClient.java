@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,12 +43,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class JerseyClient implements HttpClient {
-	
+
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(JerseyClient.class); 
-	
+	private static Logger logger = LoggerFactory.getLogger(JerseyClient.class);
+
 	protected final String name;
 	protected final boolean https;
 	protected final boolean selfSignedCerts;
@@ -57,31 +57,31 @@ public class JerseyClient implements HttpClient {
 	protected final String basePath;
 	protected final String userName;
 	protected final String password;
-	
+
 	protected final Client client;
 	protected final String baseUrl;
-	
+
 	protected boolean alive = true;
-	
-	
-	public JerseyClient(String name, boolean https, 
+
+
+	public JerseyClient(String name, boolean https,
 			            boolean selfSignedCerts,
-			            String hostname, int port, 
+			            String hostname, int port,
 			            String basePath, String userName,
-			            String password) 
+			            String password)
 	throws KeyManagementException, NoSuchAlgorithmException {
-		
+
 		super();
-		
+
 		if (name == null || name.isEmpty())
 			throw new IllegalArgumentException("Name must be provided");
-		
+
 		if (hostname == null || hostname.isEmpty())
 			throw new IllegalArgumentException("Hostname must be provided");
-		
+
 		if (port <= 0 && port >= 65535)
 			throw new IllegalArgumentException("Invalid Port provided: " + port);
-		
+
 		this.name = name;
 		this.https = https;
 		this.hostname = hostname;
@@ -90,7 +90,7 @@ public class JerseyClient implements HttpClient {
 		this.userName = userName;
 		this.password = password;
 		this.selfSignedCerts = selfSignedCerts;
-		
+
 		StringBuilder tmpBaseUrl = new StringBuilder();
 		if (this.https) {
 			tmpBaseUrl.append("https://");
@@ -104,7 +104,7 @@ public class JerseyClient implements HttpClient {
 			        public void checkServerTrusted(X509Certificate[]  chain, String authType) throws CertificateException {}
 					@Override
 			        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
-	
+
 			    }}, new SecureRandom());
 				 clientBuilder = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(new HostnameVerifier() {
 					@Override
@@ -115,36 +115,36 @@ public class JerseyClient implements HttpClient {
 				clientBuilder = ClientBuilder.newBuilder().sslContext(sslContext);
 			}
 			this.client = clientBuilder.build();
-		} else {	
+		} else {
 			tmpBaseUrl.append("http://");
 			this.client = ClientBuilder.newClient();
 		}
-		
+
 		if (this.userName != null && !this.userName.isEmpty() &&
 			this.password != null && !this.password.isEmpty()) {
 			HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.basic(userName, password);
 			this.client.register(authFeature);
 		}
-		
+
 		this.baseUrl = tmpBaseUrl.append(this.hostname).append(":").
 				                  append(this.port).append("/").
 		                          append((this.basePath == null) ? "" : this.basePath).
 		                          toString();
 	}
-	
+
 	@Override
-	public Response get(String path) {		
+	public Response get(String path) {
 		if (path != null && !path.isEmpty())
 			return this.client.target(this.baseUrl).path(path).request().get();
 		else
 			return this.client.target(this.baseUrl).request().get();
 	}
-	
+
 	@Override
 	public Response get() {
 		return this.client.target(this.baseUrl).request().get();
 	}
-	
+
 
 	@Override
 	public boolean start() throws IllegalStateException {
@@ -161,11 +161,11 @@ public class JerseyClient implements HttpClient {
 		synchronized(this) {
 			alive = false;
 		}
-		
+
 		try {
 			this.client.close();
 		} catch (Exception e) {
-			logger.warn("{}: cannot close because of {}", this, 
+			logger.warn("{}: cannot close because of {}", this,
 				        e.getMessage(), e);
 		}
 	}

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,45 +35,45 @@ import javax.persistence.TemporalType;
 public class DroolsSessionEntity implements Serializable, DroolsSession {
 
 	private static final long serialVersionUID = -5495057038819948709L;
-		
+
 	@Id
 	@Column(name="sessionName", nullable=false)
 	private String sessionName = "-1";
-	
+
 	@Column(name="sessionId", nullable=false)
 	private long sessionId = -1L;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="createdDate", nullable=false)
 	private Date createdDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="updatedDate", nullable=false)
 	private Date updatedDate;
-	
-	
+
+
 	public DroolsSessionEntity() {
-		
+
 	}
-	
+
 	public DroolsSessionEntity(String sessionName,
 								long sessionId) {
 		this.sessionName = sessionName;
 		this.sessionId = sessionId;
-		
+
 	}
-	
+
 	@PrePersist
 	public void	prePersist() {
 		this.createdDate = new Date();
 		this.updatedDate = new Date();
 	}
-	
+
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedDate = new Date();
 	}
-	
+
 	@Override
 	public String getSessionName() {
 		return sessionName;
@@ -92,7 +92,7 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
 		this.sessionId = sessionId;
 	}
 
-	@Override	
+	@Override
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -122,7 +122,7 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -130,7 +130,7 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
 		result = prime * result + getSessionName().hashCode();
 		return result;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "{name=" + getSessionName()

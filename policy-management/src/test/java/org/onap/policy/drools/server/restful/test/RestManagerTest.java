@@ -128,13 +128,13 @@ public class RestManagerTest {
 
     PolicyEngine.manager.configure(engineProps);
     PolicyEngine.manager.start();
-    
+
     Properties controllerProps = new Properties();
     PolicyEngine.manager.createPolicyController(FOO_CONTROLLER, controllerProps);
 
-    
+
     client = HttpClients.createDefault();
-    
+
 
   }
 
@@ -148,18 +148,18 @@ public class RestManagerTest {
     client.close();
     cleanUpWorkingDirs();
   }
-  
- 
+
+
   @Test
   public void putDeleteTest() throws ClientProtocolException, IOException, InterruptedException {
     HttpPut httpPut;
     HttpDelete httpDelete;
     CloseableHttpResponse response;
-    
+
     /*
      * DELETE:
      *      /engine/controllers/controllerName/drools/facts/session/factType
-     *      
+     *
      */
     httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session/factType");
     response = client.execute(httpDelete);
@@ -167,21 +167,21 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-    
+
     httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/controllerName/drools/facts/session/factType");
     response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-    
+
     /*
      * PUT:
      *      /engine/switches/lock
      *      /engine/controllers/controllername/switches/lock
      * DELETE:
      *      /engine/switches/lock
-     *      /engine/controllers/controllername  
+     *      /engine/controllers/controllername
      */
     httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
     response = client.execute(httpPut);
@@ -189,56 +189,56 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(406, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpDelete = new HttpDelete(HOST_URL + "/engine/switches/lock");
     response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(406, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-    
+
     httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/");
     response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
             response.getStatusLine().getStatusCode());
     assertEquals(405, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-        
+
     httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + null);
     response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
     response.getStatusLine().getStatusCode());
     assertEquals(400, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-    
+
     httpPut = new HttpPut(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/switches/lock");
     response = client.execute(httpPut);
     logger.info(httpPut.getRequestLine() +" response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(406, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-         
+
     httpDelete = new HttpDelete(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER);
     response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
     response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-  
+
     httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
     response = client.execute(httpPut);
     logger.info(httpPut.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpDelete = new HttpDelete(HOST_URL + "/engine/switches/lock");
     response = client.execute(httpDelete);
     logger.info(httpDelete.getRequestLine() + " response code: {}",
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
- 
+
     /*
      * PUT:
      *      /engine/topics/sources/ueb/topic/events
@@ -256,7 +256,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/events");
     httpPut.addHeader("Content-Type", "text/plain");
     httpPut.addHeader("Accept", "application/json");
@@ -266,7 +266,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/fiznits/events");
     httpPut.addHeader("Content-Type", "text/plain");
     httpPut.addHeader("Accept", "application/json");
@@ -276,7 +276,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(406, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/fiznits/events");
     httpPut.addHeader("Content-Type", "text/plain");
     httpPut.addHeader("Accept", "application/json");
@@ -286,7 +286,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(404, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpPut = new HttpPut(HOST_URL + "/engine/topics/switches/lock");
     response = client.execute(httpPut);
     logger.info(httpPut.getRequestLine() + " response code: {}",
@@ -303,7 +303,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(406, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
     httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/dmaap/" + DMAAP_TOPIC + "/events");
     httpPut.addHeader("Content-Type", "text/plain");
     httpPut.addHeader("Accept", "application/json");
@@ -320,7 +320,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();
-    
+
     /*
      * PUT:
      *      /engine/topics/sources/ueb/topic/switches/lock
@@ -364,7 +364,7 @@ public class RestManagerTest {
      * PUT:
      *     /engine/switches/activation
      * DELETE:
-     *     /engine/switches/activation 
+     *     /engine/switches/activation
      */
    /* httpPut = new HttpPut(HOST_URL + "/engine/switches/activation");
     response = client.execute(httpPut);
@@ -379,7 +379,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpDelete.releaseConnection();*/
-    
+
     /*
      * PUT:
      *      /engine/tools/loggers/logger/level
@@ -390,10 +390,10 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpPut.releaseConnection();
-    
+
   }
-  
-  
+
+
   @Test
   public void getTest() throws ClientProtocolException, IOException, InterruptedException {
     HttpGet httpGet;
@@ -411,7 +411,7 @@ public class RestManagerTest {
      *      /engine/environment
      *      /engine/switches
      *      /engine/controllers
-     */ 
+     */
     httpGet = new HttpGet(HOST_URL + "/engine");
     response = client.execute(httpGet);
     logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
@@ -489,7 +489,7 @@ public class RestManagerTest {
      *      /engine/controllers/features/inventory
      *      /engine/controllers/features/featureName
      *      /engine/controllers/controllerName
-     *      
+     *
      */
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/inventory");
     response = client.execute(httpGet);
@@ -590,7 +590,7 @@ public class RestManagerTest {
      *      /engine/controllers/controllerName/drools/facts/session
      *      /engine/controllers/controllerName/drools/facts/session/factType
      *      /engine/controllers/controllerName/drools/facts/session/query/queriedEntity
-     *      
+     *
      */
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts");
     response = client.execute(httpGet);
@@ -629,7 +629,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
-    
+
     httpGet = new HttpGet(HOST_URL + "/engine/controllers/dummy"
             + "/drools/facts/session/query/queriedEntity");
     response = client.execute(httpGet);
@@ -910,7 +910,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(500, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
-    
+
     httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches");
     response = client.execute(httpGet);
     logger.info(httpGet.getRequestLine() + " response code: {}",
@@ -976,7 +976,7 @@ public class RestManagerTest {
         response.getStatusLine().getStatusCode());
     assertEquals(200, response.getStatusLine().getStatusCode());
     httpGet.releaseConnection();
-  
+
   }
 
 

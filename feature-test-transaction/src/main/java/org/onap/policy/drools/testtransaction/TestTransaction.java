@@ -181,7 +181,7 @@ class TTControllerTask implements Runnable {
       this.alive = false;
     }
   }
-  
+
   private void injectTxIntoSessions(List<String> sessions, HashMap<String, Long> fpcs, DroolsController drools) {
 
       for (final String session : sessions) {
@@ -212,10 +212,10 @@ class TTControllerTask implements Runnable {
         fpcs.put(session, fpc);
         drools.getContainer().insert(session, new EventObject(TestTransaction.TT_UUID));
       }
-      
+
   }
-  
-  
+
+
   @Override
   public String toString() {
     final StringBuilder builder = new StringBuilder();

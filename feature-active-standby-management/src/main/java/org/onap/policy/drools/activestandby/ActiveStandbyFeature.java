@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,21 +47,21 @@ import org.onap.policy.drools.utils.PropertyUtil;
  * 'PolicyContainer' and 'Main'. It was moved here as part of making this
  * a separate optional feature.
  */
-public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI, 
+public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 				PolicySessionFeatureAPI, PolicyEngineFeatureAPI
 {
 	// get an instance of logger
 	private static final Logger logger =
 			LoggerFactory.getLogger(ActiveStandbyFeature.class);
-	
+
 	private static DroolsPdp myPdp;
 	private static Object myPdpSync = new Object();
 	private static DroolsPdpsElectionHandler electionHandler;
-	
+
 	private StateManagementFeatureAPI stateManagementFeature;
-	
+
 	public static final int SEQ_NUM = 1;
-	
+
 
 	/**************************/
 	/* 'FeatureAPI' interface */
@@ -84,7 +84,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 	{
 		// This must come first since it initializes myPdp
 		initializePersistence(configDir);
-		
+
 		for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList())
 		{
 			if (feature.getResourceName().equals(myPdp.getPdpId()))
@@ -129,7 +129,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean afterStart(PolicyEngine engine) 
+	public boolean afterStart(PolicyEngine engine)
 	{
 		// ASSERTION: engine == PolicyEngine.manager
 		PolicyEngine.manager.lock();
@@ -144,14 +144,14 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 	{
 		//Get the Active Standby properties
 		try {
-				Properties activeStandbyProperties = 
+				Properties activeStandbyProperties =
 						PropertyUtil.getProperties(configDir + "/feature-active-standby-management.properties");
 				ActiveStandbyProperties.initProperties(activeStandbyProperties);
 				logger.info("initializePersistence: ActiveStandbyProperties success");
 		} catch (IOException e) {
 			logger.error("ActiveStandbyFeature: initializePersistence ActiveStandbyProperties", e);
 		}
-		
+
 		DroolsPdpsConnector conn = getDroolsPdpsConnector("activeStandbyPU");
 		String resourceName = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.NODE_NAME);
 		if(resourceName == null){
@@ -174,7 +174,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 		synchronized(myPdpSync){
 			if(myPdp == null){
 
-				myPdp = new DroolsPdpImpl(resourceName,false,4,new Date());	
+				myPdp = new DroolsPdpImpl(resourceName,false,4,new Date());
 			}
 			String site_name = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
 			if (site_name == null) {

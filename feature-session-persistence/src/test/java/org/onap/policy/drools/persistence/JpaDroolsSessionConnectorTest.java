@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,10 +43,10 @@ import org.onap.policy.drools.persistence.EntityMgrTrans;
 import org.onap.policy.drools.persistence.JpaDroolsSessionConnector;
 
 public class JpaDroolsSessionConnectorTest {
-	
+
 	private EntityManagerFactory emf;
 	private JpaDroolsSessionConnector conn;
-	
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -55,13 +55,13 @@ public class JpaDroolsSessionConnectorTest {
 		propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
 		propMap.put("javax.persistence.jdbc.url",
 						"jdbc:h2:mem:JpaDroolsSessionConnectorTest");
-		
+
 		emf = Persistence.createEntityManagerFactory(
 								"junitDroolsSessionEntityPU", propMap);
-		
+
 		conn = new JpaDroolsSessionConnector(emf);
 	}
-	
+
 	@After
 	public void tearDown() {
 		// this will cause the memory db to be dropped
@@ -73,56 +73,56 @@ public class JpaDroolsSessionConnectorTest {
 		/*
 		 * Load up the DB with some data.
 		 */
-		
+
 		addSession("nameA", 10);
 		addSession("nameY", 20);
-		
-		
+
+
 		/*
 		 * Now test the functionality.
 		 */
-		
+
 		// not found
 		assertNull( conn.get("unknown"));
-		
+
 		assertEquals("{name=nameA, id=10}",
 						conn.get("nameA").toString());
-		
+
 		assertEquals("{name=nameY, id=20}",
 						conn.get("nameY").toString());
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testGet_NewEx() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class);
 		EntityManager em = mock(EntityManager.class);
-		
+
 		when(emf.createEntityManager()).thenReturn(em);
 		when(em.getTransaction()).thenThrow(new RuntimeException("expected exception"));
 
 		conn = new JpaDroolsSessionConnector(emf);
 		conn.get("xyz");
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testGet_FindEx() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class);
 		EntityManager em = mock(EntityManager.class);
 		EntityTransaction tr = mock(EntityTransaction.class);
-		
+
 		when(emf.createEntityManager()).thenReturn(em);
 		when(em.getTransaction()).thenReturn(tr);
 		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
 
 		new JpaDroolsSessionConnector(emf).get("xyz");
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void testGet_FindEx_CloseEx() {
 		EntityManagerFactory emf = mock(EntityManagerFactory.class);
 		EntityManager em = mock(EntityManager.class);
 		EntityTransaction tr = mock(EntityTransaction.class);
-		
+
 		when(emf.createEntityManager()).thenReturn(em);
 		when(em.getTransaction()).thenReturn(tr);
 		when(em.find(any(), any())).thenThrow(new RuntimeException("expected exception"));
@@ -134,10 +134,10 @@ public class JpaDroolsSessionConnectorTest {
 	@Test
 	public void testReplace_Existing() {
 		addSession("nameA", 10);
-		
+
 		DroolsSessionEntity sess =
 				new DroolsSessionEntity("nameA", 30);
-		
+
 		conn.replace(sess);
 
 		// id should be changed
@@ -149,7 +149,7 @@ public class JpaDroolsSessionConnectorTest {
 	public void testReplace_New() {
 		DroolsSessionEntity sess =
 				new DroolsSessionEntity("nameA", 30);
-		
+
 		conn.replace(sess);
 
 		assertEquals(sess.toString(),
@@ -160,7 +160,7 @@ public class JpaDroolsSessionConnectorTest {
 	public void testAdd() {
 		DroolsSessionEntity sess =
 				new DroolsSessionEntity("nameA", 30);
-		
+
 		conn.replace(sess);
 
 		assertEquals(sess.toString(),
@@ -170,10 +170,10 @@ public class JpaDroolsSessionConnectorTest {
 	@Test
 	public void testUpdate() {
 		addSession("nameA", 10);
-		
+
 		DroolsSessionEntity sess =
 				new DroolsSessionEntity("nameA", 30);
-		
+
 		conn.replace(sess);
 
 		// id should be changed
@@ -189,15 +189,15 @@ public class JpaDroolsSessionConnectorTest {
 	 */
 	private void addSession(String sessnm, int sessid) {
 		EntityManager em = emf.createEntityManager();
-		
+
 		try(EntityMgrTrans trans = new EntityMgrTrans(em)) {
 			DroolsSessionEntity ent = new DroolsSessionEntity();
-			
+
 			ent.setSessionName(sessnm);
 			ent.setSessionId(sessid);
-			
+
 			em.persist(ent);
-		
+
 			trans.commit();
 		}
 	}

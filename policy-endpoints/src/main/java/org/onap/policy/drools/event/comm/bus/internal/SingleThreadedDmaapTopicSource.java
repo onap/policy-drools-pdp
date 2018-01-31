@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,25 +34,25 @@ import org.slf4j.LoggerFactory;
  * over DMAAP topic and notifying its listeners
  */
 public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
-                                            implements DmaapTopicSource, Runnable {	
+                                            implements DmaapTopicSource, Runnable {
 
 	private static Logger logger = LoggerFactory.getLogger(SingleThreadedDmaapTopicSource.class);
-	
+
 	protected boolean allowSelfSignedCerts;
 	protected final String userName;
 	protected final String password;
-	
+
 	protected String environment = null;
 	protected String aftEnvironment = null;
 	protected String partner = null;
 	protected String latitude = null;
 	protected String longitude = null;
-	
+
 	protected Map<String,String> additionalProps = null;
 
-	
+
 	/**
-	 * 
+	 *
 	 * @param servers DMaaP servers
 	 * @param topic DMaaP Topic to be monitored
 	 * @param apiKey DMaaP API Key (optional)
@@ -69,10 +69,10 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	 * @param additionalProps Additional properties to pass to DME2
 	 * @param useHttps does connection use HTTPS?
 	 * @param allowSelfSignedCerts are self-signed certificates allow
-	 * 
+	 *
 	 * @throws IllegalArgumentException An invalid parameter passed in
 	 */
-	public SingleThreadedDmaapTopicSource(List<String> servers, String topic, 
+	public SingleThreadedDmaapTopicSource(List<String> servers, String topic,
 											String apiKey, String apiSecret,
 											String userName, String password,
 											String consumerGroup, String consumerInstance,
@@ -81,21 +81,21 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 											String latitude, String longitude, Map<String,String> additionalProps,
 											boolean useHttps, boolean allowSelfSignedCerts)
 			throws IllegalArgumentException {
-			
-		super(servers, topic, apiKey, apiSecret, 
-			  consumerGroup, consumerInstance, 
+
+		super(servers, topic, apiKey, apiSecret,
+			  consumerGroup, consumerInstance,
 			  fetchTimeout, fetchLimit, useHttps,allowSelfSignedCerts);
-		
+
 		this.userName = userName;
 		this.password = password;
-		
+
 		this.environment = environment;
 		this.aftEnvironment = aftEnvironment;
 		this.partner = partner;
-		
+
 		this.latitude = latitude;
 		this.longitude = longitude;
-		
+
 		this.additionalProps = additionalProps;
 		try {
 			this.init();
@@ -106,7 +106,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	}
 
 	/**
-	 * 
+	 *
 	 * @param servers DMaaP servers
 	 * @param topic DMaaP Topic to be monitored
 	 * @param apiKey DMaaP API Key (optional)
@@ -119,21 +119,21 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	 * @param allowSelfSignedCerts are self-signed certificates allow
 	 * @throws IllegalArgumentException An invalid parameter passed in
 	 */
-	public SingleThreadedDmaapTopicSource(List<String> servers, String topic, 
+	public SingleThreadedDmaapTopicSource(List<String> servers, String topic,
 			                              String apiKey, String apiSecret,
 			                              String userName, String password,
-			                              String consumerGroup, String consumerInstance, 
+			                              String consumerGroup, String consumerInstance,
 			                              int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts)
 			throws IllegalArgumentException {
-		
-		
-		super(servers, topic, apiKey, apiSecret, 
-			  consumerGroup, consumerInstance, 
+
+
+		super(servers, topic, apiKey, apiSecret,
+			  consumerGroup, consumerInstance,
 			  fetchTimeout, fetchLimit, useHttps, allowSelfSignedCerts);
-		
+
 		this.userName = userName;
-		this.password = password;		
-		
+		this.password = password;
+
 		try {
 			this.init();
 		} catch (Exception e) {
@@ -141,17 +141,17 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
 
 	/**
 	 * Initialize the Cambria or MR Client
 	 */
 	@Override
 	public void init() throws MalformedURLException {
-		if (this.userName == null || this.userName.isEmpty() || 
+		if (this.userName == null || this.userName.isEmpty() ||
 				this.password == null || this.password.isEmpty()) {
 				this.consumer =
-						new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
+						new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic,
 								                           this.apiKey, this.apiSecret,
 								                           this.consumerGroup, this.consumerInstance,
 								                           this.fetchTimeout, this.fetchLimit,
@@ -162,14 +162,14 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 				   (this.longitude == null	   || this.longitude.isEmpty()) &&
 				   (this.partner == null 	   || this.partner.isEmpty())) {
 			this.consumer =
-					new BusConsumer.DmaapAafConsumerWrapper(this.servers, this.topic, 
+					new BusConsumer.DmaapAafConsumerWrapper(this.servers, this.topic,
 							                            this.apiKey, this.apiSecret,
 							                            this.userName, this.password,
 							                            this.consumerGroup, this.consumerInstance,
 							                            this.fetchTimeout, this.fetchLimit, this.useHttps);
 		} else {
 			this.consumer =
-					new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic, 
+					new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic,
 							                            this.apiKey, this.apiSecret,
 							                            this.userName, this.password,
 							                            this.consumerGroup, this.consumerInstance,
@@ -177,10 +177,10 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 							                            this.environment, this.aftEnvironment, this.partner,
 							                            this.latitude, this.longitude, this.additionalProps, this.useHttps);
 		}
-			
+
 		logger.info("{}: INITTED", this);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

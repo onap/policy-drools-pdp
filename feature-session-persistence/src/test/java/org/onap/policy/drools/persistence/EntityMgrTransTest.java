@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.onap.policy.drools.persistence.EntityMgrTrans;
 
 public class EntityMgrTransTest {
-	
+
 	private EntityTransaction trans;
 	private EntityManager mgr;
 
@@ -42,7 +42,7 @@ public class EntityMgrTransTest {
 	public void setUp() throws Exception {
 		trans = mock(EntityTransaction.class);
 		mgr = mock(EntityManager.class);
-		
+
 		when(mgr.getTransaction()).thenReturn(trans);
 	}
 
@@ -55,7 +55,7 @@ public class EntityMgrTransTest {
 	@Test
 	public void testEntityMgrTrans() {
 		EntityMgrTrans t = new EntityMgrTrans(mgr);
-		
+
 		// verify that transaction was started
 		verify(trans).begin();
 
@@ -63,7 +63,7 @@ public class EntityMgrTransTest {
 		verify(trans, never()).commit();
 		verify(trans, never()).rollback();
 		verify(mgr, never()).close();
-		
+
 		t.close();
 	}
 
@@ -76,7 +76,7 @@ public class EntityMgrTransTest {
 		EntityMgrTrans t = new EntityMgrTrans(mgr);
 
 		when(trans.isActive()).thenReturn(true);
-		
+
 		t.close();
 
 		// closed and rolled back, but not committed
@@ -94,7 +94,7 @@ public class EntityMgrTransTest {
 		EntityMgrTrans t = new EntityMgrTrans(mgr);
 
 		when(trans.isActive()).thenReturn(false);
-		
+
 		t.close();
 
 		// closed, but not committed or rolled back
@@ -110,9 +110,9 @@ public class EntityMgrTransTest {
 	@Test
 	public void testClose_TryWithoutExcept_Active() {
 		when(trans.isActive()).thenReturn(true);
-		
+
 		try(EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-			
+
 		}
 
 		// closed and rolled back, but not committed
@@ -129,9 +129,9 @@ public class EntityMgrTransTest {
 	@Test
 	public void testClose_TryWithoutExcept_Inactive() {
 		when(trans.isActive()).thenReturn(false);
-		
+
 		try(EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-			
+
 		}
 
 		// closed, but not rolled back or committed
@@ -147,12 +147,12 @@ public class EntityMgrTransTest {
 	@Test
 	public void testClose_TryWithExcept_Active() {
 		when(trans.isActive()).thenReturn(true);
-		
+
 		try {
 			try(EntityMgrTrans t = new EntityMgrTrans(mgr)) {
 				throw new Exception("expected exception");
 			}
-			
+
 		} catch (Exception e) {
 		}
 
@@ -170,12 +170,12 @@ public class EntityMgrTransTest {
 	@Test
 	public void testClose_TryWithExcept_Inactive() {
 		when(trans.isActive()).thenReturn(false);
-		
+
 		try {
 			try(EntityMgrTrans t = new EntityMgrTrans(mgr)) {
 				throw new Exception("expected exception");
 			}
-			
+
 		} catch (Exception e) {
 		}
 
@@ -192,14 +192,14 @@ public class EntityMgrTransTest {
 	@Test
 	public void testCommit() {
 		EntityMgrTrans t = new EntityMgrTrans(mgr);
-		
+
 		t.commit();
-		
+
 		// committed, but not closed or rolled back
 		verify(trans).commit();
 		verify(trans, never()).rollback();
 		verify(mgr, never()).close();
-		
+
 		// closed, but not re-committed
 		t.close();
 
@@ -214,14 +214,14 @@ public class EntityMgrTransTest {
 	@Test
 	public void testRollback() {
 		EntityMgrTrans t = new EntityMgrTrans(mgr);
-		
+
 		t.rollback();
-		
+
 		// rolled back, but not closed or committed
 		verify(trans, never()).commit();
 		verify(trans).rollback();
 		verify(mgr, never()).close();
-		
+
 		// closed, but not re-rolled back
 		t.close();
 

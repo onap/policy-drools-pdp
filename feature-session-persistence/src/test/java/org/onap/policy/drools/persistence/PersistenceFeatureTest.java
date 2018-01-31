@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -107,9 +107,9 @@ public class PersistenceFeatureTest {
 	private PolicyContainer polcont;
 	private PolicySession polsess;
 	private PersistenceFeature.Factory fact;
-	
+
 	private PersistenceFeature feat;
-	
+
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -149,27 +149,27 @@ public class PersistenceFeatureTest {
 		polctlr = mock(PolicyController.class);
 		polsess = mock(PolicySession.class);
 		fact = mock(PersistenceFeature.Factory.class);
-		
+
 		feat = new PersistenceFeature();
 		feat.setFactory(fact);
-		
+
 		props.putAll(stdprops);
-		
+
 		when(pds.getUniqueName()).thenReturn("myds");
-		
+
 		when(fact.getKieServices()).thenReturn(kiesvc);
 		when(fact.getTransMgrConfig()).thenReturn(bitcfg);
 		when(fact.getTransMgr()).thenReturn(bittrans);
 		when(fact.loadProperties(anyString())).thenReturn(props);
-		
+
 		when(kiesvc.newEnvironment()).thenReturn(kieenv);
 		when(kiesvc.getStoreServices()).thenReturn(kiestore);
 		when(kiesvc.newKieSessionConfiguration()).thenReturn(kiecfg);
-		
+
 		when(polcont.getKieContainer()).thenReturn(kiecont);
-		
+
 		when(polsess.getPolicyContainer()).thenReturn(polcont);
-		
+
 		when(kiecont.getKieBase(anyString())).thenReturn(kiebase);
 	}
 
@@ -200,7 +200,7 @@ public class PersistenceFeatureTest {
 				ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
 		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
-		
+
 		assertNotNull( adjcap.getValue());
 	}
 
@@ -219,14 +219,14 @@ public class PersistenceFeatureTest {
 				ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
 		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
-		
+
 		// return adjunct on next call
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
 
 		// force getContainerAdjunct() to be invoked again
 		setUpKie("myname2", 999L, true);
 		feat.activatePolicySession(polcont, "myname2", "mybase");
-		
+
 		// ensure it isn't invoked again
 		verify(polcont, times(1)).setAdjunct(any(), any());
 	}
@@ -239,15 +239,15 @@ public class PersistenceFeatureTest {
 	@Test
 	public void testGlobalInit() throws Exception {
 		when(fact.getHostName()).thenReturn("myhost");
-		
+
 		feat.globalInit(null, SRC_TEST_RESOURCES);
-		
+
 		// verify that various factory methods were invoked
 		verify(fact).getHostName();
 		verify(fact).getKieServices();
 		verify(fact).getTransMgrConfig();
 		verify(fact).loadProperties("src/test/resources/feature-session-persistence.properties");
-		
+
 		verify(bitcfg).setJournal(null);
 		verify(bitcfg).setServerId("myhost");
 	}
@@ -259,21 +259,21 @@ public class PersistenceFeatureTest {
 
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 		feat.beforeActivate(null);
-		
+
 		KieSession s =
 				feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
 		verify(kiestore, never()).newKieSession(any(), any(), any());
-		
+
 		assertEquals(s, kiesess);
-		
+
 		verify(ps).executeUpdate();
 
 		verify(kieenv, times(2)).set(anyString(), any());
 		verify(pds).init();
 		assertFalse( dsprops.isEmpty());
-		
+
 		verify(jpa).get("myname");
 		verify(jpa).replace(any());
 	}
@@ -284,11 +284,11 @@ public class PersistenceFeatureTest {
 
 		PreparedStatement ps = mockDbConn(5);
 		setUpKie("myname", 999L, true);
-		
+
 		props.remove("persistence.type");
-		
+
 		feat.beforeStart(null);
-		
+
 		assertNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 
 		verify(ps, never()).executeUpdate();
@@ -298,7 +298,7 @@ public class PersistenceFeatureTest {
 
 	/**
 	 * Verifies that a new KIE session is created when there is no existing
-	 * session entity. 
+	 * session entity.
 	 */
 	@Test
 	public void testActivatePolicySession_New() throws Exception {
@@ -306,14 +306,14 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("noName", 999L, true);
-		
-		
+
+
 		KieSession s =
 				feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kiestore, never()).loadKieSession(anyLong(), any(), any(), any());
 		verify(kiestore).newKieSession(any(), any(), any());
-		
+
 		assertEquals(s, kiesess);
 
 		verify(kieenv, times(2)).set(anyString(), any());
@@ -334,14 +334,14 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
-		
+
+
 		KieSession s =
 				feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
 		verify(kiestore).newKieSession(any(), any(), any());
-		
+
 		assertEquals(s, kiesess);
 
 		verify(kieenv, times(2)).set(anyString(), any());
@@ -349,11 +349,11 @@ public class PersistenceFeatureTest {
 		assertFalse( dsprops.isEmpty());
 
 		verify(jpa).get("myname");
-		
+
 		ArgumentCaptor<DroolsSession> d =
 				ArgumentCaptor.forClass(DroolsSession.class);
 		verify(jpa).replace( d.capture());
-		
+
 		assertEquals("myname", d.getValue().getSessionName());
 		assertEquals(100L, d.getValue().getSessionId());
 	}
@@ -364,11 +364,11 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kieenv, times(2)).set(any(), any());
-		
+
 		verify(kieenv).set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 		verify(kieenv).set(EnvironmentName.TRANSACTION_MANAGER, bittrans);
 	}
@@ -379,13 +379,13 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		assertEquals(JDBC_URL, dsprops.getProperty("URL"));
 		assertEquals(JDBC_USER, dsprops.getProperty("user"));
 		assertEquals(JDBC_PASSWD, dsprops.getProperty("password"));
-		
+
 		verify(pds).setUniqueName("jdbc/BitronixJTADataSource/myname");
 		verify(pds).setClassName(JDBC_DATASRC);
 		verify(pds).setMaxPoolSize(anyInt());
@@ -400,14 +400,14 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, true);
-		
-		
+
+
 		KieSession s =
 				feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kiestore).loadKieSession(999L, kiebase, kiecfg, kieenv);
 		verify(kiestore, never()).newKieSession(any(), any(), any());
-		
+
 		assertEquals(s, kiesess);
 	}
 
@@ -421,17 +421,17 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		when(kiestore.loadKieSession(anyLong(), any(), any(), any()))
 				.thenThrow( new RuntimeException("expected exception"));
-		
-		
+
+
 		KieSession s =
 				feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
 		verify(kiestore).newKieSession(any(), any(), any());
-		
+
 		assertEquals(s, kiesess);
 	}
 
@@ -441,13 +441,13 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
-		
+
+
 		KieSession s =
 				feat.activatePolicySession(polcont, "myname", "mybase");
 
 		verify(kiestore).newKieSession(kiebase, null, kieenv);
-		
+
 		assertEquals(s, kiesess);
 	}
 
@@ -462,14 +462,14 @@ public class PersistenceFeatureTest {
 
 		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
 				ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
-		
+
 		verify(polcont).setAdjunct(any(), adjcap.capture());
-		
+
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
-		
+
 		// invoke it again
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(fact, times(1)).makePoolingDataSource();
 	}
 
@@ -483,16 +483,16 @@ public class PersistenceFeatureTest {
 
 		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
 				ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
-		
+
 		verify(polcont).setAdjunct(any(), adjcap.capture());
-		
+
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
 
 		setUpKie("myname2", 999L, false);
-		
+
 		// invoke it again
 		feat.activatePolicySession(polcont, "myname2", "mybase");
-		
+
 		verify(fact, times(2)).makePoolingDataSource();
 	}
 
@@ -505,26 +505,26 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(pds, never()).close();
 		verify(polcont).setAdjunct(any(), adjcap.capture());
-		
+
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
-		
+
 		feat.disposeKieSession(polsess);
 
 		// call twice to ensure it isn't re-closed
 		feat.disposeKieSession(polsess);
-		
+
 		verify(pds, times(1)).close();
 	}
 
 	@Test
 	public void testDisposeKieSession_NoAdjunct() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
-		
+
 		feat.disposeKieSession(polsess);
 	}
 
@@ -537,19 +537,19 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(pds, never()).close();
 		verify(polcont).setAdjunct(any(), adjcap.capture());
-		
+
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
 
 		// specify a session that was never loaded
 		when(polsess.getName()).thenReturn("anotherName");
-		
+
 		feat.disposeKieSession(polsess);
-		
+
 		verify(pds, never()).close();
 	}
 
@@ -562,26 +562,26 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(pds, never()).close();
 		verify(polcont).setAdjunct(any(), adjcap.capture());
-		
+
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
-		
+
 		feat.destroyKieSession(polsess);
 
 		// call twice to ensure it isn't re-closed
 		feat.destroyKieSession(polsess);
-		
+
 		verify(pds, times(1)).close();
 	}
 
 	@Test
 	public void testDestroyKieSession_NoAdjunct() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
-		
+
 		feat.destroyKieSession(polsess);
 	}
 
@@ -594,17 +594,17 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, false);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(pds, never()).close();
 		verify(polcont).setAdjunct(any(), adjcap.capture());
-		
+
 		when(polcont.getAdjunct(any())).thenReturn( adjcap.getValue());
 
 		// specify a session that was never loaded
 		when(polsess.getName()).thenReturn("anotherName");
-		
+
 		feat.destroyKieSession(polsess);
 
 		verify(pds, never()).close();
@@ -697,25 +697,25 @@ public class PersistenceFeatureTest {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s).executeUpdate();
 	}
 
 	@Test
 	public void testGetPersistenceTimeout_Missing() throws Exception {
-		
+
 		props.remove(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT);
-		
+
 		PreparedStatement s = mockDbConn(0);
 
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s, never()).executeUpdate();
 	}
 
@@ -727,18 +727,18 @@ public class PersistenceFeatureTest {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s, never()).executeUpdate();
 	}
 
 	@Test
 	public void testInitHostName() throws Exception {
 		when(fact.getHostName()).thenReturn("myhost");
-		
+
 		feat.globalInit(null, SRC_TEST_RESOURCES);
-		
+
 		verify(bitcfg).setServerId("myhost");
 	}
 
@@ -747,26 +747,26 @@ public class PersistenceFeatureTest {
 		when(fact.getHostName())
 				.thenThrow(
 						new UnknownHostException("expected exception"));
-		
+
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 	}
 
 	@Test
 	public void testCleanUpSessionInfo() throws Exception {
 		setUpKie("myname", 999L, true);
-		
+
 		// use a real DB so we can verify that the "delete" works correctly
 		fact = new PartialFactory();
 		feat.setFactory(fact);
-		
+
 		makeSessionInfoTbl(20000);
 
-		
+
 		feat.globalInit(null, SRC_TEST_RESOURCES);
-		
+
 		feat.beforeStart(null);
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		assertEquals("[1, 4, 5]", getSessions().toString());
 	}
 
@@ -777,10 +777,10 @@ public class PersistenceFeatureTest {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		// reset
 		feat.beforeStart(null);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		verify(s, times(1)).executeUpdate();
 
@@ -788,11 +788,11 @@ public class PersistenceFeatureTest {
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		verify(s, times(1)).executeUpdate();
-		
+
 
 		// reset
 		feat.beforeStart(null);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		verify(s, times(2)).executeUpdate();
 
@@ -809,10 +809,10 @@ public class PersistenceFeatureTest {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		// reset
 		feat.beforeActivate(null);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		verify(s, times(1)).executeUpdate();
 
@@ -820,11 +820,11 @@ public class PersistenceFeatureTest {
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		verify(s, times(1)).executeUpdate();
-		
+
 
 		// reset
 		feat.beforeActivate(null);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
 		verify(s, times(2)).executeUpdate();
 
@@ -838,60 +838,60 @@ public class PersistenceFeatureTest {
 	public void testCleanUpSessionInfo_NoTimeout() throws Exception {
 
 		props.remove(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT);
-		
+
 		PreparedStatement s = mockDbConn(0);
 
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s, never()).executeUpdate();
 	}
 
 	@Test
 	public void testCleanUpSessionInfo_NoUrl() throws Exception {
 		PreparedStatement s = mockDbConn(0);
-		
+
 		props.remove(DroolsPersistenceProperties.DB_URL);
 
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s, never()).executeUpdate();
 	}
 
 	@Test
 	public void testCleanUpSessionInfo_NoUser() throws Exception {
 		PreparedStatement s = mockDbConn(0);
-		
+
 		props.remove(DroolsPersistenceProperties.DB_USER);
 
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s, never()).executeUpdate();
 	}
 
 	@Test
 	public void testCleanUpSessionInfo_NoPassword() throws Exception {
 		PreparedStatement s = mockDbConn(0);
-		
+
 		props.remove(DroolsPersistenceProperties.DB_PWD);
 
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s, never()).executeUpdate();
 	}
 
@@ -902,9 +902,9 @@ public class PersistenceFeatureTest {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		setUpKie("myname", 999L, true);
-		
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(s).executeUpdate();
 	}
 
@@ -914,28 +914,28 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, true);
-		
-		
+
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
 
 
 		ArgumentCaptor<Properties> propcap =
 				ArgumentCaptor.forClass(Properties.class);
-		
+
 		verify(fact).makeJpaConnector(anyString(), propcap.capture());
-		
+
 		Properties p = propcap.getValue();
 		assertNotNull(p);
-		
+
 		assertEquals(JDBC_DRIVER,
 				p.getProperty("javax.persistence.jdbc.driver"));
-		
+
 		assertEquals(JDBC_URL,
 				p.getProperty("javax.persistence.jdbc.url"));
-		
+
 		assertEquals(JDBC_USER,
 				p.getProperty("javax.persistence.jdbc.user"));
-		
+
 		assertEquals(JDBC_PASSWD,
 				p.getProperty("javax.persistence.jdbc.password"));
 	}
@@ -949,16 +949,16 @@ public class PersistenceFeatureTest {
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, true);
-		
-		
+
+
 		feat.activatePolicySession(polcont, "myname", "mybase");
-		
+
 		verify(jpa).replace( sesscap.capture());
-		
+
 		assertEquals("myname", sesscap.getValue().getSessionName());
 		assertEquals(999L, sesscap.getValue().getSessionId());
 	}
-	
+
 	@Test
 	public void testIsPersistenceEnabled_Auto() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -967,10 +967,10 @@ public class PersistenceFeatureTest {
 		setUpKie("myname", 999L, true);
 
 		props.setProperty("persistence.type", "auto");
-		
+
 		assertNotNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testIsPersistenceEnabled_Native() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -979,10 +979,10 @@ public class PersistenceFeatureTest {
 		setUpKie("myname", 999L, true);
 
 		props.setProperty("persistence.type", "native");
-		
+
 		assertNotNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testIsPersistenceEnabled_None() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -991,23 +991,23 @@ public class PersistenceFeatureTest {
 		setUpKie("myname", 999L, true);
 
 		props.remove("persistence.type");
-		
+
 		assertNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testGetProperties_Ex() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
 
 		mockDbConn(5);
 		setUpKie("myname", 999L, true);
-		
+
 		when(fact.getPolicyContainer(polcont))
 			.thenThrow( new IllegalArgumentException("expected exception"));
 
 		assertNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testGetProperty_Specific() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -1017,10 +1017,10 @@ public class PersistenceFeatureTest {
 
 		props.remove("persistence.type");
 		props.setProperty("persistence.myname.type", "auto");
-		
+
 		assertNotNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testGetProperty_Specific_None() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -1030,10 +1030,10 @@ public class PersistenceFeatureTest {
 
 		props.remove("persistence.type");
 		props.setProperty("persistence.xxx.type", "auto");
-		
+
 		assertNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testGetProperty_Both_SpecificOn() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -1043,10 +1043,10 @@ public class PersistenceFeatureTest {
 
 		props.setProperty("persistence.type", "other");
 		props.setProperty("persistence.myname.type", "auto");
-		
+
 		assertNotNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testGetProperty_Both_SpecificDisabledOff() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -1056,10 +1056,10 @@ public class PersistenceFeatureTest {
 
 		props.setProperty("persistence.type", "auto");
 		props.setProperty("persistence.myname.type", "other");
-		
+
 		assertNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
-	
+
 	@Test
 	public void testGetProperty_None() throws Exception {
 		feat.globalInit(null, SRC_TEST_RESOURCES);
@@ -1068,34 +1068,34 @@ public class PersistenceFeatureTest {
 		setUpKie("myname", 999L, true);
 
 		props.remove("persistence.type");
-		
+
 		assertNull( feat.activatePolicySession(polcont, "myname", "mybase"));
 	}
 
-	
+
 	/**
 	 * Gets an ordered list of ids of the current SessionInfo records.
 	 * @return ordered list of SessInfo IDs
-	 * @throws SQLException 
-	 * @throws IOException 
+	 * @throws SQLException
+	 * @throws IOException
 	 */
 	private List<Integer> getSessions() throws SQLException, IOException {
 		attachDb();
-		
+
 		ArrayList<Integer> lst = new ArrayList<>(5);
 
 		try(
 				PreparedStatement stmt = conn.prepareStatement("SELECT id from sessioninfo order by id");
 				ResultSet rs = stmt.executeQuery()) {
-			
+
 			while(rs.next()) {
 				lst.add( rs.getInt(1));
 			}
 		}
-		
+
 		return lst;
 	}
-	
+
 	/**
 	 * Sets up for doing invoking the newKieSession() method.
 	 * @param sessnm	name to which JPA should respond with a session
@@ -1104,29 +1104,29 @@ public class PersistenceFeatureTest {
 	 * 					value, {@code false} to return null
 	 */
 	private void setUpKie(String sessnm, long sessid, boolean loadOk) {
-		
+
 		when(fact.makeJpaConnector(any(), any())).thenReturn(jpa);
 		when(fact.makePoolingDataSource()).thenReturn(pds);
 		when(fact.getPolicyContainer(polcont)).thenReturn(polctlr);
-		
+
 		props.setProperty("persistence.type", "auto");
-		
+
 		when(polctlr.getProperties()).thenReturn(props);
-		
+
 		when(jpa.get(sessnm)).thenReturn(sess);
-		
+
 		when(pds.getDriverProperties()).thenReturn(dsprops);
-		
+
 		when(sess.getSessionId()).thenReturn(sessid);
-		
+
 		when(polsess.getPolicyContainer()).thenReturn(polcont);
 		when(polsess.getName()).thenReturn(sessnm);
-		
+
 		if(loadOk) {
 			when(kiesess.getIdentifier()).thenReturn(sessid);
 			when(kiestore.loadKieSession(anyLong(), any(), any(), any()))
 					.thenReturn(kiesess);
-			
+
 		} else {
 			// use an alternate id for the new session
 			when(kiesess.getIdentifier()).thenReturn(100L);
@@ -1140,19 +1140,19 @@ public class PersistenceFeatureTest {
 	/**
 	 * Creates the SessionInfo DB table and populates it with some data.
 	 * @param expMs 	number of milli-seconds for expired sessioninfo records
-	 * @throws SQLException 
-	 * @throws IOException 
+	 * @throws SQLException
+	 * @throws IOException
 	 */
 	private void makeSessionInfoTbl(int expMs)
 				throws SQLException, IOException {
-		
+
 		attachDb();
 
 		try(
 				PreparedStatement stmt = conn.prepareStatement(
 						"CREATE TABLE sessioninfo(id int, lastmodificationdate timestamp)")) {
 
-			stmt.executeUpdate();	
+			stmt.executeUpdate();
 		}
 
 		try(
@@ -1160,27 +1160,27 @@ public class PersistenceFeatureTest {
 						"INSERT into sessioninfo(id, lastmodificationdate) values(?, ?)")) {
 
 			Timestamp ts;
-			
+
 			// current data
 			ts = new Timestamp( System.currentTimeMillis());
 			stmt.setTimestamp(2, ts);
-	
+
 			stmt.setInt(1, 1);
 			stmt.executeUpdate();
-	
+
 			stmt.setInt(1, 4);
 			stmt.executeUpdate();
-	
+
 			stmt.setInt(1, 5);
 			stmt.executeUpdate();
-			
+
 			// expired data
 			ts = new Timestamp( System.currentTimeMillis() - expMs);
 			stmt.setTimestamp(2, ts);
-	
+
 			stmt.setInt(1, 2);
 			stmt.executeUpdate();
-	
+
 			stmt.setInt(1, 3);
 			stmt.executeUpdate();
 		}
@@ -1194,7 +1194,7 @@ public class PersistenceFeatureTest {
 	private void attachDb() throws SQLException, IOException {
 		if(conn == null) {
 			Properties p = loadDbProps();
-			
+
 			conn = DriverManager.getConnection(
 						p.getProperty(DroolsPersistenceProperties.DB_URL),
 						p.getProperty(DroolsPersistenceProperties.DB_USER),
@@ -1212,14 +1212,14 @@ public class PersistenceFeatureTest {
 	 */
 	private Properties loadDbProps()
 				throws IOException, FileNotFoundException {
-		
+
 		Properties p = new Properties();
-		
+
 		try(FileReader rdr = new FileReader(
 				"src/test/resources/feature-session-persistence.properties")) {
 			p.load(rdr);
 		}
-		
+
 		return p;
 	}
 
@@ -1237,26 +1237,26 @@ public class PersistenceFeatureTest {
 		when(fact.makeDbConnection(anyString(), anyString(), anyString()))
 				.thenReturn(c);
 		when(c.prepareStatement(anyString())).thenReturn(s);
-		
+
 		if(retval < 0) {
 			// should throw an exception
 			when(s.executeUpdate())
 				.thenThrow( new SQLException("expected exception"));
-			
+
 		} else {
 			// should return the value
 			when(s.executeUpdate()).thenReturn(retval);
 		}
-		
+
 		return s;
 	}
-	
+
 	/**
 	 * A partial factory, which exports a few of the real methods, but
 	 * overrides the rest.
 	 */
 	private class PartialFactory extends PersistenceFeature.Factory {
-		
+
 		@Override
 		public PoolingDataSource makePoolingDataSource() {
 			return pds;
@@ -1278,7 +1278,7 @@ public class PersistenceFeatureTest {
 			if(pu.equals("onapsessionsPU")) {
 				return null;
 			}
-			
+
 			return super.makeEntMgrFact("junitPersistenceFeaturePU", propMap);
 		}
 
@@ -1286,6 +1286,6 @@ public class PersistenceFeatureTest {
 		public PolicyController getPolicyContainer(PolicyContainer container) {
 			return polctlr;
 		}
-		
+
 	}
 }

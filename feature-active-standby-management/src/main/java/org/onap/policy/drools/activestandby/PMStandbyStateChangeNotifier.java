@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,25 +18,25 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.activestandby; 
- 
-/* 
+package org.onap.policy.drools.activestandby;
+
+/*
  * Per MultiSite_v1-10.ppt:
- * 
- * Extends the StateChangeNotifier class and overwrites the abstract handleStateChange() method to get state changes 
- * and do the following: 
- * 
- * When the Standby Status changes (from providingservice) to hotstandby or coldstandby, 
- * the Active/Standby selection algorithm must stand down if the PDP-D is currently the lead/active node 
+ *
+ * Extends the StateChangeNotifier class and overwrites the abstract handleStateChange() method to get state changes
+ * and do the following:
+ *
+ * When the Standby Status changes (from providingservice) to hotstandby or coldstandby,
+ * the Active/Standby selection algorithm must stand down if the PDP-D is currently the lead/active node
  * and allow another PDP-D to take over.  It must also call lock on all engines in the engine management.
- * 
- * When the Standby Status changes from (hotstandby) to coldstandby, the Active/Standby algorithm must NOT assume 
+ *
+ * When the Standby Status changes from (hotstandby) to coldstandby, the Active/Standby algorithm must NOT assume
  * the active/lead role.
- *  
- * When the Standby Status changes (from coldstandby or providingservice) to hotstandby, 
+ *
+ * When the Standby Status changes (from coldstandby or providingservice) to hotstandby,
  * the Active/Standby algorithm may assume the active/lead role if the active/lead fails.
- * 
- * When the Standby Status changes to providingservice (from hotstandby or coldstandby) call unlock on all 
+ *
+ * When the Standby Status changes to providingservice (from hotstandby or coldstandby) call unlock on all
  * engines in the engine management layer.
  */
 import java.util.Date;
@@ -51,27 +51,27 @@ import org.onap.policy.drools.system.PolicyEngine;
 
 /*
  * Some background:
- * 
+ *
  * Originally, there was a "StandbyStateChangeNotifier" that belonged to policy-core, and this class's handleStateChange() method
- * used to take care of invoking conn.standDownPdp().   But testing revealed that when a state change to hot standby occurred 
- * from a demote() operation, first the PMStandbyStateChangeNotifier.handleStateChange() method would be invoked and then the 
+ * used to take care of invoking conn.standDownPdp().   But testing revealed that when a state change to hot standby occurred
+ * from a demote() operation, first the PMStandbyStateChangeNotifier.handleStateChange() method would be invoked and then the
  * StandbyStateChangeNotifier.handleStateChange() method would be invoked, and this ordering was creating the following problem:
- * 
+ *
  * When PMStandbyStateChangeNotifier.handleStateChange() was invoked it would take a long time to finish, because it would result
- * in SingleThreadedUebTopicSource.stop() being invoked, which can potentially do a 5 second sleep for each controller being stopped.   
+ * in SingleThreadedUebTopicSource.stop() being invoked, which can potentially do a 5 second sleep for each controller being stopped.
  * Meanwhile, as these controller stoppages and their associated sleeps were occurring, the election handler would discover the
  * demoted PDP in hotstandby (but still designated!) and promote it, resulting in the standbyStatus going from hotstandby
  * to providingservice.  So then, by the time that PMStandbyStateChangeNotifier.handleStateChange() finished its work and
  * StandbyStateChangeNotifier.handleStateChange() started executing, the standbyStatus was no longer hotstandby (as effected by
  * the demote), but providingservice (as reset by the election handling logic) and conn.standDownPdp() would not get called!
- * 
- * To fix this bug, we consolidated StandbyStateChangeNotifier and PMStandbyStateChangeNotifier, with the standDownPdp() always 
- * being invoked prior to the TopicEndpoint.manager.lock().  In this way, when the election handling logic is invoked 
+ *
+ * To fix this bug, we consolidated StandbyStateChangeNotifier and PMStandbyStateChangeNotifier, with the standDownPdp() always
+ * being invoked prior to the TopicEndpoint.manager.lock().  In this way, when the election handling logic is invoked
  * during the controller stoppages, the PDP is in hotstandby and the standdown occurs.
- * 
+ *
  */
 public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
-	// get an instance of logger 
+	// get an instance of logger
 	private static final Logger  logger = LoggerFactory.getLogger(PMStandbyStateChangeNotifier.class);
 	private Timer delayActivateTimer;
 	private int pdpUpdateInterval;
@@ -83,7 +83,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 	public static final String NONE = "none";
 	public static final String UNSUPPORTED = "unsupported";
 	public static final String HOTSTANDBY_OR_COLDSTANDBY = "hotstandby_or_coldstandby";
-		
+
 	public PMStandbyStateChangeNotifier(){
 		pdpUpdateInterval = Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
 		isWaitingForActivation = false;
@@ -97,7 +97,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 	@Override
 	public void handleStateChange() {
 		/*
-		 * A note on synchronization: This method is not synchronized because the caller, stateManagememt, 
+		 * A note on synchronization: This method is not synchronized because the caller, stateManagememt,
 		 * has synchronize all of its methods. Only one stateManagement operation can occur at a time. Thus,
 		 * only one handleStateChange() call will ever be made at a time.
 		 */
@@ -115,7 +115,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 			logger.debug("handleStateChange: previousStandbyStatus = {}"
 				+ "; standbyStatus = {}", previousStandbyStatus, standbyStatus);
 		}
-		
+
 		if (standbyStatus == null  || standbyStatus.equals(StateManagement.NULL_VALUE)) {
 			if(logger.isDebugEnabled()){
 				logger.debug("handleStateChange: standbyStatus is null; standing down PDP={}", pdpId);
@@ -209,10 +209,10 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 				if(logger.isDebugEnabled()){
 					logger.debug("handleStateChange: PROVIDING_SERVICE isWaitingForActivation= {}", isWaitingForActivation);
 				}
-				
-				//Delay activation for 2*pdpUpdateInterval+2000 ms in case of an election handler conflict.  
+
+				//Delay activation for 2*pdpUpdateInterval+2000 ms in case of an election handler conflict.
 				//You could have multiple election handlers thinking they can take over.
-				
+
 				 // First let's check that the timer has not died
 				if(isWaitingForActivation){
 					if(logger.isDebugEnabled()){
@@ -236,9 +236,9 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 							isWaitingForActivation = false;
 						}
 					}
-					
+
 				}
-				
+
 				if(!isWaitingForActivation){
 					try{
 						//Just in case there is an old timer hanging around
@@ -265,7 +265,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 						logger.debug("handleStateChange: PROVIDING_SERVICE delayActivationTimer is waiting for activation.");
 					}
 				}
-				
+
 			}catch(Exception e){
 				logger.warn("handleStateChange: PROVIDING_SERVICE standbyStatus == providingservice caught exception: ", e);
 			}
@@ -338,7 +338,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 			}
 		}
 	}
-	
+
 	public String getPreviousStandbyStatus(){
 		return previousStandbyStatus;
 	}

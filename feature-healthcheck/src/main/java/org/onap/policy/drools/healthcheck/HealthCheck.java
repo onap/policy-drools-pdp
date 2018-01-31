@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * Healthcheck
  */
 public interface HealthCheck extends Startable {
-	
+
 	/**
 	 * Healthcheck Report
 	 */
@@ -47,27 +47,27 @@ public interface HealthCheck extends Startable {
 		 * Named Entity in the report
 		 */
 		private String name;
-		
+
 		/**
 		 * URL queried
 		 */
 		private String url;
-		
+
 		/**
 		 * healthy?
 		 */
 		private boolean healthy;
-		
+
 		/**
 		 * return code
 		 */
 		private int code;
-		
+
 		/**
 		 * Message from remote entity
 		 */
 		private String message;
-		
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -125,14 +125,14 @@ public interface HealthCheck extends Startable {
             this.message = message;
         }
 	}
-	
+
 	/**
 	 * Report aggregation
 	 */
 	public static class Reports {
 		private boolean healthy;
 		private List<Report> details = new ArrayList<>();
-		
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -160,7 +160,7 @@ public interface HealthCheck extends Startable {
             this.details = details;
         }
 	}
-	
+
 	/**
 	 * perform a healthcheck
 	 * @return a report
@@ -182,30 +182,30 @@ class HealthCheckMonitor implements HealthCheck {
 	 * Logger
 	 */
 	private static Logger logger = LoggerFactory.getLogger(HealthCheckMonitor.class);
-	
+
 	/**
 	 * attached http servers
 	 */
 	protected volatile ArrayList<HttpServletServer> servers = new ArrayList<>();
-	
+
 	/**
 	 * attached http clients
 	 */
 	protected volatile ArrayList<HttpClient> clients = new ArrayList<>();
-	
+
 	/**
 	 * healthcheck configuration
 	 */
-	protected volatile Properties healthCheckProperties = null; 
-	
+	protected volatile Properties healthCheckProperties = null;
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Reports healthCheck() {	
+	public Reports healthCheck() {
 		Reports reports = new Reports();
 		reports.setHealthy(PolicyEngine.manager.isAlive());
-		
+
 		HealthCheck.Report engineReport = new Report();
 		engineReport.setHealthy(PolicyEngine.manager.isAlive());
 		engineReport.setName("PDP-D");
@@ -213,7 +213,7 @@ class HealthCheckMonitor implements HealthCheck {
 		engineReport.setCode(PolicyEngine.manager.isAlive() ? 200 : 500);
 		engineReport.setMessage(PolicyEngine.manager.isAlive() ? "alive" : "not alive");
 		reports.getDetails().add(engineReport);
-		
+
 		for (HttpClient client : clients) {
 			HealthCheck.Report report = new Report();
 			report.setName(client.getName());
@@ -226,11 +226,11 @@ class HealthCheckMonitor implements HealthCheck {
 					report.setHealthy(false);
 					reports.setHealthy(false);
 				}
-        
+
 				report.setMessage(getHttpBody(response, client));
 			} catch (Exception e) {
 				logger.warn("{}: cannot contact http-client {}", this, client, e);
-				
+
 				report.setHealthy(false);
 				reports.setHealthy(false);
 			}
@@ -238,26 +238,26 @@ class HealthCheckMonitor implements HealthCheck {
 		}
 		return reports;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean start() throws IllegalStateException {
-		
+
 		try {
 			this.healthCheckProperties = SystemPersistence.manager.getProperties(HealthCheckFeature.CONFIGURATION_PROPERTIES_NAME);
 			this.servers = HttpServletServer.factory.build(healthCheckProperties);
 			this.clients = HttpClient.factory.build(healthCheckProperties);
-			
+
 			for (HttpServletServer server : servers) {
 			    startServer(server);
 			}
 		} catch (Exception e) {
-			logger.warn("{}: cannot start {}", this, e);		
+			logger.warn("{}: cannot start {}", this, e);
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -266,7 +266,7 @@ class HealthCheckMonitor implements HealthCheck {
 	 */
 	@Override
 	public boolean stop() throws IllegalStateException {
-		
+
 		for (HttpServletServer server : servers) {
 			try {
 				server.stop();
@@ -274,7 +274,7 @@ class HealthCheckMonitor implements HealthCheck {
 				logger.warn("{}: cannot stop http-server {}", this, server, e);
 			}
 		}
-		
+
 		for (HttpClient client : clients) {
 			try {
 				client.stop();
@@ -282,7 +282,7 @@ class HealthCheckMonitor implements HealthCheck {
 				logger.warn("{}: cannot stop http-client {}", this, client, e);
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -301,23 +301,23 @@ class HealthCheckMonitor implements HealthCheck {
 	public synchronized boolean isAlive() {
 		return this.healthCheckProperties != null;
 	}
-	
+
 	/**
 	 * @return list of attached Http Servers
 	 */
 	public List<HttpServletServer> getServers() {
 		return this.servers;
 	}
-	
+
 	/**
 	 * @return list of attached Http Clients
 	 */
 	public List<HttpClient> getClients() {
 		return this.clients;
 	}
-	
+
 	public String getHttpBody(Response response, HttpClient client) {
-        
+
 	    String body = null;
         try {
             body = HttpClient.getBody(response, String.class);
@@ -325,10 +325,10 @@ class HealthCheckMonitor implements HealthCheck {
             logger.info("{}: cannot get body from http-client {}", this,
                     client, e);
         }
-        
+
         return body;
 	}
-	
+
 	public void startServer(HttpServletServer server) {
         try {
             server.start();
@@ -347,5 +347,5 @@ class HealthCheckMonitor implements HealthCheck {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 }

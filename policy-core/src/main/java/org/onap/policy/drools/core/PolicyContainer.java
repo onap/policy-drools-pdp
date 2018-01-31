@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PolicyContainer implements Startable
 {
-	// get an instance of logger 
-  private static Logger logger = LoggerFactory.getLogger(PolicyContainer.class);	
+	// get an instance of logger
+  private static Logger logger = LoggerFactory.getLogger(PolicyContainer.class);
   // 'KieServices' singleton
   private static KieServices kieServices = KieServices.Factory.get();
 
@@ -70,11 +70,11 @@ public class PolicyContainer implements Startable
 
   // if not null, this is a 'KieScanner' looking for updates
   private KieScanner scanner = null;
-  
+
   // indicates whether the scanner has been started
   // (it can block for a long time)
   private boolean scannerStarted = false;
-  
+
   private static final String ERROR_STRING = "ERROR: Feature API: ";
 
   /**
@@ -827,7 +827,7 @@ public class PolicyContainer implements Startable
 		  }
 	  }
   }
-	
+
   /**
    * Fetch the adjunct object associated with a given feature
    *

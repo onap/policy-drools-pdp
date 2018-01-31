@@ -590,7 +590,7 @@ class PolicyEngineManager implements PolicyEngine {
     final String entity = config.getEntity();
 
     switch (entity) {
-      case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:          
+      case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:
         return controllerConfig(config);
       default:
         final String msg = "Configuration Entity is not supported: " + entity;
@@ -907,39 +907,39 @@ class PolicyEngineManager implements PolicyEngine {
 
   @Override
   public synchronized void shutdown() {
-    
-    /* 
+
+    /*
      * shutdown activity even when underlying subcomponents
-     * (features, controllers, topics, etc ..) are stuck 
+     * (features, controllers, topics, etc ..) are stuck
      */
-    
-    Thread exitThread = new Thread(new Runnable() {    
+
+    Thread exitThread = new Thread(new Runnable() {
       private static final long SHUTDOWN_MAX_GRACE_TIME = 30000L;
-      
+
       @Override
       public void run() {
         try {
           Thread.sleep(SHUTDOWN_MAX_GRACE_TIME);
-          logger.warn("{}: abnormal termination - shutdown graceful time period expiration", 
+          logger.warn("{}: abnormal termination - shutdown graceful time period expiration",
               PolicyEngineManager.this);
         } catch (final InterruptedException e) {
           /* courtesy to shutdown() to allow it to return  */
           synchronized(PolicyEngineManager.this) {}
-          logger.info("{}: finishing a graceful shutdown ", 
+          logger.info("{}: finishing a graceful shutdown ",
               PolicyEngineManager.this, e);
         } finally {
-          /* 
+          /*
            * shut down the Policy Engine owned http servers as the  very last thing
            */
           for (final HttpServletServer httpServer : PolicyEngineManager.this.getHttpServers()) {
             try {
               httpServer.shutdown();
             } catch (final Exception e) {
-              logger.error("{}: cannot shutdown http-server {} because of {}", 
+              logger.error("{}: cannot shutdown http-server {} because of {}",
                   PolicyEngineManager.this, httpServer, e.getMessage(), e);
             }
           }
-          
+
           logger.info("{}: exit" , PolicyEngineManager.this);
           System.exit(0);
         }
@@ -999,7 +999,7 @@ class PolicyEngineManager implements PolicyEngine {
             feature.getClass().getName(), e.getMessage(), e);
       }
     }
-    
+
     exitThread.interrupt();
     logger.info("{}: normal termination" , this);
   }
@@ -1421,7 +1421,7 @@ class PolicyEngineManager implements PolicyEngine {
       }
     }
   }
-  
+
   public boolean controllerConfig(PdpdConfiguration config) {
       /* only this one supported for now */
       final List<ControllerConfiguration> configControllers = config.getControllers();
@@ -1437,7 +1437,7 @@ class PolicyEngineManager implements PolicyEngine {
       else if (policyControllers.size() == configControllers.size())
         return true;
 
-      return false;      
+      return false;
   }
 
   @Override

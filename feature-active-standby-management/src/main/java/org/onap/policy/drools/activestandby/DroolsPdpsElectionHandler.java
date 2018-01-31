@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,43 +32,43 @@ import org.slf4j.LoggerFactory;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 
 public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
-	// get an instance of logger 
-	private final static Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);	
+	// get an instance of logger
+	private final static Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);
 	private DroolsPdpsConnector pdpsConnector;
 	private Object checkWaitTimerLock = new Object();
 	private Object designationWaiterLock = new Object();
-	
+
 	/*
 	 * Must be static, so it can be referenced by JpaDroolsPdpsConnector,
 	 * without requiring a reference to the election handler instantiation.
 	 */
 	private static DroolsPdp myPdp;
-	
+
 	private DesignationWaiter designationWaiter;
 	private Timer updateWorker;
 	private Timer waitTimer;
 	private Date waitTimerLastRunDate;
-	
+
 	// The interval between checks of the DesignationWaiter to be sure it is running.
 	private int pdpCheckInterval;
-	
+
 	// The interval between runs of the DesignationWaiter
 	private int pdpUpdateInterval;
-	
+
 	private volatile boolean isDesignated;
 
 	private String pdpdNowActive;
 	private String pdpdLastActive;
-	
+
 	/*
 	 * Start allSeemsWell with a value of null so that, on the first run
 	 * of the checkWaitTimer it will set the value in IntegrityMonitor
 	 * regardless of whether it needs to be set to true or false.
 	 */
 	private Boolean allSeemsWell=null;
-	
+
 	private StateManagementFeatureAPI stateManagementFeature;
-	
+
 	private static boolean isUnitTesting = false;
 	public static void setIsUnitTesting(boolean val){
 		isUnitTesting = val;
@@ -77,7 +77,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 	public static void setIsStalled(boolean val){
 		isStalled = val;
 	}
-	
+
 	public DroolsPdpsElectionHandler(DroolsPdpsConnector pdps, DroolsPdp myPdp){
 		if (pdps == null) {
 			logger.error("DroolsPdpsElectinHandler(): pdpsConnector==null");
@@ -106,7 +106,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}catch(Exception e){
 			logger.error
 			("Could not get pdpUpdateInterval property. Using default {} ", pdpUpdateInterval, e);
-		}	
+		}
 
 		Date now = new Date();
 
@@ -114,11 +114,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		long nowMs = now.getTime();
 
 		// Create the timer which will update the updateDate in DroolsPdpEntity table.
-		// This is the heartbeat 
+		// This is the heartbeat
 		updateWorker = new Timer();
 
 		// Schedule the TimerUpdateClass to run at 100 ms and run at pdpCheckInterval ms thereafter
-		// NOTE: The first run of the TimerUpdateClass results in myPdp being added to the 
+		// NOTE: The first run of the TimerUpdateClass results in myPdp being added to the
 		// drools droolsPdpEntity table.
 		updateWorker.scheduleAtFixedRate(new TimerUpdateClass(), 100, pdpCheckInterval);
 
@@ -132,7 +132,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		waitTimerLastRunDate = new Date(nowMs + startMs);
 
 		//Get the StateManagementFeature instance
-		
+
 		for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList())
 		{
 			if (feature.getResourceName().equals(myPdp.getPdpId()))
@@ -151,7 +151,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					+ "with resourceID: {}", myPdp.getPdpId());
 		}
 	}
-	
+
 	/*
 	 * When the JpaDroolsPdpsConnector.standDown() method is invoked, it needs
 	 * access to myPdp, so it can keep its designation status in sync with the
@@ -164,9 +164,9 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}
 		myPdp.setDesignated(designated);
 	}
-	
+
 	private class DesignationWaiter extends TimerTask {
-		// get an instance of logger 
+		// get an instance of logger
 		private final Logger  logger = LoggerFactory.getLogger(DesignationWaiter.class);
 
 		@Override
@@ -176,7 +176,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					logger.debug
 					("DesignatedWaiter.run: Entering");
 				}
-				
+
 				//This is for testing the checkWaitTimer
 				if(isUnitTesting && isStalled){
 					if(logger.isDebugEnabled()){
@@ -242,10 +242,10 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						/*
 						 * There are 4 combinations of isDesignated and isCurrent.  We will examine each one in-turn
 						 * and evaluate the each pdp in the list of pdps against each combination.
-						 * 
+						 *
 						 * This is the first combination of isDesignated and isCurrent
 						 */
-						if (pdp.isDesignated()  &&  isCurrent) { 
+						if (pdp.isDesignated()  &&  isCurrent) {
 							//It is current, but it could have a standbystatus=coldstandby / hotstandby
 							//If so, we need to stand it down and demote it
 							if(!standbyStatus.equals(StateManagement.PROVIDING_SERVICE)){
@@ -260,14 +260,14 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 									try {
 										//Keep the order like this.  StateManagement is last since it triggers controller shutdown
 										//This will change isDesignated and it can enter another if(combination) below
-										pdpsConnector.standDownPdp(pdp.getPdpId()); 
+										pdpsConnector.standDownPdp(pdp.getPdpId());
 										myPdp.setDesignated(false);
 										isDesignated = false;
-										if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) || 
+										if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) ||
 												standbyStatus.equals(StateManagement.COLD_STANDBY))){
 											/*
 											 * Only demote it if it appears it has not already been demoted. Don't worry
-											 * about synching with the topic endpoint states.  That is done by the 
+											 * about synching with the topic endpoint states.  That is done by the
 											 * refreshStateAudit
 											 */
 											stateManagementFeature.demote();
@@ -306,7 +306,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 						/*
 						 * The second combination of isDesignated and isCurrent
-						 * 					
+						 * 
 						 * PDP is designated but not current; it has failed.   So we stand it down (it doesn't matter what
 						 * its standbyStatus is). None of these go on the list.
 						 */
@@ -320,7 +320,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 							 * Changes designated to 0 but it is still potentially providing service
 							 * Will affect isDesignated, so, it can enter an if(combination) below
 							 */
-							pdpsConnector.standDownPdp(pdp.getPdpId()); 
+							pdpsConnector.standDownPdp(pdp.getPdpId());
 
 							//need to change standbystatus to coldstandby
 							if (pdp.getPdpId().equals(myPdp.getPdpId())){
@@ -363,12 +363,12 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 							}
 							continue; //we are not going to do anything else with this pdp
-						} 
+						}
 
 						/*
 						 * The third combination of isDesignated and isCurrent
 						 * /*
-						 * If a PDP is not currently designated but is providing service (erroneous, but recoverable) or hot standby 
+						 * If a PDP is not currently designated but is providing service (erroneous, but recoverable) or hot standby
 						 * we can add it to the list of possible designated if all the designated have failed
 						 */
 						if (!pdp.isDesignated() && isCurrent){
@@ -411,7 +411,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 									logger.debug
 									("INFO: DesignatedWaiter.run: PDP= {}"
 										+ " is not designated but is {} and designated PDP "
-										+ "has failed.  standbyStatus= {}", pdp.getPdpId(), 
+										+ "has failed.  standbyStatus= {}", pdp.getPdpId(),
 										standbyStatus, standbyStatus);
 								}
 								listOfDesignated.add(pdp);
@@ -421,10 +421,10 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 						/*
 						 * The fourth combination of isDesignated and isCurrent
-						 * 
+						 *
 						 * We are not going to put any of these on the list since it appears they have failed.
 
-						 * 
+						 *
 						 */
 						if(!pdp.isDesignated() && !isCurrent) {
 							if(logger.isDebugEnabled()){
@@ -432,13 +432,13 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 								("INFO: DesignatedWaiter.run: PDP= {} "
 									+ "designated= {}, current= {}, "
 									+ "designatedPdpHasFailed= {}, "
-									+ "standbyStatus= {}",pdp.getPdpId(), 
+									+ "standbyStatus= {}",pdp.getPdpId(),
 									pdp.isDesignated(), isCurrent, designatedPdpHasFailed, standbyStatus);
 							}
 							if(!standbyStatus.equals(StateManagement.COLD_STANDBY)){
 								//stand it down
 								//disableFail it
-								pdpsConnector.standDownPdp(pdp.getPdpId()); 
+								pdpsConnector.standDownPdp(pdp.getPdpId());
 								if(pdp.getPdpId().equals(myPdp.getPdpId())){
 									/*
 									 * I don't actually know how this condition could happen, but if it did, we would want
@@ -459,14 +459,14 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 									} catch (Exception e) {
 										logger.error
 										("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
-												+ "disableFail myPdp {}, message= {}", 
+												+ "disableFail myPdp {}, message= {}",
 												 myPdp.getPdpId(), myPdp.getPdpId(), e);
 									}
 								}else{//it is remote
 									if(logger.isDebugEnabled()){
 										logger.debug
 										("\n\nDesignatedWaiter.run: myPdp {} is !current and !designated, "
-											+ " Executing stateManagement.disableFailed({})\n\n", 
+											+ " Executing stateManagement.disableFailed({})\n\n",
 											myPdp.getPdpId(), pdp.getPdpId());
 									}
 									// We already called standdown(pdp) which will change designated to false
@@ -475,7 +475,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 										stateManagementFeature.disableFailed(pdp.getPdpId());
 									} catch (Exception e) {
 										logger.error
-										("DesignatedWaiter.run: for PDP {}" 
+										("DesignatedWaiter.run: for PDP {}"
 												+ " Caught Exception attempting to disableFail({})"
 												+ ", message=", pdp.getPdpId(), pdp.getPdpId(), e);
 									}
@@ -489,41 +489,41 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 					/*
 					 * We have checked the four combinations of isDesignated and isCurrent.  Where appropriate,
 					 * we added the PDPs to the potential list of designated pdps
-					 * 
+					 *
 					 * We need to give priority to pdps on the same site that is currently being used
 					 * First, however, we must sanitize the list of designated to make sure their are
-					 * only designated members or non-designated members.  There should not be both in 
+					 * only designated members or non-designated members.  There should not be both in
 					 * the list. Because there are real time delays, it is possible that both types could
 					 * be on the list.
 					 */
-					
+
 					listOfDesignated = santizeDesignatedList(listOfDesignated);
 
 					/*
-					 * We need to figure out the last pdp that was the primary so we can get the last site 
+					 * We need to figure out the last pdp that was the primary so we can get the last site
 					 * name and the last session numbers.  We need to create a "dummy" droolspdp since
 					 * it will be used in later comparisons and cannot be null.
 					 */
-					
+
 					DroolsPdp mostRecentPrimary = computeMostRecentPrimary(pdps, listOfDesignated);
-					
+
 					if(mostRecentPrimary != null){
 						pdpdLastActive = mostRecentPrimary.getPdpId();
 					}
-					
-					
+
+
 					/*
 					 * It is possible to get here with more than one pdp designated and providingservice. This normally
 					 * occurs when there is a race condition with multiple nodes coming up at the same time. If that is
 					 * the case we must determine which one is the one that should be designated and which one should
 					 * be demoted.
-					 * 
-					 * It is possible to have 0, 1, 2 or more but not all, or all designated.  
+					 *
+					 * It is possible to have 0, 1, 2 or more but not all, or all designated.
 					 *   If we have one designated and current, we chose it and are done
 					 *   If we have 2 or more, but not all, we must determine which one is in the same site as
 					 *   the previously designated pdp.
 					 */
-					
+
 					designatedPdp = computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
 					if(designatedPdp != null){
 						pdpdNowActive = designatedPdp.getPdpId();
@@ -536,16 +536,16 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						myPdp.setDesignated(false);
 						pdpsConnector.setDesignated(myPdp,false);
 						isDesignated = false;
-						
+
 						waitTimerLastRunDate = new Date();
 						if(logger.isDebugEnabled()){
 							logger.debug("DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = {}", waitTimerLastRunDate);
 						}
 						myPdp.setUpdatedDate(waitTimerLastRunDate);
 						pdpsConnector.update(myPdp);
-						
+
 						return;
-						
+
 					} else if (designatedPdp.getPdpId().equals(myPdp.getPdpId())) {
 						if(logger.isDebugEnabled()){
 							logger.debug
@@ -582,7 +582,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 							//If you can't promote it, demote it
 							try {
 								String standbyStatus = stateManagementFeature.getStandbyStatus();
-								if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) || 
+								if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) ||
 										standbyStatus.equals(StateManagement.COLD_STANDBY))){
 									/*
 									 * Only call demote if it is not already in the right state.  Don't worry about
@@ -598,7 +598,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 										myPdp.getPdpId(), e1);
 							}
 
-						} 
+						}
 						waitTimerLastRunDate = new Date();
 						if(logger.isDebugEnabled()){
 							logger.debug("DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) "
@@ -622,17 +622,17 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				if(logger.isDebugEnabled()){
 					logger.debug("DesignatedWaiter.run (end of run) waitTimerLastRunDate = {}", tmpDate);
 				}
-				
+
 				waitTimerLastRunDate = tmpDate;
 				myPdp.setUpdatedDate(waitTimerLastRunDate);
 				pdpsConnector.update(myPdp);
-				
+
 			}catch(Exception e){
 				logger.error("DesignatedWaiter.run caught an unexpected exception: ", e);
 			}
 		} // end run
 	}
-	
+
 	public ArrayList<DroolsPdp> santizeDesignatedList(ArrayList<DroolsPdp> listOfDesignated){
 
 		boolean containsDesignated = false;
@@ -641,7 +641,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		for(DroolsPdp pdp : listOfDesignated){
 			if(logger.isDebugEnabled()){
 				logger.debug
-				("DesignatedWaiter.run sanitizing: pdp = {}" 
+				("DesignatedWaiter.run sanitizing: pdp = {}"
 					+ " isDesignated = {}",pdp.getPdpId(), pdp.isDesignated());
 			}
 			if(pdp.isDesignated()){
@@ -658,7 +658,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}
 		return listOfDesignated;
 	}
-	
+
 	public DroolsPdp computeMostRecentPrimary(Collection<DroolsPdp> pdps, ArrayList<DroolsPdp> listOfDesignated){
 		boolean containsDesignated = false;
 		for(DroolsPdp pdp : listOfDesignated){
@@ -680,7 +680,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 			for(DroolsPdp pdp : pdps){
 				if(logger.isDebugEnabled()){
 					logger.debug
-					("DesignatedWaiter.run pdp = {}" 
+					("DesignatedWaiter.run pdp = {}"
 						+ " pdp.getDesignatedDate() = {}", pdp.getPdpId(), pdp.getDesignatedDate());
 				}
 				if(pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0){
@@ -724,14 +724,14 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 			if(logger.isDebugEnabled()){
 				logger.debug("DesignatedWainter.run: Some but not all are designated or hot standby. ");
 			}
-			//Some but not all are designated or hot standby. 
+			//Some but not all are designated or hot standby.
 			if(containsDesignated){
 				if(logger.isDebugEnabled()){
 					logger.debug("DesignatedWainter.run: containsDesignated = {}", containsDesignated);
 				}
 				/*
 				 * The list only contains designated.  This is a problem.  It is most likely a race
-				 * condition that resulted in two thinking they should be designated. Choose the 
+				 * condition that resulted in two thinking they should be designated. Choose the
 				 * site with the latest designated date for the pdp not included on the designated list.
 				 * This should be the site that had the last designation before this race condition
 				 * occurred.
@@ -766,7 +766,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}
 		return mostRecentPrimary;
 	}
-	
+
 	public DroolsPdp computeDesignatedPdp(ArrayList<DroolsPdp> listOfDesignated, DroolsPdp mostRecentPrimary){
 		DroolsPdp designatedPdp = null;
 		DroolsPdp lowestPriorityPdp = null;
@@ -785,7 +785,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						if(lowestPriorityDifferentSite != null){
 							rejectedPdp = lowestPriorityDifferentSite;
 						}
-						lowestPrioritySameSite = pdp;									
+						lowestPrioritySameSite = pdp;
 					}else{
 						if(pdp.getPdpId().equals((lowestPrioritySameSite.getPdpId()))){
 							continue;//nothing to compare
@@ -793,7 +793,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						if(pdp.comparePriority(lowestPrioritySameSite) <0){
 							if(logger.isDebugEnabled()){
 								logger.debug
-								("\nDesignatedWaiter.run: myPdp {}  listOfDesignated pdp ID: {}" 
+								("\nDesignatedWaiter.run: myPdp {}  listOfDesignated pdp ID: {}"
 									+ " has lower priority than pdp ID: {}",myPdp.getPdpId(), pdp.getPdpId(),
 									lowestPrioritySameSite.getPdpId());
 							}
@@ -804,7 +804,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 							//we need to reject pdp and keep lowestPrioritySameSite
 							if(logger.isDebugEnabled()){
 								logger.debug
-								("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {} " 
+								("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {} "
 									+ " has higher priority than pdp ID: {}", myPdp.getPdpId(),pdp.getPdpId(),
 									lowestPrioritySameSite.getPdpId());
 							}
@@ -826,7 +826,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						if(pdp.comparePriority(lowestPriorityDifferentSite) <0){
 							if(logger.isDebugEnabled()){
 								logger.debug
-								("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}" 
+								("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"
 									+ " has lower priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
 									lowestPriorityDifferentSite.getPdpId());
 							}
@@ -837,7 +837,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 							//we need to reject pdp and keep lowestPriorityDifferentSite
 							if(logger.isDebugEnabled()){
 								logger.debug
-								("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}" 
+								("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"
 									+ " has higher priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
 									lowestPriorityDifferentSite.getPdpId());
 							}
@@ -850,7 +850,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				if(rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(),myPdp.getPdpId())){
 					if(logger.isDebugEnabled()){
 						logger.debug
-						("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated myPdp ID: {}" 
+						("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated myPdp ID: {}"
 							+ " is NOT the lowest priority.  Executing stateManagement.demote()\n\n", myPdp.getPdpId(),
 							 myPdp.getPdpId());
 					}
@@ -862,7 +862,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						pdpsConnector.setDesignated(myPdp, false);
 						isDesignated = false;
 						String standbyStatus = stateManagementFeature.getStandbyStatus();
-						if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) || 
+						if(!(standbyStatus.equals(StateManagement.HOT_STANDBY) ||
 								standbyStatus.equals(StateManagement.COLD_STANDBY))){
 							/*
 							 * Only call demote if it is not already in the right state.  Don't worry about
@@ -877,7 +877,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 						isDesignated = false;
 						logger.error
 						("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
-								+ "demote myPdp {} myPdp.getPdpId(), message= {}", myPdp.getPdpId(), 
+								+ "demote myPdp {} myPdp.getPdpId(), message= {}", myPdp.getPdpId(),
 								e);
 					}
 				}
@@ -891,7 +891,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 			if(logger.isDebugEnabled()){
 				logger.debug
 				("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated "
-					+ "found the LOWEST priority pdp ID: {} " 
+					+ "found the LOWEST priority pdp ID: {} "
 					+ " It is now the designatedPpd from the perspective of myPdp ID: {} \n\n",
 					 myPdp.getPdpId(), lowestPriorityPdp.getPdpId(), myPdp);
 			}
@@ -914,7 +914,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		return designatedPdp;
 
 	}
-	
+
 	private class TimerUpdateClass extends TimerTask{
 
 		@Override
@@ -947,23 +947,23 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				long nowMs = now.getTime();
 				long waitTimerMs = waitTimerLastRunDate.getTime();
 
-				//give it 10 times leeway  
+				//give it 10 times leeway
 				if((nowMs - waitTimerMs)  > 10*pdpUpdateInterval){
 					if(allSeemsWell==null || allSeemsWell){
 						allSeemsWell = false;
 						if(logger.isDebugEnabled()){
 							logger.debug("checkWaitTimer: calling allSeemsWell with ALLNOTWELL param");
 						}
-						stateManagementFeature.allSeemsWell(this.getClass().getName(), 
+						stateManagementFeature.allSeemsWell(this.getClass().getName(),
 								StateManagementFeatureAPI.ALLNOTWELL,
 								"DesignationWaiter/ElectionHandler has STALLED");
 					}
-					logger.error("checkWaitTimer: nowMs - waitTimerMs = {}" 
+					logger.error("checkWaitTimer: nowMs - waitTimerMs = {}"
 							+ ", exceeds 10* pdpUpdateInterval = {}"
 							+ " DesignationWaiter is STALLED!", (nowMs - waitTimerMs), (10*pdpUpdateInterval));
 				}else if(allSeemsWell==null || !allSeemsWell){
 					allSeemsWell = true;
-					stateManagementFeature.allSeemsWell(this.getClass().getName(), 
+					stateManagementFeature.allSeemsWell(this.getClass().getName(),
 							StateManagementFeatureAPI.ALLSEEMSWELL,
 							"DesignationWaiter/ElectionHandler has RESUMED");
 					logger.info("DesignationWaiter/ElectionHandler has RESUMED");
@@ -976,16 +976,16 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 			}
 		}
 	}
-	
+
 	private long getDWaiterStartMs(){
 		Date now = new Date();
-		
+
 		// Retrieve the ms since the epoch
 		long nowMs = now.getTime();
-		
+
 		// Time since the end of the last pdpUpdateInterval multiple
 		long nowModMs = nowMs % pdpUpdateInterval;
-		
+
 		// Time to the start of the next pdpUpdateInterval multiple
 		long startMs = 2*pdpUpdateInterval - nowModMs;
 
@@ -996,7 +996,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}
 		return startMs;
 	}
-	
+
 	private boolean nullSafeEquals(Object one, Object two){
 		if(one == null && two == null){
 			return true;
@@ -1006,11 +1006,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}
 		return false;
 	}
-	
+
 	public String getPdpdNowActive(){
 		return pdpdNowActive;
 	}
-	
+
 	public String getPdpdLastActive(){
 		return pdpdLastActive;
 	}

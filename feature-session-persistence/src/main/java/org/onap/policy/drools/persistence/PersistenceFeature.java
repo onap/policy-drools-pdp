@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -115,7 +115,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	/**
 	 * Sets the factory to be used during junit testing.
-	 * 
+	 *
 	 * @param fact
 	 *            factory to be used
 	 */
@@ -126,7 +126,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	/**
 	 * Lookup the adjunct for this feature that is associated with the specified
 	 * PolicyContainer. If not found, create one.
-	 * 
+	 *
 	 * @param policyContainer
 	 *            the container whose adjunct we are looking up, and possibly
 	 *            creating
@@ -159,7 +159,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	@Override
 	public void globalInit(String args[], String configDir) {
-		
+
 		kieSvcFact = fact.getKieServices();
 
 		initHostName();
@@ -211,7 +211,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 */
 	@Override
 	public void disposeKieSession(PolicySession policySession) {
-		
+
 		ContainerAdjunct contAdj = (ContainerAdjunct) policySession.getPolicyContainer().getAdjunct(this);
 		if(contAdj != null) {
 			contAdj.disposeKieSession( policySession.getName());
@@ -274,7 +274,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	/**
 	 * Gets the persistence timeout value for sessioninfo records.
-	 * 
+	 *
 	 * @return the timeout value, in milli-seconds, or {@code -1} if it is
 	 *         unspecified or invalid
 	 */
@@ -322,7 +322,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * 'PolicyContainer' instance that this adjunct is extending.
 		 */
 		private PolicyContainer policyContainer;
-		
+
 		/**
 		 * Maps a KIE session name to its data source.
 		 */
@@ -342,7 +342,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * Create a new persistent KieSession. If there is already a
 		 * corresponding entry in the database, it is used to initialize the
 		 * KieSession. If not, a completely new session is created.
-		 * 
+		 *
 		 * @param name
 		 *            the name of the KieSession (which is also the name of the
 		 *            associated PolicySession)
@@ -395,7 +395,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 */
 		private String loadDataSource(String sessName) {
 			PoolingDataSource ds = name2ds.get(sessName);
-			
+
 			if(ds == null) {
 				Properties props = new Properties();
 				addOptProp(props, "URL", persistProps.getProperty(DroolsPersistenceProperties.DB_URL));
@@ -410,27 +410,27 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				ds.setAllowLocalTransactions(true);
 				ds.getDriverProperties().putAll(props);
 				ds.init();
-				
+
 				name2ds.put(sessName, ds);
 			}
-			
+
 			return ds.getUniqueName();
 		}
 
 		/**
 		 * Configures a Kie Environment
-		 * 
+		 *
 		 * @param name
 		 * 				session name
 		 * @param env
 		 * 				environment to be configured
-		 * @param dsName 
+		 * @param dsName
 		 * 				data source name
 		 */
 		private void configureKieEnv(String name, Environment env, String dsName) {
 			Properties emfProperties = new Properties();
 			emfProperties.setProperty(PersistenceUnitProperties.JTA_DATASOURCE, dsName);
-			
+
 			EntityManagerFactory emfact = fact.makeEntMgrFact("onapsessionsPU", emfProperties);
 
 			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emfact);
@@ -439,7 +439,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Loads an existing KieSession from the persistent store.
-		 * 
+		 *
 		 * @param kieBaseName
 		 *            the name of the 'KieBase' instance containing this session
 		 * @param desiredSessionId
@@ -469,7 +469,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Creates a new, persistent KieSession.
-		 * 
+		 *
 		 * @param kieBaseName
 		 *            the name of the 'KieBase' instance containing this session
 		 * @param env
@@ -567,7 +567,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	/**
 	 * Gets a connector for manipulating DroolsSession objects within the
 	 * persistent store.
-	 * 
+	 *
 	 * @param pu
 	 * @return a connector for DroolsSession objects
 	 */
@@ -600,7 +600,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	/**
 	 * Gets a session's ID from the persistent store.
-	 * 
+	 *
 	 * @param conn
 	 *            persistence connector
 	 * @param sessnm
@@ -615,7 +615,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	/**
 	 * Replaces a session within the persistent store, if it exists.  Adds
 	 * it otherwise.
-	 * 
+	 *
 	 * @param conn
 	 *            persistence connector
 	 * @param sessnm
@@ -635,7 +635,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	/**
 	 * Determine whether persistence is enabled for a specific container
-	 * 
+	 *
 	 * @param container
 	 *            container to be checked
 	 * @param sessionName
@@ -658,7 +658,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	/**
 	 * Determine the controller properties associated with the policy container.
-	 * 
+	 *
 	 * @param container
 	 *            container whose properties are to be retrieved
 	 * @return the container's properties, or {@code null} if not found
@@ -679,7 +679,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 * <li>persistence.SESSION-NAME.PROPERTY</li>
 	 * <li>persistence.PROPERTY</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param properties
 	 *            properties from which the value is to be retrieved
 	 * @param sessionName
@@ -705,7 +705,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 * compatible with persistence.
 	 */
 	public class PersistentThreadModel implements Runnable, PolicySession.ThreadModel {
-		
+
 		/**
 		 * Session associated with this persistent thread.
 		 */
@@ -715,18 +715,18 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		 * The session thread.
 		 */
 		private final Thread thread;
-		
+
 		/**
 		 * Used to indicate that processing should stop.
 		 */
 		private final CountDownLatch stopped = new CountDownLatch(1);
-		
+
 		/**
 		 * Minimum time, in milli-seconds, that the thread should sleep
 		 * before firing rules again.
 		 */
 		long minSleepTime = 100;
-		
+
 		/**
 		 * Maximum time, in milli-seconds, that the thread should sleep
 		 * before firing rules again.  This is a "half" time, so that
@@ -745,11 +745,11 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		public PersistentThreadModel(PolicySession session, Properties properties) {
 			this.session = session;
 			this.thread = new Thread(this, getThreadName());
-			
+
 			if (properties == null) {
 				return;
 			}
-			
+
 			// extract 'minSleepTime' and/or 'maxSleepTime'
 			String name = session.getName();
 
@@ -782,7 +782,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				minSleepTime = maxSleepTime;
 				maxSleepTime = tmp;
 			}
-			
+
 			halfMaxSleepTime = Math.max(1, maxSleepTime/2);
 		}
 
@@ -812,16 +812,16 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		public void stop() {
 			// tell the thread to stop
 			stopped.countDown();
-			
+
 			// wait up to 10 seconds for the thread to stop
 			try {
 				thread.join(10000);
-				
+
 			} catch (InterruptedException e) {
 				logger.error("stopThread exception: ", e);
 				Thread.currentThread().interrupt();
 			}
-			
+
 			// verify that it's done
 			if(thread.isAlive()) {
 				logger.error("stopThread: still running");
@@ -847,7 +847,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		@Override
 		public void run() {
 			logger.info("PersistentThreadModel running");
-			
+
 			// set thread local variable
 			session.setPolicySession();
 
@@ -856,9 +856,9 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 			// We want to continue, despite any exceptions that occur
 			// while rules are fired.
-			
+
 			for(;;) {
-			
+
 				try {
 					if (kieSession.fireAllRules() > 0) {
 						// some rules fired -- reduce poll delay
@@ -869,20 +869,20 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 					}
 				} catch (Exception | LinkageError e) {
 					logger.error("Exception during kieSession.fireAllRules", e);
-				}				
-			
+				}
+
 				try {
 					if(stopped.await(sleepTime, TimeUnit.MILLISECONDS)) {
 						break;
 					}
-					
+
 				} catch (InterruptedException e) {
 					logger.error("startThread exception: ", e);
 					Thread.currentThread().interrupt();
 					break;
 				}
 			}
-			
+
 			logger.info("PersistentThreadModel completed");
 		}
 	}
@@ -896,7 +896,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Gets the configuration for the transaction manager.
-		 * 
+		 *
 		 * @return the configuration for the transaction manager
 		 */
 		public Configuration getTransMgrConfig() {
@@ -905,7 +905,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Gets the transaction manager.
-		 * 
+		 *
 		 * @return the transaction manager
 		 */
 		public BitronixTransactionManager getTransMgr() {
@@ -914,7 +914,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Gets the KIE services.
-		 * 
+		 *
 		 * @return the KIE services
 		 */
 		public KieServices getKieServices() {
@@ -923,7 +923,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Gets the current host name.
-		 * 
+		 *
 		 * @return the current host name, associated with the IP address of the
 		 *         local machine
 		 * @throws UnknownHostException
@@ -934,7 +934,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Loads properties from a file.
-		 * 
+		 *
 		 * @param filenm
 		 *            name of the file to load
 		 * @return properties, as loaded from the file
@@ -947,7 +947,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Makes a connection to the DB.
-		 * 
+		 *
 		 * @param url
 		 *            DB URL
 		 * @param user
@@ -964,7 +964,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Makes a new pooling data source.
-		 * 
+		 *
 		 * @return a new pooling data source
 		 */
 		public PoolingDataSource makePoolingDataSource() {
@@ -973,7 +973,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Makes a new JPA connector for drools sessions.
-		 * 
+		 *
 		 * @param pu
 		 *            PU for the entity manager factory
 		 * @param propMap
@@ -989,7 +989,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Makes a new entity manager factory.
-		 * 
+		 *
 		 * @param pu
 		 *            PU for the entity manager factory
 		 * @param propMap
@@ -1002,7 +1002,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 		/**
 		 * Gets the policy controller associated with a given policy container.
-		 * 
+		 *
 		 * @param container
 		 *            container whose controller is to be retrieved
 		 * @return the container's controller

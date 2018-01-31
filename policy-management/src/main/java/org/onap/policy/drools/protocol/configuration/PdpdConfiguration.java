@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,12 +37,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * ENGINE-CONFIGURATION
  * <p>
- * 
- * 
+ *
+ *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdpdConfiguration {
-	
+
 	/**
 	 * Controller Entity ID
 	 */
@@ -51,20 +51,20 @@ public class PdpdConfiguration {
     /**
      * Unique Transaction ID.   This is an UUID.
      * (Required)
-     * 
+     *
      */
     @JsonProperty("requestID")
     private String requestID;
     /**
      * Set of entities on which configuration can be performed: controller
      * (Required)
-     * 
+     *
      */
     @JsonProperty("entity")
     private String entity;
     /**
      * Controller Information, only applicable when the entity is set to controller
-     * 
+     *
      */
     @JsonProperty("controllers")
     private List<ControllerConfiguration> controllers = new ArrayList<>();
@@ -74,14 +74,14 @@ public class PdpdConfiguration {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public PdpdConfiguration() {
     	// Empty
     }
 
     /**
-     * 
+     *
      * @param controller
      * @param requestID
      * @param entity
@@ -95,7 +95,7 @@ public class PdpdConfiguration {
     /**
      * Unique Transaction ID.   This is an UUID.
      * (Required)
-     * 
+     *
      * @return
      *     The requestID
      */
@@ -107,7 +107,7 @@ public class PdpdConfiguration {
     /**
      * Unique Transaction ID.   This is an UUID.
      * (Required)
-     * 
+     *
      * @param requestID
      *     The requestID
      */
@@ -124,7 +124,7 @@ public class PdpdConfiguration {
     /**
      * Set of entities on which configuration can be performed: controller
      * (Required)
-     * 
+     *
      * @return
      *     The entity
      */
@@ -136,7 +136,7 @@ public class PdpdConfiguration {
     /**
      * Set of entities on which configuration can be performed: controller
      * (Required)
-     * 
+     *
      * @param entity
      *     The entity
      */
@@ -152,7 +152,7 @@ public class PdpdConfiguration {
 
     /**
      * Controller Information, only applicable when the entity is set to controller
-     * 
+     *
      * @return
      *     The controller
      */
@@ -163,7 +163,7 @@ public class PdpdConfiguration {
 
     /**
      * Controller Information, only applicable when the entity is set to controller
-     * 
+     *
      * @param controller
      *     The controller
      */
@@ -268,21 +268,21 @@ public class PdpdConfiguration {
         PdpdConfiguration rhs = (PdpdConfiguration) other;
         return new EqualsBuilder().append(requestID, rhs.requestID).append(entity, rhs.entity).append(controllers, rhs.controllers).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
-    
+
     public void callSetRequestId(Object value) {
         if (value instanceof String) {
             setRequestID((String) value);
         } else {
             throw new IllegalArgumentException("property \"requestID\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
-        }       
+        }
     }
-    
+
     public void callSetEntity(Object value) {
         if (value instanceof String) {
             setEntity((String) value);
         } else {
             throw new IllegalArgumentException("property \"entity\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
-        }       
+        }
     }
 
     public void callSetControllers(Object value) {
@@ -290,6 +290,6 @@ public class PdpdConfiguration {
             setControllers((List<ControllerConfiguration> ) value);
         } else {
             throw new IllegalArgumentException("property \"controllers\" is of type \"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", but got "+ value.getClass().toString());
-        }        
+        }
     }
 }

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,7 +47,7 @@ public interface DmaapTopicSinkFactory {
 
 	/**
 	 * Instantiates a new DMAAP Topic Sink
-	 * 
+	 *
 	 * @param servers list of servers
 	 * @param topic topic name
 	 * @param apiKey API Key
@@ -62,13 +62,13 @@ public interface DmaapTopicSinkFactory {
 	 * @param longitude DME2 longitude
 	 * @param additionalProps additional properties to pass to DME2
 	 * @param managed is this sink endpoint managed?
-	 * 
+	 *
 	 * @return an DMAAP Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public DmaapTopicSink build(List<String> servers, 
-								String topic, 
-								String apiKey, 
+	public DmaapTopicSink build(List<String> servers,
+								String topic,
+								String apiKey,
 								String apiSecret,
 								String userName,
 								String password,
@@ -82,10 +82,10 @@ public interface DmaapTopicSinkFactory {
 								boolean managed,
 								boolean useHttps,
 								boolean allowSelfSignedCerts) ;
-	
+
 	/**
 	 * Instantiates a new DMAAP Topic Sink
-	 * 
+	 *
 	 * @param servers list of servers
 	 * @param topic topic name
 	 * @param apiKey API Key
@@ -94,13 +94,13 @@ public interface DmaapTopicSinkFactory {
 	 * @param password AAF password
 	 * @param partitionKey Consumer Group
 	 * @param managed is this sink endpoint managed?
-	 * 
+	 *
 	 * @return an DMAAP Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public DmaapTopicSink build(List<String> servers, 
-								String topic, 
-								String apiKey, 
+	public DmaapTopicSink build(List<String> servers,
+								String topic,
+								String apiKey,
 								String apiSecret,
 								String userName,
 								String password,
@@ -108,31 +108,31 @@ public interface DmaapTopicSinkFactory {
 								boolean managed,
 								boolean useHttps,
 								boolean allowSelfSignedCerts);
-	
+
 	/**
 	 * Creates an DMAAP Topic Sink based on properties files
-	 * 
+	 *
 	 * @param properties Properties containing initialization values
-	 * 
+	 *
 	 * @return an DMAAP Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
 	public List<DmaapTopicSink> build(Properties properties);
-	
+
 	/**
 	 * Instantiates a new DMAAP Topic Sink
-	 * 
+	 *
 	 * @param servers list of servers
 	 * @param topic topic name
-	 * 
+	 *
 	 * @return an DMAAP Topic Sink
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
 	public DmaapTopicSink build(List<String> servers, String topic);
-	
+
 	/**
 	 * Destroys an DMAAP Topic Sink based on a topic
-	 * 
+	 *
 	 * @param topic topic name
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
@@ -141,14 +141,14 @@ public interface DmaapTopicSinkFactory {
 	/**
 	 * gets an DMAAP Topic Sink based on topic name
 	 * @param topic the topic name
-	 * 
+	 *
 	 * @return an DMAAP Topic Sink with topic name
 	 * @throws IllegalArgumentException if an invalid topic is provided
-	 * @throws IllegalStateException if the DMAAP Topic Reader is 
+	 * @throws IllegalStateException if the DMAAP Topic Reader is
 	 * an incorrect state
 	 */
 	public DmaapTopicSink get(String topic);
-	
+
 	/**
 	 * Provides a snapshot of the DMAAP Topic Sinks
 	 * @return a list of the DMAAP Topic Sinks
@@ -170,17 +170,17 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(IndexedDmaapTopicSinkFactory.class);	
-	
+	private static Logger logger = LoggerFactory.getLogger(IndexedDmaapTopicSinkFactory.class);
+
 	/**
 	 * DMAAP Topic Name Index
 	 */
 	protected HashMap<String, DmaapTopicSink> dmaapTopicWriters = new HashMap<>();
 
 	@Override
-	public DmaapTopicSink build(List<String> servers, 
-								String topic, 
-								String apiKey, 
+	public DmaapTopicSink build(List<String> servers,
+								String topic,
+								String apiKey,
 								String apiSecret,
 								String userName,
 								String password,
@@ -194,76 +194,76 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 								boolean managed,
 								boolean useHttps,
 								boolean allowSelfSignedCerts) {
-		
+
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
 		}
-		
+
 		synchronized (this) {
 			if (dmaapTopicWriters.containsKey(topic)) {
 				return dmaapTopicWriters.get(topic);
 			}
-			
-			DmaapTopicSink dmaapTopicSink = 
-					new InlineDmaapTopicSink(servers, topic, 
+
+			DmaapTopicSink dmaapTopicSink =
+					new InlineDmaapTopicSink(servers, topic,
 										     apiKey, apiSecret,
 										     userName, password,
 										     partitionKey,
-										     environment, aftEnvironment, 
+										     environment, aftEnvironment,
 										     partner, latitude, longitude, additionalProps, useHttps, allowSelfSignedCerts);
-			
+
 			if (managed)
 				dmaapTopicWriters.put(topic, dmaapTopicSink);
 			return dmaapTopicSink;
 		}
 	}
-	
+
 	@Override
-	public DmaapTopicSink build(List<String> servers, 
-								String topic, 
-								String apiKey, 
+	public DmaapTopicSink build(List<String> servers,
+								String topic,
+								String apiKey,
 								String apiSecret,
 								String userName,
 								String password,
 								String partitionKey,
 								boolean managed,
 								boolean useHttps, boolean allowSelfSignedCerts) {
-		
+
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
 		}
-		
+
 		synchronized (this) {
 			if (dmaapTopicWriters.containsKey(topic)) {
 				return dmaapTopicWriters.get(topic);
 			}
-			
-			DmaapTopicSink dmaapTopicSink = 
-					new InlineDmaapTopicSink(servers, topic, 
+
+			DmaapTopicSink dmaapTopicSink =
+					new InlineDmaapTopicSink(servers, topic,
 										     apiKey, apiSecret,
 										     userName, password,
 										     partitionKey, useHttps, allowSelfSignedCerts);
-			
+
 			if (managed)
 				dmaapTopicWriters.put(topic, dmaapTopicSink);
 			return dmaapTopicSink;
 		}
 	}
-	
+
 	@Override
 	public DmaapTopicSink build(List<String> servers, String topic) {
 		return this.build(servers, topic, null, null, null, null, null, true, false, false);
 	}
-	
+
 	@Override
 	public List<DmaapTopicSink> build(Properties properties) {
-		
+
 		String writeTopics = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS);
 		if (writeTopics == null || writeTopics.isEmpty()) {
 			logger.info("{}: no topic for DMaaP Sink", this);
 			return new ArrayList<>();
 		}
-		
+
 		List<String> writeTopicList = new ArrayList<>(Arrays.asList(writeTopics.split("\\s*,\\s*")));
 		List<DmaapTopicSink> newDmaapTopicSinks = new ArrayList<>();
 		synchronized(this) {
@@ -272,37 +272,37 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 					newDmaapTopicSinks.add(this.dmaapTopicWriters.get(topic));
 					continue;
 				}
-				String servers = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + 
-				                                        topic + 
+				String servers = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." +
+				                                        topic +
 				                                        PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
-				
+
 				List<String> serverList;
 				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				else serverList = new ArrayList<>();
-				
-				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
-						                               "." + topic + 
-						                               PolicyProperties.PROPERTY_TOPIC_API_KEY_SUFFIX);		 
-				String apiSecret = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
-                                                          "." + topic + 
+
+				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+						                               "." + topic +
+						                               PolicyProperties.PROPERTY_TOPIC_API_KEY_SUFFIX);
+				String apiSecret = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+                                                          "." + topic +
                                                           PolicyProperties.PROPERTY_TOPIC_API_SECRET_SUFFIX);
-				
-				String aafMechId = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
-                                                          "." + topic + 
+
+				String aafMechId = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+                                                          "." + topic +
                                                           PolicyProperties.PROPERTY_TOPIC_AAF_MECHID_SUFFIX);
-				String aafPassword = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
-         				                                    "." + topic + 
+				String aafPassword = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+         				                                    "." + topic +
          				                                    PolicyProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX);
-				
-				String partitionKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
-                                                             "." + topic + 
+
+				String partitionKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+                                                             "." + topic +
                                                              PolicyProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX);
-				
+
 				String managedString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic +
 						                                      PolicyProperties.PROPERTY_MANAGED_SUFFIX);
-				
+
 				/* DME2 Properties */
-				
+
 				String dme2Environment = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
 						+ topic + PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX);
 
@@ -311,7 +311,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 
 				String dme2Partner = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
 						+ PolicyProperties.PROPERTY_DMAAP_DME2_PARTNER_SUFFIX);
-				
+
 				String dme2RouteOffer = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
 						+ PolicyProperties.PROPERTY_DMAAP_DME2_ROUTE_OFFER_SUFFIX);
 
@@ -339,9 +339,9 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 				String dme2SessionStickinessRequired = properties
 						.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic
 								+ PolicyProperties.PROPERTY_DMAAP_DME2_SESSION_STICKINESS_REQUIRED_SUFFIX);
-				
+
 				Map<String,String> dme2AdditionalProps = new HashMap<>();
-				
+
 				if (dme2EpReadTimeoutMs != null && !dme2EpReadTimeoutMs.isEmpty())
 					dme2AdditionalProps.put(DME2_READ_TIMEOUT_PROPERTY, dme2EpReadTimeoutMs);
 				if (dme2EpConnTimeout != null && !dme2EpConnTimeout.isEmpty())
@@ -361,12 +361,12 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 					logger.error("{}: no DMaaP servers or DME2 ServiceName provided", this);
 					continue;
 				}
-				
+
 				boolean managed = true;
 				if (managedString != null && !managedString.isEmpty()) {
 					managed = Boolean.parseBoolean(managedString);
 				}
-				
+
 				String useHttpsString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic +
 						PolicyProperties.PROPERTY_HTTP_HTTPS_SUFFIX);
 
@@ -375,57 +375,57 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 				if (useHttpsString != null && !useHttpsString.isEmpty()){
 					useHttps = Boolean.parseBoolean(useHttpsString);
 				}
-				
-				
+
+
 				String allowSelfSignedCertsString = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + topic +
 						PolicyProperties.PROPERTY_ALLOW_SELF_SIGNED_CERTIFICATES_SUFFIX);
 
-					//default is to disallow self-signed certs 
+					//default is to disallow self-signed certs
 				boolean allowSelfSignedCerts = false;
 				if (allowSelfSignedCertsString != null && !allowSelfSignedCertsString.isEmpty()){
 					allowSelfSignedCerts = Boolean.parseBoolean(allowSelfSignedCertsString);
-				}				
-				
-				DmaapTopicSink dmaapTopicSink = this.build(serverList, topic, 
+				}
+
+				DmaapTopicSink dmaapTopicSink = this.build(serverList, topic,
 						   						           apiKey, apiSecret,
 						   						           aafMechId, aafPassword,
 						   						           partitionKey,
 						   						           dme2Environment, dme2AftEnvironment,
 						   						           dme2Partner, dme2Latitude, dme2Longitude,
 						   						           dme2AdditionalProps, managed, useHttps, allowSelfSignedCerts);
-				
+
 				newDmaapTopicSinks.add(dmaapTopicSink);
 			}
 			return newDmaapTopicSinks;
 		}
 	}
-	
+
 	@Override
 	public void destroy(String topic) {
-		
+
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
 		}
-		
+
 		DmaapTopicSink dmaapTopicWriter;
 		synchronized(this) {
 			if (!dmaapTopicWriters.containsKey(topic)) {
 				return;
 			}
-			
+
 			dmaapTopicWriter = dmaapTopicWriters.remove(topic);
 		}
-		
+
 		dmaapTopicWriter.shutdown();
 	}
-	
+
 	@Override
 	public void destroy() {
 		List<DmaapTopicSink> writers = this.inventory();
 		for (DmaapTopicSink writer: writers) {
 			writer.shutdown();
 		}
-		
+
 		synchronized(this) {
 			this.dmaapTopicWriters.clear();
 		}
@@ -433,11 +433,11 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 
 	@Override
 	public DmaapTopicSink get(String topic) {
-		
+
 		if (topic == null || topic.isEmpty()) {
 			throw new IllegalArgumentException("A topic must be provided");
 		}
-		
+
 		synchronized(this) {
 			if (dmaapTopicWriters.containsKey(topic)) {
 				return dmaapTopicWriters.get(topic);
@@ -449,7 +449,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 
 	@Override
 	public synchronized List<DmaapTopicSink> inventory() {
-		 List<DmaapTopicSink> writers = 
+		 List<DmaapTopicSink> writers =
 				 new ArrayList<>(this.dmaapTopicWriters.values());
 		 return writers;
 	}
@@ -460,5 +460,5 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 		builder.append("IndexedDmaapTopicSinkFactory []");
 		return builder.toString();
 	}
-	
+
 }

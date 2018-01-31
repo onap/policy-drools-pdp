@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,25 +46,25 @@ public class PdpJmxListener {
 			server.unregisterMBean(new ObjectName("PolicyEngine:type=PdpJmx"));
 		} catch (MBeanRegistrationException | InstanceNotFoundException
 				| MalformedObjectNameException e) {
-			logger.error("PdpJmxListener.stop(): " + 
+			logger.error("PdpJmxListener.stop(): " +
 				         "Could not unregister PolicyEngine:type=PdpJmx MBean " +
 					     "with the MBean server", e);
 		}
-		
+
 	}
 
-	
+
 	public static void start() {
 		final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
 		try {
 			server.registerMBean(PdpJmx.getInstance(), new ObjectName("PolicyEngine:type=PdpJmx"));
 		} catch (InstanceAlreadyExistsException | MBeanRegistrationException
 				| NotCompliantMBeanException | MalformedObjectNameException e) {
-			logger.error("PdpJmxListener.start(): " + 
+			logger.error("PdpJmxListener.start(): " +
 			             "Could not unregister PolicyEngine:type=PdpJmx MBean " +
 				         "with the MBean server", e);
 		}
-		
+
 	}
 
 }

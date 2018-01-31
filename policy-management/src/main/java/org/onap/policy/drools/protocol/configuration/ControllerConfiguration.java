@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Drools Related Information
- * 
+ *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ControllerConfiguration {
@@ -45,24 +45,24 @@ public class ControllerConfiguration {
 	public static final String CONFIG_CONTROLLER_OPERATION_UPDATE = "update";
 	public static final String CONFIG_CONTROLLER_OPERATION_LOCK = "lock";
 	public static final String CONFIG_CONTROLLER_OPERATION_UNLOCK = "unlock";
-	
+
     /**
-     * 
+     *
      * (Required)
-     * 
+     *
      */
     @JsonProperty("name")
     private String name;
     /**
      * Set of operations that can be applied to a controller: create, lock
      * (Required)
-     * 
+     *
      */
     @JsonProperty("operation")
     private String operation;
     /**
      * Maven Related Information
-     * 
+     *
      */
     @JsonProperty("drools")
     private DroolsConfiguration drools;
@@ -72,14 +72,14 @@ public class ControllerConfiguration {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public ControllerConfiguration() {
     	// Empty
     }
 
     /**
-     * 
+     *
      * @param name
      * @param drools
      * @param operation
@@ -91,9 +91,9 @@ public class ControllerConfiguration {
     }
 
     /**
-     * 
+     *
      * (Required)
-     * 
+     *
      * @return
      *     The name
      */
@@ -103,9 +103,9 @@ public class ControllerConfiguration {
     }
 
     /**
-     * 
+     *
      * (Required)
-     * 
+     *
      * @param name
      *     The name
      */
@@ -122,7 +122,7 @@ public class ControllerConfiguration {
     /**
      * Set of operations that can be applied to a controller: create, lock
      * (Required)
-     * 
+     *
      * @return
      *     The operation
      */
@@ -134,7 +134,7 @@ public class ControllerConfiguration {
     /**
      * Set of operations that can be applied to a controller: create, lock
      * (Required)
-     * 
+     *
      * @param operation
      *     The operation
      */
@@ -150,7 +150,7 @@ public class ControllerConfiguration {
 
     /**
      * Maven Related Information
-     * 
+     *
      * @return
      *     The drools
      */
@@ -161,7 +161,7 @@ public class ControllerConfiguration {
 
     /**
      * Maven Related Information
-     * 
+     *
      * @param drools
      *     The drools
      */
@@ -265,7 +265,7 @@ public class ControllerConfiguration {
         ControllerConfiguration rhs = ((ControllerConfiguration) other);
         return new EqualsBuilder().append(name, rhs.name).append(operation, rhs.operation).append(drools, rhs.drools).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
-    
+
     public void callSetName(Object value) {
         if (value instanceof String) {
             setName((String) value);
@@ -273,7 +273,7 @@ public class ControllerConfiguration {
             throw new IllegalArgumentException("property \"name\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
         }
     }
-    
+
     public void callSetOperation(Object value) {
         if (value instanceof String) {
             setOperation((String) value);
@@ -281,7 +281,7 @@ public class ControllerConfiguration {
             throw new IllegalArgumentException("property \"operation\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
         }
     }
-    
+
     public void callSetDrools(Object value) {
         if (value instanceof DroolsConfiguration) {
             setDrools((DroolsConfiguration) value);

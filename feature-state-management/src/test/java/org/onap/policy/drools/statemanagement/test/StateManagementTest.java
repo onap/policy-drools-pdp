@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -49,63 +49,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StateManagementTest {
-		
-	// get an instance of logger 
-	private static Logger  logger = LoggerFactory.getLogger(StateManagementTest.class);	
-	
+
+	// get an instance of logger
+	private static Logger  logger = LoggerFactory.getLogger(StateManagementTest.class);
+
 	StateManagementFeatureAPI stateManagementFeature;
-	
+
 	/*
 	 * All you need to do here is create an instance of StateManagementFeature class.  Then,
 	 * check it initial state and the state after diableFailed() and promote()
 	 */
-	
+
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		
+
 		logger.info("setUpClass: Entering");
 
 		String userDir = System.getProperty("user.dir");
 		logger.debug("setUpClass: userDir=" + userDir);
 		System.setProperty("com.sun.management.jmxremote.port", "9980");
 		System.setProperty("com.sun.management.jmxremote.authenticate","false");
-				
+
 		initializeDb();
-		
+
 		logger.info("setUpClass: Exiting");
 	}
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
-				
+
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		
+
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		
+
 	}
-	
+
 	/*
 	 * Verifies that StateManagementFeature starts and runs successfully.
 	 */
-	 
+
 	//@Ignore
 	@Test
 	public void testStateManagementOperation() throws Exception {
-		
+
 		logger.debug("\n\ntestStateManagementOperation: Entering\n\n");
 
 		logger.debug("testStateManagementOperation: Reading StateManagementProperties");
 
 		String configDir = "src/test/resources";
-		
+
 		DbAudit.setIsJunit(true);
-		
+
 		Properties fsmProperties = new Properties();
 		fsmProperties.load(new FileInputStream(new File(
 				configDir + "/feature-state-management.properties")));
@@ -127,53 +127,53 @@ public class StateManagementTest {
 			logger.error(msg);
 			logger.debug(msg);
 		}
-		
+
 		String admin = stateManagementFeature.getAdminState();
 		String oper = stateManagementFeature.getOpState();
 		String avail = stateManagementFeature.getAvailStatus();
 		String standby = stateManagementFeature.getStandbyStatus();
-		
+
 		logger.debug("admin = {}", admin);
 		logger.debug("oper = {}", oper);
 		logger.debug("avail = {}", avail);
 		logger.debug("standby = {}", standby);
-		
+
 		assertTrue("Admin state not unlocked after initialization", admin.equals(StateManagement.UNLOCKED));
 		assertTrue("Operational state not enabled after initialization", oper.equals(StateManagement.ENABLED));
-		
+
 		try{
 			stateManagementFeature.disableFailed();
 		}catch(Exception e){
 			logger.error(e.getMessage());
 			assertTrue(e.getMessage(), false);
 		}
-				
+
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();
 		avail = stateManagementFeature.getAvailStatus();
 		standby = stateManagementFeature.getStandbyStatus();
-		
+
 		logger.debug("after disableFailed()");
 		logger.debug("admin = {}", admin);
 		logger.debug("oper = {}", oper);
 		logger.debug("avail = {}", avail);
 		logger.debug("standby = {}", standby);
-		
+
 		assertTrue("Operational state not disabled after disableFailed()", oper.equals(StateManagement.DISABLED));
 		assertTrue("Availability status not failed after disableFailed()", avail.equals(StateManagement.FAILED));
-		
-		
+
+
 		try{
 			stateManagementFeature.promote();
 		}catch(Exception e){
 			logger.debug(e.getMessage());
 		}
-		
+
 		admin = stateManagementFeature.getAdminState();
 		oper = stateManagementFeature.getOpState();
 		avail = stateManagementFeature.getAvailStatus();
 		standby = stateManagementFeature.getStandbyStatus();
-		
+
 		logger.debug("after promote()");
 		logger.debug("admin = {}", admin);
 		logger.debug("oper = {}", oper);
@@ -187,8 +187,8 @@ public class StateManagementTest {
 		try{
 			RepositoryAudit repositoryAudit = (RepositoryAudit) RepositoryAudit.getInstance();
 			repositoryAudit.invoke(fsmProperties);
-		
-			//Should not throw an IOException in Linux Foundation env 
+
+			//Should not throw an IOException in Linux Foundation env
 			assertTrue(true);
 		}catch(IOException e){
 			//Note: this catch is here because in a local environment mvn will not run in
@@ -205,7 +205,7 @@ public class StateManagementTest {
 		try{
 			DbAudit dbAudit = (DbAudit) DbAudit.getInstance();
 			dbAudit.invoke(fsmProperties);
-		
+
 			assertTrue(true);
 		}catch(Exception e){
 			assertTrue(false);
@@ -215,25 +215,25 @@ public class StateManagementTest {
 		/*************IntegrityMonitorRestManager Test*************/
 		logger.debug("\n\ntestStateManagementOperation: IntegrityMonitorRestManager\n\n");
 		IntegrityMonitorRestManager integrityMonitorRestManager = new IntegrityMonitorRestManager();
-		
+
 		Response response = integrityMonitorRestManager.test();
 		logger.debug("\n\nIntegrityMonitorRestManager response: " + response.toString());
-		
+
 		assertTrue(response.toString().contains("status=500"));
 
 		//All done
 		logger.debug("\n\ntestStateManagementOperation: Exiting\n\n");
-	}	
-	
+	}
+
     /*
-     * This method initializes and cleans the DB so that PDP-D will be able to 
+     * This method initializes and cleans the DB so that PDP-D will be able to
      * store fresh records in the DB.
      */
-     
+
 	public static void initializeDb(){
-		
+
 		logger.debug("initializeDb: Entering");
-		
+
     	Properties cleanProperties = new Properties();
     	cleanProperties.put(StateManagementProperties.DB_DRIVER,"org.h2.Driver");
     	cleanProperties.put(StateManagementProperties.DB_URL, "jdbc:h2:file:./sql/statemanagement");
@@ -241,7 +241,7 @@ public class StateManagementTest {
     	cleanProperties.put(StateManagementProperties.DB_PWD, "");
 
     	EntityManagerFactory emf = Persistence.createEntityManagerFactory("junitPU", cleanProperties);
-		
+
 		EntityManager em = emf.createEntityManager();
 		// Start a transaction
 		EntityTransaction et = em.getTransaction();
@@ -256,7 +256,7 @@ public class StateManagementTest {
 		// commit transaction
 		et.commit();
 		em.close();
-		
+
 		logger.debug("initializeDb: Exiting");
-	}	
+	}
 }

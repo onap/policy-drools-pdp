@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,13 +43,13 @@ import org.slf4j.LoggerFactory;
  * a separate optional feature.
  */
 
-public class StateManagementFeature implements StateManagementFeatureAPI, 
+public class StateManagementFeature implements StateManagementFeatureAPI,
 				PolicySessionFeatureAPI, PolicyEngineFeatureAPI
 {
 	// get an instance of logger
 	private static final Logger logger =
 			LoggerFactory.getLogger(StateManagementFeature.class);
-	
+
 	private DroolsPDPIntegrityMonitor droolsPdpIntegrityMonitor = null;
 	private StateManagement stateManagement = null;
 
@@ -62,7 +62,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 			logger.debug("StateManagementFeature() constructor");
 		}
 	}
-	
+
 	@Override
 	public void globalInit(String[] args, String configDir)
 	{
@@ -107,7 +107,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 					+ "to get DroolsPDPIntegrityMonitor instance:", e1);
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -131,7 +131,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	public String getAdminState() {
 		return stateManagement.getAdminState();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -147,7 +147,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	public String getAvailStatus() {
 		return stateManagement.getAvailStatus();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -186,7 +186,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	 */
 	@Override
 	public void promote() throws Exception {
-		stateManagement.promote();		
+		stateManagement.promote();
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	public void demote() throws Exception {
 		stateManagement.demote();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -204,10 +204,10 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	public String getResourceName() {
 		return StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public boolean lock(){
@@ -219,10 +219,10 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 		}
 		return true;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public boolean unlock(){
@@ -234,16 +234,16 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 		}
 		return true;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public boolean isLocked(){
 		return StateManagement.LOCKED.equals(stateManagement.getAdminState());
 	}
-	
+
 	@Override
 	public int getSequenceNumber() {
 		return SEQ_NUM;
@@ -254,7 +254,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	 */
 	private static void initializeProperties(String configDir)
 	{
-		//Get the state management properties 
+		//Get the state management properties
 		try {
 			Properties pIm =
 					PropertyUtil.getProperties(configDir + "/feature-state-management.properties");
@@ -270,6 +270,6 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 			throws IllegalArgumentException, AllSeemsWellException {
 
 		droolsPdpIntegrityMonitor.allSeemsWell(key, asw, msg);
-		
+
 	}
 }

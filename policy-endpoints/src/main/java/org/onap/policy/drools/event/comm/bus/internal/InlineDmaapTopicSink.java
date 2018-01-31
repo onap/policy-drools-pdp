@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,23 +33,23 @@ import org.onap.policy.drools.event.comm.bus.DmaapTopicSink;
  * inline with the calling thread.
  */
 public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTopicSink {
-	
-	protected static Logger logger = 
+
+	protected static Logger logger =
 			LoggerFactory.getLogger(InlineDmaapTopicSink.class);
-	
+
 	protected final String userName;
 	protected final String password;
-	
+
 	protected String environment = null;
 	protected String aftEnvironment = null;
 	protected String partner = null;
 	protected String latitude = null;
 	protected String longitude = null;
-	
+
 	protected Map<String,String> additionalProps = null;
-	
+
 	/**
-	 * 
+	 *
 	 * @param servers DMaaP servers
 	 * @param topic DMaaP Topic to be monitored
 	 * @param apiKey DMaaP API Key (optional)
@@ -66,10 +66,10 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 	 * @param additionalProps Additional properties to pass to DME2
 	 * @param useHttps does connection use HTTPS?
 	 * @param allowSelfSignedCerts are self-signed certificates allow
-	 * 
+	 *
 	 * @throws IllegalArgumentException An invalid parameter passed in
 	 */
-	public InlineDmaapTopicSink(List<String> servers, String topic, 
+	public InlineDmaapTopicSink(List<String> servers, String topic,
 											String apiKey, String apiSecret,
 											String userName, String password,
 											String partitionKey,
@@ -77,34 +77,34 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 											String latitude, String longitude, Map<String,String> additionalProps,
 											boolean useHttps, boolean allowSelfSignedCerts)
 			throws IllegalArgumentException {
-			
+
 		super(servers, topic, apiKey, apiSecret, partitionKey, useHttps, allowSelfSignedCerts);
-		
+
 		this.userName = userName;
 		this.password = password;
-		
+
 		this.environment = environment;
 		this.aftEnvironment = aftEnvironment;
 		this.partner = partner;
-		
+
 		this.latitude = latitude;
 		this.longitude = longitude;
-		
+
 		this.additionalProps = additionalProps;
 	}
-	
-	public InlineDmaapTopicSink(List<String> servers, String topic, 
+
+	public InlineDmaapTopicSink(List<String> servers, String topic,
 			                    String apiKey, String apiSecret,
 	                            String userName, String password,
-			                    String partitionKey, boolean useHttps,  boolean allowSelfSignedCerts) 
+			                    String partitionKey, boolean useHttps,  boolean allowSelfSignedCerts)
 		throws IllegalArgumentException {
-		
+
 		super(servers, topic, apiKey, apiSecret, partitionKey, useHttps, allowSelfSignedCerts);
-		
+
 		this.userName = userName;
 		this.password = password;
 	}
-	
+
 
 	@Override
 	public void init() {
@@ -113,20 +113,20 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 		   (this.latitude == null		|| this.latitude.isEmpty()) &&
 		   (this.longitude == null		|| this.longitude.isEmpty()) &&
 		   (this.partner == null		|| this.partner.isEmpty())) {
-			this.publisher = 
-				new BusPublisher.DmaapAafPublisherWrapper(this.servers, 
-						                               this.topic, 
-						                               this.userName, 
+			this.publisher =
+				new BusPublisher.DmaapAafPublisherWrapper(this.servers,
+						                               this.topic,
+						                               this.userName,
 						                               this.password, this.useHttps);
 		} else {
-			this.publisher = 
-				new BusPublisher.DmaapDmePublisherWrapper(this.servers, this.topic, 
+			this.publisher =
+				new BusPublisher.DmaapDmePublisherWrapper(this.servers, this.topic,
 						                               this.userName, this.password,
 						                               this.environment, this.aftEnvironment,
 						                               this.partner, this.latitude, this.longitude,
 						                               this.additionalProps, this.useHttps);
 		}
-		
+
 		logger.info("{}: DMAAP SINK created", this);
 	}
 
