@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.statemanagement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 import org.onap.policy.common.im.IntegrityMonitor;
@@ -67,10 +68,10 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 	super(resourceName, consolidatedProperties);
   }
   
-  private static void missingProperty(String prop) throws StateManagementPropertiesException{
+  private static void missingProperty(String prop) throws IntegrityMonitorException{
 		String msg = "init: missing IntegrityMonitor property: ".concat(prop);
 		logger.error(msg);
-		throw new StateManagementPropertiesException(msg);
+		throw new IntegrityMonitorException(msg);
   }
   
   private static void logPropertyValue(String prop, String val){
@@ -83,156 +84,182 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   /**
    * Static initialization -- create Drools Integrity Monitor, and
    * an HTTP server to handle REST 'test' requests
+   * @throws StateManagementPropertiesException
+   * @throws IntegrityMonitorException 
    */
-  public static DroolsPDPIntegrityMonitor init(String configDir) throws Exception
+  public static DroolsPDPIntegrityMonitor init(String configDir) throws IntegrityMonitorException
   {
 	  	  
 	logger.info("init: Entering and invoking PropertyUtil.getProperties() on '{}'", configDir);
 		
 	// read in properties
-	Properties stateManagementProperties =
-	  PropertyUtil.getProperties(configDir + "/" + PROPERTIES_NAME);
-	// fetch and verify definitions of some properties
+	Properties stateManagementProperties = getProperties(configDir);
+	
+	// fetch and verify definitions of some properties, adding defaults where
+	// appropriate
 	// (the 'IntegrityMonitor' constructor does some additional verification)
+	
+	checkPropError(stateManagementProperties, StateManagementProperties.TEST_HOST);
+	checkPropError(stateManagementProperties, StateManagementProperties.TEST_PORT);
+
+	addDefaultPropError(stateManagementProperties,
+			StateManagementProperties.TEST_SERVICES,
+			StateManagementProperties.TEST_SERVICES_DEFAULT);
+	
+	addDefaultPropError(stateManagementProperties,
+			StateManagementProperties.TEST_REST_CLASSES,
+			StateManagementProperties.TEST_REST_CLASSES_DEFAULT);
+
+	addDefaultPropWarn(stateManagementProperties,
+			StateManagementProperties.TEST_MANAGED,
+			StateManagementProperties.TEST_MANAGED_DEFAULT);
+	
+	addDefaultPropWarn(stateManagementProperties,
+			StateManagementProperties.TEST_SWAGGER,
+			StateManagementProperties.TEST_SWAGGER_DEFAULT);
+	
+	checkPropError(stateManagementProperties, StateManagementProperties.RESOURCE_NAME);
+	checkPropError(stateManagementProperties, StateManagementProperties.FP_MONITOR_INTERVAL);
+	checkPropError(stateManagementProperties, StateManagementProperties.FAILED_COUNTER_THRESHOLD);
+	checkPropError(stateManagementProperties, StateManagementProperties.TEST_TRANS_INTERVAL);
+	checkPropError(stateManagementProperties, StateManagementProperties.WRITE_FPC_INTERVAL);
+	checkPropError(stateManagementProperties, StateManagementProperties.SITE_NAME);
+	checkPropError(stateManagementProperties, StateManagementProperties.NODE_TYPE);
+	checkPropError(stateManagementProperties, StateManagementProperties.DEPENDENCY_GROUPS);
+	checkPropError(stateManagementProperties, StateManagementProperties.DB_DRIVER);
+	checkPropError(stateManagementProperties, StateManagementProperties.DB_URL);
+	checkPropError(stateManagementProperties, StateManagementProperties.DB_USER);
+	checkPropError(stateManagementProperties, StateManagementProperties.DB_PWD);
+	
 	String testHost = stateManagementProperties.getProperty(StateManagementProperties.TEST_HOST);
 	String testPort = stateManagementProperties.getProperty(StateManagementProperties.TEST_PORT);
-    String testServices = stateManagementProperties.getProperty(StateManagementProperties.TEST_SERVICES);
-    String testRestClasses = stateManagementProperties.getProperty(StateManagementProperties.TEST_REST_CLASSES);
-    String testManaged = stateManagementProperties.getProperty(StateManagementProperties.TEST_MANAGED);
-    String testSwagger = stateManagementProperties.getProperty(StateManagementProperties.TEST_SWAGGER);
 	String resourceName = stateManagementProperties.getProperty(StateManagementProperties.RESOURCE_NAME);
-	String fpMonitorInterval = stateManagementProperties.getProperty(StateManagementProperties.FP_MONITOR_INTERVAL);
-	String failedCounterThreshold = stateManagementProperties.getProperty(StateManagementProperties.FAILED_COUNTER_THRESHOLD);
-	String testTransInterval = stateManagementProperties.getProperty(StateManagementProperties.TEST_TRANS_INTERVAL);
-	String writeFpcInterval = stateManagementProperties.getProperty(StateManagementProperties.WRITE_FPC_INTERVAL);
-	String siteName = stateManagementProperties.getProperty(StateManagementProperties.SITE_NAME);
-	String nodeType = stateManagementProperties.getProperty(StateManagementProperties.NODE_TYPE);
-	String dependencyGroups = stateManagementProperties.getProperty(StateManagementProperties.DEPENDENCY_GROUPS);
-	String javaxPersistenceJdbcDriver = stateManagementProperties.getProperty(StateManagementProperties.DB_DRIVER);
-	String javaxPersistenceJdbcUrl = stateManagementProperties.getProperty(StateManagementProperties.DB_URL);
-	String javaxPersistenceJdbcUser = stateManagementProperties.getProperty(StateManagementProperties.DB_USER);
-	String javaxPersistenceJdbcPassword = stateManagementProperties.getProperty(StateManagementProperties.DB_PWD);
 
-	if (testHost == null){
-		missingProperty(StateManagementProperties.TEST_HOST);
-	}
-	if (testPort == null){
-		missingProperty(StateManagementProperties.TEST_PORT);
-	}
-    if (testServices == null) {
-        testServices = StateManagementProperties.TEST_SERVICES_DEFAULT;
-        stateManagementProperties.put(StateManagementProperties.TEST_SERVICES, testServices);
-    }
-    if (testRestClasses == null) {
-        testRestClasses = StateManagementProperties.TEST_REST_CLASSES_DEFAULT;
-        stateManagementProperties.put(StateManagementProperties.TEST_REST_CLASSES, testRestClasses);
-    }
-    if (testManaged == null) {
-        testManaged = StateManagementProperties.TEST_MANAGED_DEFAULT;
-        stateManagementProperties.put(StateManagementProperties.TEST_MANAGED, testManaged);
-    }
-    if (testSwagger == null) {
-        testSwagger = StateManagementProperties.TEST_SWAGGER_DEFAULT;
-        stateManagementProperties.put(StateManagementProperties.TEST_SWAGGER, testSwagger);
-    }
-	if (!testServices.equals(StateManagementProperties.TEST_SERVICES_DEFAULT)){
-		logger.error(INVALID_PROPERTY_VALUE,
-				StateManagementProperties.TEST_SERVICES,
-				StateManagementProperties.TEST_SERVICES_DEFAULT);
-	}
-	if (!testRestClasses.equals(StateManagementProperties.TEST_REST_CLASSES_DEFAULT)){
-		logger.error(INVALID_PROPERTY_VALUE,
-				StateManagementProperties.TEST_REST_CLASSES,
-				StateManagementProperties.TEST_REST_CLASSES_DEFAULT);
-	}
-	if (!testManaged.equals(StateManagementProperties.TEST_MANAGED_DEFAULT)){
-		logger.warn(INVALID_PROPERTY_VALUE,
-				StateManagementProperties.TEST_MANAGED,
-				StateManagementProperties.TEST_MANAGED_DEFAULT);
-	}
-	if (!testSwagger.equals(StateManagementProperties.TEST_SWAGGER_DEFAULT)){
-		logger.warn(INVALID_PROPERTY_VALUE,
-				StateManagementProperties.TEST_SWAGGER,
-				StateManagementProperties.TEST_SWAGGER_DEFAULT);
-	}
-	if (resourceName == null){
-		missingProperty(StateManagementProperties.RESOURCE_NAME);
-	  }
-	if (fpMonitorInterval == null){
-		missingProperty(StateManagementProperties.FP_MONITOR_INTERVAL);
-	  }	
-	if (failedCounterThreshold == null){
-		missingProperty(StateManagementProperties.FAILED_COUNTER_THRESHOLD);
-	  }	
-	if (testTransInterval == null){
-		missingProperty(StateManagementProperties.TEST_TRANS_INTERVAL);
-	  }	
-	if (writeFpcInterval == null){
-		missingProperty(StateManagementProperties.WRITE_FPC_INTERVAL);
-	  }	
-	if (siteName == null){
-		missingProperty(StateManagementProperties.SITE_NAME);
-	  }	
-	if (nodeType == null){
-		missingProperty(StateManagementProperties.NODE_TYPE);
-	  }	
-	if (dependencyGroups == null){
-		missingProperty(StateManagementProperties.DEPENDENCY_GROUPS);
-	  }	
-	if (javaxPersistenceJdbcDriver == null){
-		missingProperty(StateManagementProperties.DB_DRIVER);
-	  }		
-	if (javaxPersistenceJdbcUrl == null){
-		missingProperty(StateManagementProperties.DB_URL);
-	  }			
-	if (javaxPersistenceJdbcUser == null){
-		missingProperty(StateManagementProperties.DB_USER);
-	  }			
-	if (javaxPersistenceJdbcPassword == null){
-		missingProperty(StateManagementProperties.DB_PWD);
-	  }
-	
-	//Log the values so we can diagnose any issues
-	logPropertyValue(StateManagementProperties.TEST_HOST,testHost);
-	logPropertyValue(StateManagementProperties.TEST_PORT,testPort);
-	logPropertyValue(StateManagementProperties.TEST_SERVICES,testServices);
-	logPropertyValue(StateManagementProperties.TEST_REST_CLASSES,testRestClasses);
-	logPropertyValue(StateManagementProperties.TEST_MANAGED,testManaged);
-	logPropertyValue(StateManagementProperties.TEST_SWAGGER,testSwagger);
-	logPropertyValue(StateManagementProperties.RESOURCE_NAME,resourceName);
-	logPropertyValue(StateManagementProperties.FP_MONITOR_INTERVAL,fpMonitorInterval);
-	logPropertyValue(StateManagementProperties.FAILED_COUNTER_THRESHOLD,failedCounterThreshold);
-	logPropertyValue(StateManagementProperties.TEST_TRANS_INTERVAL,testTransInterval);
-	logPropertyValue(StateManagementProperties.WRITE_FPC_INTERVAL,writeFpcInterval);
-	logPropertyValue(StateManagementProperties.SITE_NAME,siteName);
-	logPropertyValue(StateManagementProperties.NODE_TYPE,nodeType);
-	logPropertyValue(StateManagementProperties.DEPENDENCY_GROUPS,dependencyGroups);
-	logPropertyValue(StateManagementProperties.DB_DRIVER,javaxPersistenceJdbcDriver);
-	logPropertyValue(StateManagementProperties.DB_URL,javaxPersistenceJdbcUrl);
-	logPropertyValue(StateManagementProperties.DB_USER,javaxPersistenceJdbcUser);
-	logPropertyValue(StateManagementProperties.DB_PWD,javaxPersistenceJdbcPassword);
-		
 	subsystemTestProperties = stateManagementProperties;
 
 	// Now that we've validated the properties, create Drools Integrity Monitor
 	// with these properties.
-	im = new DroolsPDPIntegrityMonitor(resourceName,
-				stateManagementProperties);
+	im = makeMonitor(resourceName, stateManagementProperties);
 	logger.info("init: New DroolsPDPIntegrityMonitor instantiated, resourceName = ", resourceName);
 
 	// create http server
+	makeRestServer(testHost, testPort, stateManagementProperties);
+	logger.info("init: Exiting and returning DroolsPDPIntegrityMonitor");
+	
+	return im;
+  }
+
+  /**
+   * Makes an Integrity Monitor.
+   * @param resourceName unique name of this Integrity Monitor
+   * @param properties properties used to configure the Integrity Monitor
+   * @return
+   * @throws IntegrityMonitorException
+   */
+  private static DroolsPDPIntegrityMonitor makeMonitor(String resourceName, Properties properties)
+		throws IntegrityMonitorException {
+	  
+	try {
+		return new DroolsPDPIntegrityMonitor(resourceName, properties);
+		
+	} catch (Exception e) {
+		throw new IntegrityMonitorException(e);
+	}
+  }
+
+  /**
+   * Makes a rest server for the Integrity Monitor.
+   * @param testHost		host name
+   * @param testPort		port
+   * @param properties		properties used to configure the rest server
+   * @throws IntegrityMonitorException
+   */
+  private static void makeRestServer(String testHost, String testPort, Properties properties)
+		throws IntegrityMonitorException {
+	  
 	try {
 		logger.info("init: Starting HTTP server, addr= {}", testHost+":"+testPort);
-		IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
 		
-		server.init(stateManagementProperties);
+		IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
+		server.init(properties);
+		
 	} catch (Exception e) {
 		logger.error("init: Caught Exception attempting to start server on testPort= {} message:",
 								testPort, e);
-		throw e;
+		throw new IntegrityMonitorException(e);
 	}
-	logger.info("init: Exiting and returning DroolsPDPIntegrityMonitor");
-	return im;
+  }
+
+  /**
+   * Gets the properties from the property file.
+   * @param configDir	directory containing the property file
+   * @return the properties
+   * @throws IntegrityMonitorException 
+   */
+  private static Properties getProperties(String configDir) throws IntegrityMonitorException {
+	try {
+		return PropertyUtil.getProperties(configDir + "/" + PROPERTIES_NAME);
+		
+	} catch (IOException e) {
+		throw new IntegrityMonitorException(e);
+	}
+  }
+  
+  /**
+   * Checks that a property is defined.
+   * @param props	set of properties
+   * @param name	name of the property to check
+   * @throws IntegrityMonitorException
+   */
+  private static void checkPropError(Properties props, String name) throws IntegrityMonitorException {
+	  String val = props.getProperty(name);
+	  if(val == null) {
+		  missingProperty(name);
+	  }
+	  
+	  logPropertyValue(name, val);
+  }
+  
+  /**
+   * Checks a property's value to verify that it matches the expected value.
+   * If the property is not defined, then it is added to the property set,
+   * with the expected value.  Logs an error if the property is defined,
+   * but does not have the expected value.
+   * @param props		set of properties
+   * @param name		name of the property to check
+   * @param expected	expected/default value
+   */
+  private static void addDefaultPropError(Properties props, String name, String expected) {
+	  String val = props.getProperty(name);
+	  if(val == null) {
+		  props.setProperty(name, expected);
+		  
+	  } else if( ! val.equals(expected)) {
+		  logger.error(INVALID_PROPERTY_VALUE, name, expected);
+	  }
+	  
+	  logPropertyValue(name, val);
+  }
+  
+  /**
+   * Checks a property's value to verify that it matches the expected value.
+   * If the property is not defined, then it is added to the property set,
+   * with the expected value.  Logs a warning if the property is defined,
+   * but does not have the expected value.
+   * @param props		set of properties
+   * @param name		name of the property to check
+   * @param expected	expected/default value
+   */
+  private static void addDefaultPropWarn(Properties props, String name, String dflt) {
+	  String val = props.getProperty(name);
+	  if(val == null) {
+		  props.setProperty(name, dflt);
+		  
+	  } else if( ! val.equals(dflt)) {
+		  logger.warn(INVALID_PROPERTY_VALUE, name, dflt);
+	  }
+	  
+	  logPropertyValue(name, val);
   }
 
   /**
