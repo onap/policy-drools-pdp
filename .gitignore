@@ -8,8 +8,10 @@
 *.log
 *.out
 .metadata/
+.idea/
 target/
 */logs/
 */sql/
 */testingLogs/
 */config/
+**/*.iml
