@@ -25,6 +25,7 @@ package org.onap.policy.drools.utils;
  * of services (features) discovered via 'ServiceLoader'. See
  * 'OrderedServiceImpl' for more details.
  */
+@FunctionalInterface
 public interface OrderedService
 {
   /**

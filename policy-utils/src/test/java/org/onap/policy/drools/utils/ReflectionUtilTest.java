@@ -21,6 +21,7 @@ package org.onap.policy.drools.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -58,5 +59,26 @@ public class ReflectionUtilTest {
             fail();
         }
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testException1() {
+    	ReflectionUtil.fetchClass(null, "org.onap.policy.drools.utils.ReflectionUtil");
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testException2() {
+        Class<?> class1;
+		try {
+			class1 = Class.forName("org.onap.policy.drools.utils.ReflectionUtil");
+	        ClassLoader classLoader = class1.getClassLoader();
+	    	ReflectionUtil.fetchClass(classLoader, null);
+		} catch (ClassNotFoundException e) {
+			fail();
+		}
+    }
+
+    @Test
+    public void testException3() throws ClassNotFoundException {
+    	assertNull(ReflectionUtil.fetchClass(ClassLoader.getSystemClassLoader(), "foo.bar"));
+    }
 }

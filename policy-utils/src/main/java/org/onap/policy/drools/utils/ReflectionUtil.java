@@ -45,8 +45,7 @@ public class ReflectionUtil {
 	 * @throws IllegalArgumentException if an invalid parameter has been passed in
 	 */
 	public static Class<?> fetchClass(ClassLoader classLoader, 
-			                          String className) 
-		throws IllegalArgumentException {
+			                          String className) {
 		if (classLoader == null)
 			throw new IllegalArgumentException("A class loader must be provided");
 		
@@ -70,8 +69,7 @@ public class ReflectionUtil {
 	 * @return true if exists
 	 * @throws IllegalArgumentException if an invalid parameter has been passed in
 	 */
-	public static boolean isClass(ClassLoader classLoader, String classname) 
-           throws IllegalArgumentException {
+	public static boolean isClass(ClassLoader classLoader, String classname) {
 		return fetchClass(classLoader, classname) != null;
 	}
 	
