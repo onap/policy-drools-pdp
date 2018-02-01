@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_2c4cd29d",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-02-01T14:03:51Z",
+      "side": 1,
+      "message": "I thought about it, but wasn\u0027t sure I wasn\u0027t sure there was asynchronous behavior when transferring control to the underlying kie libraries on this file, so I decided to postpone deletion of this temp resource till exiting the process.",
+      "parentUuid": "5a93c517_4c311ea1",
+      "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_ac21c24e",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
         "patchSetId": 2
