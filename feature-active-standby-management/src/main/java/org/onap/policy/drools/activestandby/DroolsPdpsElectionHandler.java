@@ -955,7 +955,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 							logger.debug("checkWaitTimer: calling allSeemsWell with ALLNOTWELL param");
 						}
 						stateManagementFeature.allSeemsWell(this.getClass().getName(), 
-								StateManagementFeatureAPI.ALLNOTWELL,
+								StateManagementFeatureAPI.ALLNOTWELL_STATE,
 								"DesignationWaiter/ElectionHandler has STALLED");
 					}
 					logger.error("checkWaitTimer: nowMs - waitTimerMs = {}" 
@@ -964,7 +964,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 				}else if(allSeemsWell==null || !allSeemsWell){
 					allSeemsWell = true;
 					stateManagementFeature.allSeemsWell(this.getClass().getName(), 
-							StateManagementFeatureAPI.ALLSEEMSWELL,
+							StateManagementFeatureAPI.ALLSEEMSWELL_STATE,
 							"DesignationWaiter/ElectionHandler has RESUMED");
 					logger.info("DesignationWaiter/ElectionHandler has RESUMED");
 				}

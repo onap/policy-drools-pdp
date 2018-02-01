@@ -25,7 +25,6 @@ import java.util.Observer;
 import javax.validation.constraints.NotNull;
 
 import org.onap.policy.common.im.AllSeemsWellException;
-import org.onap.policy.common.im.StandbyStatusException;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.properties.Lockable;
 import org.onap.policy.drools.utils.OrderedService;
@@ -42,7 +41,7 @@ import org.onap.policy.drools.utils.OrderedServiceImpl;
 public interface StateManagementFeatureAPI extends OrderedService, Lockable
 {
 	
-	public static final String LOCKED               = StateManagement.LOCKED;
+	  public static final String LOCKED               = StateManagement.LOCKED;
 	  public static final String UNLOCKED             = StateManagement.UNLOCKED;
 	  public static final String ENABLED              = StateManagement.ENABLED;
 	  public static final String DISABLED             = StateManagement.DISABLED;
@@ -54,10 +53,10 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
 	  public static final String DISABLE_DEPENDENCY   = StateManagement.DISABLE_DEPENDENCY;
 	  public static final String ENABLE_NO_DEPENDENCY = StateManagement.ENABLE_NO_DEPENDENCY;
 	  public static final String NULL_VALUE           = StateManagement.NULL_VALUE;
-	  public static final String LOCK                 = StateManagement.LOCK;
-	  public static final String UNLOCK               = StateManagement.UNLOCK;
-	  public static final String PROMOTE              = StateManagement.PROMOTE;
-	  public static final String DEMOTE               = StateManagement.DEMOTE;
+	  public static final String DO_LOCK              = StateManagement.LOCK;
+	  public static final String DO_UNLOCK            = StateManagement.UNLOCK;
+	  public static final String DO_PROMOTE           = StateManagement.PROMOTE;
+	  public static final String DO_DEMOTE            = StateManagement.DEMOTE;
 	  public static final String HOT_STANDBY          = StateManagement.HOT_STANDBY;
 	  public static final String COLD_STANDBY         = StateManagement.COLD_STANDBY;
 	  public static final String PROVIDING_SERVICE    = StateManagement.PROVIDING_SERVICE;
@@ -67,8 +66,8 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
 	  public static final String AVAILABLE_STATUS= StateManagement.AVAILABLE_STATUS;
 	  public static final String STANDBY_STATUS  = StateManagement.STANDBY_STATUS;
 	  
-	  static public final Boolean ALLSEEMSWELL = Boolean.TRUE;
-	  static public final Boolean ALLNOTWELL = Boolean.FALSE;
+	  public static final Boolean ALLSEEMSWELL_STATE  = Boolean.TRUE;
+	  public static final Boolean ALLNOTWELL_STATE    = Boolean.FALSE;
 	  
 	  public static final int SEQ_NUM = 0;
   /**
@@ -95,11 +94,10 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
    * @param asw - This is the indicator of health. See constants: ALLSEEMSWELL or ALLNOTWELL
    * @param msg - A message is required.  It should indicate why all is not well or a message indicating
    * that a component has been restored to health (perhaps indicating the problem that has resolved).
-   * @throws IllegalArgumentException
    * @throws AllSeemsWellException
    */
   public void allSeemsWell(@NotNull String key, @NotNull Boolean asw, @NotNull String msg)
-		  throws IllegalArgumentException, AllSeemsWellException;
+		  throws AllSeemsWellException;
   
   /**
    * This method is called to add an Observer to receive notifications of state changes
@@ -168,10 +166,9 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable
    * to providingservice. If the current value is coldstandby, no change is made.
    * If the current value is null, it will move to providingservice assuming the
    * Operational State is enabled and Administrative State is unlocked.
-   * @throws Exception 
-   * @throws StandbyStatusException 
+   * @throws Exception  
    */
-  public void promote() throws StandbyStatusException, Exception;
+  public void promote() throws Exception;
   
   /**
    * This method moves the X.731 Standby Status for this resource from providingservice 
