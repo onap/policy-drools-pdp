@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_ac26a2cc",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-02-01T14:25:38Z",
+      "side": 1,
+      "message": "If this gets used regularly, perhaps as part of a periodic audit, and the DroolsPDP VM stays up for weeks or months at a time, you might end up with a large collection of files. We see a similar problem with the Maven repository audit -- if Nexus is not configured to empty the trash periodically, we eventually run out of inodes.\n\nIt might be worth it to have a timer clean it up in a minute or so.",
+      "parentUuid": "5a93c517_2c4cd29d",
+      "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_ac21c24e",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
         "patchSetId": 2
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "I see, I was referring to the \"NullController\" (vs the \"MavenController\") that both implement the same controller interface :).     At some point I have to add \"MavenController\" junits and an \"assertMavenController\" that may make more clear.   I can accompany it with some comment to make it more clear.   That will come in future reviews.",
       "parentUuid": "5a93c517_ac21c24e",
+      "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_2c1a927d",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-02-01T14:25:38Z",
+      "side": 1,
+      "message": "OK - got it.",
+      "parentUuid": "5a93c517_6c597a59",
       "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
