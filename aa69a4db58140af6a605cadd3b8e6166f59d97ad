@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_4c311ea1",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-02-01T09:20:08Z",
+      "side": 1,
+      "message": "Should the file remain as long as the JVM is running? Wouldn\u0027t it be better to explicitly delete it in this method?",
+      "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_ac21c24e",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-02-01T09:20:08Z",
+      "side": 1,
+      "message": "The name of this method seems inconsistent with the \u0027assertNotNull\u0027 statement that follows.",
+      "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
