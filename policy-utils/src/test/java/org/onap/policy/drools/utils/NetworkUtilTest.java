@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,21 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-
 package org.onap.policy.drools.utils;
 
-/**
- * This is a base interface that is used to control the order of a list
- * of services (features) discovered via 'ServiceLoader'. See
- * 'OrderedServiceImpl' for more details.
- */
-@FunctionalInterface
-public interface OrderedService
-{
-  /**
-   * @return an integer sequence number, which determines the order of a list
-   *	of objects implementing this interface
-   */
-  public int getSequenceNumber();
-  
-  
-  /**
-   * @return the name of the ordered service
-   */
-  public default String getName() {return this.getClass().getName();}
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
+public class NetworkUtilTest {
+
+	@Test
+	public void test() throws InterruptedException, IOException {
+		assertNotNull(NetworkUtil.IPv4_WILDCARD_ADDRESS);
+		assertFalse(NetworkUtil.isTcpPortOpen("localhost", 8080, 1, 5));
+	}
+
 }

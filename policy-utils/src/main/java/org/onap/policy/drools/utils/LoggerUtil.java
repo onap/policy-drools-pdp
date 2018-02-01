@@ -32,6 +32,10 @@ public class LoggerUtil {
    * Root logger
    */
   public static final String ROOT_LOGGER = "ROOT";
+  
+  private LoggerUtil() {
+	  // Empty constructor
+  }
 
   /**
    * set the log level of a logger

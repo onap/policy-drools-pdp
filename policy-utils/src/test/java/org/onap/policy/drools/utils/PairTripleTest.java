@@ -21,6 +21,7 @@
 package org.onap.policy.drools.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -30,18 +31,20 @@ public class PairTripleTest {
     public void pairTest() {
         Pair<String, String> p = new Pair<String, String>("foo", "bar");
         
-       assertEquals(p.first(),"foo");
-       assertEquals(p.second(),"bar");
-       assertEquals(p.getFirst(),"foo");
-       assertEquals(p.getSecond(),"bar");
+       assertEquals("foo", p.first());
+       assertEquals("bar", p.second());
+       assertEquals("foo", p.getFirst());
+       assertEquals("bar", p.getSecond());
        
        p.first("one");
        p.second("two");
 
-       assertEquals(p.first(),"one");
-       assertEquals(p.second(),"two");
-       assertEquals(p.getFirst(),"one");
-       assertEquals(p.getSecond(),"two");
+       assertEquals("one", p.first());
+       assertEquals("two", p.second());
+       assertEquals("one", p.getFirst());
+       assertEquals("two", p.getSecond());
+       
+       assertNotNull(p.toString());
         
     } 
 
@@ -49,17 +52,17 @@ public class PairTripleTest {
     public void tripleTest() {
         Triple<String, String, String> t = new Triple<String, String,String>("foo", "bar", "fiz");
         
-       assertEquals(t.first(),"foo");
-       assertEquals(t.second(),"bar");
-       assertEquals(t.third(),"fiz");
+       assertEquals("foo", t.first());
+       assertEquals("bar", t.second());
+       assertEquals("fiz", t.third());
        
        t.first("one");
        t.second("two");
        t.third("three");
 
-       assertEquals(t.first(),"one");
-       assertEquals(t.second(),"two");
-       assertEquals(t.third(),"three");   
+       assertEquals("one", t.first());
+       assertEquals("two", t.second());
+       assertEquals("three", t.third());   
     }
 
 }

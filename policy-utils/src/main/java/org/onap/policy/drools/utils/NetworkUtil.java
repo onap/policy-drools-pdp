@@ -39,6 +39,9 @@ public class NetworkUtil {
    */
   public static final String IPv4_WILDCARD_ADDRESS = "0.0.0.0";
 
+  private NetworkUtil() {
+	  // Empty constructor
+  }
 
   /**
    * try to connect to $host:$port $retries times while we are getting connection failures.
