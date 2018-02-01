@@ -212,7 +212,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 		List<TopicCoderFilterConfiguration>
 			topics2DecodedClasses2Filters = new ArrayList<>();
 		
-		if (topicEntities.isEmpty())
+		if (topicEntities == null || topicEntities.isEmpty())
 			return topics2DecodedClasses2Filters;
 				
 		for (Topic topic: topicEntities) {
