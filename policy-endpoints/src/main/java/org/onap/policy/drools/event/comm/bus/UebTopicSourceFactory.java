@@ -96,7 +96,6 @@ public interface UebTopicSourceFactory {
 	/**
 	 * Instantiates a new UEB Topic Source
 	 * 
-	 * @param uebTopicSourceType Implementation type
 	 * @param servers list of servers
 	 * @param topic topic name
 	 * 
@@ -261,7 +260,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 					
 				String fetchLimitString = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + 
                                                                  "." + topic + 
-                                                                 PolicyProperties.PROPERTY_TOPIC_SOURCE_FETCH_TIMEOUT_SUFFIX);
+                                                                 PolicyProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX);
 				int fetchLimit = UebTopicSource.DEFAULT_LIMIT_FETCH;
 				if (fetchLimitString != null && !fetchLimitString.isEmpty()) {
 					try {
