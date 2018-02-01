@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_47049914",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-02-01T14:44:15Z",
+      "side": 1,
+      "message": "Right now, there\u0027s no heavy usage for this, just for maven test builds (junits).   It\u0027s currently not used at runtime.   I can see though it has potential to be used for other more sophisticated tasks.  We can revisit at that time.",
+      "parentUuid": "5a93c517_ac26a2cc",
+      "revId": "aa69a4db58140af6a605cadd3b8e6166f59d97ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_ac21c24e",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
         "patchSetId": 2
