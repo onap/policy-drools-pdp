@@ -58,18 +58,14 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	/**************************/
 
 	public StateManagementFeature(){
-		if(logger.isDebugEnabled()){
-			logger.debug("StateManagementFeature() constructor");
-		}
+		logger.debug("StateManagementFeature() constructor");
 	}
 	
 	@Override
 	public void globalInit(String[] args, String configDir)
 	{
 		// Initialization code associated with 'PolicyContainer'
-		if(logger.isDebugEnabled()){
-			logger.debug("StateManagementFeature.globalInit({}) entry", configDir);
-		}
+		logger.debug("StateManagementFeature.globalInit({}) entry", configDir);
 
 		try
 		{
@@ -77,9 +73,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 		}
 		catch (Exception e)
 		{
-			if(logger.isDebugEnabled()){
-				logger.debug("DroolsPDPIntegrityMonitor initialization exception: ", e);
-			}
+			logger.debug("DroolsPDPIntegrityMonitor initialization exception: ", e);
 			logger.error("DroolsPDPIntegrityMonitor.init()", e);
 		}
 
@@ -89,20 +83,16 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 		try {
 			droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
 			stateManagement = droolsPdpIntegrityMonitor.getStateManager();
-			if(logger.isDebugEnabled()){
-				logger.debug("StateManagementFeature.globalInit(): "
-					+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
-			}
+			
+			logger.debug("StateManagementFeature.globalInit(): "
+				+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
+			
 			if(stateManagement == null){
-				if(logger.isDebugEnabled()){
-					logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
-				}
+				logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
 			}
 		} catch (Exception e1) {
-			if(logger.isDebugEnabled()){
-				logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
-					+ " initialization failed with exception:", e1);
-			}
+			logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
+				+ " initialization failed with exception:", e1);
 			logger.error("DroolsPDPIntegrityMonitor.init(): StateManagementFeature startup failed "
 					+ "to get DroolsPDPIntegrityMonitor instance:", e1);
 		}
@@ -113,15 +103,13 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 	 */
 	@Override
 	public void addObserver(Observer stateChangeObserver) {
-		if(logger.isDebugEnabled()){
-			logger.debug("StateManagementFeature.addObserver() entry\n"
-					+ "StateManagementFeature.addObserver(): "
-					+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
-		}
+		logger.debug("StateManagementFeature.addObserver() entry\n"
+				+ "StateManagementFeature.addObserver(): "
+				+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
+		
 		stateManagement.addObserver(stateChangeObserver);
-		if(logger.isDebugEnabled()){
-			logger.debug("StateManagementFeature.addObserver() exit");
-		}
+		
+		logger.debug("StateManagementFeature.addObserver() exit");
 	}
 
 	/**
@@ -267,7 +255,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 
 	@Override
 	public void allSeemsWell(String key, Boolean asw, String msg)
-			throws IllegalArgumentException, AllSeemsWellException {
+			throws AllSeemsWellException {
 
 		droolsPdpIntegrityMonitor.allSeemsWell(key, asw, msg);
 		

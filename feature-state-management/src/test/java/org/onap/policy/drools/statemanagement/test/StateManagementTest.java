@@ -185,6 +185,7 @@ public class StateManagementTest {
 		/**************Repository Audit Test**************/
 		logger.debug("\n\ntestStateManagementOperation: Repository Audit\n\n");
 		try{
+			StateManagementProperties.initProperties(fsmProperties);
 			RepositoryAudit repositoryAudit = (RepositoryAudit) RepositoryAudit.getInstance();
 			repositoryAudit.invoke(fsmProperties);
 		

@@ -84,29 +84,11 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   @Override
 	public void invoke(Properties properties)
   {
-	if(logger.isDebugEnabled()){
-		logger.debug("Running 'DbAudit.invoke'");
-	}
-	if(isJunit){
-		createTableNeeded = false;
-	}
-	boolean isActive = true;
-	String dbAuditIsActive = StateManagementProperties.getProperty("db.audit.is.active");
-	if(logger.isDebugEnabled()){
-		logger.debug("DbAudit.invoke: dbAuditIsActive = {}", dbAuditIsActive);
-	}
+	logger.debug("Running 'DbAudit.invoke'");
+	boolean doCreate = createTableNeeded && !isJunit;
 	
-	if (dbAuditIsActive != null) {
-		try {
-			isActive = Boolean.parseBoolean(dbAuditIsActive.trim());
-		} catch (NumberFormatException e) {
-			logger.warn("DbAudit.invoke: Ignoring invalid property: db.audit.is.active = {}", dbAuditIsActive);
-		}
-	}
-	
-	if(!isActive){
-		
-		logger.info("DbAudit.invoke: exiting because isActive = {}", isActive);
+	if(!isActive()){		
+		logger.info("DbAudit.invoke: exiting because isActive = false");
 		return;
 	}
 	
@@ -123,14 +105,12 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
 
 	// create connection to DB
 	phase = "creating connection";
-	if(logger.isDebugEnabled()){
-		logger.debug("DbAudit: Creating connection to {}", url);
-	}
+	logger.debug("DbAudit: Creating connection to {}", url);
 	try (Connection connection = DriverManager.getConnection(url, user, password))
 	  {
 
 		// create audit table, if needed
-		if (createTableNeeded)
+		if (doCreate)
 		  {
 			phase = "create table";
 			createTable(connection);
@@ -156,14 +136,32 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase
   }
 
   /**
+   * Determines if the DbAudit is active, based on properties.  Defaults to
+   * {@code true}, if not found in the properties.
+   * @return {@code true} if DbAudit is active, {@code false} otherwise
+   */
+  private boolean isActive() {
+	String dbAuditIsActive = StateManagementProperties.getProperty("db.audit.is.active");
+	logger.debug("DbAudit.invoke: dbAuditIsActive = {}", dbAuditIsActive);
+	
+	if (dbAuditIsActive != null) {
+		try {
+			return Boolean.parseBoolean(dbAuditIsActive.trim());
+		} catch (NumberFormatException e) {
+			logger.warn("DbAudit.invoke: Ignoring invalid property: db.audit.is.active = {}", dbAuditIsActive);
+		}
+	}
+	
+	return true;
+  }
+
+  /**
    * Creates the table.
    * @param connection
    * @throws SQLException
    */
   private void createTable(Connection connection) throws SQLException {
-	if(logger.isDebugEnabled()){
 		logger.info("DbAudit: Creating 'Audit' table, if needed");
-	}
 	try (PreparedStatement statement = connection.prepareStatement
 	  ("CREATE TABLE IF NOT EXISTS Audit (\n"
 	   + " name varchar(64) DEFAULT NULL,\n"
