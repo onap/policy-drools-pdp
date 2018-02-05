@@ -483,7 +483,6 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	@Override
 	 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
 	   {
-		 // logger.info("RepositoryAudit: Delete " + file);
 		 file.toFile().delete();
 		 return FileVisitResult.CONTINUE;
 	   }
@@ -494,7 +493,6 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	   {
 		 if (e == null)
 		   {
-			 // logger.info("RepositoryAudit: Delete " + file);
 			 file.toFile().delete();
 			 return FileVisitResult.CONTINUE;
 		   }
