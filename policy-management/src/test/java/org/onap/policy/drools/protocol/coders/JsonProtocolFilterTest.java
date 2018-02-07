@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ public class JsonProtocolFilterTest {
     private static final String REGEX3 = "regex3";
 
     private static final String NAME4 = "name4";
-    private static final String REGEX4a = "regex4a";
-    private static final String REGEX4b = "regex4b";
+    private static final String REGEX4a = "^regex4a.*";
+    private static final String REGEX4b = ".*regex4b$";
     
 
     @Test
@@ -149,27 +149,80 @@ public class JsonProtocolFilterTest {
 
         //      ************   D E L E T E   f i l t e r s   f r o m   p r o t o c o l F i l t e r B       ***********
         //      DELETE specific filter from protocolFilterB by passing both the name & regex values
-        protocolFilterB.deleteRule(NAME3, REGEX3);
+
+        assertTrue(protocolFilterB.getRules(NAME3).size() == 1);
+        assertTrue(protocolFilterB.getRules(NAME3).get(0).getName().equals(NAME3));
+        assertTrue(protocolFilterB.getRules(NAME3).get(0).getRegex().equals(REGEX3));
+
+        assertTrue(protocolFilterB.getRules(NAME4).size() == 2);
+        assertTrue(protocolFilterB.getRules(NAME4).get(0).getName().equals(NAME4));
+        assertTrue(protocolFilterB.getRules(NAME4).get(0).getRegex().equals(REGEX4a));
+        assertTrue(protocolFilterB.getRules(NAME4).get(1).getName().equals(NAME4));
+        assertTrue(protocolFilterB.getRules(NAME4).get(1).getRegex().equals(REGEX4b));
+
+        String jsonA = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
+                        "\"name3\":\"regex3\",\"name4\":\"regex4a\",\"name4\":\"regex4b\"}";
+        String jsonB = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
+                        "\"name3\":\"regex3\",\"name4\":\"regex4a-regex4b\"}";
+        String jsonC = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
+                        "\"name3\":\"regex3\",\"name4\":\"regex4a\"}";
+        String jsonD = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
+                        "\"name3\":\"regex3\",\"name4\":\"regex4b\"}";
+
+        assertFalse(protocolFilterB.accept(jsonA));
+        assertTrue(protocolFilterB.accept(jsonB));
+        assertFalse(protocolFilterB.accept(jsonC));
+        assertFalse(protocolFilterB.accept(jsonD));
+
+        protocolFilterB.deleteRule(NAME4, REGEX4a);
+
+        assertTrue(protocolFilterB.accept(jsonA));
+        assertTrue(protocolFilterB.accept(jsonB));
+        assertFalse(protocolFilterB.accept(jsonC));
+        assertTrue(protocolFilterB.accept(jsonD));
+
+        protocolFilterB.addRule(NAME4, REGEX4a);
+
+        assertTrue(protocolFilterB.getRules(NAME4).size() == 2);
+        assertTrue(protocolFilterB.getRules(NAME4).get(0).getName().equals(NAME4));
+        assertTrue(protocolFilterB.getRules(NAME4).get(0).getRegex().equals(REGEX4b));
+        assertTrue(protocolFilterB.getRules(NAME4).get(1).getName().equals(NAME4));
+        assertTrue(protocolFilterB.getRules(NAME4).get(1).getRegex().equals(REGEX4a));
+
+        assertFalse(protocolFilterB.accept(jsonA));
+        assertTrue(protocolFilterB.accept(jsonB));
+        assertFalse(protocolFilterB.accept(jsonC));
+        assertFalse(protocolFilterB.accept(jsonD));
 
         //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //      DELETE all filters from protocolFilterB that have a match to the same name value
         protocolFilterB.deleteRules(NAME4);
 
+        assertTrue(protocolFilterB.getRules(NAME4).isEmpty());
+        assertTrue(protocolFilterB.accept(jsonA));
+        assertTrue(protocolFilterB.accept(jsonB));
+        assertTrue(protocolFilterB.accept(jsonC));
+        assertTrue(protocolFilterB.accept(jsonD));
+
+        assertTrue(protocolFilterB.getRules(NAME3).size() == 1);
+        protocolFilterB.addRule(NAME3, REGEX3);
+        assertTrue(protocolFilterB.getRules(NAME3).size() == 1);
+        protocolFilterB.deleteRule(NAME3, REGEX3);
+        assertTrue(protocolFilterB.getRules(NAME3).isEmpty());
+
         //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //      VALIDATE that protocolFilterB now only contains the filters that were originally passed using filtersA
         assertEquals(protocolFilterB.getRules(), filtersA);
 
-
-
         //      ************   A C C E P T   J S O N   I F   I T   P A S S E S   A L L   F I L T E R S     ***********
         //      ACCEPT TRUE a JSON that passes all filters
-        String jsonA = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"}";
-        assertTrue(protocolFilterA.accept(jsonA));
+        String jsonE = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"}";
+        assertTrue(protocolFilterA.accept(jsonE));
+
         //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //      ACCEPT FALSE a JSON that does NOT pass all filters
-        String jsonB = "{ \"name1\":\"regex1\"}";
-        assertFalse(protocolFilterA.accept(jsonB));
-
+        String jsonF = "{ \"name1\":\"regex1\"}";
+        assertFalse(protocolFilterA.accept(jsonF));
     }
 
 }
