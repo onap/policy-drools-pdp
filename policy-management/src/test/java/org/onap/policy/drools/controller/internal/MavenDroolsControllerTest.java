@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -31,11 +31,11 @@ import org.onap.policy.drools.util.KieUtils;
 
 public class MavenDroolsControllerTest {
 
-    private static final String JUNIT_ECHO_KSESSION = "echo";
-    private static final String JUNIT_ECHO_KMODULE_DRL_PATH = "src/test/resources/echo.drl";
-    private static final String JUNIT_ECHO_KMODULE_POM_PATH = "src/test/resources/echo.pom";
-    private static final String JUNIT_ECHO_KMODULE_PATH = "src/test/resources/echo.kmodule";
-    private static final String JUNIT_ECHO_KJAR_DRL_PATH =
+    public static final String JUNIT_ECHO_KSESSION = "echo";
+    public static final String JUNIT_ECHO_KMODULE_DRL_PATH = "src/test/resources/echo.drl";
+    public static final String JUNIT_ECHO_KMODULE_POM_PATH = "src/test/resources/echo.pom";
+    public static final String JUNIT_ECHO_KMODULE_PATH = "src/test/resources/echo.kmodule";
+    public static final String JUNIT_ECHO_KJAR_DRL_PATH =
         "src/main/resources/kbEcho/org/onap/policy/drools/test/echo.drl";
 
     private static volatile ReleaseId releaseId;
@@ -74,6 +74,9 @@ public class MavenDroolsControllerTest {
     }
 
     private DroolsController createDroolsController(long courtesyStartTimeMs) throws InterruptedException {
+        if (releaseId == null)
+            throw new IllegalStateException("no prereq artifact installed in maven repository");
+
         DroolsController controller = new MavenDroolsController(releaseId.getGroupId(),
             releaseId.getArtifactId(), releaseId.getVersion(), null, null);
 
