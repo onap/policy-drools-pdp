@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,24 +20,6 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -53,6 +35,22 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Protocol Coding/Decoding Toolset
@@ -87,7 +85,7 @@ public abstract class ProtocolCoderToolset {
   /**
    * Protocols and associated Filters
    */
-  protected final List<CoderFilters> coders = new ArrayList<>();
+  protected final List<CoderFilters> coders = new CopyOnWriteArrayList<>();
 
   /**
    * Tree model (instead of class model) generic parsing to be able to inspect elements
@@ -115,7 +113,6 @@ public abstract class ProtocolCoderToolset {
 
     if (topic == null || controllerId == null || groupId == null || artifactId == null
         || codedClass == null || filters == null || topic.isEmpty() || controllerId.isEmpty()) {
-      // TODO
       throw new IllegalArgumentException("Invalid input");
     }
 
@@ -134,6 +131,9 @@ public abstract class ProtocolCoderToolset {
    * @return the decoder filters or null if not found
    */
   public CoderFilters getCoder(String classname) {
+    if (classname == null || classname.isEmpty())
+      throw new IllegalArgumentException("no classname provided");
+
     for (final CoderFilters decoder : this.coders) {
       if (decoder.factClass.equals(classname)) {
         return decoder;
@@ -143,12 +143,12 @@ public abstract class ProtocolCoderToolset {
   }
 
   /**
-   * get all coder filters in use
+   * get a copy of the coder filters in use
    *
    * @return coder filters
    */
   public List<CoderFilters> getCoders() {
-    return this.coders;
+    return new ArrayList<>(this.coders);
   }
 
   /**
@@ -158,38 +158,35 @@ public abstract class ProtocolCoderToolset {
    * @param filter filter
    */
   public void addCoder(String eventClass, JsonProtocolFilter filter, int modelClassLoaderHash) {
-    synchronized (this) {
-      for (final CoderFilters coder : this.coders) {
-        if (coder.factClass.equals(eventClass)) {
-          // this is a better check than checking pointers, just
-          // in case classloader is different and this is just an update
-          coder.factClass = eventClass;
-          coder.filter = filter;
-          coder.modelClassLoaderHash = modelClassLoaderHash;
-          return;
-        }
+    if (eventClass == null || eventClass.isEmpty())
+      throw new IllegalArgumentException("no event class provided");
+
+    for (final CoderFilters coder : this.coders) {
+      if (coder.getCodedClass().equals(eventClass)) {
+        coder.setFilter(filter);
+        coder.setFromClassLoaderHash(modelClassLoaderHash);
+        return;
       }
     }
-
     this.coders.add(new CoderFilters(eventClass, filter, modelClassLoaderHash));
   }
 
   /**
    * remove coder
-   *
-   * @param eventClass decoder
-   * @param filter filter
+   * @param eventClass event class
    */
   public void removeCoders(String eventClass) {
-    synchronized (this) {
-      final Iterator<CoderFilters> codersIt = this.coders.iterator();
-      while (codersIt.hasNext()) {
-        final CoderFilters coder = codersIt.next();
-        if (coder.factClass.equals(eventClass)) {
-          codersIt.remove();
-        }
+    if (eventClass == null || eventClass.isEmpty())
+      throw new IllegalArgumentException("no event class provided");
+
+    List<CoderFilters> temp = new ArrayList<>();
+    for (final CoderFilters coder : this.coders) {
+      if (coder.factClass.equals(eventClass)) {
+        temp.add(coder);
       }
     }
+
+    this.coders.removeAll(temp);
   }
 
   /**
@@ -258,7 +255,6 @@ public abstract class ProtocolCoderToolset {
     // Don't parse if it is not necessary
 
     if (this.coders.isEmpty()) {
-      // TODO this is an error
       throw new IllegalStateException("No coders available");
     }
 

@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-utils
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,21 +25,62 @@ public class Triple<F,S,T> {
     private F first;
     private S second;
     private T third;
-    
+
+    public Triple() {
+        // empty constructor
+    }
+
     public Triple(F first, S second, T third){
         this.first = first;
         this.second = second;
         this.third = third;
     }
-    public F first(){ return this.first; }
-    
-    public S second(){ return this.second; }
-    
-    public T third(){ return this.third; }
-    
-    public void first(F first){ this.first = first; }
-    
-    public void second(S second){ this.second = second; }
-    
-    public void third(T third){ this.third = third; }
+
+    public F first(){
+        return this.getFirst();
+    }
+
+    public F getFirst() {
+        return first;
+    }
+
+    public void first(F first) {
+        this.setFirst(first);
+    }
+
+    public void setFirst(F first) {
+        this.first = first;
+    }
+
+    public S second() {
+        return this.getSecond();
+    }
+
+    public S getSecond() {
+        return second;
+    }
+
+    public void second(S second) {
+        this.setSecond(second);
+    }
+
+    public void setSecond(S second) {
+        this.second = second;
+    }
+
+    public T third() {
+        return this.getThird();
+    }
+
+    public T getThird() {
+        return this.third;
+    }
+
+    public void third(T third) {
+        this.setThird(third);
+    }
+
+    public void setThird(T third) {
+        this.third = third;
+    }
 }
