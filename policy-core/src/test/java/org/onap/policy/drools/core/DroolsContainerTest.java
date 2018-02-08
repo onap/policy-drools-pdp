@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.drools.util.KieUtils;
 
 /**
  * These tests focus on the following classes:
@@ -38,6 +40,27 @@ import org.junit.Test;
  */
 public class DroolsContainerTest
 {
+	/**
+	 * This test is centered around the creation of a 'PolicyContainer'
+	 * and 'PolicySession', and the updating of that container to a new
+	 * version.
+	 */
+   @BeforeClass
+	public static void setUp() throws Exception
+   {
+	 KieUtils.installArtifact
+		  (Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
+	       Paths.get("src/test/resources/drools-artifact-1.1/pom.xml").toFile(),
+		   "src/main/resources/rules/org/onap/policy/drools/core/test/rules.drl",
+		   Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/rules.drl").toFile());
+
+	 KieUtils.installArtifact
+		   (Paths.get("src/test/resources/drools-artifact-1.2/src/main/resources/META-INF/kmodule.xml").toFile(),
+			Paths.get("src/test/resources/drools-artifact-1.2/pom.xml").toFile(),
+			"src/main/resources/rules/org/onap/policy/drools/core/test/rules.drl",
+			Paths.get("src/test/resources/drools-artifact-1.2/src/main/resources/rules.drl").toFile());
+   }
+
   /**
    * This test is centered around the creation of a 'PolicyContainer'
    * and 'PolicySession', and the updating of that container to a new
