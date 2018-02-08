@@ -22,6 +22,30 @@
       "revId": "ecf719c9cee21ff7aac0f868cb72704ab5ed4497",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b3127007",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-02-08T16:05:53Z",
+      "side": 1,
+      "message": "Yes, this will create a different list from the class one, part of this base class.   The way I phrased it was a bit faulty, what I meant that any additions/removals to the list by the caller won\u0027t have any effects in the master list, won\u0027t have any effects here on the list membership (just on the list membership).   I think it is ok.",
+      "parentUuid": "5a93c517_50e9a2e4",
+      "range": {
+        "startLine": 151,
+        "startChar": 11,
+        "endLine": 151,
+        "endChar": 40
+      },
+      "revId": "ecf719c9cee21ff7aac0f868cb72704ab5ed4497",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
