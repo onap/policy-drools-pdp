@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_50e9a2e4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-02-08T12:06:33Z",
+      "side": 1,
+      "message": "Is your intention to return an immutable list? I would use Collections.unmodifiableList instead. Wasn\u0027t clear if the constructor actually creates new copies of the elements. If that matters.",
+      "range": {
+        "startLine": 151,
+        "startChar": 11,
+        "endLine": 151,
+        "endChar": 40
+      },
+      "revId": "ecf719c9cee21ff7aac0f868cb72704ab5ed4497",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
