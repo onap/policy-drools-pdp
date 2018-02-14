@@ -20,30 +20,50 @@
 
 package org.onap.policy.drools.persistence;
 
-import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Wrapper for an <i>EntityManager</i>, providing auto-close functionality.
+ * Generates the schema DDL files.
  */
-public class EntityMgrCloser implements AutoCloseable {
+public class GenSchema {
+
+	private static final Logger logger = LoggerFactory.getLogger(PersistenceFeatureTest.class);
+
+	private EntityManagerFactory emf;
 
 	/**
-	 * The wrapper manager.
-	 */
-	private final EntityManager em;
-
-	/**
+	 * Opens the EMF, which generates the schema, as a side-effect.
 	 * 
-	 * @param em
-	 *            manager to be auto-closed
+	 * @throws Exception
 	 */
-	public EntityMgrCloser(EntityManager em) {
-		this.em = em;
+	private GenSchema() throws Exception {
+		Map<String, Object> propMap = new HashMap<>();
+
+		propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
+		propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:JpaDroolsSessionConnectorTest");
+
+		emf = Persistence.createEntityManagerFactory("schemaDroolsPU", propMap);
+
+		emf.close();
 	}
 
-	@Override
-	public void close() {
-		em.close();
-	}
+	/**
+	 * This is is provided as a utility for producing a basic ddl schema file in
+	 * the sql directory.
+	 */
+	public static void main(String[] args) {
+		try {
+			new GenSchema();
 
+		} catch (Exception e) {
+			logger.error("failed to generate schema", e);
+		}
+	}
 }
