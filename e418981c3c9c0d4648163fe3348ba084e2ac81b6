@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_47d30f60",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-02-16T15:37:26Z",
+      "side": 1,
+      "message": "Last 2 lines, seems to have merged ..",
+      "revId": "e418981c3c9c0d4648163fe3348ba084e2ac81b6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
