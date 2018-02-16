@@ -1,6 +1,6 @@
-<!--
-  ============LICENSE_START=======================================================
-  ONAP Policy Engine - Drools PDP
+<!-- 
+  ============LICENSE_START======================================================= 
+  ONAP Policy Engine - Drools PDP 
   ================================================================================
   Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -15,8 +15,8 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  ============LICENSE_END=========================================================
-  -->
+  ============LICENSE_END========================================================= 
+-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -26,7 +26,7 @@
 		<groupId>org.onap.oparent</groupId>
 		<artifactId>oparent</artifactId>
 		<version>0.1.1</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<groupId>org.onap.policy.drools-pdp</groupId>
@@ -38,8 +38,25 @@
 	<description>The ONAP Policy Engine drools-based PDP Project</description>
 
 	<properties>
+		<!-- Project common build settings -->
 		<project.source.version>1.8</project.source.version>
 		<project.target.version>1.8</project.target.version>
+
+		<!-- Project path properties -->
+		<nexusproxy>https://nexus.onap.org</nexusproxy>
+		<sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
+		<releases.path>content/repositories/releases/</releases.path>
+		<snapshots.path>content/repositories/snapshots/</snapshots.path>
+		<staging.path>content/repositories/staging/</staging.path>
+
+		<!-- sonar/jacoco overrides -->
+		<!-- Overriding oparent default sonar/jacoco settings Combine all our reports 
+			into one file shared across sub-modules -->
+		<sonar.jacoco.reportPath>${project.basedir}/../target/code-coverage/jacoco-ut.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.itReportPath>${project.basedir}/../target/code-coverage/jacoco-it.exec</sonar.jacoco.itReportPath>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+
+		<!-- Project common dependency versions -->
 		<dmaap.version>1.0.0</dmaap.version>
 		<cambria.version>0.0.1</cambria.version>
 		<jersey.version>2.25.1</jersey.version>
@@ -56,12 +73,6 @@
 		<commons.io.version>2.5</commons.io.version>
 		<guava.version>23.0</guava.version>
 		<xml.apis.version>1.4.01</xml.apis.version>
-
-		<nexusproxy>https://nexus.onap.org</nexusproxy>
-		<sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
-		<releases.path>content/repositories/releases/</releases.path>
-		<snapshots.path>content/repositories/snapshots/</snapshots.path>
-		<staging.path>content/repositories/staging/</staging.path>
 	</properties>
 
 	<modules>
@@ -98,30 +109,30 @@
 		</site>
 	</distributionManagement>
 
-        <repositories>
-                <!-- LF repositories -->
-                <repository>
-                        <id>ecomp-releases</id>
-                        <name>Release Repository</name>
-                        <url>${nexusproxy}/content/repositories/releases/</url>
-                </repository>
-                <repository>
-                        <id>ecomp-staging</id>
-                        <name>Staging Repository</name>
-                        <url>${nexusproxy}/content/repositories/staging/</url>
-                </repository>
-                <repository>
-                        <id>ecomp-snapshots</id>
-                        <name>Snapshots Repository</name>
-                        <url>${nexusproxy}/content/repositories/snapshots/</url>
-                </repository>
-                <repository>
-                        <id>ecomp-public</id>
-                        <name>Public Repository</name>
-                        <url>${nexusproxy}/content/repositories/public/</url>
-                </repository>
-                <!-- LF repositories END-->
-        </repositories>
+	<repositories>
+		<!-- LF repositories -->
+		<repository>
+			<id>ecomp-releases</id>
+			<name>Release Repository</name>
+			<url>${nexusproxy}/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>ecomp-staging</id>
+			<name>Staging Repository</name>
+			<url>${nexusproxy}/content/repositories/staging/</url>
+		</repository>
+		<repository>
+			<id>ecomp-snapshots</id>
+			<name>Snapshots Repository</name>
+			<url>${nexusproxy}/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>ecomp-public</id>
+			<name>Public Repository</name>
+			<url>${nexusproxy}/content/repositories/public/</url>
+		</repository>
+		<!-- LF repositories END -->
+	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -211,35 +222,61 @@
 				<version>${eclipselink.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.mariadb.jdbc</groupId>
-			    <artifactId>mariadb-java-client</artifactId>
-			    <version>${mariadb.jdbc.version}</version>
+				<groupId>org.mariadb.jdbc</groupId>
+				<artifactId>mariadb-java-client</artifactId>
+				<version>${mariadb.jdbc.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.hibernate</groupId>
-			    <artifactId>hibernate-core</artifactId>
-			    <version>${hibernate.core.version}</version>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.core.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.hibernate.common</groupId>
-			    <artifactId>hibernate-commons-annotations</artifactId>
-			    <version>${hibernate.commons.annotations.version}</version>
+				<groupId>org.hibernate.common</groupId>
+				<artifactId>hibernate-commons-annotations</artifactId>
+				<version>${hibernate.commons.annotations.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>commons-io</groupId>
-			    <artifactId>commons-io</artifactId>
-			    <version>${commons.io.version}</version>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons.io.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>xml-apis</groupId>
-			    <artifactId>xml-apis</artifactId>
-			    <version>${xml.apis.version}</version>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+				<version>${xml.apis.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${sonar.jacoco.reportPath}</destFile>
+							<append>true</append>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${sonar.jacoco.reportPath}</dataFile>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -277,15 +314,15 @@
 			</plugin>
 
 			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-site-plugin</artifactId>
-			  <dependencies>
-			    <dependency>
-			      <groupId>org.apache.maven.wagon</groupId>
-			      <artifactId>wagon-webdav-jackrabbit</artifactId>
-			      <version>2.10</version>
-			    </dependency>
-			  </dependencies>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.wagon</groupId>
+						<artifactId>wagon-webdav-jackrabbit</artifactId>
+						<version>2.10</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
@@ -293,56 +330,96 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 			</plugin>
 
-			
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
-               <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.maven.plugins</groupId>
-                                        <artifactId>maven-checkstyle-plugin</artifactId>
-                                        <versionRange>2.17,)</versionRange>
-                                        <goals>
-                                            <goal>check</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco.version}</version>
+					<configuration>
+						<!-- Note: This exclusion list should match <sonar.exclusions> property 
+							above -->
+						<excludes>
+							<exclude>**/gen/**</exclude>
+							<exclude>**/generated-sources/**</exclude>
+							<exclude>**/yang-gen/**</exclude>
+							<exclude>**/pax/**</exclude>
+						</excludes>
+					</configuration>
+					<executions>
+						<!-- Prepares the property pointing to the JaCoCo runtime agent which 
+							is passed as VM argument when Maven the Surefire plugin is executed. -->
+						<execution>
+							<id>pre-unit-test</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+							<configuration>
+								<destFile>${sonar.jacoco.reportPath}</destFile>
+							</configuration>
+						</execution>
+						<!-- Ensures that the code coverage report for unit tests is created 
+							after unit tests have been run. -->
+						<execution>
+							<id>post-unit-test</id>
+							<phase>test</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+							<configuration>
+								<dataFile>${sonar.jacoco.reportPath}</dataFile>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-checkstyle-plugin</artifactId>
+										<versionRange>2.17,)</versionRange>
+										<goals>
+											<goal>check</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 	<reporting>
-	  <plugins>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-javadoc-plugin</artifactId>
-	      <version>2.10.4</version>
-	      <configuration>
-		<failOnError>false</failOnError>
-		<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
-		<docletArtifact>
-		  <groupId>org.umlgraph</groupId>
-		  <artifactId>umlgraph</artifactId>
-		  <version>5.6</version>
-		</docletArtifact>
-		<additionalparam>-views</additionalparam>
-		<useStandardDocletOptions>true</useStandardDocletOptions>
-	      </configuration>
-	    </plugin>
-	  </plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+					<failOnError>false</failOnError>
+					<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+					<docletArtifact>
+						<groupId>org.umlgraph</groupId>
+						<artifactId>umlgraph</artifactId>
+						<version>5.6</version>
+					</docletArtifact>
+					<additionalparam>-views</additionalparam>
+					<useStandardDocletOptions>true</useStandardDocletOptions>
+				</configuration>
+			</plugin>
+		</plugins>
 	</reporting>
 
 </project>
