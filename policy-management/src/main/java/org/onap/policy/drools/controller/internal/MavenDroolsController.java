@@ -20,12 +20,13 @@
 
 package org.onap.policy.drools.controller.internal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.drools.core.ClassObjectFilter;
 import org.kie.api.definition.KiePackage;
@@ -34,13 +35,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.jmx.PdpJmx;
 import org.onap.policy.drools.event.comm.TopicSink;
+import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
@@ -48,9 +48,8 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.Cust
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 import org.onap.policy.drools.utils.ReflectionUtil;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Maven-based Drools Controller that interacts with the 
@@ -118,8 +117,8 @@ public class MavenDroolsController implements DroolsController {
 	 * @param groupId maven group id
 	 * @param artifactId maven artifact id
 	 * @param version maven version
-	 * @param decoderConfiguration list of topic -> decoders -> filters mapping
-	 * @param encoderConfiguration list of topic -> encoders -> filters mapping
+	 * @param decoderConfigurations list of topic -> decoders -> filters mapping
+	 * @param encoderConfigurations list of topic -> encoders -> filters mapping
 	 * 
 	 * @throws IllegalArgumentException invalid arguments passed in
 	 */
@@ -148,8 +147,8 @@ public class MavenDroolsController implements DroolsController {
 	
 	/**
 	 * init encoding/decoding configuration
-	 * @param decoderConfiguration list of topic -> decoders -> filters mapping
-	 * @param encoderConfiguration list of topic -> encoders -> filters mapping
+	 * @param decoderConfigurations list of topic -> decoders -> filters mapping
+	 * @param encoderConfigurations list of topic -> encoders -> filters mapping
 	 */
 	protected void init(List<TopicCoderFilterConfiguration> decoderConfigurations,
 			            List<TopicCoderFilterConfiguration> encoderConfigurations) {
@@ -227,7 +226,7 @@ public class MavenDroolsController implements DroolsController {
 	 * Note this is critical to be done after the Policy Container is
 	 * instantiated to be able to fetch the corresponding classes.
 	 * 
-	 * @param decoderConfiguration list of topic -> decoders -> filters mapping
+	 * @param coderConfigurations list of topic -> decoders -> filters mapping
 	 */
 	protected void initCoders(List<TopicCoderFilterConfiguration> coderConfigurations, 
 			                  boolean decoder) {
@@ -512,11 +511,32 @@ public class MavenDroolsController implements DroolsController {
 		// Broadcast
 		
 		if (logger.isInfoEnabled())
-			logger.info(this + "BROADCAST-INJECT of " + event + " FROM " + topic + " INTO " + this.policyContainer.getName());		
-		
-		if (!this.policyContainer.insertAll(anEvent))
+			logger.info(this + "BROADCAST-INJECT of " + event + " FROM " + topic + " INTO " + this.policyContainer.getName());
+
+		for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+			try {
+				if (feature.beforeInsert(this, anEvent))
+					return true;
+			} catch (Exception e) {
+				logger.error("{}: feature {} before-insert failure because of {}",
+					this, feature.getClass().getName(), e.getMessage(), e);
+			}
+		}
+
+		boolean successInject = this.policyContainer.insertAll(anEvent);
+		if (!successInject)
 			logger.warn(this + "Failed to inject into PolicyContainer " + this.getSessionNames());
-		
+
+		for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+			try {
+				if (feature.afterInsert(this, anEvent, successInject))
+					return true;
+			} catch (Exception e) {
+				logger.error("{}: feature {} after-insert failure because of {}",
+					this, feature.getClass().getName(), e.getMessage(), e);
+			}
+		}
+
 		return true;
 	}	
 	
