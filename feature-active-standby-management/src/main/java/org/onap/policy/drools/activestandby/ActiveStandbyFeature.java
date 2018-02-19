@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void globalInit(String args[], String configDir)
+	public void globalInit(String[] args, String configDir)
 	{
 		// This must come first since it initializes myPdp
 		initializePersistence(configDir);
@@ -164,7 +164,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 		 */
 		DroolsPdp existingPdp = conn.getPdp(resourceName);
 		if (existingPdp != null) {
-			System.out.println("Found existing PDP record, pdpId="
+			logger.info("Found existing PDP record, pdpId="
 					+ existingPdp.getPdpId() + ", isDesignated="
 					+ existingPdp.isDesignated() + ", updatedDate="
 					+ existingPdp.getUpdatedDate());
@@ -176,18 +176,17 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 
 				myPdp = new DroolsPdpImpl(resourceName,false,4,new Date());	
 			}
-			String site_name = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
-			if (site_name == null) {
-				site_name = "";
+			String siteName = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
+			if (siteName == null) {
+				siteName = "";
 			}else{
-				site_name = site_name.trim();
+				siteName = siteName.trim();
 			}
-			myPdp.setSiteName(site_name);
+			myPdp.setSiteName(siteName);
 			if(electionHandler == null){
 				electionHandler = new DroolsPdpsElectionHandler(conn,myPdp);
 			}
 		}
-		System.out.println("\n\nThis controller is a standby, waiting to be chosen as primary...\n\n");
 		logger.info("\n\nThis controller is a standby, waiting to be chosen as primary...\n\n");
 	}
 
@@ -199,7 +198,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 	 */
 	public static DroolsPdpsConnector getDroolsPdpsConnector(String pu) {
 
-		Map<String, Object> propMap = new HashMap<String, Object>();
+		Map<String, Object> propMap = new HashMap<>();
 		propMap.put("javax.persistence.jdbc.driver", ActiveStandbyProperties
 				.getProperty(ActiveStandbyProperties.DB_DRIVER));
 		propMap.put("javax.persistence.jdbc.url",
@@ -211,9 +210,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory(
 				pu, propMap);
-		DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emf);
-
-		return conn;
+		return new JpaDroolsPdpsConnector(emf);
 	}
 
 	/**

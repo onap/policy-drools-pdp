@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,12 @@ import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
  *
  */
 public interface PolicyController extends Startable, Lockable {
+	
+	/**
+	 * Factory that tracks and manages Policy Controllers
+	 */
+	public static PolicyControllerFactory factory =
+						new IndexedPolicyControllerFactory();
 	
 	/**
 	 * name of this Policy Controller
@@ -91,20 +97,12 @@ public interface PolicyController extends Startable, Lockable {
 	 *         not supported.
 	 */
 	public boolean deliver(CommInfrastructure busType, String topic, 
-			               Object event)
-			throws IllegalArgumentException, IllegalStateException, 
-			       UnsupportedOperationException;
+			               Object event);
 	
 	/**
 	 * halts and permanently releases all resources
 	 * @throws IllegalStateException
 	 */
-	public void halt() throws IllegalStateException;
-	
-	/**
-	 * Factory that tracks and manages Policy Controllers
-	 */
-	public static PolicyControllerFactory factory =
-						new IndexedPolicyControllerFactory();
+	public void halt();
 	
 }

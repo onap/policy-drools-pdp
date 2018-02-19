@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,12 @@ public interface DroolsController extends Startable, Lockable {
 	 * No version identifier
 	 */
 	public static final String NO_VERSION = "NO-VERSION";
+	
+	/**
+	 * Factory to track and manage drools controllers
+	 */
+	public static final DroolsControllerFactory factory = 
+									new IndexedDroolsControllerFactory();
 	
 	/**
 	 * get group id
@@ -106,9 +112,7 @@ public interface DroolsController extends Startable, Lockable {
 	 *         to the functionality missing (ie. communication infrastructure
 	 *         not supported.
 	 */
-	public boolean deliver(TopicSink sink, Object event)
-			throws IllegalArgumentException, IllegalStateException, 
-		           UnsupportedOperationException;
+	public boolean deliver(TopicSink sink, Object event);
 	
 	/**
 	 * 
@@ -133,7 +137,7 @@ public interface DroolsController extends Startable, Lockable {
 	 * @param encodedObject
 	 * @return
 	 */
-	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) throws IllegalStateException;
+	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash);
 	
 	/**
 	 * fetches a class from the model
@@ -141,7 +145,7 @@ public interface DroolsController extends Startable, Lockable {
 	 * @param className the class to fetch
 	 * @return the actual class object, or null if not found
 	 */
-	public Class<?> fetchModelClass(String className) throws IllegalArgumentException;
+	public Class<?> fetchModelClass(String className);
 	
 	/**
 	 * is this controller Smart?
@@ -164,14 +168,14 @@ public interface DroolsController extends Startable, Lockable {
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			List<TopicCoderFilterConfiguration> decoderConfigurations,
 			List<TopicCoderFilterConfiguration> encoderConfigurations)
-	throws IllegalArgumentException, LinkageError;
+	throws LinkageError;
 
 	/**
 	 * gets the classnames of facts as well as the current count
 	 * @param sessionName the session name
 	 * @return map of class to count
 	 */
-	public Map<String,Integer> factClassNames(String sessionName) throws IllegalArgumentException;	
+	public Map<String,Integer> factClassNames(String sessionName);	
 	
 	/**
 	 * gets the count of facts for a given session
@@ -179,7 +183,7 @@ public interface DroolsController extends Startable, Lockable {
 	 * @return the fact count 
 	 * @throws IllegalArgumentException
 	 */
-	public long factCount(String sessionName) throws IllegalArgumentException;
+	public long factCount(String sessionName);
 	
 	/**
 	 * gets all the facts of a given class for a given session
@@ -208,11 +212,5 @@ public interface DroolsController extends Startable, Lockable {
 	 * halts and permanently releases all resources
 	 * @throws IllegalStateException
 	 */
-	public void halt() throws IllegalStateException;
-	
-	/**
-	 * Factory to track and manage drools controllers
-	 */
-	public static final DroolsControllerFactory factory = 
-									new IndexedDroolsControllerFactory();
+	public void halt();
 }

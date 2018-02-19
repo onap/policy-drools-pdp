@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-engine
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,12 @@ import org.onap.policy.drools.utils.OrderedServiceImpl;
  * Policy Engine Feature API.
  * Provides Interception Points during the Policy Engine lifecycle.
  */
-public interface PolicyEngineFeatureAPI extends OrderedService {
+public interface PolicyEngineFeatureAPI extends OrderedService {	  
+	  /**
+	   * Feature providers implementing this interface
+	   */
+	  public static final OrderedServiceImpl<PolicyEngineFeatureAPI> providers = 
+			  						new OrderedServiceImpl<>(PolicyEngineFeatureAPI.class);
 	
 	  /**
 	   * intercept before the Policy Engine is commanded to boot.
@@ -39,7 +44,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * of the operation preventing the invocation of 
 	   * lower priority features.   False, otherwise.
 	   */
-	  public default boolean beforeBoot(PolicyEngine engine, String cliArgs[]) {return false;};
+	  public default boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {return false;};
 	  
 	  /**
 	   * intercept after the Policy Engine is booted.
@@ -193,10 +198,4 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
 	   * lower priority features.   False, otherwise.
 	   */
 	  public default boolean afterShutdown(PolicyEngine engine) {return false;};
-	  
-	  /**
-	   * Feature providers implementing this interface
-	   */
-	  public static final OrderedServiceImpl<PolicyEngineFeatureAPI> providers = 
-			  						new OrderedServiceImpl<>(PolicyEngineFeatureAPI.class);
 }

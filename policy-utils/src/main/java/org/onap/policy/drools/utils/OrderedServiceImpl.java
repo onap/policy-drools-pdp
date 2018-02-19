@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 package org.onap.policy.drools.utils;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,30 +97,17 @@ public class OrderedServiceImpl<T extends OrderedService>
 
 	// Sort the list according to sequence number, and then alphabetically
 	// according to full class name.
-	Collections.sort(tmp, new Comparator<T>()
-					 {
-					   @Override
-					   public int compare(T o1, T o2)
-						 {
-						   int s1 = o1.getSequenceNumber();
-						   int s2 = o2.getSequenceNumber();
-						   int rval;
-						   if (s1 < s2)
-							 {
-							   rval = -1;
-							 }
-						   else if (s1 > s2)
-							 {
-							   rval = 1;
-							 }
-						   else
-							 {
-							   rval = o1.getClass().getName().compareTo
-								 (o2.getClass().getName());
-							 }
-						   return rval;
-						 }
-					 });
+	Collections.sort(tmp, (o1, o2) -> {
+			int s1 = o1.getSequenceNumber();
+			int s2 = o2.getSequenceNumber();
+			if (s1 < s2) {
+				return -1;
+			} else if (s1 > s2) {
+				return 1;
+			} else {
+				return o1.getClass().getName().compareTo(o2.getClass().getName());
+			}
+		});
 
 	// create an unmodifiable version of this list
 	implementers = Collections.unmodifiableList(tmp);

@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -251,11 +251,10 @@ public class MavenDroolsController implements DroolsController {
 				String customGsonCoderClass = coderConfig.getCustomGsonCoder().getClassContainer();
 				if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(),
 						                   customGsonCoderClass)) {
-					logger.error(customGsonCoderClass + " cannot be retrieved");
-					throw new IllegalArgumentException(customGsonCoderClass + " cannot be retrieved");
+					throw makeRetrieveEx(customGsonCoderClass);
 				} else {
 					if (logger.isInfoEnabled())
-						logger.info("CLASS FETCHED " + customGsonCoderClass);
+						logClassFetched(customGsonCoderClass);
 				}
 			}
 			
@@ -267,11 +266,10 @@ public class MavenDroolsController implements DroolsController {
 				String customJacksonCoderClass = coderConfig.getCustomJacksonCoder().getClassContainer();
 				if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(),
 						                   customJacksonCoderClass)) {
-					logger.error(customJacksonCoderClass + " cannot be retrieved");
-					throw new IllegalArgumentException(customJacksonCoderClass + " cannot be retrieved");
+					throw makeRetrieveEx(customJacksonCoderClass);
 				} else {
 					if (logger.isInfoEnabled())
-						logger.info("CLASS FETCHED " + customJacksonCoderClass);
+						logClassFetched(customJacksonCoderClass);
 				}
 			}	
 			
@@ -286,11 +284,10 @@ public class MavenDroolsController implements DroolsController {
 				
 				if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(), 
 						                   potentialCodedClass)) {
-					logger.error(potentialCodedClass + " cannot be retrieved");
-					throw new IllegalArgumentException(potentialCodedClass + " cannot be retrieved");
+					throw makeRetrieveEx(potentialCodedClass);
 				} else {
 					if (logger.isInfoEnabled())
-						logger.info("CLASS FETCHED " + potentialCodedClass);
+						logClassFetched(potentialCodedClass);
 				}			
 				
 				if (decoder)
@@ -307,6 +304,24 @@ public class MavenDroolsController implements DroolsController {
 							                              this.policyContainer.getClassLoader().hashCode());
 			}
 		}
+	}
+	
+	/**
+	 * Logs an error and makes an exception for an item that cannot be retrieved.
+	 * @param itemName
+	 * @return a new exception
+	 */
+	private IllegalArgumentException makeRetrieveEx(String itemName) {
+		logger.error(itemName + " cannot be retrieved");
+		return new IllegalArgumentException(itemName + " cannot be retrieved");
+	}
+
+	/**
+	 * Logs the name of the class that was fetched.
+	 * @param className
+	 */
+	private void logClassFetched(String className) {
+		logger.info("CLASS FETCHED " + className);
 	}
 	
 
@@ -521,8 +536,7 @@ public class MavenDroolsController implements DroolsController {
 	}	
 	
 	@Override
-	public boolean deliver(TopicSink sink, Object event) 
-			throws UnsupportedOperationException {
+	public boolean deliver(TopicSink sink, Object event) {
 		
 		if (logger.isInfoEnabled())
 			logger.info(this + "DELIVER: " +  event + " FROM " + this + " TO " + sink);
@@ -665,13 +679,17 @@ public class MavenDroolsController implements DroolsController {
 				return session;				
 		}
 		
-		throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+		throw invalidSessNameEx(sessionName);
+	}
+
+	private IllegalArgumentException invalidSessNameEx(String sessionName) {
+		return new IllegalArgumentException("Invalid Session Name: " + sessionName);
 	}
 	
 	@Override
 	public Map<String,Integer> factClassNames(String sessionName) {		
 		if (sessionName == null || sessionName.isEmpty())
-			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+			throw invalidSessNameEx(sessionName);
 
 		Map<String,Integer> classNames = new HashMap<>();
 		
@@ -697,7 +715,7 @@ public class MavenDroolsController implements DroolsController {
 	@Override
 	public long factCount(String sessionName) {		
 		if (sessionName == null || sessionName.isEmpty())
-			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+			throw invalidSessNameEx(sessionName);
 		
 		PolicySession session = getSession(sessionName);
 		return session.getKieSession().getFactCount();	
@@ -706,7 +724,7 @@ public class MavenDroolsController implements DroolsController {
 	@Override
 	public List<Object> facts(String sessionName, String className, boolean delete) {		
 		if (sessionName == null || sessionName.isEmpty())
-			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+			throw invalidSessNameEx(sessionName);
 		
 		if (className == null || className.isEmpty())
 			throw new IllegalArgumentException("Invalid Class Name: " + className);
@@ -738,7 +756,7 @@ public class MavenDroolsController implements DroolsController {
 	@Override
 	public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, boolean delete, Object... queryParams) {		
 		if (sessionName == null || sessionName.isEmpty())
-			throw new IllegalArgumentException("Invalid Session Name: " + sessionName);
+			throw invalidSessNameEx(sessionName);
 		
 		if (queryName == null || queryName.isEmpty())
 			throw new IllegalArgumentException("Invalid Query Name: " + queryName);
@@ -779,9 +797,7 @@ public class MavenDroolsController implements DroolsController {
 	
 	@Override
 	public Class<?> fetchModelClass(String className) {
-		Class<?> modelClass = 
-			ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), className);
-		return modelClass;
+		return ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), className);
 	}
 
 	/**

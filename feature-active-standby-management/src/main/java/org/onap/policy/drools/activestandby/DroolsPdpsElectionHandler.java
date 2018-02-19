@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ package org.onap.policy.drools.activestandby;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,7 +34,7 @@ import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 
 public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 	// get an instance of logger 
-	private final static Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);	
+	private static final Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);	
 	private DroolsPdpsConnector pdpsConnector;
 	private Object checkWaitTimerLock = new Object();
 	private Object designationWaiterLock = new Object();
@@ -70,13 +71,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 	private StateManagementFeatureAPI stateManagementFeature;
 	
 	private static boolean isUnitTesting = false;
-	public static void setIsUnitTesting(boolean val){
-		isUnitTesting = val;
-	}
 	private static boolean isStalled = false;
-	public static void setIsStalled(boolean val){
-		isStalled = val;
-	}
 	
 	public DroolsPdpsElectionHandler(DroolsPdpsConnector pdps, DroolsPdp myPdp){
 		if (pdps == null) {
@@ -152,6 +147,13 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		}
 	}
 	
+	public static void setIsUnitTesting(boolean val){
+		isUnitTesting = val;
+	}
+	public static void setIsStalled(boolean val){
+		isStalled = val;
+	}
+	
 	/*
 	 * When the JpaDroolsPdpsConnector.standDown() method is invoked, it needs
 	 * access to myPdp, so it can keep its designation status in sync with the
@@ -194,7 +196,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 					//It is possible that multiple PDPs are designated lead.  So, we will make a list of all designated
 					//PDPs and then decide which one really should be designated at the end.
-					ArrayList<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
+					ArrayList<DroolsPdp> listOfDesignated = new ArrayList<>();
 
 					Collection<DroolsPdp> pdps = pdpsConnector.getDroolsPdps();
 					DroolsPdp designatedPdp = null;
@@ -767,7 +769,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		return mostRecentPrimary;
 	}
 	
-	public DroolsPdp computeDesignatedPdp(ArrayList<DroolsPdp> listOfDesignated, DroolsPdp mostRecentPrimary){
+	public DroolsPdp computeDesignatedPdp(List<DroolsPdp> listOfDesignated, DroolsPdp mostRecentPrimary){
 		DroolsPdp designatedPdp = null;
 		DroolsPdp lowestPriorityPdp = null;
 		if(listOfDesignated.size() > 1){

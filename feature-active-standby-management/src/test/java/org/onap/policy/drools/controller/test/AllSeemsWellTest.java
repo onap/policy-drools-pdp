@@ -37,7 +37,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.activestandby.ActiveStandbyFeatureAPI;
@@ -264,7 +263,7 @@ public class AllSeemsWellTest {
 				
 		logger.debug("testAllSeemsWell: Sleeping {} ms, to allow JpaDroolsPdpsConnector "
 				+ "time to check droolspdpentity table", sleepTime);
-		Thread.sleep(sleepTime);
+		sleep(sleepTime);
 		
 		
 		// Verify that this formerly un-designated PDP in HOT_STANDBY is now designated and providing service.
@@ -292,7 +291,7 @@ public class AllSeemsWellTest {
 		//It takes 10x the update interval (1 sec) before the watcher will declare the election handler dead
 		//and that just stops forward progress counter.  So, the fp monitor must then run to determine
 		//if the fpc has stalled.  That will take about another 5 sec.
-		Thread.sleep(stalledElectionHandlerSleepTime);
+		sleep(stalledElectionHandlerSleepTime);
 		
 		logger.debug("testAllSeemsWell: After isStalled=true, PDP= {} "
 				+ "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
@@ -302,7 +301,7 @@ public class AllSeemsWellTest {
 		//Now lets resume the election handler
 		DroolsPdpsElectionHandler.setIsStalled(false);
 		
-		Thread.sleep(resumedElectionHandlerSleepTime);
+		sleep(resumedElectionHandlerSleepTime);
 		
 		logger.debug("testAllSeemsWell: After isStalled=false, PDP= {} "
 				+ "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
@@ -312,5 +311,9 @@ public class AllSeemsWellTest {
 		//resumedElectionHandlerSleepTime = 5000;
 		logger.debug("\n\ntestAllSeemsWell: Exiting\n\n");
 
+	}
+
+	private void sleep(long sleepms) throws InterruptedException {
+		Thread.sleep(sleepms);
 	}
 }
