@@ -1,4 +1,4 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
@@ -20,6 +20,24 @@
 
 package org.onap.policy.drools.protocol.coders;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -30,27 +48,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Protocol Coding/Decoding Toolset
@@ -109,7 +110,7 @@ public abstract class ProtocolCoderToolset {
    */
   public ProtocolCoderToolset(String topic, String controllerId, String groupId, String artifactId,
       String codedClass, JsonProtocolFilter filters, CustomCoder customCoder,
-      int modelClassLoaderHash) throws IllegalArgumentException {
+      int modelClassLoaderHash) {
 
     if (topic == null || controllerId == null || groupId == null || artifactId == null
         || codedClass == null || filters == null || topic.isEmpty() || controllerId.isEmpty()) {
@@ -243,8 +244,7 @@ public abstract class ProtocolCoderToolset {
    * @throws UnsupportedOperationException can't filter
    * @throws IllegalArgumentException invalid input
    */
-  protected CoderFilters filter(String json)
-      throws UnsupportedOperationException, IllegalArgumentException, IllegalStateException {
+  protected CoderFilters filter(String json) {
 
 
     // 1. Get list of decoding classes for this controller Id and topic
@@ -297,8 +297,7 @@ public abstract class ProtocolCoderToolset {
    * @throws IllegalArgumentException if an invalid parameter has been received
    * @throws UnsupportedOperationException if parsing into POJO is not possible
    */
-  public abstract Object decode(String json)
-      throws IllegalArgumentException, UnsupportedOperationException, IllegalStateException;
+  public abstract Object decode(String json);
 
   /**
    * Encodes a POJO object into a JSON String
@@ -308,8 +307,7 @@ public abstract class ProtocolCoderToolset {
    * @throws IllegalArgumentException if an invalid parameter has been received
    * @throws UnsupportedOperationException if parsing into POJO is not possible
    */
-  public abstract String encode(Object event)
-      throws IllegalArgumentException, UnsupportedOperationException;
+  public abstract String encode(Object event);
 
   @Override
   public String toString() {
@@ -328,7 +326,11 @@ public abstract class ProtocolCoderToolset {
  * Tools used for encoding/decoding using Jackson
  */
 class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
-  private static Logger logger = LoggerFactory.getLogger(JacksonProtocolCoderToolset.class);
+  private static final String WARN_FETCH_FAILED = "{}: cannot fetch application class {}";
+private static final String WARN_FETCH_FAILED_BECAUSE = "{}: cannot fetch application class {} because of {}";
+private static final String FETCH_FAILED = "cannot fetch application class ";
+private static final String ENCODE_FAILED = "event cannot be encoded";
+private static Logger logger = LoggerFactory.getLogger(JacksonProtocolCoderToolset.class);
   /**
    * decoder
    */
@@ -381,8 +383,7 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
    * {@inheritDoc}
    */
   @Override
-  public Object decode(String json)
-      throws IllegalArgumentException, UnsupportedOperationException, IllegalStateException {
+  public Object decode(String json) {
 
     // 0. Use custom coder if available
 
@@ -408,21 +409,20 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
     try {
       decoderClass = droolsController.fetchModelClass(decoderFilter.getCodedClass());
       if (decoderClass == null) {
-        logger.warn("{}: cannot fetch application class {}", this, decoderFilter.getCodedClass());
+        logger.warn(WARN_FETCH_FAILED, this, decoderFilter.getCodedClass());
         throw new IllegalStateException(
-            "cannot fetch application class " + decoderFilter.getCodedClass());
+            FETCH_FAILED + decoderFilter.getCodedClass());
       }
     } catch (final Exception e) {
-      logger.warn("{}: cannot fetch application class {} because of {}", this,
+      logger.warn(WARN_FETCH_FAILED_BECAUSE, this,
           decoderFilter.getCodedClass(), e.getMessage());
       throw new UnsupportedOperationException(
-          "cannot fetch application class " + decoderFilter.getCodedClass(), e);
+          FETCH_FAILED + decoderFilter.getCodedClass(), e);
     }
 
 
     try {
-      final Object fact = this.decoder.readValue(json, decoderClass);
-      return fact;
+      return this.decoder.readValue(json, decoderClass);
     } catch (final Exception e) {
       logger.warn("{} cannot decode {} into {} because of {}", this, json, decoderClass.getName(),
           e.getMessage(), e);
@@ -435,8 +435,7 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
    * {@inheritDoc}
    */
   @Override
-  public String encode(Object event)
-      throws IllegalArgumentException, UnsupportedOperationException {
+  public String encode(Object event) {
 
     // 0. Use custom coder if available
 
@@ -446,11 +445,10 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
     }
 
     try {
-      final String encodedEvent = this.encoder.writeValueAsString(event);
-      return encodedEvent;
+      return this.encoder.writeValueAsString(event);
     } catch (final JsonProcessingException e) {
       logger.error("{} cannot encode {} because of {}", this, event, e.getMessage(), e);
-      throw new UnsupportedOperationException("event cannot be encoded");
+      throw new UnsupportedOperationException(ENCODE_FAILED);
     }
   }
 
@@ -491,7 +489,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
       implements JsonSerializer<ZonedDateTime>, JsonDeserializer<ZonedDateTime> {
     @Override
     public ZonedDateTime deserialize(JsonElement element, Type type,
-        JsonDeserializationContext context) throws JsonParseException {
+        JsonDeserializationContext context) {
       try {
         return ZonedDateTime.parse(element.getAsString(), format);
       } catch (final Exception e) {
@@ -511,8 +509,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
       implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
 
     @Override
-    public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-        throws JsonParseException {
+    public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
       return Instant.ofEpochMilli(json.getAsLong());
     }
 
@@ -578,8 +575,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
    * {@inheritDoc}
    */
   @Override
-  public Object decode(String json)
-      throws IllegalArgumentException, UnsupportedOperationException, IllegalStateException {
+  public Object decode(String json) {
 
     final DroolsController droolsController =
         DroolsController.factory.get(this.groupId, this.artifactId, "");
@@ -617,8 +613,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
         final Object gsonObject = gsonField.get(null);
         final Method fromJsonMethod = gsonObject.getClass().getDeclaredMethod("fromJson",
             new Class[] {String.class, Class.class});
-        final Object fact = fromJsonMethod.invoke(gsonObject, json, decoderClass);
-        return fact;
+        return fromJsonMethod.invoke(gsonObject, json, decoderClass);
       } catch (final Exception e) {
         logger.warn("{}: cannot fetch application class {} because of {}", this,
             decoderFilter.getCodedClass(), e.getMessage());
@@ -627,8 +622,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
       }
     } else {
       try {
-        final Object fact = this.decoder.fromJson(json, decoderClass);
-        return fact;
+        return this.decoder.fromJson(json, decoderClass);
       } catch (final Exception e) {
         logger.warn("{} cannot decode {} into {} because of {}", this, json, decoderClass.getName(),
             e.getMessage(), e);
@@ -644,8 +638,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
    * {@inheritDoc}
    */
   @Override
-  public String encode(Object event)
-      throws IllegalArgumentException, UnsupportedOperationException {
+  public String encode(Object event) {
 
     if (this.customCoder != null) {
       try {
@@ -657,8 +650,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
         final Object gsonObject = gsonField.get(null);
         final Method toJsonMethod =
             gsonObject.getClass().getDeclaredMethod("toJson", new Class[] {Object.class});
-        final String encodedJson = (String) toJsonMethod.invoke(gsonObject, event);
-        return encodedJson;
+        return (String) toJsonMethod.invoke(gsonObject, event);
       } catch (final Exception e) {
         logger.warn("{} cannot custom-encode {} because of {}", this, event, e.getMessage(), e);
         throw new UnsupportedOperationException("event cannot be encoded", e);

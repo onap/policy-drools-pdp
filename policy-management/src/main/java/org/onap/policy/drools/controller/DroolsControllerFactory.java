@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -207,7 +207,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 	protected List<TopicCoderFilterConfiguration> codersAndFilters
 					(Properties properties, List<? extends Topic> topicEntities) {
 		
-		String PROPERTY_TOPIC_ENTITY_PREFIX;
+		String propertyTopicEntityPrefix;
 		
 		List<TopicCoderFilterConfiguration>
 			topics2DecodedClasses2Filters = new ArrayList<>();
@@ -222,19 +222,19 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 			CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
 			if (commInfra == CommInfrastructure.UEB) {
 				if (isSource) {
-					PROPERTY_TOPIC_ENTITY_PREFIX = PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
+					propertyTopicEntityPrefix = PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
 				} else {
-					PROPERTY_TOPIC_ENTITY_PREFIX = PolicyProperties.PROPERTY_UEB_SINK_TOPICS + ".";
+					propertyTopicEntityPrefix = PolicyProperties.PROPERTY_UEB_SINK_TOPICS + ".";
 				}
 			} else if (commInfra == CommInfrastructure.DMAAP) {
 				if (isSource) {
-					PROPERTY_TOPIC_ENTITY_PREFIX = PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
+					propertyTopicEntityPrefix = PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
 				} else {
-					PROPERTY_TOPIC_ENTITY_PREFIX = PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
+					propertyTopicEntityPrefix = PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
 				}
 			} else if (commInfra == CommInfrastructure.NOOP) {
 				if (!isSource)
-					PROPERTY_TOPIC_ENTITY_PREFIX = PolicyProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
+					propertyTopicEntityPrefix = PolicyProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
 				else
 					continue;
 			} else {
@@ -249,7 +249,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 			//     instead of the ones provided in the platform
 
 			String customGson = properties.getProperty
-					(PROPERTY_TOPIC_ENTITY_PREFIX + 
+					(propertyTopicEntityPrefix + 
 					 aTopic + 
 					 PolicyProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
 			
@@ -264,7 +264,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 			}
 			
 			String customJackson = properties.getProperty
-					(PROPERTY_TOPIC_ENTITY_PREFIX + 
+					(propertyTopicEntityPrefix + 
 					 aTopic + 
 					 PolicyProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_JACKSON_SUFFIX);
 			
@@ -281,7 +281,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 			// 3. second the list of classes associated with each topic
 			
 			String eventClasses = 
-					properties.getProperty(PROPERTY_TOPIC_ENTITY_PREFIX + aTopic + PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
+					properties.getProperty(propertyTopicEntityPrefix + aTopic + PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
 			
 			if (eventClasses == null || eventClasses.isEmpty()) {
 				// TODO warn
@@ -299,7 +299,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 				// 4. third, for each coder class, get the list of field filters
 				
 				String filter = properties.getProperty
-						(PROPERTY_TOPIC_ENTITY_PREFIX + 
+						(propertyTopicEntityPrefix + 
 						 aTopic + 
 						 PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX + 
 						 "." + aClass + 
@@ -509,9 +509,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
 	@Override
 	public List<DroolsController> inventory() {
-		 List<DroolsController> controllers = 
-				 new ArrayList<>(this.droolsControllers.values());
-		 return controllers;
+		 return new ArrayList<>(this.droolsControllers.values());
 	}
 	
 	@Override

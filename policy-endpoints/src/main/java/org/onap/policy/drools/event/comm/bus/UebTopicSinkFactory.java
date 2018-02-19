@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,6 +116,8 @@ public interface UebTopicSinkFactory {
  * Factory of UEB Reader Topics indexed by topic name
  */
 class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
+	private static final String MISSING_TOPIC = "A topic must be provided";
+
 	/**
 	 * Logger 
 	 */
@@ -142,7 +144,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 		}
 
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized (this) {
@@ -245,7 +247,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	public void destroy(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		UebTopicSink uebTopicWriter;
@@ -276,7 +278,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 	public UebTopicSink get(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -290,9 +292,7 @@ class IndexedUebTopicSinkFactory implements UebTopicSinkFactory {
 
 	@Override
 	public synchronized List<UebTopicSink> inventory() {
-		 List<UebTopicSink> writers = 
-				 new ArrayList<>(this.uebTopicSinks.values());
-		 return writers;
+		 return new ArrayList<>(this.uebTopicSinks.values());
 	}
 
 

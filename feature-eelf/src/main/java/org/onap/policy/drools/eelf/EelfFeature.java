@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-eelf
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.onap.policy.drools.system.PolicyEngine;
 public class EelfFeature implements PolicyEngineFeatureAPI {
 
 	@Override
-	final public boolean beforeBoot(PolicyEngine engine, String cliArgs[]) {
+	public final boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
 		
 		String logback = System.getProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, 
 				                            Main.LOGBACK_CONFIGURATION_FILE_DEFAULT);		
@@ -53,15 +53,16 @@ public class EelfFeature implements PolicyEngineFeatureAPI {
 		Logger logger = FlexLogger.getLogger(this.getClass(), true);
 		
 		if (logger.isInfoEnabled()) {
-			logger.info("eelf-feature: Property " + Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY + "=" + 
-			            System.getProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY));
-			logger.info("eelf-feature: Property " + Configuration.PROPERTY_LOGGING_FILE_PATH + "=" + 
-		                System.getProperty(Configuration.PROPERTY_LOGGING_FILE_PATH));
-			logger.info("eelf-feature: Property " + Configuration.PROPERTY_LOGGING_FILE_NAME + "=" + 
-	                    System.getProperty(Configuration.PROPERTY_LOGGING_FILE_NAME));
+			logProperty(logger, Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY);
+			logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_PATH);
+			logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_NAME);
 		}
 		
 		return false;
+	}
+	
+	private void logProperty(Logger logger, String propnm) {
+		logger.info("eelf-feature: Property " + propnm + "=" + System.getProperty(propnm));
 	}
 	
 	@Override

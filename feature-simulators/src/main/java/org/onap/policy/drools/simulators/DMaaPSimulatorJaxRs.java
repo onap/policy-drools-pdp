@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-simulators
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 @Path("/events")
 public class DMaaPSimulatorJaxRs {
 	
+	private static final String NO_DATA_MSG = "No Data";
 	private static final Map<String, BlockingQueue<String>> queues = new ConcurrentHashMap<>();
 	private static final Logger logger = LoggerFactory.getLogger(DMaaPSimulatorJaxRs.class);
 	private static int responseCode = 200;
@@ -57,7 +58,6 @@ public class DMaaPSimulatorJaxRs {
         try {
             httpResponse.flushBuffer();
         } catch (IOException e) {
-            final Logger logger = LoggerFactory.getLogger(DMaaPSimulatorJaxRs.class);
             logger.error("flushBuffer threw: ", e);
             return "Got an error";
         }
@@ -68,14 +68,15 @@ public class DMaaPSimulatorJaxRs {
 	    }
 		if (queues.containsKey(topicName)) {
 			BlockingQueue<String> queue = queues.get(topicName);
-			String response = "No Data";
+			String response = NO_DATA_MSG;
 			try {
 				response = queue.poll(timeout, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
 				logger.debug("error in DMaaP simulator", e);
+				Thread.currentThread().interrupt();
 			}
 			if (response == null) {
-			    response = "No Data";
+			    response = NO_DATA_MSG;
 			}
 			return response;
 		}
@@ -86,12 +87,13 @@ public class DMaaPSimulatorJaxRs {
 					BlockingQueue<String> queue = queues.get(topicName);
 					String response = queue.poll();
 					if (response == null) {
-					    response = "No Data";
+					    response = NO_DATA_MSG;
 					}
 					return response;
 				}
 			} catch (InterruptedException e) {
 				logger.debug("error in DMaaP simulator", e);
+				Thread.currentThread().interrupt();
 			}
 		}
 		return "No topic";

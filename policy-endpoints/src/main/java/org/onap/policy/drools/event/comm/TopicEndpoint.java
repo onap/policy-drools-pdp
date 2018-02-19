@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * the System.
  */
 public interface TopicEndpoint extends Startable, Lockable {
+
+  /**
+   * singleton for global access
+   */
+  public static final TopicEndpoint manager = new ProxyTopicEndpointManager();
 
   /**
    * Add Topic Sources to the communication infrastructure initialized per properties
@@ -90,8 +95,7 @@ public interface TopicEndpoint extends Startable, Lockable {
    * @throws IllegalArgumentException if invalid parameters are present
    * @throws UnsupportedOperationException if the operation is not supported.
    */
-  public TopicSource getTopicSource(Topic.CommInfrastructure commType, String topicName)
-      throws UnsupportedOperationException;
+  public TopicSource getTopicSource(Topic.CommInfrastructure commType, String topicName);
 
   /**
    * get the UEB Topic Source for the given topic name
@@ -138,8 +142,7 @@ public interface TopicEndpoint extends Startable, Lockable {
    *         TopicWriters for a topic name and communication infrastructure
    * @throws IllegalArgumentException if invalid parameters are present
    */
-  public TopicSink getTopicSink(Topic.CommInfrastructure commType, String topicName)
-      throws UnsupportedOperationException;
+  public TopicSink getTopicSink(Topic.CommInfrastructure commType, String topicName);
 
   /**
    * get the Topic Sinks for the given topic name and all the underlying communication
@@ -232,11 +235,6 @@ public interface TopicEndpoint extends Startable, Lockable {
    * @return the NOOP Topic Sinks List
    */
   public List<NoopTopicSink> getNoopTopicSinks();
-
-  /**
-   * singleton for global access
-   */
-  public static final TopicEndpoint manager = new ProxyTopicEndpointManager();
 }
 
 
@@ -552,17 +550,14 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
   }
 
   @Override
-  public TopicSource getTopicSource(Topic.CommInfrastructure commType, String topicName)
-      throws UnsupportedOperationException {
+  public TopicSource getTopicSource(Topic.CommInfrastructure commType, String topicName) {
 
     if (commType == null) {
-      throw new IllegalArgumentException(
-          "Invalid parameter: a communication infrastructure required to fetch " + topicName);
+      throw parmException(topicName);
     }
 
     if (topicName == null) {
-      throw new IllegalArgumentException(
-          "Invalid parameter: a communication infrastructure required to fetch " + topicName);
+      throw parmException(topicName);
     }
 
     switch (commType) {
@@ -575,17 +570,19 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
     }
   }
 
-  @Override
-  public TopicSink getTopicSink(Topic.CommInfrastructure commType, String topicName)
-      throws UnsupportedOperationException {
-    if (commType == null) {
-      throw new IllegalArgumentException(
+  private IllegalArgumentException parmException(String topicName) {
+	return new IllegalArgumentException(
           "Invalid parameter: a communication infrastructure required to fetch " + topicName);
+  }
+
+  @Override
+  public TopicSink getTopicSink(Topic.CommInfrastructure commType, String topicName) {
+    if (commType == null) {
+      throw parmException(topicName);
     }
 
     if (topicName == null) {
-      throw new IllegalArgumentException(
-          "Invalid parameter: a communication infrastructure required to fetch " + topicName);
+      throw parmException(topicName);
     }
 
     switch (commType) {
@@ -603,8 +600,7 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
   @Override
   public List<TopicSink> getTopicSinks(String topicName) {
     if (topicName == null) {
-      throw new IllegalArgumentException(
-          "Invalid parameter: a communication infrastructure required to fetch " + topicName);
+      throw parmException(topicName);
     }
 
     final List<TopicSink> sinks = new ArrayList<>();
@@ -612,23 +608,27 @@ class ProxyTopicEndpointManager implements TopicEndpoint {
     try {
       sinks.add(this.getUebTopicSink(topicName));
     } catch (final Exception e) {
-      logger.debug("No sink for topic: {}", topicName, e);
+      logNoSink(topicName, e);
     }
 
     try {
       sinks.add(this.getDmaapTopicSink(topicName));
     } catch (final Exception e) {
-      logger.debug("No sink for topic: {}", topicName, e);
+      logNoSink(topicName, e);
     }
 
     try {
       sinks.add(this.getNoopTopicSink(topicName));
     } catch (final Exception e) {
-      logger.debug("No sink for topic: {}", topicName, e);
+      logNoSink(topicName, e);
     }
 
     return sinks;
   }
+
+private void logNoSink(String topicName, Exception ex) {
+	logger.debug("No sink for topic: {}", topicName, ex);
+}
 
   @Override
   public UebTopicSource getUebTopicSource(String topicName) {

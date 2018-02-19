@@ -20,16 +20,13 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +43,11 @@ import org.onap.policy.drools.util.KieUtils;
 import org.onap.policy.drools.utils.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * ProtocolCoder Toolset JUNITs
@@ -157,7 +159,8 @@ public class ProtocolCoderToolsetTest {
         decode(protocolFilter, coderToolset, triple, tripleEncoded);
     }
 
-    private void decode(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset,
+    @SuppressWarnings("unchecked")
+	private void decode(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset,
                         Triple<String, String, String> triple, String tripleEncoded) {
 
         Triple<String, String, String> tripleDecoded = null;
@@ -273,9 +276,8 @@ public class ProtocolCoderToolsetTest {
         droolsControllerConfig.put(PolicyProperties.PROPERTY_NOOP_SINK_TOPICS + "." +
                 JUNIT_PROTOCOL_CODER_TOPIC + PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX,
             Triple.class.getCanonicalName());
-
-        DroolsController droolsController =
-            DroolsController.factory.build(droolsControllerConfig, null, noopTopics);
+        
+        DroolsController.factory.build(droolsControllerConfig, null, noopTopics);
     }
 
     private JsonProtocolFilter createFilterSet() {

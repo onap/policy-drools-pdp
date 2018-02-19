@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@
 package org.onap.policy.drools.persistence;
 
 public class DroolsPersistenceProperties {
-	private DroolsPersistenceProperties() {
-	}
 	/*
 	 * feature-session-persistence.properties parameter key values
 	 */
@@ -32,4 +30,8 @@ public class DroolsPersistenceProperties {
 	public static final String DB_PWD = "javax.persistence.jdbc.password";
 	public static final String DB_SESSIONINFO_TIMEOUT = "persistence.sessioninfo.timeout";
 	public static final String JTA_OBJECTSTORE_DIR = "persistence.objectstore.dir";
+
+	private DroolsPersistenceProperties() {
+		super();
+	}
 }

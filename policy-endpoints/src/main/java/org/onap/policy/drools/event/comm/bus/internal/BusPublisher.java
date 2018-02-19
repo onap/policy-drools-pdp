@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public interface BusPublisher {
 	 * @return true if success, false otherwise
 	 * @throws IllegalArgumentException if no message provided
 	 */
-	public boolean send(String partitionId, String message) throws IllegalArgumentException;
+	public boolean send(String partitionId, String message);
 	
 	/**
 	 * closes the publisher
@@ -73,7 +73,7 @@ public interface BusPublisher {
 		
 		public CambriaPublisherWrapper(List<String> servers, String topic,
 						               String apiKey,
-						               String apiSecret, boolean useHttps) throws IllegalArgumentException {
+						               String apiSecret, boolean useHttps) {
 			PublisherBuilder builder = new CambriaClientBuilders.PublisherBuilder();
 		
 
@@ -105,8 +105,7 @@ public interface BusPublisher {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean send(String partitionId, String message) 
-				throws IllegalArgumentException {
+		public boolean send(String partitionId, String message) {
 			if (message == null)
 				throw new IllegalArgumentException("No message provided");
 			
@@ -169,7 +168,7 @@ public interface BusPublisher {
 		public DmaapPublisherWrapper(ProtocolTypeConstants protocol,
 									 List<String> servers, String topic,
 				                     String username,
-				                     String password, boolean useHttps) throws IllegalArgumentException {
+				                     String password, boolean useHttps) {
 
 			
 			if (topic == null || topic.isEmpty())
@@ -260,8 +259,7 @@ public interface BusPublisher {
 		 * {@inheritDoc}
 		 */
 		@Override
-		public boolean send(String partitionId, String message) 
-				throws IllegalArgumentException {
+		public boolean send(String partitionId, String message) {
 			if (message == null)
 				throw new IllegalArgumentException("No message provided");
 			
@@ -322,17 +320,13 @@ public interface BusPublisher {
 			String dme2RouteOffer = additionalProps.get(DmaapTopicSinkFactory.DME2_ROUTE_OFFER_PROPERTY);
 			
 			 if (environment == null || environment.isEmpty()) {
-				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
-						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX + " property for DME2 in DMaaP");
+					throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX);
 			} if (aftEnvironment == null || aftEnvironment.isEmpty()) {
-				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
-						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX + " property for DME2 in DMaaP");
+				throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX);
 			} if (latitude == null || latitude.isEmpty()) {
-				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
-						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX + " property for DME2 in DMaaP");
+				throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX);
 			} if (longitude == null || longitude.isEmpty()) {
-				throw new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
-						"." + topic + PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX + " property for DME2 in DMaaP");
+				throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX);
 			}
 			
 			if ((dme2Partner == null || dme2Partner.isEmpty()) && (dme2RouteOffer == null || dme2RouteOffer.isEmpty())) {
@@ -380,6 +374,12 @@ public interface BusPublisher {
 			}
 			
 			this.publisher.setProps(props);
+		}
+		
+		private IllegalArgumentException parmException(String topic, String propnm) {
+			return new IllegalArgumentException("Missing " + PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS +
+					"." + topic + propnm + " property for DME2 in DMaaP");
+			
 		}
 	}
 }

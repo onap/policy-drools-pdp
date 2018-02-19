@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,6 +167,8 @@ public interface DmaapTopicSinkFactory {
  * Factory of DMAAP Reader Topics indexed by topic name
  */
 class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
+	private static final String MISSING_TOPIC = "A topic must be provided";
+
 	/**
 	 * Logger
 	 */
@@ -196,7 +198,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 								boolean allowSelfSignedCerts) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized (this) {
@@ -230,7 +232,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 								boolean useHttps, boolean allowSelfSignedCerts) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized (this) {
@@ -277,7 +279,8 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 				                                        PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				
 				List<String> serverList;
-				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
+				if (servers != null && !servers.isEmpty())
+					serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				else serverList = new ArrayList<>();
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SINK_TOPICS + 
@@ -404,7 +407,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 	public void destroy(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		DmaapTopicSink dmaapTopicWriter;
@@ -435,7 +438,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 	public DmaapTopicSink get(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -449,9 +452,7 @@ class IndexedDmaapTopicSinkFactory implements DmaapTopicSinkFactory {
 
 	@Override
 	public synchronized List<DmaapTopicSink> inventory() {
-		 List<DmaapTopicSink> writers = 
-				 new ArrayList<>(this.dmaapTopicWriters.values());
-		 return writers;
+		 return new ArrayList<>(this.dmaapTopicWriters.values());
 	}
 
 	@Override

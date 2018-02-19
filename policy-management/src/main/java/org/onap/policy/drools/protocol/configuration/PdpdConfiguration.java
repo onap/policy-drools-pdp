@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class PdpdConfiguration {
     private List<ControllerConfiguration> controllers = new ArrayList<>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    protected final static Object NOT_FOUND_VALUE = new Object();
+    protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
      * No args constructor for use in serialization
@@ -197,8 +197,7 @@ public class PdpdConfiguration {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-	protected boolean declaredProperty(String name, Object value) {
+    protected boolean declaredProperty(String name, Object value) {
         switch (name) {
             case "requestID":
                 callSetRequestId(value);
@@ -262,7 +261,7 @@ public class PdpdConfiguration {
         if (other == this) {
             return true;
         }
-        if ((other instanceof PdpdConfiguration) == false) {
+        if (!(other instanceof PdpdConfiguration)) {
             return false;
         }
         PdpdConfiguration rhs = (PdpdConfiguration) other;
@@ -285,7 +284,8 @@ public class PdpdConfiguration {
         }       
     }
 
-    public void callSetControllers(Object value) {
+    @SuppressWarnings("unchecked")
+	public void callSetControllers(Object value) {
         if (value instanceof List) {
             setControllers((List<ControllerConfiguration> ) value);
         } else {

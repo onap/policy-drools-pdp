@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,11 @@ import com.google.gson.GsonBuilder;
  */
 public interface PolicyEngine extends Startable, Lockable, TopicListener {
   /**
+   * Policy Engine Manager
+   */
+  public static final PolicyEngine manager = new PolicyEngineManager();
+  
+  /**
    * Default Telemetry Server Port
    */
   public static final int TELEMETRY_SERVER_DEFAULT_PORT = 9696;
@@ -86,7 +91,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    *
    * @param cliArgs command line arguments
    */
-  public void boot(String cliArgs[]);
+  public void boot(String[] cliArgs);
 
   /**
    * configure the policy engine according to the given properties
@@ -246,8 +251,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    *
    * @return the feature
    */
-  public PolicyEngineFeatureAPI getFeatureProvider(String featureName)
-      throws IllegalArgumentException;
+  public PolicyEngineFeatureAPI getFeatureProvider(String featureName);
 
   /**
    * get features attached to the Policy Engine
@@ -267,8 +271,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    * @throws IllegalStateException when the engine is in a state where this operation is not
    *         permitted (ie. locked or stopped).
    */
-  public boolean deliver(String topic, Object event)
-      throws IllegalArgumentException, IllegalStateException;
+  public boolean deliver(String topic, Object event);
 
   /**
    * Attempts the dispatching of an "event" object over communication infrastructure "busType"
@@ -284,8 +287,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
    *         missing (ie. communication infrastructure not supported.
    */
-  public boolean deliver(String busType, String topic, Object event)
-      throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException;
+  public boolean deliver(String busType, String topic, Object event);
 
   /**
    * Attempts the dispatching of an "event" object over communication infrastructure "busType"
@@ -301,8 +303,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
    *         missing (ie. communication infrastructure not supported.
    */
-  public boolean deliver(CommInfrastructure busType, String topic, Object event)
-      throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException;
+  public boolean deliver(CommInfrastructure busType, String topic, Object event);
 
   /**
    * Attempts delivering of an String over communication infrastructure "busType"
@@ -318,8 +319,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
    *         missing (ie. communication infrastructure not supported.
    */
-  public boolean deliver(CommInfrastructure busType, String topic, String event)
-      throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException;
+  public boolean deliver(CommInfrastructure busType, String topic, String event);
 
   /**
    * Invoked when the host goes into the active state.
@@ -337,11 +337,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
    * @return policy engine configuration
    */
   public Properties defaultTelemetryConfig();
-
-  /**
-   * Policy Engine Manager
-   */
-  public final static PolicyEngine manager = new PolicyEngineManager();
 }
 
 
@@ -349,7 +344,15 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
  * Policy Engine Manager Implementation
  */
 class PolicyEngineManager implements PolicyEngine {
-  /**
+  private static final String INVALID_TOPIC_MSG = "Invalid Topic";
+
+private static final String INVALID_EVENT_MSG = "Invalid Event";
+
+private static final String ENGINE_STOPPED_MSG = "Policy Engine is stopped";
+
+private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
+
+/**
    * logger
    */
   private static final Logger logger = LoggerFactory.getLogger(PolicyEngineManager.class);
@@ -396,7 +399,7 @@ class PolicyEngineManager implements PolicyEngine {
 
 
   @Override
-  public synchronized void boot(String cliArgs[]) {
+  public synchronized void boot(String[] cliArgs) {
 
     for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
       try {
@@ -531,8 +534,7 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public synchronized PolicyController createPolicyController(String name, Properties properties)
-      throws IllegalArgumentException, IllegalStateException {
+  public synchronized PolicyController createPolicyController(String name, Properties properties) {
 
     String tempName = name;
     // check if a PROPERTY_CONTROLLER_NAME property is present
@@ -601,8 +603,7 @@ class PolicyEngineManager implements PolicyEngine {
 
   @Override
   public List<PolicyController> updatePolicyControllers(
-      List<ControllerConfiguration> configControllers)
-      throws IllegalArgumentException, IllegalStateException {
+      List<ControllerConfiguration> configControllers) {
 
     final List<PolicyController> policyControllers = new ArrayList<>();
     if (configControllers == null || configControllers.isEmpty()) {
@@ -739,7 +740,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     boolean success = true;
     if (this.locked)
-      throw new IllegalStateException("Engine is locked");
+      throw new IllegalStateException(ENGINE_LOCKED_MSG);
 
     this.alive = true;
 
@@ -1199,24 +1200,23 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public boolean deliver(String topic, Object event)
-      throws IllegalArgumentException, IllegalStateException {
+  public boolean deliver(String topic, Object event) {
 
     /*
      * Note this entry point is usually from the DRL
      */
 
     if (topic == null || topic.isEmpty())
-      throw new IllegalArgumentException("Invalid Topic");
+      throw new IllegalArgumentException(INVALID_TOPIC_MSG);
 
     if (event == null)
-      throw new IllegalArgumentException("Invalid Event");
+      throw new IllegalArgumentException(INVALID_EVENT_MSG);
 
     if (!this.isAlive())
-      throw new IllegalStateException("Policy Engine is stopped");
+      throw new IllegalStateException(ENGINE_STOPPED_MSG);
 
     if (this.isLocked())
-      throw new IllegalStateException("Policy Engine is locked");
+      throw new IllegalStateException(ENGINE_LOCKED_MSG);
 
     final List<? extends TopicSink> topicSinks = TopicEndpoint.manager.getTopicSinks(topic);
     if (topicSinks == null || topicSinks.isEmpty() || topicSinks.size() > 1)
@@ -1227,8 +1227,7 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public boolean deliver(String busType, String topic, Object event)
-      throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+  public boolean deliver(String busType, String topic, Object event) {
 
     /*
      * Note this entry point is usually from the DRL (one of the reasons busType is String.
@@ -1238,10 +1237,10 @@ class PolicyEngineManager implements PolicyEngine {
       throw new IllegalArgumentException("Invalid Communication Infrastructure");
 
     if (topic == null || topic.isEmpty())
-      throw new IllegalArgumentException("Invalid Topic");
+      throw new IllegalArgumentException(INVALID_TOPIC_MSG);
 
     if (event == null)
-      throw new IllegalArgumentException("Invalid Event");
+      throw new IllegalArgumentException(INVALID_EVENT_MSG);
 
     boolean valid = false;
     for (final Topic.CommInfrastructure comm : Topic.CommInfrastructure.values()) {
@@ -1255,30 +1254,29 @@ class PolicyEngineManager implements PolicyEngine {
 
 
     if (!this.isAlive())
-      throw new IllegalStateException("Policy Engine is stopped");
+      throw new IllegalStateException(ENGINE_STOPPED_MSG);
 
     if (this.isLocked())
-      throw new IllegalStateException("Policy Engine is locked");
+      throw new IllegalStateException(ENGINE_LOCKED_MSG);
 
 
     return this.deliver(Topic.CommInfrastructure.valueOf(busType), topic, event);
   }
 
   @Override
-  public boolean deliver(Topic.CommInfrastructure busType, String topic, Object event)
-      throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+  public boolean deliver(Topic.CommInfrastructure busType, String topic, Object event) {
 
     if (topic == null || topic.isEmpty())
-      throw new IllegalArgumentException("Invalid Topic");
+      throw new IllegalArgumentException(INVALID_TOPIC_MSG);
 
     if (event == null)
-      throw new IllegalArgumentException("Invalid Event");
+      throw new IllegalArgumentException(INVALID_EVENT_MSG);
 
     if (!this.isAlive())
-      throw new IllegalStateException("Policy Engine is stopped");
+      throw new IllegalStateException(ENGINE_STOPPED_MSG);
 
     if (this.isLocked())
-      throw new IllegalStateException("Policy Engine is locked");
+      throw new IllegalStateException(ENGINE_LOCKED_MSG);
 
     /*
      * Try to send through the controller, this is the preferred way, since it may want to apply
@@ -1312,20 +1310,19 @@ class PolicyEngineManager implements PolicyEngine {
   }
 
   @Override
-  public boolean deliver(Topic.CommInfrastructure busType, String topic, String event)
-      throws IllegalArgumentException, IllegalStateException, UnsupportedOperationException {
+  public boolean deliver(Topic.CommInfrastructure busType, String topic, String event) {
 
     if (topic == null || topic.isEmpty())
-      throw new IllegalArgumentException("Invalid Topic");
+      throw new IllegalArgumentException(INVALID_TOPIC_MSG);
 
     if (event == null || event.isEmpty())
-      throw new IllegalArgumentException("Invalid Event");
+      throw new IllegalArgumentException(INVALID_EVENT_MSG);
 
     if (!this.isAlive())
-      throw new IllegalStateException("Policy Engine is stopped");
+      throw new IllegalStateException(ENGINE_STOPPED_MSG);
 
     if (this.isLocked())
-      throw new IllegalStateException("Policy Engine is locked");
+      throw new IllegalStateException(ENGINE_LOCKED_MSG);
 
     try {
       final TopicSink sink = TopicEndpoint.manager.getTopicSink(busType, topic);

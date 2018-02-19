@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,12 @@ import org.onap.policy.drools.utils.OrderedService;
 import org.onap.policy.drools.utils.OrderedServiceImpl;
 
 public interface PolicyControllerFeatureAPI extends OrderedService {
+	  
+	  /**
+	   * Feature providers implementing this interface
+	   */
+	  public static final OrderedServiceImpl<PolicyControllerFeatureAPI> providers = 
+			  						new OrderedServiceImpl<PolicyControllerFeatureAPI>(PolicyControllerFeatureAPI.class);
 
 	  /**
 	   * called before creating a controller with name 'name' and 
@@ -212,11 +218,4 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
 							              String topic,
 							              Object event, 
 							              boolean success) {return false;}
-
-	  
-	  /**
-	   * Feature providers implementing this interface
-	   */
-	  public static final OrderedServiceImpl<PolicyControllerFeatureAPI> providers = 
-			  						new OrderedServiceImpl<PolicyControllerFeatureAPI>(PolicyControllerFeatureAPI.class);
 }

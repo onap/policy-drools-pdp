@@ -58,7 +58,7 @@ public class Main {
    * @param args program arguments
    * @throws IOException
    */
-  public static void main(String args[]) {
+  public static void main(String[] args) {
 
     /* logging defaults */
 

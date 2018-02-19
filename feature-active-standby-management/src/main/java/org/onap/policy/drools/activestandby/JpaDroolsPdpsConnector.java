@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 			em.getTransaction().begin();
 			Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p");
 			List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
-			LinkedList<DroolsPdp> droolsPdpsReturnList = new LinkedList<DroolsPdp>();
+			LinkedList<DroolsPdp> droolsPdpsReturnList = new LinkedList<>();
 			for(Object o : droolsPdpsList){
 				if(o instanceof DroolsPdp){
 					//Make sure it is not a cached version
@@ -613,23 +613,21 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 	 */
 	private static void cleanup(EntityManager em, String method)
 	{
-		if (em != null) {
-			if (em.isOpen()) {
-				if (em.getTransaction().isActive()) {
-					// there is an active EntityTransaction -- roll it back
-					try {
-						em.getTransaction().rollback();
-					} catch (Exception e) {
-						logger.error(method + ": Caught Exception attempting to rollback EntityTransaction,", e);
-					}
-				}
-
-				// now, close the EntityManager
+		if (em != null && em.isOpen()) {
+			if (em.getTransaction().isActive()) {
+				// there is an active EntityTransaction -- roll it back
 				try {
-					em.close();
+					em.getTransaction().rollback();
 				} catch (Exception e) {
-					logger.error(method + ": Caught Exception attempting to close EntityManager, ", e);
+					logger.error(method + ": Caught Exception attempting to rollback EntityTransaction,", e);
 				}
+			}
+
+			// now, close the EntityManager
+			try {
+				em.close();
+			} catch (Exception e) {
+				logger.error(method + ": Caught Exception attempting to close EntityManager, ", e);
 			}
 		}
 	}
