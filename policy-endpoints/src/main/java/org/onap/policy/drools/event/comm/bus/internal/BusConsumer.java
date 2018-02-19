@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,8 +101,7 @@ public interface BusConsumer {
      */
     public CambriaConsumerWrapper(List<String> servers, String topic, String apiKey,
         String apiSecret, String consumerGroup, String consumerInstance, int fetchTimeout,
-        int fetchLimit, boolean useHttps, boolean useSelfSignedCerts)
-        throws IllegalArgumentException {
+        int fetchLimit, boolean useHttps, boolean useSelfSignedCerts) {
 
       this.fetchTimeout = fetchTimeout;
 
@@ -368,27 +367,16 @@ public interface BusConsumer {
           additionalProps.get(DmaapTopicSinkFactory.DME2_ROUTE_OFFER_PROPERTY);
 
       if (environment == null || environment.isEmpty()) {
-        throw new IllegalArgumentException(
-            "Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
-                + PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX
-                + " property for DME2 in DMaaP");
+          throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX);
       }
       if (aftEnvironment == null || aftEnvironment.isEmpty()) {
-        throw new IllegalArgumentException(
-            "Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
-                + PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX
-                + " property for DME2 in DMaaP");
+          throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX);
       }
       if (latitude == null || latitude.isEmpty()) {
-        throw new IllegalArgumentException("Missing "
-            + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
-            + PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX + " property for DME2 in DMaaP");
+        throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX);
       }
       if (longitude == null || longitude.isEmpty()) {
-        throw new IllegalArgumentException(
-            "Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
-                + PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX
-                + " property for DME2 in DMaaP");
+    	throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX);
       }
 
       if ((dme2Partner == null || dme2Partner.isEmpty())
@@ -458,6 +446,13 @@ public interface BusConsumer {
       this.consumer.setProps(props);
 
       logger.info("{}: CREATION", this);
+    }
+    
+    private IllegalArgumentException parmException(String topic, String propnm) {
+        return new IllegalArgumentException(
+                "Missing " + PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "." + topic
+                    + propnm + " property for DME2 in DMaaP");
+    	
     }
   }
 }

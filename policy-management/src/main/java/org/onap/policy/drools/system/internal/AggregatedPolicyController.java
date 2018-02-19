@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,8 +111,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 * 
 	 * @throws IllegalArgumentException when invalid arguments are provided
 	 */
-	public AggregatedPolicyController(String name, Properties properties) 
-			throws IllegalArgumentException {
+	public AggregatedPolicyController(String name, Properties properties) {
 		
 		this.name = name;
 		
@@ -139,7 +138,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 * initialize drools layer
 	 * @throws IllegalArgumentException if invalid parameters are passed in
 	 */
-	protected void initDrools(Properties properties) throws IllegalArgumentException {
+	protected void initDrools(Properties properties) {
 		try {
 			// Register with drools infrastructure
 			this.droolsController = DroolsController.factory.build(properties, sources, sinks);
@@ -153,7 +152,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 * initialize sinks
 	 * @throws IllegalArgumentException if invalid parameters are passed in
 	 */
-	protected void initSinks() throws IllegalArgumentException {
+	protected void initSinks() {
 		this.topic2Sinks.clear();
 		for (TopicSink sink: sinks) {
 			this.topic2Sinks.put(sink.getTopic(), sink);
@@ -224,7 +223,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean start() throws IllegalStateException {		
+	public boolean start() {		
 		logger.info("{}: start", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
@@ -328,7 +327,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		logger.info("{}: shutdown", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
@@ -360,7 +359,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void halt() throws IllegalStateException {
+	public void halt() {
 		logger.info("{}: halt", this);
 		
 		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
@@ -432,9 +431,7 @@ public class AggregatedPolicyController implements PolicyController,
 	 */
 	@Override
 	public boolean deliver(Topic.CommInfrastructure commType, 
-			               String topic, Object event)
-		throws IllegalArgumentException, IllegalStateException,
-               UnsupportedOperationException {	
+			               String topic, Object event) {
 		
 		if (logger.isDebugEnabled())
 			logger.debug("{}: deliver event to {}:{}: {}", this, commType, topic, event);

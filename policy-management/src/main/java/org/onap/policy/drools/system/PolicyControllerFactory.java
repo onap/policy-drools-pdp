@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,7 @@ public interface PolicyControllerFactory {
 	 * 
 	 * @throws IllegalArgumentException invalid values provided in properties
 	 */
-	public PolicyController build(String name, Properties properties)
-			throws IllegalArgumentException;
+	public PolicyController build(String name, Properties properties);
 	
 	/**
 	 * patches (updates) a controller from a critical configuration update.
@@ -82,8 +81,7 @@ public interface PolicyControllerFactory {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	public PolicyController get(DroolsController droolsController) 
-			throws IllegalArgumentException, IllegalStateException;
+	public PolicyController get(DroolsController droolsController);
 	
 	/**
 	 * Makes the Policy Controller identified by controllerName not operational, but
@@ -92,7 +90,7 @@ public interface PolicyControllerFactory {
 	 * @param controllerName  name of the policy controller
 	 * @throws IllegalArgumentException invalid arguments
 	 */
-	public void shutdown(String controllerName) throws IllegalArgumentException;;
+	public void shutdown(String controllerName);
 	
 	/**
 	 * Makes the Policy Controller identified by controller not operational, but
@@ -101,7 +99,7 @@ public interface PolicyControllerFactory {
 	 * @param controller a Policy Controller
 	 * @throws IllegalArgumentException invalid arguments
 	 */
-	public void shutdown(PolicyController controller) throws IllegalArgumentException;
+	public void shutdown(PolicyController controller);
 	
 	/**
 	 * Releases all Policy Controllers from operation
@@ -114,7 +112,7 @@ public interface PolicyControllerFactory {
 	 * @param controllerName  name of the policy controller
 	 * @throws IllegalArgumentException invalid arguments
 	 */
-	public void destroy(String controllerName) throws IllegalArgumentException;;
+	public void destroy(String controllerName);
 	
 	/**
 	 * Destroys this Policy Controller
@@ -122,7 +120,7 @@ public interface PolicyControllerFactory {
 	 * @param controller a Policy Controller
 	 * @throws IllegalArgumentException invalid arguments
 	 */
-	public void destroy(PolicyController controller) throws IllegalArgumentException;
+	public void destroy(PolicyController controller);
 	
 	/**
 	 * Releases all Policy Controller resources
@@ -137,8 +135,7 @@ public interface PolicyControllerFactory {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	public PolicyController get(String policyControllerName)
-		   throws IllegalArgumentException, IllegalStateException;
+	public PolicyController get(String policyControllerName);
 	
 	/**
 	 * gets the Policy Controller identified by group and artifact ids
@@ -149,8 +146,7 @@ public interface PolicyControllerFactory {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	public PolicyController get(String groupId, String artifactId)
-		   throws IllegalArgumentException, IllegalStateException;
+	public PolicyController get(String groupId, String artifactId);
 	
 	/**
 	 * get features attached to the Policy Controllers
@@ -162,8 +158,7 @@ public interface PolicyControllerFactory {
 	 * get named feature attached to the Policy Controllers
 	 * @return the feature
 	 */
-	public PolicyControllerFeatureAPI getFeatureProvider(String featureName) 
-			throws IllegalArgumentException;
+	public PolicyControllerFeatureAPI getFeatureProvider(String featureName);
 	
 	/**
 	 * get features attached to the Policy Controllers
@@ -213,8 +208,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized PolicyController build(String name, Properties properties) 
-			throws IllegalArgumentException {
+	public synchronized PolicyController build(String name, Properties properties) {
 		
 		if (this.policyControllers.containsKey(name)) {
 			return this.policyControllers.get(name);
@@ -241,11 +235,10 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized PolicyController patch(String name, DroolsConfiguration droolsConfig) 
-			throws IllegalArgumentException {
+	public synchronized PolicyController patch(String name, DroolsConfiguration droolsConfig) {
 		
 		if (name == null || name.isEmpty() || !this.policyControllers.containsKey(name)) {
-			throw new IllegalArgumentException("Invalid " + name);
+			throw makeArgEx(name);
 		}
 		
 		if (droolsConfig == null)
@@ -273,8 +266,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PolicyController patch(PolicyController controller, DroolsConfiguration droolsConfig) 
-			throws IllegalArgumentException {
+	public PolicyController patch(PolicyController controller, DroolsConfiguration droolsConfig) {
 
 		if (controller == null)
 			throw new IllegalArgumentException("Not a valid controller:  null");
@@ -300,10 +292,10 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown(String controllerName) throws IllegalArgumentException {
+	public void shutdown(String controllerName) {
 		
 		if (controllerName == null || controllerName.isEmpty()) {
-			throw new IllegalArgumentException("Invalid " + controllerName);
+			throw makeArgEx(controllerName);
 		}
 		
 		synchronized(this) {
@@ -320,7 +312,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown(PolicyController controller) throws IllegalArgumentException {		
+	public void shutdown(PolicyController controller) {		
 		this.unmanage(controller);
 		controller.shutdown();
 	}
@@ -348,7 +340,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	protected void unmanage(PolicyController controller) throws IllegalArgumentException {
+	protected void unmanage(PolicyController controller) {
 	    PolicyController tempController = controller;
 		if (tempController == null) {
 			throw new IllegalArgumentException("Invalid Controller");
@@ -370,10 +362,10 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void destroy(String controllerName) throws IllegalArgumentException {
+	public void destroy(String controllerName) {
 		
 		if (controllerName == null || controllerName.isEmpty()) {
-			throw new IllegalArgumentException("Invalid " + controllerName);
+			throw makeArgEx(controllerName);
 		}
 		
 		synchronized(this) {
@@ -390,7 +382,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void destroy(PolicyController controller) throws IllegalArgumentException {
+	public void destroy(PolicyController controller) {
 		this.unmanage(controller);
 		controller.halt();
 	}
@@ -415,17 +407,17 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PolicyController get(String name) throws IllegalArgumentException, IllegalStateException {
+	public PolicyController get(String name) {
 
 		if (name == null || name.isEmpty()) {
-			throw new IllegalArgumentException("Invalid " + name);
+			throw makeArgEx(name);
 		}
 		
 		synchronized(this) {
 			if (this.policyControllers.containsKey(name)) {
 				return this.policyControllers.get(name);
 			} else {
-				throw new IllegalArgumentException("Invalid " + name);
+				throw makeArgEx(name);
 			}
 		}
 	}
@@ -434,8 +426,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PolicyController get(String groupId, String artifactId) 
-			throws IllegalArgumentException, IllegalStateException {
+	public PolicyController get(String groupId, String artifactId) {
 
 		if (groupId == null || groupId.isEmpty() || 
 			artifactId == null || artifactId.isEmpty()) {
@@ -447,7 +438,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 			if (this.coordinates2Controller.containsKey(key)) {
 				return this.coordinates2Controller.get(key);
 			} else {
-				throw new IllegalArgumentException("Invalid " + key);
+				throw makeArgEx(key);
 			}
 		}
 	}
@@ -456,8 +447,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PolicyController get(DroolsController droolsController) 
-			throws IllegalArgumentException, IllegalStateException {
+	public PolicyController get(DroolsController droolsController) {
 
 		if (droolsController == null) {
 			throw new IllegalArgumentException("No Drools Controller provided");
@@ -479,9 +469,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 */
 	@Override
 	public List<PolicyController> inventory() {
-		 List<PolicyController> controllers = 
-				 new ArrayList<>(this.policyControllers.values());
-		 return controllers;
+		 return new ArrayList<>(this.policyControllers.values());
 	}
 	
 	/**
@@ -509,7 +497,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PolicyControllerFeatureAPI getFeatureProvider(String featureName) throws IllegalArgumentException {
+	public PolicyControllerFeatureAPI getFeatureProvider(String featureName) {
 		if (featureName == null || featureName.isEmpty())
 			throw new IllegalArgumentException("A feature name must be provided");
 		
@@ -519,5 +507,9 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 		}
 		
 		throw new IllegalArgumentException("Invalid Feature Name: " + featureName);
+	}
+
+	private IllegalArgumentException makeArgEx(String argName) {
+		return new IllegalArgumentException("Invalid " + argName);
 	}
 }

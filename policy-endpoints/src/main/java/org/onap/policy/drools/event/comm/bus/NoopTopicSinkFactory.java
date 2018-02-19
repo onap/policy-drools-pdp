@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,9 @@ public interface NoopTopicSinkFactory {
  * Factory of noop sinks
  */
 class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
-  /**
+  private static final String MISSING_TOPIC = "A topic must be provided";
+
+/**
    * Logger
    */
   private static Logger logger = LoggerFactory.getLogger(IndexedUebTopicSinkFactory.class);
@@ -159,7 +161,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
     }
 
     if (topic == null || topic.isEmpty()) {
-      throw new IllegalArgumentException("A topic must be provided");
+      throw new IllegalArgumentException(MISSING_TOPIC);
     }
 
     synchronized (this) {
@@ -179,7 +181,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
   @Override
   public void destroy(String topic) {
     if (topic == null || topic.isEmpty()) {
-      throw new IllegalArgumentException("A topic must be provided");
+      throw new IllegalArgumentException(MISSING_TOPIC);
     }
 
     NoopTopicSink noopSink;
@@ -209,7 +211,7 @@ class IndexedNoopTopicSinkFactory implements NoopTopicSinkFactory {
   @Override
   public NoopTopicSink get(String topic) {
     if (topic == null || topic.isEmpty()) {
-      throw new IllegalArgumentException("A topic must be provided");
+      throw new IllegalArgumentException(MISSING_TOPIC);
     }
 
     synchronized (this) {

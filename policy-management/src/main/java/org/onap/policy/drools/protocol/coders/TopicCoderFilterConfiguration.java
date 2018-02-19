@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class TopicCoderFilterConfiguration {
 	 * Custom coder, contains class and static field to access parser that the controller
 	 * desires to use instead of the framework provided parser
 	 */
-	public static abstract class CustomCoder {
+	public abstract static class CustomCoder {
 		protected String className;
 		protected String staticCoderField;
 		
@@ -41,7 +41,7 @@ public class TopicCoderFilterConfiguration {
 		 * 
 		 * @param rawCustomCoder with format: <class-containing-custom-coder>,<static-coder-field>
 		 */
-		public CustomCoder(String rawCustomCoder) throws IllegalArgumentException {			
+		public CustomCoder(String rawCustomCoder) {			
 			if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
 				
 				this.className = rawCustomCoder.substring(0,rawCustomCoder.indexOf(","));
@@ -62,7 +62,7 @@ public class TopicCoderFilterConfiguration {
 		 * @param classContainer
 		 * @param staticCoderField
 		 */
-		public CustomCoder(String className, String staticCoderField) throws IllegalArgumentException {
+		public CustomCoder(String className, String staticCoderField) {
 			if (className == null || className.isEmpty()) {
 				throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
 			}
@@ -120,7 +120,7 @@ public class TopicCoderFilterConfiguration {
 				super(className, staticCoderField);
 		}
 
-		public CustomGsonCoder(String customGson) throws IllegalArgumentException {
+		public CustomGsonCoder(String customGson) {
 			super(customGson);
 		}
 
@@ -139,7 +139,7 @@ public class TopicCoderFilterConfiguration {
 				super(className, staticCoderField);
 		}
 		
-		public CustomJacksonCoder(String customJackson) throws IllegalArgumentException {
+		public CustomJacksonCoder(String customJackson) {
 			super(customJackson);
 		}
 		

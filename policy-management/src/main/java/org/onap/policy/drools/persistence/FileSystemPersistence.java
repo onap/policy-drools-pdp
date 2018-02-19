@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,29 +43,29 @@ public class FileSystemPersistence implements SystemPersistence {
   /**
    * policy controllers suffix
    */
-  public final static String CONTROLLER_SUFFIX_IDENTIFIER = "-controller";
+  public static final String CONTROLLER_SUFFIX_IDENTIFIER = "-controller";
 
   /**
    * policy controller properties file suffix
    */
-  public final static String PROPERTIES_FILE_CONTROLLER_SUFFIX =
+  public static final String PROPERTIES_FILE_CONTROLLER_SUFFIX =
       CONTROLLER_SUFFIX_IDENTIFIER + ".properties";
 
   /**
    * policy controller properties file suffix
    */
-  public final static String PROPERTIES_FILE_CONTROLLER_BACKUP_SUFFIX =
+  public static final String PROPERTIES_FILE_CONTROLLER_BACKUP_SUFFIX =
       CONTROLLER_SUFFIX_IDENTIFIER + ".properties.bak";
 
   /**
    * policy engine properties file name
    */
-  public final static String PROPERTIES_FILE_ENGINE = "policy-engine.properties";
+  public static final String PROPERTIES_FILE_ENGINE = "policy-engine.properties";
 
   /**
    * Installation environment suffix for files
    */
-  public final static String ENV_SUFFIX = ".environment";
+  public static final String ENV_SUFFIX = ".environment";
 
   /**
    * configuration directory

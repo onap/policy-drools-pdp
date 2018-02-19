@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1816,7 +1816,7 @@ public class RestManager {
       return Response.status(Status.OK).entity(source).build();
     else
       return Response.status(Status.NOT_ACCEPTABLE)
-          .entity(new Error("cannot perform operation on " + topic)).build();
+          .entity(makeTopicOperError(topic)).build();
   }
 
   @DELETE
@@ -1833,8 +1833,12 @@ public class RestManager {
       return Response.status(Status.OK).entity(source).build();
     else
       return Response.status(Status.NOT_ACCEPTABLE)
-          .entity(new Error("cannot perform operation on " + topic)).build();
+          .entity(makeTopicOperError(topic)).build();
   }
+
+private Error makeTopicOperError(String topic) {
+	return new Error("cannot perform operation on " + topic);
+}
 
   @GET
   @Path("engine/topics/sources/dmaap/{topic}/switches")
@@ -1858,7 +1862,7 @@ public class RestManager {
       return Response.status(Status.OK).entity(source).build();
     else
       return Response.status(Status.NOT_ACCEPTABLE)
-          .entity(new Error("cannot perform operation on " + topic)).build();
+          .entity(makeTopicOperError(topic)).build();
   }
 
   @DELETE
@@ -1875,7 +1879,7 @@ public class RestManager {
       return Response.status(Status.OK).entity(source).build();
     else
       return Response.status(Status.SERVICE_UNAVAILABLE)
-          .entity(new Error("cannot perform operation on " + topic)).build();
+          .entity(makeTopicOperError(topic)).build();
   }
 
   @PUT
@@ -1904,21 +1908,23 @@ public class RestManager {
         return Response.status(Status.NOT_ACCEPTABLE)
             .entity(new Error("Failure to inject event over " + topic)).build();
     } catch (final IllegalArgumentException e) {
-      logger.debug("{}: cannot offer for encoder ueb topic for {} because of {}", this, topic,
-          e.getMessage(), e);
+      logNoUebEncoder(topic, e);
       return Response.status(Response.Status.NOT_FOUND).entity(new Error(topic + " not found"))
           .build();
     } catch (final IllegalStateException e) {
-      logger.debug("{}: cannot offer for encoder ueb topic for {} because of {}", this, topic,
-          e.getMessage(), e);
+      logNoUebEncoder(topic, e);
       return Response.status(Response.Status.NOT_ACCEPTABLE)
           .entity(new Error(topic + " not acceptable due to current state")).build();
     } catch (final Exception e) {
-      logger.debug("{}: cannot offer for encoder ueb topic for {} because of {}", this, topic,
-          e.getMessage(), e);
+      logNoUebEncoder(topic, e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity(new Error(e.getMessage())).build();
     }
+  }
+
+  private void logNoUebEncoder(String topic, Exception e) {
+	logger.debug("{}: cannot offer for encoder ueb topic for {} because of {}", this, topic,
+          e.getMessage(), e);
   }
 
   @PUT
@@ -1948,21 +1954,23 @@ public class RestManager {
         return Response.status(Status.NOT_ACCEPTABLE)
             .entity(new Error("Failure to inject event over " + topic)).build();
     } catch (final IllegalArgumentException e) {
-      logger.debug("{}: cannot offer for encoder dmaap topic for {} because of {}", this, topic,
-          e.getMessage(), e);
+      logNoDmaapEncoder(topic, e);
       return Response.status(Response.Status.NOT_FOUND).entity(new Error(topic + " not found"))
           .build();
     } catch (final IllegalStateException e) {
-      logger.debug("{}: cannot offer for encoder dmaap topic for {} because of {}", this, topic,
-          e.getMessage(), e);
+      logNoDmaapEncoder(topic, e);
       return Response.status(Response.Status.NOT_ACCEPTABLE)
           .entity(new Error(topic + " not acceptable due to current state")).build();
     } catch (final Exception e) {
-      logger.debug("{}: cannot offer for encoder dmaap topic for {} because of {}", this, topic,
-          e.getMessage(), e);
+      logNoDmaapEncoder(topic, e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
           .entity(new Error(e.getMessage())).build();
     }
+  }
+
+  private void logNoDmaapEncoder(String topic, Exception e) {
+	logger.debug("{}: cannot offer for encoder dmaap topic for {} because of {}", this, topic,
+          e.getMessage(), e);
   }
 
   @GET
@@ -2122,18 +2130,18 @@ public class RestManager {
    * Generic Error Reporting class
    */
   public static class Error {
-    private String error;
+    private String msg;
 
-    public Error(String error) {
-      this.setError(error);
+    public Error(String msg) {
+      this.setError(msg);
     }
 
     public String getError() {
-        return error;
+        return msg;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setError(String msg) {
+        this.msg = msg;
     }
   }
 

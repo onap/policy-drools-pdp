@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,12 @@ public interface SystemPersistence {
    * configuration directory
    */
   public static final String DEFAULT_CONFIGURATION_DIR = "config";
+
+  /**
+   * Persistence Manager. For now it is a file-based properties management, In the future, it will
+   * probably be DB based, so manager implementation will change.
+   */
+  public static final SystemPersistence manager = new FileSystemPersistence();
 
   /**
    * sets a configuration directory and ensures it exists
@@ -123,10 +129,4 @@ public interface SystemPersistence {
    * @throws IllegalArgumentException if the name does not lead to a properties configuration
    */
   public Properties getProperties(String name);
-
-  /**
-   * Persistence Manager. For now it is a file-based properties management, In the future, it will
-   * probably be DB based, so manager implementation will change.
-   */
-  public static final SystemPersistence manager = new FileSystemPersistence();
 }

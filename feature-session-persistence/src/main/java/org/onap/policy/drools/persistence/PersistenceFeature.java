@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,7 +148,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void globalInit(String args[], String configDir) {
+	public void globalInit(String[] args, String configDir) {
 
 		kieSvcFact = fact.getKieServices();
 
@@ -448,20 +448,70 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				ds.close();
 			}
 		}
+
+		/**
+		 * Configures java system properties for JPA/JTA.
+		 */
+		private void configureSysProps() {
+			System.setProperty("com.arjuna.ats.arjuna.coordinator.defaultTimeout", "60");
+			System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir",
+					persistProps.getProperty(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR));
+			System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir",
+					persistProps.getProperty(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR));
+		}
+
+		/**
+		 * Configures a Kie Environment
+		 * 
+		 * @param env
+		 *            environment to be configured
+		 * @param emf
+		 *            entity manager factory
+		 */
+		private void configureKieEnv(Environment env, EntityManagerFactory emf) {
+			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+			env.set(EnvironmentName.TRANSACTION, fact.getUserTrans());
+			env.set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, fact.getTransSyncReg());
+			env.set(EnvironmentName.TRANSACTION_MANAGER, fact.getTransMgr());
+		}
+
+		/**
+		 * Gets a session's ID from the persistent store.
+		 * 
+		 * @param conn
+		 *            persistence connector
+		 * @param sessnm
+		 *            name of the session
+		 * @return the session's id, or {@code -1} if the session is not found
+		 */
+		private long getSessionId(DroolsSessionConnector conn, String sessnm) {
+			DroolsSession sess = conn.get(sessnm);
+			return sess != null ? sess.getSessionId() : -1;
+		}
+
+		/**
+		 * Replaces a session within the persistent store, if it exists. Adds it
+		 * otherwise.
+		 * 
+		 * @param conn
+		 *            persistence connector
+		 * @param sessnm
+		 *            name of session to be updated
+		 * @param kieSession
+		 *            new session information
+		 */
+		private void replaceSession(DroolsSessionConnector conn, String sessnm, KieSession kieSession) {
+
+			DroolsSessionEntity sess = new DroolsSessionEntity();
+
+			sess.setSessionName(sessnm);
+			sess.setSessionId(kieSession.getIdentifier());
+
+			conn.replace(sess);
+		}
 	}
 
 	/* ============================================================ */
-
-	/**
-	 * Configures java system properties for JPA/JTA.
-	 */
-	private void configureSysProps() {
-		System.setProperty("com.arjuna.ats.arjuna.coordinator.defaultTimeout", "60");
-		System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir",
-				persistProps.getProperty(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR));
-		System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir",
-				persistProps.getProperty(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR));
-	}
 
 	/**
 	 * Gets the data source properties.
@@ -482,21 +532,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 		props.put("poolPreparedStatements", "true");
 
 		return props;
-	}
-
-	/**
-	 * Configures a Kie Environment
-	 * 
-	 * @param env
-	 *            environment to be configured
-	 * @param emf
-	 *            entity manager factory
-	 */
-	private void configureKieEnv(Environment env, EntityManagerFactory emf) {
-		env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-		env.set(EnvironmentName.TRANSACTION, fact.getUserTrans());
-		env.set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, fact.getTransSyncReg());
-		env.set(EnvironmentName.TRANSACTION_MANAGER, fact.getTransMgr());
 	}
 
 	/**
@@ -540,41 +575,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 			sessInfoCleaned = true;
 		}
-	}
-
-	/**
-	 * Gets a session's ID from the persistent store.
-	 * 
-	 * @param conn
-	 *            persistence connector
-	 * @param sessnm
-	 *            name of the session
-	 * @return the session's id, or {@code -1} if the session is not found
-	 */
-	private long getSessionId(DroolsSessionConnector conn, String sessnm) {
-		DroolsSession sess = conn.get(sessnm);
-		return sess != null ? sess.getSessionId() : -1;
-	}
-
-	/**
-	 * Replaces a session within the persistent store, if it exists. Adds it
-	 * otherwise.
-	 * 
-	 * @param conn
-	 *            persistence connector
-	 * @param sessnm
-	 *            name of session to be updated
-	 * @param kieSession
-	 *            new session information
-	 */
-	private void replaceSession(DroolsSessionConnector conn, String sessnm, KieSession kieSession) {
-
-		DroolsSessionEntity sess = new DroolsSessionEntity();
-
-		sess.setSessionName(sessnm);
-		sess.setSessionId(kieSession.getIdentifier());
-
-		conn.replace(sess);
 	}
 
 	/**
@@ -801,7 +801,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 			// We want to continue, despite any exceptions that occur
 			// while rules are fired.
 
-			for (;;) {
+			boolean cont = true;
+			while(cont) {
 
 				try {
 					if (kieSession.fireAllRules() > 0) {
@@ -815,16 +816,17 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 				} catch (Exception | LinkageError e) {
 					logger.error("Exception during kieSession.fireAllRules", e);
 				}
+				
 
 				try {
 					if (stopped.await(sleepTime, TimeUnit.MILLISECONDS)) {
-						break;
+						cont = false;
 					}
 
 				} catch (InterruptedException e) {
 					logger.error("startThread exception: ", e);
 					Thread.currentThread().interrupt();
-					break;
+					cont = false;
 				}
 			}
 
@@ -892,6 +894,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
 	private static class SingletonRegistry {
 		private static final TransactionSynchronizationRegistry transreg = new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple();
+		
+		private SingletonRegistry() {
+			super();
+		}
 	}
 
 	/**

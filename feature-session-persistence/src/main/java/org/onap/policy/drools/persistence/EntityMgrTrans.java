@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,7 @@ public class EntityMgrTrans extends EntityMgrCloser {
 			userTrans.begin();
 			em.joinTransaction();
 
-		} catch (RuntimeException e) {
-			em.close();
-			throw new EntityMgrException(e);
-
-		} catch (NotSupportedException | SystemException e) {
+		} catch (RuntimeException |NotSupportedException | SystemException e) {
 			em.close();
 			throw new EntityMgrException(e);
 		}

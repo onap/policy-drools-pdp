@@ -1,4 +1,4 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
@@ -28,7 +28,7 @@ public class TripleTest {
     @Test
     public void test() {
         Triple<String, String, String> triple  =
-                new Triple("one", "two", "three");
+                new Triple<>("one", "two", "three");
 
         Assert.assertTrue("one".equals(triple.first()));
         Assert.assertTrue("one".equals(triple.getFirst()));

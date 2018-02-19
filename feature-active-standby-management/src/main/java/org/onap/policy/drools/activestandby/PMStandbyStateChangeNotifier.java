@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,11 +101,9 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 		 * has synchronize all of its methods. Only one stateManagement operation can occur at a time. Thus,
 		 * only one handleStateChange() call will ever be made at a time.
 		 */
-		if(logger.isInfoEnabled()){
-			if(logger.isDebugEnabled()){
-				logger.debug("handleStateChange: Entering, message={}, standbyStatus={}",
-						 super.getMessage(), super.getStateManagement().getStandbyStatus());
-			}
+		if(logger.isDebugEnabled()){
+			logger.debug("handleStateChange: Entering, message={}, standbyStatus={}",
+					 super.getMessage(), super.getStateManagement().getStandbyStatus());
 		}
 		String standbyStatus = super.getStateManagement().getStandbyStatus();
 		String pdpId = ActiveStandbyProperties

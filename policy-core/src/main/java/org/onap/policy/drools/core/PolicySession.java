@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class PolicySession
   private ThreadModel threadModel = null;
 
   // supports 'getCurrentSession()' method
-  private static ThreadLocal<PolicySession> policySession =
+  private static ThreadLocal<PolicySession> policySess =
 	new ThreadLocal<>();
 
   /**
@@ -194,7 +194,7 @@ public class PolicySession
   public void setPolicySession()
   {
 	// this sets a 'ThreadLocal' variable
-	policySession.set(this);
+	policySess.set(this);
   }
 
   /**
@@ -204,7 +204,7 @@ public class PolicySession
    */
   public static PolicySession getCurrentSession()
   {
-	return policySession.get();
+	return policySess.get();
   }
 	
   /**

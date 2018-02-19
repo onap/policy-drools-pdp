@@ -38,7 +38,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.onap.policy.common.im.AdministrativeStateException;
 import org.onap.policy.common.im.IntegrityMonitor;
@@ -274,7 +273,7 @@ public class StandbyStateManagementTest {
 		assertTrue(pmNotifier.getPreviousStandbyStatus().equals(PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
 		//Sleep long enough for the delayActivationTimer to run
-		Thread.sleep(5000);
+		sleep(5000);
 		assertTrue(pmNotifier.getPreviousStandbyStatus().equals(StateManagement.PROVIDING_SERVICE));
 
 		//standbystatus = providingservice
@@ -790,7 +789,7 @@ public class StandbyStateManagementTest {
 		logger.debug("testColdStandby: Runner started; Sleeping "
 				+ interruptRecoveryTime + "ms before promoting PDP= {}",
 				thisPdpId);
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 		logger.debug("testColdStandby: Promoting PDP={}", thisPdpId);
 		smf.promote();		
@@ -802,7 +801,7 @@ public class StandbyStateManagementTest {
 		logger.debug("testColdStandby: Locking smf");
 		smf.lock();
 		
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 		
 		// Verify that the PDP is no longer designated.
 		 
@@ -812,7 +811,7 @@ public class StandbyStateManagementTest {
 		assertTrue(droolsPdpEntity.isDesignated() == false);
 		
 		logger.debug("\n\ntestColdStandby: Exiting\n\n");
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 	}
 
@@ -918,7 +917,7 @@ public class StandbyStateManagementTest {
 				
 		logger.debug("testHotStandby1: Sleeping {} ms, to allow JpaDroolsPdpsConnector "
 				+ "time to check droolspdpentity table", sleepTime);
-		Thread.sleep(sleepTime);
+		sleep(sleepTime);
 		
 		
 		// Verify that this formerly un-designated PDP in HOT_STANDBY is now designated and providing service.
@@ -936,7 +935,7 @@ public class StandbyStateManagementTest {
 		//policyManagementRunner.stopRunner();		
 	
 		logger.debug("\n\ntestHotStandby1: Exiting\n\n");
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 	}
 
@@ -1066,7 +1065,7 @@ public class StandbyStateManagementTest {
 		
 		logger.info("testHotStandby2: Runner started; Sleeping {} "
 				+ "ms before promoting/demoting", interruptRecoveryTime);
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 		logger.info("testHotStandby2: Runner started; promoting PDP={}", activePdpId);
 		//At this point, the newly created pdp will have set the state to disabled/failed/cold standby
@@ -1085,7 +1084,7 @@ public class StandbyStateManagementTest {
 		
 		logger.info("testHotStandby2: Sleeping {} ms, to allow JpaDroolsPdpsConnector "
 				+ "time to check droolspdpentity table", sleepTime);
-		Thread.sleep(sleepTime);
+		sleep(sleepTime);
 		
 		/*
 		 * Verify that this PDP, demoted to HOT_STANDBY, is now
@@ -1108,7 +1107,7 @@ public class StandbyStateManagementTest {
 		//policyManagementRunner.stopRunner();		
 
 		logger.info("\n\ntestHotStandby2: Exiting\n\n");
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 	}
 	
@@ -1221,7 +1220,7 @@ public class StandbyStateManagementTest {
 		logger.debug("testLocking1: Runner started; Sleeping "
 				+ interruptRecoveryTime + "ms before promoting PDP={}",
 				thisPdpId);
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 		logger.debug("testLocking1: Promoting PDP={}", thisPdpId);
 		sm.promote();
@@ -1229,7 +1228,7 @@ public class StandbyStateManagementTest {
 		logger.debug("testLocking1: Sleeping {} ms, to allow time for "
 				+ "policy-management.Main class to come up, designated= {}", 
 				 sleepTime, conn.getPdp(thisPdpId).isDesignated());
-		Thread.sleep(sleepTime);
+		sleep(sleepTime);
 		
 		logger.debug("testLocking1: Waking up and invoking startTransaction on active PDP={}"
 				+ ", designated= {}",thisPdpId, conn.getPdp(thisPdpId).isDesignated());
@@ -1258,7 +1257,7 @@ public class StandbyStateManagementTest {
 		
 		logger.debug("testLocking1: sleeping" + electionWaitSleepTime
 				+ " to allow election handler to re-promote PDP={}", thisPdpId);
-		Thread.sleep(electionWaitSleepTime);
+		sleep(electionWaitSleepTime);
 								
 		logger.debug("testLocking1: Invoking startTransaction on re-promoted PDP={}"
 				+ ", designated={}", thisPdpId, conn.getPdp(thisPdpId).isDesignated());
@@ -1283,7 +1282,7 @@ public class StandbyStateManagementTest {
 		
 		// Just to avoid any race conditions, sleep a little after locking
 		logger.debug("testLocking1: Sleeping a few millis after locking, to avoid race condition");
-		Thread.sleep(100);
+		sleep(100);
 		
 		logger.debug("testLocking1: Invoking startTransaction on locked PDP= {}"
 				+ ", designated= {}",thisPdpId, conn.getPdp(thisPdpId).isDesignated());
@@ -1309,7 +1308,7 @@ public class StandbyStateManagementTest {
 		
 		// Just to avoid any race conditions, sleep a little after locking
 		logger.debug("testLocking1: Sleeping a few millis after unlocking, to avoid race condition");
-		Thread.sleep(electionWaitSleepTime);
+		sleep(electionWaitSleepTime);
 		
 		logger.debug("testLocking1: Invoking startTransaction on unlocked PDP="
 				+ thisPdpId
@@ -1337,7 +1336,7 @@ public class StandbyStateManagementTest {
 		
 		// Just to avoid any race conditions, sleep a little after promoting
 		logger.debug("testLocking1: Sleeping a few millis after demoting, to avoid race condition");
-		Thread.sleep(100);
+		sleep(100);
 		
 		logger.debug("testLocking1: Invoking startTransaction on demoted PDP={}"
 				+ ", designated={}", thisPdpId, conn.getPdp(thisPdpId).isDesignated());
@@ -1357,7 +1356,7 @@ public class StandbyStateManagementTest {
 		}
 		
 		logger.debug("\n\ntestLocking1: Exiting\n\n");
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 	}
 	
@@ -1483,7 +1482,7 @@ public class StandbyStateManagementTest {
 				
 		logger.debug("testLocking2: Runner started; Sleeping {} ms "
 				+ "before promoting/demoting", interruptRecoveryTime);
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
 
 		logger.debug("testLocking2: Promoting PDP= {}", thisPdpId);
 		sm.promote();
@@ -1493,7 +1492,7 @@ public class StandbyStateManagementTest {
 		sm2.demote();
 		
 		logger.debug("testLocking2: Sleeping {} ms, to allow time for to come up", sleepTime);
-		Thread.sleep(sleepTime);
+		sleep(sleepTime);
 		
 		logger.debug("testLocking2: Waking up and invoking startTransaction on active PDP={}"
 				+ ", designated= {}", thisPdpId, conn.getPdp(thisPdpId).isDesignated());
@@ -1521,7 +1520,7 @@ public class StandbyStateManagementTest {
 		
 		logger.debug("testLocking2: sleeping {}"
 				+ " to allow election handler to re-promote PDP={}", electionWaitSleepTime, thisPdpId);
-		Thread.sleep(electionWaitSleepTime);
+		sleep(electionWaitSleepTime);
 		
 		logger.debug("testLocking2: Waking up and invoking startTransaction "
 				+ "on re-promoted PDP= {}, designated= {}",
@@ -1546,6 +1545,10 @@ public class StandbyStateManagementTest {
 		assertTrue(standbyPdpDesignated == false);
 
 		logger.debug("\n\ntestLocking2: Exiting\n\n");
-		Thread.sleep(interruptRecoveryTime);
+		sleep(interruptRecoveryTime);
+	}
+
+	private void sleep(long sleepms) throws InterruptedException {
+		Thread.sleep(sleepms);
 	}
 }

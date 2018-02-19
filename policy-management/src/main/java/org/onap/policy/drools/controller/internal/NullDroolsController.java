@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,8 +106,8 @@ public class NullDroolsController implements DroolsController {
 	}
 
 	@Override
-	public boolean deliver(TopicSink sink, Object event) throws UnsupportedOperationException {
-		throw new IllegalStateException(this.getClass().getCanonicalName() + " invoked");
+	public boolean deliver(TopicSink sink, Object event) {
+		throw new IllegalStateException(makeInvokeMsg());
 	}
 
 	@Override
@@ -127,12 +127,12 @@ public class NullDroolsController implements DroolsController {
 
 	@Override
 	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
-		throw new IllegalStateException(this.getClass().getCanonicalName() + " invoked");
+		throw new IllegalStateException(makeInvokeMsg());
 	}
 
 	@Override
 	public Class<?> fetchModelClass(String className) {
-		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
+		throw new IllegalArgumentException(makeInvokeMsg());
 	}
 	
 	@Override
@@ -151,13 +151,12 @@ public class NullDroolsController implements DroolsController {
 	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
 			List<TopicCoderFilterConfiguration> decoderConfigurations,
 			List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws IllegalArgumentException, LinkageError {
-		throw new IllegalArgumentException(this.getClass().getCanonicalName() + " invoked");
+			throws LinkageError {
+		throw new IllegalArgumentException(makeInvokeMsg());
 	}
 
 	@Override
-	public Map<String, Integer> factClassNames(String sessionName) 
-		   throws IllegalArgumentException {
+	public Map<String, Integer> factClassNames(String sessionName) {
 		return new HashMap<>();
 	}
 
@@ -176,5 +175,9 @@ public class NullDroolsController implements DroolsController {
 			                      String queriedEntity, 
 			                      boolean delete, Object... queryParams) {
 		return new ArrayList<>();
+	}
+
+	private String makeInvokeMsg() {
+		return this.getClass().getCanonicalName() + " invoked";
 	}
 }

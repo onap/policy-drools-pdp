@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-healthcheck
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,11 @@ import org.slf4j.LoggerFactory;
  * Healthcheck
  */
 public interface HealthCheck extends Startable {
+
+	/**
+	 * Healthcheck Monitor
+	 */
+	public static final HealthCheck monitor = new HealthCheckMonitor();
 	
 	/**
 	 * Healthcheck Report
@@ -156,7 +161,7 @@ public interface HealthCheck extends Startable {
             return details;
         }
 
-        public void setDetails(ArrayList<Report> details) {
+        public void setDetails(List<Report> details) {
             this.details = details;
         }
 	}
@@ -166,11 +171,6 @@ public interface HealthCheck extends Startable {
 	 * @return a report
 	 */
 	public Reports healthCheck();
-
-	/**
-	 * Healthcheck Monitor
-	 */
-	public static final HealthCheck monitor = new HealthCheckMonitor();
 }
 
 /**
@@ -243,7 +243,7 @@ class HealthCheckMonitor implements HealthCheck {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean start() throws IllegalStateException {
+	public boolean start() {
 		
 		try {
 			this.healthCheckProperties = SystemPersistence.manager.getProperties(HealthCheckFeature.CONFIGURATION_PROPERTIES_NAME);
@@ -265,7 +265,7 @@ class HealthCheckMonitor implements HealthCheck {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean stop() throws IllegalStateException {
+	public boolean stop() {
 		
 		for (HttpServletServer server : servers) {
 			try {
@@ -290,7 +290,7 @@ class HealthCheckMonitor implements HealthCheck {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		this.stop();
 	}
 

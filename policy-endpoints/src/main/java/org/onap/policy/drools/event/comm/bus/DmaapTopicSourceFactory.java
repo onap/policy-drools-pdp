@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,7 @@ public interface DmaapTopicSourceFactory {
 	 * @return an DMAAP Topic Source
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<DmaapTopicSource> build(Properties properties)
-			throws IllegalArgumentException;
+	public List<DmaapTopicSource> build(Properties properties);
 	
 	/**
 	 * Instantiates a new DMAAP Topic Source
@@ -88,8 +87,7 @@ public interface DmaapTopicSourceFactory {
 								int fetchLimit,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts)
-			throws IllegalArgumentException;
+								boolean allowSelfSignedCerts);
 	
 	/**
 	 * Instantiates a new DMAAP Topic Source
@@ -135,8 +133,7 @@ public interface DmaapTopicSourceFactory {
 								Map<String,String> additionalProps,
 								boolean managed,
 								boolean useHttps, 
-								boolean allowSelfSignedCerts)
-			throws IllegalArgumentException;
+								boolean allowSelfSignedCerts);
 	
 	/**
 	 * Instantiates a new DMAAP Topic Source
@@ -152,8 +149,7 @@ public interface DmaapTopicSourceFactory {
 	public DmaapTopicSource build(List<String> servers, 
 								String topic, 
 								String apiKey, 
-								String apiSecret)
-			throws IllegalArgumentException;
+								String apiSecret);
 
 	/**
 	 * Instantiates a new DMAAP Topic Source
@@ -165,8 +161,7 @@ public interface DmaapTopicSourceFactory {
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
 	public DmaapTopicSource build(List<String> servers,
-								String topic)
-			throws IllegalArgumentException;	
+								String topic);	
 	
 	/**
 	 * Destroys an DMAAP Topic Source based on a topic
@@ -189,8 +184,7 @@ public interface DmaapTopicSourceFactory {
 	 * @throws IllegalStateException if the DMAAP Topic Source is 
 	 * an incorrect state
 	 */
-	public DmaapTopicSource get(String topic)
-		   throws IllegalArgumentException, IllegalStateException;
+	public DmaapTopicSource get(String topic);
 	
 	/**
 	 * Provides a snapshot of the DMAAP Topic Sources
@@ -207,6 +201,8 @@ public interface DmaapTopicSourceFactory {
  */
 
 class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
+	private static final String MISSING_TOPIC = "A topic must be provided";
+
 	/**
 	 * Logger 
 	 */
@@ -240,11 +236,10 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 								Map<String,String> additionalProps,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts) 
-			throws IllegalArgumentException {
+								boolean allowSelfSignedCerts) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -282,15 +277,14 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 								int fetchLimit,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts) 
-			throws IllegalArgumentException {
+								boolean allowSelfSignedCerts) {
 		
 		if (servers == null || servers.isEmpty()) {
 			throw new IllegalArgumentException("DMaaP Server(s) must be provided");
 		}
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -315,8 +309,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<DmaapTopicSource> build(Properties properties) 
-			throws IllegalArgumentException {
+	public List<DmaapTopicSource> build(Properties properties) {
 		
 		String readTopics = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS);
 		if (readTopics == null || readTopics.isEmpty()) {
@@ -325,11 +318,11 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 		}
 		List<String> readTopicList = new ArrayList<>(Arrays.asList(readTopics.split("\\s*,\\s*")));		
 		
-		List<DmaapTopicSource> dmaapTopicSource_s = new ArrayList<>();
+		List<DmaapTopicSource> dmaapTopicSourceLst = new ArrayList<>();
 		synchronized(this) {
 			for (String topic: readTopicList) {
 				if (this.dmaapTopicSources.containsKey(topic)) {
-					dmaapTopicSource_s.add(this.dmaapTopicSources.get(topic));
+					dmaapTopicSourceLst.add(this.dmaapTopicSources.get(topic));
 					continue;
 				}
 				
@@ -338,7 +331,8 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
                                                         PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX);
 				
 				List<String> serverList;
-				if (servers != null && !servers.isEmpty()) serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
+				if (servers != null && !servers.isEmpty())
+					serverList = new ArrayList<>(Arrays.asList(servers.split("\\s*,\\s*")));
 				else serverList = new ArrayList<>();
 				
 				String apiKey = properties.getProperty(PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS + 
@@ -490,10 +484,10 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 						   						           dme2Latitude, dme2Longitude, dme2AdditionalProps,
 						   						           managed, useHttps, allowSelfSignedCerts);
 				
-				dmaapTopicSource_s.add(uebTopicSource);
+				dmaapTopicSourceLst.add(uebTopicSource);
 			}
 		}
-		return dmaapTopicSource_s;
+		return dmaapTopicSourceLst;
 	}
 	
 	/**
@@ -504,7 +498,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	public DmaapTopicSource build(List<String> servers, 
 								String topic,
 								String apiKey, 
-								String apiSecret) throws IllegalArgumentException {
+								String apiSecret) {
 		return this.build(servers, topic, 
 				  		  apiKey, apiSecret, null, null,
 				  		  null, null,
@@ -520,7 +514,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	 * @throws IllegalArgumentException 
 	 */
 	@Override
-	public DmaapTopicSource build(List<String> servers, String topic) throws IllegalArgumentException {
+	public DmaapTopicSource build(List<String> servers, String topic) {
 		return this.build(servers, topic, null, null);
 	}	
 
@@ -528,11 +522,10 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void destroy(String topic) 
-		   throws IllegalArgumentException {
+	public void destroy(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		DmaapTopicSource uebTopicSource;
@@ -552,11 +545,10 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public DmaapTopicSource get(String topic) 
-	       throws IllegalArgumentException, IllegalStateException {
+	public DmaapTopicSource get(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -570,9 +562,7 @@ class IndexedDmaapTopicSourceFactory implements DmaapTopicSourceFactory {
 
 	@Override
 	public synchronized List<DmaapTopicSource> inventory() {
-		 List<DmaapTopicSource> readers = 
-				 new ArrayList<>(this.dmaapTopicSources.values());
-		 return readers;
+		 return new ArrayList<>(this.dmaapTopicSources.values());
 	}
 
 	@Override

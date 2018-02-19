@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,7 @@ public interface UebTopicSourceFactory {
 	 * @return an UEB Topic Source
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public List<UebTopicSource> build(Properties properties)
-			throws IllegalArgumentException;
+	public List<UebTopicSource> build(Properties properties);
 	
 	/**
 	 * Instantiates a new UEB Topic Source
@@ -73,8 +72,7 @@ public interface UebTopicSourceFactory {
 								int fetchLimit,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts)
-			throws IllegalArgumentException;
+								boolean allowSelfSignedCerts);
 	
 	/**
 	 * Instantiates a new UEB Topic Source
@@ -90,8 +88,7 @@ public interface UebTopicSourceFactory {
 	public UebTopicSource build(List<String> servers, 
 								String topic, 
 								String apiKey, 
-								String apiSecret)
-			throws IllegalArgumentException;
+								String apiSecret);
 
 	/**
 	 * Instantiates a new UEB Topic Source
@@ -103,8 +100,7 @@ public interface UebTopicSourceFactory {
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
 	public UebTopicSource build(List<String> servers, 
-								String topic)
-			throws IllegalArgumentException;	
+								String topic);	
 	
 	/**
 	 * Destroys an UEB Topic Source based on a topic
@@ -127,8 +123,7 @@ public interface UebTopicSourceFactory {
 	 * @throws IllegalStateException if the UEB Topic Source is 
 	 * an incorrect state
 	 */
-	public UebTopicSource get(String topic)
-		   throws IllegalArgumentException, IllegalStateException;
+	public UebTopicSource get(String topic);
 	
 	/**
 	 * Provides a snapshot of the UEB Topic Sources
@@ -143,6 +138,8 @@ public interface UebTopicSourceFactory {
  * Factory of UEB Source Topics indexed by topic name
  */
 class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
+	private static final String MISSING_TOPIC = "A topic must be provided";
+
 	/**
 	 * Logger
 	 */
@@ -168,14 +165,13 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 								int fetchLimit,
 								boolean managed,
 								boolean useHttps,
-								boolean allowSelfSignedCerts) 
-	throws IllegalArgumentException {
+								boolean allowSelfSignedCerts) {
 		if (servers == null || servers.isEmpty()) {
 			throw new IllegalArgumentException("UEB Server(s) must be provided");
 		}
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -200,8 +196,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UebTopicSource> build(Properties properties) 
-			throws IllegalArgumentException {
+	public List<UebTopicSource> build(Properties properties) {
 		
 		String readTopics = properties.getProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS);
 		if (readTopics == null || readTopics.isEmpty()) {
@@ -334,11 +329,10 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void destroy(String topic) 
-		   throws IllegalArgumentException {
+	public void destroy(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		UebTopicSource uebTopicSource;
@@ -358,11 +352,10 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UebTopicSource get(String topic) 
-	       throws IllegalArgumentException, IllegalStateException {
+	public UebTopicSource get(String topic) {
 		
 		if (topic == null || topic.isEmpty()) {
-			throw new IllegalArgumentException("A topic must be provided");
+			throw new IllegalArgumentException(MISSING_TOPIC);
 		}
 		
 		synchronized(this) {
@@ -376,9 +369,7 @@ class IndexedUebTopicSourceFactory implements UebTopicSourceFactory {
 
 	@Override
 	public synchronized List<UebTopicSource> inventory() {
-		 List<UebTopicSource> readers = 
-				 new ArrayList<>(this.uebTopicSources.values());
-		 return readers;
+		 return new ArrayList<>(this.uebTopicSources.values());
 	}
 
 	@Override

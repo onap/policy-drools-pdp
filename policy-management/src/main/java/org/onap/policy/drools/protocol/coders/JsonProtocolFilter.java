@@ -1,4 +1,4 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
@@ -37,6 +37,7 @@ import com.google.gson.JsonParser;
  */
 public class JsonProtocolFilter {
 	
+	private static final String MISSING_RULE_NAME = "no rule name provided";
 	/**
 	 * Logger
 	 */
@@ -128,35 +129,11 @@ public class JsonProtocolFilter {
 	protected List<FilterRule> rules = new CopyOnWriteArrayList<>();
 	
 	/**
-	 * 
-	 * @param rawFilters raw filter initialization
-	 * 
-	 * @throws IllegalArgumentException an invalid input has been provided
-	 */
-	public static JsonProtocolFilter fromRawFilters(List<Pair<String, String>> rawFilters) 
-		throws IllegalArgumentException {
-		
-		if (rawFilters == null) {
-			throw new IllegalArgumentException("No raw filters provided");
-		}
-		
-		List<FilterRule> filters = new ArrayList<>();
-		for (Pair<String, String> filterPair: rawFilters) {
-			if  (filterPair.first() == null || filterPair.first().isEmpty()) {
-				continue;
-			}
-			
-			filters.add(new FilterRule(filterPair.first(), filterPair.second()));
-		}
-		return new JsonProtocolFilter(filters);
-	}
-	
-	/**
 	 * Create a Protocol Filter
 	 * 
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
-	public JsonProtocolFilter() throws IllegalArgumentException {}
+	public JsonProtocolFilter() {}
 	
 	/**
 	 * 
@@ -164,7 +141,7 @@ public class JsonProtocolFilter {
 	 * 
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
-	public JsonProtocolFilter(List<FilterRule> filters) throws IllegalArgumentException {
+	public JsonProtocolFilter(List<FilterRule> filters) {
 		List<FilterRule> temp = new ArrayList<>();
 		for (FilterRule rule : filters) {
 			if (rule.getName() == null || rule.getName().isEmpty()) {
@@ -179,6 +156,29 @@ public class JsonProtocolFilter {
 		}
 
 		this.rules.addAll(temp);
+	}
+	
+	/**
+	 * 
+	 * @param rawFilters raw filter initialization
+	 * 
+	 * @throws IllegalArgumentException an invalid input has been provided
+	 */
+	public static JsonProtocolFilter fromRawFilters(List<Pair<String, String>> rawFilters) {
+		
+		if (rawFilters == null) {
+			throw new IllegalArgumentException("No raw filters provided");
+		}
+		
+		List<FilterRule> filters = new ArrayList<>();
+		for (Pair<String, String> filterPair: rawFilters) {
+			if  (filterPair.first() == null || filterPair.first().isEmpty()) {
+				continue;
+			}
+			
+			filters.add(new FilterRule(filterPair.first(), filterPair.second()));
+		}
+		return new JsonProtocolFilter(filters);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class JsonProtocolFilter {
 	 * 
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
-	public boolean accept(JsonElement json) throws IllegalArgumentException {
+	public boolean accept(JsonElement json) {
 		if (json == null) {
 			throw new IllegalArgumentException("no JSON provided");
 		}
@@ -248,7 +248,7 @@ public class JsonProtocolFilter {
 	 * 
 	 * @throws IllegalArgumentException an invalid input has been provided
 	 */
-	public boolean accept(String json) throws IllegalArgumentException {
+	public boolean accept(String json) {
 		if (json == null || json.isEmpty()) {
 			throw new IllegalArgumentException("no JSON provided");
 		}
@@ -279,7 +279,7 @@ public class JsonProtocolFilter {
 
 	public List<FilterRule> getRules(String name) {
 		if (name == null || name.isEmpty())
-			throw new IllegalArgumentException("no rule name provided");
+			throw new IllegalArgumentException(MISSING_RULE_NAME);
 
 		ArrayList<FilterRule> temp = new ArrayList<>();
 		for (FilterRule rule : this.rules) {
@@ -300,7 +300,7 @@ public class JsonProtocolFilter {
 	
 	public void deleteRules(String name) {
 		if (name == null || name.isEmpty())
-			throw new IllegalArgumentException("no rule name provided");
+			throw new IllegalArgumentException(MISSING_RULE_NAME);
 
 		List<FilterRule> temp = new ArrayList<>();
 		for (FilterRule rule : this.rules) {
@@ -313,7 +313,7 @@ public class JsonProtocolFilter {
 
 	public void deleteRule(String name, String regex) {
 		if (name == null || name.isEmpty())
-			throw new IllegalArgumentException("no rule name provided");
+			throw new IllegalArgumentException(MISSING_RULE_NAME);
 
 		String nonNullRegex = regex;
 		if (regex == null || regex.isEmpty()) {
@@ -332,7 +332,7 @@ public class JsonProtocolFilter {
 	
 	public void addRule(String name, String regex) {
 		if (name == null || name.isEmpty())
-			throw new IllegalArgumentException("no rule name provided");
+			throw new IllegalArgumentException(MISSING_RULE_NAME);
 
 		String nonNullRegex = regex;
 		if (regex == null || regex.isEmpty()) {
