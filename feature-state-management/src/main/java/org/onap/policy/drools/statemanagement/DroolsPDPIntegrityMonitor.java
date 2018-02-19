@@ -430,14 +430,14 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
 		}
   	}
 
-	public static DroolsPDPIntegrityMonitor getInstance() throws Exception{
+	public static DroolsPDPIntegrityMonitor getInstance() throws IntegrityMonitorException{
 		if(logger.isDebugEnabled()){
 			logger.debug("getInstance() called");
 		}
 		if (im == null) {
 			String msg = "No DroolsPDPIntegrityMonitor instance exists."
 					+ " Please use the method DroolsPDPIntegrityMonitor init(String configDir)";
-			throw new Exception(msg);
+			throw new IntegrityMonitorException(msg);
 		}else{
 			return im;
 		}
