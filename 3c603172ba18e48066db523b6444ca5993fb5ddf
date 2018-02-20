@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_e981cac3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-02-20T14:57:57Z",
+      "side": 1,
+      "message": "This is the wrong JIRA for these types of fixes. This JIRa was specifically for generic exception.",
+      "range": {
+        "startLine": 31,
+        "startChar": 10,
+        "endLine": 31,
+        "endChar": 20
+      },
+      "revId": "3c603172ba18e48066db523b6444ca5993fb5ddf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
