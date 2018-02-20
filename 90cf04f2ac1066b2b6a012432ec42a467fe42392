@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_714fe46b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 540,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-02-20T15:43:05Z",
+      "side": 1,
+      "message": "It seems this method always returns \u0027true\u0027, but according to the comment in \u0027DroolsController.offer(...)\u0027, it should return \u0027true\u0027 if the operation is successful.\n\nThis one should probably be \u0027return successInject\u0027, the ones at line 519 and 533 are probably OK, but the other returns in this method should probably be \u0027return false\u0027.\n\nI imagine that no one is really looking at the return value to this method, but as long as it isn\u0027t \u0027void\u0027, it should probably return something consistent with the description.",
+      "revId": "90cf04f2ac1066b2b6a012432ec42a467fe42392",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
