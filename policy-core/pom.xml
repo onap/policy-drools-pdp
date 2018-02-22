@@ -31,6 +31,23 @@
   </parent>
 
   <dependencies>
+    <!--
+    Issue: 1 of 2
+    These 2 dependencies are trying to upgrade security fixes
+    identified. If they are removed or manipulated then please
+    fix the 2nd change as noted below. 
+    -->
+    <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.24</version>
+    </dependency>
+    <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>1.4.10</version>
+    </dependency>
+
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
@@ -40,6 +57,22 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
       <version>6.5.0.Final</version>
+      <!--
+      Issue: 2 of 2
+      Excluding these 2 dependencies in order to force upgrade security fixes
+      identified. As declared above. Any changes here should be reflected above
+      and vice versa.
+      -->
+      <exclusions>
+        <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
