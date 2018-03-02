@@ -38,5 +38,6 @@
 	<modules>
 		<module>base</module>
 		<module>install</module>
+		<module>docker</module>
 	</modules>
 </project>
