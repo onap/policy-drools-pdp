@@ -72,6 +72,27 @@
                                 <groupId>org.apache.maven.plugins</groupId>
                                 <artifactId>maven-dependency-plugin</artifactId>
                                 <executions>
+					<execution>
+						<id>copy-drools-zip</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/policy-drools</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.onap.policy.drools-pdp</groupId>
+									<artifactId>install-drools</artifactId>
+									<version>${project.version}</version>
+									<type>zip</type>
+									<destFileName>install-drools.zip</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
                                         <execution>
                                                 <id>copy-apps-zip</id>
                                                 <phase>prepare-package</phase>
@@ -95,6 +116,29 @@
                                         </execution>
                                 </executions>
                         </plugin>
+                        <plugin>
+                                <artifactId>maven-resources-plugin</artifactId>
+                                <version>3.0.2</version>
+                                <executions>
+                                        <execution>
+                                                <id>copy-resources</id>
+                                                <phase>prepare-package</phase>
+                                                <goals>
+                                                        <goal>copy-resources</goal>
+                                                </goals>
+                                                <configuration>
+                                                        <outputDirectory>${project.build.directory}/policy-drools</outputDirectory>
+                                                        <resources>
+                                                                <resource>
+                                                                        <directory>src/main/docker</directory>
+                                                                        <filtering>true</filtering>
+                                                                </resource>
+                                                        </resources>
+                                                </configuration>
+                                        </execution>
+                                </executions>
+                        </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
