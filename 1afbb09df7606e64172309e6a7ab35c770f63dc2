@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_9ff6008e",
+        "filename": "packages/docker/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-03-08T12:37:46Z",
+      "side": 1,
+      "message": "Just a question, was filtering used before and it\u0027s not needed anymore? Strange it would be specified if it wasn\u0027t used, could be a copy-paste thing.",
+      "revId": "1afbb09df7606e64172309e6a7ab35c770f63dc2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
