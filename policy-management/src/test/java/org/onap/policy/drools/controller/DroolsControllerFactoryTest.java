@@ -23,6 +23,7 @@ package org.onap.policy.drools.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Properties;
@@ -33,10 +34,11 @@ public class DroolsControllerFactoryTest {
     @Test
     public void buildNullController() {
         Properties droolsProps = new Properties();
-        DroolsController droolsController =
-            DroolsController.factory.build(droolsProps, null, null);
+        DroolsController droolsController = DroolsController.factory.build(droolsProps, null, null);
 
-        assertNullController(droolsController);
+        if (!isNullController(droolsController)) {
+        		fail("drools controller is not a null controller");
+        }
     }
 
     @Test
@@ -46,17 +48,21 @@ public class DroolsControllerFactoryTest {
                 DroolsController.NO_ARTIFACT_ID, DroolsController.NO_VERSION);
 
         assertNotNull(controller);
-        assertEquals(controller.getGroupId(), DroolsController.NO_GROUP_ID);
-        assertEquals(controller.getArtifactId(), DroolsController.NO_ARTIFACT_ID);
-        assertEquals(controller.getVersion(), DroolsController.NO_VERSION);
+        assertEquals(DroolsController.NO_GROUP_ID, controller.getGroupId());
+        assertEquals(DroolsController.NO_ARTIFACT_ID, controller.getArtifactId());
+        assertEquals(DroolsController.NO_VERSION, controller.getVersion());
     }
 
     @Test
     public void inventory() {
         List<DroolsController> controllers = DroolsController.factory.inventory();
         assertNotNull(controllers);
-        assertTrue(controllers.size() == 1);
-        assertNullController(controllers.get(0));
+        
+        for (int i = 0; i < controllers.size(); i++) {
+            if (!isNullController(controllers.get(i)) && !isActualController(controllers.get(i))) {
+            		fail("drools controller is not a null controller");
+            }
+        }
     }
 
     @Test
@@ -73,11 +79,35 @@ public class DroolsControllerFactoryTest {
         assertTrue(droolsFactory.inventory().isEmpty());
     }
 
-    private void assertNullController(DroolsController droolsController) {
-        assertNotNull(droolsController);
-        assertEquals(droolsController.getGroupId(), DroolsController.NO_GROUP_ID);
-        assertEquals(droolsController.getArtifactId(), DroolsController.NO_ARTIFACT_ID);
-        assertEquals(droolsController.getVersion(), DroolsController.NO_VERSION);
+    private boolean isNullController(DroolsController droolsController) {
+        if (droolsController == null) {
+        		return false;
+        }
+        
+        if (!DroolsController.NO_GROUP_ID.equals(droolsController.getGroupId())) {
+        		return false;
+        }
+        
+        if (!DroolsController.NO_ARTIFACT_ID.equals(droolsController.getArtifactId())) {
+        		return false;
+        }
+
+        return DroolsController.NO_VERSION.equals(droolsController.getVersion());
     }
 
+    private boolean isActualController(DroolsController droolsController) {
+        if (droolsController == null) {
+        		return false;
+        }
+        
+        if (!"org.onap.policy.drools.test".equals(droolsController.getGroupId())) {
+        		return false;
+        }
+        
+        if (!"protocolcoder".equals(droolsController.getArtifactId())) {
+        		return false;
+        }
+        
+        return droolsController.getVersion() != null && droolsController.getVersion().substring(0, 1).matches("[0-9]");
+    }
 }
