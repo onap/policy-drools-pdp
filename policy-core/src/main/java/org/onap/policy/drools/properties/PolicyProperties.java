@@ -35,6 +35,7 @@ public interface PolicyProperties {
 	public static final String PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX = ".aafPassword";	
 	public static final String PROPERTY_TOPIC_EVENTS_SUFFIX =".events";
 	public static final String PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX =".filter";
+    public static final String PROPERTY_TOPIC_EVENTS_EXTRACTOR_SUFFIX =".extractor";
 	public static final String PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX =".events.custom.gson";
 	public static final String PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_JACKSON_SUFFIX =".events.custom.jackson";
 	
