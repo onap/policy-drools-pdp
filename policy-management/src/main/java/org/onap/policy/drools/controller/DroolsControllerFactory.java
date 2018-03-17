@@ -288,78 +288,85 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 				continue;
 			}
 			
-			List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
-			
 			List<String> aTopicClasses = 
 					new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
-			
-			for (String aClass: aTopicClasses) {
-				
-				
-				// 4. third, for each coder class, get the list of field filters
-				
-				String filter = properties.getProperty
-						(propertyTopicEntityPrefix + 
-						 aTopic + 
-						 PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX + 
-						 "." + aClass + 
-						 PolicyProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
-				
-				List<Pair<String,String>> filters = new ArrayList<>();
-				
-				if (filter == null || filter.isEmpty()) {
-					// 4. topic -> class -> with no filters
-					
-					JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
-					PotentialCoderFilter class2Filters = 
-							new PotentialCoderFilter(aClass, protocolFilter);
-					classes2Filters.add(class2Filters);
-					continue;
-				}
-				
-				// There are filters associated with the applicability of
-				// this class for decoding.
-				List<String> listOfFilters = 
-						new ArrayList<>(Arrays.asList(filter.split("\\s*,\\s*")));
-				
-				for (String nameValue: listOfFilters) {
-					String fieldName;
-					String regexValue;
-					
-					String[] nameValueSplit = nameValue.split("\\s*=\\s*");
-					if (nameValueSplit.length <= 0 || nameValueSplit.length > 2) {
-						// TODO warn
-						// skip
-						continue;
-					}
-					
-					if (nameValueSplit.length == 2) {
-						fieldName = nameValueSplit[0];
-						regexValue = nameValueSplit[1];
-					} else if (nameValueSplit.length == 1) {
-						fieldName = nameValueSplit[0];
-						regexValue = null;
-					} else {
-						// unreachable 
-						continue;
-					}
-					
-					filters.add(new Pair<String,String>(fieldName, regexValue));
-				}
-				
-				JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
-				PotentialCoderFilter class2Filters = 
-						new PotentialCoderFilter(aClass, protocolFilter);
-				classes2Filters.add(class2Filters);
-			}
+            
+            List<PotentialCoderFilter> classes2Filters = buildFilters(properties,
+                            propertyTopicEntityPrefix + aTopic + PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX + ".",
+                            PolicyProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX, aTopicClasses);
+            
+            List<PotentialCoderFilter> classes2Extractors = buildFilters(properties,
+                            propertyTopicEntityPrefix + aTopic + PolicyProperties.PROPERTY_TOPIC_EVENTS_SUFFIX + ".",
+                            PolicyProperties.PROPERTY_TOPIC_EVENTS_EXTRACTOR_SUFFIX, aTopicClasses);
 			
 			TopicCoderFilterConfiguration topic2Classes2Filters =
-						new TopicCoderFilterConfiguration(aTopic,classes2Filters, customGsonCoder, customJacksonCoder);
+						new TopicCoderFilterConfiguration(aTopic, classes2Filters, classes2Extractors, customGsonCoder, customJacksonCoder);
 			topics2DecodedClasses2Filters.add(topic2Classes2Filters);
 		}
 		
 		return topics2DecodedClasses2Filters;
 	}
+
+    private List<PotentialCoderFilter> buildFilters(Properties properties, String propPrefix,
+                    String propSuffix, List<String> aTopicClasses) {
+        List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
+        
+        for (String aClass: aTopicClasses) {
+        	
+        	
+        	// 4. third, for each coder class, get the list of field filters
+        	
+        	String filter = properties.getProperty(propPrefix + aClass + propSuffix);
+        	
+        	List<Pair<String,String>> filters = new ArrayList<>();
+        	
+        	if (filter == null || filter.isEmpty()) {
+        		// 4. topic -> class -> with no filters
+        		
+        		JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
+        		PotentialCoderFilter class2Filters = 
+        				new PotentialCoderFilter(aClass, protocolFilter);
+        		classes2Filters.add(class2Filters);
+        		continue;
+        	}
+        	
+        	// There are filters associated with the applicability of
+        	// this class for decoding.
+        	List<String> listOfFilters = 
+        			new ArrayList<>(Arrays.asList(filter.split("\\s*,\\s*")));
+        	
+        	for (String nameValue: listOfFilters) {
+        		String fieldName;
+        		String regexValue;
+        		
+        		String[] nameValueSplit = nameValue.split("\\s*=\\s*");
+        		if (nameValueSplit.length <= 0 || nameValueSplit.length > 2) {
+        			// TODO warn
+        			// skip
+        			continue;
+        		}
+        		
+        		if (nameValueSplit.length == 2) {
+        			fieldName = nameValueSplit[0];
+        			regexValue = nameValueSplit[1];
+        		} else if (nameValueSplit.length == 1) {
+        			fieldName = nameValueSplit[0];
+        			regexValue = null;
+        		} else {
+        			// unreachable 
+        			continue;
+        		}
+        		
+        		filters.add(new Pair<String,String>(fieldName, regexValue));
+        	}
+        	
+        	JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
+        	PotentialCoderFilter class2Filters = 
+        			new PotentialCoderFilter(aClass, protocolFilter);
+        	classes2Filters.add(class2Filters);
+        }
+        return classes2Filters;
+    }
 
 	@Override
 	public DroolsController build(String newGroupId, 

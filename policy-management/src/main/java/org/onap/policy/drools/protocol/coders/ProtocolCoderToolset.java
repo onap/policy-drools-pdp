@@ -289,6 +289,36 @@ public abstract class ProtocolCoderToolset {
   }
 
   /**
+   * extracts the request id from a json string
+   *
+   * @param json json string
+   * @return the request id, or {@code null} if it could not be extracted
+   * @throws UnsupportedOperationException can't filter
+   * @throws IllegalArgumentException invalid input
+   */
+  public String extract(String json) {
+
+    if (this.coders.isEmpty()) {
+      throw new IllegalStateException("No coders available");
+    }
+
+    for (final CoderFilters extractor : this.coders) {
+      try {
+        final String reqid = extractor.getFilter().extract(json);
+        if (reqid != null) {
+          return reqid;
+        }
+      } catch (final Exception e) {
+        logger.info("{}: unexpected failure accepting {} because of {}", this, json,
+            e.getMessage(), e);
+        // continue
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Decode json into a POJO object
    *
    * @param json json string
