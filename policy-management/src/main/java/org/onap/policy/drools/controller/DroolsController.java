@@ -113,6 +113,15 @@ public interface DroolsController extends Startable, Lockable {
 	 *         not supported.
 	 */
 	public boolean deliver(TopicSink sink, Object event);
+
+    /**
+     * Extracts the request id from the event.
+     * 
+     * @param topic
+     * @param event
+     * @return the request id, or {@code null} if it cannot be extracted
+     */
+    public default String extractRequestId(String topic, String event) { return null; }
 	
 	/**
 	 * 
