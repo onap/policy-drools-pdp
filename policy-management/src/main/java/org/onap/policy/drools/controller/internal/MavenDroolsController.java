@@ -89,6 +89,12 @@ public class MavenDroolsController implements DroolsController {
 	 * with a list of associated filters.
 	 */
 	protected List<TopicCoderFilterConfiguration> decoderConfigurations;
+    
+    /**
+     * list of topics, each with associated extractor classes, each
+     * with a list of associated filters.
+     */
+    protected List<TopicCoderFilterConfiguration> extractorConfigurations;
 	
 	/**
 	 * list of topics, each with associated encoder classes, each
@@ -117,7 +123,7 @@ public class MavenDroolsController implements DroolsController {
 	 * @param groupId maven group id
 	 * @param artifactId maven artifact id
 	 * @param version maven version
-	 * @param decoderConfigurations list of topic -> decoders -> filters mapping
+	 * @param decoderConfigurations list of topic -> decoders -> filters/extractors mapping
 	 * @param encoderConfigurations list of topic -> encoders -> filters mapping
 	 * 
 	 * @throws IllegalArgumentException invalid arguments passed in
@@ -156,8 +162,29 @@ public class MavenDroolsController implements DroolsController {
 		this.decoderConfigurations = decoderConfigurations;
 		this.encoderConfigurations = encoderConfigurations;
 		
-		this.initCoders(decoderConfigurations, true);
-		this.initCoders(encoderConfigurations, false);
+        this.initCoders(decoderConfigurations,
+                        (topic, potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder) -> {
+                            EventProtocolCoder.manager.addDecoder(this.getGroupId(), this.getArtifactId(), topic,
+                                            potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder,
+                                            this.policyContainer.getClassLoader().hashCode());
+
+                        });
+        
+        this.initCoders(decoderConfigurations,
+                        (topic, potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder) -> {
+                            EventProtocolCoder.manager.addExtractor(this.getGroupId(), this.getArtifactId(), topic,
+                                            potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder,
+                                            this.policyContainer.getClassLoader().hashCode());
+
+                        });
+		
+		this.initCoders(encoderConfigurations, 
+                        (topic, potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder) -> {
+                            EventProtocolCoder.manager.addEncoder(this.getGroupId(), this.getArtifactId(), topic,
+                                            potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder,
+                                            this.policyContainer.getClassLoader().hashCode());
+
+                        });
 		
 		this.modelClassLoaderHash = this.policyContainer.getClassLoader().hashCode();		
 	}
@@ -229,7 +256,7 @@ public class MavenDroolsController implements DroolsController {
 	 * @param coderConfigurations list of topic -> decoders -> filters mapping
 	 */
 	protected void initCoders(List<TopicCoderFilterConfiguration> coderConfigurations, 
-			                  boolean decoder) {
+	                AddCoderFunction addCoderFunc) {
 		
 		if (logger.isInfoEnabled())
 			logger.info("INIT-CODERS: " +  this);
@@ -288,19 +315,8 @@ public class MavenDroolsController implements DroolsController {
 					if (logger.isInfoEnabled())
 						logClassFetched(potentialCodedClass);
 				}			
-				
-				if (decoder)
-					EventProtocolCoder.manager.addDecoder(this.getGroupId(), this.getArtifactId(), 
-							                              topic, potentialCodedClass, protocolFilter,
-							                              customGsonCoder,
-							                              customJacksonCoder,
-							                              this.policyContainer.getClassLoader().hashCode());
-				else
-					EventProtocolCoder.manager.addEncoder(this.getGroupId(), this.getArtifactId(), 
-                                                          topic, potentialCodedClass, protocolFilter,
-							                              customGsonCoder,
-							                              customJacksonCoder,
-							                              this.policyContainer.getClassLoader().hashCode());
+
+                addCoderFunc.add(topic, potentialCodedClass, protocolFilter, customGsonCoder, customJacksonCoder);
 			}
 		}
 	}
@@ -556,6 +572,40 @@ public class MavenDroolsController implements DroolsController {
 	}	
 	
 	@Override
+	public String extractRequestId(String topic, String event) {
+	    
+	    /*
+	     * Check if extraction is supported.
+	     */
+	    
+        if (!EventProtocolCoder.manager.isExtractionSupported(this.getGroupId(), 
+                                                              this.getArtifactId(), 
+                                                              topic)) {
+            
+            logger.warn("{}: EXTRACTION-UNSUPPORTED {}:{}:{}", this, 
+                        topic, this.getGroupId(), this.getArtifactId());
+            
+            // let invoker have the event
+            return null;
+        }
+        
+        /*
+         * Extract request id.
+         */
+        
+        try {
+            return EventProtocolCoder.manager.extract(this.getGroupId(), 
+                                                          this.getArtifactId(), 
+                                                          topic, 
+                                                          event);
+        } catch (Exception e) {
+            logger.warn("{}: EXTRACT FAILED: {} <- {} because of {}", this, topic, 
+                        event, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    @Override
 	public boolean deliver(TopicSink sink, Object event) {
 		
 		if (logger.isInfoEnabled())
@@ -859,4 +909,10 @@ public class MavenDroolsController implements DroolsController {
 		return builder.toString();
 	}
 
+    @FunctionalInterface
+    private static interface AddCoderFunction {
+
+        public void add(String topic, String potentialCodedClass, JsonProtocolFilter protocolFilter,
+                        CustomGsonCoder customGsonCoder, CustomJacksonCoder customJacksonCoder);
+    }
 }

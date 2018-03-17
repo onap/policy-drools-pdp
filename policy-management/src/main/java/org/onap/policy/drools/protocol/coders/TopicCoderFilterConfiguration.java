@@ -228,6 +228,11 @@ public class TopicCoderFilterConfiguration {
 	 * List of decoder -> filters
 	 */
 	protected final List<PotentialCoderFilter> coderFilters;
+    
+    /**
+     * List of decoder -> extractors
+     */
+    protected final List<PotentialCoderFilter> coderExtractors;
 	
 	/**
 	 * custom gson coder that this controller prefers to use instead of the framework ones
@@ -246,9 +251,10 @@ public class TopicCoderFilterConfiguration {
 	 * @param topic the topic
 	 */
 	public TopicCoderFilterConfiguration(String topic, List<PotentialCoderFilter> decoderFilters,
-                                         CustomGsonCoder customGsonCoder, 
+                                         List<PotentialCoderFilter> decoderExtractors, CustomGsonCoder customGsonCoder, 
                                          CustomJacksonCoder customJacksonCoder) {
 		this.coderFilters = decoderFilters;
+		this.coderExtractors = decoderExtractors;
 		this.topic = topic;
 		this.customGsonCoder = customGsonCoder;
 		this.customJacksonCoder = customJacksonCoder;
@@ -269,6 +275,14 @@ public class TopicCoderFilterConfiguration {
 	}
 	
 	/**
+	 * 
+	 * @return the decoderExtractors
+	 */
+	public List<PotentialCoderFilter> getCoderExtractors() {
+        return coderExtractors;
+    }
+
+    /**
 	 * @return the customGsonCoder
 	 */
 	public CustomGsonCoder getCustomGsonCoder() {
