@@ -39,6 +39,17 @@ public interface DroolsControllerFeatureAPI extends OrderedService {
 	   */
 	  default boolean beforeInsert(DroolsController controller, Object fact) {return false;}
 
+      /**
+       * intercepts before the Drools Controller after the request id has been extracted,
+       * but before it gives the Policy Container a fact to insert into its Policy Sessions.
+       * This is invoked after {@link #beforeInsert(DroolsController, Object)}.
+       *
+       * @return true if this feature intercepts and takes ownership
+       * of the operation preventing the invocation of
+       * lower priority features.   False, otherwise.
+       */
+      default boolean afterExtract(DroolsController controller, String topic, String event, String reqid) {return false;}
+
 	  /**
 	   * called after a fact is injected into the Policy Container
 	   *

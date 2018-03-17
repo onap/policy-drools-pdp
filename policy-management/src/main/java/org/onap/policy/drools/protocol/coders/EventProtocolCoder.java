@@ -139,6 +139,26 @@ public interface EventProtocolCoder {
 			               CustomGsonCoder customGsonCoder,
 			               CustomJacksonCoder customJacksonCoder,
 			               int modelClassLoaderHash);
+    
+    /**
+     * Adds an Extractor class to extract the request id from the protocol over this topic
+     *  
+     * @param groupId of the controller
+     * @param artifactId of the controller
+     * @param topic the topic 
+     * @param eventClass the event class
+     * @param protocolFilter filters to selectively choose a particular decoder
+     * when there are multiples
+     * 
+     * @throw IllegalArgumentException if an invalid parameter is passed
+     */
+    public void addExtractor(String groupId, String artifactId, 
+                    String topic, 
+                    String eventClass, 
+                    JsonProtocolFilter protocolFilter, 
+                    CustomGsonCoder customGsonCoder,
+                    CustomJacksonCoder customJacksonCoder,
+                    int modelClassLoaderHash);
 
 	/**
 	 * removes all decoders associated with the controller id
@@ -256,6 +276,16 @@ public interface EventProtocolCoder {
 	 * @return true if supported
 	 */
 	public boolean isDecodingSupported(String groupId, String artifactId, String topic);
+    
+    /**
+     * is extraction supported for the controller id and topic
+     * 
+     * @param groupId of the controller
+     * @param artifactId of the controller
+     * @param topic protocol
+     * @return true if supported
+     */
+    public boolean isExtractionSupported(String groupId, String artifactId, String topic);
 	
 	/**
 	 * Adds a Encoder class to encode the protocol over this topic
@@ -341,6 +371,20 @@ public interface EventProtocolCoder {
 	 * @throws IllegalStateException if the system is in an illegal state
 	 */
 	public Object decode(String groupId, String artifactId, String topic, String json);
+    
+    /**
+     * extract request id from topic's stringified event (json).
+     * 
+     * @param groupId of the controller
+     * @param artifactId of the controller
+     * @param topic protocol
+     * @param json event string
+     * @return the extracted request id, or {@code null} if it could not be extracted
+     * @throws IllegalArgumentException invalid arguments passed in
+     * @throws UnsupportedOperationException if the operation is not supported
+     * @throws IllegalStateException if the system is in an illegal state
+     */
+    public String extract(String groupId, String artifactId, String topic, String json);
 
 	/**
 	 * encodes topic's stringified event (json) to corresponding Event Object.
@@ -397,6 +441,11 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
 	 * Encoders
 	 */
 	protected EventProtocolEncoder encoders = new EventProtocolEncoder();
+    
+    /**
+     * Extractors
+     */
+    protected EventProtocolExtractor extractors = new EventProtocolExtractor();
 	
 	
 	/**
@@ -434,6 +483,24 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
 		this.encoders.add(groupId, artifactId, topic, eventClass, protocolFilter, 
 		                  customGsonCoder, customJacksonCoder, modelClassLoaderHash);
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addExtractor(String groupId, String artifactId, String topic, 
+                           String eventClass, 
+                           JsonProtocolFilter protocolFilter,
+                           CustomGsonCoder customGsonCoder,
+                           CustomJacksonCoder customJacksonCoder,
+                           int modelClassLoaderHash) {
+        logger.info("{}: add-extractor {}:{}:{}:{}:{}:{}:{}:{}", this, 
+                    groupId, artifactId, topic, eventClass,
+                    protocolFilter, customGsonCoder, customJacksonCoder,
+                    modelClassLoaderHash);
+        this.extractors.add(groupId, artifactId, topic, eventClass, protocolFilter, 
+                          customGsonCoder, customJacksonCoder, modelClassLoaderHash);
+    }
 	
 	/**
 	 * {@inheritDoc}
@@ -460,6 +527,14 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
 	public boolean isDecodingSupported(String groupId, String artifactId, String topic) {	
 		return this.decoders.isCodingSupported(groupId, artifactId, topic);
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExtractionSupported(String groupId, String artifactId, String topic) {   
+        return this.extractors.isCodingSupported(groupId, artifactId, topic);
+    }
 	
 	/**
 	 * {@inheritDoc}
@@ -477,6 +552,15 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
 		logger.debug("{}: decode {}:{}:{}:{}", this, groupId, artifactId, topic, json);
 		return this.decoders.decode(groupId, artifactId, topic, json);
 	}
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String extract(String groupId, String artifactId, String topic, String json) {
+        logger.debug("{}: extract {}:{}:{}:{}", this, groupId, artifactId, topic, json);
+        return this.extractors.extract(groupId, artifactId, topic, json);
+    }
 
 	/**
 	 * {@inheritDoc}
@@ -940,6 +1024,55 @@ abstract class GenericEventProtocolCoder  {
 		
 		throw new UnsupportedOperationException("Cannot decode neither with gson or jackson");
 	}
+    
+    /**
+     * decode a json string into an Object
+     * 
+     * @param groupId group id
+     * @param artifactId artifact id
+     * @param topic topic
+     * @param json json string to convert to object
+     * @return the request id, or {@code null} if it could not be extracted
+     * @throws IllegalArgumentException if invalid argument is provided
+     * @throws UnsupportedOperationException if the operation cannot be performed
+     */
+    public String extract(String groupId, String artifactId, String topic, String json) {
+        
+        if (!isCodingSupported(groupId, artifactId, topic))
+            throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic) + " for encoding");
+        
+        String key = this.codersKey(groupId, artifactId, topic);
+        Pair<ProtocolCoderToolset,ProtocolCoderToolset> coderTools = coders.get(key);
+        try {
+            String reqid = coderTools.first().extract(json);
+            if (reqid != null)
+                return reqid;
+        } catch (Exception e) {
+            logger.debug("{}, cannot extract {}", this, json, e);
+        }
+        
+        if (multipleToolsetRetries) {
+            // try the less favored toolset
+            try {
+                String reqid = coderTools.second().extract(json);
+                if (reqid != null) {
+                    // change the priority of the toolset
+                    synchronized(this) {
+                        ProtocolCoderToolset first = coderTools.first();
+                        ProtocolCoderToolset second = coderTools.second();
+                        coderTools.first(second);
+                        coderTools.second(first);
+                    }
+                    
+                    return reqid;
+                }
+            } catch (Exception e) {
+                throw new UnsupportedOperationException(e);
+            }
+        } 
+        
+        return null;
+    }
 
 	/**
 	 * encode an object into a json string
@@ -1338,6 +1471,19 @@ class EventProtocolDecoder extends GenericEventProtocolCoder {
 		return builder.toString();
 	}
 	
+}
+
+class EventProtocolExtractor extends GenericEventProtocolCoder {
+
+    public EventProtocolExtractor(){super(false);}
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("EventProtocolDecoder [toString()=").append(super.toString()).append("]");
+        return builder.toString();
+    }
+    
 }
 	
 class EventProtocolEncoder extends GenericEventProtocolCoder {
