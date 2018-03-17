@@ -22,18 +22,19 @@ package org.onap.policy.drools.protocol.coders;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * JSON Protocol Filter.
+ * JSON Protocol Filter/Extractor.
  */
 public class JsonProtocolFilter {
 	
@@ -56,6 +57,12 @@ public class JsonProtocolFilter {
 		 * Field Value regex
 		 */
 		private String regex;
+		
+		/**
+		 * Compiled version of regex, or {@code null} if matching the whole
+		 * field (i.e., regex = ".*").
+		 */
+		private Pattern pattern;
 		
 		/**
 		 * Filter Constructor
@@ -93,11 +100,15 @@ public class JsonProtocolFilter {
 			return regex;
 		}
 
-		/**
+		public Pattern getPattern() {
+            return pattern;
+        }
+
+        /**
 		 * sets field name
 		 * @param name field name
 		 */
-		public void setName(String name) {
+		public final void setName(String name) {
 			if (name == null || name.isEmpty())
 				throw new IllegalArgumentException("filter field name must be provided");
 
@@ -108,12 +119,66 @@ public class JsonProtocolFilter {
 		 * sets regex name
 		 * @param regex
 		 */
-		public void setRegex(String regex) {
-		    if (regex == null || regex.isEmpty())
-		    	this.regex = ".*";
+		public final void setRegex(String regex) {
+		    String re = (regex == null || regex.isEmpty() ? ".*" : regex);
 
-			this.regex = regex;
+            if (re.equals(".*")) {
+                this.regex = re;
+                this.pattern = null;
+                return;
+            }
+
+            try {
+                /*
+                 * Set "pattern" before "regex" so that we know it successfully
+                 * compiled before we update "regex".
+                 */
+                this.pattern = Pattern.compile(re);
+                this.regex = re;
+
+            } catch (PatternSyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
 		}
+
+        /**
+         * 
+         * @param value
+         * @return {@code true} if the value matches the regular expression,
+         *         {@code false} otherwise
+         */
+        public boolean matches(String value) {
+            return (pattern == null ? true : pattern.matcher(value).matches());
+        }
+
+        /**
+         * Extracts a value from a field.
+         * 
+         * @param fieldValue
+         * @return the extracted value, or {@code null} if the value did not
+         *         match the regular expression
+         */
+        public String extract(String fieldValue) {
+            if (pattern == null) {
+                // no pattern - matches the entire field
+                return fieldValue;
+            }
+
+            Matcher mat = pattern.matcher(fieldValue);
+            if (!mat.matches()) {
+                return null;
+            }
+
+            for (int x = 1; x <= mat.groupCount(); ++x) {
+                String grp = mat.group(x);
+                if (grp != null) {
+                    return grp;
+                }
+            }
+
+            // no subgroup matched - return the whole value
+            return fieldValue;
+        }
 
 		@Override
 		public String toString() {
@@ -214,9 +279,7 @@ public class JsonProtocolFilter {
 		try {
 			JsonObject event = json.getAsJsonObject();
 			for (FilterRule filter: rules) {
-				if (filter.getRegex() == null ||
-					filter.getRegex().isEmpty() ||
-					".*".equals(filter.getRegex())) {
+                if (filter.getPattern() == null) {
 					
 					// Only check for presence
 					if (!event.has(filter.getName())) {
@@ -229,7 +292,7 @@ public class JsonProtocolFilter {
 					}
 					
 					String fieldValue = field.getAsString();
-					if (!fieldValue.matches(filter.getRegex())) {
+					if(!filter.matches(fieldValue)) {
 						return false;
 					}
 				}
@@ -272,6 +335,83 @@ public class JsonProtocolFilter {
 			throw new IllegalArgumentException(e);			
 		}
 	}
+
+    /**
+     * Extracts a value from a JSON object.
+     * 
+     * @param json object from which to extract the value
+     * @return the extracted value from the first matching rule, or {@code null}
+     *         if no rules matched
+     * @throws IllegalArgumentException an invalid input has been provided
+     */
+    public String extract(JsonElement json) {
+        if (json == null) {
+            throw new IllegalArgumentException("no JSON provided");
+        }
+
+        if (!json.isJsonObject()) {
+            return null;
+        }
+
+        if (rules.isEmpty()) {
+            return null;
+        }
+
+        JsonObject event = json.getAsJsonObject();
+
+        for (FilterRule extractor : getRules()) {
+            JsonElement field = event.get(extractor.getName());
+            if (field == null) {
+                continue;
+            }
+
+            String fieldValue = field.getAsString();
+            if (fieldValue == null) {
+                continue;
+            }
+
+            String ext = extractor.extract(fieldValue);
+            if (ext != null) {
+                return ext;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Extracts a value from a JSON string.
+     * 
+     * @param json string from which to extract the value
+     * @return the extracted value from the first matching rule, or {@code null}
+     *         if no rules matched
+     * @throws IllegalArgumentException an invalid input has been provided
+     */
+    public String extract(String json) {
+        if (json == null || json.isEmpty()) {
+            throw new IllegalArgumentException("no JSON provided");
+        }
+
+        if (rules.isEmpty()) {
+            return null;
+        }
+
+        try {
+            JsonElement element = new JsonParser().parse(json);
+            if (element == null || !element.isJsonObject()) {
+                return null;
+            }
+
+            return extract(element.getAsJsonObject());
+
+        } catch (IllegalArgumentException e) {
+            throw e;
+
+        } catch (RuntimeException e) {
+            logger.info("{}: cannot extract {} because of {}", this, json, e.getMessage(), e);
+            throw new IllegalArgumentException(e);
+        }
+    }
 
 	public List<FilterRule> getRules() {
 		return new ArrayList<>(this.rules);
