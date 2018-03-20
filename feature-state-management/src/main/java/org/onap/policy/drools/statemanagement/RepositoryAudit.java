@@ -330,7 +330,7 @@ public class RepositoryAudit extends DroolsPDPIntegrityMonitor.AuditBase
 	 *     Note: at present, this step just generates log messages,
 	 *     but doesn't do any verification.
 	 */
-	if (rval == 0)
+	if (rval == 0 && output != null)
 	  {
 		// place output in 'fileContents' (replacing the Return characters
 		// with Newline)

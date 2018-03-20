@@ -84,11 +84,12 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 			droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
 			stateManagement = droolsPdpIntegrityMonitor.getStateManager();
 			
-			logger.debug("StateManagementFeature.globalInit(): "
-				+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
-			
-			if(stateManagement == null){
+			if (stateManagement == null) {
 				logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
+			}
+			else {
+				logger.debug("StateManagementFeature.globalInit(): "
+						+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
 			}
 		} catch (Exception e1) {
 			logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
