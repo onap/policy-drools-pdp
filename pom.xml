@@ -89,6 +89,7 @@
 		<module>api-active-standby-management</module>
 		<module>feature-active-standby-management</module>
 		<module>feature-simulators</module>
+		<module>feature-distributed-locking</module>
 		<module>packages</module>
 	</modules>
 
