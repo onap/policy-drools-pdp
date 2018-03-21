@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_91023e6e",
+        "filename": "feature-simulators/src/main/java/org/onap/policy/drools/simulators/DMaaPSimulatorJaxRs.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-21T12:57:31Z",
+      "side": 1,
+      "message": "modify this method to use putIfAbsent to add the queue to the map, and then offer the body to whichever queue object is actually in the map",
+      "revId": "7cc18f0f1c9634949a8609dac75eef915fdcbac1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
