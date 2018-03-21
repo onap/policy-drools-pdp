@@ -1,0 +1,1 @@
+create table locks (resourceId VARCHAR(128), owner VARCHAR(128), expirationTime BIGINT, PRIMARY KEY (resourceId));create table locks (resourceId VARCHAR(128), owner VARCHAR(128), expirationTime BIGINT, PRIMARY KEY (resourceId));
