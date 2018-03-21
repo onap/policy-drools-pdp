@@ -90,6 +90,7 @@
 		<module>feature-active-standby-management</module>
 		<module>feature-simulators</module>
 		<module>packages</module>
+		<module>feature-distributed-locking</module>
 	</modules>
 
 	<distributionManagement>
