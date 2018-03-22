@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_0361f7d2",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T19:09:48Z",
+      "side": 1,
+      "message": "Maybe swap this line with the cleanUp line - I\u0027m not sure if having the thread marked \"interrupted\" would interfere with the db.close() call",
+      "revId": "aebdb8c20b916ec0858dde941f686e46c8e8c70f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
