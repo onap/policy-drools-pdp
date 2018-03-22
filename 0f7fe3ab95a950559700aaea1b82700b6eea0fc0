@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_28a9707b",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "Probably need to override another method from PolicySessionFeatureAPI to insert this object into the rule engine so the rules can access it",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a89d805b",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "change to: return tLock.lock();",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_48a2bc9b",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "change to: return tLock.unlock();",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_68cd385d",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "looks like this could be simplified as:\nwhile(!grabLock() \u0026\u0026 !checkLock()) {\n  try-catch block\n}\ncleanUp\nreturn true",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_88fd2471",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "seems like it should return false if the expiration time is reached.  (Or perhaps provide an argument to the method to say how long to wait to obtain the lock.)",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_e8e148d1",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "use logger instead of printStackTrace (everywhere)\nre-interrupt the thread.\nreturn false",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a8eb40af",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "if this succeeds, shouldn\u0027t it return true?",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_48f71c8d",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "change to: return updateLock();\nsimilar comment elsewhere",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_68f45887",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-22T18:10:59Z",
+      "side": 1,
+      "message": "should probably return false.\nmay also need to wait a bit if there\u0027s a DB-connectivity issue",
+      "revId": "0f7fe3ab95a950559700aaea1b82700b6eea0fc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
