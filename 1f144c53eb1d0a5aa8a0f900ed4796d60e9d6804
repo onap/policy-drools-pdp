@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_64680088",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-03-23T09:24:58Z",
+      "side": 1,
+      "message": "You aren\u0027t overriding any \u0027PolicyEngineFeatureAPI\u0027 methods, so there is no reason to include it here.",
+      "revId": "1f144c53eb1d0a5aa8a0f900ed4796d60e9d6804",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_24099895",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-03-23T09:24:58Z",
+      "side": 1,
+      "message": "This method appears to be blocking the current thread, until the lock is obtained. If the lock is currently held by another transaction within this Drools session, it won\u0027t get a chance to run and free the lock, because this method is holding the one-and-only thread within the Drools session. As a result, this method will loop until the previous user times out, and forcibly take over the lock. Given that the \u0027sleep\u0027 is for 5 seconds, one loop would do it.",
+      "revId": "1f144c53eb1d0a5aa8a0f900ed4796d60e9d6804",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_241758a5",
+        "filename": "feature-distributed-locking/src/main/resources/META-INF/services/org.onap.policy.drools.features.PolicyEngineFeatureAPI",
+        "patchSetId": 9
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-03-23T09:24:58Z",
+      "side": 1,
+      "message": "You also need \u0027PolicySessionFeatureAPI\u0027 associated with this class, or \u0027DistributedLockingFeature.globalInit\u0027 will not be called. In fact, you really don\u0027t need \u0027PolicyEngineFeatureAPI\u0027, because you are not overriding any of its methods.",
+      "revId": "1f144c53eb1d0a5aa8a0f900ed4796d60e9d6804",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
