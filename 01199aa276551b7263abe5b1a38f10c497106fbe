@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_0a9583e3",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-03-23T15:20:37Z",
+      "side": 1,
+      "message": "This is still going to block the thread.",
+      "revId": "01199aa276551b7263abe5b1a38f10c497106fbe",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
