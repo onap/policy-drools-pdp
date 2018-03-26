@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_c3ec6192",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-03-26T07:55:14Z",
+      "side": 1,
+      "message": "Implementations should go in separate files from interfaces",
+      "revId": "3d3ece6f1b45c67fee6cf4f3b3045bc0c93f91d8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
