@@ -27,9 +27,10 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.onap.policy.drools.event.comm.FilterableTopicSource;
 import org.onap.policy.drools.event.comm.TopicListener;
 import org.onap.policy.drools.event.comm.bus.BusTopicSource;
+import org.onap.policy.drools.event.comm.bus.internal.BusConsumer.FilterableBusConsumer;
 
 /**
  * This topic source implementation specializes in reading messages
@@ -37,7 +38,7 @@ import org.onap.policy.drools.event.comm.bus.BusTopicSource;
  */
 public abstract class SingleThreadedBusTopicSource 
        extends BusTopicBase
-       implements Runnable, BusTopicSource {
+       implements Runnable, BusTopicSource, FilterableTopicSource {
 	   
 	/**
 	 * Not to be converted to PolicyLogger.
@@ -286,6 +287,16 @@ public abstract class SingleThreadedBusTopicSource
 	
 
 	@Override
+    public void setFilter(String filter) {
+	    if(consumer instanceof FilterableBusConsumer) {
+	        ((FilterableBusConsumer) consumer).setFilter(filter);
+	        
+	    } else {
+	        throw new UnsupportedOperationException("no server-side filtering for topic " + topic);
+	    }
+    }
+
+    @Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("SingleThreadedBusTopicSource [consumerGroup=").append(consumerGroup)
