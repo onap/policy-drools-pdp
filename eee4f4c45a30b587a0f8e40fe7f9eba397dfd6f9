@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_1244d072",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-03-26T21:24:50Z",
+      "side": 1,
+      "message": "always true??",
+      "range": {
+        "startLine": 65,
+        "startChar": 2,
+        "endLine": 65,
+        "endChar": 14
+      },
+      "revId": "eee4f4c45a30b587a0f8e40fe7f9eba397dfd6f9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_3249cc8b",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingProperties.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-03-26T21:24:50Z",
+      "side": 1,
+      "message": "just add super() to avoid our friend sonar",
+      "range": {
+        "startLine": 39,
+        "startChar": 1,
+        "endLine": 40,
+        "endChar": 2
+      },
+      "revId": "eee4f4c45a30b587a0f8e40fe7f9eba397dfd6f9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
