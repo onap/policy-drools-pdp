@@ -42,11 +42,11 @@ function um_start() {
       RETVAL=0
       return
     fi
-    mkdir -p $_DIR/logs
-    if [ -e $_DIR/logs/$PNAME.out.1 ]; then mv $_DIR/logs/$PNAME.out.1 $_DIR/logs/$PNAME.out.2; fi
-    if [ -e $_DIR/logs/$PNAME.err.1 ]; then mv $_DIR/logs/$PNAME.err.1 $_DIR/logs/$PNAME.err.2; fi
-    if [ -e $_DIR/logs/$PNAME.out ]; then mv $_DIR/logs/$PNAME.out $_DIR/logs/$PNAME.out.1; fi
-    if [ -e $_DIR/logs/$PNAME.err ]; then mv $_DIR/logs/$PNAME.err $_DIR/logs/$PNAME.err.1; fi
+    mkdir -p $_LOGS
+    if [ -e $_LOGS/$PNAME.out.1 ]; then mv $_LOGS/$PNAME.out.1 $_LOGS/$PNAME.out.2; fi
+    if [ -e $_LOGS/$PNAME.err.1 ]; then mv $_LOGS/$PNAME.err.1 $_LOGS/$PNAME.err.2; fi
+    if [ -e $_LOGS/$PNAME.out ]; then mv $_LOGS/$PNAME.out $_LOGS/$PNAME.out.1; fi
+    if [ -e $_LOGS/$PNAME.err ]; then mv $_LOGS/$PNAME.err $_LOGS/$PNAME.err.1; fi
     CP=$(ls $_DIR/lib/*.jar | xargs -I X printf ":%s" X)
 
     # If 'system.properties' exists, convert it into JVM arguments.
@@ -66,7 +66,7 @@ function um_start() {
 	    # to subprocesses
 	    exec {cfg}>&-
 	fi
-	nohup $JAVA_HOME/bin/java -Dkie.maven.settings.custom=$_DIR/config/kie_settings.xml -Dlog4j.configuration=file:$_DIR/config/log4j.properties -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_DIR/logs/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_DIR/logs/$PNAME.err) &
+	nohup $JAVA_HOME/bin/java -Dkie.maven.settings.custom=$_DIR/config/kie_settings.xml -Dlog4j.configuration=file:$_DIR/config/log4j.properties -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
 
 	_PID=$!
 	echo $_PID > $_PIDFILE
@@ -167,6 +167,12 @@ function update_monitor() {
 # main
 
 _DIR=${POLICY_HOME}
+_LOGS=${POLICY_LOGS}
+
+if [[ -z ${POLICY_LOGS} ]]; then
+	_LOGS="${POLICY_HOME}"/logs
+fi
+
 CONTROLLER=policy-management-controller
 
 RETVAL=0

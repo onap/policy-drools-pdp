@@ -64,7 +64,7 @@ import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
-import org.onap.policy.drools.utils.LoggerUtil;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
