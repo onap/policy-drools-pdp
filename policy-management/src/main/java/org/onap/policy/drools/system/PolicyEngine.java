@@ -44,6 +44,8 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
+import org.onap.policy.drools.utils.logging.MDCTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,7 +141,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
   /**
    * registers a new Policy Controller with the Policy Engine initialized per properties.
    *
-   * @param controller name
    * @param properties properties to initialize the Policy Controller
    * @throws IllegalArgumentException when invalid or insufficient properties are provided
    * @throws IllegalStateException when the engine is in a state where this operation is not
@@ -276,7 +277,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
   /**
    * Attempts the dispatching of an "event" object over communication infrastructure "busType"
    *
-   * @param eventBus Communication infrastructure identifier
    * @param topic topic
    * @param event the event object to send
    *
@@ -292,7 +292,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
   /**
    * Attempts the dispatching of an "event" object over communication infrastructure "busType"
    *
-   * @param eventBus Communication infrastructure enum
    * @param topic topic
    * @param event the event object to send
    *
@@ -308,7 +307,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
   /**
    * Attempts delivering of an String over communication infrastructure "busType"
    *
-   * @param eventBus Communication infrastructure identifier
    * @param topic topic
    * @param event the event object to send
    *
@@ -591,12 +589,22 @@ private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
 
     final String entity = config.getEntity();
 
+    MDCTransaction mdcTrans = MDCTransaction.newTransaction(config.getRequestID(), "brmsgw");
+    if (this.getSources().size() == 1) {
+      Topic topic = this.getSources().get(0);
+      mdcTrans.setServiceName(topic.getTopic()).setRemoteHost(topic.getServers().toString()).
+        setTargetEntity(config.getEntity());
+    }
+
     switch (entity) {
-      case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:          
-        return controllerConfig(config);
+      case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:
+        boolean success = controllerConfig(config);
+        mdcTrans.resetSubTransaction().setStatusCode(success).transaction();
+        return success;
       default:
         final String msg = "Configuration Entity is not supported: " + entity;
-        logger.warn(msg);
+        mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
+        logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, msg);
         throw new IllegalArgumentException(msg);
     }
   }
@@ -613,11 +621,18 @@ private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
     }
 
     for (final ControllerConfiguration configController : configControllers) {
+      MDCTransaction mdcTrans =
+          MDCTransaction.newSubTransaction(null).setTargetEntity(configController.getName()).
+              setTargetServiceName(configController.getOperation()).
+              setTargetVirtualEntity(configController.getDrools().toString());
       try {
         final PolicyController policyController = this.updatePolicyController(configController);
         policyControllers.add(policyController);
+        mdcTrans.setStatusCode(true).transaction();
       } catch (final Exception e) {
-        logger.error("{}: cannot update-policy-controllers because of {}", this, e.getMessage(), e);
+        mdcTrans.setStatusCode(false).setResponseCode(e.getClass().getName()).
+            setResponseDescription(e.getMessage()).flush();
+        logger.error(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, "{}: cannot update-policy-controllers because of {}", this, e.getMessage(), e);
       }
     }
 
@@ -1423,18 +1438,23 @@ private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
       /* only this one supported for now */
       final List<ControllerConfiguration> configControllers = config.getControllers();
       if (configControllers == null || configControllers.isEmpty()) {
-        if (logger.isInfoEnabled())
-          logger.info("No controller configuration provided: " + config);
+        logger.info("No controller configuration provided: {}" + config);
         return false;
       }
-      final List<PolicyController> policyControllers =
-          this.updatePolicyControllers(config.getControllers());
-      if (policyControllers == null || policyControllers.isEmpty())
-        return false;
-      else if (policyControllers.size() == configControllers.size())
-        return true;
 
-      return false;      
+      final List<PolicyController> policyControllers = this.updatePolicyControllers(config.getControllers());
+
+      boolean success;
+
+      if (policyControllers == null || policyControllers.isEmpty()) {
+        success = false;
+      } else if (policyControllers.size() == configControllers.size()) {
+        success = true;
+      } else {
+        success = false;
+      }
+
+      return success;
   }
 
   @Override

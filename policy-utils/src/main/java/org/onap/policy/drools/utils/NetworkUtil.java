@@ -22,8 +22,10 @@ package org.onap.policy.drools.utils;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.Socket;
 
+import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,42 +34,80 @@ import org.slf4j.LoggerFactory;
  */
 public class NetworkUtil {
 
-  public static final Logger logger = LoggerFactory.getLogger(NetworkUtil.class.getName());
+    public static final Logger logger = LoggerFactory.getLogger(NetworkUtil.class.getName());
 
-  /**
-   * IPv4 Wildcard IP address
-   */
-  public static final String IPv4_WILDCARD_ADDRESS = "0.0.0.0";
+    /**
+     * IPv4 Wildcard IP address
+     */
+    public static final String IPv4_WILDCARD_ADDRESS = "0.0.0.0";
 
-  private NetworkUtil() {
-	  // Empty constructor
-  }
-
-  /**
-   * try to connect to $host:$port $retries times while we are getting connection failures.
-   *
-   * @param host host
-   * @param port port
-   * @param retries number of attempts
-   * @return true is port is open, false otherwise
-   * @throws InterruptedException if execution has been interrupted
-   */
-  public static boolean isTcpPortOpen(String host, int port, int retries, long interval)
-      throws InterruptedException, IOException {
-    int retry = 0;
-    while (retry < retries) {
-      try (Socket s = new Socket(host, port)) {
-        logger.debug("{}:{} connected - retries={} interval={}", host, port, retries, interval);
-        return true;
-      } catch (final ConnectException e) {
-        retry++;
-        logger.trace("{}:{} connected - retries={} interval={}", host, port, retries, interval, e);
-        Thread.sleep(interval);
-      }
+    private NetworkUtil() {
+        // Empty constructor
     }
 
-    logger.warn("{}:{} closed = retries={} interval={}", host, port, retries, interval);
-    return false;
-  }
+    /**
+     * try to connect to $host:$port $retries times while we are getting connection failures.
+     *
+     * @param host host
+     * @param port port
+     * @param retries number of attempts
+     * @return true is port is open, false otherwise
+     * @throws InterruptedException if execution has been interrupted
+     */
+    public static boolean isTcpPortOpen(String host, int port, int retries, long interval)
+        throws InterruptedException, IOException {
+        int retry = 0;
+        while (retry < retries) {
+            try (Socket s = new Socket(host, port)) {
+                logger.debug("{}:{} connected - retries={} interval={}", host, port, retries, interval);
+                return true;
+            } catch (final ConnectException e) {
+                retry++;
+                logger.trace("{}:{} connected - retries={} interval={}", host, port, retries, interval, e);
+                Thread.sleep(interval);
+            }
+        }
 
+        logger.warn("{}:{} closed = retries={} interval={}", host, port, retries, interval);
+        return false;
+    }
+
+    /**
+     * gets host name
+     *
+     * @return host name
+     */
+    public static String getHostname() {
+
+        String hostname = System.getenv("HOSTNAME");
+        if (hostname != null && !hostname.isEmpty()) {
+            return hostname;
+        }
+
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            logger.warn("cannot resolve local hostname", e);
+            /* continue */
+        }
+
+        return "localhost";
+    }
+
+    /**
+     * gets host's IP
+     *
+     * @return host IP
+     */
+    public static String getHostIp() {
+
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            logger.warn("cannot resolve local hostname", e);
+            /* continue */
+        }
+
+        return "127.0.0.1";
+    }
 }

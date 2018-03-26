@@ -390,6 +390,13 @@ function install_base() {
 		exit 1
 	fi	
 	
+	if [[ -n ${POLICY_LOGS} ]]; then
+		if ! /bin/mkdir -p "${POLICY_LOGS}" > /dev/null 2>&1; then	
+			echo "error: aborting base installation: cannot create ${POLICY_LOGS}"
+			exit 1
+		fi	
+	fi
+	
 	BASE_TGZ=$(ls base-*.tar.gz)
 	if [ ! -r ${BASE_TGZ} ]; then
 		echo "error: aborting: base package is not accessible"

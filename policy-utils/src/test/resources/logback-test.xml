@@ -1,0 +1,16 @@
+<configuration>
+
+    <property name="pattern" value="%X{RequestID}|%X{InvocationID}|%X{ServiceName}|%X{PartnerName}|%X{BeginTimestamp}|%X{EndTimestamp}|%X{ElapsedTime}|%X{ServiceInstanceID}|%X{VirtualServerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%X{Severity}|%X{TargetEntity}|%X{TargetServiceName}|%X{Server}|%X{ServerIPAddress}|%X{ServerFQDN}|%X{ClientIPAddress}|%X{ProcessKey}|%X{RemoteHost}|%X{AlertSeverity}|%X{TargetVirtualEntity}|%level|%logger{0}|%thread| %msg%n"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="org.onap.policy.drools.utils.logging.LoggerMarkerFilter$MetricLoggerMarkerFilter" />
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${pattern}</Pattern>
+        </encoder>
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

@@ -129,12 +129,7 @@ public class JettyJerseyServer extends JettyServletServer {
 
 		String hostname = this.connector.getHost();
 		if (hostname == null || hostname.isEmpty() || hostname.equals(NetworkUtil.IPv4_WILDCARD_ADDRESS)) {
-			try {
-				hostname = InetAddress.getLocalHost().getHostName();
-			} catch (UnknownHostException e) {
-				logger.warn("{}: can't resolve connector's hostname: {}", this, hostname, e);
-				hostname = "localhost";
-			}
+			hostname = NetworkUtil.getHostname();
 		}
 
 		swaggerServlet.setInitParameter(SWAGGER_API_BASEPATH,
