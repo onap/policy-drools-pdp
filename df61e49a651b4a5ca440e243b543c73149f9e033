@@ -195,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_6f252c09",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-03-26T16:40:04Z",
+      "side": 1,
+      "message": "The table will likely have to be audited since a host may go off line while it owns a lock and never release it. I\u0027m not sure how the audit would determine whether or not an owner should still have the lock unless we kept the exipirationTime field in the table. The audit would then remove any rows where the expirationTime \u003e currentTime.",
+      "parentUuid": "5a93c517_8a3bce37",
+      "revId": "df61e49a651b4a5ca440e243b543c73149f9e033",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_ea1132b0",
         "filename": "feature-distributed-locking/src/test/resources/feature-distributed-locking.properties",
         "patchSetId": 14
