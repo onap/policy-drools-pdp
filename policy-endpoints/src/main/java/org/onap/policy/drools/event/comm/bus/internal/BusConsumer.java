@@ -61,19 +61,39 @@ public interface BusConsumer {
   public void close();
 
   /**
+   * BusConsumer that supports server-side filtering.
+   */
+  public interface FilterableBusConsumer extends BusConsumer {
+
+        /**
+         * Sets the server-side filter.
+         * 
+         * @param filter new filter value, or {@code null}
+         * @throws IllegalArgumentException if the consumer cannot be built with
+         *         the new filter
+         */
+        public void setFilter(String filter);
+  }
+
+  /**
    * Cambria based consumer
    */
-  public static class CambriaConsumerWrapper implements BusConsumer {
+  public static class CambriaConsumerWrapper implements FilterableBusConsumer {
 
     /**
      * logger
      */
     private static Logger logger = LoggerFactory.getLogger(CambriaConsumerWrapper.class);
+    
+    /**
+     * Used to build the consumer.
+     */
+    private final ConsumerBuilder builder;
 
     /**
      * Cambria client
      */
-    protected CambriaConsumer consumer;
+    protected volatile CambriaConsumer consumer;
 
     /**
      * fetch timeout
@@ -105,7 +125,7 @@ public interface BusConsumer {
 
       this.fetchTimeout = fetchTimeout;
 
-      final ConsumerBuilder builder = new CambriaClientBuilders.ConsumerBuilder();
+      this.builder = new CambriaClientBuilders.ConsumerBuilder();
 
       if (useHttps) {
 
@@ -155,6 +175,19 @@ public interface BusConsumer {
       }
 
       this.consumer.close();
+    }
+
+    @Override
+    public void setFilter(String filter) {
+        logger.info("{}: setting DMAAP server-side filter: {}", this, filter);
+        builder.withServerSideFilter(filter);
+
+        try {
+            consumer = builder.build();
+            
+        } catch (MalformedURLException | GeneralSecurityException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
