@@ -1,0 +1,36 @@
+<!--
+  ============LICENSE_START=======================================================
+  ONAP
+  ================================================================================
+  Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+-->
+
+<configuration>
+
+    <property name="pattern" value="%X{RequestID}|%X{InvocationID}|%X{ServiceName}|%X{PartnerName}|%X{BeginTimestamp}|%X{EndTimestamp}|%X{ElapsedTime}|%X{ServiceInstanceID}|%X{VirtualServerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%X{Severity}|%X{TargetEntity}|%X{TargetServiceName}|%X{Server}|%X{ServerIPAddress}|%X{ServerFQDN}|%X{ClientIPAddress}|%X{ProcessKey}|%X{RemoteHost}|%X{AlertSeverity}|%X{TargetVirtualEntity}|%level|%logger{0}|%thread| %msg%n"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="org.onap.policy.drools.utils.logging.LoggerMarkerFilter$MetricLoggerMarkerFilter" />
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${pattern}</Pattern>
+        </encoder>
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

@@ -4,7 +4,7 @@
 # ============LICENSE_START=======================================================
 # Installation Package
 # ================================================================================
-# Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -389,6 +389,13 @@ function install_base() {
 		echo "error: aborting base installation: cannot create ${POLICY_HOME}/logs/"
 		exit 1
 	fi	
+	
+	if [[ -n ${POLICY_LOGS} ]]; then
+		if ! /bin/mkdir -p "${POLICY_LOGS}" > /dev/null 2>&1; then	
+			echo "error: aborting base installation: cannot create ${POLICY_LOGS}"
+			exit 1
+		fi	
+	fi
 	
 	BASE_TGZ=$(ls base-*.tar.gz)
 	if [ ! -r ${BASE_TGZ} ]; then

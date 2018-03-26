@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-simulators
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.http.server.HttpServletServer;
-import org.onap.policy.drools.utils.LoggerUtil;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.NetworkUtil;
 
 public class DMaaPSimulatorTest {

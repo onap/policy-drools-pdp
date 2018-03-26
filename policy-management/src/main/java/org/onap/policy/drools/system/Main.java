@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@
 
 package org.onap.policy.drools.system;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.PolicyProperties;
-import org.onap.policy.drools.utils.LoggerUtil;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
+import org.onap.policy.drools.utils.logging.MDCTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +56,6 @@ public class Main {
    * main
    *
    * @param args program arguments
-   * @throws IOException
    */
   public static void main(String[] args) {
 
@@ -110,16 +109,23 @@ public class Main {
 
     /* 2. Start the Engine with the basic services only (no Policy Controllers) */
 
+    MDCTransaction trans =
+        MDCTransaction.newTransaction(null, null).setServiceName(Main.class.getSimpleName()).
+          setTargetEntity("engine").setTargetServiceName("start");
     try {
       final boolean success = PolicyEngine.manager.start();
       if (!success) {
-        logger.warn("Main: {} has been partially started", PolicyEngine.manager);
+        trans.setStatusCode(false).setResponseDescription("partial start").flush();
+        logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER, "Main: {} has been partially started", PolicyEngine.manager);
+      } else {
+        trans.setStatusCode(true).transaction();
       }
     } catch (final IllegalStateException e) {
-      logger.warn("Main: cannot start {} (bad state) because of {}", PolicyEngine.manager,
-          e.getMessage(), e);
+      trans.setStatusCode(false).setResponseCode(e.getClass().getSimpleName()).setResponseDescription(e.getMessage()).flush();
+      logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER, "Main: cannot start {} (bad state) because of {}", PolicyEngine.manager, e.getMessage(), e);
     } catch (final Exception e) {
-      logger.warn("Main: cannot start {} because of {}", PolicyEngine.manager, e.getMessage(), e);
+      trans.setStatusCode(false).setResponseCode(e.getClass().getSimpleName()).setResponseDescription(e.getMessage()).flush();
+      logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER, "Main: cannot start {} because of {}", PolicyEngine.manager, e.getMessage(), e);
       System.exit(1);
     }
 
@@ -130,14 +136,24 @@ public class Main {
       final String controllerName =
           controllerProperties.getProperty(PolicyProperties.PROPERTY_CONTROLLER_NAME);
       try {
+        trans =
+            MDCTransaction.newTransaction(null, null).setServiceName(Main.class.getSimpleName()).
+                setTargetEntity("controller:" + controllerName).setTargetServiceName("start");
+
         final PolicyController controller =
             PolicyEngine.manager.createPolicyController(controllerName, controllerProperties);
         controller.start();
+
+        trans.setStatusCode(true).
+            setResponseDescription(controller.getDrools().getCanonicalSessionNames().toString()).
+            transaction();
       } catch (final Exception e) {
-        logger.error("Main: cannot instantiate policy-controller {} because of {}", controllerName,
-            e.getMessage(), e);
+        trans.setStatusCode(false).setResponseCode(e.getClass().getSimpleName()).setResponseDescription(e.getMessage()).flush();
+        logger.error(LoggerUtil.TRANSACTION_LOG_MARKER, "Main: cannot instantiate policy-controller {} because of {}",
+            controllerName, e.getMessage(), e);
       } catch (final LinkageError e) {
-        logger.warn("Main: cannot instantiate policy-controller {} (linkage) because of {}",
+        trans.setStatusCode(false).setResponseCode(e.getClass().getSimpleName()).setResponseDescription(e.getMessage()).flush();
+        logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER, "Main: cannot instantiate policy-controller {} (linkage) because of {}",
             controllerName, e.getMessage(), e);
       }
     }
