@@ -16,6 +16,24 @@
       "revId": "3d3ece6f1b45c67fee6cf4f3b3045bc0c93f91d8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f4d27533",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-03-26T14:51:30Z",
+      "side": 1,
+      "message": "Ummm, not sure, I don\u0027t think I agree, unless there\u0027s a documented ONAP standard that forces me to do that.   Users should program to the interface rather than the implementation.   Provided there\u0027s only one implementation and that the implementation class is not \"public\" and therefore with restricted access outside the package. I consider it a good way to encourage the practice.",
+      "parentUuid": "5a93c517_c3ec6192",
+      "revId": "3d3ece6f1b45c67fee6cf4f3b3045bc0c93f91d8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
