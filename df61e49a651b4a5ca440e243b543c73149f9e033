@@ -212,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_8fd99885",
+        "filename": "feature-distributed-locking/src/test/resources/feature-distributed-locking.properties",
+        "patchSetId": 14
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-03-26T15:25:34Z",
+      "side": 1,
+      "message": "For this feature I was going to create a table within the drools schema. Should the feature have its own schema?",
+      "parentUuid": "5a93c517_ea1132b0",
+      "revId": "df61e49a651b4a5ca440e243b543c73149f9e033",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_0a17bea4",
         "filename": "pom.xml",
         "patchSetId": 14
