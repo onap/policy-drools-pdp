@@ -16,6 +16,24 @@
       "revId": "1d2c8346e0ac02320ca933b66c1943c7f72343c6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_4e870862",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusConsumer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-27T13:33:26Z",
+      "side": 1,
+      "message": "I\u0027m unsure of the \"policy\" nomenclature.  This line was copied from the subordinate class.  However, it only works for topics using cambria client.  Should it therefore be changed to say \"UEB\" instead?",
+      "parentUuid": "5a93c517_6430ea56",
+      "revId": "1d2c8346e0ac02320ca933b66c1943c7f72343c6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
