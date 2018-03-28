@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_cd046c80",
+        "filename": "feature-distributed-locking/src/main/feature/db/drools/sql/1804-distributedlocking.upgrade.sql",
+        "patchSetId": 17
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-03-28T22:23:55Z",
+      "side": 1,
+      "message": "needs to change to host",
+      "range": {
+        "startLine": 21,
+        "startChar": 67,
+        "endLine": 21,
+        "endChar": 73
+      },
+      "revId": "59547a15d326efcca75c8d2184c5c1f733cbca74",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
