@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_847168aa",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-03-28T07:57:25Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this method always return \u0027false\u0027? A value of \u0027true\u0027 will prevent other features from having their \u0027afterStart\u0027 method invoked.",
+      "revId": "e600048ec7577da0db7d080eed8855a52c0533aa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_0446b84f",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-03-28T07:57:25Z",
+      "side": 1,
+      "message": "Shouldn\u0027t you check the return code of this as well?",
+      "revId": "e600048ec7577da0db7d080eed8855a52c0533aa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
