@@ -2,11 +2,16 @@ FROM ubuntu:14.04
 
 ARG HTTP_PROXY=${HTTP_PROXY}
 ARG HTTPS_PROXY=${HTTPS_PROXY}
-ARG POLICY_LOGS=/var/log/ONAP/policy
+ARG POLICY_HOME=/opt/app/policy
+ARG POLICY_LOGS=/var/log/onap/policy/pdpd
+ARG POLICY_INSTALL=/tmp/policy-install
 
 ENV http_proxy $HTTP_PROXY
 ENV https_proxy $HTTPS_PROXY
+ENV POLICY_INSTALL ${POLICY_INSTALL}
+ENV POLICY_HOME ${POLICY_HOME}
 ENV POLICY_LOGS ${POLICY_LOGS}
+ENV POLICY_DOCKER true
 
 RUN \
         apt-get clean && \
@@ -32,18 +37,23 @@ RUN \
         apt-get install -y mariadb-client
 
 RUN pip install http-prompt
-RUN mkdir -p /opt/app/policy/ /tmp/policy-install/ ${POLICY_LOGS} && \
-    chown -R policy /opt/app/policy/ /tmp/policy-install/ ${POLICY_LOGS}
+RUN mkdir -p ${POLICY_HOME}/config ${POLICY_LOGS} ${POLICY_INSTALL}/config && \
+    chown -R policy:policy ${POLICY_HOME} ${POLICY_LOGS} ${POLICY_INSTALL}
 
-WORKDIR /tmp/policy-install
+WORKDIR ${POLICY_INSTALL}
 
 COPY install-drools.zip apps.zip docker-install.sh do-start.sh wait-for-port.sh ./
+
+VOLUME [ "${POLICY_INSTALL}/config", "${POLICY_HOME}/config" ]
 
 RUN unzip -o install-drools.zip && \
     unzip -o apps.zip && \
     rm install-drools.zip apps.zip && \
-    chown -R policy * && \
+    chown -R policy:policy * && \
     chmod +x *.sh
 
+EXPOSE 9696 6969
+
 USER policy
+
 CMD ./do-start.sh
