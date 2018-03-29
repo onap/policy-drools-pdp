@@ -374,27 +374,29 @@ function install_base() {
 		exit 1
 	fi
 
-	if ! /bin/rm -fr "${POLICY_HOME}"/* > /dev/null 2>&1; then
-		echo "error: aborting base installation: cannot delete the underlying ${POLICY_HOME} files"
-		exit 1
-	fi
+	if [[ -z ${POLICY_DOCKER} ]]; then
+		if ! /bin/rm -fr "${POLICY_HOME}"/* > /dev/null 2>&1; then
+			echo "error: aborting base installation: cannot delete the underlying ${POLICY_HOME} files"
+			exit 1
+		fi
 	
-	POLICY_HOME_CONTENTS=$(ls -A "${POLICY_HOME}" 2> /dev/null)
-	if [[ -n ${POLICY_HOME_CONTENTS} ]]; then
-		echo "error: aborting base installation: ${POLICY_HOME} directory is not empty"
-		exit 1
-	fi
+		POLICY_HOME_CONTENTS=$(ls -A "${POLICY_HOME}" 2> /dev/null)
+		if [[ -n ${POLICY_HOME_CONTENTS} ]]; then
+			echo "error: aborting base installation: ${POLICY_HOME} directory is not empty"
+			exit 1
+		fi
 	
-	if ! /bin/mkdir -p "${POLICY_HOME}/logs/" > /dev/null 2>&1; then	
-		echo "error: aborting base installation: cannot create ${POLICY_HOME}/logs/"
-		exit 1
-	fi	
-	
-	if [[ -n ${POLICY_LOGS} ]]; then
-		if ! /bin/mkdir -p "${POLICY_LOGS}" > /dev/null 2>&1; then	
-			echo "error: aborting base installation: cannot create ${POLICY_LOGS}"
+		if ! /bin/mkdir -p "${POLICY_HOME}/logs/" > /dev/null 2>&1; then
+			echo "error: aborting base installation: cannot create ${POLICY_HOME}/logs/"
 			exit 1
 		fi	
+	
+		if [[ -n ${POLICY_LOGS} ]]; then
+			if ! /bin/mkdir -p "${POLICY_LOGS}" > /dev/null 2>&1; then	
+				echo "error: aborting base installation: cannot create ${POLICY_LOGS}"
+				exit 1
+			fi	
+		fi
 	fi
 	
 	BASE_TGZ=$(ls base-*.tar.gz)
@@ -868,7 +870,7 @@ function do_install()
 		set -x
 	fi
 
-	echo "Starting installation at $(date)"
+	echo "Starting installation at $(date) at ${PWD}"
 	echo
 	
 	COMPONENT_TYPE=base
