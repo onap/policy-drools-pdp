@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_58d33338",
+        "filename": "feature-distributed-locking/src/main/feature/db/drools/sql/1804-distributedlocking.downgrade.sql",
+        "patchSetId": 19
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-03-29T19:35:42Z",
+      "side": 1,
+      "message": "should have mentioned this earlier, but instead of using drools database, and provided this is an optional capability, if you can use a different name that abstracts away this new capability that you and Jim are working on, something like pooling or something of that sort that can be used across related features to implement the functionality that you guys are working on.",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_f2902098",
         "filename": "feature-distributed-locking/src/main/feature/db/drools/sql/1804-distributedlocking.upgrade.sql",
         "patchSetId": 19
