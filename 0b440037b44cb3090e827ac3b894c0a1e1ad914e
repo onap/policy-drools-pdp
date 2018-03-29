@@ -1,0 +1,429 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_d26724e9",
+        "filename": "feature-distributed-locking/pom.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "probably not needed - same for policy-endpoints and policy-management",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b25cd81a",
+        "filename": "feature-distributed-locking/src/assembly/assemble_zip.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "remove \"-package\"",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f2902098",
+        "filename": "feature-distributed-locking/src/main/feature/db/drools/sql/1804-distributedlocking.upgrade.sql",
+        "patchSetId": 19
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "add secondary indices - one on expirationTime and possibly one on host",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_72ec102a",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "add \"private\"",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f2bee0ff",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "catch exception and re-throw, after logging a message.  As an alternative, can derive DistributedLockingProperties from PropertyConfiguration.  (See PoolingProperties for an example.)",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_723ad099",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "add checks for other required (i.e., DB) properties",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b2e1382c",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "change 10000 to heartbeatInterval",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f2e100fd",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/Heartbeat.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "should probably do this inside of run()",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_32b768f7",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/Heartbeat.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "either cache the statement for later use, or use try-with-resource so that the statement is automatically closed",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_12dd8c42",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/Heartbeat.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "should disconnect and re-connect",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_52b6b4dd",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "maybe make this a local variable and then use try-with-resources to guarantee that it\u0027s closed regardless of exceptions.  Could also eliminate cleanUp() method, then.",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f276e03e",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "looks like this can be a local variable, as it is created in every method call",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b2705841",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "remove the string concatenation.  Add column names, to prevent a mismatch with the setXxx() calls",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f29d8058",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "need to catch other errors? Ex: Long.valueOf() may throw NumberFormatException - connection still needs to be closed",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_32b3e8ea",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "add column names and remove string concatenation",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f2cb4048",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "don\u0027t need \"where\" clause",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f2f2609a",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "change the expiration-time property to 150ms and then can change 8000 to 200ms, then the test will run a lot faster",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_7215f099",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "seems like the heartbeat should keep the lock active, so this should actually return false",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_3238c83c",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "add a sleep that\u0027s less than the expiration-time, say 70ms",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b24378ae",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "add a test for unlock() BEFORE locking, just to ensure it\u0027s false",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_9248bccd",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "test a second unlock(), to ensure it returns false",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_521234b5",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "test isActive() before locked, too",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f267c04f",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "delete the lock manually and then verify that isActive() is now false",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_12834ccd",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "change to just couple-hundred milliseconds",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_328688dc",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-03-29T16:07:54Z",
+      "side": 1,
+      "message": "test that isActive() returns true",
+      "revId": "0b440037b44cb3090e827ac3b894c0a1e1ad914e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
