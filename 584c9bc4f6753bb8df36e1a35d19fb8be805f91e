@@ -189,6 +189,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_62b3d9e9",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-03-30T17:15:57Z",
+      "side": 1,
+      "message": "I have to wrap the code in a try catch or the compiler will complain.",
+      "parentUuid": "5a93c517_a229e18a",
+      "revId": "584c9bc4f6753bb8df36e1a35d19fb8be805f91e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_a250010b",
         "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
         "patchSetId": 20
