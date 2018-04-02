@@ -78,10 +78,10 @@
                                                         <artifactItems>
                                                                 <artifactItem>
                                                                         <groupId>org.onap.policy.drools-applications.controlloop.packages</groupId>
-                                                                        <artifactId>apps</artifactId>
+                                                                        <artifactId>apps-controlloop</artifactId>
                                                                         <version>${project.version}</version>
                                                                         <type>zip</type>
-                                                                        <destFileName>apps.zip</destFileName>
+                                                                        <destFileName>apps-controlloop.zip</destFileName>
                                                                 </artifactItem>
                                                         </artifactItems>
                                                 </configuration>

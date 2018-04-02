@@ -369,6 +369,8 @@ function install_base() {
 		fi
 	done
 
+	/bin/mkdir -p "${POLICY_HOME}/logs/" > /dev/null 2>&1
+
 	if [[ ! ( -d "$POLICY_HOME" && -w "$POLICY_HOME" ) ]]; then
 		echo "ERROR: Installation directory $POLICY_HOME does not exist or not writable"
 		exit 1
@@ -385,11 +387,6 @@ function install_base() {
 			echo "error: aborting base installation: ${POLICY_HOME} directory is not empty"
 			exit 1
 		fi
-	
-		if ! /bin/mkdir -p "${POLICY_HOME}/logs/" > /dev/null 2>&1; then
-			echo "error: aborting base installation: cannot create ${POLICY_HOME}/logs/"
-			exit 1
-		fi	
 	
 		if [[ -n ${POLICY_LOGS} ]]; then
 			if ! /bin/mkdir -p "${POLICY_LOGS}" > /dev/null 2>&1; then	
@@ -885,12 +882,12 @@ function do_install()
 	installArtifacts
 
 
-	if [[ -f apps-installer ]]; then
+	if [[ -f apps-controlloop-installer ]]; then
 		# if exists, any customizations to the 
 		# base drools installation from the drools apps
 		# is executed here
 
-		./apps-installer
+		./apps-controlloop-installer
 	fi
 	
 	echo
