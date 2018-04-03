@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_48903343",
+        "filename": "policy-management/src/main/server/config/system.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-04-03T21:35:14Z",
+      "side": 1,
+      "message": "Might be no harm to make a not of this somewhere (JIRA?) so that we can permanently delete these property values in the long term.",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 54
+      },
+      "revId": "4841ce461687d7afd0c479a3eeff728bbfd8adc6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
