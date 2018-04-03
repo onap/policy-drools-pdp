@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_917c31ed",
+        "filename": "feature-distributed-locking/src/main/feature/db/drools/sql/1804-distributedlocking.downgrade.sql",
+        "patchSetId": 21
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-03T01:44:53Z",
+      "side": 1,
+      "message": "Note that the directory \"feature/db/drools/\" has to be \"pooling\" instead of \"drools\" for automated creation",
+      "revId": "27414523be79b2c0319070d8794b8206fc3fe0cb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
