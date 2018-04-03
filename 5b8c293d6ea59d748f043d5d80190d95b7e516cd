@@ -50,6 +50,23 @@
       "revId": "5b8c293d6ea59d748f043d5d80190d95b7e516cd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_82813c91",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T17:30:40Z",
+      "side": 1,
+      "message": "add similar code here to expire the timer and then verify that it\u0027s false",
+      "revId": "5b8c293d6ea59d748f043d5d80190d95b7e516cd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
