@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_82aa9c17",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T17:26:04Z",
+      "side": 1,
+      "message": "change \"\u003e\" to \"\u003e\u003d\" (or change \"\u003c\" to \"\u003c\u003d\" in previous update statement)",
+      "revId": "5b8c293d6ea59d748f043d5d80190d95b7e516cd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_22baa86e",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T17:26:04Z",
+      "side": 1,
+      "message": "need to include expirationTime in the query",
+      "revId": "5b8c293d6ea59d748f043d5d80190d95b7e516cd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_026e8c01",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T17:26:04Z",
+      "side": 1,
+      "message": "add a beforeIsLockedBy for \"owner2\", just to ensure it\u0027s false",
+      "revId": "5b8c293d6ea59d748f043d5d80190d95b7e516cd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
