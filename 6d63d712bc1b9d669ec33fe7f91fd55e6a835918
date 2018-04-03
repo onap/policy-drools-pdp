@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_025bec87",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeatureException.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-03T17:07:28Z",
+      "side": 1,
+      "message": "I can\u0027t extend the ExceptionsTester class since my new exception class needs to extend the RuntimeException class.",
+      "parentUuid": "5a93c517_a2b47835",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_c2dd0472",
         "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/LockFeatureAPI.java",
         "patchSetId": 24
