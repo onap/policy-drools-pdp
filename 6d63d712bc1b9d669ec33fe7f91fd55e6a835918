@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_02a68c10",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "should also override beforeIsLocked(resourceId)",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_629f50b5",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeature.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "rename to beforeIsLockedBy and add @Override",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a2b47835",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockingFeatureException.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "add a junit for this class.  Can subclass from ExceptionsTester (policy-common/utils-test) and since it has just one constructor, simply invoke: assertEquals(1, DistributedLockingFeatureException.class)\n\nThat\u0027s all that\u0027s needed to fully test the class.",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c2dd0472",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/LockFeatureAPI.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "this file should be deleted",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c2c42494",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/TargetLock.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "include the host in the \"where\" clause",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_2245c816",
+        "filename": "feature-distributed-locking/src/main/resources/META-INF/services/org.onap.policy.distributed.locking.LockFeatureAPI",
+        "patchSetId": 24
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "rename the file to match \u003cpackage of PolicyResourceLockFeatureAPI\u003e.PolicyResourceLockFeatureAPI",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_8255bcc7",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "need to invoke beforeLock() again, to re-lock it (since the lock was forced to expire)",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_425fb4e5",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/test/TargetLockTest.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-03T15:56:16Z",
+      "side": 1,
+      "message": "do one more unlock, and verify that it now returns false",
+      "revId": "6d63d712bc1b9d669ec33fe7f91fd55e6a835918",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
