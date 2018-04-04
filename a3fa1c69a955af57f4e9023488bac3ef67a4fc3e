@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_325a082b",
+        "filename": "pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-04-04T02:08:37Z",
+      "side": 1,
+      "message": "can we fix the formatting in this?",
+      "revId": "a3fa1c69a955af57f4e9023488bac3ef67a4fc3e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
