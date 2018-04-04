@@ -88,19 +88,21 @@ public class TargetLock {
 	 */
 	private boolean grabLock() {
 
+		// try to insert a record into the table(thereby grabbing the lock)
 		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
 				lockProps.getDbPwd());
 
-				// try to insert a record into the table(thereby grabbing the lock)
-				PreparedStatement statement = conn
-						.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)");) {
+				PreparedStatement statement = conn.prepareStatement(
+						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)")) {
+			
 			statement.setString(1, this.resourceId);
 			statement.setString(2, this.uuid.toString());
 			statement.setString(3, this.owner);
 			statement.setLong(4, System.currentTimeMillis() + lockProps.getAgingProperty());
-
 			statement.executeUpdate();
-		}  catch (SQLException e) {
+		}
+
+		catch (SQLException e) {
 			logger.error("error in TargetLock.grabLock()", e);
 			return secondGrab();
 		}
@@ -117,9 +119,11 @@ public class TargetLock {
 		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
 				lockProps.getDbPwd());
 
-				PreparedStatement updateStatement = conn.prepareStatement("UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = ? WHERE expirationTime <= ? AND resourceId = ?");
-				
-				PreparedStatement insertStatement = conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)");) {
+				PreparedStatement updateStatement = conn.prepareStatement(
+						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = ? WHERE expirationTime <= ? AND resourceId = ?");
+
+				PreparedStatement insertStatement = conn.prepareStatement(
+						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)");) {
 
 			updateStatement.setString(1, this.uuid.toString());
 			updateStatement.setString(2, this.owner);
@@ -132,6 +136,7 @@ public class TargetLock {
 			if (updateStatement.executeUpdate() == 1) {
 				return true;
 			}
+
 			// If our update does not return 1 row, the lock either has not expired
 			// or it was removed. Try one last grab
 			else {
@@ -140,7 +145,7 @@ public class TargetLock {
 				insertStatement.setString(3, this.owner);
 				insertStatement.setLong(4, System.currentTimeMillis() + lockProps.getAgingProperty());
 
-					// If our insert returns 1 we successfully grabbed the lock
+				// If our insert returns 1 we successfully grabbed the lock
 				return (insertStatement.executeUpdate() == 1);
 			}
 
@@ -159,13 +164,13 @@ public class TargetLock {
 		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
 				lockProps.getDbPwd());
 
-				PreparedStatement deleteStatement = conn
-						.prepareStatement("DELETE FROM pooling.locks WHERE resourceId = ? AND owner = ? AND host = ?");) {
+				PreparedStatement deleteStatement = conn.prepareStatement(
+						"DELETE FROM pooling.locks WHERE resourceId = ? AND owner = ? AND host = ?")) {
 
 			deleteStatement.setString(1, this.resourceId);
 			deleteStatement.setString(2, this.owner);
 			deleteStatement.setString(3, this.uuid.toString());
-			
+
 			return (deleteStatement.executeUpdate() == 1);
 
 		} catch (SQLException e) {
@@ -174,34 +179,35 @@ public class TargetLock {
 		}
 
 	}
-	
+
 	/**
 	 * Is the lock active
 	 */
 	public boolean isActive() {
-
 		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
 				lockProps.getDbPwd());
 
-				PreparedStatement selectStatement = conn
-						.prepareStatement("SELECT * FROM pooling.locks WHERE resourceId = ? AND host = ? AND owner= ? AND expirationTime >= ?");) {
-			{
-				selectStatement.setString(1, this.resourceId);
-				selectStatement.setString(2, this.uuid.toString());
-				selectStatement.setString(3, this.owner);
-				selectStatement.setLong(4, System.currentTimeMillis());
+				PreparedStatement selectStatement = conn.prepareStatement(
+						"SELECT * FROM pooling.locks WHERE resourceId = ? AND host = ? AND owner= ? AND expirationTime >= ?")) {
 
-				ResultSet result = selectStatement.executeQuery();
+			selectStatement.setString(1, this.resourceId);
+			selectStatement.setString(2, this.uuid.toString());
+			selectStatement.setString(3, this.owner);
+			selectStatement.setLong(4, System.currentTimeMillis());
+			try (ResultSet result = selectStatement.executeQuery()) {
 
 				// This will return true if the
 				// query returned at least one row
 				return result.first();
-
 			}
-		} catch (SQLException e) {
+
+		}
+
+		catch (SQLException e) {
 			logger.error("error in TargetLock.isActive()", e);
 			return false;
 		}
+
 	}
 
 	/**
@@ -211,20 +217,20 @@ public class TargetLock {
 
 		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
 				lockProps.getDbPwd());
-
+			
 				PreparedStatement selectStatement = conn
-						.prepareStatement("SELECT * FROM pooling.locks WHERE resourceId = ? AND expirationTime >= ?");) {
-			{
-				selectStatement.setString(1, this.resourceId);
-				selectStatement.setLong(2, System.currentTimeMillis());
-				ResultSet result = selectStatement.executeQuery();
+						.prepareStatement("SELECT * FROM pooling.locks WHERE resourceId = ? AND expirationTime >= ?")) {
 
+			selectStatement.setString(1, this.resourceId);
+			selectStatement.setLong(2, System.currentTimeMillis());
+			try (ResultSet result = selectStatement.executeQuery()) {
 				// This will return true if the
 				// query returned at least one row
 				return result.first();
-
 			}
-		} catch (SQLException e) {
+		}
+
+		catch (SQLException e) {
 			logger.error("error in TargetLock.isActive()", e);
 			return false;
 		}

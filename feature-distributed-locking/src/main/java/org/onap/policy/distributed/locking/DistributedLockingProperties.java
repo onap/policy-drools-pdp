@@ -23,13 +23,9 @@ import java.util.Properties;
 
 import org.onap.policy.common.utils.properties.PropertyConfiguration;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class DistributedLockingProperties extends PropertyConfiguration{
-	
-	private static final Logger  logger = LoggerFactory.getLogger(DistributedLockingProperties.class);
 	
 	/**
      * Feature properties all begin with this prefix.
