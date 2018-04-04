@@ -24,10 +24,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
-import org.onap.policy.drools.utils.NetworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +51,34 @@ public class Heartbeat implements Runnable{
 	 */
 	private UUID uuid;
 	
+	/**
+	 * Countdown latch for testing 
+	 */
+	private volatile CountDownLatch latch;
+	
+	/**
+	 * 
+	 * @param uuid
+	 * @param lockProps
+	 */
 	public Heartbeat(UUID uuid, DistributedLockingProperties lockProps) {
 		this.lockProps = lockProps;
 		this.uuid = uuid;
+		this.latch = new CountDownLatch(1);
+	}
+	/**
+	 * 
+	 * @param latch
+	 * Used for testing purposes
+	 */
+	protected void giveLatch(CountDownLatch latch) {
+		this.latch = latch;
 	}
 	
 	@Override
 	public void run() {
 
+		
 		long expirationAge = lockProps.getAgingProperty();
 
 		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
@@ -70,9 +89,14 @@ public class Heartbeat implements Runnable{
 			statement.setLong(1, System.currentTimeMillis() + expirationAge);
 			statement.setString(2, this.uuid.toString());
 			statement.executeUpdate();
+			
+			latch.countDown();
+			
 		} catch (SQLException e) {
 			logger.error("error in Heartbeat.run()", e);
 		}
 
 	}
+	
+	
 }

@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.distributed.locking.test;
+package org.onap.policy.distributed.locking;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -70,7 +70,6 @@ public class TargetLockTest {
 	
 	@Before
 	public void wipeDb() {
-		
 		try (PreparedStatement lockDelete = conn.prepareStatement("DELETE FROM pooling.locks");){
 			lockDelete.executeUpdate();
 		} catch (SQLException e) {
@@ -101,16 +100,31 @@ public class TargetLockTest {
 
 	@Test
 	public void testExpiredLocks() throws InterruptedException, ExecutionException {
-		CountDownLatch latch = new CountDownLatch(1);
-		
+
+		CountDownLatch rowExpireLatch = new CountDownLatch(1);
+		CountDownLatch heartbeatLatch = new CountDownLatch(1);
+			
+			//grab lock
 		distLockFeat.beforeLock("resource1", "owner1", null);
 		
+			//Wait for lock to expire
 		try {
-			latch.await(1000, TimeUnit.MILLISECONDS);
+			rowExpireLatch.await(150, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			logger.error("Error in testExpiredLocks", e);
 		}
 		
+		// Grab reference to heartbeat object
+		Heartbeat heartbeat = distLockFeat.getHeartbeat();
+
+		// Pass heartbeat object countdown latch
+		try {
+			heartbeat.giveLatch(heartbeatLatch);
+			heartbeatLatch.await(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			logger.error("Error in testExpiredLocks", e);
+		}
+	
 			//Heartbeat should keep it active
 		assertFalse(distLockFeat.beforeLock("resource1", "owner1", null).get());
 	}
@@ -169,16 +183,33 @@ public class TargetLockTest {
 	
 	@Test
 	public void testHeartbeat() {
-		CountDownLatch latch = new CountDownLatch(1);
 		
+		CountDownLatch rowExpireLatch = new CountDownLatch(1);
+		CountDownLatch heartbeatLatch = new CountDownLatch(1);
+		
+			//grab lock
 		distLockFeat.beforeLock("resource1", "owner1", null);
+		
+			//Wait for lock to expire
 		try {
-			latch.await(1000, TimeUnit.MILLISECONDS);
+			rowExpireLatch.await(150, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			logger.error("Error in testExpiredLocks", e);
 		}
 		
-			// This test always returns true.
+			//Grab reference to heartbeat object
+		Heartbeat heartbeat = distLockFeat.getHeartbeat();
+		
+			//Pass heartbeat object countdown latch
+		try {
+			heartbeat.giveLatch(heartbeatLatch);
+			heartbeatLatch.await(5, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			logger.error("Error in testExpiredLocks", e);
+		}
+			//At this point the heartbeat object should hve
+			//refreshed the lock. assert that resource1 is
+			//locked
 		assertTrue(distLockFeat.beforeIsLocked("resource1"));
 	}
 	

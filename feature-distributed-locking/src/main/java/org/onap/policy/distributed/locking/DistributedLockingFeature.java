@@ -65,9 +65,12 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	 */
 	private static final UUID uuid = UUID.randomUUID();
 	
+
 	/**
-	 * Config directory
+	 * Reference to Heartbeat
 	 */
+	private static Heartbeat heartbeat = null;
+	
 	@Override
 	public int getSequenceNumber() {
         return 1000;
@@ -116,7 +119,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 		long heartbeatInterval = this.lockProps.getHeartBeatIntervalProperty();
 		
 		cleanLockTable();
-		Heartbeat heartbeat = new Heartbeat(this.uuid, lockProps);
+		heartbeat = new Heartbeat(this.uuid, lockProps);
 		
 		this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		this.scheduledExecutorService.scheduleAtFixedRate(heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
@@ -153,6 +156,10 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 			logger.error("error in refreshLockTable()", e);
 		}
 		
+	}
+
+	public static Heartbeat getHeartbeat() {
+		return heartbeat;
 	}
 	
 }

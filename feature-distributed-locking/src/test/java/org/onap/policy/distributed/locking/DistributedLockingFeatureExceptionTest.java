@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.distributed.locking.test;
+package org.onap.policy.distributed.locking;
 
 import static org.junit.Assert.assertEquals;
 
