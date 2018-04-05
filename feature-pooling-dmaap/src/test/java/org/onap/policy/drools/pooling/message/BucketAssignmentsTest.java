@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.junit.Test;
@@ -196,16 +197,21 @@ public class BucketAssignmentsTest {
         String[] arr = {"def", "abc", "def", "ghi", "def", "def", "xyz"};
         asgn.setHostArray(arr);
 
-        for (int x = 0; x < arr.length; ++x) {
-            assertEquals("x=" + x, arr[x], asgn.getAssignedHost(x));
+        /*
+         * get assignments for consecutive integers, including negative numbers and
+         * numbers extending past the length of the array.
+         * 
+         */
+        TreeSet<String> seen = new TreeSet<>();
+        for (int x = -1; x < arr.length + 2; ++x) {
+            seen.add(asgn.getAssignedHost(x));
         }
 
-        // negative
-        assertNull(asgn.getAssignedHost(-1));
+        TreeSet<String> expected = new TreeSet<>(Arrays.asList(arr));
+        assertEquals(expected, seen);
 
-        // beyond end
-        assertNull(asgn.getAssignedHost(arr.length));
-        assertNull(asgn.getAssignedHost(arr.length + 1));
+        // try a much bigger number
+        assertNotNull(asgn.getAssignedHost(arr.length * 1000));
     }
 
     @Test

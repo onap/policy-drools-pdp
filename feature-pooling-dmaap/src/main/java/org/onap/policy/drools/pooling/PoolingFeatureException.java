@@ -47,13 +47,4 @@ public class PoolingFeatureException extends Exception {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    /**
-     * Converts the exception to a runtime exception.
-     * 
-     * @return a new runtime exception, wrapping this exception
-     */
-    public PoolingFeatureRtException toRuntimeException() {
-        return new PoolingFeatureRtException(this);
-    }
-
 }

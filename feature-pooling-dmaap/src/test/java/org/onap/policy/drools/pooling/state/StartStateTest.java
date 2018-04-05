@@ -23,7 +23,7 @@ package org.onap.policy.drools.pooling.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,6 +38,7 @@ import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
+import org.onap.policy.drools.utils.Pair;
 
 public class StartStateTest extends BasicStateTester {
 
@@ -74,18 +75,18 @@ public class StartStateTest extends BasicStateTester {
 
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
 
-        assertEquals(MY_HOST, msg.first);
-        assertEquals(state.getHbTimestampMs(), msg.second.getTimestampMs());
+        assertEquals(MY_HOST, msg.first());
+        assertEquals(state.getHbTimestampMs(), msg.second().getTimestampMs());
 
         Pair<Long, StateTimerTask> timer = onceTasks.removeFirst();
 
-        assertEquals(STD_HEARTBEAT_WAIT_MS, timer.first.longValue());
+        assertEquals(STD_HEARTBEAT_WAIT_MS, timer.first().longValue());
 
         // invoke the task - it should go to the state returned by the mgr
         State next = mock(State.class);
         when(mgr.goInactive()).thenReturn(next);
 
-        assertEquals(next, timer.second.fire(null));
+        assertEquals(next, timer.second().fire());
 
         verify(mgr).internalTopicFailed();
     }
@@ -93,8 +94,8 @@ public class StartStateTest extends BasicStateTester {
     @Test
     public void testStartStatePoolingManager() {
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
     }
@@ -105,8 +106,8 @@ public class StartStateTest extends BasicStateTester {
         state = new StartState(mgr);
 
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
     }
