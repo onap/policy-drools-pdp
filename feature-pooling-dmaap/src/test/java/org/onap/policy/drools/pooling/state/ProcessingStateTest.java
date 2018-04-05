@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -38,16 +38,19 @@ import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Query;
+import org.onap.policy.drools.pooling.state.ProcessingState.HostBucket;
 
 public class ProcessingStateTest extends BasicStateTester {
 
     private ProcessingState state;
+    private HostBucket hostBucket;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
         state = new ProcessingState(mgr, MY_HOST);
+        hostBucket = new HostBucket(MY_HOST);
     }
 
     @Test
@@ -59,6 +62,39 @@ public class ProcessingStateTest extends BasicStateTester {
         utils.checkArray(FilterUtils.CLASS_OR, 2, filter);
         utils.checkEquals(FilterUtils.MSG_CHANNEL, Message.ADMIN, utils.getItem(filter, 0));
         utils.checkEquals(FilterUtils.MSG_CHANNEL, MY_HOST, utils.getItem(filter, 1));
+    }
+
+    @Test
+    public void testGoActive_WithAssignment() {
+        State act = mock(State.class);
+        State inact = mock(State.class);
+
+        when(mgr.goActive()).thenReturn(act);
+        when(mgr.goInactive()).thenReturn(inact);
+
+        String[] arr = {HOST2, PREV_HOST, MY_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        assertEquals(act, state.goActive(asgn));
+
+        verify(mgr).startDistributing(asgn);
+    }
+
+    @Test
+    public void testGoActive_WithoutAssignment() {
+        State act = mock(State.class);
+        State inact = mock(State.class);
+
+        when(mgr.goActive()).thenReturn(act);
+        when(mgr.goInactive()).thenReturn(inact);
+
+        String[] arr = {HOST2, PREV_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        assertEquals(inact, state.goActive(asgn));
+
+        verify(mgr).startDistributing(asgn);
+
     }
 
     @Test
@@ -97,8 +133,8 @@ public class ProcessingStateTest extends BasicStateTester {
         state = new ProcessingState(mgr, LEADER);
 
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
 
@@ -260,8 +296,8 @@ public class ProcessingStateTest extends BasicStateTester {
     @Test
     public void testMakeBucketArray() {
         /*
-         * All hosts are still alive, so it should have the exact same
-         * assignments as it had to start.
+         * All hosts are still alive, so it should have the exact same assignments as it
+         * had to start.
          */
         state.setAssignments(ASGN3);
         state.becomeLeader(sortHosts(HOST_ARR3));
@@ -325,4 +361,80 @@ public class ProcessingStateTest extends BasicStateTester {
         assertEquals(Arrays.asList(expected), captureHostList());
     }
 
+    @Test
+    public void testHostBucketRemove_testHostBucketAdd_testHostBucketSize() {
+        assertEquals(0, hostBucket.size());
+
+        hostBucket.add(20);
+        hostBucket.add(30);
+        hostBucket.add(40);
+        assertEquals(3, hostBucket.size());
+
+        assertEquals(20, hostBucket.remove().intValue());
+        assertEquals(30, hostBucket.remove().intValue());
+        assertEquals(1, hostBucket.size());
+
+        // add more before taking the last item
+        hostBucket.add(50);
+        hostBucket.add(60);
+        assertEquals(3, hostBucket.size());
+
+        assertEquals(40, hostBucket.remove().intValue());
+        assertEquals(50, hostBucket.remove().intValue());
+        assertEquals(60, hostBucket.remove().intValue());
+        assertEquals(0, hostBucket.size());
+
+        // add more AFTER taking the last item
+        hostBucket.add(70);
+        assertEquals(70, hostBucket.remove().intValue());
+        assertEquals(0, hostBucket.size());
+    }
+
+    @Test
+    public void testHostBucketCompareTo() {
+        HostBucket hb1 = new HostBucket(PREV_HOST);
+        HostBucket hb2 = new HostBucket(MY_HOST);
+
+        assertEquals(0, hb1.compareTo(hb1));
+        assertEquals(0, hb1.compareTo(new HostBucket(PREV_HOST)));
+
+        // both empty
+        assertTrue(hb1.compareTo(hb2) < 0);
+        assertTrue(hb2.compareTo(hb1) > 0);
+
+        // hb1 has one bucket, so it should not be larger
+        hb1.add(100);
+        assertTrue(hb1.compareTo(hb2) > 0);
+        assertTrue(hb2.compareTo(hb1) < 0);
+
+        // hb1 has two buckets, so it should still be larger
+        hb1.add(200);
+        assertTrue(hb1.compareTo(hb2) > 0);
+        assertTrue(hb2.compareTo(hb1) < 0);
+
+        // hb1 has two buckets, hb2 has one, so hb1 should still be larger
+        hb2.add(1000);
+        assertTrue(hb1.compareTo(hb2) > 0);
+        assertTrue(hb2.compareTo(hb1) < 0);
+
+        // same number of buckets, so hb2 should now be larger
+        hb2.add(2000);
+        assertTrue(hb1.compareTo(hb2) < 0);
+        assertTrue(hb2.compareTo(hb1) > 0);
+
+        // hb2 has more buckets, it should still be larger
+        hb2.add(3000);
+        assertTrue(hb1.compareTo(hb2) < 0);
+        assertTrue(hb2.compareTo(hb1) > 0);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testHostBucketHashCode() {
+        hostBucket.hashCode();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testHostBucketEquals() {
+        hostBucket.equals(hostBucket);
+    }
 }

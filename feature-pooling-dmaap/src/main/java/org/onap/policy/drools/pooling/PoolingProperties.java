@@ -51,6 +51,7 @@ public class PoolingProperties extends SpecPropertyConfiguration {
     public static final String IDENTIFICATION_MS = PREFIX + "{?.}identification.milliseconds";
     public static final String ACTIVE_HEARTBEAT_MS = PREFIX + "{?.}active.heartbeat.milliseconds";
     public static final String INTER_HEARTBEAT_MS = PREFIX + "{?.}inter.heartbeat.milliseconds";
+    public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "{?.}offline.publish.wait.milliseconds";
 
     /**
      * Properties from which this was constructed.
@@ -113,6 +114,13 @@ public class PoolingProperties extends SpecPropertyConfiguration {
     private long interHeartbeatMs;
 
     /**
+     * Time, in milliseconds, to wait for an "Offline" message to be published
+     * to DMaaP.
+     */
+    @Property(name = OFFLINE_PUB_WAIT_MS, defaultValue = "3000")
+    private long offlinePubWaitMs;
+
+    /**
      * @param controllerName the name of the controller
      * @param props set of properties used to configure this
      * @throws PropertyException if an error occurs
@@ -158,5 +166,9 @@ public class PoolingProperties extends SpecPropertyConfiguration {
 
     public long getInterHeartbeatMs() {
         return interHeartbeatMs;
+    }
+
+    public long getOfflinePubWaitMs() {
+        return offlinePubWaitMs;
     }
 }

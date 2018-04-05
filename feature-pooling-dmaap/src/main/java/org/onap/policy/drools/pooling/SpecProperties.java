@@ -23,8 +23,7 @@ package org.onap.policy.drools.pooling;
 import java.util.Properties;
 
 /**
- * Properties with an optional specialization (e.g., session name, controller
- * name).
+ * Properties with an optional specialization (e.g., session name, controller name).
  */
 public class SpecProperties extends Properties {
     private static final long serialVersionUID = 1L;
@@ -41,10 +40,8 @@ public class SpecProperties extends Properties {
 
     /**
      * 
-     * @param prefix the property name prefix that appears before any
-     *        specialization
-     * @param specialization the property name specialization (e.g., session
-     *        name)
+     * @param prefix the property name prefix that appears before any specialization
+     * @param specialization the property name specialization (e.g., session name)
      */
     public SpecProperties(String prefix, String specialization) {
         this.prefix = withTrailingDot(prefix);
@@ -53,10 +50,8 @@ public class SpecProperties extends Properties {
 
     /**
      * 
-     * @param prefix the property name prefix that appears before any
-     *        specialization
-     * @param specialization the property name specialization (e.g., session
-     *        name)
+     * @param prefix the property name prefix that appears before any specialization
+     * @param specialization the property name specialization (e.g., session name)
      * @param props the default properties
      */
     public SpecProperties(String prefix, String specialization, Properties props) {
@@ -77,13 +72,14 @@ public class SpecProperties extends Properties {
     }
 
     /**
-     * Gets the property whose value has the given key, looking first for the
-     * specialized property name, and then for the generalized property name.
+     * Gets the property whose value has the given key, looking first for the specialized
+     * property name, and then for the generalized property name.
      * 
      * @param key property name, without the specialization
-     * @return the value from the property set, or {@code null} if the property
-     *         set does not contain the value
+     * @return the value from the property set, or {@code null} if the property set does
+     *         not contain the value
      */
+    @Override
     public String getProperty(String key) {
         if (!key.startsWith(prefix)) {
             return super.getProperty(key);
@@ -105,5 +101,15 @@ public class SpecProperties extends Properties {
 
     protected String getSpecPrefix() {
         return specPrefix;
+    }
+
+    @Override
+    public final int hashCode() {
+        throw new UnsupportedOperationException("HostBucket cannot be hashed");
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        throw new UnsupportedOperationException("cannot compare HostBuckets");
     }
 }

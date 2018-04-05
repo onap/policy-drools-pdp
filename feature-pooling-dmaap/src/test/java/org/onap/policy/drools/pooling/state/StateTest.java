@@ -21,16 +21,18 @@
 package org.onap.policy.drools.pooling.state;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.policy.drools.pooling.CancellableScheduledTask;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Forward;
@@ -55,8 +57,8 @@ public class StateTest extends BasicStateTester {
     @Test
     public void testStatePoolingManager() {
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
     }
@@ -67,8 +69,8 @@ public class StateTest extends BasicStateTester {
         state = new MyState(mgr);
 
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
     }
@@ -98,13 +100,13 @@ public class StateTest extends BasicStateTester {
         verify(mgr).schedule(delay, task2);
         verify(mgr).scheduleWithFixedDelay(initDelay, delay, task3);
 
-        ScheduledFuture<?> fut1 = onceFutures.removeFirst();
-        ScheduledFuture<?> fut2 = onceFutures.removeFirst();
-        ScheduledFuture<?> fut3 = repeatedFutures.removeFirst();
+        CancellableScheduledTask sched1 = onceSchedules.removeFirst();
+        CancellableScheduledTask sched2 = onceSchedules.removeFirst();
+        CancellableScheduledTask sched3 = repeatedSchedules.removeFirst();
 
-        verify(fut1, never()).cancel(false);
-        verify(fut2, never()).cancel(false);
-        verify(fut3, never()).cancel(false);
+        verify(sched1, never()).cancel();
+        verify(sched2, never()).cancel();
+        verify(sched3, never()).cancel();
 
         /*
          * Cancel the timers.
@@ -112,9 +114,9 @@ public class StateTest extends BasicStateTester {
         state.cancelTimers();
 
         // verify that all were cancelled
-        verify(fut1).cancel(false);
-        verify(fut2).cancel(false);
-        verify(fut3).cancel(false);
+        verify(sched1).cancel();
+        verify(sched2).cancel();
+        verify(sched3).cancel();
     }
 
     @Test
@@ -131,13 +133,6 @@ public class StateTest extends BasicStateTester {
     @Test
     public void testStart() {
         state.start();
-    }
-
-    @Test
-    public void testStop() {
-        state.stop();
-
-        assertEquals(MY_HOST, captureAdminMessage(Offline.class).getSource());
     }
 
     @Test
@@ -195,7 +190,18 @@ public class StateTest extends BasicStateTester {
     }
 
     @Test
-    public void testProcessLeader_NullAssignment() {
+    public void testProcessLeader() {
+        String[] arr = {HOST2, HOST1};
+        BucketAssignments asgn = new BucketAssignments(arr);
+        Leader msg = new Leader(HOST1, asgn);
+
+        // should ignore it
+        assertEquals(null, state.process(msg));
+        verify(mgr).startDistributing(asgn);
+    }
+
+    @Test
+    public void testProcessLeader_Invalid() {
         Leader msg = new Leader(PREV_HOST, null);
 
         // should stay in the same state, and not start distributing
@@ -206,57 +212,44 @@ public class StateTest extends BasicStateTester {
     }
 
     @Test
-    public void testProcessLeader_NullSource() {
+    public void testIsValidLeader_NullAssignment() {
+        assertFalse(state.isValid(new Leader(PREV_HOST, null)));
+    }
+
+    @Test
+    public void testIsValidLeader_NullSource() {
         String[] arr = {HOST2, PREV_HOST, MY_HOST};
         BucketAssignments asgn = new BucketAssignments(arr);
-        Leader msg = new Leader(null, asgn);
-
-        // should stay in the same state, and not start distributing
-        assertNull(state.process(msg));
-        verify(mgr, never()).startDistributing(any());
-        verify(mgr, never()).goActive();
-        verify(mgr, never()).goInactive();
+        assertFalse(state.isValid(new Leader(null, asgn)));
     }
 
     @Test
-    public void testProcessLeader_EmptyAssignment() {
-        Leader msg = new Leader(PREV_HOST, new BucketAssignments());
-
-        // should stay in the same state, and not start distributing
-        assertNull(state.process(msg));
-        verify(mgr, never()).startDistributing(any());
-        verify(mgr, never()).goActive();
-        verify(mgr, never()).goInactive();
+    public void testIsValidLeader_EmptyAssignment() {
+        assertFalse(state.isValid(new Leader(PREV_HOST, new BucketAssignments())));
     }
 
     @Test
-    public void testProcessLeader_MyHostAssigned() {
-        String[] arr = {HOST2, PREV_HOST, MY_HOST};
+    public void testIsValidLeader_FromSelf() {
+        String[] arr = {HOST2, MY_HOST};
         BucketAssignments asgn = new BucketAssignments(arr);
-        Leader msg = new Leader(PREV_HOST, asgn);
 
-        State next = mock(State.class);
-        when(mgr.goActive()).thenReturn(next);
-
-        // should go Active and start distributing
-        assertEquals(next, state.process(msg));
-        verify(mgr).startDistributing(asgn);
-        verify(mgr, never()).goInactive();
+        assertFalse(state.isValid(new Leader(MY_HOST, asgn)));
     }
 
     @Test
-    public void testProcessLeader_MyHostUnassigned() {
+    public void testIsValidLeader_WrongLeader() {
+        String[] arr = {HOST2, HOST3};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        assertFalse(state.isValid(new Leader(HOST1, asgn)));
+    }
+
+    @Test
+    public void testIsValidLeader() {
         String[] arr = {HOST2, HOST1};
         BucketAssignments asgn = new BucketAssignments(arr);
-        Leader msg = new Leader(HOST1, asgn);
 
-        State next = mock(State.class);
-        when(mgr.goInactive()).thenReturn(next);
-
-        // should go Inactive and start distributing
-        assertEquals(next, state.process(msg));
-        verify(mgr).startDistributing(asgn);
-        verify(mgr, never()).goActive();
+        assertTrue(state.isValid(new Leader(HOST1, asgn)));
     }
 
     @Test
@@ -344,18 +337,18 @@ public class StateTest extends BasicStateTester {
 
         state.schedule(delay, task);
 
-        ScheduledFuture<?> fut = onceFutures.removeFirst();
+        CancellableScheduledTask sched = onceSchedules.removeFirst();
 
         // scheduled, but not canceled yet
         verify(mgr).schedule(delay, task);
-        verify(fut, never()).cancel(false);
+        verify(sched, never()).cancel();
 
         /*
-         * Ensure the state added the timer to its list by telling it to cancel
-         * its timers and then seeing if this timer was canceled.
+         * Ensure the state added the timer to its list by telling it to cancel its timers
+         * and then seeing if this timer was canceled.
          */
         state.cancelTimers();
-        verify(fut).cancel(false);
+        verify(sched).cancel();
     }
 
     @Test
@@ -367,18 +360,18 @@ public class StateTest extends BasicStateTester {
 
         state.scheduleWithFixedDelay(initdel, delay, task);
 
-        ScheduledFuture<?> fut = repeatedFutures.removeFirst();
+        CancellableScheduledTask sched = repeatedSchedules.removeFirst();
 
         // scheduled, but not canceled yet
         verify(mgr).scheduleWithFixedDelay(initdel, delay, task);
-        verify(fut, never()).cancel(false);
+        verify(sched, never()).cancel();
 
         /*
-         * Ensure the state added the timer to its list by telling it to cancel
-         * its timers and then seeing if this timer was canceled.
+         * Ensure the state added the timer to its list by telling it to cancel its timers
+         * and then seeing if this timer was canceled.
          */
         state.cancelTimers();
-        verify(fut).cancel(false);
+        verify(sched).cancel();
     }
 
     @Test

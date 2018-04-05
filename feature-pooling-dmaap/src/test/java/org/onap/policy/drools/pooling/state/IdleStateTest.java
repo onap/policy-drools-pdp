@@ -61,12 +61,6 @@ public class IdleStateTest extends BasicStateTester {
     }
 
     @Test
-    public void testStop() {
-        state.stop();
-        verifyNothingPublished();
-    }
-
-    @Test
     public void testProcessForward() {
         Forward msg = new Forward();
         assertNull(state.process(msg));

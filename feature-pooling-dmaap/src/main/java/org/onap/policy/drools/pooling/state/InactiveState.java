@@ -23,8 +23,8 @@ package org.onap.policy.drools.pooling.state;
 import org.onap.policy.drools.pooling.PoolingManager;
 
 /**
- * The inactive state. In this state, we just wait a bit and then try to
- * re-activate. In the meantime, all messages are ignored.
+ * The inactive state. In this state, we just wait a bit and then try to re-activate. In
+ * the meantime, all messages are ignored.
  */
 public class InactiveState extends State {
 
@@ -41,11 +41,11 @@ public class InactiveState extends State {
 
         super.start();
 
-        schedule(getProperties().getReactivateMs(), xxx -> goStart());
+        schedule(getProperties().getReactivateMs(), () -> goStart());
     }
 
     /**
-     * Remains in this state.
+     * Remains in this state, without resetting any timers.
      */
     @Override
     protected State goInactive() {
