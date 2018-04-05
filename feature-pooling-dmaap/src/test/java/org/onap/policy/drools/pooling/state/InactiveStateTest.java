@@ -28,6 +28,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.Message;
+import org.onap.policy.drools.utils.Pair;
 
 public class InactiveStateTest extends BasicStateTester {
 
@@ -62,20 +63,20 @@ public class InactiveStateTest extends BasicStateTester {
 
         Pair<Long, StateTimerTask> timer = onceTasks.remove();
 
-        assertEquals(STD_REACTIVATE_WAIT_MS, timer.first.longValue());
+        assertEquals(STD_REACTIVATE_WAIT_MS, timer.first().longValue());
 
         // invoke the task - it should go to the state returned by the mgr
         State next = mock(State.class);
         when(mgr.goStart()).thenReturn(next);
 
-        assertEquals(next, timer.second.fire(null));
+        assertEquals(next, timer.second().fire());
     }
 
     @Test
     public void testInactiveState() {
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
     }

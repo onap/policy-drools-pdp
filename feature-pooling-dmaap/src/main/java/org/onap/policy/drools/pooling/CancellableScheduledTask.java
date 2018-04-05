@@ -1,5 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
+ * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -17,25 +18,16 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.pooling.message;
+package org.onap.policy.drools.pooling;
 
-import org.junit.Test;
-import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
-import com.fasterxml.jackson.databind.ObjectMapper;
+/**
+ * A scheduled task that can be cancelled.
+ */
+@FunctionalInterface
+public interface CancellableScheduledTask {
 
-public class Trial {
-
-	@Test
-	public void test() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		
-		Message msg = new Forward("me", CommInfrastructure.DMAAP, "my topic", "a message", "my req");
-		
-		String enc = mapper.writeValueAsString(msg);
-		System.out.println("enc=" + enc);
-		
-		Message msg2 = mapper.readValue(enc, Message.class);
-		System.out.println("class=" + msg2.getClass());
-	}
-
+    /**
+     * Cancels the scheduled task.
+     */
+    public void cancel();
 }

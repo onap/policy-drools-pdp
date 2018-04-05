@@ -21,7 +21,6 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ScheduledFuture;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Forward;
 import org.onap.policy.drools.pooling.message.Message;
@@ -48,19 +47,19 @@ public interface PoolingManager {
     public String getHost();
 
     /**
-     * Gets the name of the internal DMaaP topic used by this manager to
-     * communicate with its other hosts.
+     * Gets the name of the internal DMaaP topic used by this manager to communicate with
+     * its other hosts.
      * 
      * @return the name of the internal DMaaP topic
      */
     public String getTopic();
 
     /**
-     * Indicates that communication with internal DMaaP topic failed, typically
-     * due to a missed heart beat. Stops the PolicyController.
+     * Indicates that communication with internal DMaaP topic failed, typically due to a
+     * missed heart beat. Stops the PolicyController.
      * 
-     * @return a latch that can be used to determine when the controller's
-     *         stop() method has completed
+     * @return a latch that can be used to determine when the controller's stop() method
+     *         has completed
      */
     public CountDownLatch internalTopicFailed();
 
@@ -68,14 +67,16 @@ public interface PoolingManager {
      * Starts distributing requests according to the given bucket assignments.
      * 
      * @param assignments must <i>not</i> be {@code null}
+     * @return a latch that can be used to determine when the events in the event queue
+     *         have all be processed
      */
-    public void startDistributing(BucketAssignments assignments);
+    public CountDownLatch startDistributing(BucketAssignments assignments);
 
     /**
      * Gets the current bucket assignments.
      * 
-     * @return the current bucket assignments, or {@code null} if no assignments
-     *         have been made
+     * @return the current bucket assignments, or {@code null} if no assignments have been
+     *         made
      */
     public BucketAssignments getAssignments();
 
@@ -95,8 +96,7 @@ public interface PoolingManager {
     public void publish(String channel, Message msg);
 
     /**
-     * Handles a {@link Forward} event that was received from the internal
-     * topic.
+     * Handles a {@link Forward} event that was received from the internal topic.
      * 
      * @param event
      */
@@ -107,9 +107,9 @@ public interface PoolingManager {
      * 
      * @param delayMs delay, in milliseconds
      * @param task
-     * @return a future that can be used to cancel the timer
+     * @return a new scheduled task
      */
-    public ScheduledFuture<?> schedule(long delayMs, StateTimerTask task);
+    public CancellableScheduledTask schedule(long delayMs, StateTimerTask task);
 
     /**
      * Schedules a timer to fire repeatedly.
@@ -117,9 +117,9 @@ public interface PoolingManager {
      * @param initialDelayMs initial delay, in milliseconds
      * @param delayMs delay, in milliseconds
      * @param task
-     * @return a future that can be used to cancel the timer
+     * @return a new scheduled task
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);
+    public CancellableScheduledTask scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);
 
     /**
      * Transitions to the "start" state.
