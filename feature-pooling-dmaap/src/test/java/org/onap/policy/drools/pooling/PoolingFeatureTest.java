@@ -23,7 +23,7 @@ package org.onap.policy.drools.pooling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,11 +41,10 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.drools.pooling.PoolingFeature.Factory;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.Pair;
 
 public class PoolingFeatureTest {
-
-    private static final String CONFIG_DIR = "src/test/java/org/onap/policy/drools/pooling";
 
     private static final String CONTROLLER1 = "controllerA";
     private static final String CONTROLLER2 = "controllerB";
@@ -66,6 +66,8 @@ public class PoolingFeatureTest {
      */
     private static Factory saveFactory;
 
+    private Properties props;
+    private PolicyEngine engine;
     private PolicyController controller1;
     private PolicyController controller2;
     private PolicyController controllerDisabled;
@@ -94,6 +96,8 @@ public class PoolingFeatureTest {
 
     @Before
     public void setUp() throws Exception {
+        props = initProperties();
+        engine = mock(PolicyEngine.class);
         factory = mock(Factory.class);
         controller1 = mock(PolicyController.class);
         controller2 = mock(PolicyController.class);
@@ -113,12 +117,13 @@ public class PoolingFeatureTest {
         when(controllerException.getName()).thenReturn(CONTROLLER_EX);
         when(controllerUnknown.getName()).thenReturn(CONTROLLER_UNKNOWN);
 
+        when(factory.getProperties(PoolingProperties.FEATURE_NAME)).thenReturn(props);
         when(factory.getController(drools1)).thenReturn(controller1);
         when(factory.getController(drools2)).thenReturn(controller2);
         when(factory.getController(droolsDisabled)).thenReturn(controllerDisabled);
 
         when(factory.makeManager(any(), any())).thenAnswer(args -> {
-            PoolingProperties props = args.getArgumentAt(1, PoolingProperties.class);
+            PoolingProperties props = args.getArgument(1);
 
             PoolingManagerImpl mgr = mock(PoolingManagerImpl.class);
 
@@ -129,7 +134,7 @@ public class PoolingFeatureTest {
 
         pool = new PoolingFeature();
 
-        pool.globalInit(null, CONFIG_DIR);
+        pool.beforeStart(engine);
 
         pool.afterCreate(controller1);
         pool.afterCreate(controller2);
@@ -149,24 +154,17 @@ public class PoolingFeatureTest {
     }
 
     @Test
-    public void testGlobalInit() {
+    public void testBeforeStartEngine() {
         pool = new PoolingFeature();
 
-        pool.globalInit(null, CONFIG_DIR);
-    }
-
-    @Test(expected = PoolingFeatureRtException.class)
-    public void testGlobalInit_NotFound() {
-        pool = new PoolingFeature();
-
-        pool.globalInit(null, CONFIG_DIR + "/unknown");
+        assertFalse(pool.beforeStart(engine));
     }
 
     @Test
     public void testAfterCreate() {
         managers.clear();
         pool = new PoolingFeature();
-        pool.globalInit(null, CONFIG_DIR);
+        pool.beforeStart(engine);
 
         assertFalse(pool.afterCreate(controller1));
         assertEquals(1, managers.size());
@@ -184,7 +182,7 @@ public class PoolingFeatureTest {
     public void testAfterCreate_NotEnabled() {
         managers.clear();
         pool = new PoolingFeature();
-        pool.globalInit(null, CONFIG_DIR);
+        pool.beforeStart(engine);
 
         assertFalse(pool.afterCreate(controllerDisabled));
         assertTrue(managers.isEmpty());
@@ -194,7 +192,7 @@ public class PoolingFeatureTest {
     public void testAfterCreate_PropertyEx() {
         managers.clear();
         pool = new PoolingFeature();
-        pool.globalInit(null, CONFIG_DIR);
+        pool.beforeStart(engine);
 
         pool.afterCreate(controllerException);
     }
@@ -202,9 +200,9 @@ public class PoolingFeatureTest {
     @Test(expected = PoolingFeatureRtException.class)
     public void testAfterCreate_NoProps() {
         pool = new PoolingFeature();
-        
+
         // did not perform globalInit, which is an error
-        
+
         pool.afterCreate(controller1);
     }
 
@@ -212,7 +210,7 @@ public class PoolingFeatureTest {
     public void testAfterCreate_NoFeatProps() {
         managers.clear();
         pool = new PoolingFeature();
-        pool.globalInit(null, CONFIG_DIR);
+        pool.beforeStart(engine);
 
         assertFalse(pool.afterCreate(controllerUnknown));
         assertTrue(managers.isEmpty());
@@ -492,4 +490,31 @@ public class PoolingFeatureTest {
         pool.afterStop(controller1);
     }
 
+    private Properties initProperties() {
+        Properties props = new Properties();
+
+        initProperties(props, "A", 0);
+        initProperties(props, "B", 1);
+        initProperties(props, "Exception", 2);
+
+        props.setProperty("pooling.controllerDisabled.enabled", "false");
+
+        props.setProperty("pooling.controllerException.offline.queue.limit", "INVALID NUMBER");
+
+        return props;
+    }
+
+    private void initProperties(Properties props, String suffix, int offset) {
+        props.setProperty("pooling.controller" + suffix + ".topic", "topic." + suffix);
+        props.setProperty("pooling.controller" + suffix + ".enabled", "true");
+        props.setProperty("pooling.controller" + suffix + ".offline.queue.limit", String.valueOf(5 + offset));
+        props.setProperty("pooling.controller" + suffix + ".offline.queue.age.milliseconds",
+                        String.valueOf(100 + offset));
+        props.setProperty("pooling.controller" + suffix + ".start.heartbeat.milliseconds", String.valueOf(10 + offset));
+        props.setProperty("pooling.controller" + suffix + ".reactivate.milliseconds", String.valueOf(20 + offset));
+        props.setProperty("pooling.controller" + suffix + ".identification.milliseconds", String.valueOf(30 + offset));
+        props.setProperty("pooling.controller" + suffix + ".active.heartbeat.milliseconds",
+                        String.valueOf(40 + offset));
+        props.setProperty("pooling.controller" + suffix + ".inter.heartbeat.milliseconds", String.valueOf(50 + offset));
+    }
 }

@@ -30,6 +30,7 @@ import static org.onap.policy.drools.pooling.PoolingProperties.IDENTIFICATION_MS
 import static org.onap.policy.drools.pooling.PoolingProperties.INTER_HEARTBEAT_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.OFFLINE_AGE_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.OFFLINE_LIMIT;
+import static org.onap.policy.drools.pooling.PoolingProperties.OFFLINE_PUB_WAIT_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.POOLING_TOPIC;
 import static org.onap.policy.drools.pooling.PoolingProperties.REACTIVATE_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.START_HEARTBEAT_MS;
@@ -53,6 +54,7 @@ public class PoolingPropertiesTest {
     public static final long STD_LEADER_MS = 5000L;
     public static final long STD_ACTIVE_HEARTBEAT_MS = 6000L;
     public static final long STD_INTER_HEARTBEAT_MS = 7000L;
+    public static final long STD_OFFLINE_PUB_WAIT_MS = 8000L;
 
     private Properties plain;
     private PoolingProperties pooling;
@@ -121,10 +123,15 @@ public class PoolingPropertiesTest {
         doTest(INTER_HEARTBEAT_MS, STD_INTER_HEARTBEAT_MS, 15000L, xxx -> pooling.getInterHeartbeatMs());
     }
 
+    @Test
+    public void testGetOfflinePubWaitMs() throws PropertyException {
+        doTest(OFFLINE_PUB_WAIT_MS, STD_OFFLINE_PUB_WAIT_MS, 3000L, xxx -> pooling.getOfflinePubWaitMs());
+    }
+
     /**
-     * Tests a particular property. Verifies that the correct value is returned
-     * if the specialized property has a value or the property has no value.
-     * Also verifies that the property name can be generalized.
+     * Tests a particular property. Verifies that the correct value is returned if the
+     * specialized property has a value or the property has no value. Also verifies that
+     * the property name can be generalized.
      * 
      * @param propnm name of the property of interest
      * @param specValue expected specialized value
@@ -140,8 +147,8 @@ public class PoolingPropertiesTest {
         assertEquals("special " + propnm, specValue, func.apply(null));
 
         /*
-         * Ensure the property supports generalization - this will throw an
-         * exception if it does not.
+         * Ensure the property supports generalization - this will throw an exception if
+         * it does not.
          */
         assertFalse(propnm.equals(generalize(propnm)));
 
@@ -155,8 +162,8 @@ public class PoolingPropertiesTest {
     }
 
     /**
-     * Makes a set of properties, where all of the properties are specialized
-     * for the controller.
+     * Makes a set of properties, where all of the properties are specialized for the
+     * controller.
      * 
      * @return a new property set
      */
@@ -172,6 +179,7 @@ public class PoolingPropertiesTest {
         props.setProperty(specialize(IDENTIFICATION_MS, CONTROLLER), "" + STD_IDENTIFICATION_MS);
         props.setProperty(specialize(ACTIVE_HEARTBEAT_MS, CONTROLLER), "" + STD_ACTIVE_HEARTBEAT_MS);
         props.setProperty(specialize(INTER_HEARTBEAT_MS, CONTROLLER), "" + STD_INTER_HEARTBEAT_MS);
+        props.setProperty(specialize(OFFLINE_PUB_WAIT_MS, CONTROLLER), "" + STD_OFFLINE_PUB_WAIT_MS);
 
         return props;
     }
