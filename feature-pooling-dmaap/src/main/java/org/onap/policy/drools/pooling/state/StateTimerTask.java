@@ -29,9 +29,8 @@ public interface StateTimerTask {
     /**
      * Fires the timer.
      * 
-     * @param arg always {@code null}
      * @return the new state, or {@code null} if the state is unchanged
      */
-    public State fire(Void arg);
+    public State fire();
 
 }

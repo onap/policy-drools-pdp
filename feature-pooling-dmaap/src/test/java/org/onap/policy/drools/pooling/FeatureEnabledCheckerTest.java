@@ -48,6 +48,16 @@ public class FeatureEnabledCheckerTest {
         assertFalse(check(false, false));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void test_ArgEx() {
+        
+        // check case where there's an exception in the property
+        Properties props = new Properties();
+        props.setProperty(generalize(PROP_NAME), "invalid-boolean");
+        
+        assertFalse(FeatureEnabledChecker.isFeatureEnabled(props, SPEC, PROP_NAME));        
+    }
+
     /**
      * Adds properties, as specified, and checks if the feature is enabled.
      * 

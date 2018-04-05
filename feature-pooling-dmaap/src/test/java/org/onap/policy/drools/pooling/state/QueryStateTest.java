@@ -25,9 +25,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Map;
@@ -38,7 +39,7 @@ import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
-import org.onap.policy.drools.pooling.message.Query;
+import org.onap.policy.drools.utils.Pair;
 
 public class QueryStateTest extends BasicStateTester {
 
@@ -68,39 +69,38 @@ public class QueryStateTest extends BasicStateTester {
 
         Pair<Long, StateTimerTask> timer = onceTasks.remove();
 
-        assertEquals(STD_IDENTIFICATION_MS, timer.first.longValue());
-        assertNotNull(timer.second);
+        assertEquals(STD_IDENTIFICATION_MS, timer.first().longValue());
+        assertNotNull(timer.second());
     }
 
     @Test
-    public void testGoQuery() {
-        assertNull(state.process(new Query()));
-        assertEquals(ASGN3, state.getAssignments());
-    }
+    public void testProcessIdentification_SameSource() {
+        String[] arr = {HOST2, PREV_HOST, MY_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
 
-    @Test
-    public void testProcessIdentification_NullSource() {
-        assertNull(state.process(new Identification()));
+        assertNull(state.process(new Identification(MY_HOST, asgn)));
 
+        // info should be unchanged
         assertEquals(MY_HOST, state.getLeader());
+        verify(mgr, never()).startDistributing(asgn);
     }
 
     @Test
-    public void testProcessIdentification_NewLeader() {
-        assertNull(state.process(new Identification(PREV_HOST, null)));
+    public void testProcessIdentification_DiffSource() {
+        String[] arr = {HOST2, PREV_HOST, MY_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
 
-        assertEquals(PREV_HOST, state.getLeader());
-    }
+        assertNull(state.process(new Identification(HOST2, asgn)));
 
-    @Test
-    public void testProcessIdentification_NotNewLeader() {
-        assertNull(state.process(new Identification(HOST2, null)));
-
+        // leader should be unchanged
         assertEquals(MY_HOST, state.getLeader());
+
+        // should have picked up the assignments
+        verify(mgr).startDistributing(asgn);
     }
 
     @Test
-    public void testProcessLeader_NullAssignment() {
+    public void testProcessLeader_Invalid() {
         Leader msg = new Leader(PREV_HOST, null);
 
         // should stay in the same state, and not start distributing
@@ -115,56 +115,29 @@ public class QueryStateTest extends BasicStateTester {
     }
 
     @Test
-    public void testProcessLeader_NullSource() {
+    public void testProcessLeader_SameLeader() {
         String[] arr = {HOST2, PREV_HOST, MY_HOST};
         BucketAssignments asgn = new BucketAssignments(arr);
-        Leader msg = new Leader(null, asgn);
 
-        // should stay in the same state, and not start distributing
-        assertNull(state.process(msg));
-        verify(mgr, never()).startDistributing(any());
-        verify(mgr, never()).goActive();
+        // identify a leader that's better than my host
+        assertEquals(null, state.process(new Identification(PREV_HOST, asgn)));
+
+        // now send a Leader message for that leader
+        Leader msg = new Leader(PREV_HOST, asgn);
+
+        State next = mock(State.class);
+        when(mgr.goActive()).thenReturn(next);
+
+        // should go Active and start distributing
+        assertEquals(next, state.process(msg));
         verify(mgr, never()).goInactive();
 
-        // info should be unchanged
-        assertEquals(MY_HOST, state.getLeader());
-        assertEquals(ASGN3, state.getAssignments());
+        // Ident msg + Leader msg = times(2)
+        verify(mgr, times(2)).startDistributing(asgn);
     }
 
     @Test
-    public void testProcessLeader_SourceIsNotAssignmentLeader() {
-        String[] arr = {HOST2, PREV_HOST, MY_HOST};
-        BucketAssignments asgn = new BucketAssignments(arr);
-        Leader msg = new Leader(HOST2, asgn);
-
-        // should stay in the same state, and not start distributing
-        assertNull(state.process(msg));
-        verify(mgr, never()).startDistributing(any());
-        verify(mgr, never()).goActive();
-        verify(mgr, never()).goInactive();
-
-        // info should be unchanged
-        assertEquals(MY_HOST, state.getLeader());
-        assertEquals(ASGN3, state.getAssignments());
-    }
-
-    @Test
-    public void testProcessLeader_EmptyAssignment() {
-        Leader msg = new Leader(PREV_HOST, new BucketAssignments());
-
-        // should stay in the same state, and not start distributing
-        assertNull(state.process(msg));
-        verify(mgr, never()).startDistributing(any());
-        verify(mgr, never()).goActive();
-        verify(mgr, never()).goInactive();
-
-        // info should be unchanged
-        assertEquals(MY_HOST, state.getLeader());
-        assertEquals(ASGN3, state.getAssignments());
-    }
-
-    @Test
-    public void testProcessLeader_BetterLeader() {
+    public void testProcessLeader_BetterLeaderWithAssignment() {
         String[] arr = {HOST2, PREV_HOST, MY_HOST};
         BucketAssignments asgn = new BucketAssignments(arr);
         Leader msg = new Leader(PREV_HOST, asgn);
@@ -176,6 +149,21 @@ public class QueryStateTest extends BasicStateTester {
         assertEquals(next, state.process(msg));
         verify(mgr).startDistributing(asgn);
         verify(mgr, never()).goInactive();
+    }
+
+    @Test
+    public void testProcessLeader_BetterLeaderWithoutAssignment() {
+        String[] arr = {HOST2, PREV_HOST, HOST1};
+        BucketAssignments asgn = new BucketAssignments(arr);
+        Leader msg = new Leader(PREV_HOST, asgn);
+
+        State next = mock(State.class);
+        when(mgr.goInactive()).thenReturn(next);
+
+        // should go Inactive, but start distributing
+        assertEquals(next, state.process(msg));
+        verify(mgr).startDistributing(asgn);
+        verify(mgr, never()).goActive();
     }
 
     @Test
@@ -241,41 +229,48 @@ public class QueryStateTest extends BasicStateTester {
     }
 
     @Test
-    public void testProcessQuery() {
-        BucketAssignments asgn = new BucketAssignments(new String[] {HOST1, HOST2});
-        mgr.startDistributing(asgn);
-        state = new QueryState(mgr);
-
-        State next = mock(State.class);
-        when(mgr.goQuery()).thenReturn(next);
-
-        assertEquals(null, state.process(new Query()));
-
-        verify(mgr).publishAdmin(any(Identification.class));
-    }
-
-    @Test
     public void testQueryState() {
         /*
-         * Prove the state is attached to the manager by invoking getHost(),
-         * which delegates to the manager.
+         * Prove the state is attached to the manager by invoking getHost(), which
+         * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
     }
 
     @Test
-    public void testAwaitIdentification_Leader() {
+    public void testAwaitIdentification_MissingSelfIdent() {
         state.start();
 
         Pair<Long, StateTimerTask> timer = onceTasks.remove();
 
-        assertEquals(STD_IDENTIFICATION_MS, timer.first.longValue());
-        assertNotNull(timer.second);
+        assertEquals(STD_IDENTIFICATION_MS, timer.first().longValue());
+        assertNotNull(timer.second());
+
+        // should published an Offline message and go inactive
+
+        State next = mock(State.class);
+        when(mgr.goInactive()).thenReturn(next);
+
+        assertEquals(next, timer.second().fire());
+
+        Offline msg = captureAdminMessage(Offline.class);
+        assertEquals(MY_HOST, msg.getSource());
+    }
+
+    @Test
+    public void testAwaitIdentification_Leader() {
+        state.start();
+        state.process(new Identification(MY_HOST, null));
+
+        Pair<Long, StateTimerTask> timer = onceTasks.remove();
+
+        assertEquals(STD_IDENTIFICATION_MS, timer.first().longValue());
+        assertNotNull(timer.second());
 
         State next = mock(State.class);
         when(mgr.goActive()).thenReturn(next);
 
-        assertEquals(next, timer.second.fire(null));
+        assertEquals(next, timer.second().fire());
 
         // should have published a Leader message
         Leader msg = captureAdminMessage(Leader.class);
@@ -291,20 +286,21 @@ public class QueryStateTest extends BasicStateTester {
         state = new QueryState(mgr);
 
         state.start();
+        state.process(new Identification(MY_HOST, null));
 
         // tell it the leader is still active
         state.process(new Identification(PREV_HOST, asgn));
 
         Pair<Long, StateTimerTask> timer = onceTasks.remove();
 
-        assertEquals(STD_IDENTIFICATION_MS, timer.first.longValue());
-        assertNotNull(timer.second);
+        assertEquals(STD_IDENTIFICATION_MS, timer.first().longValue());
+        assertNotNull(timer.second());
 
         // set up active state, as that's what it should return
         State next = mock(State.class);
         when(mgr.goActive()).thenReturn(next);
 
-        assertEquals(next, timer.second.fire(null));
+        assertEquals(next, timer.second().fire());
 
         // should NOT have published a Leader message
         assertTrue(admin.isEmpty());
@@ -321,20 +317,21 @@ public class QueryStateTest extends BasicStateTester {
         state = new QueryState(mgr);
 
         state.start();
+        state.process(new Identification(MY_HOST, null));
 
         // tell it the leader is still active
         state.process(new Identification(PREV_HOST, asgn));
 
         Pair<Long, StateTimerTask> timer = onceTasks.remove();
 
-        assertEquals(STD_IDENTIFICATION_MS, timer.first.longValue());
-        assertNotNull(timer.second);
+        assertEquals(STD_IDENTIFICATION_MS, timer.first().longValue());
+        assertNotNull(timer.second());
 
         // set up inactive state, as that's what it should return
         State next = mock(State.class);
         when(mgr.goInactive()).thenReturn(next);
 
-        assertEquals(next, timer.second.fire(null));
+        assertEquals(next, timer.second().fire());
 
         // should NOT have published a Leader message
         assertTrue(admin.isEmpty());

@@ -24,9 +24,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,11 +39,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Heartbeat;
-import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
+import org.onap.policy.drools.utils.Pair;
+import org.onap.policy.drools.utils.Triple;
 
 public class ActiveStateTest extends BasicStateTester {
 
@@ -65,7 +66,7 @@ public class ActiveStateTest extends BasicStateTester {
 
         // ensure a heart beat was generated
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
-        assertEquals(MY_HOST, msg.second.getSource());
+        assertEquals(MY_HOST, msg.second().getSource());
     }
 
     @Test
@@ -183,8 +184,8 @@ public class ActiveStateTest extends BasicStateTester {
 
         /*
          * 
-         * PREV_HOST2 has buckets and is my predecessor, but it isn't the leader
-         * thus should be ignored.
+         * PREV_HOST2 has buckets and is my predecessor, but it isn't the leader thus
+         * should be ignored.
          */
         assertNull(state.process(new Offline(PREV_HOST2)));
     }
@@ -196,22 +197,57 @@ public class ActiveStateTest extends BasicStateTester {
         state = new ActiveState(mgr);
 
         /*
-         * HOST1 has buckets, but it isn't the leader and it isn't my
-         * predecessor, thus should be ignored.
+         * HOST1 has buckets, but it isn't the leader and it isn't my predecessor, thus
+         * should be ignored.
          */
         assertNull(state.process(new Offline(HOST1)));
     }
 
     @Test
-    public void testProcessQuery() {
+    public void testProcessLeader_Invalid() {
+        Leader msg = new Leader(PREV_HOST, null);
+
+        // should stay in the same state, and not start distributing
+        assertNull(state.process(msg));
+        verify(mgr, never()).startDistributing(any());
+        verify(mgr, never()).goActive();
+        verify(mgr, never()).goInactive();
+
+        // info should be unchanged
+        assertEquals(MY_HOST, state.getLeader());
+        assertEquals(ASGN3, state.getAssignments());
+    }
+
+    @Test
+    public void testProcessLeader_BadLeader() {
+        String[] arr = {HOST2, HOST1};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        // now send a Leader message for that leader
+        Leader msg = new Leader(HOST1, asgn);
+
         State next = mock(State.class);
         when(mgr.goQuery()).thenReturn(next);
 
-        assertEquals(next, state.process(new Query()));
+        // should go Query, but not start distributing
+        assertEquals(next, state.process(msg));
+        verify(mgr, never()).startDistributing(asgn);
+    }
 
-        Identification ident = captureAdminMessage(Identification.class);
-        assertEquals(MY_HOST, ident.getSource());
-        assertEquals(ASGN3, ident.getAssignments());
+    @Test
+    public void testProcessLeader_GoodLeader() {
+        String[] arr = {HOST2, PREV_HOST, MY_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        // now send a Leader message for that leader
+        Leader msg = new Leader(PREV_HOST, asgn);
+
+        State next = mock(State.class);
+        when(mgr.goActive()).thenReturn(next);
+
+        // should go Active and start distributing
+        assertEquals(next, state.process(msg));
+        verify(mgr).startDistributing(asgn);
     }
 
     @Test
@@ -262,18 +298,18 @@ public class ActiveStateTest extends BasicStateTester {
 
         // heart beat generator
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first.longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second.longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
 
         // my heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first.longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second.longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
 
         // predecessor's heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first.longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second.longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
     }
 
     @Test
@@ -291,13 +327,13 @@ public class ActiveStateTest extends BasicStateTester {
 
         // heart beat generator
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first.longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second.longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
 
         // my heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first.longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second.longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
     }
 
     @Test
@@ -314,14 +350,14 @@ public class ActiveStateTest extends BasicStateTester {
         verify(mgr).publish(anyString(), any(Heartbeat.class));
 
         // fire the task
-        assertNull(task.third.fire(null));
+        assertNull(task.third().fire());
 
         // should have generated a second pair of heart beats
         verify(mgr, times(2)).publish(anyString(), any(Heartbeat.class));
 
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
-        assertEquals(MY_HOST, msg.first);
-        assertEquals(MY_HOST, msg.second.getSource());
+        assertEquals(MY_HOST, msg.first());
+        assertEquals(MY_HOST, msg.second().getSource());
     }
 
     @Test
@@ -339,7 +375,7 @@ public class ActiveStateTest extends BasicStateTester {
         when(mgr.goInactive()).thenReturn(next);
 
         // fire the task - should not transition
-        assertNull(task.third.fire(null));
+        assertNull(task.third().fire());
 
         verify(mgr, never()).publishAdmin(any(Query.class));
     }
@@ -356,7 +392,7 @@ public class ActiveStateTest extends BasicStateTester {
         when(mgr.goInactive()).thenReturn(next);
 
         // fire the task - should transition
-        assertEquals(next, task.third.fire(null));
+        assertEquals(next, task.third().fire());
 
         // should indicate failure
         verify(mgr).internalTopicFailed();
@@ -381,7 +417,7 @@ public class ActiveStateTest extends BasicStateTester {
         when(mgr.goQuery()).thenReturn(next);
 
         // fire the task - should NOT transition
-        assertNull(task.third.fire(null));
+        assertNull(task.third().fire());
 
         verify(mgr, never()).publishAdmin(any(Query.class));
     }
@@ -398,7 +434,7 @@ public class ActiveStateTest extends BasicStateTester {
         when(mgr.goQuery()).thenReturn(next);
 
         // fire the task - should transition
-        assertEquals(next, task.third.fire(null));
+        assertEquals(next, task.third().fire());
 
         verify(mgr).publishAdmin(any(Query.class));
     }
@@ -414,8 +450,8 @@ public class ActiveStateTest extends BasicStateTester {
         verify(mgr, times(1)).publish(any(), any());
 
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
-        assertEquals(MY_HOST, msg.first);
-        assertEquals(MY_HOST, msg.second.getSource());
+        assertEquals(MY_HOST, msg.first());
+        assertEquals(MY_HOST, msg.second().getSource());
     }
 
     @Test
@@ -429,13 +465,13 @@ public class ActiveStateTest extends BasicStateTester {
 
         // this message should go to itself
         msg = capturePublishedMessage(Heartbeat.class, index++);
-        assertEquals(MY_HOST, msg.first);
-        assertEquals(MY_HOST, msg.second.getSource());
+        assertEquals(MY_HOST, msg.first());
+        assertEquals(MY_HOST, msg.second().getSource());
 
         // this message should go to its successor
         msg = capturePublishedMessage(Heartbeat.class, index++);
-        assertEquals(HOST1, msg.first);
-        assertEquals(MY_HOST, msg.second.getSource());
+        assertEquals(HOST1, msg.first());
+        assertEquals(MY_HOST, msg.second().getSource());
     }
 
 }

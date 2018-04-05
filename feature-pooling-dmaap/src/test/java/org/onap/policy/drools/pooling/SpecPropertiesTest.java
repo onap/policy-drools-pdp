@@ -49,8 +49,8 @@ public class SpecPropertiesTest {
     private static final String PREFIX_SPEC = PREFIX_GEN + MY_SPEC + ".";
 
     /**
-     * Suffix to add to property names to generate names of properties that are
-     * not populated.
+     * Suffix to add to property names to generate names of properties that are not
+     * populated.
      */
     private static final String SUFFIX = ".suffix";
 
@@ -173,6 +173,16 @@ public class SpecPropertiesTest {
 
         // can return null
         assertNull(props.getProperty(gen(PROP_UNKNOWN), null));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testHashCode() {
+        props.hashCode();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testEquals() {
+        props.equals(props);
     }
 
     private String gen(String propnm) {
