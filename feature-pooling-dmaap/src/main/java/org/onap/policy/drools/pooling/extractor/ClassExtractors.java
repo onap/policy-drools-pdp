@@ -152,7 +152,7 @@ public class ClassExtractors {
          * cannot extract data items from objects of this type, so just
          * allocated a null extractor.
          */
-        logger.warn("missing property " + prefix + clazz.getName());
+        logger.warn("missing property {}{}", prefix, clazz.getName());
         return new NullExtractor();
     }
 
@@ -166,24 +166,24 @@ public class ClassExtractors {
      */
     private Extractor buildExtractor(Class<?> clazz, String value) {
         if (!value.startsWith("${")) {
-            logger.warn("property value for " + prefix + clazz.getName() + " does not start with '${'");
+            logger.warn("property value for {}{} does not start with '${'", prefix, clazz.getName());
             return new NullExtractor();
         }
 
         if (!value.endsWith("}")) {
-            logger.warn("property value for " + prefix + clazz.getName() + " does not end with '}'");
+            logger.warn("property value for {}{} does not end with '}'", prefix, clazz.getName());
             return new NullExtractor();
         }
 
         // get the part in the middle
         String val = value.substring(2, value.length() - 1);
         if (val.startsWith(".")) {
-            logger.warn("property value for " + prefix + clazz.getName() + " begins with '.'");
+            logger.warn("property value for {}{} begins with '.'", prefix, clazz.getName());
             return new NullExtractor();
         }
 
         if (val.endsWith(".")) {
-            logger.warn("property value for " + prefix + clazz.getName() + " ends with '.'");
+            logger.warn("property value for {}{} ends with '.'", prefix, clazz.getName());
             return new NullExtractor();
         }
 
@@ -198,7 +198,7 @@ public class ClassExtractors {
             return (ext.extractors.length == 1 ? ext.extractors[0] : ext);
 
         } catch (ExtractorException e) {
-            logger.warn("cannot build extractor for " + clazz.getName());
+            logger.warn("cannot build extractor for {}", clazz.getName(), e);
             return new NullExtractor();
         }
     }
@@ -255,7 +255,7 @@ public class ClassExtractors {
 
         @Override
         public Object extract(Object object) {
-            logger.warn("cannot extract " + type + " from " + object.getClass());
+            logger.warn("cannot extract {} from {}", type, object.getClass());
             return null;
         }
     }
@@ -374,6 +374,7 @@ public class ClassExtractors {
 
             } catch (NoSuchMethodException expected) {
                 // no getXxx() method, maybe there's a field by this name
+                logger.debug("no method {} in {}", nm, clazz.getName());
                 return null;
 
             } catch (SecurityException e) {
@@ -407,9 +408,8 @@ public class ClassExtractors {
          * @param key item key within the map
          * @return a new extractor, or {@code null} if the class is not a Map
          *         subclass
-         * @throws ExtractorException
          */
-        private Pair<Extractor, Class<?>> getMapExtractor(Class<?> clazz, String key) throws ExtractorException {
+        private Pair<Extractor, Class<?>> getMapExtractor(Class<?> clazz, String key) {
 
             if (!Map.class.isAssignableFrom(clazz)) {
                 return null;
@@ -445,6 +445,7 @@ public class ClassExtractors {
 
             } catch (NoSuchFieldException expected) {
                 // no field by this name - try super class & interfaces
+                logger.debug("no field {} in {}", name, clazz.getName());
 
             } catch (SecurityException e) {
                 throw new ExtractorException("inaccessible field " + clazz + "." + name, e);

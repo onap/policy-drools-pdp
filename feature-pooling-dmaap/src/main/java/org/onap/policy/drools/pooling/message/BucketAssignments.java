@@ -37,9 +37,19 @@ public class BucketAssignments {
     private static final Logger logger = LoggerFactory.getLogger(BucketAssignments.class);
 
     /**
-     * Number of buckets.
+     * The number of bits in the maximum number of buckets.
      */
-    public static final int MAX_BUCKETS = 1024;
+    private static final int MAX_BUCKET_BITS = 10;
+
+    /**
+     * Maximum nNumber of buckets. Must be a power of two.
+     */
+    public static final int MAX_BUCKETS = 1 << MAX_BUCKET_BITS;
+
+    /**
+     * Used to ensure that a hash code is not negative.
+     */
+    private static final int MAX_BUCKETS_MASK = MAX_BUCKETS - 1;
 
     /**
      * Identifies the host serving a particular bucket.
@@ -55,8 +65,8 @@ public class BucketAssignments {
 
     /**
      * 
-     * @param hostArray maps a bucket number (i.e., array index) to a host. All
-     *        values must be non-null
+     * @param hostArray maps a bucket number (i.e., array index) to a host. All values
+     *        must be non-null
      */
     public BucketAssignments(String[] hostArray) {
         this.hostArray = hostArray;
@@ -97,8 +107,7 @@ public class BucketAssignments {
      * Determines if a host has an assignment.
      * 
      * @param host host to be checked
-     * @return {@code true} if the host has an assignment, {@code false}
-     *         otherwise
+     * @return {@code true} if the host has an assignment, {@code false} otherwise
      */
     @JsonIgnore
     public boolean hasAssignment(String host) {
@@ -139,23 +148,17 @@ public class BucketAssignments {
     /**
      * Gets the host assigned to a given bucket.
      * 
-     * @param bucket bucket number
-     * @return the assigned host, or {@code null} if the bucket has no assigned
-     *         host
+     * @param hashCode hash code of the item whose assignment is desired
+     * @return the assigned host, or {@code null} if the item has no assigned host
      */
     @JsonIgnore
-    public String getAssignedHost(int bucket) {
-        if (hostArray == null) {
+    public String getAssignedHost(int hashCode) {
+        if (hostArray == null || hostArray.length == 0) {
             logger.error("no buckets have been assigned");
             return null;
         }
 
-        if (bucket < 0 || bucket >= hostArray.length) {
-            logger.error("invalid bucket number {} maximum {}", bucket, hostArray.length);
-            return null;
-        }
-
-        return hostArray[bucket];
+        return hostArray[(hashCode & MAX_BUCKETS_MASK) % hostArray.length];
     }
 
     /**
@@ -169,8 +172,8 @@ public class BucketAssignments {
     }
 
     /**
-     * Checks the validity of the assignments, verifying that all buckets have
-     * been assigned to a host.
+     * Checks the validity of the assignments, verifying that all buckets have been
+     * assigned to a host.
      * 
      * @throws PoolingFeatureException if the assignments are invalid
      */
@@ -208,8 +211,6 @@ public class BucketAssignments {
         if (getClass() != obj.getClass())
             return false;
         BucketAssignments other = (BucketAssignments) obj;
-        if (!Arrays.equals(hostArray, other.hostArray))
-            return false;
-        return true;
+        return Arrays.equals(hostArray, other.hostArray);
     }
 }

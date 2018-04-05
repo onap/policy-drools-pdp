@@ -21,9 +21,9 @@
 package org.onap.policy.drools.pooling.state;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -40,9 +40,11 @@ import org.onap.policy.drools.pooling.PoolingProperties;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
+import org.onap.policy.drools.utils.Pair;
+import org.onap.policy.drools.utils.Triple;
 
 /**
- * Superclass used to test subclasses of {@link Message}.
+ * Superclass used to test subclasses of {@link State}.
  */
 public class BasicStateTester {
 
@@ -183,7 +185,7 @@ public class BasicStateTester {
         when(mgr.getAssignments()).thenAnswer(args -> asgn.get());
 
         doAnswer(args -> {
-            asgn.set(args.getArgumentAt(0, BucketAssignments.class));
+            asgn.set(args.getArgument(0));
             return null;
         }).when(mgr).startDistributing(any());
     }
@@ -199,8 +201,7 @@ public class BasicStateTester {
     }
 
     /**
-     * Captures the host array from the Leader message published to the admin
-     * channel.
+     * Captures the host array from the Leader message published to the admin channel.
      * 
      * @return the host array, as a list
      */
@@ -209,8 +210,7 @@ public class BasicStateTester {
     }
 
     /**
-     * Captures the host array from the Leader message published to the admin
-     * channel.
+     * Captures the host array from the Leader message published to the admin channel.
      * 
      * @return the host array
      */
@@ -224,8 +224,7 @@ public class BasicStateTester {
     }
 
     /**
-     * Captures the assignments from the Leader message published to the admin
-     * channel.
+     * Captures the assignments from the Leader message published to the admin channel.
      * 
      * @return the bucket assignments
      */
@@ -277,42 +276,6 @@ public class BasicStateTester {
      */
     protected <T extends Message> Pair<String, T> capturePublishedMessage(Class<T> clazz, int index) {
         Pair<String, Message> msg = published.get(index);
-        return new Pair<>(msg.first, clazz.cast(msg.second));
+        return new Pair<>(msg.first(), clazz.cast(msg.second()));
     }
-
-    /**
-     * Pair of values.
-     * 
-     * @param <F> first value's type
-     * @param <S> second value's type
-     */
-    public static class Pair<F, S> {
-        public final F first;
-        public final S second;
-
-        public Pair(F first, S second) {
-            this.first = first;
-            this.second = second;
-        }
-    }
-
-    /**
-     * Pair of values.
-     * 
-     * @param <F> first value's type
-     * @param <S> second value's type
-     * @param <T> third value's type
-     */
-    public static class Triple<F, S, T> {
-        public final F first;
-        public final S second;
-        public final T third;
-
-        public Triple(F first, S second, T third) {
-            this.first = first;
-            this.second = second;
-            this.third = third;
-        }
-    }
-
 }

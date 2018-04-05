@@ -48,19 +48,19 @@ public interface PoolingManager {
     public String getHost();
 
     /**
-     * Gets the name of the internal DMaaP topic used by this manager to
-     * communicate with its other hosts.
+     * Gets the name of the internal DMaaP topic used by this manager to communicate with
+     * its other hosts.
      * 
      * @return the name of the internal DMaaP topic
      */
     public String getTopic();
 
     /**
-     * Indicates that communication with internal DMaaP topic failed, typically
-     * due to a missed heart beat. Stops the PolicyController.
+     * Indicates that communication with internal DMaaP topic failed, typically due to a
+     * missed heart beat. Stops the PolicyController.
      * 
-     * @return a latch that can be used to determine when the controller's
-     *         stop() method has completed
+     * @return a latch that can be used to determine when the controller's stop() method
+     *         has completed
      */
     public CountDownLatch internalTopicFailed();
 
@@ -74,8 +74,8 @@ public interface PoolingManager {
     /**
      * Gets the current bucket assignments.
      * 
-     * @return the current bucket assignments, or {@code null} if no assignments
-     *         have been made
+     * @return the current bucket assignments, or {@code null} if no assignments have been
+     *         made
      */
     public BucketAssignments getAssignments();
 
@@ -95,8 +95,7 @@ public interface PoolingManager {
     public void publish(String channel, Message msg);
 
     /**
-     * Handles a {@link Forward} event that was received from the internal
-     * topic.
+     * Handles a {@link Forward} event that was received from the internal topic.
      * 
      * @param event
      */
@@ -109,7 +108,7 @@ public interface PoolingManager {
      * @param task
      * @return a future that can be used to cancel the timer
      */
-    public ScheduledFuture<?> schedule(long delayMs, StateTimerTask task);
+    public ScheduledFuture<Boolean> schedule(long delayMs, StateTimerTask task);
 
     /**
      * Schedules a timer to fire repeatedly.
@@ -119,7 +118,7 @@ public interface PoolingManager {
      * @param task
      * @return a future that can be used to cancel the timer
      */
-    public ScheduledFuture<?> scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);
+    public ScheduledFuture<Boolean> scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);
 
     /**
      * Transitions to the "start" state.

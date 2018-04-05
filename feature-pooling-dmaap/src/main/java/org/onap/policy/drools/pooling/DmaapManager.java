@@ -239,7 +239,7 @@ public class DmaapManager {
             topicSource.setFilter(filter);
 
         } catch (UnsupportedOperationException e) {
-            throw new PoolingFeatureException("cannot filter topic " + topic);
+            throw new PoolingFeatureException("cannot filter topic " + topic, e);
         }
     }
 

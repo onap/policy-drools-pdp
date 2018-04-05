@@ -24,13 +24,13 @@ import java.util.Arrays;
 import java.util.TreeSet;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.Heartbeat;
+import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Offline;
-import org.onap.policy.drools.pooling.message.Query;
 
 /**
- * The active state. In this state, this host has one more more bucket
- * assignments and processes any events associated with one of its buckets.
- * Other events are forwarded to appropriate target hosts.
+ * The active state. In this state, this host has one more more bucket assignments and
+ * processes any events associated with one of its buckets. Other events are forwarded to
+ * appropriate target hosts.
  */
 public class ActiveState extends ProcessingState {
 
@@ -50,8 +50,8 @@ public class ActiveState extends ProcessingState {
     private String predHost = "";
 
     /**
-     * {@code True} if we saw this host's heart beat since the last check,
-     * {@code false} otherwise.
+     * {@code True} if we saw this host's heart beat since the last check, {@code false}
+     * otherwise.
      */
     private boolean myHeartbeatSeen = false;
 
@@ -74,14 +74,13 @@ public class ActiveState extends ProcessingState {
     }
 
     /**
-     * Determine this host's neighbors based on the order of the host UUIDs.
-     * Updates {@link #succHost} and {@link #predHost}.
+     * Determine this host's neighbors based on the order of the host UUIDs. Updates
+     * {@link #succHost} and {@link #predHost}.
      */
     private void detmNeighbors() {
         if (assigned.size() < 2) {
             /*
-             * this host is the only one with any assignments - it has no
-             * neighbors
+             * this host is the only one with any assignments - it has no neighbors
              */
             succHost = null;
             predHost = "";
@@ -115,7 +114,7 @@ public class ActiveState extends ProcessingState {
          */
         long genMs = getProperties().getActiveHeartbeatMs();
 
-        scheduleWithFixedDelay(genMs, genMs, xxx -> {
+        scheduleWithFixedDelay(genMs, genMs, () -> {
             genHeartbeat();
             return null;
         });
@@ -125,7 +124,7 @@ public class ActiveState extends ProcessingState {
          */
         long interMs = getProperties().getInterHeartbeatMs();
 
-        scheduleWithFixedDelay(interMs, interMs, xxx -> {
+        scheduleWithFixedDelay(interMs, interMs, () -> {
             if (myHeartbeatSeen) {
                 myHeartbeatSeen = false;
                 return null;
@@ -141,7 +140,7 @@ public class ActiveState extends ProcessingState {
          */
         if (!predHost.isEmpty()) {
 
-            scheduleWithFixedDelay(interMs, interMs, xxx -> {
+            scheduleWithFixedDelay(interMs, interMs, () -> {
                 if (predHeartbeatSeen) {
                     predHeartbeatSeen = false;
                     return null;
@@ -186,6 +185,20 @@ public class ActiveState extends ProcessingState {
     }
 
     @Override
+    public State process(Leader msg) {
+        if (!isValid(msg)) {
+            return null;
+        }
+
+        if (getHost().compareTo(msg.getSource()) < 0) {
+            // our host would be a better leader - find out what's up
+            return goQuery();
+        }
+
+        return goActive(msg.getAssignments());
+    }
+
+    @Override
     public State process(Offline msg) {
         String src = msg.getSource();
 
@@ -194,8 +207,7 @@ public class ActiveState extends ProcessingState {
 
         } else if (!assigned.contains(src)) {
             /*
-             * the offline host wasn't assigned any buckets, so just ignore the
-             * message
+             * the offline host wasn't assigned any buckets, so just ignore the message
              */
             return null;
 
@@ -203,11 +215,11 @@ public class ActiveState extends ProcessingState {
             /*
              * Case 1: We are the leader.
              * 
-             * Case 2: Our predecessor was the leader and it has gone offline -
-             * we should become the leader.
+             * Case 2: Our predecessor was the leader and it has gone offline - we should
+             * become the leader.
              * 
-             * In either case, we are now the leader and we must re-balance the
-             * buckets since one of the hosts has gone offline.
+             * In either case, we are now the leader and we must re-balance the buckets
+             * since one of the hosts has gone offline.
              */
 
             assigned.remove(src);
@@ -216,24 +228,11 @@ public class ActiveState extends ProcessingState {
 
         } else {
             /*
-             * Otherwise, we don't care right now - we'll wait for the leader to
-             * tell us it's been removed.
+             * Otherwise, we don't care right now - we'll wait for the leader to tell us
+             * it's been removed.
              */
             return null;
         }
-    }
-
-    /**
-     * Transitions to the query state.
-     */
-    @Override
-    public State process(Query msg) {
-        State next = super.process(msg);
-        if (next != null) {
-            return next;
-        }
-
-        return goQuery();
     }
 
     protected String getSuccHost() {

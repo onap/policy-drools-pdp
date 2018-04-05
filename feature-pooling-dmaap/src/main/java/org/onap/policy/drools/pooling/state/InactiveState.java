@@ -41,7 +41,7 @@ public class InactiveState extends State {
 
         super.start();
 
-        schedule(getProperties().getReactivateMs(), xxx -> goStart());
+        schedule(getProperties().getReactivateMs(), () -> goStart());
     }
 
     /**

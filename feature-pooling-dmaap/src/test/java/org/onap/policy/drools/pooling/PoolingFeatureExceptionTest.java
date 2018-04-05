@@ -31,12 +31,4 @@ public class PoolingFeatureExceptionTest extends ExceptionsTester {
         assertEquals(5, test(PoolingFeatureException.class));
     }
 
-    @Test
-    public void testToRuntimeException() {
-        PoolingFeatureException plainExc = new PoolingFeatureException("hello");
-        PoolingFeatureRtException runtimeExc = plainExc.toRuntimeException();
-        
-        assertTrue(plainExc == runtimeExc.getCause());
-    }
-
 }

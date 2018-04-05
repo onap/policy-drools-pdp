@@ -36,13 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Controller/session pooling. Multiple hosts may be launched, all servicing the
- * same controllers/sessions. When this feature is enabled, the requests are
- * divided across the different hosts, instead of all running on a single,
- * active host.
+ * Controller/session pooling. Multiple hosts may be launched, all servicing the same
+ * controllers/sessions. When this feature is enabled, the requests are divided across the
+ * different hosts, instead of all running on a single, active host.
  * <p>
- * With each controller, there is an associated DMaaP topic that is used for
- * internal communication between the different hosts serving the controller.
+ * With each controller, there is an associated DMaaP topic that is used for internal
+ * communication between the different hosts serving the controller.
  */
 public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControllerFeatureAPI, PolicySessionFeatureAPI {
 
@@ -56,8 +55,7 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
     private static Factory factory;
 
     /**
-     * Entire set of feature properties, including those specific to various
-     * controllers.
+     * Entire set of feature properties, including those specific to various controllers.
      */
     private Properties featProps = null;
 
@@ -67,9 +65,9 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
     private ConcurrentHashMap<String, PoolingManagerImpl> ctlr2pool = new ConcurrentHashMap<>(107);
 
     /**
-     * Arguments passed to beforeOffer(), which are saved for when the
-     * beforeInsert() is called later. As multiple threads can be active within
-     * the methods at the same time, we must keep this in thread local storage.
+     * Arguments passed to beforeOffer(), which are saved for when the beforeInsert() is
+     * called later. As multiple threads can be active within the methods at the same
+     * time, we must keep this in thread local storage.
      */
     private ThreadLocal<OfferArgs> offerArgs = new ThreadLocal<>();
 
@@ -99,8 +97,7 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
     }
 
     /**
-     * @throws PoolingFeatureRtException if the properties cannot be read or are
-     *         invalid
+     * @throws PoolingFeatureRtException if the properties cannot be read or are invalid
      */
     @Override
     public void globalInit(String[] args, String configDir) {
@@ -205,8 +202,8 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
     @Override
     public boolean beforeOffer(PolicyController controller, CommInfrastructure protocol, String topic2, String event) {
         /*
-         * As this is invoked a lot, we'll directly call the manager's method
-         * instead of using the functional interface via doManager().
+         * As this is invoked a lot, we'll directly call the manager's method instead of
+         * using the functional interface via doManager().
          */
         PoolingManagerImpl mgr = ctlr2pool.get(controller.getName());
         if (mgr == null) {
@@ -234,16 +231,21 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
             controller = factory.getController(droolsController);
 
         } catch (IllegalArgumentException | IllegalStateException e) {
+            logger.warn("cannot get controller for {} {}", droolsController.getGroupId(),
+                            droolsController.getArtifactId(), e);
             return false;
         }
+        
 
         if (controller == null) {
+            logger.warn("cannot determine controller for {} {}", droolsController.getGroupId(),
+                            droolsController.getArtifactId());
             return false;
         }
 
         /*
-         * As this is invoked a lot, we'll directly call the manager's method
-         * instead of using the functional interface via doManager().
+         * As this is invoked a lot, we'll directly call the manager's method instead of
+         * using the functional interface via doManager().
          */
         PoolingManagerImpl mgr = ctlr2pool.get(controller.getName());
         if (mgr == null) {
@@ -264,14 +266,12 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
     }
 
     /**
-     * Executes a function using the manager associated with the controller.
-     * Catches any exceptions from the function and re-throws it as a runtime
-     * exception.
+     * Executes a function using the manager associated with the controller. Catches any
+     * exceptions from the function and re-throws it as a runtime exception.
      * 
      * @param controller
      * @param func function to be executed
-     * @return {@code true} if the function handled the request, {@code false}
-     *         otherwise
+     * @return {@code true} if the function handled the request, {@code false} otherwise
      * @throws PoolingFeatureRtException if an error occurs
      */
     private boolean doManager(PolicyController controller, MgrFunc func) {
@@ -284,19 +284,18 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
             return func.apply(mgr);
 
         } catch (PoolingFeatureException e) {
-            throw e.toRuntimeException();
+            throw new PoolingFeatureRtException(e);
         }
     }
 
     /**
-     * Executes a function using the manager associated with the controller and
-     * then deletes the manager. Catches any exceptions from the function and
-     * re-throws it as a runtime exception.
+     * Executes a function using the manager associated with the controller and then
+     * deletes the manager. Catches any exceptions from the function and re-throws it as a
+     * runtime exception.
      * 
      * @param controller
      * @param func function to be executed
-     * @return {@code true} if the function handled the request, {@code false}
-     *         otherwise
+     * @return {@code true} if the function handled the request, {@code false} otherwise
      * @throws PoolingFeatureRtException if an error occurs
      */
     private boolean doDeleteManager(PolicyController controller, Function<PoolingManagerImpl, Boolean> func) {
@@ -321,8 +320,8 @@ public class PoolingFeature implements PolicyControllerFeatureAPI, DroolsControl
         /**
          * 
          * @param mgr
-         * @return {@code true} if the request was handled by the manager,
-         *         {@code false} otherwise
+         * @return {@code true} if the request was handled by the manager, {@code false}
+         *         otherwise
          * @throws PoolingFeatureException
          */
         public boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
