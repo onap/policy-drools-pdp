@@ -21,11 +21,6 @@
 package org.onap.policy.drools.pooling.state;
 
 import org.onap.policy.drools.pooling.PoolingManager;
-import org.onap.policy.drools.pooling.message.Heartbeat;
-import org.onap.policy.drools.pooling.message.Identification;
-import org.onap.policy.drools.pooling.message.Leader;
-import org.onap.policy.drools.pooling.message.Offline;
-import org.onap.policy.drools.pooling.message.Query;
 
 /**
  * Idle state, used when offline.
@@ -39,47 +34,6 @@ public class IdleState extends State {
     @Override
     public void stop() {
         // do nothing - don't even send of "offline" message
-    }
-
-    /**
-     * Discards the message.
-     */
-    @Override
-    public State process(Heartbeat msg) {
-        return null;
-    }
-
-    /**
-     * Discards the message.
-     */
-    @Override
-    public State process(Identification msg) {
-        return null;
-    }
-
-    /**
-     * Copies the assignments, but doesn't change states.
-     */
-    @Override
-    public State process(Leader msg) {
-        super.process(msg);
-        return null;
-    }
-
-    /**
-     * Discards the message.
-     */
-    @Override
-    public State process(Offline msg) {
-        return null;
-    }
-
-    /**
-     * Discards the message.
-     */
-    @Override
-    public State process(Query msg) {
-        return null;
     }
 
 }
