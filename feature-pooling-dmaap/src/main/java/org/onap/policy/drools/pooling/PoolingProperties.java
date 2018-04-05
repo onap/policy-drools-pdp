@@ -30,6 +30,11 @@ import org.onap.policy.common.utils.properties.exception.PropertyException;
 public class PoolingProperties extends SpecPropertyConfiguration {
 
     /**
+     * The feature name, used to retrieve properties.
+     */
+    public static final String FEATURE_NAME = "feature-pooling-dmaap";
+
+    /**
      * Feature properties all begin with this prefix.
      */
     public static final String PREFIX = "pooling.";
@@ -51,6 +56,17 @@ public class PoolingProperties extends SpecPropertyConfiguration {
     public static final String IDENTIFICATION_MS = PREFIX + "{?.}identification.milliseconds";
     public static final String ACTIVE_HEARTBEAT_MS = PREFIX + "{?.}active.heartbeat.milliseconds";
     public static final String INTER_HEARTBEAT_MS = PREFIX + "{?.}inter.heartbeat.milliseconds";
+    public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "{?.}offline.publish.wait.milliseconds";
+
+    /**
+     * Type of item that the extractors will be extracting.
+     */
+    public static final String EXTRACTOR_TYPE = "requestId";
+
+    /**
+     * Prefix for extractor properties.
+     */
+    public static final String PROP_EXTRACTOR_PREFIX = "extractor." + EXTRACTOR_TYPE;
 
     /**
      * Properties from which this was constructed.
@@ -113,6 +129,13 @@ public class PoolingProperties extends SpecPropertyConfiguration {
     private long interHeartbeatMs;
 
     /**
+     * Time, in milliseconds, to wait for an "Offline" message to be published
+     * to DMaaP.
+     */
+    @Property(name = OFFLINE_PUB_WAIT_MS, defaultValue = "3000")
+    private long offlinePubWaitMs;
+
+    /**
      * @param controllerName the name of the controller
      * @param props set of properties used to configure this
      * @throws PropertyException if an error occurs
@@ -158,5 +181,9 @@ public class PoolingProperties extends SpecPropertyConfiguration {
 
     public long getInterHeartbeatMs() {
         return interHeartbeatMs;
+    }
+
+    public long getOfflinePubWaitMs() {
+        return offlinePubWaitMs;
     }
 }
