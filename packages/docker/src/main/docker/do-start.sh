@@ -23,6 +23,14 @@ else
 		find -L ${POLICY_HOME}/config -type l -exec rm -- {} +
 	fi
 
+	apps=$(ls config/apps*.zip 2> /dev/null)
+
+	echo "Applications found: ${apps}"
+
+	if [[ -n ${apps} ]]; then
+	    unzip -o ${apps}
+	fi
+
 	echo "docker install at ${PWD}"
 
 	./docker-install.sh

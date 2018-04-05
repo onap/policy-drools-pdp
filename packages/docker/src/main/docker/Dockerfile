@@ -42,13 +42,12 @@ RUN mkdir -p ${POLICY_HOME}/config ${POLICY_LOGS} ${POLICY_INSTALL}/config && \
 
 WORKDIR ${POLICY_INSTALL}
 
-COPY install-drools.zip apps-controlloop.zip docker-install.sh do-start.sh wait-for-port.sh ./
+COPY install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
 
 VOLUME [ "${POLICY_INSTALL}/config", "${POLICY_HOME}/config" ]
 
 RUN unzip -o install-drools.zip && \
-    unzip -o apps-controlloop.zip && \
-    rm install-drools.zip apps-controlloop.zip && \
+    rm install-drools.zip && \
     chown -R policy:policy * && \
     chmod +x *.sh
 
