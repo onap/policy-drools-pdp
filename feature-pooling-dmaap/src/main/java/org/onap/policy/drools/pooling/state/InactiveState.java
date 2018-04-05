@@ -21,12 +21,18 @@
 package org.onap.policy.drools.pooling.state;
 
 import org.onap.policy.drools.pooling.PoolingManager;
+import org.onap.policy.drools.pooling.message.Leader;
+import org.onap.policy.drools.pooling.message.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The inactive state. In this state, we just wait a bit and then try to
- * re-activate. In the meantime, all messages are ignored.
+ * The inactive state. In this state, we just wait a bit and then try to re-activate. In
+ * the meantime, all messages are ignored.
  */
 public class InactiveState extends State {
+
+    private static final Logger logger = LoggerFactory.getLogger(InactiveState.class);
 
     /**
      * 
@@ -41,11 +47,36 @@ public class InactiveState extends State {
 
         super.start();
 
-        schedule(getProperties().getReactivateMs(), xxx -> goStart());
+        schedule(getProperties().getReactivateMs(), () -> goStart());
+    }
+
+    @Override
+    public State process(Leader msg) {
+        if(isValid(msg)) {
+            logger.info("received Leader message from {} on topic {}", msg.getSource(), getTopic());
+            startDistributing(msg.getAssignments());
+            
+            if(msg.getAssignments().hasAssignment(getHost())) {
+                logger.info("received Leader message on topic {}", getTopic());
+                return goActive();
+            }
+        }
+        
+        return null;
     }
 
     /**
-     * Remains in this state.
+     * Generates an Identification message and goes to the query state.
+     */
+    @Override
+    public State process(Query msg) {
+        logger.info("received Query message on topic {}", getTopic());
+        publish(makeIdentification());
+        return goQuery();
+    }
+
+    /**
+     * Remains in this state, without resetting any timers.
      */
     @Override
     protected State goInactive() {

@@ -18,9 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.pooling;
-
-// TODO move to policy-utils
+package org.onap.policy.drools.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

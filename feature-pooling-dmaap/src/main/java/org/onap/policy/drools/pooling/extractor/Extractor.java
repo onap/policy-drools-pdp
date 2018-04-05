@@ -23,6 +23,7 @@ package org.onap.policy.drools.pooling.extractor;
 /**
  * Used to extract an object contained within another object.
  */
+@FunctionalInterface
 public interface Extractor {
 
     /**
