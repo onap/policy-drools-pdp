@@ -53,7 +53,7 @@ public class MapExtractor implements Extractor {
             return map.get(key);
 
         } else {
-            logger.warn("expecting a map, instead of " + object.getClass());
+            logger.warn("expecting a map, instead of {}", object.getClass());
             return null;
         }
     }
