@@ -140,10 +140,10 @@ public class ProcessingState extends State {
      * @return the new state
      */
     protected State becomeLeader(SortedSet<String> alive) {
-        String leader = getHost();
+        String newLeader = getHost();
 
-        if (!leader.equals(alive.first())) {
-            throw new IllegalArgumentException(leader + " cannot replace " + alive.first());
+        if (!newLeader.equals(alive.first())) {
+            throw new IllegalArgumentException(newLeader + " cannot replace " + alive.first());
         }
 
         Leader msg = makeLeader(alive);
@@ -251,7 +251,7 @@ public class ProcessingState extends State {
      * @param host2data maps a host name to its {@link HostBucket}
      */
     private void addIndicesToHostBuckets(String[] bucket2host, Map<String, HostBucket> host2data) {
-        LinkedList<Integer> nullBuckets = new LinkedList<Integer>();
+        LinkedList<Integer> nullBuckets = new LinkedList<>();
 
         for (int x = 0; x < bucket2host.length; ++x) {
             String host = bucket2host[x];
@@ -358,7 +358,7 @@ public class ProcessingState extends State {
         /**
          * Buckets that have been assigned to this host.
          */
-        private Queue<Integer> buckets = new LinkedList<>();
+        private LinkedList<Integer> buckets = new LinkedList<>();
 
         /**
          * 
@@ -405,6 +405,37 @@ public class ProcessingState extends State {
                 d = host.compareTo(other.host);
             }
             return d;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((buckets == null) ? 0 : buckets.hashCode());
+            result = prime * result + ((host == null) ? 0 : host.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            HostBucket other = (HostBucket) obj;
+            if (buckets == null) {
+                if (other.buckets != null)
+                    return false;
+            } else if (!buckets.equals(other.buckets))
+                return false;
+            if (host == null) {
+                if (other.host != null)
+                    return false;
+            } else if (!host.equals(other.host))
+                return false;
+            return true;
         }
     }
 }

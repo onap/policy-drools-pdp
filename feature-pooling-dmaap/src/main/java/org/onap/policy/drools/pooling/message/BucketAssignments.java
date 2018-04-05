@@ -55,8 +55,8 @@ public class BucketAssignments {
 
     /**
      * 
-     * @param hostArray maps a bucket number (i.e., array index) to a host. All
-     *        values must be non-null
+     * @param hostArray maps a bucket number (i.e., array index) to a host. All values
+     *        must be non-null
      */
     public BucketAssignments(String[] hostArray) {
         this.hostArray = hostArray;
@@ -97,8 +97,7 @@ public class BucketAssignments {
      * Determines if a host has an assignment.
      * 
      * @param host host to be checked
-     * @return {@code true} if the host has an assignment, {@code false}
-     *         otherwise
+     * @return {@code true} if the host has an assignment, {@code false} otherwise
      */
     @JsonIgnore
     public boolean hasAssignment(String host) {
@@ -140,8 +139,7 @@ public class BucketAssignments {
      * Gets the host assigned to a given bucket.
      * 
      * @param bucket bucket number
-     * @return the assigned host, or {@code null} if the bucket has no assigned
-     *         host
+     * @return the assigned host, or {@code null} if the bucket has no assigned host
      */
     @JsonIgnore
     public String getAssignedHost(int bucket) {
@@ -169,8 +167,8 @@ public class BucketAssignments {
     }
 
     /**
-     * Checks the validity of the assignments, verifying that all buckets have
-     * been assigned to a host.
+     * Checks the validity of the assignments, verifying that all buckets have been
+     * assigned to a host.
      * 
      * @throws PoolingFeatureException if the assignments are invalid
      */
@@ -208,8 +206,6 @@ public class BucketAssignments {
         if (getClass() != obj.getClass())
             return false;
         BucketAssignments other = (BucketAssignments) obj;
-        if (!Arrays.equals(hostArray, other.hostArray))
-            return false;
-        return true;
+        return Arrays.equals(hostArray, other.hostArray);
     }
 }
