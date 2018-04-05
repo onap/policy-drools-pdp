@@ -146,6 +146,7 @@ public class Forward extends Message {
 
     }
 
+    @Override
     @JsonIgnore
     public void checkValidity() throws PoolingFeatureException {
 

@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.pooling;
+package org.onap.policy.drools.util;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +26,7 @@ import static org.onap.policy.common.utils.properties.SpecPropertyConfiguration.
 import static org.onap.policy.common.utils.properties.SpecPropertyConfiguration.specialize;
 import java.util.Properties;
 import org.junit.Test;
+import org.onap.policy.drools.util.FeatureEnabledChecker;
 
 public class FeatureEnabledCheckerTest {
 
@@ -46,6 +47,16 @@ public class FeatureEnabledCheckerTest {
         assertFalse(check(false, null));
         assertTrue(check(false, true));
         assertFalse(check(false, false));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_ArgEx() {
+        
+        // check case where there's an exception in the property
+        Properties props = new Properties();
+        props.setProperty(generalize(PROP_NAME), "invalid-boolean");
+        
+        assertFalse(FeatureEnabledChecker.isFeatureEnabled(props, SPEC, PROP_NAME));        
     }
 
     /**
