@@ -26,7 +26,9 @@ import static org.onap.policy.drools.core.lock.LockRequestFuture.makeNullArgExce
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.Callback;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +42,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     /**
      * Used to access various objects.
      */
-    public static Factory factory = new Factory();
+    private static Factory factory = new Factory();
 
     /**
      * Used by junit tests.
@@ -105,17 +107,16 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             throw makeNullArgException(MSG_NULL_OWNER);
         }
 
-        Boolean result = doIntercept(null, impl -> impl.beforeUnlock(resourceId, owner));
-        if (result != null) {
-            return result;
-        }
 
-        // implementer didn't do the work - use superclass
-        boolean unlocked = super.unlock(resourceId, owner);
+        return doBoolIntercept(impl -> impl.beforeUnlock(resourceId, owner), () -> {
 
-        doIntercept(false, impl -> impl.afterUnlock(resourceId, owner, unlocked));
+            // implementer didn't do the work - defer to the superclass
+            boolean unlocked = super.unlock(resourceId, owner);
 
-        return unlocked;
+            doIntercept(false, impl -> impl.afterUnlock(resourceId, owner, unlocked));
+
+            return unlocked;
+        });
     }
 
     /**
@@ -128,12 +129,12 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             throw makeNullArgException(MSG_NULL_RESOURCE_ID);
         }
 
-        Boolean result = doIntercept(null, impl -> impl.beforeIsLocked(resourceId));
-        if (result != null) {
-            return result;
-        }
 
-        return super.isLocked(resourceId);
+        return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () -> {
+
+            // implementer didn't do the work - defer to the superclass
+            return super.isLocked(resourceId);
+        });
     }
 
     /**
@@ -150,12 +151,31 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             throw makeNullArgException(MSG_NULL_OWNER);
         }
 
-        Boolean result = doIntercept(null, impl -> impl.beforeIsLockedBy(resourceId, owner));
-        if (result != null) {
-            return result;
+        return doBoolIntercept(impl -> impl.beforeIsLockedBy(resourceId, owner), () -> {
+
+            // implementer didn't do the work - defer to the superclass
+            return super.isLockedBy(resourceId, owner);
+        });
+    }
+
+    /**
+     * Applies a function to each implementer of the lock feature. Returns as soon as one
+     * of them returns a result other than <b>OPER_UNHANDLED</b>. If they all return
+     * <b>OPER_UNHANDLED</b>, then it returns the result of applying the default function.
+     * 
+     * @param interceptFunc
+     * @param defaultFunc
+     * @return {@code true} if success, {@code false} otherwise
+     */
+    private boolean doBoolIntercept(Function<PolicyResourceLockFeatureAPI, OperResult> interceptFunc,
+                    Supplier<Boolean> defaultFunc) {
+
+        OperResult result = doIntercept(OperResult.OPER_UNHANDLED, interceptFunc);
+        if (result != OperResult.OPER_UNHANDLED) {
+            return (result == OperResult.OPER_ACCEPTED);
         }
 
-        return super.isLockedBy(resourceId, owner);
+        return defaultFunc.get();
     }
 
     /**
@@ -168,7 +188,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * @return first non-null value returned by an implementer, <i>continueValue<i/> if
      *         they all returned <i>continueValue<i/>
      */
-    public static <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureAPI, T> func) {
+    private static <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureAPI, T> func) {
 
         for (PolicyResourceLockFeatureAPI impl : factory.getImplementers()) {
             try {
@@ -189,6 +209,14 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * Initialization-on-demand holder idiom.
      */
     private static class Singleton {
+
+        /**
+         * Not invoked.
+         */
+        private Singleton() {
+            super();
+        }
+
         private static final PolicyResourceLockManager instance = new PolicyResourceLockManager();
     }
 

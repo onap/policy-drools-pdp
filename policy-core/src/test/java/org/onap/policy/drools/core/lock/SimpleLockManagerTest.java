@@ -98,10 +98,10 @@ public class SimpleLockManagerTest {
     @Test
     public void testLock_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, xxx -> mgr.lock(null, OWNER1, null));
+                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, null));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.lock(RESOURCE_A, null, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, null));
         assertEquals(NULL_OWNER, ex.getMessage());
 
         // this should not throw an exception
@@ -118,10 +118,10 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testUnlock_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, xxx -> mgr.unlock(null, OWNER1));
+        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(null, OWNER1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.unlock(RESOURCE_A, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(RESOURCE_A, null));
         assertEquals(NULL_OWNER, ex.getMessage());
     }
 
@@ -156,7 +156,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testIsLocked_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, xxx -> mgr.isLocked(null));
+        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.isLocked(null));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
     }
 
@@ -181,10 +181,10 @@ public class SimpleLockManagerTest {
     @Test
     public void testIsLockedBy_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, xxx -> mgr.isLockedBy(null, OWNER1));
+                        expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(null, OWNER1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.isLockedBy(RESOURCE_A, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(RESOURCE_A, null));
         assertEquals(NULL_OWNER, ex.getMessage());
     }
 
@@ -221,34 +221,31 @@ public class SimpleLockManagerTest {
         for (int x = 0; x < nthreads; ++x) {
             String owner = "owner." + x;
 
-            Thread t = new Thread() {
-                @Override
-                public void run() {
+            Thread t = new Thread(() -> {
 
-                    for (int y = 0; y < nlocks; ++y) {
-                        String res = resources[y % resources.length];
+                for (int y = 0; y < nlocks; ++y) {
+                    String res = resources[y % resources.length];
 
-                        try {
-                            // some locks will be acquired, some denied
-                            mgr.lock(res, owner, null).get();
+                    try {
+                        // some locks will be acquired, some denied
+                        mgr.lock(res, owner, null).get();
 
-                            // do some "work"
-                            stopper.await(1L, TimeUnit.MILLISECONDS);
+                        // do some "work"
+                        stopper.await(1L, TimeUnit.MILLISECONDS);
 
-                            mgr.unlock(res, owner);
+                        mgr.unlock(res, owner);
 
-                        } catch (CancellationException | ExecutionException e) {
-                            nfail.incrementAndGet();
+                    } catch (CancellationException | ExecutionException e) {
+                        nfail.incrementAndGet();
 
-                        } catch (InterruptedException expected) {
-                            Thread.currentThread().interrupt();
-                            break;
-                        }
+                    } catch (InterruptedException expected) {
+                        Thread.currentThread().interrupt();
+                        break;
                     }
-
-                    completed.countDown();
                 }
-            };
+
+                completed.countDown();
+            });
 
             t.setDaemon(true);
             threads.add(t);

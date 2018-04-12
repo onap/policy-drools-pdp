@@ -20,10 +20,12 @@
 
 package org.onap.policy.drools.core.lock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 
 public class PolicyResourceLockFeatureAPITest {
 
@@ -55,7 +57,7 @@ public class PolicyResourceLockFeatureAPITest {
 
     @Test
     public void testBeforeUnlock() {
-        assertNull(api.beforeUnlock(RESOURCE_ID, OWNER));
+        assertEquals(OperResult.OPER_UNHANDLED, api.beforeUnlock(RESOURCE_ID, OWNER));
     }
 
     @Test
@@ -66,11 +68,11 @@ public class PolicyResourceLockFeatureAPITest {
 
     @Test
     public void testBeforeIsLocked() {
-        assertNull(api.beforeIsLocked(RESOURCE_ID));
+        assertEquals(OperResult.OPER_UNHANDLED, api.beforeIsLocked(RESOURCE_ID));
     }
 
     @Test
     public void testBeforeIsLockedBy() {
-        assertNull(api.beforeIsLockedBy(RESOURCE_ID, OWNER));
+        assertEquals(OperResult.OPER_UNHANDLED, api.beforeIsLockedBy(RESOURCE_ID, OWNER));
     }
 }

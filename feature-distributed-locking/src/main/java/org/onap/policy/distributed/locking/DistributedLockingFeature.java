@@ -86,24 +86,24 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	}
 
 	@Override
-	public Boolean beforeUnlock(String resourceId, String owner) {
+	public OperResult beforeUnlock(String resourceId, String owner) {
 		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps);
 		
-		return tLock.unlock();
+		return(tLock.unlock() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
 	}
 	
 	@Override
-	public Boolean beforeIsLockedBy(String resourceId, String owner) {
+	public OperResult beforeIsLockedBy(String resourceId, String owner) {
 		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps);
-		
-		return tLock.isActive();
+
+        return(tLock.isActive() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
 	}
 	
 	@Override
-	public Boolean beforeIsLocked(String resourceId) {
+	public OperResult beforeIsLocked(String resourceId) {
 		TargetLock tLock = new TargetLock(resourceId, uuid, "dummyOwner", lockProps);
-		
-		return tLock.isLocked();
+
+        return(tLock.isLocked() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
 	}
 	
 	@Override
