@@ -46,9 +46,9 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
                     new OrderedServiceImpl<>(PolicyResourceLockFeatureAPI.class);
 
     /**
-     * Callback that an implementer invokes when a lock is acquired (or denied),
-     * asynchronously. The implementer invokes the method to indicate that the lock was
-     * acquired (or denied).
+     * Callback that an implementer invokes, asynchronously, when a lock is acquired (or
+     * denied). The implementer invokes the method to indicate that the lock was acquired
+     * (or denied).
      */
     @FunctionalInterface
     public static interface Callback {
@@ -59,6 +59,31 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
          *        was denied
          */
         public void set(boolean locked);
+    }
+
+    /**
+     * Result of a requested operation.
+     */
+    public static enum OperResult {
+
+        /**
+         * The implementer accepted the request; no additional locking logic should be
+         * performed.
+         */
+        OPER_ACCEPTED,
+
+        /**
+         * The implementer denied the request; no additional locking logic should be
+         * performed.
+         */
+        OPER_DENIED,
+
+
+        /**
+         * The implementer did not handle the request; additional locking logic <i>should
+         * be<i> performed.
+         */
+        OPER_UNHANDLED
     }
 
     /**
@@ -112,21 +137,11 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
      * 
      * @param resourceId
      * @param owner
-     *        <dt>true</dt>
-     *        <dd>the implementer handled the request and found the resource to be locked
-     *        by the given owner; the resource was unlocked and no additional locking
-     *        logic should be performed</dd>
-     *        <dt>false</dt>
-     *        <dd>the implementer handled the request and found the resource was not
-     *        locked by given the owner; no additional locking logic should be
-     *        performed</dd>
-     *        <dt>null</dt>
-     *        <dd>the implementer did not handle the request; additional locking logic
-     *        <i>should be</i> performed
-     *        </dl>
+     * @return the result, where <b>OPER_DENIED</b> indicates that the lock is not
+     *         currently held by the given owner
      */
-    public default Boolean beforeUnlock(String resourceId, String owner) {
-        return null;
+    public default OperResult beforeUnlock(String resourceId, String owner) {
+        return OperResult.OPER_UNHANDLED;
     }
 
     /**
@@ -147,21 +162,11 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
      * This method is called before a check is made to determine if a resource is locked.
      * 
      * @param resourceId
-     * @return
-     *         <dl>
-     *         <dt>true</dt>
-     *         <dd>the implementer handled the request and found the resource to be
-     *         locked; no additional locking logic should be performed</dd>
-     *         <dt>false</dt>
-     *         <dd>the implementer handled the request and found the resource was not
-     *         locked; no additional locking logic should be performed</dd>
-     *         <dt>null</dt>
-     *         <dd>the implementer did not handle the request; additional locking logic
-     *         <i>should be</i> performed
-     *         </dl>
+     * @return the result, where <b>OPER_ACCEPTED</b> indicates that the resource is
+     *         locked, while <b>OPER_DENIED</b> indicates that it is not
      */
-    public default Boolean beforeIsLocked(String resourceId) {
-        return null;
+    public default OperResult beforeIsLocked(String resourceId) {
+        return OperResult.OPER_UNHANDLED;
     }
 
     /**
@@ -170,21 +175,11 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
      * 
      * @param resourceId
      * @param owner
-     * @return
-     *         <dl>
-     *         <dt>true</dt>
-     *         <dd>the implementer handled the request and found the resource to be locked
-     *         by the given owner; no additional locking logic should be performed</dd>
-     *         <dt>false</dt>
-     *         <dd>the implementer handled the request and found the resource was not
-     *         locked by given the owner; no additional locking logic should be
-     *         performed</dd>
-     *         <dt>null</dt>
-     *         <dd>the implementer did not handle the request; additional locking logic
-     *         <i>should be</i> performed
-     *         </dl>
+     * @return the result, where <b>OPER_ACCEPTED</b> indicates that the resource is
+     *         locked by the given owner, while <b>OPER_DENIED</b> indicates that it is
+     *         not
      */
-    public default Boolean beforeIsLockedBy(String resourceId, String owner) {
-        return null;
+    public default OperResult beforeIsLockedBy(String resourceId, String owner) {
+        return OperResult.OPER_UNHANDLED;
     }
 }

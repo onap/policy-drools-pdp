@@ -98,10 +98,10 @@ public class SimpleLockManagerTest {
     @Test
     public void testLock_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, xxx -> mgr.lock(null, OWNER1, null));
+                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, null));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.lock(RESOURCE_A, null, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, null));
         assertEquals(NULL_OWNER, ex.getMessage());
 
         // this should not throw an exception
@@ -118,10 +118,10 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testUnlock_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, xxx -> mgr.unlock(null, OWNER1));
+        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(null, OWNER1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.unlock(RESOURCE_A, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(RESOURCE_A, null));
         assertEquals(NULL_OWNER, ex.getMessage());
     }
 
@@ -156,7 +156,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testIsLocked_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, xxx -> mgr.isLocked(null));
+        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.isLocked(null));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
     }
 
@@ -181,10 +181,10 @@ public class SimpleLockManagerTest {
     @Test
     public void testIsLockedBy_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, xxx -> mgr.isLockedBy(null, OWNER1));
+                        expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(null, OWNER1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.isLockedBy(RESOURCE_A, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(RESOURCE_A, null));
         assertEquals(NULL_OWNER, ex.getMessage());
     }
 

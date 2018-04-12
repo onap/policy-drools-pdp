@@ -31,7 +31,7 @@ public class TestUtils {
      */
     public static <T> T expectException(Class<T> clazz, VoidFunction func) {
         try {
-            func.apply(null);
+            func.apply();
             throw new AssertionError("missing exception");
 
         } catch (Exception e) {
@@ -50,10 +50,6 @@ public class TestUtils {
     @FunctionalInterface
     public static interface VoidFunction {
 
-        /**
-         * 
-         * @param arg always {@code null}
-         */
-        public void apply(Void arg) throws Exception;
+        public void apply() throws Exception;
     }
 }

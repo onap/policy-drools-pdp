@@ -81,12 +81,12 @@ public class LockRequestFutureTest {
 
         // null resource id
         IllegalArgumentException ex = expectException(IllegalArgumentException.class,
-                        xxx -> new LockRequestFuture(null, OWNER, true));
+                        () -> new LockRequestFuture(null, OWNER, true));
         assertEquals("null resourceId", ex.getMessage());
 
 
         // null owner
-        ex = expectException(IllegalArgumentException.class, xxx -> new LockRequestFuture(RESOURCE, null, true));
+        ex = expectException(IllegalArgumentException.class, () -> new LockRequestFuture(RESOURCE, null, true));
         assertEquals("null owner", ex.getMessage());
     }
 
@@ -108,12 +108,12 @@ public class LockRequestFutureTest {
 
         // null resource id
         IllegalArgumentException ex = expectException(IllegalArgumentException.class,
-                        xxx -> new LockRequestFuture(null, OWNER, callback));
+                        () -> new LockRequestFuture(null, OWNER, callback));
         assertEquals("null resourceId", ex.getMessage());
 
 
         // null owner
-        ex = expectException(IllegalArgumentException.class, xxx -> new LockRequestFuture(RESOURCE, null, callback));
+        ex = expectException(IllegalArgumentException.class, () -> new LockRequestFuture(RESOURCE, null, callback));
         assertEquals("null owner", ex.getMessage());
 
 
@@ -141,7 +141,7 @@ public class LockRequestFutureTest {
         assertTrue(fut.isDone());
 
         // should not block now
-        expectException(CancellationException.class, xxx -> fut.get(0, TimeUnit.SECONDS));
+        expectException(CancellationException.class, () -> fut.get(0, TimeUnit.SECONDS));
 
     }
 
@@ -153,7 +153,7 @@ public class LockRequestFutureTest {
         assertFalse(fut.cancel(true));
         assertTrue(fut.isDone());
 
-        expectException(CancellationException.class, xxx -> fut.get(0, TimeUnit.SECONDS));
+        expectException(CancellationException.class, () -> fut.get(0, TimeUnit.SECONDS));
     }
 
     @Test
@@ -201,7 +201,7 @@ public class LockRequestFutureTest {
         assertFalse(fut.setLocked(false));
 
         assertTrue(fut.isDone());
-        expectException(CancellationException.class, xxx -> fut.get(0, TimeUnit.SECONDS));
+        expectException(CancellationException.class, () -> fut.get(0, TimeUnit.SECONDS));
     }
 
     @Test
@@ -303,7 +303,7 @@ public class LockRequestFutureTest {
             }
         }.start();
 
-        expectException(CancellationException.class, xxx -> fut.get());
+        expectException(CancellationException.class, () -> fut.get());
     }
 
     @Test
@@ -332,7 +332,7 @@ public class LockRequestFutureTest {
 
     @Test
     public void testGetLongTimeUnit() throws Exception {
-        expectException(TimeoutException.class, xxx -> fut.get(0, TimeUnit.SECONDS));
+        expectException(TimeoutException.class, () -> fut.get(0, TimeUnit.SECONDS));
 
         fut.setLocked(true);
         assertTrue(fut.get(0, TimeUnit.SECONDS));
@@ -340,8 +340,8 @@ public class LockRequestFutureTest {
 
     @Test
     public void testGetLongTimeUnit_Timeout() throws Exception {
-        expectException(TimeoutException.class, xxx -> fut.get(0, TimeUnit.SECONDS));
-        expectException(TimeoutException.class, xxx -> fut.get(2, TimeUnit.MILLISECONDS));
+        expectException(TimeoutException.class, () -> fut.get(0, TimeUnit.SECONDS));
+        expectException(TimeoutException.class, () -> fut.get(2, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -353,7 +353,7 @@ public class LockRequestFutureTest {
             }
         }.start();
 
-        expectException(CancellationException.class, xxx -> fut.get(WAIT_SEC, TimeUnit.SECONDS));
+        expectException(CancellationException.class, () -> fut.get(WAIT_SEC, TimeUnit.SECONDS));
     }
 
     @Test

@@ -25,10 +25,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.distributed.locking.DistributedLockingFeature;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -115,7 +116,7 @@ public class TargetLockTest {
 		}
 		
 		// Grab reference to heartbeat object
-		Heartbeat heartbeat = distLockFeat.getHeartbeat();
+		Heartbeat heartbeat = DistributedLockingFeature.getHeartbeat();
 
 		// Pass heartbeat object countdown latch
 		try {
@@ -149,16 +150,16 @@ public class TargetLockTest {
 	public void testUnlock() throws InterruptedException, ExecutionException {
 		distLockFeat.beforeLock("resource1", "owner1", null);
 
-		assertTrue(distLockFeat.beforeUnlock("resource1", "owner1"));
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeUnlock("resource1", "owner1"));
 		assertTrue(distLockFeat.beforeLock("resource1", "owner1", null).get());
 	}
 	
 	@Test
 	public void testIsActive() {
-		assertFalse(distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
 		distLockFeat.beforeLock("resource1", "owner1", null);
-		assertTrue(distLockFeat.beforeIsLockedBy("resource1", "owner1"));
-		assertFalse(distLockFeat.beforeIsLockedBy("resource1", "owner2"));
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner2"));
 
 		// isActive on expiredLock
 		try (PreparedStatement updateStatement = conn
@@ -172,12 +173,12 @@ public class TargetLockTest {
 			throw new RuntimeException(e);
 		}
 
-		assertFalse(distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
 
 		distLockFeat.beforeLock("resource1", "owner1", null);
 			//Unlock record, next isActive attempt should fail
 		distLockFeat.beforeUnlock("resource1", "owner1");
-		assertFalse(distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
 		
 	}
 	
@@ -198,7 +199,7 @@ public class TargetLockTest {
 		}
 		
 			//Grab reference to heartbeat object
-		Heartbeat heartbeat = distLockFeat.getHeartbeat();
+		Heartbeat heartbeat = DistributedLockingFeature.getHeartbeat();
 		
 			//Pass heartbeat object countdown latch
 		try {
@@ -210,22 +211,22 @@ public class TargetLockTest {
 			//At this point the heartbeat object should hve
 			//refreshed the lock. assert that resource1 is
 			//locked
-		assertTrue(distLockFeat.beforeIsLocked("resource1"));
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLocked("resource1"));
 	}
 	
 	@Test
 	public void unlockBeforeLock() {
-		assertFalse(distLockFeat.beforeUnlock("resource1", "owner1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeUnlock("resource1", "owner1"));
 		distLockFeat.beforeLock("resource1", "owner1", null);
-		assertTrue(distLockFeat.beforeUnlock("resource1", "owner1"));
-		assertFalse(distLockFeat.beforeUnlock("resource1", "owner1"));
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeUnlock("resource1", "owner1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeUnlock("resource1", "owner1"));
 	}
 	
 	@Test
 	public void testIsLocked() {
-		assertFalse(distLockFeat.beforeIsLocked("resource1"));
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLocked("resource1"));
 		distLockFeat.beforeLock("resource1", "owner1", null);
-		assertTrue(distLockFeat.beforeIsLocked("resource1"));
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLocked("resource1"));
 	
 	}
 	

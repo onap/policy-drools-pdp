@@ -183,7 +183,7 @@ public class LockRequestFuture implements Future<Boolean> {
      * @return {@code true} if the lock was acquired, {@code false} if it was denied
      */
     @Override
-    public Boolean get() throws CancellationException, InterruptedException {
+    public Boolean get() throws InterruptedException {
         waiter.await();
 
         switch (state.get()) {
@@ -202,7 +202,7 @@ public class LockRequestFuture implements Future<Boolean> {
      */
     @Override
     public Boolean get(long timeout, TimeUnit unit)
-                    throws CancellationException, InterruptedException, TimeoutException {
+                    throws InterruptedException, TimeoutException {
 
         if (!waiter.await(timeout, unit)) {
             throw new TimeoutException("lock request did not complete in time");
