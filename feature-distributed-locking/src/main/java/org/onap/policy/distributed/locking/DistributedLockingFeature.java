@@ -79,7 +79,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	@Override
 	public Future<Boolean> beforeLock(String resourceId, String owner, Callback callback) {
 		
-		TargetLock tLock = new TargetLock(resourceId, this.uuid, owner, lockProps);
+		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps);
 		
 		return new LockRequestFuture(resourceId, owner, tLock.lock());
 				
@@ -87,21 +87,21 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 
 	@Override
 	public Boolean beforeUnlock(String resourceId, String owner) {
-		TargetLock tLock = new TargetLock(resourceId, this.uuid, owner, lockProps);
+		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps);
 		
 		return tLock.unlock();
 	}
 	
 	@Override
 	public Boolean beforeIsLockedBy(String resourceId, String owner) {
-		TargetLock tLock = new TargetLock(resourceId, this.uuid, owner, lockProps);
+		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps);
 		
 		return tLock.isActive();
 	}
 	
 	@Override
 	public Boolean beforeIsLocked(String resourceId) {
-		TargetLock tLock = new TargetLock(resourceId, this.uuid, "dummyOwner", lockProps);
+		TargetLock tLock = new TargetLock(resourceId, uuid, "dummyOwner", lockProps);
 		
 		return tLock.isLocked();
 	}
@@ -119,7 +119,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 		long heartbeatInterval = this.lockProps.getHeartBeatIntervalProperty();
 		
 		cleanLockTable();
-		heartbeat = new Heartbeat(this.uuid, lockProps);
+		heartbeat = new Heartbeat(uuid, lockProps);
 		
 		this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		this.scheduledExecutorService.scheduleAtFixedRate(heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
@@ -148,7 +148,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	    	PreparedStatement statement = conn.prepareStatement("DELETE FROM pooling.locks WHERE host = ? OR expirationTime < ?");
 	    	){
 			
-				statement.setString(1, this.uuid.toString());
+				statement.setString(1, uuid.toString());
 				statement.setLong(2, System.currentTimeMillis());
 				statement.executeUpdate();
 			
