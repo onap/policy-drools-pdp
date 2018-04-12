@@ -42,6 +42,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.Callback;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager.Factory;
 
 public class PolicyResourceLockManagerTest {
@@ -111,9 +112,9 @@ public class PolicyResourceLockManagerTest {
      */
     private void initImplementer(PolicyResourceLockFeatureAPI impl) {
         when(impl.beforeLock(anyString(), anyString(), any(Callback.class))).thenReturn(null);
-        when(impl.beforeUnlock(anyString(), anyString())).thenReturn(null);
-        when(impl.beforeIsLocked(anyString())).thenReturn(null);
-        when(impl.beforeIsLockedBy(anyString(), anyString())).thenReturn(null);
+        when(impl.beforeUnlock(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
+        when(impl.beforeIsLocked(anyString())).thenReturn(OperResult.OPER_UNHANDLED);
+        when(impl.beforeIsLockedBy(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
     }
 
     @Test
@@ -147,10 +148,10 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testLock_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, xxx -> mgr.lock(null, OWNER1, callback1));
+                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, callback1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.lock(RESOURCE_A, null, callback1));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, callback1));
         assertEquals(NULL_OWNER, ex.getMessage());
 
         // this should not throw an exception
@@ -250,10 +251,10 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testUnlock_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, xxx -> mgr.unlock(null, OWNER1));
+        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(null, OWNER1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.unlock(RESOURCE_A, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(RESOURCE_A, null));
         assertEquals(NULL_OWNER, ex.getMessage());
     }
 
@@ -263,7 +264,7 @@ public class PolicyResourceLockManagerTest {
         mgr.lock(RESOURCE_A, OWNER1, null);
 
         // have impl1 intercept
-        when(impl1.beforeUnlock(RESOURCE_A, OWNER1)).thenReturn(true);
+        when(impl1.beforeUnlock(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_ACCEPTED);
 
         assertTrue(mgr.unlock(RESOURCE_A, OWNER1));
 
@@ -280,7 +281,7 @@ public class PolicyResourceLockManagerTest {
         mgr.lock(RESOURCE_A, OWNER1, null);
 
         // have impl1 intercept
-        when(impl1.beforeUnlock(RESOURCE_A, OWNER1)).thenReturn(false);
+        when(impl1.beforeUnlock(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_DENIED);
 
         assertFalse(mgr.unlock(RESOURCE_A, OWNER1));
 
@@ -365,7 +366,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testIsLocked_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, xxx -> mgr.isLocked(null));
+        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.isLocked(null));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
     }
 
@@ -373,7 +374,7 @@ public class PolicyResourceLockManagerTest {
     public void testIsLocked_BeforeIntercepted_True() {
 
         // have impl1 intercept
-        when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(true);
+        when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(OperResult.OPER_ACCEPTED);;
 
         assertTrue(mgr.isLocked(RESOURCE_A));
 
@@ -388,7 +389,7 @@ public class PolicyResourceLockManagerTest {
         mgr.lock(RESOURCE_A, OWNER1, null);
 
         // have impl1 intercept
-        when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(false);
+        when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(OperResult.OPER_DENIED);
 
         assertFalse(mgr.isLocked(RESOURCE_A));
 
@@ -420,10 +421,10 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testIsLockedBy_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, xxx -> mgr.isLockedBy(null, OWNER1));
+                        expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(null, OWNER1));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, xxx -> mgr.isLockedBy(RESOURCE_A, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(RESOURCE_A, null));
         assertEquals(NULL_OWNER, ex.getMessage());
     }
 
@@ -431,7 +432,7 @@ public class PolicyResourceLockManagerTest {
     public void testIsLockedBy_BeforeIntercepted_True() {
 
         // have impl1 intercept
-        when(impl1.beforeIsLockedBy(RESOURCE_A, OWNER1)).thenReturn(true);
+        when(impl1.beforeIsLockedBy(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_ACCEPTED);;
 
         assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
 
@@ -446,7 +447,7 @@ public class PolicyResourceLockManagerTest {
         mgr.lock(RESOURCE_A, OWNER1, null);
 
         // have impl1 intercept
-        when(impl1.beforeIsLockedBy(RESOURCE_A, OWNER1)).thenReturn(false);
+        when(impl1.beforeIsLockedBy(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_DENIED);
 
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER1));
 
@@ -479,7 +480,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testDoIntercept_Impl1() {
-        when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(true);
+        when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(OperResult.OPER_ACCEPTED);;
 
         assertTrue(mgr.isLocked(RESOURCE_A));
 
@@ -489,7 +490,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testDoIntercept_Impl2() {
-        when(impl2.beforeIsLocked(RESOURCE_A)).thenReturn(true);
+        when(impl2.beforeIsLocked(RESOURCE_A)).thenReturn(OperResult.OPER_ACCEPTED);;
 
         assertTrue(mgr.isLocked(RESOURCE_A));
 
