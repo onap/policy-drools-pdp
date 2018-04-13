@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   ONAP Policy Engine - Drools PDP
   ================================================================================
-  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -233,6 +233,15 @@
 		<groupId>org.apache.commons</groupId>
 		<artifactId>commons-collections4</artifactId>
 		<version>4.1</version>
+	</dependency>
+	
+	<!-- if we don't explicitly specify the version here, we seem to end up
+		 with version 1.4 (as a dependency to drools-core). This version is
+		 not compatible with 'saClientLibrary' version 1.2.1-oss -->
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<version>1.9</version>
 	</dependency>
 	
 	<dependency>
