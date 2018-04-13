@@ -119,7 +119,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 		long heartbeatInterval = this.lockProps.getHeartBeatIntervalProperty();
 		
 		cleanLockTable();
-		heartbeat = new Heartbeat(uuid, lockProps);
+		initHeartbeat(lockProps);
 		
 		this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
 		this.scheduledExecutorService.scheduleAtFixedRate(heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
@@ -158,6 +158,14 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 		
 	}
 
+	/**
+	 * Initialize the static heartbeat object
+	 */
+	private static void initHeartbeat(DistributedLockingProperties lockProps) {
+		heartbeat = new Heartbeat(uuid, lockProps);
+		
+	}
+	
 	public static Heartbeat getHeartbeat() {
 		return heartbeat;
 	}

@@ -130,11 +130,11 @@ public class PolicyResourceLockManager extends SimpleLockManager {
         }
 
 
-        return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () -> {
+        return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () -> 
 
             // implementer didn't do the work - defer to the superclass
-            return super.isLocked(resourceId);
-        });
+           super.isLocked(resourceId)
+        );
     }
 
     /**
@@ -151,11 +151,11 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             throw makeNullArgException(MSG_NULL_OWNER);
         }
 
-        return doBoolIntercept(impl -> impl.beforeIsLockedBy(resourceId, owner), () -> {
+        return doBoolIntercept(impl -> impl.beforeIsLockedBy(resourceId, owner), () -> 
 
             // implementer didn't do the work - defer to the superclass
-            return super.isLockedBy(resourceId, owner);
-        });
+            super.isLockedBy(resourceId, owner)
+        );
     }
 
     /**
@@ -210,6 +210,8 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      */
     private static class Singleton {
 
+        private static final PolicyResourceLockManager instance = new PolicyResourceLockManager();
+        
         /**
          * Not invoked.
          */
@@ -217,7 +219,6 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             super();
         }
 
-        private static final PolicyResourceLockManager instance = new PolicyResourceLockManager();
     }
 
     /**
