@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,11 +162,12 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 				   (this.longitude == null	   || this.longitude.isEmpty()) &&
 				   (this.partner == null 	   || this.partner.isEmpty())) {
 			this.consumer =
-					new BusConsumer.DmaapAafConsumerWrapper(this.servers, this.topic, 
+					new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
 							                            this.apiKey, this.apiSecret,
 							                            this.userName, this.password,
 							                            this.consumerGroup, this.consumerInstance,
-							                            this.fetchTimeout, this.fetchLimit, this.useHttps);
+							                            this.fetchTimeout, this.fetchLimit,
+							                            this.useHttps, this.allowSelfSignedCerts);
 		} else {
 			this.consumer =
 					new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic, 
