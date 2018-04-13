@@ -64,7 +64,7 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
     /**
      * Result of a requested operation.
      */
-    public static enum OperResult {
+    public enum OperResult {
 
         /**
          * The implementer accepted the request; no additional locking logic should be
