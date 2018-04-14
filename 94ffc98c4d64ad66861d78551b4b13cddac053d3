@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_418f842a",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-14T20:06:24Z",
+      "side": 1,
+      "message": "I would prefer not to add the first 2 dependencies here, there\u0027s no reason in this review (unrelated).  In any case these changes to be complete, would have to include additional changes in those features\u0027 poms that may be referring to these libraries.  \n\nParticularly, ONAP-Logging (and flexlogger) usage is discouraged in pdp-d.   integrity-monitor is not used, haven\u0027t been tested, and unsure of applicability in the near future.",
+      "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
