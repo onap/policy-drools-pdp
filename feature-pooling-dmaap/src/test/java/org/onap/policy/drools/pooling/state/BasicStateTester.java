@@ -21,9 +21,9 @@
 package org.onap.policy.drools.pooling.state;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,16 +33,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import org.onap.policy.drools.pooling.CancellableScheduledTask;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.PoolingProperties;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
+import org.onap.policy.drools.utils.Pair;
+import org.onap.policy.drools.utils.Triple;
 
 /**
- * Superclass used to test subclasses of {@link Message}.
+ * Superclass used to test subclasses of {@link State}.
  */
 public class BasicStateTester {
 
@@ -74,9 +76,9 @@ public class BasicStateTester {
     protected static final BucketAssignments ASGN3 = new BucketAssignments(HOST_ARR3);
 
     /**
-     * Futures returned by schedule().
+     * Scheduled tasks returned by schedule().
      */
-    protected LinkedList<ScheduledFuture<?>> onceFutures;
+    protected LinkedList<CancellableScheduledTask> onceSchedules;
 
     /**
      * Tasks captured via schedule().
@@ -84,9 +86,9 @@ public class BasicStateTester {
     protected LinkedList<Pair<Long, StateTimerTask>> onceTasks;
 
     /**
-     * Futures returned by scheduleWithFixedDelay().
+     * Scheduled tasks returned by scheduleWithFixedDelay().
      */
-    protected LinkedList<ScheduledFuture<?>> repeatedFutures;
+    protected LinkedList<CancellableScheduledTask> repeatedSchedules;
 
     /**
      * Tasks captured via scheduleWithFixedDelay().
@@ -112,10 +114,10 @@ public class BasicStateTester {
     }
 
     public void setUp() throws Exception {
-        onceFutures = new LinkedList<>();
+        onceSchedules = new LinkedList<>();
         onceTasks = new LinkedList<>();
 
-        repeatedFutures = new LinkedList<>();
+        repeatedSchedules = new LinkedList<>();
         repeatedTasks = new LinkedList<>();
 
         published = new LinkedList<>();
@@ -162,9 +164,9 @@ public class BasicStateTester {
             Object[] args = invocation.getArguments();
             onceTasks.add(new Pair<>((Long) args[0], (StateTimerTask) args[1]));
 
-            ScheduledFuture<?> fut = mock(ScheduledFuture.class);
-            onceFutures.add(fut);
-            return fut;
+            CancellableScheduledTask sched = mock(CancellableScheduledTask.class);
+            onceSchedules.add(sched);
+            return sched;
         });
 
         // capture scheduleWithFixedDelay() arguments, and return a new future
@@ -172,9 +174,9 @@ public class BasicStateTester {
             Object[] args = invocation.getArguments();
             repeatedTasks.add(new Triple<>((Long) args[0], (Long) args[1], (StateTimerTask) args[2]));
 
-            ScheduledFuture<?> fut = mock(ScheduledFuture.class);
-            repeatedFutures.add(fut);
-            return fut;
+            CancellableScheduledTask sched = mock(CancellableScheduledTask.class);
+            repeatedSchedules.add(sched);
+            return sched;
         });
 
         // get/set assignments in the manager
@@ -183,7 +185,7 @@ public class BasicStateTester {
         when(mgr.getAssignments()).thenAnswer(args -> asgn.get());
 
         doAnswer(args -> {
-            asgn.set(args.getArgumentAt(0, BucketAssignments.class));
+            asgn.set(args.getArgument(0));
             return null;
         }).when(mgr).startDistributing(any());
     }
@@ -199,8 +201,7 @@ public class BasicStateTester {
     }
 
     /**
-     * Captures the host array from the Leader message published to the admin
-     * channel.
+     * Captures the host array from the Leader message published to the admin channel.
      * 
      * @return the host array, as a list
      */
@@ -209,8 +210,7 @@ public class BasicStateTester {
     }
 
     /**
-     * Captures the host array from the Leader message published to the admin
-     * channel.
+     * Captures the host array from the Leader message published to the admin channel.
      * 
      * @return the host array
      */
@@ -224,8 +224,7 @@ public class BasicStateTester {
     }
 
     /**
-     * Captures the assignments from the Leader message published to the admin
-     * channel.
+     * Captures the assignments from the Leader message published to the admin channel.
      * 
      * @return the bucket assignments
      */
@@ -277,42 +276,6 @@ public class BasicStateTester {
      */
     protected <T extends Message> Pair<String, T> capturePublishedMessage(Class<T> clazz, int index) {
         Pair<String, Message> msg = published.get(index);
-        return new Pair<>(msg.first, clazz.cast(msg.second));
+        return new Pair<>(msg.first(), clazz.cast(msg.second()));
     }
-
-    /**
-     * Pair of values.
-     * 
-     * @param <F> first value's type
-     * @param <S> second value's type
-     */
-    public static class Pair<F, S> {
-        public final F first;
-        public final S second;
-
-        public Pair(F first, S second) {
-            this.first = first;
-            this.second = second;
-        }
-    }
-
-    /**
-     * Pair of values.
-     * 
-     * @param <F> first value's type
-     * @param <S> second value's type
-     * @param <T> third value's type
-     */
-    public static class Triple<F, S, T> {
-        public final F first;
-        public final S second;
-        public final T third;
-
-        public Triple(F first, S second, T third) {
-            this.first = first;
-            this.second = second;
-            this.third = third;
-        }
-    }
-
 }
