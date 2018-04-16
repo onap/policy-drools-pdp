@@ -49,9 +49,6 @@ public class SimpleLockManager {
         super();
     }
 
-    // TODO: for ease of use by clients, should we always invoke the callback, even though
-    // this is synchronous?
-
     /**
      * Attempts to lock a resource. This method ignores the callback and always returns a
      * {@link CompletedLockRequest}.
