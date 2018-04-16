@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "5a93c517_2a51ed35",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-04-16T11:58:17Z",
+      "side": 1,
+      "message": "This is the wrong place to put this - should be under \"Project common dependency versions\"",
+      "range": {
+        "startLine": 44,
+        "startChar": 2,
+        "endLine": 44,
+        "endChar": 69
+      },
+      "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_ea46a57a",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-04-16T11:58:17Z",
+      "side": 1,
+      "message": "Cambria is supposed to be deprecated functionality. Introducing this now could introduce licensing issues.",
+      "range": {
+        "startLine": 62,
+        "startChar": 2,
+        "endLine": 62,
+        "endChar": 46
+      },
+      "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_418f842a",
         "filename": "pom.xml",
         "patchSetId": 1
