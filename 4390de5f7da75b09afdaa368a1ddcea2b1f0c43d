@@ -22,6 +22,30 @@
       "revId": "4390de5f7da75b09afdaa368a1ddcea2b1f0c43d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b5000235",
+        "filename": "policy-management/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-16T13:50:49Z",
+      "side": 1,
+      "message": "This will win over 1.4, we\u0027ll use this one at runtime I believe.",
+      "parentUuid": "5a93c517_75ecbabb",
+      "range": {
+        "startLine": 238,
+        "startChar": 1,
+        "endLine": 246,
+        "endChar": 1
+      },
+      "revId": "4390de5f7da75b09afdaa368a1ddcea2b1f0c43d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
