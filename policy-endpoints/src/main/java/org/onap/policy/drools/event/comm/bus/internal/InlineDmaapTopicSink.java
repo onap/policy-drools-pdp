@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,10 +114,11 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 		   (this.longitude == null		|| this.longitude.isEmpty()) &&
 		   (this.partner == null		|| this.partner.isEmpty())) {
 			this.publisher = 
-				new BusPublisher.DmaapAafPublisherWrapper(this.servers, 
+				new BusPublisher.CambriaPublisherWrapper(this.servers, 
 						                               this.topic, 
-						                               this.userName, 
-						                               this.password, this.useHttps);
+						                               this.apiKey, this.apiSecret,
+						                               this.userName, this.password,
+						                               this.useHttps);
 		} else {
 			this.publisher = 
 				new BusPublisher.DmaapDmePublisherWrapper(this.servers, this.topic, 

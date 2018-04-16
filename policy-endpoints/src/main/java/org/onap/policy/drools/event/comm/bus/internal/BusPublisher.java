@@ -74,24 +74,34 @@ public interface BusPublisher {
 		public CambriaPublisherWrapper(List<String> servers, String topic,
 						               String apiKey,
 						               String apiSecret, boolean useHttps) {
-			PublisherBuilder builder = new CambriaClientBuilders.PublisherBuilder();
-		
+			this(servers, topic, apiKey, apiSecret, null, null, useHttps);
+		}
 
-			if (useHttps){
-				
-				builder.usingHosts(servers)
-			       .onTopic(topic)
-			       .usingHttps();
-			}
-			else{
-				builder.usingHosts(servers)
-			       .onTopic(topic);
+		public CambriaPublisherWrapper(List<String> servers, String topic,
+						               String apiKey, String apiSecret,
+						               String username, String password,
+						               boolean useHttps) {
+
+			PublisherBuilder builder = new CambriaClientBuilders.PublisherBuilder();
+
+            builder.usingHosts(servers).onTopic(topic);
+            
+			// Set read timeout to 30 seconds (TBD: this should be configurable)
+			builder.withSocketTimeout(30000);
+
+			if (useHttps){				
+				builder.usingHttps();
 			}
 		
 			
 			if (apiKey != null && !apiKey.isEmpty() &&
 				apiSecret != null && !apiSecret.isEmpty()) {
 				builder.authenticatedBy(apiKey, apiSecret);
+			}
+			
+			if (username != null && !username.isEmpty() &&
+				password != null && !password.isEmpty()) {
+				builder.authenticatedByHttp(username, password);
 			}
 			
 			try {
