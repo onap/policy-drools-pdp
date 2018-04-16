@@ -16,6 +16,24 @@
       "revId": "c8475b389d0db7a5234822e403bc60ef80cfd138",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c4695dbf",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/extractor/ClassExtractors.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-16T19:48:01Z",
+      "side": 1,
+      "message": "Yes, it works.  If the last arg in a var-arg list is an Exception, then logback treats the last arg special and only uses the previous args to populate the \"{}\" place-holders.",
+      "parentUuid": "5a93c517_4f032b10",
+      "revId": "c8475b389d0db7a5234822e403bc60ef80cfd138",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
