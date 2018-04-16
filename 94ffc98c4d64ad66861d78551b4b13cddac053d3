@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_353e328d",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-16T13:06:42Z",
+      "side": 1,
+      "message": "I will just remove this",
+      "parentUuid": "5a93c517_2a51ed35",
+      "range": {
+        "startLine": 44,
+        "startChar": 2,
+        "endLine": 44,
+        "endChar": 69
+      },
+      "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_ea46a57a",
         "filename": "pom.xml",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2018-04-16T11:58:17Z",
       "side": 1,
       "message": "Cambria is supposed to be deprecated functionality. Introducing this now could introduce licensing issues.",
+      "range": {
+        "startLine": 62,
+        "startChar": 2,
+        "endLine": 62,
+        "endChar": 46
+      },
+      "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_75e11a29",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-16T13:06:42Z",
+      "side": 1,
+      "message": "1.2.1-oss is the open source version.  Cambria client continues to have significantly better support and is much more robust that than DMaaP client, which continues to lag behind.",
+      "parentUuid": "5a93c517_ea46a57a",
       "range": {
         "startLine": 62,
         "startChar": 2,
@@ -76,6 +124,24 @@
       "writtenOn": "2018-04-14T21:51:24Z",
       "side": 1,
       "message": "I would prefer to not add these changes here, as they are not related, and to be complete will need to remove versions from the features\u0027 pom using it.   In general, ONAP-Logging (and flex logger) usage is discouraged, and integrity-monitor has not been used or tested.",
+      "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_15d2165c",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-16T13:06:42Z",
+      "side": 1,
+      "message": "I\u0027ll remove all three - should not be needed.",
+      "parentUuid": "5a93c517_648dee7b",
       "revId": "94ffc98c4d64ad66861d78551b4b13cddac053d3",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
