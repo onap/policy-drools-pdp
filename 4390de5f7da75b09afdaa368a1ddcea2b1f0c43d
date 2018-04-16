@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_75ecbabb",
+        "filename": "policy-management/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-04-16T13:33:46Z",
+      "side": 1,
+      "message": "Should we just update drools-core to 1.9 or later. We need to run the CLM job and ensure there are no security issues in this dependency.",
+      "range": {
+        "startLine": 238,
+        "startChar": 1,
+        "endLine": 246,
+        "endChar": 1
+      },
+      "revId": "4390de5f7da75b09afdaa368a1ddcea2b1f0c43d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
