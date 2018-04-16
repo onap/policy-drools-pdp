@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_4f032b10",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/extractor/ClassExtractors.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2018-04-16T09:15:43Z",
+      "side": 1,
+      "message": "Does this work? Method \u0027Logger.warn(String msg, Throwable t)\u0027 exists, but I don\u0027t know if you can have a variable number of arguments, with a \u0027Throwable\u0027 last, and have it interpreted the way you would like.",
+      "revId": "c8475b389d0db7a5234822e403bc60ef80cfd138",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
