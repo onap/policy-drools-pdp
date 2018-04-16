@@ -22,6 +22,30 @@
       "revId": "7bfe22230193a39c55df944a555bfcaf498f3d1c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b55c824c",
+        "filename": "policy-core/src/test/resources/drools-artifact-1.1/src/main/resources/rules.drl",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-16T14:02:16Z",
+      "side": 1,
+      "message": "Wow, good eyes Liam :).   It should be ok I believe ..",
+      "parentUuid": "5a93c517_75dfdad6",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 1
+      },
+      "revId": "7bfe22230193a39c55df944a555bfcaf498f3d1c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
