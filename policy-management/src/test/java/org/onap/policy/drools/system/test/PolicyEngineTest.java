@@ -27,6 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -274,13 +276,12 @@ public class PolicyEngineTest {
   @Test
   public void test901Stop() throws InterruptedException {
     logger.info("enter");
-
+	CountDownLatch latch = new CountDownLatch(1);
     /* Shutdown managed resources */
     PolicyController.factory.shutdown();
     TopicEndpoint.manager.shutdown();
     PolicyEngine.manager.stop();
-
-    Thread.sleep(10000L);
+	latch.await(10000L, TimeUnit.MILLISECONDS);
     assertFalse(PolicyEngine.manager.isAlive());
   }
 

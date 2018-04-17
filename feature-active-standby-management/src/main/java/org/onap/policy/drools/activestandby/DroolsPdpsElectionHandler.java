@@ -196,7 +196,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 					//It is possible that multiple PDPs are designated lead.  So, we will make a list of all designated
 					//PDPs and then decide which one really should be designated at the end.
-					ArrayList<DroolsPdp> listOfDesignated = new ArrayList<>();
+					List<DroolsPdp> listOfDesignated = new ArrayList<>();
 
 					Collection<DroolsPdp> pdps = pdpsConnector.getDroolsPdps();
 					DroolsPdp designatedPdp = null;
@@ -635,11 +635,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		} // end run
 	}
 	
-	public ArrayList<DroolsPdp> santizeDesignatedList(ArrayList<DroolsPdp> listOfDesignated){
+	public List<DroolsPdp> santizeDesignatedList(List<DroolsPdp> listOfDesignated){
 
 		boolean containsDesignated = false;
 		boolean containsHotStandby = false;
-		ArrayList<DroolsPdp> listForRemoval = new ArrayList<DroolsPdp>();
+		ArrayList<DroolsPdp> listForRemoval = new ArrayList<>();
 		for(DroolsPdp pdp : listOfDesignated){
 			if(logger.isDebugEnabled()){
 				logger.debug
@@ -656,12 +656,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 		if(containsDesignated && containsHotStandby){
 			//remove the hot standby from the list
 			listOfDesignated.removeAll(listForRemoval);
-			containsHotStandby = false;
 		}
 		return listOfDesignated;
 	}
 	
-	public DroolsPdp computeMostRecentPrimary(Collection<DroolsPdp> pdps, ArrayList<DroolsPdp> listOfDesignated){
+	public DroolsPdp computeMostRecentPrimary(Collection<DroolsPdp> pdps, List<DroolsPdp> listOfDesignated){
 		boolean containsDesignated = false;
 		for(DroolsPdp pdp : listOfDesignated){
 			if(pdp.isDesignated()){

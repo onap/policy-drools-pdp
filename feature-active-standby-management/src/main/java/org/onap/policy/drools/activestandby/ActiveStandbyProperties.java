@@ -45,6 +45,10 @@ public class ActiveStandbyProperties {
 	public static final String DB_PWD = "javax.persistence.jdbc.password";
 		
 	private static Properties properties = null;
+	
+	private ActiveStandbyProperties() {
+		throw new IllegalStateException("Utility class");
+	}
 	/*
 	 * Initialize the parameter values from the droolsPersitence.properties file values
 	 * 
