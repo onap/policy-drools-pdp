@@ -22,12 +22,19 @@ package org.onap.policy.drools.pooling.state;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.policy.drools.pooling.message.BucketAssignments;
+import org.onap.policy.drools.pooling.message.Identification;
+import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
+import org.onap.policy.drools.pooling.message.Query;
 import org.onap.policy.drools.utils.Pair;
 
 public class InactiveStateTest extends BasicStateTester {
@@ -50,6 +57,42 @@ public class InactiveStateTest extends BasicStateTester {
         utils.checkArray(FilterUtils.CLASS_OR, 2, filter);
         utils.checkEquals(FilterUtils.MSG_CHANNEL, Message.ADMIN, utils.getItem(filter, 0));
         utils.checkEquals(FilterUtils.MSG_CHANNEL, MY_HOST, utils.getItem(filter, 1));
+    }
+
+    @Test
+    public void testProcessLeader() {
+        State next = mock(State.class);
+        when(mgr.goActive()).thenReturn(next);
+
+        String[] arr = {PREV_HOST, MY_HOST, HOST1};
+        BucketAssignments asgn = new BucketAssignments(arr);
+        Leader msg = new Leader(PREV_HOST, asgn);
+
+        assertEquals(next, state.process(msg));
+        verify(mgr).startDistributing(asgn);
+    }
+
+    @Test
+    public void testProcessLeader_Invalid() {
+        Leader msg = new Leader(PREV_HOST, null);
+
+        // should stay in the same state, and not start distributing
+        assertNull(state.process(msg));
+        verify(mgr, never()).startDistributing(any());
+        verify(mgr, never()).goActive();
+        verify(mgr, never()).goInactive();
+    }
+
+    @Test
+    public void testProcessQuery() {
+        State next = mock(State.class);
+        when(mgr.goQuery()).thenReturn(next);
+
+        assertEquals(next, state.process(new Query()));
+
+        Identification ident = captureAdminMessage(Identification.class);
+        assertEquals(MY_HOST, ident.getSource());
+        assertEquals(ASGN3, ident.getAssignments());
     }
 
     @Test

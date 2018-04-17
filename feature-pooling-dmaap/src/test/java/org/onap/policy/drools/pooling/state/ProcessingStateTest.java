@@ -65,39 +65,6 @@ public class ProcessingStateTest extends BasicStateTester {
     }
 
     @Test
-    public void testGoActive_WithAssignment() {
-        State act = mock(State.class);
-        State inact = mock(State.class);
-
-        when(mgr.goActive()).thenReturn(act);
-        when(mgr.goInactive()).thenReturn(inact);
-
-        String[] arr = {HOST2, PREV_HOST, MY_HOST};
-        BucketAssignments asgn = new BucketAssignments(arr);
-
-        assertEquals(act, state.goActive(asgn));
-
-        verify(mgr).startDistributing(asgn);
-    }
-
-    @Test
-    public void testGoActive_WithoutAssignment() {
-        State act = mock(State.class);
-        State inact = mock(State.class);
-
-        when(mgr.goActive()).thenReturn(act);
-        when(mgr.goInactive()).thenReturn(inact);
-
-        String[] arr = {HOST2, PREV_HOST};
-        BucketAssignments asgn = new BucketAssignments(arr);
-
-        assertEquals(inact, state.goActive(asgn));
-
-        verify(mgr).startDistributing(asgn);
-
-    }
-
-    @Test
     public void testProcessQuery() {
         State next = mock(State.class);
         when(mgr.goQuery()).thenReturn(next);
@@ -152,13 +119,6 @@ public class ProcessingStateTest extends BasicStateTester {
     public void testProcessingState_ZeroLengthHostArray() {
         when(mgr.getAssignments()).thenReturn(new BucketAssignments(new String[] {}));
         state = new ProcessingState(mgr, LEADER);
-    }
-
-    @Test
-    public void testMakeIdentification() {
-        Identification ident = state.makeIdentification();
-        assertEquals(MY_HOST, ident.getSource());
-        assertEquals(ASGN3, ident.getAssignments());
     }
 
     @Test
