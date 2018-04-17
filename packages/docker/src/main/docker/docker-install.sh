@@ -839,7 +839,7 @@ function installFeatures
 		SOURCE_DIR=$PWD
 		for feature in feature-*.zip ; do
 			name="${feature#feature-}"
-			name="${name%-[0-9]*\.zip}"
+			name="${name%%-[0-9]*\.zip}"
 			mkdir -p "${FEATURES_HOME}/${name}" > /dev/null 2>&1
 			(cd "${FEATURES_HOME}/${name}"; jar xf ${SOURCE_DIR}/${feature})
 			featureConf="feature-${name}.conf"

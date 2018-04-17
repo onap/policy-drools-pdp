@@ -921,7 +921,7 @@ function installFeatures
 				# the ZIP file is specified -- find the name
 				name="${feature##*/}"
 				name="${name#feature-}"
-				name="${name%-[0-9]*\.zip}"
+				name="${name%%-[0-9]*\.zip}"
 
 				# if the ZIP file has a directory name component,
 				# set 'dir' accordingly
