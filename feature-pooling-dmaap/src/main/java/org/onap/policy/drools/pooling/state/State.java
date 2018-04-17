@@ -113,12 +113,21 @@ public abstract class State {
     }
 
     /**
-     * Transitions to the "active" state.
+     * Goes active with a new set of assignments.
      * 
-     * @return the new state
+     * @param asgn new assignments
+     * @return the new state, either Active or Inactive, depending on whether or not this
+     *         host has an assignment
      */
-    public final State goActive() {
-        return mgr.goActive();
+    protected State goActive(BucketAssignments asgn) {
+        startDistributing(asgn);
+
+        if (asgn.hasAssignment(getHost())) {
+            return mgr.goActive();
+
+        } else {
+            return goInactive();
+        }
     }
 
     /**
@@ -322,7 +331,21 @@ public abstract class State {
     }
 
     /**
-     * Indicates that the internal topic failed.
+     * Indicates that we failed to see our own heartbeat; must be a problem with the
+     * internal topic.
+     * 
+     * @return a new {@link StartState}
+     */
+    protected final State missedHeartbeat() {
+        publish(makeOffline());
+        mgr.startDistributing(null);
+
+        return mgr.goStart();
+    }
+
+    /**
+     * Indicates that the internal topic failed; this should only be invoked from the
+     * StartState.
      * 
      * @return a new {@link InactiveState}
      */

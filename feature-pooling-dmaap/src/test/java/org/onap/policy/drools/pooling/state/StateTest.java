@@ -154,12 +154,35 @@ public class StateTest extends BasicStateTester {
     }
 
     @Test
-    public void testGoActive() {
-        State next = mock(State.class);
-        when(mgr.goActive()).thenReturn(next);
+    public void testGoActive_WithAssignment() {
+        State act = mock(State.class);
+        State inact = mock(State.class);
 
-        State next2 = state.goActive();
-        assertEquals(next, next2);
+        when(mgr.goActive()).thenReturn(act);
+        when(mgr.goInactive()).thenReturn(inact);
+
+        String[] arr = {HOST2, PREV_HOST, MY_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        assertEquals(act, state.goActive(asgn));
+
+        verify(mgr).startDistributing(asgn);
+    }
+
+    @Test
+    public void testGoActive_WithoutAssignment() {
+        State act = mock(State.class);
+        State inact = mock(State.class);
+
+        when(mgr.goActive()).thenReturn(act);
+        when(mgr.goInactive()).thenReturn(inact);
+
+        String[] arr = {HOST2, PREV_HOST};
+        BucketAssignments asgn = new BucketAssignments(arr);
+
+        assertEquals(inact, state.goActive(asgn));
+
+        verify(mgr).startDistributing(asgn);
     }
 
     @Test
@@ -375,6 +398,20 @@ public class StateTest extends BasicStateTester {
     }
 
     @Test
+    public void testMissedHeartbeat() {
+        State next = mock(State.class);
+        when(mgr.goStart()).thenReturn(next);
+
+        State next2 = state.missedHeartbeat();
+        assertEquals(next, next2);
+
+        verify(mgr).startDistributing(null);
+
+        Offline msg = captureAdminMessage(Offline.class);
+        assertEquals(MY_HOST, msg.getSource());
+    }
+
+    @Test
     public void testInternalTopicFailed() {
         State next = mock(State.class);
         when(mgr.goInactive()).thenReturn(next);
@@ -395,6 +432,13 @@ public class StateTest extends BasicStateTester {
 
         assertEquals(MY_HOST, msg.getSource());
         assertEquals(timestamp, msg.getTimestampMs());
+    }
+
+    @Test
+    public void testMakeIdentification() {
+        Identification ident = state.makeIdentification();
+        assertEquals(MY_HOST, ident.getSource());
+        assertEquals(ASGN3, ident.getAssignments());
     }
 
     @Test

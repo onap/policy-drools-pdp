@@ -23,6 +23,7 @@ package org.onap.policy.drools.pooling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,6 +74,7 @@ public class PoolingManagerImplTest {
     protected static final long STD_INTER_HEARTBEAT_MS = STD_ACTIVE_HEARTBEAT_MS + 1;
     protected static final long STD_OFFLINE_PUB_WAIT_MS = STD_INTER_HEARTBEAT_MS + 1;
 
+    private static final String MY_HOST = "my.host";
     private static final String HOST2 = "other.host";
 
     private static final String MY_CONTROLLER = "my.controller";
@@ -151,7 +153,7 @@ public class PoolingManagerImplTest {
 
         when(factory.makeEventQueue(any())).thenReturn(eventQueue);
         when(factory.makeClassExtractors(any())).thenReturn(extractors);
-        when(factory.makeDmaapManager(any())).thenReturn(dmaap);
+        when(factory.makeDmaapManager(any(), any())).thenReturn(dmaap);
         when(factory.makeScheduler()).thenReturn(sched);
         when(factory.canDecodeEvent(drools, TOPIC2)).thenReturn(true);
         when(factory.decodeEvent(drools, TOPIC2, THE_EVENT)).thenReturn(DECODED_EVENT);
@@ -179,12 +181,12 @@ public class PoolingManagerImplTest {
 
         PoolingManagerImpl.setFactory(factory);
 
-        mgr = new PoolingManagerImpl(controller, poolProps);
+        mgr = new PoolingManagerImpl(MY_HOST, controller, poolProps);
     }
 
     @Test
-    public void testPoolingManagerImpl() {
-        mgr = new PoolingManagerImpl(controller, poolProps);
+    public void testPoolingManagerImpl() throws Exception {
+        verify(factory).makeDmaapManager(any(), any());
 
         State st = mgr.getCurrent();
         assertTrue(st instanceof IdleState);
@@ -202,7 +204,7 @@ public class PoolingManagerImplTest {
         PolicyController ctlr = mock(PolicyController.class);
 
         PoolingFeatureRtException ex = expectException(PoolingFeatureRtException.class,
-                        xxx -> new PoolingManagerImpl(ctlr, poolProps));
+                        () -> new PoolingManagerImpl(MY_HOST, ctlr, poolProps));
         assertNotNull(ex.getCause());
         assertTrue(ex.getCause() instanceof ClassCastException);
     }
@@ -211,23 +213,28 @@ public class PoolingManagerImplTest {
     public void testPoolingManagerImpl_PoolEx() throws PoolingFeatureException {
         // throw an exception when we try to create the dmaap manager
         PoolingFeatureException ex = new PoolingFeatureException();
-        when(factory.makeDmaapManager(any())).thenThrow(ex);
+        when(factory.makeDmaapManager(any(), any())).thenThrow(ex);
 
         PoolingFeatureRtException ex2 = expectException(PoolingFeatureRtException.class,
-                        xxx -> new PoolingManagerImpl(controller, poolProps));
+                        () -> new PoolingManagerImpl(MY_HOST, controller, poolProps));
         assertEquals(ex, ex2.getCause());
     }
 
     @Test
+    public void testGetCurrent() throws Exception {
+        assertEquals(IdleState.class, mgr.getCurrent().getClass());
+
+        startMgr();
+
+        assertEquals(StartState.class, mgr.getCurrent().getClass());
+    }
+
+    @Test
     public void testGetHost() {
-        String host = mgr.getHost();
-        assertNotNull(host);
+        assertEquals(MY_HOST, mgr.getHost());
 
-        // create another manager and ensure it generates a different host
-        mgr = new PoolingManagerImpl(controller, poolProps);
-
-        assertNotNull(mgr.getHost());
-        assertFalse(host.equals(mgr.getHost()));
+        mgr = new PoolingManagerImpl(HOST2, controller, poolProps);
+        assertEquals(HOST2, mgr.getHost());
     }
 
     @Test
@@ -268,7 +275,7 @@ public class PoolingManagerImplTest {
         PoolingFeatureException ex = new PoolingFeatureException();
         doThrow(ex).when(dmaap).startPublisher();
 
-        PoolingFeatureException ex2 = expectException(PoolingFeatureException.class, xxx -> mgr.beforeStart());
+        PoolingFeatureException ex2 = expectException(PoolingFeatureException.class, () -> mgr.beforeStart());
         assertEquals(ex, ex2);
 
         // should never start the scheduler
@@ -453,8 +460,9 @@ public class PoolingManagerImplTest {
         // should have set the new filter
         verify(dmaap, times(++ntimes)).setFilter(any());
 
-        // should have cancelled the timer
-        assertEquals(1, futures.size());
+        // should have cancelled the timers
+        assertEquals(2, futures.size());
+        verify(futures.poll()).cancel(false);
         verify(futures.poll()).cancel(false);
 
         /*
@@ -465,8 +473,9 @@ public class PoolingManagerImplTest {
         // should have set the new filter
         verify(dmaap, times(++ntimes)).setFilter(any());
 
-        // timer should still be active
-        assertEquals(1, futures.size());
+        // new timers should now be active
+        assertEquals(2, futures.size());
+        verify(futures.poll(), never()).cancel(false);
         verify(futures.poll(), never()).cancel(false);
     }
 
@@ -548,7 +557,7 @@ public class PoolingManagerImplTest {
         ArgumentCaptor<Long> timeCap = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<TimeUnit> unitCap = ArgumentCaptor.forClass(TimeUnit.class);
 
-        verify(sched).scheduleWithFixedDelay(taskCap.capture(), initCap.capture(), timeCap.capture(),
+        verify(sched, times(2)).scheduleWithFixedDelay(taskCap.capture(), initCap.capture(), timeCap.capture(),
                         unitCap.capture());
 
         assertEquals(STD_HEARTBEAT_WAIT_MS, initCap.getValue().longValue());
@@ -987,7 +996,7 @@ public class PoolingManagerImplTest {
 
         // route the message to this host
         mgr.startDistributing(makeAssignments(true));
-        
+
         // generate RuntimeException when onTopicEvent() is invoked
         doThrow(new IllegalArgumentException("expected")).when(controller).onTopicEvent(any(), any(), any());
 
@@ -1056,21 +1065,27 @@ public class PoolingManagerImplTest {
         startMgr();
 
         // route the message to this host
-        mgr.startDistributing(makeAssignments(true));
-
+        assertNotNull(mgr.startDistributing(makeAssignments(true)));
         assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        verify(eventQueue, never()).add(any());
 
 
-        // null assignments should be ignored
-        mgr.startDistributing(null);
+        // null assignments should cause message to be queued
+        assertNull(mgr.startDistributing(null));
+        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        verify(eventQueue).add(any());
 
+
+        // route the message to this host
+        assertNotNull(mgr.startDistributing(makeAssignments(true)));
         assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        verify(eventQueue).add(any());
 
 
         // route the message to the other host
-        mgr.startDistributing(makeAssignments(false));
-
+        assertNotNull(mgr.startDistributing(makeAssignments(false)));
         assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        verify(eventQueue).add(any());
     }
 
     @Test
@@ -1086,7 +1101,9 @@ public class PoolingManagerImplTest {
         when(eventQueue.poll()).thenAnswer(args -> lst.poll());
 
         // route the messages to this host
-        assertTrue(mgr.startDistributing(makeAssignments(true)).await(2, TimeUnit.SECONDS));
+        CountDownLatch latch = mgr.startDistributing(makeAssignments(true));
+        assertNotNull(latch);
+        assertTrue(latch.await(2, TimeUnit.SECONDS));
 
         // all of the events should have been processed locally
         verify(dmaap, times(START_PUB)).publish(any());
@@ -1330,7 +1347,7 @@ public class PoolingManagerImplTest {
      */
     private <T extends Exception> T expectException(Class<T> exClass, ExFunction<T> func) {
         try {
-            func.apply(null);
+            func.apply();
             throw new AssertionError("missing exception");
 
         } catch (Exception e) {
@@ -1349,10 +1366,9 @@ public class PoolingManagerImplTest {
         /**
          * Invokes the function.
          * 
-         * @param arg always {@code null}
          * @throws T if an error occurs
          */
-        public void apply(Void arg) throws T;
+        public void apply() throws T;
 
     }
 }
