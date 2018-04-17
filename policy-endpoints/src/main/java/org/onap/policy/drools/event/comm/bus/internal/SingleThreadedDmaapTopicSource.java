@@ -38,7 +38,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 
 	private static Logger logger = LoggerFactory.getLogger(SingleThreadedDmaapTopicSource.class);
 	
-	protected boolean allowSelfSignedCerts;
+	protected boolean dmaapAllowSelfSignedCerts;
 	protected final String userName;
 	protected final String password;
 	
@@ -155,7 +155,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 								                           this.apiKey, this.apiSecret,
 								                           this.consumerGroup, this.consumerInstance,
 								                           this.fetchTimeout, this.fetchLimit,
-								                           this.useHttps, this.allowSelfSignedCerts);
+								                           this.useHttps, this.dmaapAllowSelfSignedCerts);
 		} else if ((this.environment == null    || this.environment.isEmpty()) &&
 				   (this.aftEnvironment == null || this.aftEnvironment.isEmpty()) &&
 				   (this.latitude == null	   || this.latitude.isEmpty()) &&
@@ -167,7 +167,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 							                            this.userName, this.password,
 							                            this.consumerGroup, this.consumerInstance,
 							                            this.fetchTimeout, this.fetchLimit,
-							                            this.useHttps, this.allowSelfSignedCerts);
+							                            this.useHttps, this.dmaapAllowSelfSignedCerts);
 		} else {
 			this.consumer =
 					new BusConsumer.DmaapDmeConsumerWrapper(this.servers, this.topic, 

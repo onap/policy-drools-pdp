@@ -23,7 +23,7 @@ package org.onap.policy.drools.http.server.test;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.ws.rs.core.Response;
@@ -180,10 +180,10 @@ public class HttpClientTest {
     httpProperties.setProperty(PolicyProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "PDP"
         + PolicyProperties.PROPERTY_MANAGED_SUFFIX, "true");
 
-    final ArrayList<HttpServletServer> servers = HttpServletServer.factory.build(httpProperties);
+    final List<HttpServletServer> servers = HttpServletServer.factory.build(httpProperties);
     assertTrue(servers.size() == 2);
 
-    final ArrayList<HttpClient> clients = HttpClient.factory.build(httpProperties);
+    final List<HttpClient> clients = HttpClient.factory.build(httpProperties);
     assertTrue(clients.size() == 2);
 
     for (final HttpServletServer server : servers) {

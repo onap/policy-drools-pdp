@@ -566,7 +566,7 @@ class MDCTransactionImpl implements MDCTransaction {
 
     private String invocationId;
     private String virtualServerName;
-    private String server;
+    private String mdcServer;
     private String serverIpAddress;
     private String serverFqdn;
 
@@ -583,7 +583,7 @@ class MDCTransactionImpl implements MDCTransaction {
     private String statusCode;
     private String responseCode;
     private String responseDescription;
-    private String severity;
+    private String mdcSeverity;
     private String alertSeverity;
 
     private String targetEntity;
@@ -723,8 +723,8 @@ class MDCTransactionImpl implements MDCTransaction {
         if (this.virtualServerName != null)
             MDC.put(VIRTUAL_SERVER_NAME, this.virtualServerName);
 
-        if (this.server != null)
-            MDC.put(SERVER, this.server);
+        if (this.mdcServer != null)
+            MDC.put(SERVER, this.mdcServer);
 
         if (this.serverIpAddress != null)
             MDC.put(SERVER_IP_ADDRESS, this.serverIpAddress);
@@ -772,8 +772,8 @@ class MDCTransactionImpl implements MDCTransaction {
         if (this.responseDescription != null)
             MDC.put(RESPONSE_DESCRIPTION, this.responseDescription);
 
-        if (this.severity != null)
-            MDC.put(SEVERITY, this.severity);
+        if (this.mdcSeverity != null)
+            MDC.put(SEVERITY, this.mdcSeverity);
 
         if (this.alertSeverity != null)
             MDC.put(ALERT_SEVERITY, this.alertSeverity);
@@ -863,7 +863,7 @@ class MDCTransactionImpl implements MDCTransaction {
 
     @Override
     public String getServer() {
-        return this.server;
+        return this.mdcServer;
     }
 
     @Override
@@ -984,7 +984,7 @@ class MDCTransactionImpl implements MDCTransaction {
 
     @Override
     public MDCTransaction setSeverity(String severity) {
-        this.severity = severity;
+        this.mdcSeverity = severity;
         return this;
     }
 
@@ -1033,7 +1033,7 @@ class MDCTransactionImpl implements MDCTransaction {
 
     @Override
     public String getSeverity() {
-        return severity;
+        return mdcSeverity;
     }
 
     @Override
@@ -1085,12 +1085,12 @@ class MDCTransactionImpl implements MDCTransaction {
     @Override
     public MDCTransaction setServer(String server) {
         if (server == null || server.isEmpty()) {
-            this.server = DEFAULT_HOSTNAME;
+            this.mdcServer = DEFAULT_HOSTNAME;
         } else {
-            this.server = server;
+            this.mdcServer = server;
         }
 
-        MDC.put(SERVER, this.server);
+        MDC.put(SERVER, this.mdcServer);
         return this;
     }
 
@@ -1167,7 +1167,7 @@ class MDCTransactionImpl implements MDCTransaction {
         sb.append(", partner='").append(partner).append('\'');
         sb.append(", invocationId='").append(invocationId).append('\'');
         sb.append(", virtualServerName='").append(virtualServerName).append('\'');
-        sb.append(", server='").append(server).append('\'');
+        sb.append(", server='").append(mdcServer).append('\'');
         sb.append(", serverIpAddress='").append(serverIpAddress).append('\'');
         sb.append(", serverFqdn='").append(serverFqdn).append('\'');
         sb.append(", serviceName='").append(serviceName).append('\'');
@@ -1180,7 +1180,7 @@ class MDCTransactionImpl implements MDCTransaction {
         sb.append(", statusCode='").append(statusCode).append('\'');
         sb.append(", responseCode='").append(responseCode).append('\'');
         sb.append(", responseDescription='").append(responseDescription).append('\'');
-        sb.append(", severity='").append(severity).append('\'');
+        sb.append(", severity='").append(mdcSeverity).append('\'');
         sb.append(", alertSeverity='").append(alertSeverity).append('\'');
         sb.append(", targetEntity='").append(targetEntity).append('\'');
         sb.append(", targetServiceName='").append(targetServiceName).append('\'');

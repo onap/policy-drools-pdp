@@ -52,5 +52,5 @@ public interface DroolsControllerFeatureAPI extends OrderedService {
 	   * Feature providers implementing this interface
 	   */
 	  public static final OrderedServiceImpl<DroolsControllerFeatureAPI> providers =
-			  						new OrderedServiceImpl<DroolsControllerFeatureAPI>(DroolsControllerFeatureAPI.class);
+			  						new OrderedServiceImpl<>(DroolsControllerFeatureAPI.class);
 }

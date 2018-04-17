@@ -22,6 +22,9 @@ package org.onap.policy.drools.controller.internal;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -74,6 +77,7 @@ public class MavenDroolsControllerTest {
     }
 
     private DroolsController createDroolsController(long courtesyStartTimeMs) throws InterruptedException {
+    	CountDownLatch latch = new CountDownLatch(1);
         if (releaseId == null)
             throw new IllegalStateException("no prereq artifact installed in maven repository");
 
@@ -97,8 +101,9 @@ public class MavenDroolsControllerTest {
         Assert.assertEquals(releaseId.getVersion(), controller.getContainer().getVersion());
 
         /* courtesy timer to allow full initialization from local maven repository */
-        Thread.sleep(courtesyStartTimeMs);
+		latch.await(courtesyStartTimeMs, TimeUnit.MILLISECONDS);
 
+		
         Assert.assertTrue(controller.getSessionNames().size() == 1);
         Assert.assertEquals(JUNIT_ECHO_KSESSION, controller.getSessionNames().get(0));
         Assert.assertTrue(controller.getCanonicalSessionNames().size() == 1);

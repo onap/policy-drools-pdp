@@ -20,12 +20,15 @@
 
 package org.onap.policy.drools.controller.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -314,6 +317,8 @@ public class AllSeemsWellTest {
 	}
 
 	private void sleep(long sleepms) throws InterruptedException {
-		Thread.sleep(sleepms);
+		CountDownLatch latch = new CountDownLatch(1);
+		
+		latch.await(sleepms, TimeUnit.MILLISECONDS);
 	}
 }
