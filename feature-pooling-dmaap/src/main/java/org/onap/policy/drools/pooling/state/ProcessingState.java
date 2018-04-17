@@ -74,24 +74,6 @@ public class ProcessingState extends State {
     }
 
     /**
-     * Goes active with a new set of assignments.
-     * 
-     * @param asgn new assignments
-     * @return the new state, either Active or Inactive, depending on whether or not this
-     *         host has an assignment
-     */
-    protected State goActive(BucketAssignments asgn) {
-        startDistributing(asgn);
-
-        if (asgn.hasAssignment(getHost())) {
-            return goActive();
-
-        } else {
-            return goInactive();
-        }
-    }
-
-    /**
      * Generates an Identification message and goes to the query state.
      */
     @Override
@@ -154,11 +136,11 @@ public class ProcessingState extends State {
         }
 
         Leader msg = makeLeader(alive);
+        logger.info("{}/{} hosts have an assignment", msg.getAssignments().getAllHosts().size(), alive.size());
+
         publish(msg);
 
-        setAssignments(msg.getAssignments());
-
-        return goActive();
+        return goActive(msg.getAssignments());
     }
 
     /**

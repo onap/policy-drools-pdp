@@ -119,14 +119,16 @@ public abstract class SingleThreadedBusTopicSource
 		
 		super(servers, topic, apiKey, apiSecret, useHttps, allowSelfSignedCerts);
 		
+		String uuid = UUID.randomUUID().toString();
+		
 		if (consumerGroup == null || consumerGroup.isEmpty()) {
-			this.consumerGroup = UUID.randomUUID ().toString();
+			this.consumerGroup = uuid;
 		} else {
 			this.consumerGroup = consumerGroup;
 		}
 		
 		if (consumerInstance == null || consumerInstance.isEmpty()) {
-			this.consumerInstance = DEFAULT_CONSUMER_INSTANCE;
+            this.consumerInstance = uuid;
 		} else {
 			this.consumerInstance = consumerInstance;
 		}

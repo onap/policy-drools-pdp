@@ -31,6 +31,7 @@ public interface BusTopicSource extends ApiKeyEnabled, TopicSource {
 	/**
 	 * Default Consumer Instance Value
 	 */
+    @Deprecated
 	public static String DEFAULT_CONSUMER_INSTANCE = "0";
 	
 	/**

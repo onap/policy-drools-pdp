@@ -63,7 +63,6 @@ public class QueryState extends ProcessingState {
 
     @Override
     public void start() {
-
         super.start();
 
         // start identification timer
@@ -85,37 +84,19 @@ public class QueryState extends ProcessingState {
             if (!sawSelfIdent) {
                 // didn't see our identification
                 logger.error("missed our own Ident message on topic {}", getTopic());
-                return internalTopicFailed();
+                return missedHeartbeat();
 
             } else if (isLeader()) {
                 // "this" host is the new leader
                 logger.info("this host is the new leader for topic {}", getTopic());
                 return becomeLeader(alive);
 
-            } else if (hasAssignment()) {
-                /*
-                 * this host is not the new leader, but it does have an assignment -
-                 * return to the active state while we wait for the leader
-                 */
-                logger.info("no new leader on topic {}", getTopic());
-                return goActive();
-
             } else {
-                // not the leader and no assignment yet
+                // not the leader - return to previous state
                 logger.info("no new leader on topic {}", getTopic());
-                return goInactive();
+                return goActive(getAssignments());
             }
         });
-    }
-
-    /**
-     * Determines if this host has an assignment in the CURRENT assignments.
-     * 
-     * @return {@code true} if this host has an assignment, {@code false} otherwise
-     */
-    protected boolean hasAssignment() {
-        BucketAssignments asgn = getAssignments();
-        return (asgn != null && asgn.hasAssignment(getHost()));
     }
 
     @Override
