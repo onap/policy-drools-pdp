@@ -186,12 +186,12 @@ class HealthCheckMonitor implements HealthCheck {
 	/**
 	 * attached http servers
 	 */
-	protected volatile ArrayList<HttpServletServer> servers = new ArrayList<>();
+	protected volatile List<HttpServletServer> servers = new ArrayList<>();
 	
 	/**
 	 * attached http clients
 	 */
-	protected volatile ArrayList<HttpClient> clients = new ArrayList<>();
+	protected volatile List<HttpClient> clients = new ArrayList<>();
 	
 	/**
 	 * healthcheck configuration

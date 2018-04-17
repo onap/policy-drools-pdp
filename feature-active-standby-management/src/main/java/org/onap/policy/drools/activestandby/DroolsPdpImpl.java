@@ -89,4 +89,24 @@ public class DroolsPdpImpl extends DroolsPdpObject {
 		this.designatedDate = designatedDate;
 		
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		
+
+		if (obj instanceof DroolsPdp) {
+			DroolsPdpImpl p = (DroolsPdpImpl) obj;
+			return this.pdpId.equals(p.getPdpId());
+		} else {
+			return false;
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.pdpId == null ? 0 : this.pdpId.hashCode());
+		return result;
+	}
 }

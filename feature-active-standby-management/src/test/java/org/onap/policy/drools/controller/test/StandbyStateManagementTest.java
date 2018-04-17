@@ -26,7 +26,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -100,6 +103,7 @@ public class StandbyStateManagementTest {
 	
 	private final String configDir = "src/test/resources";
 
+	private CountDownLatch latch = new CountDownLatch(1);
 	/*
 	 * See the IntegrityMonitor.getJmxUrl() method for the rationale behind this jmx related processing.
 	 */
@@ -321,7 +325,7 @@ public class StandbyStateManagementTest {
 		DroolsPdp pdp3 = new DroolsPdpImpl("pdp3", false, 4, new Date());
 		DroolsPdp pdp4 = new DroolsPdpImpl("pdp4", false, 4, new Date());
 		
-		ArrayList<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
+		List<DroolsPdp> listOfDesignated = new ArrayList<DroolsPdp>();
 		listOfDesignated.add(pdp1);
 		listOfDesignated.add(pdp2);
 		listOfDesignated.add(pdp3);
@@ -1549,6 +1553,6 @@ public class StandbyStateManagementTest {
 	}
 
 	private void sleep(long sleepms) throws InterruptedException {
-		Thread.sleep(sleepms);
+		latch.await(sleepms, TimeUnit.MILLISECONDS);
 	}
 }
