@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -104,7 +106,9 @@ public class TestTransactionTest {
    */
   public Thread getThread(String threadName) throws InterruptedException {
     // give a chance to the transaction thread to be spawned/destroyed
-    Thread.sleep(5000L);
+	CountDownLatch latch = new CountDownLatch(1);
+		
+	latch.await(5000L, TimeUnit.MILLISECONDS);
 
     final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
     for (final Thread thread : threadSet) {

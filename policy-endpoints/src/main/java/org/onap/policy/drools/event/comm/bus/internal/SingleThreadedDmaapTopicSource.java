@@ -38,7 +38,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 
 	private static Logger logger = LoggerFactory.getLogger(SingleThreadedDmaapTopicSource.class);
 	
-	protected boolean allowSelfSignedCerts;
+
 	protected final String userName;
 	protected final String password;
 	

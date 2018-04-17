@@ -28,6 +28,9 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.util.KieUtils;
@@ -321,7 +324,8 @@ public class DroolsContainerTest
    * to appear.
    */
   private int waitForChange(int[] array) throws InterruptedException
-  {
+  {		
+	CountDownLatch latch = new CountDownLatch(1);
 	int rval = -1;
 
 	// the value is tested every 1/100 of a second, and it waits up to
@@ -329,7 +333,8 @@ public class DroolsContainerTest
 	for (int i = 0 ; i < 3000 ; i += 1)
 	  {
 		// wait for 10 milliseconds = 1/100 of a second
-		Thread.sleep(10);
+		latch.await(10, TimeUnit.MILLISECONDS);
+
 		if ((rval = array[0]) != 0)
 		  {
 			// a non-zero value has been stored
