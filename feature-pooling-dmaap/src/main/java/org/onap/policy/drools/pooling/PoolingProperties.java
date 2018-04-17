@@ -51,12 +51,12 @@ public class PoolingProperties extends SpecPropertyConfiguration {
     public static final String FEATURE_ENABLED = PREFIX + "{?.}enabled";
     public static final String OFFLINE_LIMIT = PREFIX + "{?.}offline.queue.limit";
     public static final String OFFLINE_AGE_MS = PREFIX + "{?.}offline.queue.age.milliseconds";
+    public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "{?.}offline.publish.wait.milliseconds";
     public static final String START_HEARTBEAT_MS = PREFIX + "{?.}start.heartbeat.milliseconds";
     public static final String REACTIVATE_MS = PREFIX + "{?.}reactivate.milliseconds";
     public static final String IDENTIFICATION_MS = PREFIX + "{?.}identification.milliseconds";
     public static final String ACTIVE_HEARTBEAT_MS = PREFIX + "{?.}active.heartbeat.milliseconds";
     public static final String INTER_HEARTBEAT_MS = PREFIX + "{?.}inter.heartbeat.milliseconds";
-    public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "{?.}offline.publish.wait.milliseconds";
 
     /**
      * Type of item that the extractors will be extracting.
@@ -94,10 +94,17 @@ public class PoolingProperties extends SpecPropertyConfiguration {
     private long offlineAgeMs;
 
     /**
+     * Time, in milliseconds, to wait for an "Offline" message to be published
+     * to DMaaP.
+     */
+    @Property(name = OFFLINE_PUB_WAIT_MS, defaultValue = "3000")
+    private long offlinePubWaitMs;
+
+    /**
      * Time, in milliseconds, to wait for this host's heart beat during the
      * start-up state.
      */
-    @Property(name = START_HEARTBEAT_MS, defaultValue = "50000")
+    @Property(name = START_HEARTBEAT_MS, defaultValue = "100000")
     private long startHeartbeatMs;
 
     /**
@@ -123,17 +130,10 @@ public class PoolingProperties extends SpecPropertyConfiguration {
 
     /**
      * Time, in milliseconds, to wait between heart beat generations during
-     * the active state.
+     * the active and start-up states.
      */
     @Property(name = INTER_HEARTBEAT_MS, defaultValue = "15000")
     private long interHeartbeatMs;
-
-    /**
-     * Time, in milliseconds, to wait for an "Offline" message to be published
-     * to DMaaP.
-     */
-    @Property(name = OFFLINE_PUB_WAIT_MS, defaultValue = "3000")
-    private long offlinePubWaitMs;
 
     /**
      * @param controllerName the name of the controller
@@ -163,6 +163,10 @@ public class PoolingProperties extends SpecPropertyConfiguration {
         return offlineAgeMs;
     }
 
+    public long getOfflinePubWaitMs() {
+        return offlinePubWaitMs;
+    }
+
     public long getStartHeartbeatMs() {
         return startHeartbeatMs;
     }
@@ -181,9 +185,5 @@ public class PoolingProperties extends SpecPropertyConfiguration {
 
     public long getInterHeartbeatMs() {
         return interHeartbeatMs;
-    }
-
-    public long getOfflinePubWaitMs() {
-        return offlinePubWaitMs;
     }
 }

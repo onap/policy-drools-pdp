@@ -193,20 +193,26 @@ public interface BusConsumer {
     public void setFilter(String filter) {
         logger.info("{}: setting DMAAP server-side filter: {}", this, filter);
         builder.withServerSideFilter(filter);
+        
+        CambriaConsumer oldConsumer = consumer;
 
         try {
             consumer = builder.build();
             
         } catch (MalformedURLException | GeneralSecurityException e) {
+            /*
+             * Since an exception occurred, "consumer" still has its old value,
+             * thus it should not be closed at this point.
+             */
             throw new IllegalArgumentException(e);
         }
+        
+        oldConsumer.close();
     }
 
     @Override
     public String toString() {
-      final StringBuilder builder = new StringBuilder();
-      builder.append("CambriaConsumerWrapper [fetchTimeout=").append(fetchTimeout).append("]");
-      return builder.toString();
+      return "CambriaConsumerWrapper [fetchTimeout=" + fetchTimeout + "]";
     }
   }
 
@@ -311,13 +317,10 @@ public interface BusConsumer {
 
     @Override
     public String toString() {
-      final StringBuilder builder = new StringBuilder();
-      builder.append("DmaapConsumerWrapper [").append("consumer.getAuthDate()=")
-          .append(consumer.getAuthDate()).append(", consumer.getAuthKey()=")
-          .append(consumer.getAuthKey()).append(", consumer.getHost()=").append(consumer.getHost())
-          .append(", consumer.getProtocolFlag()=").append(consumer.getProtocolFlag())
-          .append(", consumer.getUsername()=").append(consumer.getUsername()).append("]");
-      return builder.toString();
+            return "DmaapConsumerWrapper [" + "consumer.getAuthDate()=" + consumer.getAuthDate()
+                            + ", consumer.getAuthKey()=" + consumer.getAuthKey() + ", consumer.getHost()="
+                            + consumer.getHost() + ", consumer.getProtocolFlag()=" + consumer.getProtocolFlag()
+                            + ", consumer.getUsername()=" + consumer.getUsername() + "]";
     }
   }
 
@@ -378,15 +381,12 @@ public interface BusConsumer {
 
     @Override
     public String toString() {
-      final StringBuilder builder = new StringBuilder();
       final MRConsumerImpl consumer = this.consumer;
 
-      builder.append("DmaapConsumerWrapper [").append("consumer.getAuthDate()=")
-          .append(consumer.getAuthDate()).append(", consumer.getAuthKey()=")
-          .append(consumer.getAuthKey()).append(", consumer.getHost()=").append(consumer.getHost())
-          .append(", consumer.getProtocolFlag()=").append(consumer.getProtocolFlag())
-          .append(", consumer.getUsername()=").append(consumer.getUsername()).append("]");
-      return builder.toString();
+            return "DmaapConsumerWrapper [" + "consumer.getAuthDate()=" + consumer.getAuthDate()
+                            + ", consumer.getAuthKey()=" + consumer.getAuthKey() + ", consumer.getHost()="
+                            + consumer.getHost() + ", consumer.getProtocolFlag()=" + consumer.getProtocolFlag()
+                            + ", consumer.getUsername()=" + consumer.getUsername() + "]";
     }
   }
 
