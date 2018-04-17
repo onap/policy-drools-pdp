@@ -60,11 +60,11 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
    * @param url the JMX URL of the MBean server
    * @param properties properties used locally, as well as by
    *	'IntegrityMonitor'
-   * @throws Exception (passed from superclass)
+   * @throws IntegrityMonitorException (passed from superclass)
    */
 	private DroolsPDPIntegrityMonitor(String resourceName,
 			Properties consolidatedProperties
-			) throws Exception {
+			) throws IntegrityMonitorException {
 	super(resourceName, consolidatedProperties);
   }
   

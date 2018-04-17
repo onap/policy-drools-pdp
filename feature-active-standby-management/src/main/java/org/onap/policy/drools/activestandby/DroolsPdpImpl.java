@@ -89,4 +89,22 @@ public class DroolsPdpImpl extends DroolsPdpObject {
 		this.designatedDate = designatedDate;
 		
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		
+	    if (! super.equals(obj)) {
+	        return false;
+	      }
+	    
+		DroolsPdpImpl dpi = (DroolsPdpImpl) obj;
+
+		return (this.pdpId.equals(dpi.getPdpId()) && this.site.equals(dpi.getSiteName()));
+		
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }
