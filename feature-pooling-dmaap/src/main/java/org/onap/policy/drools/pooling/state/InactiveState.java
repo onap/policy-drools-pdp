@@ -44,24 +44,17 @@ public class InactiveState extends State {
 
     @Override
     public void start() {
-
         super.start();
-
         schedule(getProperties().getReactivateMs(), () -> goStart());
     }
 
     @Override
     public State process(Leader msg) {
-        if(isValid(msg)) {
+        if (isValid(msg)) {
             logger.info("received Leader message from {} on topic {}", msg.getSource(), getTopic());
-            startDistributing(msg.getAssignments());
-            
-            if(msg.getAssignments().hasAssignment(getHost())) {
-                logger.info("received Leader message on topic {}", getTopic());
-                return goActive();
-            }
+            return goActive(msg.getAssignments());
         }
-        
+
         return null;
     }
 

@@ -193,13 +193,21 @@ public interface BusConsumer {
     public void setFilter(String filter) {
         logger.info("{}: setting DMAAP server-side filter: {}", this, filter);
         builder.withServerSideFilter(filter);
+        
+        CambriaConsumer oldConsumer = consumer;
 
         try {
             consumer = builder.build();
             
         } catch (MalformedURLException | GeneralSecurityException e) {
+            /*
+             * Since an exception occurred, "consumer" still has its old value,
+             * thus it should not be closed at this point.
+             */
             throw new IllegalArgumentException(e);
         }
+        
+        oldConsumer.close();
     }
 
     @Override

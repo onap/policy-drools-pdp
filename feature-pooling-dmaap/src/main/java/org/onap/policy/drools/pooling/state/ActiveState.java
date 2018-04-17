@@ -95,18 +95,19 @@ public class ActiveState extends ProcessingState {
         if ((succHost = assigned.higher(getHost())) == null) {
             // wrapped around - successor is the first host in the set
             succHost = assigned.first();
-            logger.info("this host's successor is {} on topic {}", succHost, getTopic());
         }
+        logger.info("this host's successor is {} on topic {}", succHost, getTopic());        
 
         if ((predHost = assigned.lower(getHost())) == null) {
             // wrapped around - predecessor is the last host in the set
             predHost = assigned.last();
-            logger.info("this host's predecessor is {} on topic {}", predHost, getTopic());
         }
+        logger.info("this host's predecessor is {} on topic {}", predHost, getTopic());
     }
 
     @Override
     public void start() {
+        super.start();
         addTimers();
         genHeartbeat();
     }
@@ -120,7 +121,7 @@ public class ActiveState extends ProcessingState {
         /*
          * heart beat generator
          */
-        long genMs = getProperties().getActiveHeartbeatMs();
+        long genMs = getProperties().getInterHeartbeatMs();
 
         scheduleWithFixedDelay(genMs, genMs, () -> {
             genHeartbeat();
@@ -130,9 +131,9 @@ public class ActiveState extends ProcessingState {
         /*
          * my heart beat checker
          */
-        long interMs = getProperties().getInterHeartbeatMs();
+        long waitMs = getProperties().getActiveHeartbeatMs();
 
-        scheduleWithFixedDelay(interMs, interMs, () -> {
+        scheduleWithFixedDelay(waitMs, waitMs, () -> {
             if (myHeartbeatSeen) {
                 myHeartbeatSeen = false;
                 return null;
@@ -141,7 +142,7 @@ public class ActiveState extends ProcessingState {
             // missed my heart beat
             logger.error("missed my heartbeat on topic {}", getTopic());
 
-            return internalTopicFailed();
+            return missedHeartbeat();
         });
 
         /*
@@ -149,7 +150,7 @@ public class ActiveState extends ProcessingState {
          */
         if (!predHost.isEmpty()) {
 
-            scheduleWithFixedDelay(interMs, interMs, () -> {
+            scheduleWithFixedDelay(waitMs, waitMs, () -> {
                 if (predHeartbeatSeen) {
                     predHeartbeatSeen = false;
                     return null;
