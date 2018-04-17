@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_33df250f",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "the contract requires hashCode \u0026 equals to work together.  Since equals only examines the pdpId, hashCode should only compute the hash code for pdpId.",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_53e431e0",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "only compute the hash code for pdpId",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_f3e45de1",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpsElectionHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 642,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "replace ArrayList\u003c\u003e with List\u003c\u003e on left-hand side",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_530bd18d",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/DmaapManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t include this file - it will be updated via another jira",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_1301c969",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/extractor/ClassExtractors.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t include this file - it will be updated via another jira",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_d3cfe154",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/extractor/ClassExtractors.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 378,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t want to report this.  Maybe just add \"expected\" to the end of the previous logger.debug() line",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b3d255fe",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/extractor/ClassExtractors.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t want to report this",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_b3f9f581",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/FeatureTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t include this file - it will be updated via another jira",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_93ecf9bc",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusConsumer.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t include this file - it will be updated via another jira",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_332de5fe",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedBusTopicSource.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-17T22:56:39Z",
+      "side": 1,
+      "message": "don\u0027t include this file - it will be updated via another jira",
+      "revId": "cf841a4d5ca4f918b4022aa79b8f1ceba5005442",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
