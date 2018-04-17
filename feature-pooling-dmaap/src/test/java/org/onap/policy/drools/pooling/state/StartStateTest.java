@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Map;
@@ -39,6 +40,7 @@ import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
 import org.onap.policy.drools.utils.Pair;
+import org.onap.policy.drools.utils.Triple;
 
 public class StartStateTest extends BasicStateTester {
 
@@ -78,15 +80,36 @@ public class StartStateTest extends BasicStateTester {
         assertEquals(MY_HOST, msg.first());
         assertEquals(state.getHbTimestampMs(), msg.second().getTimestampMs());
 
-        Pair<Long, StateTimerTask> timer = onceTasks.removeFirst();
 
-        assertEquals(STD_HEARTBEAT_WAIT_MS, timer.first().longValue());
+        /*
+         * Verify heartbeat generator
+         */
+        Triple<Long, Long, StateTimerTask> generator = repeatedTasks.removeFirst();
+
+        assertEquals(STD_INTER_HEARTBEAT_MS, generator.first().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, generator.second().longValue());
+
+        // invoke the task - it should generate another heartbeat
+        assertEquals(null, generator.third().fire());
+        verify(mgr, times(2)).publish(MY_HOST, msg.second());
+
+        // and again
+        assertEquals(null, generator.third().fire());
+        verify(mgr, times(3)).publish(MY_HOST, msg.second());
+
+
+        /*
+         * Verify heartbeat checker
+         */
+        Pair<Long, StateTimerTask> checker = onceTasks.removeFirst();
+
+        assertEquals(STD_HEARTBEAT_WAIT_MS, checker.first().longValue());
 
         // invoke the task - it should go to the state returned by the mgr
         State next = mock(State.class);
         when(mgr.goInactive()).thenReturn(next);
 
-        assertEquals(next, timer.second().fire());
+        assertEquals(next, checker.second().fire());
 
         verify(mgr).internalTopicFailed();
     }

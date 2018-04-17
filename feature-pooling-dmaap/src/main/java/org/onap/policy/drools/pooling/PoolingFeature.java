@@ -21,6 +21,7 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
@@ -54,6 +55,11 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     private static Factory factory;
 
     /**
+     * ID of this host.
+     */
+    private final String host;
+
+    /**
      * Entire set of feature properties, including those specific to various controllers.
      */
     private Properties featProps = null;
@@ -75,6 +81,8 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
      */
     public PoolingFeature() {
         super();
+
+        this.host = UUID.randomUUID().toString();
     }
 
     protected static Factory getFactory() {
@@ -88,6 +96,10 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
      */
     protected static void setFactory(Factory factory) {
         PoolingFeature.factory = factory;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     @Override
@@ -123,7 +135,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
                 PoolingProperties props = new PoolingProperties(name, featProps);
 
                 logger.info("pooling enabled for {}", name);
-                ctlr2pool.computeIfAbsent(name, xxx -> factory.makeManager(controller, props));
+                ctlr2pool.computeIfAbsent(name, xxx -> factory.makeManager(host, controller, props));
 
             } catch (PropertyException e) {
                 logger.error("pooling disabled due to exception for {}", name, e);
@@ -371,12 +383,13 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
         /**
          * Makes a pooling manager for a controller.
          * 
+         * @param host name/uuid of this host
          * @param controller
          * @param props properties to use to configure the manager
          * @return a new pooling manager
          */
-        public PoolingManagerImpl makeManager(PolicyController controller, PoolingProperties props) {
-            return new PoolingManagerImpl(controller, props);
+        public PoolingManagerImpl makeManager(String host, PolicyController controller, PoolingProperties props) {
+            return new PoolingManagerImpl(host, controller, props);
         }
 
         /**

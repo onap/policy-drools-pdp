@@ -123,6 +123,24 @@ public class SpecPropertiesTest {
     }
 
     @Test
+    public void testSpecPropertiesStringStringProperties_EmptyPrefix() {
+        supportingProps = new Properties();
+
+        supportingProps.setProperty(PROP_NO_PREFIX, VAL_NO_PREFIX);
+        supportingProps.setProperty("a.value", VAL_GEN);
+        supportingProps.setProperty("b.value", VAL_GEN);
+        supportingProps.setProperty(MY_SPEC + ".b.value", VAL_SPEC);
+
+        // no supporting properties
+        props = new SpecProperties("", MY_SPEC, supportingProps);
+
+        assertEquals(VAL_NO_PREFIX, props.getProperty(gen(PROP_NO_PREFIX)));
+        assertEquals(VAL_GEN, props.getProperty(gen("a.value")));
+        assertEquals(VAL_SPEC, props.getProperty(MY_SPEC + ".b.value"));
+        assertNull(props.getProperty(gen(PROP_UNKNOWN)));
+    }
+
+    @Test
     public void testWithTrailingDot() {
         // neither has trailing dot
         assertEquals(PREFIX_GEN, props.getPrefix());
@@ -132,6 +150,16 @@ public class SpecPropertiesTest {
         props = new SpecProperties(PREFIX_GEN, MY_SPEC + ".");
         assertEquals(PREFIX_GEN, props.getPrefix());
         assertEquals(PREFIX_SPEC, props.getSpecPrefix());
+
+        // first is empty
+        props = new SpecProperties("", MY_SPEC);
+        assertEquals("", props.getPrefix());
+        assertEquals(MY_SPEC + ".", props.getSpecPrefix());
+
+        // second is empty
+        props = new SpecProperties(PREFIX_GEN, "");
+        assertEquals(PREFIX_GEN, props.getPrefix());
+        assertEquals(PREFIX_GEN, props.getSpecPrefix());
     }
 
     @Test

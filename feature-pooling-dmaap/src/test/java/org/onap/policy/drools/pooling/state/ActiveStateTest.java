@@ -298,18 +298,18 @@ public class ActiveStateTest extends BasicStateTester {
 
         // heart beat generator
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
 
         // my heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
 
         // predecessor's heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
     }
 
     @Test
@@ -327,13 +327,13 @@ public class ActiveStateTest extends BasicStateTester {
 
         // heart beat generator
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
 
         // my heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
     }
 
     @Test
@@ -389,13 +389,13 @@ public class ActiveStateTest extends BasicStateTester {
 
         // set up next state
         State next = mock(State.class);
-        when(mgr.goInactive()).thenReturn(next);
+        when(mgr.goStart()).thenReturn(next);
 
         // fire the task - should transition
         assertEquals(next, task.third().fire());
 
-        // should indicate failure
-        verify(mgr).internalTopicFailed();
+        // should stop distributing
+        verify(mgr).startDistributing(null);
 
         // should publish an offline message
         Offline msg = captureAdminMessage(Offline.class);

@@ -21,7 +21,6 @@
 package org.onap.policy.drools.pooling.state;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -254,9 +253,12 @@ public class QueryStateTest extends BasicStateTester {
         // should published an Offline message and go inactive
 
         State next = mock(State.class);
-        when(mgr.goInactive()).thenReturn(next);
+        when(mgr.goStart()).thenReturn(next);
 
         assertEquals(next, timer.second().fire());
+
+        // should stop distributing
+        verify(mgr).startDistributing(null);
 
         Offline msg = captureAdminMessage(Offline.class);
         assertEquals(MY_HOST, msg.getSource());
@@ -340,21 +342,6 @@ public class QueryStateTest extends BasicStateTester {
 
         // should NOT have published a Leader message
         assertTrue(admin.isEmpty());
-    }
-
-    @Test
-    public void testHasAssignment() {
-        // null assignment
-        mgr.startDistributing(null);
-        assertFalse(state.hasAssignment());
-
-        // not in assignments
-        state.setAssignments(new BucketAssignments(new String[] {HOST3}));
-        assertFalse(state.hasAssignment());
-
-        // it IS in the assignments
-        state.setAssignments(new BucketAssignments(new String[] {MY_HOST}));
-        assertTrue(state.hasAssignment());
     }
 
     @Test
