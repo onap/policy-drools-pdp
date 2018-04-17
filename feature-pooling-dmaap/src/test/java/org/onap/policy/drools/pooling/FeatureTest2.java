@@ -28,40 +28,32 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.policy.common.utils.properties.SpecPropertyConfiguration.specialize;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.event.comm.FilterableTopicSource;
-import org.onap.policy.drools.event.comm.Topic;
 import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.drools.event.comm.TopicEndpoint;
 import org.onap.policy.drools.event.comm.TopicListener;
 import org.onap.policy.drools.event.comm.TopicSink;
 import org.onap.policy.drools.event.comm.TopicSource;
-import org.onap.policy.drools.pooling.message.Message;
+import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
-import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -69,69 +61,94 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * End-to-end tests of the pooling feature. Launches one or more "hosts", each one having
- * its own feature object. Uses real feature objects. However, the following are not:
+ * its own feature object. Uses real feature objects, as well as real DMaaP sources and
+ * sinks. However, the following are not:
  * <dl>
- * <dt>DMaaP sources and sinks</dt>
- * <dd>simulated using queues. There is one queue for the external topic, and one queue
- * for each host's internal topic. Messages published to the "admin" channel are simply
- * sent to all of the hosts' internal topic queues</dd>
  * <dt>PolicyEngine, PolicyController, DroolsController</dt>
  * <dd>mocked</dd>
  * </dl>
+ * 
+ * <p>
+ * The following fields must be set before executing this:
+ * <ul>
+ * <li>UEB_SERVERS</li>
+ * <li>INTERNAL_TOPIC</li>
+ * <li>EXTERNAL_TOPIC</li>
+ * </ul>
  */
-public class FeatureTest {
+public class FeatureTest2 {
 
-    private static final Logger logger = LoggerFactory.getLogger(FeatureTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(FeatureTest2.class);
+
+    /**
+     * UEB servers for both internal & external topics.
+     */
+    private static final String UEB_SERVERS = "";
 
     /**
      * Name of the topic used for inter-host communication.
      */
-    private static final String INTERNAL_TOPIC = "my.internal.topic";
+    private static final String INTERNAL_TOPIC = "";
 
     /**
      * Name of the topic from which "external" events "arrive".
      */
-    private static final String EXTERNAL_TOPIC = "my.external.topic";
+    private static final String EXTERNAL_TOPIC = "";
+
+    /**
+     * Consumer group to use when polling the external topic.
+     */
+    private static final String EXTERNAL_GROUP = FeatureTest2.class.getName();
 
     /**
      * Name of the controller.
      */
     private static final String CONTROLLER1 = "controller.one";
 
-    private static long stdReactivateWaitMs = 200;
-    private static long stdIdentificationMs = 60;
-    private static long stdStartHeartbeatMs = 60;
-    private static long stdActiveHeartbeatMs = 50;
-    private static long stdInterHeartbeatMs = 5;
-    private static long stdOfflinePubWaitMs = 2;
-    private static long stdPollMs = 2;
-    private static long stdInterPollMs = 2;
-    private static long stdEventWaitSec = 10;
+    /**
+     * Maximum number of items to fetch from DMaaP in a single poll.
+     */
+    private static final String FETCH_LIMIT = "5";
+
+    private static final long STD_REACTIVATE_WAIT_MS = 10000;
+    private static final long STD_IDENTIFICATION_MS = 10000;
+    private static final long STD_START_HEARTBEAT_MS = 15000;
+    private static final long STD_ACTIVE_HEARTBEAT_MS = 12000;
+    private static final long STD_INTER_HEARTBEAT_MS = 5000;
+    private static final long STD_OFFLINE_PUB_WAIT_MS = 2;
+    private static final long EVENT_WAIT_SEC = 15;
 
     // these are saved and restored on exit from this test class
     private static PoolingFeature.Factory saveFeatureFactory;
     private static PoolingManagerImpl.Factory saveManagerFactory;
-    private static DmaapManager.Factory saveDmaapFactory;
+
+    /**
+     * Sink for external DMaaP topic.
+     */
+    private static TopicSink externalSink;
 
     /**
      * Context for the current test case.
      */
     private Context ctx;
 
+
     @BeforeClass
     public static void setUpBeforeClass() {
         saveFeatureFactory = PoolingFeature.getFactory();
         saveManagerFactory = PoolingManagerImpl.getFactory();
-        saveDmaapFactory = DmaapManager.getFactory();
-        
-        // note: invoke runSlow() to slow things down
+
+        Properties props = makeSinkProperties(EXTERNAL_TOPIC);
+        externalSink = TopicEndpoint.manager.addTopicSinks(props).get(0);
+        externalSink.start();
     }
 
     @AfterClass
     public static void tearDownAfterClass() {
         PoolingFeature.setFactory(saveFeatureFactory);
         PoolingManagerImpl.setFactory(saveManagerFactory);
-        DmaapManager.setFactory(saveDmaapFactory);
+
+        externalSink.stop();
     }
 
     @Before
@@ -146,16 +163,19 @@ public class FeatureTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_SingleHost() throws Exception {
         run(70, 1);
     }
 
+    @Ignore
     @Test
     public void test_TwoHosts() throws Exception {
         run(200, 2);
     }
 
+    @Ignore
     @Test
     public void test_ThreeHosts() throws Exception {
         run(200, 3);
@@ -170,11 +190,13 @@ public class FeatureTest {
 
         ctx.startHosts();
 
+        ctx.awaitEvents(STD_IDENTIFICATION_MS * 2, TimeUnit.MILLISECONDS);
+
         for (int x = 0; x < nmessages; ++x) {
             ctx.offerExternal(makeMessage(x));
         }
 
-        ctx.awaitEvents(stdEventWaitSec, TimeUnit.SECONDS);
+        ctx.awaitEvents(EVENT_WAIT_SEC, TimeUnit.SECONDS);
 
         assertEquals(0, ctx.getDecodeErrors());
         assertEquals(0, ctx.getRemainingEvents());
@@ -184,20 +206,47 @@ public class FeatureTest {
     private String makeMessage(int reqnum) {
         return "{\"reqid\":\"req" + reqnum + "\", \"data\":\"hello " + reqnum + "\"}";
     }
-    
-    /**
-     * Invoke this to slow the timers down.
-     */
-    protected static void runSlow() {
-         stdReactivateWaitMs = 10000;
-         stdIdentificationMs = 10000;
-         stdStartHeartbeatMs = 15000;
-         stdActiveHeartbeatMs = 12000;
-         stdInterHeartbeatMs = 5000;
-         stdOfflinePubWaitMs = 2;
-         stdPollMs = 2;
-         stdInterPollMs = 2000;
-         stdEventWaitSec = 1000;
+
+    private static Properties makeSinkProperties(String topic) {
+        Properties props = new Properties();
+
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS, topic);
+
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
+                        + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
+                        + PolicyProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX, "0");
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
+                        + PolicyProperties.PROPERTY_MANAGED_SUFFIX, "false");
+
+        return props;
+    }
+
+    private static Properties makeSourceProperties(String topic) {
+        Properties props = new Properties();
+
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS, topic);
+
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                        + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                        + PolicyProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX, FETCH_LIMIT);
+        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                        + PolicyProperties.PROPERTY_MANAGED_SUFFIX, "false");
+
+        if (EXTERNAL_TOPIC.equals(topic)) {
+            // consumer group is a constant
+            props.setProperty(
+                            PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                                            + PolicyProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX,
+                            EXTERNAL_GROUP);
+
+            // consumer instance is generated by the BusConsumer code
+        }
+
+        // else internal topic: feature populates info for internal topic
+
+        return props;
     }
 
     /**
@@ -207,7 +256,6 @@ public class FeatureTest {
 
         private final FeatureFactory featureFactory;
         private final ManagerFactory managerFactory;
-        private final DmaapFactory dmaapFactory;
 
         /**
          * Hosts that have been added to this context.
@@ -220,16 +268,6 @@ public class FeatureTest {
         private final IdentityHashMap<DroolsController, PolicyController> drools2policy = new IdentityHashMap<>();
 
         /**
-         * Maps a channel to its queue. Does <i>not</i> include the "admin" channel.
-         */
-        private final ConcurrentMap<String, BlockingQueue<String>> channel2queue = new ConcurrentHashMap<>(7);
-
-        /**
-         * Queue for the external "DMaaP" topic.
-         */
-        private final BlockingQueue<String> externalTopic = new LinkedBlockingQueue<String>();
-
-        /**
          * Counts the number of decode errors.
          */
         private final AtomicInteger nDecodeErrors = new AtomicInteger(0);
@@ -240,24 +278,16 @@ public class FeatureTest {
         private final CountDownLatch eventCounter;
 
         /**
-         * The current host. Set by {@link #withHost(Host, VoidFunction)} and used by
-         * {@link #getCurrentHost()}.
-         */
-        private Host currentHost = null;
-
-        /**
          * 
          * @param nEvents number of events to be processed
          */
         public Context(int nEvents) {
             featureFactory = new FeatureFactory(this);
             managerFactory = new ManagerFactory(this);
-            dmaapFactory = new DmaapFactory(this);
             eventCounter = new CountDownLatch(nEvents);
 
             PoolingFeature.setFactory(featureFactory);
             PoolingManagerImpl.setFactory(managerFactory);
-            DmaapManager.setFactory(dmaapFactory);
         }
 
         /**
@@ -306,57 +336,12 @@ public class FeatureTest {
         }
 
         /**
-         * Sets {@link #currentHost} to the specified host, and then invokes the given
-         * function. Resets {@link #currentHost} to {@code null} before returning.
-         * 
-         * @param host
-         * @param func function to invoke
-         */
-        public void withHost(Host host, VoidFunction func) {
-            currentHost = host;
-            func.apply();
-            currentHost = null;
-        }
-
-        /**
          * Offers an event to the external topic.
          * 
          * @param event
          */
         public void offerExternal(String event) {
-            externalTopic.offer(event);
-        }
-
-        /**
-         * Adds an internal channel to the set of channels.
-         * 
-         * @param channel
-         * @param queue the channel's queue
-         */
-        public void addInternal(String channel, BlockingQueue<String> queue) {
-            channel2queue.put(channel, queue);
-        }
-
-        /**
-         * Offers a message to all internal channels.
-         * 
-         * @param message
-         */
-        public void offerInternal(String message) {
-            channel2queue.values().forEach(queue -> queue.offer(message));
-        }
-
-        /**
-         * Offers amessage to an internal channel.
-         * 
-         * @param channel
-         * @param message
-         */
-        public void offerInternal(String channel, String message) {
-            BlockingQueue<String> queue = channel2queue.get(channel);
-            if (queue != null) {
-                queue.offer(message);
-            }
+            externalSink.send(event);
         }
 
         /**
@@ -386,13 +371,6 @@ public class FeatureTest {
          */
         public PolicyController getController(DroolsController droolsController) {
             return drools2policy.get(droolsController);
-        }
-
-        /**
-         * @return queue for the external topic
-         */
-        public BlockingQueue<String> getExternalTopic() {
-            return externalTopic;
         }
 
         /**
@@ -436,24 +414,12 @@ public class FeatureTest {
         public boolean awaitEvents(long time, TimeUnit units) throws InterruptedException {
             return eventCounter.await(time, units);
         }
-
-        /**
-         * Gets the current host, provided this is used from within a call to
-         * {@link #withHost(Host, VoidFunction)}.
-         * 
-         * @return the current host, or {@code null} if there is no current host
-         */
-        public Host getCurrentHost() {
-            return currentHost;
-        }
     }
 
     /**
      * Simulates a single "host".
      */
     private static class Host {
-
-        private final Context context;
 
         private final PoolingFeature feature = new PoolingFeature();
 
@@ -462,15 +428,7 @@ public class FeatureTest {
          */
         private final AtomicBoolean sawMsg = new AtomicBoolean(false);
 
-        /**
-         * This host's internal "DMaaP" topic.
-         */
-        private final BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>();
-
-        /**
-         * Source that reads from the external topic and posts to the listener.
-         */
-        private TopicSource externalSource;
+        private final TopicSource externalSource;
 
         // mock objects
         private final PolicyEngine engine = mock(PolicyEngine.class);
@@ -482,10 +440,12 @@ public class FeatureTest {
          * @param context
          */
         public Host(Context context) {
-            this.context = context;
 
             when(controller.getName()).thenReturn(CONTROLLER1);
             when(controller.getDrools()).thenReturn(drools);
+
+            Properties props = makeSourceProperties(EXTERNAL_TOPIC);
+            externalSource = TopicEndpoint.manager.addTopicSources(props).get(0);
 
             // stop consuming events if the controller stops
             when(controller.stop()).thenAnswer(args -> {
@@ -496,16 +456,6 @@ public class FeatureTest {
             doAnswer(new MyExternalTopicListener(context, this)).when(controller).onTopicEvent(any(), any(), any());
 
             context.addController(controller, drools);
-
-            // arrange to read from the external topic
-            externalSource = new TopicSourceImpl(context, false);
-        }
-
-        /**
-         * @return the host name
-         */
-        public String getName() {
-            return feature.getHost();
         }
 
         /**
@@ -513,22 +463,15 @@ public class FeatureTest {
          * "DMaaP" topic and its own internal "DMaaP" topic.
          */
         public void start() {
+            feature.beforeStart(engine);
+            feature.afterCreate(controller);
 
-            context.withHost(this, () -> {
+            feature.beforeStart(controller);
 
-                feature.beforeStart(engine);
-                feature.afterCreate(controller);
+            // start consuming events from the external topic
+            externalSource.register(controller);
 
-                // assign the queue for this host's internal topic
-                context.addInternal(getName(), msgQueue);
-
-                feature.beforeStart(controller);
-
-                // start consuming events from the external topic
-                externalSource.register(controller);
-
-                feature.afterStart(controller);
-            });
+            feature.afterStart(controller);
         }
 
         /**
@@ -603,13 +546,6 @@ public class FeatureTest {
         public boolean messageSeen() {
             return sawMsg.get();
         }
-
-        /**
-         * @return the queue associated with this host's internal topic
-         */
-        public BlockingQueue<String> getInternalQueue() {
-            return msgQueue;
-        }
     }
 
     /**
@@ -662,306 +598,6 @@ public class FeatureTest {
     }
 
     /**
-     * Sink implementation that puts a message on the queue specified by the
-     * <i>channel</i> embedded within the message. If it's the "admin" channel, then the
-     * message is placed on all queues.
-     */
-    private static class TopicSinkImpl extends TopicImpl implements TopicSink {
-
-        private final Context context;
-
-        /**
-         * Used to decode the messages so that the channel can be extracted.
-         */
-        private final Serializer serializer = new Serializer();
-
-        /**
-         * 
-         * @param context
-         */
-        public TopicSinkImpl(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public synchronized boolean send(String message) {
-            if (!isAlive()) {
-                return false;
-            }
-
-            try {
-                Message msg = serializer.decodeMsg(message);
-                String channel = msg.getChannel();
-
-                if (Message.ADMIN.equals(channel)) {
-                    // add to every queue
-                    context.offerInternal(message);
-
-                } else {
-                    // add to a specific queue
-                    context.offerInternal(channel, message);
-                }
-
-                return true;
-
-            } catch (IOException e) {
-                logger.warn("could not decode message: {}", message);
-                context.bumpDecodeErrors();
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Source implementation that reads from a queue associated with a topic.
-     */
-    private static class TopicSourceImpl extends TopicImpl implements FilterableTopicSource {
-
-        private final String topic;
-
-        /**
-         * Queue from which to retrieve messages.
-         */
-        private final BlockingQueue<String> queue;
-
-        /**
-         * Manages the current consumer thread. The "first" item is used as a trigger to
-         * tell the thread to stop processing, while the "second" item is triggered <i>by
-         * the thread</i> when it completes.
-         */
-        private AtomicReference<Pair<CountDownLatch, CountDownLatch>> pair = new AtomicReference<>(null);
-
-        /**
-         * 
-         * @param context
-         * @param internal {@code true} if to read from the internal topic, {@code false}
-         *        to read from the external topic
-         */
-        public TopicSourceImpl(Context context, boolean internal) {
-            if (internal) {
-                this.topic = INTERNAL_TOPIC;
-                this.queue = context.getCurrentHost().getInternalQueue();
-
-            } else {
-                this.topic = EXTERNAL_TOPIC;
-                this.queue = context.getExternalTopic();
-            }
-        }
-
-        @Override
-        public void setFilter(String filter) {
-            logger.info("topic filter set to: {}", filter);
-        }
-
-        @Override
-        public String getTopic() {
-            return topic;
-        }
-
-        @Override
-        public boolean offer(String event) {
-            throw new UnsupportedOperationException("offer topic source");
-        }
-
-        /**
-         * Starts a thread that takes messages from the queue and gives them to the
-         * listener. Stops the thread of any previously registered listener.
-         */
-        @Override
-        public void register(TopicListener listener) {
-            Pair<CountDownLatch, CountDownLatch> newPair = new Pair<>(new CountDownLatch(1), new CountDownLatch(1));
-
-            reregister(newPair);
-
-            Thread thread = new Thread(() -> {
-
-                try {
-                    do {
-                        processMessages(newPair.first(), listener);
-                    } while (!newPair.first().await(stdInterPollMs, TimeUnit.MILLISECONDS));
-
-                    logger.info("topic source thread completed");
-
-                } catch (InterruptedException e) {
-                    logger.warn("topic source thread aborted", e);
-                    Thread.currentThread().interrupt();
-
-                } catch (RuntimeException e) {
-                    logger.warn("topic source thread aborted", e);
-                }
-
-                newPair.second().countDown();
-
-            });
-
-            thread.setDaemon(true);
-            thread.start();
-        }
-
-        /**
-         * Stops the thread of <i>any</i> currently registered listener.
-         */
-        @Override
-        public void unregister(TopicListener listener) {
-            reregister(null);
-        }
-
-        /**
-         * Registers a new "pair" with this source, stopping the consumer associated with
-         * any previous registration.
-         * 
-         * @param newPair the new "pair", or {@code null} to unregister
-         */
-        private void reregister(Pair<CountDownLatch, CountDownLatch> newPair) {
-            try {
-                Pair<CountDownLatch, CountDownLatch> oldPair = pair.getAndSet(newPair);
-                if (oldPair == null) {
-                    if (newPair == null) {
-                        // unregister was invoked twice in a row
-                        logger.warn("re-unregister for topic source");
-                    }
-
-                    // no previous thread to stop
-                    return;
-                }
-
-                // need to stop the previous thread
-
-                // tell it to stop
-                oldPair.first().countDown();
-
-                // wait for it to stop
-                if (!oldPair.second().await(2, TimeUnit.SECONDS)) {
-                    logger.warn("old topic registration is still running");
-                }
-
-            } catch (InterruptedException e) {
-                logger.warn("old topic registration may still be running", e);
-                Thread.currentThread().interrupt();
-            }
-
-            if (newPair != null) {
-                // register was invoked twice in a row
-                logger.warn("re-register for topic source");
-            }
-        }
-
-        /**
-         * Polls for messages from the topic and offers them to the listener.
-         * 
-         * @param stopped triggered if processing should stop
-         * @param listener
-         * @throws InterruptedException
-         */
-        private void processMessages(CountDownLatch stopped, TopicListener listener) throws InterruptedException {
-
-            for (int x = 0; x < 5 && stopped.getCount() > 0; ++x) {
-
-                String msg = queue.poll(stdPollMs, TimeUnit.MILLISECONDS);
-                if (msg == null) {
-                    return;
-                }
-
-                listener.onTopicEvent(CommInfrastructure.UEB, topic, msg);
-            }
-        }
-    }
-
-    /**
-     * Topic implementation. Most methods just throw
-     * {@link UnsupportedOperationException}.
-     */
-    private static class TopicImpl implements Topic {
-
-        /**
-         * {@code True} if this topic is alive/running, {@code false} otherwise.
-         */
-        private boolean alive = false;
-
-        /**
-         * 
-         */
-        public TopicImpl() {
-            super();
-        }
-
-        @Override
-        public String getTopic() {
-            return INTERNAL_TOPIC;
-        }
-
-        @Override
-        public CommInfrastructure getTopicCommInfrastructure() {
-            throw new UnsupportedOperationException("topic protocol");
-        }
-
-        @Override
-        public List<String> getServers() {
-            throw new UnsupportedOperationException("topic servers");
-        }
-
-        @Override
-        public String[] getRecentEvents() {
-            throw new UnsupportedOperationException("topic events");
-        }
-
-        @Override
-        public void register(TopicListener topicListener) {
-            throw new UnsupportedOperationException("register topic");
-        }
-
-        @Override
-        public void unregister(TopicListener topicListener) {
-            throw new UnsupportedOperationException("unregister topic");
-        }
-
-        @Override
-        public synchronized boolean start() {
-            if (alive) {
-                throw new IllegalStateException("topic already started");
-            }
-
-            alive = true;
-            return true;
-        }
-
-        @Override
-        public synchronized boolean stop() {
-            if (!alive) {
-                throw new IllegalStateException("topic is not running");
-            }
-
-            alive = false;
-            return true;
-        }
-
-        @Override
-        public synchronized void shutdown() {
-            alive = false;
-        }
-
-        @Override
-        public synchronized boolean isAlive() {
-            return alive;
-        }
-
-        @Override
-        public boolean lock() {
-            throw new UnsupportedOperationException("lock topicink");
-        }
-
-        @Override
-        public boolean unlock() {
-            throw new UnsupportedOperationException("unlock topic");
-        }
-
-        @Override
-        public boolean isLocked() {
-            throw new UnsupportedOperationException("topic isLocked");
-        }
-    }
-
-    /**
      * Simulator for the feature-level factory.
      */
     private static class FeatureFactory extends PoolingFeature.Factory {
@@ -992,15 +628,18 @@ public class FeatureTest {
             props.setProperty(specialize(PoolingProperties.OFFLINE_LIMIT, CONTROLLER1), "10000");
             props.setProperty(specialize(PoolingProperties.OFFLINE_AGE_MS, CONTROLLER1), "1000000");
             props.setProperty(specialize(PoolingProperties.OFFLINE_PUB_WAIT_MS, CONTROLLER1),
-                            "" + stdOfflinePubWaitMs);
+                            "" + STD_OFFLINE_PUB_WAIT_MS);
             props.setProperty(specialize(PoolingProperties.START_HEARTBEAT_MS, CONTROLLER1),
-                            "" + stdStartHeartbeatMs);
-            props.setProperty(specialize(PoolingProperties.REACTIVATE_MS, CONTROLLER1), "" + stdReactivateWaitMs);
-            props.setProperty(specialize(PoolingProperties.IDENTIFICATION_MS, CONTROLLER1), "" + stdIdentificationMs);
+                            "" + STD_START_HEARTBEAT_MS);
+            props.setProperty(specialize(PoolingProperties.REACTIVATE_MS, CONTROLLER1), "" + STD_REACTIVATE_WAIT_MS);
+            props.setProperty(specialize(PoolingProperties.IDENTIFICATION_MS, CONTROLLER1), "" + STD_IDENTIFICATION_MS);
             props.setProperty(specialize(PoolingProperties.ACTIVE_HEARTBEAT_MS, CONTROLLER1),
-                            "" + stdActiveHeartbeatMs);
+                            "" + STD_ACTIVE_HEARTBEAT_MS);
             props.setProperty(specialize(PoolingProperties.INTER_HEARTBEAT_MS, CONTROLLER1),
-                            "" + stdInterHeartbeatMs);
+                            "" + STD_INTER_HEARTBEAT_MS);
+
+            props.putAll(makeSinkProperties(INTERNAL_TOPIC));
+            props.putAll(makeSourceProperties(INTERNAL_TOPIC));
 
             return props;
         }
@@ -1061,49 +700,9 @@ public class FeatureTest {
     }
 
     /**
-     * Simulator for the dmaap manager factory.
-     */
-    private static class DmaapFactory extends DmaapManager.Factory {
-
-        private final Context context;
-
-        /**
-         * 
-         * @param context
-         */
-        public DmaapFactory(Context context) {
-            this.context = context;
-
-            /*
-             * Note: do NOT extract anything from "context" at this point, because it
-             * hasn't been fully initialized yet
-             */
-        }
-
-        @Override
-        public List<TopicSource> initTopicSources(Properties props) {
-            return Arrays.asList(new TopicSourceImpl(context, true));
-        }
-
-        @Override
-        public List<TopicSink> initTopicSinks(Properties props) {
-            return Arrays.asList(new TopicSinkImpl(context));
-        }
-    }
-
-    /**
      * Controller that also implements the {@link TopicListener} interface.
      */
     private static interface ListenerController extends PolicyController, TopicListener {
 
-    }
-
-    /**
-     * Simple function that takes no arguments and returns nothing.
-     */
-    @FunctionalInterface
-    private static interface VoidFunction {
-
-        public void apply();
     }
 }

@@ -67,8 +67,22 @@ public class StartState extends State {
 
         super.start();
 
-        publish(getHost(), makeHeartbeat(hbTimestampMs));
+        Heartbeat hb = makeHeartbeat(hbTimestampMs);
+        publish(getHost(), hb);
 
+        /*
+         * heart beat generator
+         */
+        long genMs = getProperties().getInterHeartbeatMs();
+
+        scheduleWithFixedDelay(genMs, genMs, () -> {
+            publish(getHost(), hb);
+            return null;
+        });
+
+        /*
+         * my heart beat checker
+         */
         schedule(getProperties().getStartHeartbeatMs(), () -> {
             logger.error("missed heartbeat on topic {}", getTopic());
             return internalTopicFailed();

@@ -211,8 +211,8 @@ public class DmaapManagerTest {
         // force exception when it starts
         doThrow(new IllegalStateException("expected")).when(sink).start();
 
-        expectException("startPublisher,start", xxx -> mgr.startPublisher());
-        expectException("startPublisher,publish", xxx -> mgr.publish(MSG));
+        expectException("startPublisher,start", () -> mgr.startPublisher());
+        expectException("startPublisher,publish", () -> mgr.publish(MSG));
 
         // allow it to succeed this time
         reset(sink);
@@ -336,7 +336,7 @@ public class DmaapManagerTest {
     @Test
     public void testPublish() throws PoolingFeatureException {
         // cannot publish before starting
-        expectException("publish,pre", xxx -> mgr.publish(MSG));
+        expectException("publish,pre", () -> mgr.publish(MSG));
 
         mgr.startPublisher();
 
@@ -352,7 +352,7 @@ public class DmaapManagerTest {
 
         // stop and verify we can no longer publish
         mgr.stopPublisher(0);
-        expectException("publish,stopped", xxx -> mgr.publish(MSG));
+        expectException("publish,stopped", () -> mgr.publish(MSG));
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -377,7 +377,7 @@ public class DmaapManagerTest {
 
     private void expectException(String testnm, VFunction func) {
         try {
-            func.apply(null);
+            func.apply();
             fail(testnm + " missing exception");
 
         } catch (PoolingFeatureException expected) {
@@ -387,6 +387,6 @@ public class DmaapManagerTest {
 
     @FunctionalInterface
     public static interface VFunction {
-        public void apply(Void arg) throws PoolingFeatureException;
+        public void apply() throws PoolingFeatureException;
     }
 }

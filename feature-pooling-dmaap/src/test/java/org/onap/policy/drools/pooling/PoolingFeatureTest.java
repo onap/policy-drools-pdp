@@ -22,6 +22,7 @@ package org.onap.policy.drools.pooling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -122,8 +123,8 @@ public class PoolingFeatureTest {
         when(factory.getController(drools2)).thenReturn(controller2);
         when(factory.getController(droolsDisabled)).thenReturn(controllerDisabled);
 
-        when(factory.makeManager(any(), any())).thenAnswer(args -> {
-            PoolingProperties props = args.getArgument(1);
+        when(factory.makeManager(any(), any(), any())).thenAnswer(args -> {
+            PoolingProperties props = args.getArgument(2);
 
             PoolingManagerImpl mgr = mock(PoolingManagerImpl.class);
 
@@ -146,6 +147,19 @@ public class PoolingFeatureTest {
     @Test
     public void test() {
         assertEquals(2, managers.size());
+    }
+
+    @Test
+    public void testGetHost() {
+        String host = pool.getHost();
+        assertNotNull(host);
+
+        // create another and ensure it generates another host name
+        pool = new PoolingFeature();
+        String host2 = pool.getHost();
+        assertNotNull(host2);
+
+        assertTrue(!host.equals(host2));
     }
 
     @Test

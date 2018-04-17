@@ -374,7 +374,7 @@ public class ClassExtractors {
 
             } catch (NoSuchMethodException expected) {
                 // no getXxx() method, maybe there's a field by this name
-                logger.debug("no method {} in {}", nm, clazz.getName());
+                logger.debug("no method {} in {}", nm, clazz.getName(), expected);
                 return null;
 
             } catch (SecurityException e) {
@@ -445,7 +445,7 @@ public class ClassExtractors {
 
             } catch (NoSuchFieldException expected) {
                 // no field by this name - try super class & interfaces
-                logger.debug("no field {} in {}", name, clazz.getName());
+                logger.debug("no field {} in {}", name, clazz.getName(), expected);
 
             } catch (SecurityException e) {
                 throw new ExtractorException("inaccessible field " + clazz + "." + name, e);
