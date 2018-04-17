@@ -58,7 +58,7 @@ public interface HttpServletServerFactory {
 	 * @return list of http servers
 	 * @throws IllegalArgumentException when invalid parameters are provided
 	 */
-	public ArrayList<HttpServletServer> build(Properties properties) throws IllegalArgumentException;
+	public List<HttpServletServer> build(Properties properties) throws IllegalArgumentException;
 	
 	/**
 	 * gets a server based on the port
@@ -119,7 +119,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	}
 	
 	@Override
-	public synchronized ArrayList<HttpServletServer> build(Properties properties) 
+	public synchronized List<HttpServletServer> build(Properties properties) 
 		throws IllegalArgumentException {	
 		
 		ArrayList<HttpServletServer> serviceList = new ArrayList<>();

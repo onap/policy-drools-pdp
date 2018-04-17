@@ -22,6 +22,7 @@ package org.onap.policy.drools.statemanagement;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import org.onap.policy.common.im.IntegrityMonitor;
 import org.onap.policy.common.im.IntegrityMonitorException;
@@ -60,11 +61,11 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
    * @param url the JMX URL of the MBean server
    * @param properties properties used locally, as well as by
    *	'IntegrityMonitor'
-   * @throws Exception (passed from superclass)
+   * @throws IntegrityMonitorException (passed from superclass)
    */
 	private DroolsPDPIntegrityMonitor(String resourceName,
 			Properties consolidatedProperties
-			) throws Exception {
+			) throws IntegrityMonitorException {
 	super(resourceName, consolidatedProperties);
   }
   
@@ -385,7 +386,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor
   		@Override
 		public boolean start() {
 			try {
-				ArrayList<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
+				List<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
 				
 				if (!servers.isEmpty()) {
 					server = servers.get(0);

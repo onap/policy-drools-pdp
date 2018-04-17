@@ -174,7 +174,7 @@ public class FeatureTest {
     @Test
     public void test_TwoHosts() throws Exception {
         int nmessages = 200;
-
+        CountDownLatch latch = new CountDownLatch(1);
         ctx = new Context(nmessages);
 
         ctx.addHost();
@@ -186,7 +186,7 @@ public class FeatureTest {
         }
 
         // wait for all hosts to have time to process a few messages
-        Thread.sleep(STD_ACTIVE_HEARTBEAT_MS + INTER_POLL_MS * 3);
+		latch.await(STD_ACTIVE_HEARTBEAT_MS + INTER_POLL_MS * 3, TimeUnit.MILLISECONDS);
 
         // pause a topic for a bit
 //        ctx.pauseTopic();

@@ -78,7 +78,7 @@ public abstract class SingleThreadedBusTopicSource
 	 * !locked & start() => alive
 	 * stop() => !alive
 	 */
-	protected volatile boolean alive = false;
+	protected volatile boolean sourceAlive = false;
 	
 	/**
 	 * Independent thread reading message over my topic
@@ -88,7 +88,7 @@ public abstract class SingleThreadedBusTopicSource
 	/**
 	 * All my subscribers for new message notifications
 	 */
-	protected final ArrayList<TopicListener> topicListeners = new ArrayList<>();
+	protected final ArrayList<TopicListener> sourceTopicListeners = new ArrayList<>();
 	
 
 	/**
@@ -157,7 +157,7 @@ public abstract class SingleThreadedBusTopicSource
 		super.register(topicListener);
 		
 		try {
-			if (!alive && !locked)
+			if (!sourceAlive && !locked)
 				this.start();
 			else
 				logger.info("{}: register: start not attempted", this);
@@ -172,7 +172,7 @@ public abstract class SingleThreadedBusTopicSource
 		boolean stop;
 		synchronized (this) {
 			super.unregister(topicListener);
-			stop = this.topicListeners.isEmpty();
+			stop = this.sourceTopicListeners.isEmpty();
 		}
 		
 		if (stop) {		
@@ -186,7 +186,7 @@ public abstract class SingleThreadedBusTopicSource
 		
 		synchronized(this) {
 			
-			if (alive)
+			if (sourceAlive)
 				return true;
 			
 			if (locked)
@@ -198,7 +198,7 @@ public abstract class SingleThreadedBusTopicSource
 				
 				try {
 					this.init();
-					this.alive = true;
+					this.sourceAlive = true;
 					this.busPollerThread = new Thread(this);
 					this.busPollerThread.setName(this.getTopicCommInfrastructure() + "-source-" + this.getTopic());
 					busPollerThread.start();
@@ -209,7 +209,7 @@ public abstract class SingleThreadedBusTopicSource
 			}
 		}
 		
-		return this.alive;
+		return this.sourceAlive;
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public abstract class SingleThreadedBusTopicSource
 		synchronized(this) {
 			BusConsumer consumerCopy = this.consumer;
 			
-			this.alive = false;
+			this.sourceAlive = false;
 			this.consumer = null;
 			
 			if (consumerCopy != null) {
@@ -241,7 +241,7 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	@Override
 	public void run() {
-		while (this.alive) {
+		while (this.sourceAlive) {
 			try {
 				for (String event: this.consumer.fetch()) {					
 					synchronized (this) {
@@ -254,7 +254,7 @@ public abstract class SingleThreadedBusTopicSource
 					
 					broadcast(event);
 					
-					if (!this.alive)
+					if (!this.sourceAlive)
 						break;
 				}
 			} catch (Exception e) {
@@ -270,7 +270,7 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	@Override
 	public boolean offer(String event) {
-		if (!this.alive) {
+		if (!this.sourceAlive) {
 			throw new IllegalStateException(this + " is not alive.");
 		}
 		
@@ -303,8 +303,8 @@ public abstract class SingleThreadedBusTopicSource
 				.append(", consumerInstance=").append(consumerInstance).append(", fetchTimeout=").append(fetchTimeout)
 				.append(", fetchLimit=").append(fetchLimit)
 				.append(", consumer=").append(this.consumer).append(", alive=")
-				.append(alive).append(", locked=").append(locked).append(", uebThread=").append(busPollerThread)
-				.append(", topicListeners=").append(topicListeners.size()).append(", toString()=").append(super.toString())
+				.append(sourceAlive).append(", locked=").append(locked).append(", uebThread=").append(busPollerThread)
+				.append(", topicListeners=").append(sourceTopicListeners.size()).append(", toString()=").append(super.toString())
 				.append("]");
 		return builder.toString();
 	}
@@ -314,7 +314,7 @@ public abstract class SingleThreadedBusTopicSource
 	 */
 	@Override
 	public boolean isAlive() {
-		return alive;
+		return sourceAlive;
 	}
 
 	/**
@@ -339,7 +339,7 @@ public abstract class SingleThreadedBusTopicSource
 	@Override
 	public void shutdown() throws IllegalStateException {
 		this.stop();
-		this.topicListeners.clear();
+		this.sourceTopicListeners.clear();
 	}
 	
 	/**

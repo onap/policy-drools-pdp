@@ -204,9 +204,9 @@ public interface BusConsumer {
 
     @Override
     public String toString() {
-      final StringBuilder builder = new StringBuilder();
-      builder.append("CambriaConsumerWrapper [fetchTimeout=").append(fetchTimeout).append("]");
-      return builder.toString();
+      final StringBuilder strBuilder = new StringBuilder();
+      strBuilder.append("CambriaConsumerWrapper [fetchTimeout=").append(fetchTimeout).append("]");
+      return strBuilder.toString();
     }
   }
 

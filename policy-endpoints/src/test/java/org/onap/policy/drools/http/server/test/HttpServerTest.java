@@ -28,6 +28,8 @@ import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.onap.policy.drools.http.server.HttpServletServer;
@@ -200,7 +202,8 @@ public class HttpServerTest {
 				logger.warn("http server {} @ {} ({}) - cannot connect yet ..", 
 							server, aUrl, numRetries, e);
 				numRetries++;
-				Thread.sleep(10000L);
+				CountDownLatch latch = new CountDownLatch(1);
+				latch.await(10000L, TimeUnit.MILLISECONDS);
 			} catch (Exception e) {
 				throw e;
 			} 

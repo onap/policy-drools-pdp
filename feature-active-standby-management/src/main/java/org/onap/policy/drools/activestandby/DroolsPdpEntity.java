@@ -133,5 +133,23 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable{
 	public void setDesignatedDate(Date designatedDate) {
 		this.designatedDate = designatedDate;		
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		
+	    if (! super.equals(obj)) {
+	        return false;
+	      }
+	    
+		DroolsPdpEntity dpe = (DroolsPdpEntity) obj;
+
+		return (this.pdpId.equals(dpe.getPdpId()) && this.site.equals(dpe.getSiteName()));
+		
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 
 }
