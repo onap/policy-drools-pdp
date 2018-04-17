@@ -48,13 +48,13 @@ public class PoolingPropertiesTest {
     public static final boolean STD_FEATURE_ENABLED = true;
     public static final int STD_OFFLINE_LIMIT = 10;
     public static final long STD_OFFLINE_AGE_MS = 1000L;
-    public static final long STD_START_HEARTBEAT_MS = 2000L;
-    public static final long STD_REACTIVATE_MS = 3000L;
-    public static final long STD_IDENTIFICATION_MS = 4000L;
-    public static final long STD_LEADER_MS = 5000L;
-    public static final long STD_ACTIVE_HEARTBEAT_MS = 6000L;
-    public static final long STD_INTER_HEARTBEAT_MS = 7000L;
-    public static final long STD_OFFLINE_PUB_WAIT_MS = 8000L;
+    public static final long STD_OFFLINE_PUB_WAIT_MS = 2000L;
+    public static final long STD_START_HEARTBEAT_MS = 3000L;
+    public static final long STD_REACTIVATE_MS = 4000L;
+    public static final long STD_IDENTIFICATION_MS = 5000L;
+    public static final long STD_LEADER_MS = 6000L;
+    public static final long STD_ACTIVE_HEARTBEAT_MS = 7000L;
+    public static final long STD_INTER_HEARTBEAT_MS = 8000L;
 
     private Properties plain;
     private PoolingProperties pooling;
@@ -99,8 +99,13 @@ public class PoolingPropertiesTest {
     }
 
     @Test
+    public void testGetOfflinePubWaitMs() throws PropertyException {
+        doTest(OFFLINE_PUB_WAIT_MS, STD_OFFLINE_PUB_WAIT_MS, 3000L, xxx -> pooling.getOfflinePubWaitMs());
+    }
+
+    @Test
     public void testGetStartHeartbeatMs() throws PropertyException {
-        doTest(START_HEARTBEAT_MS, STD_START_HEARTBEAT_MS, 50000L, xxx -> pooling.getStartHeartbeatMs());
+        doTest(START_HEARTBEAT_MS, STD_START_HEARTBEAT_MS, 100000L, xxx -> pooling.getStartHeartbeatMs());
     }
 
     @Test
@@ -121,11 +126,6 @@ public class PoolingPropertiesTest {
     @Test
     public void testGetInterHeartbeatMs() throws PropertyException {
         doTest(INTER_HEARTBEAT_MS, STD_INTER_HEARTBEAT_MS, 15000L, xxx -> pooling.getInterHeartbeatMs());
-    }
-
-    @Test
-    public void testGetOfflinePubWaitMs() throws PropertyException {
-        doTest(OFFLINE_PUB_WAIT_MS, STD_OFFLINE_PUB_WAIT_MS, 3000L, xxx -> pooling.getOfflinePubWaitMs());
     }
 
     /**
@@ -174,12 +174,12 @@ public class PoolingPropertiesTest {
         props.setProperty(specialize(FEATURE_ENABLED, CONTROLLER), "" + STD_FEATURE_ENABLED);
         props.setProperty(specialize(OFFLINE_LIMIT, CONTROLLER), "" + STD_OFFLINE_LIMIT);
         props.setProperty(specialize(OFFLINE_AGE_MS, CONTROLLER), "" + STD_OFFLINE_AGE_MS);
+        props.setProperty(specialize(OFFLINE_PUB_WAIT_MS, CONTROLLER), "" + STD_OFFLINE_PUB_WAIT_MS);
         props.setProperty(specialize(START_HEARTBEAT_MS, CONTROLLER), "" + STD_START_HEARTBEAT_MS);
         props.setProperty(specialize(REACTIVATE_MS, CONTROLLER), "" + STD_REACTIVATE_MS);
         props.setProperty(specialize(IDENTIFICATION_MS, CONTROLLER), "" + STD_IDENTIFICATION_MS);
         props.setProperty(specialize(ACTIVE_HEARTBEAT_MS, CONTROLLER), "" + STD_ACTIVE_HEARTBEAT_MS);
         props.setProperty(specialize(INTER_HEARTBEAT_MS, CONTROLLER), "" + STD_INTER_HEARTBEAT_MS);
-        props.setProperty(specialize(OFFLINE_PUB_WAIT_MS, CONTROLLER), "" + STD_OFFLINE_PUB_WAIT_MS);
 
         return props;
     }

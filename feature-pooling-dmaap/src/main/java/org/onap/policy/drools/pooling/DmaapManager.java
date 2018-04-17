@@ -202,6 +202,7 @@ public class DmaapManager {
 
         } catch (InterruptedException e) {
             logger.warn("message transmission stopped due to {}", e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
         try {

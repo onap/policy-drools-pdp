@@ -40,7 +40,8 @@ public class SpecProperties extends Properties {
 
     /**
      * 
-     * @param prefix the property name prefix that appears before any specialization
+     * @param prefix the property name prefix that appears before any specialization, may
+     *        be ""
      * @param specialization the property name specialization (e.g., session name)
      */
     public SpecProperties(String prefix, String specialization) {
@@ -50,7 +51,8 @@ public class SpecProperties extends Properties {
 
     /**
      * 
-     * @param prefix the property name prefix that appears before any specialization
+     * @param prefix the property name prefix that appears before any specialization, may
+     *        be ""
      * @param specialization the property name specialization (e.g., session name)
      * @param props the default properties
      */
@@ -68,7 +70,7 @@ public class SpecProperties extends Properties {
      * @return the text, with a trailing "."
      */
     private static String withTrailingDot(String text) {
-        return text.endsWith(".") ? text : text + ".";
+        return text.isEmpty() || text.endsWith(".") ? text : text + ".";
     }
 
     /**
