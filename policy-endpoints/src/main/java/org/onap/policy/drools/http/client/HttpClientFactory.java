@@ -50,7 +50,7 @@ public interface HttpClientFactory {
 	/**
 	 * build http client from properties
 	 */
-	public ArrayList<HttpClient> build(Properties properties) 
+	public List<HttpClient> build(Properties properties) 
 			throws KeyManagementException, NoSuchAlgorithmException;
 	
 	/**
@@ -106,7 +106,7 @@ class IndexedHttpClientFactory implements HttpClientFactory {
 	}
 
 	@Override
-	public synchronized ArrayList<HttpClient> build(Properties properties) 
+	public synchronized List<HttpClient> build(Properties properties) 
 	throws KeyManagementException, NoSuchAlgorithmException {
 		ArrayList<HttpClient> clientList = new ArrayList<>();
 		

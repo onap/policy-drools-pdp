@@ -41,6 +41,10 @@ import org.kie.scanner.MavenRepository;
  */
 public class KieUtils {
 
+	private KieUtils() {
+		throw new IllegalStateException("Utility class");
+	}
+	
     /**
      * Installs a rules artifact in the local maven repository
      *
