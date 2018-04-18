@@ -16,6 +16,24 @@
       "revId": "87a4b83c31aa78f5d83751b7f4735cc15a0a549e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_496a3eef",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/DmaapManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-18T14:35:45Z",
+      "side": 1,
+      "message": "Whoops, sorry, thought I removed it in the last patch",
+      "parentUuid": "5a93c517_898da6d5",
+      "revId": "87a4b83c31aa78f5d83751b7f4735cc15a0a549e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
