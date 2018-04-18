@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,6 @@ import org.onap.policy.drools.event.comm.TopicSource;
  *
  */
 public interface BusTopicSource extends ApiKeyEnabled, TopicSource {
-	
-	/**
-	 * Default Consumer Instance Value
-	 */
-	public static String DEFAULT_CONSUMER_INSTANCE = "0";
 	
 	/**
 	 * Default Timeout fetching in milliseconds

@@ -31,6 +31,7 @@ import org.onap.policy.drools.event.comm.FilterableTopicSource;
 import org.onap.policy.drools.event.comm.TopicListener;
 import org.onap.policy.drools.event.comm.bus.BusTopicSource;
 import org.onap.policy.drools.event.comm.bus.internal.BusConsumer.FilterableBusConsumer;
+import org.onap.policy.drools.utils.NetworkUtil;
 
 /**
  * This topic source implementation specializes in reading messages
@@ -126,7 +127,7 @@ public abstract class SingleThreadedBusTopicSource
 		}
 		
 		if (consumerInstance == null || consumerInstance.isEmpty()) {
-			this.consumerInstance = DEFAULT_CONSUMER_INSTANCE;
+            this.consumerInstance = NetworkUtil.getHostname();
 		} else {
 			this.consumerInstance = consumerInstance;
 		}
