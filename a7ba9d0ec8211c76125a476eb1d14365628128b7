@@ -248,6 +248,30 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_a51e826e",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T17:06:02Z",
+      "side": 1,
+      "message": "Can somebody show me concrete example on this particular instance, on how this hides anything?   I just don\u0027t see it.  If sonar claims it hides, but it doesn\u0027t (unless proven otherwise), it is a false claim, therefore a false positive.\n\nIn any case, the solution provided is faulty, it renames member but not accompanying get and set methods (which may cause other sonars). and the naming of choice is semantically incorrect, there is not a such thing as an mdcServer.\n\nThese are the options I see: a) if we collude that it is, declare it as false positive, b) rename interface SERVER to something meaningful, and make sure if there are any references in the code are updated, or c) rename member variable to something meaningful, replace get/set to match field name (to be gentle to telemetry API).  One potential name change is to append suffix _SPEC or \"Spec\" to all the fields used for MDC purposes since they come from ONAP logging spec (they are actually using the same names).",
+      "parentUuid": "5a93c517_65371a4e",
+      "range": {
+        "startLine": 171,
+        "startChar": 11,
+        "endLine": 171,
+        "endChar": 17
+      },
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_e5656aaf",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
         "patchSetId": 5
