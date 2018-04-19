@@ -87,6 +87,24 @@
       "revId": "163a7a236ed8b0eb540ef3d38dcbea4f2d3f7456",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_65463a7d",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedBusTopicSource.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-19T16:49:04Z",
+      "side": 1,
+      "message": "Is this guaranteed to be unique, even if multiple instances are run on the same machine (e.g., inside of separate dockers or separate VMs)?",
+      "parentUuid": "5a93c517_a569a2fa",
+      "revId": "163a7a236ed8b0eb540ef3d38dcbea4f2d3f7456",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
