@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_25f6f28f",
+        "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-19T16:00:45Z",
+      "side": 1,
+      "message": "That\u0027s a good point.  So what this means is that we will just leave the Thread.sleep() calls alone until we have time to modify the code to use some type of synchronization mechanism instead.",
+      "parentUuid": "5a93c517_8505867b",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_e54eca37",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsControllerTest.java",
         "patchSetId": 5
