@@ -141,6 +141,29 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_25cfd257",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T15:53:21Z",
+      "side": 1,
+      "message": "Jorge, this is the SERVER variable that is conflicted.\n\nHere is the exact issue from the implementation of the interface:\n\"Rename field \"server\" to prevent any misunderstanding/clash with field \"SERVER\" defined in interface \"org.onap.policy.drools.utils.logging.MDCTransaction\".\"",
+      "range": {
+        "startLine": 171,
+        "startChar": 11,
+        "endLine": 171,
+        "endChar": 17
+      },
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_e5656aaf",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
         "patchSetId": 5
