@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_8505867b",
+        "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T15:53:22Z",
+      "side": 1,
+      "message": "I think this does not address the core issue that sonar is complaining about, we should not rely on time periods, and we should rely on more sophisticated synchronized solutions to account for the time period for a resource to be made available.\n\nThe way that is corrected, it may mask the sonar, perhaps, if shouldn\u0027t if sonar is sophisticated enough.   But it leaves the core issue unresolved, since effectively you are just replacing a sleep with another sleep using a countdownlatch, which is not exactly the purpose of this concurrency utility.   I believe the solution has to be more sophisticated.   I prefer to see a sonar that reminds me of this issue, that perhaps silently with the core issue at hand being unresolved.",
+      "parentUuid": "5a93c517_05cf3680",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_e54eca37",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsControllerTest.java",
         "patchSetId": 5
