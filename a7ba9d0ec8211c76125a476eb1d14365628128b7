@@ -140,6 +140,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_e56faa5e",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T15:25:55Z",
+      "side": 1,
+      "message": "Sonar complains whenever an implementer of an interface has a member variable that is identical to a variable defined in the interface.",
+      "parentUuid": "5a93c517_e5656aaf",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_8506e6cc",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
         "patchSetId": 5
