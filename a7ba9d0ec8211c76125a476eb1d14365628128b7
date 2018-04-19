@@ -200,6 +200,30 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_e5eb2aa2",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T16:01:50Z",
+      "side": 1,
+      "message": "I think sonar is confused here, it is a false positive, SERVER implicitly as defined in interface is \"static final String\".   I don\u0027t see how it can clash, provided they are uppercase and lowercase respectively.   I would mark it as a false positive, or rename SERVER in the interface, and make sure any reference to it explicitly, that may be there\u0027s none in this repo and drools applications repo.",
+      "parentUuid": "5a93c517_25cfd257",
+      "range": {
+        "startLine": 171,
+        "startChar": 11,
+        "endLine": 171,
+        "endChar": 17
+      },
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_e5656aaf",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
         "patchSetId": 5
