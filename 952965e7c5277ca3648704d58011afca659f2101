@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_6585dacd",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusConsumer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-19T16:25:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a93c517_c572ae49",
+      "revId": "952965e7c5277ca3648704d58011afca659f2101",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_fa2509c2",
         "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusConsumer.java",
         "patchSetId": 1
