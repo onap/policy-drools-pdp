@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_25ccb288",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/BusTopicSource.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T15:39:02Z",
+      "side": 1,
+      "message": "Let\u0027s not use deprecated unless we have to.   In my experience, it never goes away.   If it\u0027s not used, and has not value, let\u0027s remove it.   It should only affect this repo.",
+      "revId": "163a7a236ed8b0eb540ef3d38dcbea4f2d3f7456",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_25a11294",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedBusTopicSource.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T15:39:02Z",
+      "side": 1,
+      "message": "I\u0027m thinking for the consumer id, may be better to place the machine\u0027s host/container name (I don\u0027t think there\u0027s restrictions in the consumerInstance, although not 100% sure).   It may be more informative for debugging.  Is there a reason to prefer the consumerGroup also as the instance ?",
+      "revId": "163a7a236ed8b0eb540ef3d38dcbea4f2d3f7456",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
