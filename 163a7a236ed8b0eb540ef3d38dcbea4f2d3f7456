@@ -69,6 +69,24 @@
       "revId": "163a7a236ed8b0eb540ef3d38dcbea4f2d3f7456",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a569a2fa",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedBusTopicSource.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T16:45:17Z",
+      "side": 1,
+      "message": "If you don\u0027t mind, let\u0027s change the \n\nthis.consumerInstance \u003d uuid \n\nto \n\nthis.consumerInstance \u003d NetworkUtil.getHostname() or something like that, I don\u0027t recall the exact name, it is in policy-util package (provided it does not carry relevance in the pooling work) \n\nIt is good to have something descriptive, and that\u0027s the point of the consumerId.   When working with DMaaP folks, it would be very useful I think, when doing debugging on the DMaaP side to know exactly the identity of the pdp-d making the query.",
+      "parentUuid": "5a93c517_25c83254",
+      "revId": "163a7a236ed8b0eb540ef3d38dcbea4f2d3f7456",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
