@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_25c27285",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedDmaapTopicSource.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "Why renaming, \"dmaap\" is redundant as it is in the class name, the name change is not very static when being shown through the telemetry apis.   I prefer not to rename it.",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c5baae0a",
+        "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "What is the exact issue that is corrected here?   2 lines of code instead of 1, and creating the CountDownLatch in every iteration, don\u0027t get quite well the benefit.",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_e54eca37",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsControllerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "can you paste the sonar issue that this is trying to fix?  In essence, this is the same.   Does the await still throw an InterruptedException?",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_a56442b9",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "What\u0027s the benefit of this vs a sleep?    There\u0027s no synchronization that is taking place here.",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_45553ec0",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/system/test/PolicyEngineTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "same question, general question",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_e5656aaf",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "Same question, why renaming, mdc is in the classname, so it is redundant.   Semantically, there\u0027s no such thing as an mdcServer.   In addition, presentation through telemetry tool is not that pretty.   To be consistent with javabean naming, getServer, should also move to getMdcServer, same thing for set, the change is incomplete.",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_8506e6cc",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MDCTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T14:52:58Z",
+      "side": 1,
+      "message": "same comment",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
