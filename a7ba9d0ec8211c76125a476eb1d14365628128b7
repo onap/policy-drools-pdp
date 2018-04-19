@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_45b1beff",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedDmaapTopicSource.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T15:20:34Z",
+      "side": 1,
+      "message": "According to sonar \"Child class fields should not shadow parent class fields\".\n\nallowSelfSignedCerts is a field in BusTopicBase",
+      "parentUuid": "5a93c517_25c27285",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_c5baae0a",
         "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-19T14:52:58Z",
       "side": 1,
       "message": "What is the exact issue that is corrected here?   2 lines of code instead of 1, and creating the CountDownLatch in every iteration, don\u0027t get quite well the benefit.",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_05cf3680",
+        "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T15:20:34Z",
+      "side": 1,
+      "message": "Sonar complains every time we use a Thread.sleep to control timing of junits.",
+      "parentUuid": "5a93c517_c5baae0a",
       "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
