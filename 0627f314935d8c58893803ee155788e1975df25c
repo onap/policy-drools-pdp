@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_0073a480",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/controller/test/AllSeemsWellTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T17:54:45Z",
+      "side": 1,
+      "message": "will change back to thread.sleep",
+      "range": {
+        "startLine": 320,
+        "startChar": 0,
+        "endLine": 320,
+        "endChar": 47
+      },
+      "revId": "0627f314935d8c58893803ee155788e1975df25c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_20702071",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/controller/test/StandbyStateManagementTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T17:54:45Z",
+      "side": 1,
+      "message": "will change back to thread.sleep",
+      "revId": "0627f314935d8c58893803ee155788e1975df25c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_c0685c8a",
+        "filename": "feature-test-transaction/src/test/java/org/onap/policy/drools/testtransaction/TestTransactionTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T17:54:45Z",
+      "side": 1,
+      "message": "will change back to thread.sleep",
+      "revId": "0627f314935d8c58893803ee155788e1975df25c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_e06558af",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/DroolsContainerTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 1645
+      },
+      "writtenOn": "2018-04-19T17:54:45Z",
+      "side": 1,
+      "message": "will change back to thread.sleep",
+      "revId": "0627f314935d8c58893803ee155788e1975df25c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
