@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_45ad3e83",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/SingleThreadedDmaapTopicSource.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-19T15:42:11Z",
+      "side": 1,
+      "message": "The right solution in this case is to remove the allowSelfSignedCerts from here if is defined in the base class instead of renaming it.",
+      "parentUuid": "5a93c517_45b1beff",
+      "revId": "a7ba9d0ec8211c76125a476eb1d14365628128b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_c5baae0a",
         "filename": "policy-endpoints/src/test/java/org/onap/policy/drools/http/server/test/HttpServerTest.java",
         "patchSetId": 5
