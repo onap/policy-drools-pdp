@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_71892425",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/FeatureTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-04-19T19:49:11Z",
+      "side": 1,
+      "message": "Sonar will complain about commented out code. Maybe if you wrap with:\n/*\n\n\n*/\n\nIf you want these available should they be in an enum?",
+      "range": {
+        "startLine": 112,
+        "startChar": 4,
+        "endLine": 120,
+        "endChar": 55
+      },
+      "revId": "0e0ca1840519cc3251ddeb266cd4e1050f414d10",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
