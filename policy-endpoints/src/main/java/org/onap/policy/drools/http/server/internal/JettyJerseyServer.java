@@ -19,15 +19,11 @@
  */
 package org.onap.policy.drools.http.server.internal;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
-
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.onap.policy.drools.utils.NetworkUtil;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-
+import org.slf4j.LoggerFactory;
 import io.swagger.jersey.config.JerseyJaxrsConfig;
 
 /**

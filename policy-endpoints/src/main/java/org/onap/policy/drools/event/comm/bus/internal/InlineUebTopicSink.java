@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,7 @@ public class InlineUebTopicSink extends InlineBusTopicSink implements UebTopicSi
             					String apiSecret,
             					String partitionId,
             					boolean useHttps,
-            					boolean allowSelfSignedCerts) 
-    throws IllegalArgumentException {		
+            					boolean allowSelfSignedCerts) {
 		super(servers, topic, apiKey, apiSecret, partitionId, useHttps, allowSelfSignedCerts);
 	}
 	

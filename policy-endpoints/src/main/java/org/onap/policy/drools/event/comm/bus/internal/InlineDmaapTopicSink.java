@@ -75,8 +75,7 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 											String partitionKey,
 											String environment, String aftEnvironment, String partner,
 											String latitude, String longitude, Map<String,String> additionalProps,
-											boolean useHttps, boolean allowSelfSignedCerts)
-			throws IllegalArgumentException {
+											boolean useHttps, boolean allowSelfSignedCerts) {
 			
 		super(servers, topic, apiKey, apiSecret, partitionKey, useHttps, allowSelfSignedCerts);
 		
@@ -96,8 +95,7 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 	public InlineDmaapTopicSink(List<String> servers, String topic, 
 			                    String apiKey, String apiSecret,
 	                            String userName, String password,
-			                    String partitionKey, boolean useHttps,  boolean allowSelfSignedCerts) 
-		throws IllegalArgumentException {
+			                    String partitionKey, boolean useHttps,  boolean allowSelfSignedCerts) {
 		
 		super(servers, topic, apiKey, apiSecret, partitionKey, useHttps, allowSelfSignedCerts);
 		
@@ -108,11 +106,7 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 
 	@Override
 	public void init() {
-		if ((this.environment == null	|| this.environment.isEmpty()) &&
-		   (this.aftEnvironment == null || this.aftEnvironment.isEmpty()) &&
-		   (this.latitude == null		|| this.latitude.isEmpty()) &&
-		   (this.longitude == null		|| this.longitude.isEmpty()) &&
-		   (this.partner == null		|| this.partner.isEmpty())) {
+		if (allNullOrEmpty(this.environment, this.aftEnvironment, this.latitude, this.longitude, this.partner)) {
 			this.publisher = 
 				new BusPublisher.CambriaPublisherWrapper(this.servers, 
 						                               this.topic, 
@@ -142,11 +136,9 @@ public class InlineDmaapTopicSink extends InlineBusTopicSink implements DmaapTop
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("InlineDmaapTopicSink [userName=").append(userName).append(", password=").append(password)
-				.append(", getTopicCommInfrastructure()=").append(getTopicCommInfrastructure()).append(", toString()=")
-				.append(super.toString()).append("]");
-		return builder.toString();
+        return "InlineDmaapTopicSink [userName=" + userName + ", password=" + password
+                        + ", getTopicCommInfrastructure()=" + getTopicCommInfrastructure() + ", toString()="
+                        + super.toString() + "]";
 	}
 
 }
