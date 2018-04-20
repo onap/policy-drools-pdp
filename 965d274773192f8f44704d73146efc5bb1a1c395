@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_bdfc56b6",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusConsumer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-04-20T18:46:14Z",
+      "side": 1,
+      "message": "Jim, is this issue possible, 2 close() on the cambria library, in the scenario below, can you verify? if that\u0027s the case what would be the behavior of the underlying cambria libraries when you issue multiple close()?  \n\nScenario:\nthread-1. fetch -  waiting here for X seconds.\nthread-2. setFilter\nthread-3. close (while still on the fetch)",
+      "revId": "965d274773192f8f44704d73146efc5bb1a1c395",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
