@@ -25,21 +25,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
-
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.onap.policy.drools.http.client.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class JerseyClient implements HttpClient {
@@ -99,17 +94,18 @@ public class JerseyClient implements HttpClient {
 			if (this.selfSignedCerts) {
 				sslContext.init(null, new TrustManager[]{new X509TrustManager() {
 					@Override
-			        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
+			        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+					    // always trusted
+					}
 					@Override
-			        public void checkServerTrusted(X509Certificate[]  chain, String authType) throws CertificateException {}
+			        public void checkServerTrusted(X509Certificate[]  chain, String authType) throws CertificateException {
+					    // always trusted
+					}
 					@Override
 			        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
 	
 			    }}, new SecureRandom());
-				 clientBuilder = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(new HostnameVerifier() {
-					@Override
-					public boolean verify(String hostname, SSLSession session) {return true;}
-				 });
+				clientBuilder = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier((host,session) -> true);
 			} else {
 				sslContext.init(null, null, null);
 				clientBuilder = ClientBuilder.newBuilder().sslContext(sslContext);
@@ -147,17 +143,17 @@ public class JerseyClient implements HttpClient {
 	
 
 	@Override
-	public boolean start() throws IllegalStateException {
+	public boolean start() {
 		return alive;
 	}
 
 	@Override
-	public boolean stop() throws IllegalStateException {
+	public boolean stop() {
 		return !alive;
 	}
 
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		synchronized(this) {
 			alive = false;
 		}

@@ -25,6 +25,12 @@ import org.onap.policy.drools.properties.Startable;
  * A Jetty Server to server REST Requests
  */
 public interface HttpServletServer extends Startable {
+    
+    
+    /**
+     * factory for managing and tracking DMAAP sources
+     */
+    public static HttpServletServerFactory factory = new IndexedHttpServletServerFactory();
 
 	/**
 	 * 
@@ -73,10 +79,4 @@ public interface HttpServletServer extends Startable {
 	 * @throws InterruptedException if the blocking operation is interrupted
 	 */
 	public boolean waitedStart(long maxWaitTime) throws InterruptedException;
-	
-	
-	/**
-	 * factory for managing and tracking DMAAP sources
-	 */
-	public static HttpServletServerFactory factory = new IndexedHttpServletServerFactory();
 }

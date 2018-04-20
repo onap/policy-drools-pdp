@@ -147,9 +147,7 @@ public interface BusPublisher {
 		
 		@Override
 		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("CambriaPublisherWrapper []");
-			return builder.toString();
+		    return "CambriaPublisherWrapper []";
 		}
 		
 	}
@@ -287,15 +285,10 @@ public interface BusPublisher {
 		
 		@Override
 		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("DmaapPublisherWrapper [").
-			append("publisher.getAuthDate()=").append(publisher.getAuthDate()).
-			append(", publisher.getAuthKey()=").append(publisher.getAuthKey()).
-			append(", publisher.getHost()=").append(publisher.getHost()).
-			append(", publisher.getProtocolFlag()=").append(publisher.getProtocolFlag()).
-			append(", publisher.getUsername()=").append(publisher.getUsername()).
-			append("]");
-			return builder.toString();
+            return "DmaapPublisherWrapper [" + "publisher.getAuthDate()=" + publisher.getAuthDate()
+                            + ", publisher.getAuthKey()=" + publisher.getAuthKey() + ", publisher.getHost()="
+                            + publisher.getHost() + ", publisher.getProtocolFlag()=" + publisher.getProtocolFlag()
+                            + ", publisher.getUsername()=" + publisher.getUsername() + "]";
 		}
 	}
 	
@@ -329,13 +322,16 @@ public interface BusPublisher {
 			
 			String dme2RouteOffer = additionalProps.get(DmaapTopicSinkFactory.DME2_ROUTE_OFFER_PROPERTY);
 			
-			 if (environment == null || environment.isEmpty()) {
+			if (environment == null || environment.isEmpty()) {
 					throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_ENVIRONMENT_SUFFIX);
-			} if (aftEnvironment == null || aftEnvironment.isEmpty()) {
+			}
+			if (aftEnvironment == null || aftEnvironment.isEmpty()) {
 				throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_AFT_ENVIRONMENT_SUFFIX);
-			} if (latitude == null || latitude.isEmpty()) {
+			}
+			if (latitude == null || latitude.isEmpty()) {
 				throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_LATITUDE_SUFFIX);
-			} if (longitude == null || longitude.isEmpty()) {
+			}
+			if (longitude == null || longitude.isEmpty()) {
 				throw parmException(topic, PolicyProperties.PROPERTY_DMAAP_DME2_LONGITUDE_SUFFIX);
 			}
 			

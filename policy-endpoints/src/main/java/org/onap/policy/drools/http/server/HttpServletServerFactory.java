@@ -48,8 +48,7 @@ public interface HttpServletServerFactory {
 	 * @throws IllegalArgumentException when invalid parameters are provided
 	 */
 	public HttpServletServer build(String name, String host, int port, String contextPath, 
-			                       boolean swagger, boolean managed)
-		   throws IllegalArgumentException;
+			                       boolean swagger, boolean managed);
 	
 	/**
 	 * list of http servers per properties
@@ -58,7 +57,7 @@ public interface HttpServletServerFactory {
 	 * @return list of http servers
 	 * @throws IllegalArgumentException when invalid parameters are provided
 	 */
-	public List<HttpServletServer> build(Properties properties) throws IllegalArgumentException;
+	public List<HttpServletServer> build(Properties properties);
 	
 	/**
 	 * gets a server based on the port
@@ -92,7 +91,9 @@ public interface HttpServletServerFactory {
  */
 class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	
-	/**
+	private static final String SPACES_COMMA_SPACES = "\\s*,\\s*";
+
+    /**
 	 * logger
 	 */
 	protected static Logger logger = LoggerFactory.getLogger(IndexedHttpServletServerFactory.class);	
@@ -105,8 +106,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	@Override
 	public synchronized HttpServletServer build(String name, String host, int port, 
 			                                    String contextPath, boolean swagger,
-			                                    boolean managed) 
-		throws IllegalArgumentException {	
+			                                    boolean managed) {
 		
 		if (servers.containsKey(port))
 			return servers.get(port);
@@ -119,8 +119,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	}
 	
 	@Override
-	public synchronized List<HttpServletServer> build(Properties properties) 
-		throws IllegalArgumentException {	
+	public synchronized List<HttpServletServer> build(Properties properties) {
 		
 		ArrayList<HttpServletServer> serviceList = new ArrayList<>();
 		
@@ -130,8 +129,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 			return serviceList;
 		}
 		
-		List<String> serviceNameList = 
-				new ArrayList<>(Arrays.asList(serviceNames.split("\\s*,\\s*")));
+		List<String> serviceNameList = Arrays.asList(serviceNames.split(SPACES_COMMA_SPACES));
 		
 		for (String serviceName : serviceNameList) {
 			String servicePortString = properties.getProperty(PolicyProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + 
@@ -205,15 +203,13 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 			}
 			
 			if (restClasses != null && !restClasses.isEmpty()) {
-				List<String> restClassesList = 
-						new ArrayList<>(Arrays.asList(restClasses.split("\\s*,\\s*")));
+				List<String> restClassesList = Arrays.asList(restClasses.split(SPACES_COMMA_SPACES));
 				for (String restClass : restClassesList)
 					service.addServletClass(restUriPath, restClass);
 			}
 			
 			if (restPackages != null && !restPackages.isEmpty()) {
-				List<String> restPackageList = 
-						new ArrayList<>(Arrays.asList(restPackages.split("\\s*,\\s*")));
+				List<String> restPackageList = Arrays.asList(restPackages.split(SPACES_COMMA_SPACES));
 				for (String restPackage : restPackageList)
 					service.addServletPackage(restUriPath, restPackage);
 			}
@@ -225,7 +221,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	}
 
 	@Override
-	public synchronized HttpServletServer get(int port) throws IllegalArgumentException {
+	public synchronized HttpServletServer get(int port) {
 		
 		if (servers.containsKey(port)) {
 			return servers.get(port);
@@ -240,7 +236,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	}
 	
 	@Override
-	public synchronized void destroy(int port) throws IllegalArgumentException, IllegalStateException {
+	public synchronized void destroy(int port) {
 		
 		if (!servers.containsKey(port)) {
 			return;
@@ -251,7 +247,7 @@ class IndexedHttpServletServerFactory implements HttpServletServerFactory {
 	}
 
 	@Override
-	public synchronized void destroy() throws IllegalArgumentException, IllegalStateException {
+	public synchronized void destroy() {
 		List<HttpServletServer> httpServletServers = this.inventory();
 		for (HttpServletServer server: httpServletServers) {
 			server.shutdown();

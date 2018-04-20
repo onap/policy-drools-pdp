@@ -57,8 +57,7 @@ public class InlineUebTopicSink extends InlineBusTopicSink implements UebTopicSi
             					String apiSecret,
             					String partitionId,
             					boolean useHttps,
-            					boolean allowSelfSignedCerts) 
-    throws IllegalArgumentException {		
+            					boolean allowSelfSignedCerts) {
 		super(servers, topic, apiKey, apiSecret, partitionId, useHttps, allowSelfSignedCerts);
 	}
 	

@@ -67,8 +67,7 @@ public abstract class BusTopicBase extends TopicBase implements ApiKeyEnabled {
 						  String apiKey, 
 						  String apiSecret,
 						  boolean useHttps,
-						  boolean allowSelfSignedCerts) 
-	throws IllegalArgumentException {
+						  boolean allowSelfSignedCerts) {
 		
 		super(servers, topic);
 		
@@ -101,6 +100,26 @@ public abstract class BusTopicBase extends TopicBase implements ApiKeyEnabled {
 	public boolean isAllowSelfSignedCerts(){
 		return allowSelfSignedCerts;
 	}
+
+    protected boolean anyNullOrEmpty(String... args) {
+        for (String arg : args) {
+            if (arg == null || arg.isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean allNullOrEmpty(String... args) {
+        for (String arg : args) {
+            if (!(arg == null || arg.isEmpty())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 
 	@Override

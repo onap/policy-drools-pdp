@@ -79,8 +79,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 											int fetchTimeout, int fetchLimit,
 											String environment, String aftEnvironment, String partner,
 											String latitude, String longitude, Map<String,String> additionalProps,
-											boolean useHttps, boolean allowSelfSignedCerts)
-			throws IllegalArgumentException {
+											boolean useHttps, boolean allowSelfSignedCerts) {
 			
 		super(servers, topic, apiKey, apiSecret, 
 			  consumerGroup, consumerInstance, 
@@ -123,8 +122,7 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 			                              String apiKey, String apiSecret,
 			                              String userName, String password,
 			                              String consumerGroup, String consumerInstance, 
-			                              int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts)
-			throws IllegalArgumentException {
+			                              int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts) {
 		
 		
 		super(servers, topic, apiKey, apiSecret, 
@@ -148,19 +146,14 @@ public class SingleThreadedDmaapTopicSource extends SingleThreadedBusTopicSource
 	 */
 	@Override
 	public void init() throws MalformedURLException {
-		if (this.userName == null || this.userName.isEmpty() || 
-				this.password == null || this.password.isEmpty()) {
+		if (anyNullOrEmpty(this.userName, this.password)) {
 				this.consumer =
 						new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
 								                           this.apiKey, this.apiSecret,
 								                           this.consumerGroup, this.consumerInstance,
 								                           this.fetchTimeout, this.fetchLimit,
 								                           this.useHttps, this.allowSelfSignedCerts);
-		} else if ((this.environment == null    || this.environment.isEmpty()) &&
-				   (this.aftEnvironment == null || this.aftEnvironment.isEmpty()) &&
-				   (this.latitude == null	   || this.latitude.isEmpty()) &&
-				   (this.longitude == null	   || this.longitude.isEmpty()) &&
-				   (this.partner == null 	   || this.partner.isEmpty())) {
+		} else if (allNullOrEmpty(this.environment, this.aftEnvironment, this.latitude, this.longitude, this.partner)) {
 			this.consumer =
 					new BusConsumer.CambriaConsumerWrapper(this.servers, this.topic, 
 							                            this.apiKey, this.apiSecret,

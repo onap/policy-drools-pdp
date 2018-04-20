@@ -82,7 +82,7 @@ public abstract class TopicBase implements Topic {
 	 * @return a Topic Base
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public TopicBase(List<String> servers, String topic) throws IllegalArgumentException {
+	public TopicBase(List<String> servers, String topic) {
 		
 		if (servers == null || servers.isEmpty()) {
 			throw new IllegalArgumentException("Server(s) must be provided");
@@ -97,8 +97,7 @@ public abstract class TopicBase implements Topic {
 	}
 	
 	@Override
-	public void register(TopicListener topicListener) 
-		throws IllegalArgumentException {		
+	public void register(TopicListener topicListener) {
 		
 		logger.info("{}: registering {}", this, topicListener);
 		

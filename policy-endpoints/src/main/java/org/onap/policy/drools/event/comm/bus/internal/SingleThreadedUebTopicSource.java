@@ -52,8 +52,7 @@ public class SingleThreadedUebTopicSource extends SingleThreadedBusTopicSource
 	public SingleThreadedUebTopicSource(List<String> servers, String topic, 
 			                            String apiKey, String apiSecret,
 			                            String consumerGroup, String consumerInstance, 
-			                            int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts)
-			throws IllegalArgumentException {
+			                            int fetchTimeout, int fetchLimit, boolean useHttps, boolean allowSelfSignedCerts) {
 		
 		super(servers, topic, apiKey, apiSecret, 
 			  consumerGroup, consumerInstance, 
