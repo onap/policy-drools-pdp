@@ -113,6 +113,7 @@ public class PoolingManagerImplTest {
     private DroolsController drools;
     private Serializer ser;
     private Factory factory;
+    private CountDownLatch active;
 
     private PoolingManagerImpl mgr;
 
@@ -142,6 +143,7 @@ public class PoolingManagerImplTest {
 
         futures = new LinkedList<>();
         ser = new Serializer();
+        active = new CountDownLatch(1);
 
         factory = mock(Factory.class);
         eventQueue = mock(EventQueue.class);
@@ -181,7 +183,7 @@ public class PoolingManagerImplTest {
 
         PoolingManagerImpl.setFactory(factory);
 
-        mgr = new PoolingManagerImpl(MY_HOST, controller, poolProps);
+        mgr = new PoolingManagerImpl(MY_HOST, controller, poolProps, active);
     }
 
     @Test
@@ -204,7 +206,7 @@ public class PoolingManagerImplTest {
         PolicyController ctlr = mock(PolicyController.class);
 
         PoolingFeatureRtException ex = expectException(PoolingFeatureRtException.class,
-                        () -> new PoolingManagerImpl(MY_HOST, ctlr, poolProps));
+                        () -> new PoolingManagerImpl(MY_HOST, ctlr, poolProps, active));
         assertNotNull(ex.getCause());
         assertTrue(ex.getCause() instanceof ClassCastException);
     }
@@ -216,7 +218,7 @@ public class PoolingManagerImplTest {
         when(factory.makeDmaapManager(any(), any())).thenThrow(ex);
 
         PoolingFeatureRtException ex2 = expectException(PoolingFeatureRtException.class,
-                        () -> new PoolingManagerImpl(MY_HOST, controller, poolProps));
+                        () -> new PoolingManagerImpl(MY_HOST, controller, poolProps, active));
         assertEquals(ex, ex2.getCause());
     }
 
@@ -233,7 +235,7 @@ public class PoolingManagerImplTest {
     public void testGetHost() {
         assertEquals(MY_HOST, mgr.getHost());
 
-        mgr = new PoolingManagerImpl(HOST2, controller, poolProps);
+        mgr = new PoolingManagerImpl(HOST2, controller, poolProps, active);
         assertEquals(HOST2, mgr.getHost());
     }
 
@@ -1102,7 +1104,6 @@ public class PoolingManagerImplTest {
 
         // route the messages to this host
         CountDownLatch latch = mgr.startDistributing(makeAssignments(true));
-        assertNotNull(latch);
         assertTrue(latch.await(2, TimeUnit.SECONDS));
 
         // all of the events should have been processed locally
@@ -1123,7 +1124,8 @@ public class PoolingManagerImplTest {
         when(eventQueue.poll()).thenAnswer(args -> lst.poll());
 
         // route the messages to the OTHER host
-        assertTrue(mgr.startDistributing(makeAssignments(false)).await(2, TimeUnit.SECONDS));
+        CountDownLatch latch = mgr.startDistributing(makeAssignments(false));
+        assertTrue(latch.await(2, TimeUnit.SECONDS));
 
         // all of the events should have been forwarded
         verify(dmaap, times(4)).publish(any());
@@ -1159,6 +1161,7 @@ public class PoolingManagerImplTest {
         assertTrue(st instanceof ActiveState);
         assertEquals(mgr.getHost(), st.getHost());
         assertEquals(asgn, mgr.getAssignments());
+        assertEquals(0, active.getCount());
     }
 
     @Test
@@ -1166,6 +1169,7 @@ public class PoolingManagerImplTest {
         State st = mgr.goInactive();
         assertTrue(st instanceof InactiveState);
         assertEquals(mgr.getHost(), st.getHost());
+        assertEquals(1, active.getCount());
     }
 
     @Test

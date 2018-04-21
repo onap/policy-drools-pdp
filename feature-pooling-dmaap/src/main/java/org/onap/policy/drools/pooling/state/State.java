@@ -122,7 +122,7 @@ public abstract class State {
     protected State goActive(BucketAssignments asgn) {
         startDistributing(asgn);
 
-        if (asgn.hasAssignment(getHost())) {
+        if (asgn != null && asgn.hasAssignment(getHost())) {
             return mgr.goActive();
 
         } else {

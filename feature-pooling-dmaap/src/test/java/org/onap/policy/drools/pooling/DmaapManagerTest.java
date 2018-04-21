@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -264,11 +265,15 @@ public class DmaapManagerTest {
         long minms = 2000L;
 
         // tell the publisher to stop in minms + additional time
-        Thread thread = new Thread(() -> mgr.stopPublisher(minms + 3000L));
+        CountDownLatch latch = new CountDownLatch(1);
+        Thread thread = new Thread(() -> {
+            latch.countDown();
+            mgr.stopPublisher(minms + 3000L);
+        });
         thread.start();
 
-        // give the thread a chance to start
-        Thread.sleep(50L);
+        // wait for the thread to start
+        latch.await();
 
         // interrupt it - it should immediately finish its work
         thread.interrupt();

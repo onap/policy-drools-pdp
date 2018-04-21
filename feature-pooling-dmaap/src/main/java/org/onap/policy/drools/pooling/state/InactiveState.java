@@ -45,7 +45,7 @@ public class InactiveState extends State {
     @Override
     public void start() {
         super.start();
-        schedule(getProperties().getReactivateMs(), () -> goStart());
+        schedule(getProperties().getReactivateMs(), this::goStart);
     }
 
     @Override

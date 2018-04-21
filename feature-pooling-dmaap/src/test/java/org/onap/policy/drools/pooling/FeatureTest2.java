@@ -189,8 +189,7 @@ public class FeatureTest2 {
         }
 
         ctx.startHosts();
-
-        ctx.awaitEvents(STD_IDENTIFICATION_MS * 2, TimeUnit.MILLISECONDS);
+        ctx.awaitAllActive(STD_IDENTIFICATION_MS * 2);
 
         for (int x = 0; x < nmessages; ++x) {
             ctx.offerExternal(makeMessage(x));
@@ -414,6 +413,14 @@ public class FeatureTest2 {
         public boolean awaitEvents(long time, TimeUnit units) throws InterruptedException {
             return eventCounter.await(time, units);
         }
+
+        public void awaitAllActive(long timeSec) throws InterruptedException {
+            long tend = timeSec * 1000L + System.currentTimeMillis();
+            for(Host host: hosts) {
+                long tremain = Math.max(0, tend - System.currentTimeMillis());
+                assertTrue(host.awaitActive(tremain));
+            }
+        }
     }
 
     /**
@@ -456,6 +463,10 @@ public class FeatureTest2 {
             doAnswer(new MyExternalTopicListener(context, this)).when(controller).onTopicEvent(any(), any(), any());
 
             context.addController(controller, drools);
+        }
+
+        public boolean awaitActive(long tremain) throws InterruptedException {
+            return feature.getActiveLatch().await(tremain, TimeUnit.MILLISECONDS);
         }
 
         /**
