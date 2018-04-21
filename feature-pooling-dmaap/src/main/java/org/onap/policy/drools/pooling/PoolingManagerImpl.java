@@ -94,6 +94,11 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     private final TopicListener listener;
 
     /**
+     * Decremented each time the manager enters the Active state. Used by junit tests.
+     */
+    private final CountDownLatch activeLatch;
+
+    /**
      * Used to encode & decode request objects received from & sent to a rule engine.
      */
     private final Serializer serializer;
@@ -142,7 +147,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Queue used when no bucket assignments are available.
      */
-    private EventQueue eventq;
+    private final EventQueue eventq;
 
     /**
      * {@code True} if events offered by the controller should be intercepted,
@@ -156,11 +161,15 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * @param host name/uuid of this host
      * @param controller controller with which this is associated
      * @param props feature properties specific to the controller
+     * @param activeLatch latch to be decremented each time the manager enters the Active
+     *        state
      */
-    public PoolingManagerImpl(String host, PolicyController controller, PoolingProperties props) {
+    public PoolingManagerImpl(String host, PolicyController controller, PoolingProperties props,
+                    CountDownLatch activeLatch) {
         this.host = host;
         this.controller = controller;
         this.props = props;
+        this.activeLatch = activeLatch;
 
         try {
             this.listener = (TopicListener) controller;
@@ -237,13 +246,13 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * @return DMaaP properties
      */
     private Properties makeDmaapProps(PolicyController controller, Properties source) {
-        SpecProperties props = new SpecProperties("", "controller." + controller.getName(), source);
+        SpecProperties specProps = new SpecProperties("", "controller." + controller.getName(), source);
 
         // could be UEB or DMAAP, so add both
-        addDmaapConsumerProps(props, PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS);
-        addDmaapConsumerProps(props, PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS);
+        addDmaapConsumerProps(specProps, PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS);
+        addDmaapConsumerProps(specProps, PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS);
 
-        return props;
+        return specProps;
     }
 
     /**
@@ -255,7 +264,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      */
     private void addDmaapConsumerProps(SpecProperties props, String prefix) {
         String fullpfx = props.getSpecPrefix() + prefix + "." + topic;
-        
+
         props.setProperty(fullpfx + PolicyProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX, host);
         props.setProperty(fullpfx + PolicyProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_INSTANCE_SUFFIX, "0");
     }
@@ -429,12 +438,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
         ScheduledFuture<?> fut = scheduler.schedule(new TimerAction(task), delayMs, TimeUnit.MILLISECONDS);
 
         // wrap the future in a "CancellableScheduledTask"
-        return new CancellableScheduledTask() {
-            @Override
-            public void cancel() {
-                fut.cancel(false);
-            }
-        };
+        return () -> fut.cancel(false);
     }
 
     @Override
@@ -444,12 +448,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
                         TimeUnit.MILLISECONDS);
 
         // wrap the future in a "CancellableScheduledTask"
-        return new CancellableScheduledTask() {
-            @Override
-            public void cancel() {
-                fut.cancel(false);
-            }
-        };
+        return () -> fut.cancel(false);
     }
 
     @Override
@@ -633,7 +632,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
                             topic);
 
         } else {
-            logger.warn("forward event hop-count={} from topic {}", event.getNumHops(), event.getTopic());
+            logger.info("forward event hop-count={} from topic {}", event.getNumHops(), event.getTopic());
             event.bumpNumHops();
             publish(target, event);
         }
@@ -829,6 +828,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     @Override
     public State goActive() {
+        activeLatch.countDown();
         return new ActiveState(this);
     }
 

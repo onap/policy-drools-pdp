@@ -123,7 +123,7 @@ public class PoolingFeatureTest {
         when(factory.getController(drools2)).thenReturn(controller2);
         when(factory.getController(droolsDisabled)).thenReturn(controllerDisabled);
 
-        when(factory.makeManager(any(), any(), any())).thenAnswer(args -> {
+        when(factory.makeManager(any(), any(), any(), any())).thenAnswer(args -> {
             PoolingProperties props = args.getArgument(2);
 
             PoolingManagerImpl mgr = mock(PoolingManagerImpl.class);

@@ -107,11 +107,11 @@ public class SpecProperties extends Properties {
 
     @Override
     public final int hashCode() {
-        throw new UnsupportedOperationException("HostBucket cannot be hashed");
+        throw new UnsupportedOperationException("SpecProperties cannot be hashed");
     }
 
     @Override
     public final boolean equals(Object obj) {
-        throw new UnsupportedOperationException("cannot compare HostBuckets");
+        throw new UnsupportedOperationException("cannot compare SpecProperties");
     }
 }

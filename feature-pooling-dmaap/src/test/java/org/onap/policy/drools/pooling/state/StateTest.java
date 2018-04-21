@@ -186,6 +186,19 @@ public class StateTest extends BasicStateTester {
     }
 
     @Test
+    public void testGoActive_NullAssignment() {
+        State act = mock(State.class);
+        State inact = mock(State.class);
+
+        when(mgr.goActive()).thenReturn(act);
+        when(mgr.goInactive()).thenReturn(inact);
+
+        assertEquals(inact, state.goActive(null));
+
+        verify(mgr, never()).startDistributing(any());
+    }
+
+    @Test
     public void testGoInactive() {
         State next = mock(State.class);
         when(mgr.goInactive()).thenReturn(next);

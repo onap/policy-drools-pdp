@@ -189,8 +189,7 @@ public class FeatureTest2 {
         }
 
         ctx.startHosts();
-
-        ctx.awaitEvents(STD_IDENTIFICATION_MS * 2, TimeUnit.MILLISECONDS);
+        ctx.awaitAllActive(STD_IDENTIFICATION_MS * 2);
 
         for (int x = 0; x < nmessages; ++x) {
             ctx.offerExternal(makeMessage(x));
@@ -414,6 +413,21 @@ public class FeatureTest2 {
         public boolean awaitEvents(long time, TimeUnit units) throws InterruptedException {
             return eventCounter.await(time, units);
         }
+
+        /**
+         * Waits, for a period of time, for all hosts to enter the Active state.
+         * 
+         * @param timeMs maximum time to wait, in milliseconds
+         * @throws InterruptedException
+         */
+        public void awaitAllActive(long timeMs) throws InterruptedException {
+            long tend = timeMs + System.currentTimeMillis();
+
+            for (Host host : hosts) {
+                long tremain = Math.max(0, tend - System.currentTimeMillis());
+                assertTrue(host.awaitActive(tremain));
+            }
+        }
     }
 
     /**
@@ -456,6 +470,18 @@ public class FeatureTest2 {
             doAnswer(new MyExternalTopicListener(context, this)).when(controller).onTopicEvent(any(), any(), any());
 
             context.addController(controller, drools);
+        }
+
+        /**
+         * Waits, for a period of time, for the host to enter the Active state.
+         * 
+         * @param timeMs time to wait, in milliseconds
+         * @return {@code true} if the host entered the Active state within the given
+         *         amount of time, {@code false} otherwise
+         * @throws InterruptedException
+         */
+        public boolean awaitActive(long timeMs) throws InterruptedException {
+            return feature.getActiveLatch().await(timeMs, TimeUnit.MILLISECONDS);
         }
 
         /**
