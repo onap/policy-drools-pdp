@@ -263,6 +263,11 @@ public interface BusConsumer {
     private static Logger logger = LoggerFactory.getLogger(DmaapConsumerWrapper.class);
 
     /**
+     * Name of the "protocol" property.
+     */
+    protected static final String PROTOCOL_PROP = "Protocol";
+
+    /**
      * fetch timeout
      */
     protected int fetchTimeout;
@@ -294,7 +299,7 @@ public interface BusConsumer {
      */
     public DmaapConsumerWrapper(List<String> servers, String topic, String apiKey, String apiSecret,
         String username, String password, String consumerGroup, String consumerInstance,
-        int fetchTimeout, int fetchLimit, boolean useHttps) throws MalformedURLException {
+        int fetchTimeout, int fetchLimit) throws MalformedURLException {
 
       this.fetchTimeout = fetchTimeout;
 
@@ -390,7 +395,7 @@ public interface BusConsumer {
         throws MalformedURLException {
 
       super(servers, topic, apiKey, apiSecret, aafLogin, aafPassword, consumerGroup,
-          consumerInstance, fetchTimeout, fetchLimit, useHttps);
+          consumerInstance, fetchTimeout, fetchLimit);
 
       // super constructor sets servers = {""} if empty to avoid errors when using DME2
       if ((servers.size() == 1 && ("".equals(servers.get(0)))) || (servers == null)
@@ -403,11 +408,11 @@ public interface BusConsumer {
       props = new Properties();
 
       if (useHttps) {
-        props.setProperty("Protocol", "https");
+        props.setProperty(PROTOCOL_PROP, "https");
         this.consumer.setHost(servers.get(0) + ":3905");
 
       } else {
-        props.setProperty("Protocol", "http");
+        props.setProperty(PROTOCOL_PROP, "http");
         this.consumer.setHost(servers.get(0) + ":3904");
       }
 
@@ -441,7 +446,7 @@ public interface BusConsumer {
 
 
       super(servers, topic, apiKey, apiSecret, dme2Login, dme2Password, consumerGroup,
-          consumerInstance, fetchTimeout, fetchLimit, useHttps);
+          consumerInstance, fetchTimeout, fetchLimit);
 
 
       final String dme2RouteOffer =
@@ -510,10 +515,10 @@ public interface BusConsumer {
       props.setProperty("MethodType", "GET");
 
       if (useHttps) {
-        props.setProperty("Protocol", "https");
+        props.setProperty(PROTOCOL_PROP, "https");
 
       } else {
-        props.setProperty("Protocol", "http");
+        props.setProperty(PROTOCOL_PROP, "http");
       }
 
       props.setProperty("contenttype", "application/json");
