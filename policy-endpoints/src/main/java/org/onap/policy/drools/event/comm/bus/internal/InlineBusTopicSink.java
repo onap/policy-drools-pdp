@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,7 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	 * @throws IllegalArgumentException in invalid parameters are passed in
 	 */
 	public InlineBusTopicSink(List<String> servers, String topic, 
-			                  String apiKey, String apiSecret, String partitionId, boolean useHttps, boolean allowSelfSignedCerts)
-			throws IllegalArgumentException {
+			                  String apiKey, String apiSecret, String partitionId, boolean useHttps, boolean allowSelfSignedCerts) {
 		
 		super(servers, topic, apiKey, apiSecret, useHttps, allowSelfSignedCerts);		
 		
@@ -82,7 +81,7 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean start() throws IllegalStateException {		
+	public boolean start() {		
 		logger.info("{}: starting", this);
 		
 		synchronized(this) {
@@ -132,7 +131,7 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean send(String message) throws IllegalArgumentException, IllegalStateException {
+	public boolean send(String message) {
 		
 		if (message == null || message.isEmpty()) {
 			throw new IllegalArgumentException("Message to send is empty");
@@ -181,16 +180,33 @@ public abstract class InlineBusTopicSink extends BusTopicBase implements BusTopi
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void shutdown() throws IllegalStateException {
+	public void shutdown() {
 		this.stop();
 	}
+
+    protected boolean anyNullOrEmpty(String... args) {
+        for (String arg : args) {
+            if (arg == null || arg.isEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean allNullOrEmpty(String... args) {
+        for (String arg : args) {
+            if (!(arg == null || arg.isEmpty())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 	
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("InlineBusTopicSink [partitionId=").append(partitionId).append(", alive=").append(alive)
-				.append(", publisher=").append(publisher).append("]");
-		return builder.toString();
+        return "InlineBusTopicSink [partitionId=" + partitionId + ", alive=" + alive + ", publisher=" + publisher + "]";
 	}
 }

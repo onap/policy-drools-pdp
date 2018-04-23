@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * policy-endpoints
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public abstract class TopicBase implements Topic {
 	 * @return a Topic Base
 	 * @throws IllegalArgumentException if invalid parameters are present
 	 */
-	public TopicBase(List<String> servers, String topic) throws IllegalArgumentException {
+	public TopicBase(List<String> servers, String topic) {
 		
 		if (servers == null || servers.isEmpty()) {
 			throw new IllegalArgumentException("Server(s) must be provided");
@@ -97,8 +97,7 @@ public abstract class TopicBase implements Topic {
 	}
 	
 	@Override
-	public void register(TopicListener topicListener) 
-		throws IllegalArgumentException {		
+	public void register(TopicListener topicListener) {
 		
 		logger.info("{}: registering {}", this, topicListener);
 		
