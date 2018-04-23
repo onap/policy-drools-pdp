@@ -16,6 +16,24 @@
       "revId": "965d274773192f8f44704d73146efc5bb1a1c395",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_9d9b9a72",
+        "filename": "policy-endpoints/src/main/java/org/onap/policy/drools/event/comm/bus/internal/BusConsumer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-04-23T14:55:37Z",
+      "side": 1,
+      "message": "A couple of comments: 1) this will never close the same consumer twice unless the invoker actually calls close() two times - same behavior as the original code  2) as you pointed out previously, close() doesn\u0027t actually do anything, so no impact  3) the behavior is unchanged from the original code, as the original code did not preclude thread-3 from closing the consumer while thread-1 was fetching",
+      "parentUuid": "5a93c517_bdfc56b6",
+      "revId": "965d274773192f8f44704d73146efc5bb1a1c395",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
