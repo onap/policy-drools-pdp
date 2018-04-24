@@ -107,6 +107,18 @@
 			<version>${project.version}</version>
 			<type>zip</type>
 		</dependency>
+        <dependency>
+            <groupId>org.onap.policy.drools-pdp</groupId>
+            <artifactId>feature-distributed-locking</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.policy.drools-pdp</groupId>
+            <artifactId>feature-pooling-dmaap</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+        </dependency>
 	</dependencies>
 
 </project>
