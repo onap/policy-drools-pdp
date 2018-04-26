@@ -239,6 +239,20 @@ function configure_settings() {
 	
 }
 
+function configure_keystore() {
+	if [[ $DEBUG == y ]]; then
+		echo "-- ${FUNCNAME[0]} $@ --"
+		set -x
+	fi
+
+    local DEFAULT_KEYSTORE_PASSWORD="Pol1cy_0nap"
+
+	if [[ -n ${KEYSTORE_PASSWD} ]]; then
+	    keytool -storepasswd -storepass ${DEFAULT_KEYSTORE_PASSWORD} -keystore ${POLICY_HOME}/etc/ssl/policy-keystore -new ${KEYSTORE_PASSWD}
+	    keytool -list -keystore ${POLICY_HOME}/etc/ssl/policy-keystore -storepass ${KEYSTORE_PASSWD}
+	fi
+}
+
 
 function check_r_file() {
 	if [[ $DEBUG == y ]]; then
@@ -329,7 +343,8 @@ function configure_base() {
 	configure_component "${BASE_CONF}" "${POLICY_HOME}"
 	
 	configure_settings
-	
+	configure_keystore
+
 	BASH_PROFILE_LINE=". ${POLICY_HOME}/etc/profile.d/env.sh"
 	PROFILE_LINE="ps -p \$\$ | grep -q bash || . ${POLICY_HOME}/etc/profile.d/env.sh"
 

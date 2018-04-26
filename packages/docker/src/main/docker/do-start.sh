@@ -56,10 +56,10 @@ else
 
 	. /opt/app/policy/etc/profile.d/env.sh
 
-	# install policy keystore
-
-	mkdir -p ${POLICY_HOME}/etc/ssl
-	cp config/policy-keystore ${POLICY_HOME}/etc/ssl
+	if [[ -f config/policy-keystore ]]; then
+	    # install policy keystore if present
+	    cp config/policy-keystore ${POLICY_HOME}/etc/ssl
+	fi
 
 	if [[ -x config/drools-tweaks.sh ]] ; then
 		echo "Executing tweaks"
