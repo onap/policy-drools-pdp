@@ -22,7 +22,7 @@ DOCKER_REPOSITORY=nexus3.onap.org:10003
 MVN_VERSION=$(cat packages/docker/target/version)
 MVN_MAJMIN_VERSION=$(cut -f 1,2 -d . packages/docker/target/version)
 TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
-PROXY_ARGS=""
+PROXY_ARGS="--build-arg BUILD_VERSION=${MVN_VERSION}"
 IMAGE=policy-drools
 
 if [ $HTTP_PROXY ]; then
