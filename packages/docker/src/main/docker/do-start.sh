@@ -32,6 +32,11 @@ else
 		cp config/*.conf .
 	fi
 
+	if [[ -f config/drools-preinstall.sh ]] ; then
+		echo "Executing preinstallation steps .."
+		bash config/drools-preinstall.sh
+	fi
+
 	# wait for nexus up before installing, since installation
 	# needs to deploy some artifacts to the repo
 	./wait-for-port.sh nexus 8081
@@ -61,7 +66,7 @@ else
 	    cp config/policy-keystore ${POLICY_HOME}/etc/ssl
 	fi
 
-	if [[ -x config/drools-tweaks.sh ]] ; then
+	if [[ -f config/drools-tweaks.sh ]] ; then
 		echo "Executing tweaks"
 		# file may not be executable; running it as an
 		# argument to bash avoids needing execute perms.
