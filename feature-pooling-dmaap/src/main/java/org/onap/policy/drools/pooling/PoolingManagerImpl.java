@@ -45,7 +45,6 @@ import org.onap.policy.drools.pooling.state.QueryState;
 import org.onap.policy.drools.pooling.state.StartState;
 import org.onap.policy.drools.pooling.state.State;
 import org.onap.policy.drools.pooling.state.StateTimerTask;
-import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
@@ -177,8 +176,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             this.topic = props.getPoolingTopic();
             this.eventq = factory.makeEventQueue(props);
             this.extractors = factory.makeClassExtractors(makeExtractorProps(controller, props.getSource()));
-            this.dmaapMgr = factory.makeDmaapManager(props.getPoolingTopic(),
-                            makeDmaapProps(controller, props.getSource()));
+            this.dmaapMgr = factory.makeDmaapManager(props.getPoolingTopic());
             this.current = new IdleState(this);
 
             logger.info("allocating host {} to controller {} for topic {}", host, controller.getName(), topic);
@@ -237,39 +235,6 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     }
 
     /**
-     * Makes properties for configuring DMaaP. Copies properties from the source that
-     * start with the Pooling property prefix followed by the controller name, stripping
-     * the prefix and controller name.
-     * 
-     * @param controller the controller for which DMaaP will be configured
-     * @param source properties from which to get the DMaaP properties
-     * @return DMaaP properties
-     */
-    private Properties makeDmaapProps(PolicyController controller, Properties source) {
-        SpecProperties specProps = new SpecProperties("", "controller." + controller.getName(), source);
-
-        // could be UEB or DMAAP, so add both
-        addDmaapConsumerProps(specProps, PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS);
-        addDmaapConsumerProps(specProps, PolicyProperties.PROPERTY_DMAAP_SOURCE_TOPICS);
-
-        return specProps;
-    }
-
-    /**
-     * Adds DMaaP consumer properties, consumer group & instance. The group is the host
-     * and the instance is a constant.
-     * 
-     * @param props where to add the new properties
-     * @param prefix property prefix
-     */
-    private void addDmaapConsumerProps(SpecProperties props, String prefix) {
-        String fullpfx = props.getSpecPrefix() + prefix + "." + topic;
-
-        props.setProperty(fullpfx + PolicyProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX, host);
-        props.setProperty(fullpfx + PolicyProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_INSTANCE_SUFFIX, "0");
-    }
-
-    /**
      * Indicates that the controller is about to start. Starts the publisher for the
      * internal topic, and creates a thread pool for the timers.
      * 
@@ -325,6 +290,8 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
                 dmaapMgr.stopConsumer(this);
                 publishAdmin(new Offline(getHost()));
             }
+
+            assignments = null;
         }
 
         if (sched != null) {
@@ -902,12 +869,11 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
          * Creates a DMaaP manager.
          * 
          * @param topic name of the internal DMaaP topic
-         * @param props properties used to configure DMaaP
          * @return a new DMaaP manager
          * @throws PoolingFeatureException if an error occurs
          */
-        public DmaapManager makeDmaapManager(String topic, Properties props) throws PoolingFeatureException {
-            return new DmaapManager(topic, props);
+        public DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+            return new DmaapManager(topic);
         }
 
         /**
