@@ -33,11 +33,7 @@ public class HeartbeatTest extends BasicMessageTester<Heartbeat> {
         super(Heartbeat.class);
     }
 
-    /**
-     * Makes a message that will pass the validity check.
-     * 
-     * @return a valid Message
-     */
+    @Override
     public Heartbeat makeValidMessage() {
         Heartbeat msg = new Heartbeat(VALID_HOST, ++sequence);
         msg.setChannel(VALID_CHANNEL);

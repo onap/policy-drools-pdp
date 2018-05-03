@@ -26,11 +26,7 @@ public class OfflineTest extends BasicMessageTester<Offline> {
         super(Offline.class);
     }
 
-    /**
-     * Makes a message that will pass the validity check.
-     * 
-     * @return a valid Message
-     */
+    @Override
     public Offline makeValidMessage() {
         Offline msg = new Offline(VALID_HOST);
         msg.setChannel(VALID_CHANNEL);

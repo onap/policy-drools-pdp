@@ -62,11 +62,7 @@ public class IdentificationTest extends MessageWithAssignmentsTester<Identificat
         msg.checkValidity();
     }
 
-    /**
-     * Makes a message that will pass the validity check.
-     * 
-     * @return a valid Message
-     */
+    @Override
     public Identification makeValidMessage() {
         Identification msg = new Identification(VALID_HOST, (isNullAssignments() ? null : VALID_ASGN));
         msg.setChannel(VALID_CHANNEL);

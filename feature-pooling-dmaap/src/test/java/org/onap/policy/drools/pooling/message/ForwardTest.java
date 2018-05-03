@@ -177,11 +177,7 @@ public class ForwardTest extends BasicMessageTester<Forward> {
         expectCheckValidityFailure(msg -> msg.setNumHops(-1));
     }
 
-    /**
-     * Makes a message that will pass the validity check.
-     * 
-     * @return a valid Message
-     */
+    @Override
     public Forward makeValidMessage() {
         tcreateMs = System.currentTimeMillis();
 

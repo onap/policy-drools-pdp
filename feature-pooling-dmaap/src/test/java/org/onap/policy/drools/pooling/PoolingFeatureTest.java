@@ -271,11 +271,28 @@ public class PoolingFeatureTest {
         assertFalse(pool.afterStop(controller1));
         verify(mgr1).afterStop();
 
-        // ensure it has been removed from the map by re-invoking
-        assertFalse(pool.afterStop(controller1));
-
+        assertFalse(pool.afterStop(controllerDisabled));
+        
         // count should be unchanged
         verify(mgr1).afterStop();
+    }
+
+    @Test
+    public void testAfterHalt() {
+        assertFalse(pool.afterHalt(controller1));
+        assertFalse(pool.afterHalt(controller1));
+        
+        verify(mgr1, never()).afterStop();
+
+        assertFalse(pool.afterStop(controllerDisabled));
+    }
+
+    @Test
+    public void testAfterShutdown() {
+        assertFalse(pool.afterShutdown(controller1));
+        assertFalse(pool.afterShutdown(controller1));
+        
+        verify(mgr1, never()).afterStop();
 
         assertFalse(pool.afterStop(controllerDisabled));
     }
@@ -462,32 +479,6 @@ public class PoolingFeatureTest {
         doThrow(new PoolingFeatureException()).when(mgr1).beforeStart();
 
         pool.beforeStart(controller1);
-    }
-
-    @Test
-    public void testDoDeleteManager() {
-        assertFalse(pool.afterStop(controller1));
-        verify(mgr1).afterStop();
-
-        // ensure it has been removed from the map by re-invoking
-        assertFalse(pool.afterStop(controller1));
-
-        // count should be unchanged
-        verify(mgr1).afterStop();
-
-
-        // different controller
-        assertFalse(pool.afterStop(controller2));
-        verify(mgr2).afterStop();
-
-        // ensure it has been removed from the map by re-invoking
-        assertFalse(pool.afterStop(controller2));
-
-        // count should be unchanged
-        verify(mgr2).afterStop();
-
-
-        assertFalse(pool.afterStop(controllerDisabled));
     }
 
     @Test
