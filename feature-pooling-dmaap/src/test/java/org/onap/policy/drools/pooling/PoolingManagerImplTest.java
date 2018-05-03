@@ -155,7 +155,7 @@ public class PoolingManagerImplTest {
 
         when(factory.makeEventQueue(any())).thenReturn(eventQueue);
         when(factory.makeClassExtractors(any())).thenReturn(extractors);
-        when(factory.makeDmaapManager(any(), any())).thenReturn(dmaap);
+        when(factory.makeDmaapManager(any())).thenReturn(dmaap);
         when(factory.makeScheduler()).thenReturn(sched);
         when(factory.canDecodeEvent(drools, TOPIC2)).thenReturn(true);
         when(factory.decodeEvent(drools, TOPIC2, THE_EVENT)).thenReturn(DECODED_EVENT);
@@ -188,7 +188,7 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testPoolingManagerImpl() throws Exception {
-        verify(factory).makeDmaapManager(any(), any());
+        verify(factory).makeDmaapManager(any());
 
         State st = mgr.getCurrent();
         assertTrue(st instanceof IdleState);
@@ -215,7 +215,7 @@ public class PoolingManagerImplTest {
     public void testPoolingManagerImpl_PoolEx() throws PoolingFeatureException {
         // throw an exception when we try to create the dmaap manager
         PoolingFeatureException ex = new PoolingFeatureException();
-        when(factory.makeDmaapManager(any(), any())).thenThrow(ex);
+        when(factory.makeDmaapManager(any())).thenThrow(ex);
 
         PoolingFeatureRtException ex2 = expectException(PoolingFeatureRtException.class,
                         () -> new PoolingManagerImpl(MY_HOST, controller, poolProps, active));
@@ -272,19 +272,6 @@ public class PoolingManagerImplTest {
     }
 
     @Test
-    public void testBeforeStart_DmaapEx() throws Exception {
-        // generate an exception
-        PoolingFeatureException ex = new PoolingFeatureException();
-        doThrow(ex).when(dmaap).startPublisher();
-
-        PoolingFeatureException ex2 = expectException(PoolingFeatureException.class, () -> mgr.beforeStart());
-        assertEquals(ex, ex2);
-
-        // should never start the scheduler
-        verify(factory, never()).makeScheduler();
-    }
-
-    @Test
     public void testAfterStart() throws Exception {
         startMgr();
 
@@ -317,7 +304,13 @@ public class PoolingManagerImplTest {
     @Test
     public void testBeforeStop() throws Exception {
         startMgr();
+        mgr.startDistributing(makeAssignments(true));
 
+        // verify that this message is not queued
+        Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
+        mgr.handle(msg);
+        verify(eventQueue, never()).add(msg);
+        
         mgr.beforeStop();
 
         verify(dmaap).stopConsumer(mgr);
@@ -325,6 +318,10 @@ public class PoolingManagerImplTest {
         verify(dmaap).publish(contains("offline"));
 
         assertTrue(mgr.getCurrent() instanceof IdleState);
+
+        // verify that next message is queued
+        mgr.handle(msg);        
+        verify(eventQueue).add(msg);
     }
 
     @Test

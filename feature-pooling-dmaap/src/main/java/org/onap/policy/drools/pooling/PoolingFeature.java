@@ -20,13 +20,16 @@
 
 package org.onap.policy.drools.pooling;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.Function;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.event.comm.TopicEndpoint;
+import org.onap.policy.drools.event.comm.TopicSink;
+import org.onap.policy.drools.event.comm.TopicSource;
 import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
@@ -53,7 +56,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     /**
      * Factory used to create objects.
      */
-    private static Factory factory;
+    private static Factory factory = new Factory();
 
     /**
      * ID of this host.
@@ -124,6 +127,10 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     public boolean beforeStart(PolicyEngine engine) {
         logger.info("initializing " + PoolingProperties.FEATURE_NAME);
         featProps = factory.getProperties(PoolingProperties.FEATURE_NAME);
+        
+        factory.initTopicSources(featProps);
+        factory.initTopicSinks(featProps);
+        
         return false;
     }
 
@@ -189,14 +196,22 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     @Override
     public boolean afterStop(PolicyController controller) {
-
-        // NOTE: using doDeleteManager() instead of doManager()
-
-        return doDeleteManager(controller, mgr -> {
-
+        return doManager(controller, mgr -> {
             mgr.afterStop();
             return false;
         });
+    }
+
+    @Override
+    public boolean afterShutdown(PolicyController controller) {
+        deleteManager(controller);
+        return false;
+    }
+
+    @Override
+    public boolean afterHalt(PolicyController controller) {
+        deleteManager(controller);
+        return false;
     }
 
     @Override
@@ -306,29 +321,17 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     }
 
     /**
-     * Executes a function using the manager associated with the controller and then
-     * deletes the manager. Catches any exceptions from the function and re-throws it as a
-     * runtime exception.
+     * Deletes the manager associated with a controller.
      * 
      * @param controller
-     * @param func function to be executed
-     * @return {@code true} if the function handled the request, {@code false} otherwise
      * @throws PoolingFeatureRtException if an error occurs
      */
-    private boolean doDeleteManager(PolicyController controller, Function<PoolingManagerImpl, Boolean> func) {
+    private void deleteManager(PolicyController controller) {
 
         String name = controller.getName();
         logger.info("remove feature-pool-dmaap manager for {}", name);
 
-        // NOTE: using "remove()" instead of "get()"
-
-        PoolingManagerImpl mgr = ctlr2pool.remove(name);
-
-        if (mgr == null) {
-            return false;
-        }
-
-        return func.apply(mgr);
+        ctlr2pool.remove(name);
     }
 
     /**
@@ -415,6 +418,26 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
          */
         public PolicyController getController(DroolsController droolsController) {
             return PolicyController.factory.get(droolsController);
+        }
+
+        /**
+         * Initializes the topic sources.
+         * 
+         * @param props properties used to configure the topics
+         * @return the topic sources
+         */
+        public List<TopicSource> initTopicSources(Properties props) {
+            return TopicEndpoint.manager.addTopicSources(props);
+        }
+
+        /**
+         * Initializes the topic sinks.
+         * 
+         * @param props properties used to configure the topics
+         * @return the topic sinks
+         */
+        public List<TopicSink> initTopicSinks(Properties props) {
+            return TopicEndpoint.manager.addTopicSinks(props);
         }
     }
 }

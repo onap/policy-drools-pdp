@@ -62,11 +62,7 @@ public class LeaderTest extends MessageWithAssignmentsTester<Leader> {
         expectCheckValidityFailure(msg -> msg.setAssignments(asgnNotSmallest));
     }
 
-    /**
-     * Makes a message that will pass the validity check.
-     * 
-     * @return a valid Message
-     */
+    @Override
     public Leader makeValidMessage() {
         Leader msg = new Leader(VALID_HOST, (isNullAssignments() ? null : VALID_ASGN));
         msg.setChannel(VALID_CHANNEL);

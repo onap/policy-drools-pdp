@@ -874,11 +874,6 @@ public class FeatureTest {
     private static class TopicImpl implements Topic {
 
         /**
-         * {@code True} if this topic is alive/running, {@code false} otherwise.
-         */
-        private boolean alive = false;
-
-        /**
          * 
          */
         public TopicImpl() {
@@ -917,32 +912,22 @@ public class FeatureTest {
 
         @Override
         public synchronized boolean start() {
-            if (alive) {
-                throw new IllegalStateException("topic already started");
-            }
-
-            alive = true;
             return true;
         }
 
         @Override
         public synchronized boolean stop() {
-            if (!alive) {
-                throw new IllegalStateException("topic is not running");
-            }
-
-            alive = false;
             return true;
         }
 
         @Override
         public synchronized void shutdown() {
-            alive = false;
+            // do nothing
         }
 
         @Override
         public synchronized boolean isAlive() {
-            return alive;
+            return true;
         }
 
         @Override
@@ -1081,12 +1066,12 @@ public class FeatureTest {
         }
 
         @Override
-        public List<TopicSource> initTopicSources(Properties props) {
+        public List<TopicSource> getTopicSources() {
             return Arrays.asList(new TopicSourceImpl(context, true));
         }
 
         @Override
-        public List<TopicSink> initTopicSinks(Properties props) {
+        public List<TopicSink> getTopicSinks() {
             return Arrays.asList(new TopicSinkImpl(context));
         }
     }

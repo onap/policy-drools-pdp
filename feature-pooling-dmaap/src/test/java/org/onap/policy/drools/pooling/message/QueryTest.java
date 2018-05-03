@@ -26,11 +26,7 @@ public class QueryTest extends BasicMessageTester<Query> {
         super(Query.class);
     }
 
-    /**
-     * Makes a message that will pass the validity check.
-     * 
-     * @return a valid Message
-     */
+    @Override
     public Query makeValidMessage() {
         Query msg = new Query(VALID_HOST);
         msg.setChannel(VALID_CHANNEL);

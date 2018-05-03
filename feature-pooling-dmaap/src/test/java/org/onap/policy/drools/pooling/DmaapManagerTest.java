@@ -24,16 +24,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -56,7 +54,6 @@ public class DmaapManagerTest {
      */
     private static Factory saveFactory;
 
-    private Properties props;
     private Factory factory;
     private TopicListener listener;
     private FilterableTopicSource source;
@@ -75,8 +72,6 @@ public class DmaapManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        props = new Properties();
-
         listener = mock(TopicListener.class);
         factory = mock(Factory.class);
         source = mock(FilterableTopicSource.class);
@@ -90,21 +85,21 @@ public class DmaapManagerTest {
         when(sink.send(any())).thenReturn(true);
 
         // three sources, with the desired one in the middle
-        when(factory.initTopicSources(props))
+        when(factory.getTopicSources())
                         .thenReturn(Arrays.asList(mock(TopicSource.class), source, mock(TopicSource.class)));
 
         // three sinks, with the desired one in the middle
-        when(factory.initTopicSinks(props))
+        when(factory.getTopicSinks())
                         .thenReturn(Arrays.asList(mock(TopicSink.class), sink, mock(TopicSink.class)));
 
-        mgr = new DmaapManager(MY_TOPIC, props);
+        mgr = new DmaapManager(MY_TOPIC);
     }
 
     @Test
     public void testDmaapManager() {
         // verify that the init methods were called
-        verify(factory).initTopicSinks(props);
-        verify(factory).initTopicSinks(props);
+        verify(factory).getTopicSinks();
+        verify(factory).getTopicSinks();
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -112,15 +107,15 @@ public class DmaapManagerTest {
         // force error by having no topics match
         when(source.getTopic()).thenReturn("");
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testDmaapManager_IllegalArgEx() throws PoolingFeatureException {
         // force error
-        when(factory.initTopicSources(props)).thenThrow(new IllegalArgumentException("expected"));
+        when(factory.getTopicSources()).thenThrow(new IllegalArgumentException("expected"));
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -128,7 +123,7 @@ public class DmaapManagerTest {
         // force an error when setFilter() is called
         doThrow(new UnsupportedOperationException("expected")).when(source).setFilter(any());
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test
@@ -148,25 +143,25 @@ public class DmaapManagerTest {
         TopicSource source2 = mock(TopicSource.class);
         when(source2.getTopic()).thenReturn(MY_TOPIC);
 
-        when(factory.initTopicSources(props)).thenReturn(Arrays.asList(source2));
+        when(factory.getTopicSources()).thenReturn(Arrays.asList(source2));
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSource_NotFound() throws PoolingFeatureException {
         // one item in list, and its topic doesn't match
-        when(factory.initTopicSources(props)).thenReturn(Arrays.asList(mock(TopicSource.class)));
+        when(factory.getTopicSources()).thenReturn(Arrays.asList(mock(TopicSource.class)));
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSource_EmptyList() throws PoolingFeatureException {
         // empty list
-        when(factory.initTopicSources(props)).thenReturn(new LinkedList<>());
+        when(factory.getTopicSources()).thenReturn(new LinkedList<>());
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test
@@ -177,50 +172,26 @@ public class DmaapManagerTest {
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSink_NotFound() throws PoolingFeatureException {
         // one item in list, and its topic doesn't match
-        when(factory.initTopicSinks(props)).thenReturn(Arrays.asList(mock(TopicSink.class)));
+        when(factory.getTopicSinks()).thenReturn(Arrays.asList(mock(TopicSink.class)));
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSink_EmptyList() throws PoolingFeatureException {
         // empty list
-        when(factory.initTopicSinks(props)).thenReturn(new LinkedList<>());
+        when(factory.getTopicSinks()).thenReturn(new LinkedList<>());
 
-        new DmaapManager(MY_TOPIC, props);
+        new DmaapManager(MY_TOPIC);
     }
 
     @Test
     public void testStartPublisher() throws PoolingFeatureException {
-        // not started yet
-        verify(sink, never()).start();
-
+        
         mgr.startPublisher();
-        verify(sink).start();
 
         // restart should have no effect
         mgr.startPublisher();
-        verify(sink).start();
-
-        // should be able to publish now
-        mgr.publish(MSG);
-        verify(sink).send(MSG);
-    }
-
-    @Test
-    public void testStartPublisher_Exception() throws PoolingFeatureException {
-        // force exception when it starts
-        doThrow(new IllegalStateException("expected")).when(sink).start();
-
-        expectException("startPublisher,start", () -> mgr.startPublisher());
-        expectException("startPublisher,publish", () -> mgr.publish(MSG));
-
-        // allow it to succeed this time
-        reset(sink);
-        when(sink.send(any())).thenReturn(true);
-
-        mgr.startPublisher();
-        verify(sink).start();
 
         // should be able to publish now
         mgr.publish(MSG);
@@ -231,18 +202,15 @@ public class DmaapManagerTest {
     public void testStopPublisher() throws PoolingFeatureException {
         // not publishing yet, so stopping should have no effect
         mgr.stopPublisher(0);
-        verify(sink, never()).stop();
 
         // now start it
         mgr.startPublisher();
 
         // this time, stop should do something
         mgr.stopPublisher(0);
-        verify(sink).stop();
 
         // re-stopping should have no effect
         mgr.stopPublisher(0);
-        verify(sink).stop();
     }
 
     @Test
@@ -282,16 +250,6 @@ public class DmaapManagerTest {
         thread.join(minms);
 
         assertFalse(thread.isAlive());
-    }
-
-    @Test
-    public void testStopPublisher_Exception() throws PoolingFeatureException {
-        mgr.startPublisher();
-
-        // force exception when it stops
-        doThrow(new IllegalStateException("expected")).when(sink).stop();
-
-        mgr.stopPublisher(0);
     }
 
     @Test
