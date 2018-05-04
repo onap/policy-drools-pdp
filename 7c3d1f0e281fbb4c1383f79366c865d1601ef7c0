@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_bcf18a02",
+        "filename": "feature-pooling-dmaap/src/main/feature/config/feature-pooling-dmaap.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-05-04T14:19:07Z",
+      "side": 1,
+      "message": "let\u0027s not used \" \u003d \" and instead use \"\u003d\" to be consistent with the other .properties.  I know is valid to use it, but also to avoid surprises if there are other scripts that parse files so to avoid unintended breakage (probably there are not, and if they are would be relatively straightforward to use), but at this point in time we should minimize potential breakages.",
+      "revId": "7c3d1f0e281fbb4c1383f79366c865d1601ef7c0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
