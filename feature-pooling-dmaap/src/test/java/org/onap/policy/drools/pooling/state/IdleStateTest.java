@@ -63,6 +63,7 @@ public class IdleStateTest extends BasicStateTester {
     @Test
     public void testProcessForward() {
         Forward msg = new Forward();
+        msg.setChannel(MY_HOST);
         assertNull(state.process(msg));
 
         verify(mgr).handle(msg);

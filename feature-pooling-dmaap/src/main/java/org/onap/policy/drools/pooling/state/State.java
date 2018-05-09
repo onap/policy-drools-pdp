@@ -147,6 +147,11 @@ public abstract class State {
      * @return the new state, or {@code null} if the state is unchanged
      */
     public State process(Forward msg) {
+        if(!getHost().equals(msg.getChannel())) {
+            logger.info("discard Forward message to {} from {} on topic {}", msg.getChannel(), msg.getSource(), getTopic());
+            return null;
+        }
+        
         logger.info("received Forward message from {} on topic {}", msg.getSource(), getTopic());
         mgr.handle(msg);
         return null;

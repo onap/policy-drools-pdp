@@ -212,6 +212,11 @@ public class StateTest extends BasicStateTester {
         Forward msg = new Forward();
         assertNull(state.process(msg));
 
+        verify(mgr, never()).handle(msg);
+
+        msg.setChannel(MY_HOST);
+        assertNull(state.process(msg));
+
         verify(mgr).handle(msg);
     }
 

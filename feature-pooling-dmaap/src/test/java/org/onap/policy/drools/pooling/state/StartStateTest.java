@@ -137,7 +137,11 @@ public class StartStateTest extends BasicStateTester {
 
     @Test
     public void testProcessForward() {
-        assertNull(state.process(new Forward()));
+        Forward msg = new Forward();
+        msg.setChannel(MY_HOST);
+        assertNull(state.process(msg));
+
+        verify(mgr).handle(msg);
     }
 
     @Test
