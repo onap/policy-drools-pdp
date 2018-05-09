@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_5df637d8",
+        "filename": "packages/install/src/files/feature-pooling-dmaap.conf",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-05-09T14:38:39Z",
+      "side": 1,
+      "message": "right now the topics that we defined,  words are dashed separated, for example, PDPD-CONFIGURATION, APPC-CL, POLICY-CL-MGT, ..  it\u0027s a little better if we can use the same pattern here just for consistency.",
+      "revId": "f64d92c8691396574cca43abe4a280821de874c2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
