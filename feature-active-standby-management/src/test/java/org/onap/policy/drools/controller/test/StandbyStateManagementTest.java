@@ -219,27 +219,14 @@ public class StandbyStateManagementTest {
 		Properties activeStandbyProperties = new Properties();
 		activeStandbyProperties.load(new FileInputStream(new File(
 				configDir + "/feature-active-standby-management.properties")));
-		ActiveStandbyProperties.initProperties(activeStandbyProperties);
-		String thisPdpId = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.NODE_NAME);
 		
-		logger.debug("testPMStandbyStateChangeNotifier: Getting StateManagementFeatureAPI");
-
-		StateManagementFeatureAPI sm = null;
-		for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList())
-		{
-			((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
-			sm = feature;
-			logger.debug("testPMStandbyStateChangeNotifier stateManagementFeature.getResourceName(): {}", sm.getResourceName());
-			break;
-		}
-		if(sm == null){
-			logger.error("testPMStandbyStateChangeNotifier failed to initialize.  "
-					+ "Unable to get instance of StateManagementFeatureAPI "
-					+ "with resourceID: {}", thisPdpId);
-			logger.debug("testPMStandbyStateChangeNotifier failed to initialize.  "
-					+ "Unable to get instance of StateManagementFeatureAPI "
-					+ "with resourceID: {}", thisPdpId);
-		}
+		String resourceName = "testPMS";
+		activeStandbyProperties.setProperty("resource.name", resourceName);
+		ActiveStandbyProperties.initProperties(activeStandbyProperties);
+		
+		logger.debug("testPMStandbyStateChangeNotifier: Getting StateManagement instance");
+		
+		StateManagement sm = new StateManagement(emfx, resourceName);
 
 		//Create an instance of the Observer
 		PMStandbyStateChangeNotifier pmNotifier = new PMStandbyStateChangeNotifier();
