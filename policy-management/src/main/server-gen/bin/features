@@ -332,9 +332,8 @@ function enableConfigAnalysis ()
 	featureConfigs=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ 2> /dev/null)
 	for configPath in ${featureConfigs}; do
 		configFileName=$(basename "${configPath}")
-		if [[ -e "${LIB}"/"${configFileName}" ]]; then
-			echo "error: a config file of the same name is already in the base: ${configFileName}"
-			return 2
+		if [[ -e "${CONFIG}"/"${configFileName}" ]]; then
+			echo "warning: a config file of the same name is already in the base installation: ${configFileName}"
 		fi
 	done
 }
@@ -425,7 +424,7 @@ function enableFeatureConfig()
 	
 	local featureName="$1"
 	local featureInstallConf=feature-"${featureName}".conf
-	local featureConfigs featureConfigPath
+	local featureConfigs featureConfigPath featureConfigName
 	
 	if [[ -z ${featureName} ]]; then
 		echo "warning: no feature name"
@@ -434,6 +433,7 @@ function enableFeatureConfig()
 	
 	featureConfigs=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ -type f -maxdepth 1 2> /dev/null)
 	for featureConfigPath in ${featureConfigs}; do
+		featureConfigName=$(basename "${featureConfigPath}")
 		ln -s -f "${featureConfigPath}" "${CONFIG}/"
 	done
 	
