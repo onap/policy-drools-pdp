@@ -332,8 +332,8 @@ function enableConfigAnalysis ()
 	featureConfigs=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_CONFIG}"/ 2> /dev/null)
 	for configPath in ${featureConfigs}; do
 		configFileName=$(basename "${configPath}")
-		if [[ -e "${LIB}"/"${configFileName}" ]]; then
-			echo "error: a config file of the same name is already in the base: ${configFileName}"
+		if [[ -e "${CONFIG}"/"${configFileName}" ]]; then
+			echo "warning: a config file of the same name is already in the base installation: ${configFileName}"
 			return 2
 		fi
 	done
