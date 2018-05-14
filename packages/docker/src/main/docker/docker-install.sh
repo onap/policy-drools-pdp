@@ -654,7 +654,11 @@ EOF
 	update_monitor $CONTROLLER_NAME
 
 	# save install configuration as an environment file
-	ln -s -f "${POLICY_HOME}/etc/profile.d/${BASE_CONF}" "${POLICY_HOME}/config/${BASE_CONF}.environment"
+	if [[ -f "${POLICY_HOME}/config/${BASE_CONF}.environment" ]] && [[ ! -L "${POLICY_HOME}/config/${BASE_CONF}.environment" ]]; then
+		echo "warning: ${POLICY_HOME}/config/${BASE_CONF}.environment exists as a regular file"
+	else
+		ln -s -f "${POLICY_HOME}/etc/profile.d/${BASE_CONF}" "${POLICY_HOME}/config/${BASE_CONF}.environment"
+	fi
 }
 
 
