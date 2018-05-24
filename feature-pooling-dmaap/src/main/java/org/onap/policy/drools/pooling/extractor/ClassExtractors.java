@@ -255,7 +255,7 @@ public class ClassExtractors {
 
         @Override
         public Object extract(Object object) {
-            logger.warn("cannot extract {} from {}", type, object.getClass());
+            logger.info("cannot extract {} from {}", type, object.getClass());
             return null;
         }
     }
