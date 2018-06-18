@@ -21,9 +21,6 @@
 package org.onap.policy.drools.pooling;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.onap.policy.common.utils.properties.SpecPropertyConfiguration.generalize;
-import static org.onap.policy.common.utils.properties.SpecPropertyConfiguration.specialize;
 import static org.onap.policy.drools.pooling.PoolingProperties.ACTIVE_HEARTBEAT_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.FEATURE_ENABLED;
 import static org.onap.policy.drools.pooling.PoolingProperties.IDENTIFICATION_MS;
@@ -32,6 +29,7 @@ import static org.onap.policy.drools.pooling.PoolingProperties.OFFLINE_AGE_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.OFFLINE_LIMIT;
 import static org.onap.policy.drools.pooling.PoolingProperties.OFFLINE_PUB_WAIT_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.POOLING_TOPIC;
+import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 import static org.onap.policy.drools.pooling.PoolingProperties.REACTIVATE_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.START_HEARTBEAT_MS;
 import java.util.Properties;
@@ -80,12 +78,6 @@ public class PoolingPropertiesTest {
     @Test
     public void testGetPoolingTopic() {
         assertEquals(STD_POOLING_TOPIC, pooling.getPoolingTopic());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPoolingTopic_Generalize() {
-        // shouldn't be able to generalize the topic
-        generalize(POOLING_TOPIC);
     }
 
     @Test
@@ -147,16 +139,10 @@ public class PoolingPropertiesTest {
         assertEquals("special " + propnm, specValue, func.apply(null));
 
         /*
-         * Ensure the property supports generalization - this will throw an exception if
-         * it does not.
-         */
-        assertFalse(propnm.equals(generalize(propnm)));
-
-        /*
          * Without the property - should use the default value.
          */
         plain.remove(specialize(propnm, CONTROLLER));
-        plain.remove(generalize(propnm));
+        plain.remove(propnm);
         pooling = new PoolingProperties(CONTROLLER, plain);
         assertEquals("default " + propnm, dfltValue, func.apply(null));
     }
@@ -182,5 +168,17 @@ public class PoolingPropertiesTest {
         props.setProperty(specialize(INTER_HEARTBEAT_MS, CONTROLLER), "" + STD_INTER_HEARTBEAT_MS);
 
         return props;
+    }
+
+    /**
+     * Embeds a specializer within a property name, after the prefix.
+     * 
+     * @param propnm property name into which it should be embedded
+     * @param spec specializer to be embedded
+     * @return the property name, with the specializer embedded within it
+     */
+    private String specialize(String propnm, String spec) {
+        String suffix = propnm.substring(PREFIX.length());
+        return PREFIX + spec + "." + suffix;
     }
 }

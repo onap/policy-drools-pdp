@@ -21,13 +21,14 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.Properties;
-import org.onap.policy.common.utils.properties.SpecPropertyConfiguration;
+import org.onap.policy.common.utils.properties.PropertyConfiguration;
+import org.onap.policy.common.utils.properties.SpecProperties;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 /**
  * Properties used by the pooling feature, specific to a controller.
  */
-public class PoolingProperties extends SpecPropertyConfiguration {
+public class PoolingProperties extends PropertyConfiguration {
 
     /**
      * The feature name, used to retrieve properties.
@@ -39,29 +40,16 @@ public class PoolingProperties extends SpecPropertyConfiguration {
      */
     public static final String PREFIX = "pooling.";
     
-    /*
-     * These properties are not used by a SpecPropertyConfiguration, thus
-     * they do not use any of the "{xxx}" forms.
-     */
     public static final String FEATURE_ENABLED = PREFIX + "enabled";
-
-    /*
-     * These properties REQUIRE a controller name, thus they use the "{$}" form.
-     */
-    public static final String POOLING_TOPIC = PREFIX + "{$}.topic";
-
-    /*
-     * These properties allow the controller name to be left out, thus they use
-     * the "{prefix?suffix}" form.
-     */
-    public static final String OFFLINE_LIMIT = PREFIX + "{?.}offline.queue.limit";
-    public static final String OFFLINE_AGE_MS = PREFIX + "{?.}offline.queue.age.milliseconds";
-    public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "{?.}offline.publish.wait.milliseconds";
-    public static final String START_HEARTBEAT_MS = PREFIX + "{?.}start.heartbeat.milliseconds";
-    public static final String REACTIVATE_MS = PREFIX + "{?.}reactivate.milliseconds";
-    public static final String IDENTIFICATION_MS = PREFIX + "{?.}identification.milliseconds";
-    public static final String ACTIVE_HEARTBEAT_MS = PREFIX + "{?.}active.heartbeat.milliseconds";
-    public static final String INTER_HEARTBEAT_MS = PREFIX + "{?.}inter.heartbeat.milliseconds";
+    public static final String POOLING_TOPIC = PREFIX + "topic";
+    public static final String OFFLINE_LIMIT = PREFIX + "offline.queue.limit";
+    public static final String OFFLINE_AGE_MS = PREFIX + "offline.queue.age.milliseconds";
+    public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "offline.publish.wait.milliseconds";
+    public static final String START_HEARTBEAT_MS = PREFIX + "start.heartbeat.milliseconds";
+    public static final String REACTIVATE_MS = PREFIX + "reactivate.milliseconds";
+    public static final String IDENTIFICATION_MS = PREFIX + "identification.milliseconds";
+    public static final String ACTIVE_HEARTBEAT_MS = PREFIX + "active.heartbeat.milliseconds";
+    public static final String INTER_HEARTBEAT_MS = PREFIX + "inter.heartbeat.milliseconds";
 
     /**
      * Type of item that the extractors will be extracting.
@@ -147,7 +135,7 @@ public class PoolingProperties extends SpecPropertyConfiguration {
      * 
      */
     public PoolingProperties(String controllerName, Properties props) throws PropertyException {
-        super(controllerName, props);
+        super(new SpecProperties(PREFIX, controllerName, props));
 
         source = props;
     }
