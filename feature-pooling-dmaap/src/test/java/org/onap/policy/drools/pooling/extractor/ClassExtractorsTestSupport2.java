@@ -27,6 +27,5 @@ public class ClassExtractorsTestSupport2 {
 
     public static final int NESTED_VALUE = 30;
     
-    @SuppressWarnings("unused")
-    private int theValue = NESTED_VALUE;
+    public final int theValue = NESTED_VALUE;
 }

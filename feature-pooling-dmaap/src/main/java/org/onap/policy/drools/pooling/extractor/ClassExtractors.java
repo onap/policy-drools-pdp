@@ -39,8 +39,10 @@ import org.slf4j.LoggerFactory;
  * <code>&lt;a.prefix>.&lt;class.name> = ${event.reqid}</code>
  * </pre>
  * 
- * If it doesn't find a property for the class, then it looks for a property for
- * that class' super class or interfaces. Extractors are compiled and cached.
+ * <p>For any given field name (e.g., "reqid"), it first looks for a public "getXxx()"
+ * method to extract the specified field. If that fails, then it looks for a public field
+ * by the given name. If that also fails, and the object is a <i>Map</i> subclass, then it
+ * simply uses the "get(field-name)" method to extract the data from the map.
  */
 public class ClassExtractors {
 
@@ -441,27 +443,16 @@ public class ClassExtractors {
             }
 
             try {
-                return clazz.getDeclaredField(name);
+                return clazz.getField(name);
 
             } catch (NoSuchFieldException expected) {
                 // no field by this name - try super class & interfaces
                 logger.debug("no field {} in {}", name, clazz.getName(), expected);
+                return null;
 
             } catch (SecurityException e) {
                 throw new ExtractorException("inaccessible field " + clazz + "." + name, e);
             }
-
-
-            Field field;
-
-            // see if the superclass has an extractor
-            if ((field = getClassField(clazz.getSuperclass(), name)) != null) {
-                return field;
-            }
-
-            // not necessary to check the interfaces
-
-            return field;
         }
     }
 }

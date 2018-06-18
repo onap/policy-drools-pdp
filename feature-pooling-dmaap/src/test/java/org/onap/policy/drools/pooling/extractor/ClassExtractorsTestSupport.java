@@ -34,7 +34,7 @@ public class ClassExtractorsTestSupport {
         super();
     }
 
-    protected ClassExtractorsTestSupport2 getNested() {
+    public ClassExtractorsTestSupport2 getNested() {
         return nested;
     }
 }

@@ -69,9 +69,9 @@ public class FieldExtractorTest {
 
     private static class MyClass {
         @SuppressWarnings("unused")
-        private String value = VALUE;
+        public String value = VALUE;
 
         @SuppressWarnings("unused")
-        private int value2 = INT_VALUE;
+        public int value2 = INT_VALUE;
     }
 }

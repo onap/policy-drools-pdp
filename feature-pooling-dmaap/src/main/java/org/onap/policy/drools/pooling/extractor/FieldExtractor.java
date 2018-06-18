@@ -42,8 +42,6 @@ public class FieldExtractor implements Extractor {
      */
     public FieldExtractor(Field field) {
         this.field = field;
-
-        field.setAccessible(true);
     }
 
     @Override

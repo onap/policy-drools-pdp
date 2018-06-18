@@ -351,19 +351,19 @@ public class ClassExtractorsTest {
          * This will not be used because getIntValue() will override it.
          */
         @SuppressWarnings("unused")
-        private int intValue = INT_VALUE2;
+        public final int intValue = INT_VALUE2;
 
         /**
          * Used to verify retrieval via a field name.
          */
         @SuppressWarnings("unused")
-        private String strValue = VALUE;
+        public final String strValue = VALUE;
 
         /**
          * Used to verify retrieval within maps.
          */
         @SuppressWarnings("unused")
-        private Map<String, Object> mapValue = null;
+        public Map<String, Object> mapValue = null;
 
         /**
          * {@code True} if {@link #getVoidValue()} was invoked, {@code false}
@@ -394,7 +394,7 @@ public class ClassExtractorsTest {
      * Used to verify multi-component retrieval.
      */
     private static class Container {
-        private Simple simpleValue = new Simple();
+        public Simple simpleValue = new Simple();
 
         @SuppressWarnings("unused")
         public Simple getData() {
@@ -416,7 +416,7 @@ public class ClassExtractorsTest {
     private static class Super implements WithString {
 
         @SuppressWarnings("unused")
-        private int intValue = INT_VALUE;
+        public final int intValue = INT_VALUE;
 
         @Override
         public String getStrValue() {
@@ -430,11 +430,11 @@ public class ClassExtractorsTest {
     private static class Sub extends Super {
 
         @SuppressWarnings("unused")
-        private Simple simple = new Simple();
+        public final Simple simple = new Simple();
 
         /**
          * Used to verify multi-component retrieval.
          */
-        private Container cont = new Container();
+        public final Container cont = new Container();
     }
 }
