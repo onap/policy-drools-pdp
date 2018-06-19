@@ -20,26 +20,25 @@
 package org.onap.policy.distributed.locking;
 
 import java.util.Properties;
-
 import org.onap.policy.common.utils.properties.PropertyConfiguration;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 
-public class DistributedLockingProperties extends PropertyConfiguration{
-	
-	/**
+public class DistributedLockingProperties extends PropertyConfiguration {
+
+    /**
      * Feature properties all begin with this prefix.
      */
     public static final String PREFIX = "distributed.locking.";
-    
-	public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
-	public static final String DB_URL = "javax.persistence.jdbc.url";
-	public static final String DB_USER = "javax.persistence.jdbc.user";
-	public static final String DB_PWD = "javax.persistence.jdbc.password";
-	public static final String AGING_PROPERTY = PREFIX + "lock.aging";
-	public static final String HEARTBEAT_INTERVAL_PROPERTY = PREFIX + "heartbeat.interval";
-	
-	/**
+
+    public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
+    public static final String DB_URL = "javax.persistence.jdbc.url";
+    public static final String DB_USER = "javax.persistence.jdbc.user";
+    public static final String DB_PWD = "javax.persistence.jdbc.password";
+    public static final String AGING_PROPERTY = PREFIX + "lock.aging";
+    public static final String HEARTBEAT_INTERVAL_PROPERTY = PREFIX + "heartbeat.interval";
+
+    /**
      * Properties from which this was constructed.
      */
     private Properties source;
@@ -49,31 +48,31 @@ public class DistributedLockingProperties extends PropertyConfiguration{
      */
     @Property(name = DB_DRIVER)
     private String dbDriver;
-    
+
     /**
      * Database url
      */
     @Property(name = DB_URL)
     private String dbUrl;
-    
+
     /**
      * Database user
      */
     @Property(name = DB_USER)
     private String dbUser;
-    
+
     /**
      * Database password
      */
     @Property(name = DB_PWD)
     private String dbPwd;
-    
+
     /**
      * Used to set expiration time for lock.
      */
     @Property(name = AGING_PROPERTY, defaultValue = "300000")
     private long agingProperty;
-    
+
     /**
      * Indicates intervals at which we refresh locks.
      */
@@ -81,43 +80,73 @@ public class DistributedLockingProperties extends PropertyConfiguration{
     private long heartBeatIntervalProperty;
 
     public DistributedLockingProperties(Properties props) throws PropertyException {
-    	super(props);
-    	source = props;
+        super(props);
+        source = props;
     }
 
 
-	public Properties getSource() {
-		return source;
-	}
+    public Properties getSource() {
+        return source;
+    }
 
 
-	public String getDbDriver() {
-		return dbDriver;
-	}
+    public String getDbDriver() {
+        return dbDriver;
+    }
 
 
-	public String getDbUrl() {
-		return dbUrl;
-	}
+    public String getDbUrl() {
+        return dbUrl;
+    }
 
 
-	public String getDbUser() {
-		return dbUser;
-	}
+    public String getDbUser() {
+        return dbUser;
+    }
 
 
-	public String getDbPwd() {
-		return dbPwd;
-	}
+    public String getDbPwd() {
+        return dbPwd;
+    }
 
 
-	public long getAgingProperty() {
-		return agingProperty;
-	}
+    public long getAgingProperty() {
+        return agingProperty;
+    }
 
 
-	public long getHeartBeatIntervalProperty() {
-		return heartBeatIntervalProperty;
-	}
+    public long getHeartBeatIntervalProperty() {
+        return heartBeatIntervalProperty;
+    }
+
+
+    public void setDbDriver(String dbDriver) {
+        this.dbDriver = dbDriver;
+    }
+
+
+    public void setDbUrl(String dbUrl) {
+        this.dbUrl = dbUrl;
+    }
+
+
+    public void setDbUser(String dbUser) {
+        this.dbUser = dbUser;
+    }
+
+
+    public void setDbPwd(String dbPwd) {
+        this.dbPwd = dbPwd;
+    }
+
+
+    public void setAgingProperty(long agingProperty) {
+        this.agingProperty = agingProperty;
+    }
+
+
+    public void setHeartBeatIntervalProperty(long heartBeatIntervalProperty) {
+        this.heartBeatIntervalProperty = heartBeatIntervalProperty;
+    }
 
 }

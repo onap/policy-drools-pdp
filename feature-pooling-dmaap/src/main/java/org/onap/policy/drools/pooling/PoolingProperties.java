@@ -38,6 +38,12 @@ public class PoolingProperties extends SpecPropertyConfiguration {
      * Feature properties all begin with this prefix.
      */
     public static final String PREFIX = "pooling.";
+    
+    /*
+     * These properties are not used by a SpecPropertyConfiguration, thus
+     * they do not use any of the "{xxx}" forms.
+     */
+    public static final String FEATURE_ENABLED = PREFIX + "enabled";
 
     /*
      * These properties REQUIRE a controller name, thus they use the "{$}" form.
@@ -48,7 +54,6 @@ public class PoolingProperties extends SpecPropertyConfiguration {
      * These properties allow the controller name to be left out, thus they use
      * the "{prefix?suffix}" form.
      */
-    public static final String FEATURE_ENABLED = PREFIX + "{?.}enabled";
     public static final String OFFLINE_LIMIT = PREFIX + "{?.}offline.queue.limit";
     public static final String OFFLINE_AGE_MS = PREFIX + "{?.}offline.queue.age.milliseconds";
     public static final String OFFLINE_PUB_WAIT_MS = PREFIX + "{?.}offline.publish.wait.milliseconds";
@@ -185,5 +190,41 @@ public class PoolingProperties extends SpecPropertyConfiguration {
 
     public long getInterHeartbeatMs() {
         return interHeartbeatMs;
+    }
+
+    public void setPoolingTopic(String poolingTopic) {
+        this.poolingTopic = poolingTopic;
+    }
+
+    public void setOfflineLimit(int offlineLimit) {
+        this.offlineLimit = offlineLimit;
+    }
+
+    public void setOfflineAgeMs(long offlineAgeMs) {
+        this.offlineAgeMs = offlineAgeMs;
+    }
+
+    public void setOfflinePubWaitMs(long offlinePubWaitMs) {
+        this.offlinePubWaitMs = offlinePubWaitMs;
+    }
+
+    public void setStartHeartbeatMs(long startHeartbeatMs) {
+        this.startHeartbeatMs = startHeartbeatMs;
+    }
+
+    public void setReactivateMs(long reactivateMs) {
+        this.reactivateMs = reactivateMs;
+    }
+
+    public void setIdentificationMs(long identificationMs) {
+        this.identificationMs = identificationMs;
+    }
+
+    public void setActiveHeartbeatMs(long activeHeartbeatMs) {
+        this.activeHeartbeatMs = activeHeartbeatMs;
+    }
+
+    public void setInterHeartbeatMs(long interHeartbeatMs) {
+        this.interHeartbeatMs = interHeartbeatMs;
     }
 }

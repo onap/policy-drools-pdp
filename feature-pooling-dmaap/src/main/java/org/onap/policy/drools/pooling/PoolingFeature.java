@@ -149,7 +149,9 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
         String name = controller.getName();
 
-        if (FeatureEnabledChecker.isFeatureEnabled(featProps, name, PoolingProperties.FEATURE_ENABLED)) {
+        SpecProperties specProps = new SpecProperties(PoolingProperties.PREFIX, name, featProps);
+        
+        if (FeatureEnabledChecker.isFeatureEnabled(specProps, PoolingProperties.FEATURE_ENABLED)) {
             try {
                 // get & validate the properties
                 PoolingProperties props = new PoolingProperties(name, featProps);
