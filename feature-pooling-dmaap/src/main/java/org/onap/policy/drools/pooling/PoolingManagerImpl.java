@@ -29,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.onap.policy.common.utils.properties.SpecProperties;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.drools.event.comm.TopicListener;

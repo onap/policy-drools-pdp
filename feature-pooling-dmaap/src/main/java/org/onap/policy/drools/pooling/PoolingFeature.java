@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import org.onap.policy.common.utils.properties.SpecProperties;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.event.comm.TopicEndpoint;
@@ -127,6 +128,9 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     public boolean beforeStart(PolicyEngine engine) {
         logger.info("initializing " + PoolingProperties.FEATURE_NAME);
         featProps = factory.getProperties(PoolingProperties.FEATURE_NAME);
+        
+        // remove any generic pooling topic - always use controller-specific property
+        featProps.remove(PoolingProperties.POOLING_TOPIC);
         
         factory.initTopicSources(featProps);
         factory.initTopicSinks(featProps);

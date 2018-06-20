@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.onap.policy.common.utils.properties.SpecPropertyConfiguration.specialize;
+import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 import java.io.IOException;
 import java.util.Deque;
 import java.util.IdentityHashMap;
@@ -673,6 +673,18 @@ public class FeatureTest2 {
         @Override
         public PolicyController getController(DroolsController droolsController) {
             return context.getController(droolsController);
+        }
+
+        /**
+         * Embeds a specializer within a property name, after the prefix.
+         * 
+         * @param propnm property name into which it should be embedded
+         * @param spec specializer to be embedded
+         * @return the property name, with the specializer embedded within it
+         */
+        private String specialize(String propnm, String spec) {
+            String suffix = propnm.substring(PREFIX.length());
+            return PREFIX + spec + "." + suffix;
         }
     }
 
