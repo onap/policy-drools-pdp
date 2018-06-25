@@ -21,12 +21,11 @@
 package org.onap.policy.distributed.locking;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +44,11 @@ public class Heartbeat implements Runnable{
 	 * Properties object containing properties needed by class
 	 */
 	private DistributedLockingProperties lockProps;
+    
+    /**
+     * Data source used to connect to the DB containing locks.
+     */
+    private BasicDataSource dataSource;
 
 	/**
 	 * UUID 
@@ -60,9 +64,11 @@ public class Heartbeat implements Runnable{
 	 * 
 	 * @param uuid
 	 * @param lockProps
+	 * @param dataSource 
 	 */
-	public Heartbeat(UUID uuid, DistributedLockingProperties lockProps) {
+	public Heartbeat(UUID uuid, DistributedLockingProperties lockProps, BasicDataSource dataSource) {
 		this.lockProps = lockProps;
+		this.dataSource = dataSource;
 		this.uuid = uuid;
 		this.latch = new CountDownLatch(1);
 	}
@@ -81,8 +87,7 @@ public class Heartbeat implements Runnable{
 		
 		long expirationAge = lockProps.getAgingProperty();
 
-		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
-				lockProps.getDbPwd());
+		try (Connection conn = dataSource.getConnection();
 			PreparedStatement statement = conn
 						.prepareStatement("UPDATE pooling.locks SET expirationTime = ? WHERE host = ?");) {
 
