@@ -22,6 +22,7 @@ package org.onap.policy.drools.core.lock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.onap.policy.drools.core.lock.TestUtils.expectException;
 import java.util.LinkedList;
@@ -31,8 +32,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.utils.time.CurrentTime;
+import org.onap.policy.common.utils.time.TestTime;
+import org.onap.policy.drools.core.lock.SimpleLockManager.Data;
+import org.powermock.reflect.Whitebox;
 
 public class SimpleLockManagerTest {
 
@@ -42,17 +49,44 @@ public class SimpleLockManagerTest {
     private static final String RESOURCE_A = "resource.a";
     private static final String RESOURCE_B = "resource.b";
     private static final String RESOURCE_C = "resource.c";
+    private static final String RESOURCE_D = "resource.d";
 
     private static final String OWNER1 = "owner.one";
     private static final String OWNER2 = "owner.two";
     private static final String OWNER3 = "owner.three";
+    
+    /**
+     * Name of the "current time" field within the {@link SimpleLockManager} class.
+     */
+    private static final String TIME_FIELD = "currentTime";
+    
+    private static CurrentTime savedTime;
 
+    private TestTime testTime;
     private Future<Boolean> fut;
     private SimpleLockManager mgr;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        savedTime = Whitebox.getInternalState(SimpleLockManager.class, TIME_FIELD);
+    }
+    
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, savedTime);
+    }
 
     @Before
     public void setUp() {
+        testTime = new TestTime();
+        Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, testTime);
+        
         mgr = new SimpleLockManager();
+    }
+    
+    @Test
+    public void testCurrentTime() {
+        assertNotNull(savedTime);
     }
 
     @Test
@@ -131,6 +165,12 @@ public class SimpleLockManagerTest {
     }
 
     @Test
+    public void testUnlock_DiffOwner() {
+        mgr.lock(RESOURCE_A, OWNER1, null);
+        assertFalse(mgr.unlock(RESOURCE_A, OWNER2));
+    }
+
+    @Test
     public void testIsLocked() {
         assertFalse(mgr.isLocked(RESOURCE_A));
 
@@ -202,6 +242,128 @@ public class SimpleLockManagerTest {
 
         // different owner
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
+    }
+    
+    @Test
+    public void testCleanUpLocks() throws Exception {
+        // note: this assumes that MAX_AGE_MS is divisible by 4
+        mgr.lock(RESOURCE_A, OWNER1, null);
+        assertTrue(mgr.isLocked(RESOURCE_A));
+        
+        testTime.sleep(10);
+        mgr.lock(RESOURCE_B, OWNER1, null);
+        assertTrue(mgr.isLocked(RESOURCE_A));
+        assertTrue(mgr.isLocked(RESOURCE_B));
+        
+        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
+        mgr.lock(RESOURCE_C, OWNER1, null);
+        assertTrue(mgr.isLocked(RESOURCE_A));
+        assertTrue(mgr.isLocked(RESOURCE_B));
+        assertTrue(mgr.isLocked(RESOURCE_C));
+        
+        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
+        mgr.lock(RESOURCE_D, OWNER1, null);
+        assertTrue(mgr.isLocked(RESOURCE_A));
+        assertTrue(mgr.isLocked(RESOURCE_B));
+        assertTrue(mgr.isLocked(RESOURCE_C));
+        assertTrue(mgr.isLocked(RESOURCE_D));
+        
+        // sleep remainder of max age - first two should expire
+        testTime.sleep(SimpleLockManager.MAX_AGE_MS/2);
+        assertFalse(mgr.isLocked(RESOURCE_A));
+        assertFalse(mgr.isLocked(RESOURCE_B));
+        assertTrue(mgr.isLocked(RESOURCE_C));
+        assertTrue(mgr.isLocked(RESOURCE_D));
+        
+        // another quarter - next one should expire
+        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
+        assertFalse(mgr.isLocked(RESOURCE_C));
+        assertTrue(mgr.isLocked(RESOURCE_D));
+        
+        // another quarter - last one should expire
+        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
+        assertFalse(mgr.isLocked(RESOURCE_D));
+    }
+    
+    @Test
+    public void testDataGetXxx() {
+        long ttime = System.currentTimeMillis() + 5;
+        Data data = new Data(OWNER1, RESOURCE_A, ttime);
+        
+        assertEquals(OWNER1, data.getOwner());
+        assertEquals(RESOURCE_A, data.getResource());
+        assertEquals(ttime, data.getExpirationMs());
+    }
+    
+    @Test
+    public void testDataCompareTo() {
+        long ttime = System.currentTimeMillis() + 50;
+        Data data = new Data(OWNER1, RESOURCE_A, ttime);
+        Data dataSame = new Data(OWNER1, RESOURCE_A, ttime);
+        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime+1);
+        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
+        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
+        
+        assertEquals(0, data.compareTo(data));
+        assertEquals(0, data.compareTo(dataSame));
+        
+        assertTrue(data.compareTo(dataDiffExpire) < 0);
+        assertTrue(dataDiffExpire.compareTo(data) > 0);
+        
+        assertTrue(data.compareTo(dataDiffOwner) < 0);
+        assertTrue(dataDiffOwner.compareTo(data) > 0);
+        
+        assertTrue(data.compareTo(dataDiffResource) < 0);
+        assertTrue(dataDiffResource.compareTo(data) > 0);
+    }
+    
+    @Test
+    public void testDataHashCode() {
+        long ttime = System.currentTimeMillis() + 1;
+        Data data = new Data(OWNER1, RESOURCE_A, ttime);
+        Data dataSame = new Data(OWNER1, RESOURCE_A, ttime);
+        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime+1);
+        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
+        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
+        Data dataNullOwner = new Data(null, RESOURCE_A, ttime);
+        Data dataNullResource = new Data(OWNER1, null, ttime);
+        
+        int hc1 = data.hashCode();
+        assertEquals(hc1, dataSame.hashCode());
+
+        assertTrue(hc1 != dataDiffExpire.hashCode());
+        assertTrue(hc1 != dataDiffOwner.hashCode());
+        assertTrue(hc1 != dataDiffResource.hashCode());
+        assertTrue(hc1 != dataNullOwner.hashCode());
+        assertTrue(hc1 != dataNullResource.hashCode());
+    }
+    
+    @Test
+    public void testDataEquals() {
+        long ttime = System.currentTimeMillis() + 50;
+        Data data = new Data(OWNER1, RESOURCE_A, ttime);
+        Data dataSame = new Data(OWNER1, RESOURCE_A, ttime);
+        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime+1);
+        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
+        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
+        Data dataNullOwner = new Data(null, RESOURCE_A, ttime);
+        Data dataNullResource = new Data(OWNER1, null, ttime);
+        
+        assertTrue(data.equals(data));
+        assertTrue(data.equals(dataSame));
+
+        assertFalse(data.equals(dataDiffExpire));
+        assertFalse(data.equals(dataDiffOwner));
+        assertFalse(data.equals(dataDiffResource));
+
+        assertFalse(data.equals(null));
+        assertFalse(data.equals("string"));
+
+        assertFalse(dataNullOwner.equals(data));
+        assertFalse(dataNullResource.equals(data));
+
+        assertTrue(dataNullOwner.equals(new Data(null, RESOURCE_A, ttime)));
+        assertTrue(dataNullResource.equals(new Data(OWNER1, null, ttime)));
     }
 
     @Test
