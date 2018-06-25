@@ -20,12 +20,11 @@
 package org.onap.policy.distributed.locking;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +41,11 @@ public class TargetLock {
 	 * Properties object containing properties needed by class
 	 */
 	private DistributedLockingProperties lockProps;
+    
+    /**
+     * Data source used to connect to the DB containing locks.
+     */
+    private BasicDataSource dataSource;
 
 	/**
 	 * UUID 
@@ -58,12 +62,14 @@ public class TargetLock {
 	 * 
 	 * @param resourceId ID of the entity we want to lock
 	 * @param lockProps Properties object containing properties needed by class
+	 * @param dataSource 
 	 */
-	public TargetLock (String resourceId, UUID uuid, String owner, DistributedLockingProperties lockProps) {
+	public TargetLock (String resourceId, UUID uuid, String owner, DistributedLockingProperties lockProps, BasicDataSource dataSource) {
 		this.resourceId = resourceId;
 		this.uuid = uuid;
 		this.owner = owner;
 		this.lockProps = lockProps;
+		this.dataSource = dataSource;
 	}
 	
 	/**
@@ -89,8 +95,7 @@ public class TargetLock {
 	private boolean grabLock() {
 
 		// try to insert a record into the table(thereby grabbing the lock)
-		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
-				lockProps.getDbPwd());
+		try (Connection conn = dataSource.getConnection();
 
 				PreparedStatement statement = conn.prepareStatement(
 						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)")) {
@@ -116,8 +121,7 @@ public class TargetLock {
 	 */
 	private boolean secondGrab() {
 
-		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
-				lockProps.getDbPwd());
+		try (Connection conn = dataSource.getConnection();
 
 				PreparedStatement updateStatement = conn.prepareStatement(
 						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = ? WHERE expirationTime <= ? AND resourceId = ?");
@@ -161,8 +165,7 @@ public class TargetLock {
 	 */
 	private boolean deleteLock() {
 
-		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
-				lockProps.getDbPwd());
+		try (Connection conn = dataSource.getConnection();
 
 				PreparedStatement deleteStatement = conn.prepareStatement(
 						"DELETE FROM pooling.locks WHERE resourceId = ? AND owner = ? AND host = ?")) {
@@ -184,8 +187,7 @@ public class TargetLock {
 	 * Is the lock active
 	 */
 	public boolean isActive() {
-		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
-				lockProps.getDbPwd());
+		try (Connection conn = dataSource.getConnection();
 
 				PreparedStatement selectStatement = conn.prepareStatement(
 						"SELECT * FROM pooling.locks WHERE resourceId = ? AND host = ? AND owner= ? AND expirationTime >= ?")) {
@@ -215,8 +217,7 @@ public class TargetLock {
 	 */
 	public boolean isLocked() {
 
-		try (Connection conn = DriverManager.getConnection(lockProps.getDbUrl(), lockProps.getDbUser(),
-				lockProps.getDbPwd());
+		try (Connection conn = dataSource.getConnection();
 			
 				PreparedStatement selectStatement = conn
 						.prepareStatement("SELECT * FROM pooling.locks WHERE resourceId = ? AND expirationTime >= ?")) {
