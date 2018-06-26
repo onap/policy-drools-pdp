@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_36dc3346",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/SimpleLockManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2018-06-26T20:58:34Z",
+      "side": 1,
+      "message": "I think this should not be hard coded but based on the timeout specified in the yaml policy. If the yaml timeout is null or could not be parsed then perhaps a default timeout of 15 would suffice.",
+      "revId": "d8a6909ef0bb3433265295107b1450122eac919a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
