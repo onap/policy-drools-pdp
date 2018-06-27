@@ -46,7 +46,7 @@ public class PolicyResourceLockFeatureAPITest {
 
     @Test
     public void testBeforeLock() {
-        assertNull(api.beforeLock(RESOURCE_ID, OWNER, null));
+        assertNull(api.beforeLock(RESOURCE_ID, OWNER, 0));
     }
 
     @Test

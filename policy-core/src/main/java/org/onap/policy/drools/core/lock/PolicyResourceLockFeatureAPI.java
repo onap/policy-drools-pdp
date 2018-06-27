@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.core.lock;
 
-import java.util.concurrent.Future;
 import org.onap.policy.drools.utils.OrderedService;
 import org.onap.policy.drools.utils.OrderedServiceImpl;
 
@@ -44,22 +43,6 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
      */
     public static OrderedServiceImpl<PolicyResourceLockFeatureAPI> impl =
                     new OrderedServiceImpl<>(PolicyResourceLockFeatureAPI.class);
-
-    /**
-     * Callback that an implementer invokes, asynchronously, when a lock is acquired (or
-     * denied). The implementer invokes the method to indicate that the lock was acquired
-     * (or denied).
-     */
-    @FunctionalInterface
-    public static interface Callback {
-
-        /**
-         * 
-         * @param locked {@code true} if the lock was acquired, {@code false} if the lock
-         *        was denied
-         */
-        public void set(boolean locked);
-    }
 
     /**
      * Result of a requested operation.
@@ -87,40 +70,21 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
     }
 
     /**
-     * This method is called before a lock is acquired on a resource. If a callback is
-     * provided, and the implementer is unable to acquire the lock immediately, then the
-     * implementer will invoke the callback once the lock is acquired. If the implementer
-     * handled the request, then it will return a future, which may be in one of three
-     * states:
-     * <dl>
-     * <dt>isDone()=true and get()=true</dt>
-     * <dd>the lock has been acquired; the callback may or may not have been invoked</dd>
-     * <dt>isDone()=true and get()=false</dt>
-     * <dd>the lock request has been denied; the callback may or may not have been
-     * invoked</dd>
-     * <dt>isDone()=false</dt>
-     * <dd>the lock was not immediately available and a callback was provided. The
-     * callback will be invoked once the lock is acquired (or denied). In this case, the
-     * future may be used to cancel the request</dd>
-     * </dl>
+     * This method is called before a lock is acquired on a resource.  It may be
+     * invoked repeatedly to extend the time that a lock is held.
      * 
      * @param resourceId
      * @param owner
-     * @param callback function to invoke, if the requester wishes to wait for the lock to
-     *        come available, {@code null} to provide immediate replies
-     * @return a future for the lock, if the implementer handled the request, {@code null}
-     *         if additional locking logic should be performed
-     * @throws IllegalStateException if the owner already holds the lock or is already in
-     *         the queue to get the lock
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     * @return the result, where <b>OPER_DENIED</b> indicates that the lock is currently
+     *         held by another owner
      */
-    public default Future<Boolean> beforeLock(String resourceId, String owner, Callback callback) {
+    public default OperResult beforeLock(String resourceId, String owner, int holdSec) {
         return null;
     }
 
     /**
-     * This method is called after a lock for a resource has been acquired or denied. This
-     * may be invoked immediately, if the status can be determined immediately, or it may
-     * be invoked asynchronously, once the status has been determined.
+     * This method is called after a lock for a resource has been acquired or denied.
      * 
      * @param resourceId
      * @param owner
