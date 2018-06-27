@@ -20,18 +20,13 @@
 
 package org.onap.policy.drools.core.lock;
 
-import static org.onap.policy.drools.core.lock.LockRequestFuture.MSG_NULL_OWNER;
-import static org.onap.policy.drools.core.lock.LockRequestFuture.MSG_NULL_RESOURCE_ID;
-import static org.onap.policy.drools.core.lock.LockRequestFuture.makeNullArgException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.onap.policy.common.utils.time.CurrentTime;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +38,9 @@ public class SimpleLockManager {
 
     protected static Logger logger = LoggerFactory.getLogger(SimpleLockManager.class);
 
-    /**
-     * Maximum age, in milliseconds, before a lock is considered stale and released.
-     */
-    protected static final long MAX_AGE_MS = TimeUnit.MINUTES.toMillis(15L);
+    // messages used in exceptions
+    public static final String MSG_NULL_RESOURCE_ID = "null resourceId";
+    public static final String MSG_NULL_OWNER = "null owner";
     
     /**
      * Used to access the current time.  May be overridden by junit tests.
@@ -80,31 +74,16 @@ public class SimpleLockManager {
     }
 
     /**
-     * Attempts to lock a resource. This method ignores the callback and always returns a
-     * {@link CompletedLockRequest}.
+     * Attempts to lock a resource, extending the lock if the owner already holds it.
      * 
      * @param resourceId
      * @param owner
-     * @param callback function to invoke, if the requester wishes to wait for the lock to
-     *        be acquired, {@code null} to provide immediate replies
-     * @return a future for the lock request. The future will be in one of three states:
-     *         <dl>
-     *         <dt>isDone()=true and get()=true</dt>
-     *         <dd>the lock has been acquired; the callback may or may not have been
-     *         invoked</dd>
-     *         <dt>isDone()=true and get()=false</dt>
-     *         <dd>the lock request has been denied; the callback may or may not have been
-     *         invoked</dd>
-     *         <dt>isDone()=false</dt>
-     *         <dd>the lock was not immediately available and a callback was provided. The
-     *         callback will be invoked once the lock is acquired (or denied). In this
-     *         case, the future may be used to cancel the request</dd>
-     *         </dl>
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     * @return {@code true} if locked, {@code false} if the resource is already locked by
+     *         a different owner
      * @throws IllegalArgumentException if the resourceId or owner is {@code null}
-     * @throws IllegalStateException if the owner already holds the lock or is already in
-     *         the queue to get the lock
      */
-    public Future<Boolean> lock(String resourceId, String owner, Callback callback) {
+    public boolean lock(String resourceId, String owner, int holdSec) {
 
         if (resourceId == null) {
             throw makeNullArgException(MSG_NULL_RESOURCE_ID);
@@ -118,22 +97,24 @@ public class SimpleLockManager {
         
         synchronized(locker) {
             cleanUpLocks();
-            
-            if((existingLock = resource2data.get(resourceId)) == null) {
-                Data data = new Data(owner, resourceId, currentTime.getMillis() + MAX_AGE_MS);
+
+            if ((existingLock = resource2data.get(resourceId)) != null && existingLock.getOwner().equals(owner)) {
+                // replace the existing lock with an extended lock
+                locks.remove(existingLock);
+                existingLock = null;
+            }
+
+            if (existingLock == null) {
+                Data data = new Data(owner, resourceId, currentTime.getMillis() + TimeUnit.SECONDS.toMillis(holdSec));
                 resource2data.put(resourceId, data);
                 locks.add(data);
             }
         }
 
         boolean locked = (existingLock == null);
-        if (existingLock != null && owner.equals(existingLock.getOwner())) {
-            throw new IllegalStateException("lock for resource " + resourceId + " already owned by " + owner);
-        }
-
         logger.info("lock {} for resource {} owner {}", locked, resourceId, owner);
 
-        return new LockRequestFuture(resourceId, owner, locked);
+        return locked;
     }
 
     /**
@@ -253,6 +234,16 @@ public class SimpleLockManager {
                 }
             }
         }
+    }
+
+    /**
+     * Makes an exception for when an argument is {@code null}.
+     * 
+     * @param msg exception message
+     * @return a new Exception
+     */
+    public static IllegalArgumentException makeNullArgException(String msg) {
+        return new IllegalArgumentException(msg);
     }
     
     /**

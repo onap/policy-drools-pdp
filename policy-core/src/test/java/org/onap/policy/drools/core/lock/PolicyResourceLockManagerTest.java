@@ -24,8 +24,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -36,16 +36,16 @@ import static org.onap.policy.drools.core.lock.TestUtils.expectException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Future;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.Callback;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager.Factory;
 
 public class PolicyResourceLockManagerTest {
+
+    private static final int MAX_AGE_SEC = 4 * 60;
 
     private static final String NULL_RESOURCE_ID = "null resourceId";
     private static final String NULL_OWNER = "null owner";
@@ -63,12 +63,9 @@ public class PolicyResourceLockManagerTest {
      */
     private static Factory saveFactory;
 
-    private Callback callback1;
     private PolicyResourceLockFeatureAPI impl1;
     private PolicyResourceLockFeatureAPI impl2;
     private List<PolicyResourceLockFeatureAPI> implList;
-
-    private Future<Boolean> fut;
 
     private PolicyResourceLockManager mgr;
 
@@ -84,7 +81,6 @@ public class PolicyResourceLockManagerTest {
 
     @Before
     public void setUp() {
-        callback1 = mock(Callback.class);
         impl1 = mock(PolicyResourceLockFeatureAPI.class);
         impl2 = mock(PolicyResourceLockFeatureAPI.class);
 
@@ -111,7 +107,7 @@ public class PolicyResourceLockManagerTest {
      * @param impl
      */
     private void initImplementer(PolicyResourceLockFeatureAPI impl) {
-        when(impl.beforeLock(anyString(), anyString(), any(Callback.class))).thenReturn(null);
+        when(impl.beforeLock(anyString(), anyString(), anyInt())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeUnlock(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeIsLocked(anyString())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeIsLockedBy(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
@@ -119,13 +115,10 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testLock() throws Exception {
-        fut = mgr.lock(RESOURCE_A, OWNER1, callback1);
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
-        assertTrue(fut.isDone());
-        assertTrue(fut.get());
-
-        verify(impl1).beforeLock(RESOURCE_A, OWNER1, callback1);
-        verify(impl2).beforeLock(RESOURCE_A, OWNER1, callback1);
+        verify(impl1).beforeLock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl2).beforeLock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         verify(impl1).afterLock(RESOURCE_A, OWNER1, true);
         verify(impl2).afterLock(RESOURCE_A, OWNER1, true);
 
@@ -135,43 +128,48 @@ public class PolicyResourceLockManagerTest {
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
 
         // null callback - not locked yet
-        fut = mgr.lock(RESOURCE_C, OWNER3, null);
-        assertTrue(fut.isDone());
-        assertTrue(fut.get());
+        assertTrue(mgr.lock(RESOURCE_C, OWNER3, MAX_AGE_SEC));
 
         // null callback - already locked
-        fut = mgr.lock(RESOURCE_A, OWNER3, null);
-        assertTrue(fut.isDone());
-        assertFalse(fut.get());
+        assertFalse(mgr.lock(RESOURCE_A, OWNER3, MAX_AGE_SEC));
     }
 
     @Test
     public void testLock_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, callback1));
+                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, MAX_AGE_SEC));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, callback1));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, MAX_AGE_SEC));
         assertEquals(NULL_OWNER, ex.getMessage());
 
         // this should not throw an exception
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
     }
 
     @Test
-    public void testLock_BeforeIntercepted() {
-        fut = mock(LockRequestFuture.class);
-
-        // NOT async
-        when(fut.isDone()).thenReturn(true);
-
+    public void testLock_Acquired_BeforeIntercepted() {
         // have impl1 intercept
-        when(impl1.beforeLock(RESOURCE_A, OWNER1, callback1)).thenReturn(fut);
+        when(impl1.beforeLock(RESOURCE_A, OWNER1, MAX_AGE_SEC)).thenReturn(OperResult.OPER_ACCEPTED);
 
-        assertEquals(fut, mgr.lock(RESOURCE_A, OWNER1, callback1));
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
-        verify(impl1).beforeLock(RESOURCE_A, OWNER1, callback1);
-        verify(impl2, never()).beforeLock(anyString(), anyString(), any(Callback.class));
+        verify(impl1).beforeLock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl2, never()).beforeLock(anyString(), anyString(), anyInt());
+
+        verify(impl1, never()).afterLock(anyString(), anyString(), anyBoolean());
+        verify(impl2, never()).afterLock(anyString(), anyString(), anyBoolean());
+    }
+
+    @Test
+    public void testLock_Denied_BeforeIntercepted() {
+        // have impl1 intercept
+        when(impl1.beforeLock(RESOURCE_A, OWNER1, MAX_AGE_SEC)).thenReturn(OperResult.OPER_DENIED);
+
+        assertFalse(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        verify(impl1).beforeLock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl2, never()).beforeLock(anyString(), anyString(), anyInt());
 
         verify(impl1, never()).afterLock(anyString(), anyString(), anyBoolean());
         verify(impl2, never()).afterLock(anyString(), anyString(), anyBoolean());
@@ -183,10 +181,7 @@ public class PolicyResourceLockManagerTest {
         // impl1 intercepts during afterLock()
         when(impl1.afterLock(RESOURCE_A, OWNER1, true)).thenReturn(true);
 
-        fut = mgr.lock(RESOURCE_A, OWNER1, callback1);
-
-        assertTrue(fut.isDone());
-        assertTrue(fut.get());
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
         // impl1 sees it, but impl2 does not
         verify(impl1).afterLock(RESOURCE_A, OWNER1, true);
@@ -195,10 +190,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testLock_Acquired() throws Exception {
-        fut = mgr.lock(RESOURCE_A, OWNER1, callback1);
-
-        assertTrue(fut.isDone());
-        assertTrue(fut.get());
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
         verify(impl1).afterLock(RESOURCE_A, OWNER1, true);
         verify(impl2).afterLock(RESOURCE_A, OWNER1, true);
@@ -207,16 +199,13 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testLock_Denied_AfterIntercepted() throws Exception {
 
-        mgr.lock(RESOURCE_A, OWNER1, callback1);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // impl1 intercepts during afterLock()
         when(impl1.afterLock(RESOURCE_A, OWNER2, false)).thenReturn(true);
 
         // owner2 tries to lock
-        fut = mgr.lock(RESOURCE_A, OWNER2, null);
-
-        assertTrue(fut.isDone());
-        assertFalse(fut.get());
+        assertFalse(mgr.lock(RESOURCE_A, OWNER2, MAX_AGE_SEC));
 
         // impl1 sees it, but impl2 does not
         verify(impl1).afterLock(RESOURCE_A, OWNER2, false);
@@ -226,10 +215,10 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testLock_Denied() {
 
-        mgr.lock(RESOURCE_A, OWNER1, callback1);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // owner2 tries to lock
-        fut = mgr.lock(RESOURCE_A, OWNER2, null);
+        mgr.lock(RESOURCE_A, OWNER2, MAX_AGE_SEC);
 
         verify(impl1).afterLock(RESOURCE_A, OWNER2, false);
         verify(impl2).afterLock(RESOURCE_A, OWNER2, false);
@@ -237,8 +226,8 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testUnlock() throws Exception {
-        mgr.lock(RESOURCE_A, OWNER1, null);
-        mgr.lock(RESOURCE_B, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        mgr.lock(RESOURCE_B, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.unlock(RESOURCE_A, OWNER1));
 
@@ -261,7 +250,7 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testUnlock_BeforeInterceptedTrue() {
 
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // have impl1 intercept
         when(impl1.beforeUnlock(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_ACCEPTED);
@@ -278,7 +267,7 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testUnlock_BeforeInterceptedFalse() {
 
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // have impl1 intercept
         when(impl1.beforeUnlock(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_DENIED);
@@ -294,7 +283,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testUnlock_Unlocked() {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.unlock(RESOURCE_A, OWNER1));
 
@@ -310,7 +299,7 @@ public class PolicyResourceLockManagerTest {
         // have impl1 intercept
         when(impl1.afterUnlock(RESOURCE_A, OWNER1, true)).thenReturn(true);
 
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.unlock(RESOURCE_A, OWNER1));
 
@@ -348,7 +337,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testIsLocked_True() {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.isLocked(RESOURCE_A));
 
@@ -386,7 +375,7 @@ public class PolicyResourceLockManagerTest {
     public void testIsLocked_BeforeIntercepted_False() {
 
         // lock it so we can verify that impl1 overrides the superclass isLocker()
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // have impl1 intercept
         when(impl1.beforeIsLocked(RESOURCE_A)).thenReturn(OperResult.OPER_DENIED);
@@ -399,7 +388,7 @@ public class PolicyResourceLockManagerTest {
 
     @Test
     public void testIsLockedBy_True() {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
 
@@ -410,7 +399,7 @@ public class PolicyResourceLockManagerTest {
     @Test
     public void testIsLockedBy_False() {
         // different owner
-        mgr.lock(RESOURCE_A, OWNER2, null);
+        mgr.lock(RESOURCE_A, OWNER2, MAX_AGE_SEC);
 
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER1));
 
@@ -444,7 +433,7 @@ public class PolicyResourceLockManagerTest {
     public void testIsLockedBy_BeforeIntercepted_False() {
 
         // lock it so we can verify that impl1 overrides the superclass isLocker()
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // have impl1 intercept
         when(impl1.beforeIsLockedBy(RESOURCE_A, OWNER1)).thenReturn(OperResult.OPER_DENIED);
@@ -470,7 +459,7 @@ public class PolicyResourceLockManagerTest {
         // clear the implementer list
         implList.clear();
 
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertFalse(mgr.isLocked(RESOURCE_B));

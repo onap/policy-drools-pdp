@@ -24,14 +24,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
-import org.onap.policy.drools.core.lock.LockRequestFuture;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -57,11 +52,6 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	private DistributedLockingProperties lockProps;
 	
 	/**
-	 *ScheduledExecutorService for LockHeartbeat 
-	 */
-	private ScheduledExecutorService scheduledExecutorService;
-	
-	/**
 	 * Data source used to connect to the DB containing locks.
 	 */
 	private BasicDataSource dataSource;
@@ -71,43 +61,36 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	 */
 	private static final UUID uuid = UUID.randomUUID();
 	
-
-	/**
-	 * Reference to Heartbeat
-	 */
-	private static Heartbeat heartbeat = null;
-	
 	@Override
 	public int getSequenceNumber() {
         return 1000;
 	}
 	
 	@Override
-	public Future<Boolean> beforeLock(String resourceId, String owner, Callback callback) {
+    public OperResult beforeLock(String resourceId, String owner, int holdSec) {
 		
-		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps, dataSource);
-		
-		return new LockRequestFuture(resourceId, owner, tLock.lock());
-				
+		TargetLock tLock = new TargetLock(resourceId, uuid, owner, dataSource);
+
+        return(tLock.lock(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);				
 	}
 
 	@Override
 	public OperResult beforeUnlock(String resourceId, String owner) {
-		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps, dataSource);
+		TargetLock tLock = new TargetLock(resourceId, uuid, owner, dataSource);
 		
 		return(tLock.unlock() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
 	}
 	
 	@Override
 	public OperResult beforeIsLockedBy(String resourceId, String owner) {
-		TargetLock tLock = new TargetLock(resourceId, uuid, owner, lockProps, dataSource);
+		TargetLock tLock = new TargetLock(resourceId, uuid, owner, dataSource);
 
         return(tLock.isActive() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
 	}
 	
 	@Override
 	public OperResult beforeIsLocked(String resourceId) {
-		TargetLock tLock = new TargetLock(resourceId, uuid, "dummyOwner", lockProps, dataSource);
+		TargetLock tLock = new TargetLock(resourceId, uuid, "dummyOwner", dataSource);
 
         return(tLock.isLocked() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
 	}
@@ -130,13 +113,8 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
             throw new DistributedLockingFeatureException(e);
 		}
 		
-		long heartbeatInterval = this.lockProps.getHeartBeatIntervalProperty();
-		
 		cleanLockTable();
-		initHeartbeat();
 		
-		this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
-		this.scheduledExecutorService.scheduleAtFixedRate(heartbeat, heartbeatInterval, heartbeatInterval, TimeUnit.MILLISECONDS);
 		return false;
 	}
 	
@@ -164,7 +142,6 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	 */
 	@Override
 	public boolean beforeShutdown(PolicyEngine engine) {
-		scheduledExecutorService.shutdown();
 		cleanLockTable();
 		return false;
 	}
@@ -186,18 +163,5 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 			logger.error("error in refreshLockTable()", e);
 		}
 		
-	}
-
-	/**
-	 * Initialize the static heartbeat object
-	 */
-	private void initHeartbeat() {
-		heartbeat = new Heartbeat(uuid, lockProps, dataSource);
-		
-	}
-	
-	public static Heartbeat getHeartbeat() {
-		return heartbeat;
-	}
-	
+	}	
 }

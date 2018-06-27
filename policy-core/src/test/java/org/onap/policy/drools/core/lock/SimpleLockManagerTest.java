@@ -26,10 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.onap.policy.drools.core.lock.TestUtils.expectException;
 import java.util.LinkedList;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.AfterClass;
@@ -43,6 +40,12 @@ import org.powermock.reflect.Whitebox;
 
 public class SimpleLockManagerTest {
 
+    // Note: this must be a multiple of four
+    private static final int MAX_AGE_SEC = 4 * 60;
+    private static final int MAX_AGE_MS = MAX_AGE_SEC * 1000;
+    
+    private static final String EXPECTED_EXCEPTION = "expected exception";
+    
     private static final String NULL_RESOURCE_ID = "null resourceId";
     private static final String NULL_OWNER = "null owner";
 
@@ -63,7 +66,6 @@ public class SimpleLockManagerTest {
     private static CurrentTime savedTime;
 
     private TestTime testTime;
-    private Future<Boolean> fut;
     private SimpleLockManager mgr;
     
     @BeforeClass
@@ -91,10 +93,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testLock() throws Exception {
-        fut = mgr.lock(RESOURCE_A, OWNER1, null);
-
-        assertTrue(fut.isDone());
-        assertTrue(fut.get());
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
@@ -102,49 +101,59 @@ public class SimpleLockManagerTest {
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
 
         // null callback - not locked yet
-        fut = mgr.lock(RESOURCE_C, OWNER3, null);
-        assertTrue(fut.isDone());
-        assertTrue(fut.get());
+        assertTrue(mgr.lock(RESOURCE_C, OWNER3, MAX_AGE_SEC));
 
         // null callback - already locked
-        fut = mgr.lock(RESOURCE_A, OWNER3, null);
-        assertTrue(fut.isDone());
-        assertFalse(fut.get());
+        assertFalse(mgr.lock(RESOURCE_A, OWNER3, MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testLock_ExtendLock() throws Exception {
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        
+        // sleep half of the cycle
+        testTime.sleep(MAX_AGE_MS/2);
+        assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
+        
+        // extend the lock
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        
+        // verify still locked after sleeping the other half of the cycle
+        testTime.sleep(MAX_AGE_MS/2+1);
+        assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
+        
+        // and should release after another half cycle
+        testTime.sleep(MAX_AGE_MS/2);
+        assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER1));
     }
 
     @Test
     public void testLock_AlreadyLocked() throws Exception {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        
+        // same owner
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
-        fut = mgr.lock(RESOURCE_A, OWNER2, null);
-        assertTrue(fut.isDone());
-        assertFalse(fut.get());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testLock_SameOwner() throws Exception {
-        mgr.lock(RESOURCE_A, OWNER1, null);
-
-        // should throw an exception
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        // different owner
+        assertFalse(mgr.lock(RESOURCE_A, OWNER2, MAX_AGE_SEC));
     }
 
     @Test
     public void testLock_ArgEx() {
         IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, null));
+                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, MAX_AGE_SEC));
         assertEquals(NULL_RESOURCE_ID, ex.getMessage());
 
-        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, null));
+        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, MAX_AGE_SEC));
         assertEquals(NULL_OWNER, ex.getMessage());
 
         // this should not throw an exception
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
     }
 
     @Test
     public void testUnlock() throws Exception {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // unlock it
         assertTrue(mgr.unlock(RESOURCE_A, OWNER1));
@@ -166,7 +175,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testUnlock_DiffOwner() {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         assertFalse(mgr.unlock(RESOURCE_A, OWNER2));
     }
 
@@ -174,8 +183,8 @@ public class SimpleLockManagerTest {
     public void testIsLocked() {
         assertFalse(mgr.isLocked(RESOURCE_A));
 
-        mgr.lock(RESOURCE_A, OWNER1, null);
-        mgr.lock(RESOURCE_B, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        mgr.lock(RESOURCE_B, OWNER1, MAX_AGE_SEC);
 
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
@@ -204,7 +213,7 @@ public class SimpleLockManagerTest {
     public void testIsLockedBy() {
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER1));
 
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         assertFalse(mgr.isLockedBy(RESOURCE_B, OWNER1));
 
@@ -230,7 +239,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testIsLockedBy_NotLocked() {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // different resource, thus no lock
         assertFalse(mgr.isLockedBy(RESOURCE_B, OWNER1));
@@ -238,7 +247,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testIsLockedBy_LockedButNotOwner() {
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
 
         // different owner
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
@@ -247,42 +256,48 @@ public class SimpleLockManagerTest {
     @Test
     public void testCleanUpLocks() throws Exception {
         // note: this assumes that MAX_AGE_MS is divisible by 4
-        mgr.lock(RESOURCE_A, OWNER1, null);
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         assertTrue(mgr.isLocked(RESOURCE_A));
         
         testTime.sleep(10);
-        mgr.lock(RESOURCE_B, OWNER1, null);
+        mgr.lock(RESOURCE_B, OWNER1, MAX_AGE_SEC);
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
         
-        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
-        mgr.lock(RESOURCE_C, OWNER1, null);
+        testTime.sleep(MAX_AGE_MS/4);
+        mgr.lock(RESOURCE_C, OWNER1, MAX_AGE_SEC);
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
         assertTrue(mgr.isLocked(RESOURCE_C));
         
-        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
-        mgr.lock(RESOURCE_D, OWNER1, null);
+        testTime.sleep(MAX_AGE_MS/4);
+        mgr.lock(RESOURCE_D, OWNER1, MAX_AGE_SEC);
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
         assertTrue(mgr.isLocked(RESOURCE_C));
         assertTrue(mgr.isLocked(RESOURCE_D));
         
         // sleep remainder of max age - first two should expire
-        testTime.sleep(SimpleLockManager.MAX_AGE_MS/2);
+        testTime.sleep(MAX_AGE_MS/2);
         assertFalse(mgr.isLocked(RESOURCE_A));
         assertFalse(mgr.isLocked(RESOURCE_B));
         assertTrue(mgr.isLocked(RESOURCE_C));
         assertTrue(mgr.isLocked(RESOURCE_D));
         
         // another quarter - next one should expire
-        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
+        testTime.sleep(MAX_AGE_MS/4);
         assertFalse(mgr.isLocked(RESOURCE_C));
         assertTrue(mgr.isLocked(RESOURCE_D));
         
         // another quarter - last one should expire
-        testTime.sleep(SimpleLockManager.MAX_AGE_MS/4);
+        testTime.sleep(MAX_AGE_MS/4);
         assertFalse(mgr.isLocked(RESOURCE_D));
+    }
+
+    @Test
+    public void testMakeNullArgException() {
+        IllegalArgumentException ex = SimpleLockManager.makeNullArgException(EXPECTED_EXCEPTION);
+        assertEquals(EXPECTED_EXCEPTION, ex.getMessage());
     }
     
     @Test
@@ -390,15 +405,12 @@ public class SimpleLockManagerTest {
 
                     try {
                         // some locks will be acquired, some denied
-                        mgr.lock(res, owner, null).get();
+                        mgr.lock(res, owner, MAX_AGE_SEC);
 
                         // do some "work"
                         stopper.await(1L, TimeUnit.MILLISECONDS);
 
                         mgr.unlock(res, owner);
-
-                    } catch (CancellationException | ExecutionException e) {
-                        nfail.incrementAndGet();
 
                     } catch (InterruptedException expected) {
                         Thread.currentThread().interrupt();

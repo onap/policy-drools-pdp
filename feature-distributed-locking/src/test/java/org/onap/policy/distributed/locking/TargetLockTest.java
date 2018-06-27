@@ -20,29 +20,24 @@
 
 package org.onap.policy.distributed.locking;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.onap.policy.distributed.locking.DistributedLockingFeature;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
-import org.onap.policy.drools.persistence.SystemPersistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
+import org.onap.policy.drools.persistence.SystemPersistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TargetLockTest {
 	private static final Logger logger = LoggerFactory.getLogger(TargetLockTest.class);
+    private static final int MAX_AGE_SEC = 4 * 60;
 	private static final String DB_CONNECTION = "jdbc:h2:mem:pooling;INIT=CREATE SCHEMA IF NOT EXISTS pooling\\;SET SCHEMA pooling";
 	private static final String DB_USER = "user";
 	private static final String DB_PASSWORD = "password";
@@ -82,7 +77,7 @@ public class TargetLockTest {
 	
 	@Test
 	public void testGrabLockSuccess() throws InterruptedException, ExecutionException {
-		assertTrue(distLockFeat.beforeLock("resource1", "owner1", null).get());
+	    assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
 	
 			//attempt to grab expiredLock
 		try (PreparedStatement updateStatement = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = ? WHERE resourceId = ?");)
@@ -96,68 +91,49 @@ public class TargetLockTest {
 			throw new RuntimeException(e);
 		}
 		
-		assertTrue(distLockFeat.beforeLock("resource1", "owner1", null).get());
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
+
+		// extend the lock
+        assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
 	}
 
 	@Test
-	public void testExpiredLocks() throws InterruptedException, ExecutionException {
-
-		CountDownLatch rowExpireLatch = new CountDownLatch(1);
-		CountDownLatch heartbeatLatch = new CountDownLatch(1);
+	public void testExpiredLocks() throws Exception {
 			
 			//grab lock
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 		
-			//Wait for lock to expire
-		try {
-			rowExpireLatch.await(150, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			logger.error("Error in testExpiredLocks", e);
-		}
-		
-		// Grab reference to heartbeat object
-		Heartbeat heartbeat = DistributedLockingFeature.getHeartbeat();
-
-		// Pass heartbeat object countdown latch
-		try {
-			heartbeat.giveLatch(heartbeatLatch);
-			heartbeatLatch.await(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			logger.error("Error in testExpiredLocks", e);
-		}
+			//force lock to expire
+        try (PreparedStatement lockExpire = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = ?");) {
+            lockExpire.setLong(1, System.currentTimeMillis() - MAX_AGE_SEC - 1);
+            lockExpire.executeUpdate();
+        }
 	
-			//Heartbeat should keep it active
-		assertFalse(distLockFeat.beforeLock("resource1", "owner1", null).get());
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner2", MAX_AGE_SEC));
 	}
 	
 	@Test
 	public void testGrabLockFail() throws InterruptedException, ExecutionException {
-		CountDownLatch latch = new CountDownLatch(1);
 		
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 		
-		try {
-			latch.await(10, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			logger.error("Error in testExpiredLocks", e);
-		}
-		assertFalse(distLockFeat.beforeLock("resource1", "owner1", null).get());
+		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeLock("resource1", "owner2", MAX_AGE_SEC));
 
 	}
 	
 	
 	@Test
 	public void testUnlock() throws InterruptedException, ExecutionException {
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 
 		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeUnlock("resource1", "owner1"));
-		assertTrue(distLockFeat.beforeLock("resource1", "owner1", null).get());
+		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner2", MAX_AGE_SEC));
 	}
 	
 	@Test
 	public void testIsActive() {
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner2"));
 
@@ -175,7 +151,7 @@ public class TargetLockTest {
 
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
 
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 			//Unlock record, next isActive attempt should fail
 		distLockFeat.beforeUnlock("resource1", "owner1");
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
@@ -183,41 +159,9 @@ public class TargetLockTest {
 	}
 	
 	@Test
-	public void testHeartbeat() {
-		
-		CountDownLatch rowExpireLatch = new CountDownLatch(1);
-		CountDownLatch heartbeatLatch = new CountDownLatch(1);
-		
-			//grab lock
-		distLockFeat.beforeLock("resource1", "owner1", null);
-		
-			//Wait for lock to expire
-		try {
-			rowExpireLatch.await(150, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			logger.error("Error in testExpiredLocks", e);
-		}
-		
-			//Grab reference to heartbeat object
-		Heartbeat heartbeat = DistributedLockingFeature.getHeartbeat();
-		
-			//Pass heartbeat object countdown latch
-		try {
-			heartbeat.giveLatch(heartbeatLatch);
-			heartbeatLatch.await(5, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			logger.error("Error in testExpiredLocks", e);
-		}
-			//At this point the heartbeat object should hve
-			//refreshed the lock. assert that resource1 is
-			//locked
-		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLocked("resource1"));
-	}
-	
-	@Test
 	public void unlockBeforeLock() {
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeUnlock("resource1", "owner1"));
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeUnlock("resource1", "owner1"));
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeUnlock("resource1", "owner1"));
 	}
@@ -225,7 +169,7 @@ public class TargetLockTest {
 	@Test
 	public void testIsLocked() {
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLocked("resource1"));
-		distLockFeat.beforeLock("resource1", "owner1", null);
+		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLocked("resource1"));
 	
 	}
