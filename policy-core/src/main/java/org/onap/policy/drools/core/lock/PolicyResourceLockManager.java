@@ -20,9 +20,6 @@
 
 package org.onap.policy.drools.core.lock;
 
-import static org.onap.policy.drools.core.lock.LockRequestFuture.MSG_NULL_OWNER;
-import static org.onap.policy.drools.core.lock.LockRequestFuture.MSG_NULL_RESOURCE_ID;
-import static org.onap.policy.drools.core.lock.LockRequestFuture.makeNullArgException;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -71,9 +68,22 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     protected static void setFactory(Factory factory) {
         PolicyResourceLockManager.factory = factory;
     }
+    
+    /**
+     * This method is here temporarily so-as not to break the drools-applications
+     * build.  It will be removed once drools-applications has been updated.
+     * @param resourceId
+     * @param owner
+     * @param callback
+     * @return nothing; always throws an exception
+     * @throws UnsupportedOperationException
+     */
+    public Future<Boolean> lock(String resourceId, String owner, Callback callback) {
+        throw new UnsupportedOperationException("lock with callback");
+    }
 
     @Override
-    public Future<Boolean> lock(String resourceId, String owner, Callback callback) {
+    public boolean lock(String resourceId, String owner, int holdSec) {
         if (resourceId == null) {
             throw makeNullArgException(MSG_NULL_RESOURCE_ID);
         }
@@ -82,19 +92,16 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             throw makeNullArgException(MSG_NULL_OWNER);
         }
 
-        Future<Boolean> result = doIntercept(null, impl -> impl.beforeLock(resourceId, owner, callback));
-        if (result != null) {
-            return result;
-        }
 
-        // implementer didn't do the work - use superclass
-        result = super.lock(resourceId, owner, callback);
+        return doBoolIntercept(impl -> impl.beforeLock(resourceId, owner, holdSec), () -> {
 
-        boolean locked = ((LockRequestFuture) result).isLocked();
+            // implementer didn't do the work - defer to the superclass
+            boolean locked = super.lock(resourceId, owner, holdSec);
 
-        doIntercept(false, impl -> impl.afterLock(resourceId, owner, locked));
+            doIntercept(false, impl -> impl.afterLock(resourceId, owner, locked));
 
-        return result;
+            return locked;
+        });
     }
 
     @Override
