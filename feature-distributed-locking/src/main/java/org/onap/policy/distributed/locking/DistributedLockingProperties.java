@@ -35,8 +35,6 @@ public class DistributedLockingProperties extends PropertyConfiguration {
     public static final String DB_URL = "javax.persistence.jdbc.url";
     public static final String DB_USER = "javax.persistence.jdbc.user";
     public static final String DB_PWD = "javax.persistence.jdbc.password";
-    public static final String AGING_PROPERTY = PREFIX + "lock.aging";
-    public static final String HEARTBEAT_INTERVAL_PROPERTY = PREFIX + "heartbeat.interval";
 
     /**
      * Properties from which this was constructed.
@@ -66,18 +64,6 @@ public class DistributedLockingProperties extends PropertyConfiguration {
      */
     @Property(name = DB_PWD)
     private String dbPwd;
-
-    /**
-     * Used to set expiration time for lock.
-     */
-    @Property(name = AGING_PROPERTY, defaultValue = "300000")
-    private long agingProperty;
-
-    /**
-     * Indicates intervals at which we refresh locks.
-     */
-    @Property(name = HEARTBEAT_INTERVAL_PROPERTY, defaultValue = "60000")
-    private long heartBeatIntervalProperty;
 
     public DistributedLockingProperties(Properties props) throws PropertyException {
         super(props);
@@ -110,16 +96,6 @@ public class DistributedLockingProperties extends PropertyConfiguration {
     }
 
 
-    public long getAgingProperty() {
-        return agingProperty;
-    }
-
-
-    public long getHeartBeatIntervalProperty() {
-        return heartBeatIntervalProperty;
-    }
-
-
     public void setDbDriver(String dbDriver) {
         this.dbDriver = dbDriver;
     }
@@ -137,16 +113,6 @@ public class DistributedLockingProperties extends PropertyConfiguration {
 
     public void setDbPwd(String dbPwd) {
         this.dbPwd = dbPwd;
-    }
-
-
-    public void setAgingProperty(long agingProperty) {
-        this.agingProperty = agingProperty;
-    }
-
-
-    public void setHeartBeatIntervalProperty(long heartBeatIntervalProperty) {
-        this.heartBeatIntervalProperty = heartBeatIntervalProperty;
     }
 
 }

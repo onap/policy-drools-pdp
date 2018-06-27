@@ -102,7 +102,7 @@ public class Lock<T> {
      */
     public boolean add(String requester, T item) {
         if (item == null) {
-            throw LockRequestFuture.makeNullArgException("lock requester item is null");
+            throw SimpleLockManager.makeNullArgException("lock requester item is null");
         }
 
         if (requester.equals(owner)) {

@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 import org.apache.commons.dbcp2.BasicDataSource;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +37,6 @@ public class TargetLock {
 	 * The Target resource we want to lock
 	 */
 	private String resourceId;
-	
-	/**
-	 * Properties object containing properties needed by class
-	 */
-	private DistributedLockingProperties lockProps;
     
     /**
      * Data source used to connect to the DB containing locks.
@@ -61,23 +57,22 @@ public class TargetLock {
 	 * Constructs a TargetLock object.
 	 * 
 	 * @param resourceId ID of the entity we want to lock
-	 * @param lockProps Properties object containing properties needed by class
 	 * @param dataSource used to connect to the DB containing locks
 	 */
-	public TargetLock (String resourceId, UUID uuid, String owner, DistributedLockingProperties lockProps, BasicDataSource dataSource) {
+	public TargetLock (String resourceId, UUID uuid, String owner, BasicDataSource dataSource) {
 		this.resourceId = resourceId;
 		this.uuid = uuid;
 		this.owner = owner;
-		this.lockProps = lockProps;
 		this.dataSource = dataSource;
 	}
 	
 	/**
 	 * obtain a lock
+     * @param holdSec the amount of time, in seconds, that the lock should be held
 	 */
-	public boolean lock() {
+	public boolean lock(int holdSec) {
 		
-		return grabLock();
+		return grabLock(TimeUnit.SECONDS.toMillis(holdSec));
 	}
 	
 	/**
@@ -91,8 +86,9 @@ public class TargetLock {
 	 * "Grabs" lock by attempting to insert a new record in the db.
 	 *  If the insert fails due to duplicate key error resource is already locked
 	 *  so we call secondGrab. 
+     * @param holdMs the amount of time, in milliseconds, that the lock should be held
 	 */
-	private boolean grabLock() {
+	private boolean grabLock(long holdMs) {
 
 		// try to insert a record into the table(thereby grabbing the lock)
 		try (Connection conn = dataSource.getConnection();
@@ -100,16 +96,17 @@ public class TargetLock {
 				PreparedStatement statement = conn.prepareStatement(
 						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)")) {
 			
-			statement.setString(1, this.resourceId);
-			statement.setString(2, this.uuid.toString());
-			statement.setString(3, this.owner);
-			statement.setLong(4, System.currentTimeMillis() + lockProps.getAgingProperty());
+		    int i = 1;
+			statement.setString(i++, this.resourceId);
+			statement.setString(i++, this.uuid.toString());
+			statement.setString(i++, this.owner);
+			statement.setLong(i++, System.currentTimeMillis() + holdMs);
 			statement.executeUpdate();
 		}
 
 		catch (SQLException e) {
 			logger.error("error in TargetLock.grabLock()", e);
-			return secondGrab();
+			return secondGrab(holdMs);
 		}
 
 		return true;
@@ -118,22 +115,25 @@ public class TargetLock {
 	/**
 	 * A second attempt at grabbing a lock. It first attempts to update the lock in case it is expired.
 	 * If that fails, it attempts to insert a new record again
+     * @param holdMs the amount of time, in milliseconds, that the lock should be held
 	 */
-	private boolean secondGrab() {
+	private boolean secondGrab(long holdMs) {
 
 		try (Connection conn = dataSource.getConnection();
 
 				PreparedStatement updateStatement = conn.prepareStatement(
-						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = ? WHERE expirationTime <= ? AND resourceId = ?");
+						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = ? WHERE resourceId = ? AND (owner = ? OR expirationTime <= ?)");
 
 				PreparedStatement insertStatement = conn.prepareStatement(
 						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)");) {
 
-			updateStatement.setString(1, this.uuid.toString());
-			updateStatement.setString(2, this.owner);
-			updateStatement.setLong(3, System.currentTimeMillis() + lockProps.getAgingProperty());
-			updateStatement.setLong(4, System.currentTimeMillis());
-			updateStatement.setString(5, this.resourceId);
+		    int i = 1;
+			updateStatement.setString(i++, this.uuid.toString());
+			updateStatement.setString(i++, this.owner);
+			updateStatement.setLong(i++, System.currentTimeMillis() + holdMs);
+            updateStatement.setString(i++, this.resourceId);
+            updateStatement.setString(i++, this.owner);
+			updateStatement.setLong(i++, System.currentTimeMillis());
 
 			// The lock was expired and we grabbed it.
 			// return true
@@ -144,10 +144,11 @@ public class TargetLock {
 			// If our update does not return 1 row, the lock either has not expired
 			// or it was removed. Try one last grab
 			else {
-				insertStatement.setString(1, this.resourceId);
-				insertStatement.setString(2, this.uuid.toString());
-				insertStatement.setString(3, this.owner);
-				insertStatement.setLong(4, System.currentTimeMillis() + lockProps.getAgingProperty());
+			    i = 1;
+				insertStatement.setString(i++, this.resourceId);
+				insertStatement.setString(i++, this.uuid.toString());
+				insertStatement.setString(i++, this.owner);
+				insertStatement.setLong(i++, System.currentTimeMillis() + holdMs);
 
 				// If our insert returns 1 we successfully grabbed the lock
 				return (insertStatement.executeUpdate() == 1);
