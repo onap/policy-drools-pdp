@@ -80,10 +80,9 @@ public class TargetLockTest {
 	    assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
 	
 			//attempt to grab expiredLock
-		try (PreparedStatement updateStatement = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = ? WHERE resourceId = ?");)
+		try (PreparedStatement updateStatement = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = timestampadd(second, -1, now()) WHERE resourceId = ?");)
 		{
-			updateStatement.setLong(1, System.currentTimeMillis() - 1000);
-			updateStatement.setString(2, "resource1");
+			updateStatement.setString(1, "resource1");
 			updateStatement.executeUpdate();
 				
 		} catch (SQLException e) {
@@ -104,8 +103,8 @@ public class TargetLockTest {
 		distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 		
 			//force lock to expire
-        try (PreparedStatement lockExpire = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = ?");) {
-            lockExpire.setLong(1, System.currentTimeMillis() - MAX_AGE_SEC - 1);
+        try (PreparedStatement lockExpire = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = timestampadd(second, -?, now())");) {
+            lockExpire.setInt(1, MAX_AGE_SEC + 1);
             lockExpire.executeUpdate();
         }
 	
@@ -139,9 +138,8 @@ public class TargetLockTest {
 
 		// isActive on expiredLock
 		try (PreparedStatement updateStatement = conn
-				.prepareStatement("UPDATE pooling.locks SET expirationTime = ? WHERE resourceId = ?");) {
-			updateStatement.setLong(1, System.currentTimeMillis() - 5000);
-			updateStatement.setString(2, "resource1");
+				.prepareStatement("UPDATE pooling.locks SET expirationTime = timestampadd(second, -5, now()) WHERE resourceId = ?");) {
+			updateStatement.setString(1, "resource1");
 			updateStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -183,7 +181,7 @@ public class TargetLockTest {
 	}
 
 	private static void createTable() {
-		String createString = "create table if not exists pooling.locks (resourceId VARCHAR(128), host VARCHAR(128), owner VARCHAR(128), expirationTime BIGINT, PRIMARY KEY (resourceId))";
+		String createString = "create table if not exists pooling.locks (resourceId VARCHAR(128), host VARCHAR(128), owner VARCHAR(128), expirationTime TIMESTAMP DEFAULT 0, PRIMARY KEY (resourceId))";
 		try (PreparedStatement createStmt = conn.prepareStatement(createString);) {
 			createStmt.executeUpdate();
 			

@@ -152,11 +152,11 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 	private void cleanLockTable() {
 		
 	    try (Connection conn = dataSource.getConnection();
-	    	PreparedStatement statement = conn.prepareStatement("DELETE FROM pooling.locks WHERE host = ? OR expirationTime < ?");
+                        PreparedStatement statement = conn.prepareStatement(
+                                        "DELETE FROM pooling.locks WHERE host = ? OR expirationTime < now()");
 	    	){
 			
 				statement.setString(1, uuid.toString());
-				statement.setLong(2, System.currentTimeMillis());
 				statement.executeUpdate();
 			
 		} catch (SQLException e) {
