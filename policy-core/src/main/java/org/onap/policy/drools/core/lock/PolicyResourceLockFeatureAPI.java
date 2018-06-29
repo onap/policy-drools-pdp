@@ -45,22 +45,6 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
                     new OrderedServiceImpl<>(PolicyResourceLockFeatureAPI.class);
 
     /**
-     * Callback that an implementer invokes, asynchronously, when a lock is acquired (or
-     * denied). The implementer invokes the method to indicate that the lock was acquired
-     * (or denied).
-     */
-    @FunctionalInterface
-    public static interface Callback {
-
-        /**
-         * 
-         * @param locked {@code true} if the lock was acquired, {@code false} if the lock
-         *        was denied
-         */
-        public void set(boolean locked);
-    }
-
-    /**
          * 
      * Result of a requested operation.
      */
