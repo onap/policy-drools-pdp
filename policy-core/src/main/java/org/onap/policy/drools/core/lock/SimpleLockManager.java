@@ -330,9 +330,7 @@ public class SimpleLockManager {
                     return false;
             } else if (!resource.equals(other.resource))
                 return false;
-            if (texpireMs != other.texpireMs)
-                return false;
-            return true;
+            return (texpireMs == other.texpireMs);
         }
     }
 }
