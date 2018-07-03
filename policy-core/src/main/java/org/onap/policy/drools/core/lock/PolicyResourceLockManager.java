@@ -21,10 +21,8 @@
 package org.onap.policy.drools.core.lock;
 
 import java.util.List;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.Callback;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,19 +65,6 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      */
     protected static void setFactory(Factory factory) {
         PolicyResourceLockManager.factory = factory;
-    }
-    
-    /**
-     * This method is here temporarily so-as not to break the drools-applications
-     * build.  It will be removed once drools-applications has been updated.
-     * @param resourceId
-     * @param owner
-     * @param callback
-     * @return nothing; always throws an exception
-     * @throws UnsupportedOperationException
-     */
-    public Future<Boolean> lock(String resourceId, String owner, Callback callback) {
-        throw new UnsupportedOperationException("lock with callback");
     }
 
     @Override
