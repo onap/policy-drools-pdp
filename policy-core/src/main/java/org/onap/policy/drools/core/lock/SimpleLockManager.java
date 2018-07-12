@@ -118,6 +118,49 @@ public class SimpleLockManager {
     }
 
     /**
+     * Attempts to refresh a lock on a resource.
+     * 
+     * @param resourceId
+     * @param owner
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     * @return {@code true} if locked, {@code false} if the resource is not currently
+     *         locked by the given owner
+     * @throws IllegalArgumentException if the resourceId or owner is {@code null}
+     */
+    public boolean refresh(String resourceId, String owner, int holdSec) {
+
+        if (resourceId == null) {
+            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
+        }
+
+        if (owner == null) {
+            throw makeNullArgException(MSG_NULL_OWNER);
+        }
+
+        boolean refreshed = false;
+        
+        synchronized(locker) {
+            cleanUpLocks();
+
+            Data existingLock = resource2data.get(resourceId);
+            if (existingLock != null && existingLock.getOwner().equals(owner)) {                
+                // MUST remove the existing lock from the set
+                locks.remove(existingLock);
+
+                refreshed = true;
+                
+                Data data = new Data(owner, resourceId, currentTime.getMillis() + TimeUnit.SECONDS.toMillis(holdSec));
+                resource2data.put(resourceId, data);
+                locks.add(data);
+            }
+        }
+
+        logger.info("refresh lock {} for resource {} owner {}", refreshed, resourceId, owner);
+
+        return refreshed;
+    }
+
+    /**
      * Unlocks a resource.
      * 
      * @param resourceId

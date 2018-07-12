@@ -90,6 +90,28 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     }
 
     @Override
+    public boolean refresh(String resourceId, String owner, int holdSec) {
+        if (resourceId == null) {
+            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
+        }
+
+        if (owner == null) {
+            throw makeNullArgException(MSG_NULL_OWNER);
+        }
+
+
+        return doBoolIntercept(impl -> impl.beforeRefresh(resourceId, owner, holdSec), () -> {
+
+            // implementer didn't do the work - defer to the superclass
+            boolean refreshed = super.refresh(resourceId, owner, holdSec);
+
+            doIntercept(false, impl -> impl.afterRefresh(resourceId, owner, refreshed));
+
+            return refreshed;
+        });
+    }
+
+    @Override
     public boolean unlock(String resourceId, String owner) {
         if (resourceId == null) {
             throw makeNullArgException(MSG_NULL_RESOURCE_ID);

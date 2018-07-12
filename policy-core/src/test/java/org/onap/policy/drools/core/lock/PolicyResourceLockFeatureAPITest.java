@@ -55,6 +55,17 @@ public class PolicyResourceLockFeatureAPITest {
     }
 
     @Test
+    public void testBeforeRefresh() {
+        assertEquals(OperResult.OPER_UNHANDLED, api.beforeRefresh(RESOURCE_ID, OWNER, 0));
+    }
+
+    @Test
+    public void testAfterRefresh() {
+        assertFalse(api.afterRefresh(RESOURCE_ID, OWNER, true));
+        assertFalse(api.afterRefresh(RESOURCE_ID, OWNER, false));
+    }
+
+    @Test
     public void testBeforeUnlock() {
         assertEquals(OperResult.OPER_UNHANDLED, api.beforeUnlock(RESOURCE_ID, OWNER));
     }
