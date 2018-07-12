@@ -119,6 +119,32 @@ public class TargetLockTest {
 		assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeLock("resource1", "owner2", MAX_AGE_SEC));
 
 	}
+    
+    @Test
+    public void testUpdateLock() throws InterruptedException, ExecutionException {
+        // not locked yet - refresh should fail
+        assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
+        
+        // now lock it
+        assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
+
+        // refresh should work now
+        assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
+        
+        // expire the lock
+        try (PreparedStatement updateStatement = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = timestampadd(second, -1, now()) WHERE resourceId = ?");)
+        {
+            updateStatement.setString(1, "resource1");
+            updateStatement.executeUpdate();
+                
+        } catch (SQLException e) {
+            logger.error("Error in TargetLockTest.testGrabLockSuccess()", e);
+            throw new RuntimeException(e);
+        }
+        
+        // refresh should fail now
+        assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
+    }
 	
 	
 	@Test
