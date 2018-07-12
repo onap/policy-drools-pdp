@@ -73,6 +73,14 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 
         return(tLock.lock(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);				
 	}
+    
+    @Override
+    public OperResult beforeRefresh(String resourceId, String owner, int holdSec) {
+        
+        TargetLock tLock = new TargetLock(resourceId, uuid, owner, dataSource);
+
+        return(tLock.refresh(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);                
+    }
 
 	@Override
 	public OperResult beforeUnlock(String resourceId, String owner) {

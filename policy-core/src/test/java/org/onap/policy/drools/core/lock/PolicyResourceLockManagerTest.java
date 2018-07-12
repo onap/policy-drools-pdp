@@ -108,6 +108,7 @@ public class PolicyResourceLockManagerTest {
      */
     private void initImplementer(PolicyResourceLockFeatureAPI impl) {
         when(impl.beforeLock(anyString(), anyString(), anyInt())).thenReturn(OperResult.OPER_UNHANDLED);
+        when(impl.beforeRefresh(anyString(), anyString(), anyInt())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeUnlock(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeIsLocked(anyString())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeIsLockedBy(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
@@ -222,6 +223,125 @@ public class PolicyResourceLockManagerTest {
 
         verify(impl1).afterLock(RESOURCE_A, OWNER2, false);
         verify(impl2).afterLock(RESOURCE_A, OWNER2, false);
+    }
+
+    @Test
+    public void testRefresh() throws Exception {
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        verify(impl1).beforeRefresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl2).beforeRefresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl1).afterRefresh(RESOURCE_A, OWNER1, true);
+        verify(impl2).afterRefresh(RESOURCE_A, OWNER1, true);
+
+        assertTrue(mgr.isLocked(RESOURCE_A));
+        assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
+        assertFalse(mgr.isLocked(RESOURCE_B));
+        assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
+
+        // different owner and resource
+        assertFalse(mgr.refresh(RESOURCE_C, OWNER3, MAX_AGE_SEC));
+
+        // different owner
+        assertFalse(mgr.lock(RESOURCE_A, OWNER3, MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testRefresh_ArgEx() {
+        IllegalArgumentException ex =
+                        expectException(IllegalArgumentException.class, () -> mgr.refresh(null, OWNER1, MAX_AGE_SEC));
+        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+
+        ex = expectException(IllegalArgumentException.class, () -> mgr.refresh(RESOURCE_A, null, MAX_AGE_SEC));
+        assertEquals(NULL_OWNER, ex.getMessage());
+
+        // this should not throw an exception
+        mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+    }
+
+    @Test
+    public void testRefresh_Acquired_BeforeIntercepted() {
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // have impl1 intercept
+        when(impl1.beforeRefresh(RESOURCE_A, OWNER1, MAX_AGE_SEC)).thenReturn(OperResult.OPER_ACCEPTED);
+
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        verify(impl1).beforeRefresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl2, never()).beforeRefresh(anyString(), anyString(), anyInt());
+
+        verify(impl1, never()).afterRefresh(anyString(), anyString(), anyBoolean());
+        verify(impl2, never()).afterRefresh(anyString(), anyString(), anyBoolean());
+    }
+
+    @Test
+    public void testRefresh_Denied_BeforeIntercepted() {
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // have impl1 intercept
+        when(impl1.beforeRefresh(RESOURCE_A, OWNER1, MAX_AGE_SEC)).thenReturn(OperResult.OPER_DENIED);
+
+        assertFalse(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        verify(impl1).beforeRefresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        verify(impl2, never()).beforeRefresh(anyString(), anyString(), anyInt());
+
+        verify(impl1, never()).afterRefresh(anyString(), anyString(), anyBoolean());
+        verify(impl2, never()).afterRefresh(anyString(), anyString(), anyBoolean());
+    }
+
+    @Test
+    public void testRefresh_Acquired_AfterIntercepted() throws Exception {
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // impl1 intercepts during afterRefresh()
+        when(impl1.afterRefresh(RESOURCE_A, OWNER1, true)).thenReturn(true);
+
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // impl1 sees it, but impl2 does not
+        verify(impl1).afterRefresh(RESOURCE_A, OWNER1, true);
+        verify(impl2, never()).afterRefresh(anyString(), anyString(), anyBoolean());
+    }
+
+    @Test
+    public void testRefresh_Acquired() throws Exception {
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+        
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        verify(impl1).afterRefresh(RESOURCE_A, OWNER1, true);
+        verify(impl2).afterRefresh(RESOURCE_A, OWNER1, true);
+    }
+
+    @Test
+    public void testRefresh_Denied_AfterIntercepted() throws Exception {
+
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+
+        // impl1 intercepts during afterRefresh()
+        when(impl1.afterRefresh(RESOURCE_A, OWNER2, false)).thenReturn(true);
+
+        // owner2 tries to lock
+        assertFalse(mgr.refresh(RESOURCE_A, OWNER2, MAX_AGE_SEC));
+
+        // impl1 sees it, but impl2 does not
+        verify(impl1).afterRefresh(RESOURCE_A, OWNER2, false);
+        verify(impl2, never()).afterRefresh(RESOURCE_A, OWNER2, false);
+    }
+
+    @Test
+    public void testRefresh_Denied() {
+
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+
+        // owner2 tries to lock
+        mgr.refresh(RESOURCE_A, OWNER2, MAX_AGE_SEC);
+
+        verify(impl1).afterRefresh(RESOURCE_A, OWNER2, false);
+        verify(impl2).afterRefresh(RESOURCE_A, OWNER2, false);
     }
 
     @Test

@@ -98,6 +98,34 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
     }
 
     /**
+     * This method is called before a lock is refreshed on a resource. It may be invoked
+     * repeatedly to extend the time that a lock is held.
+     * 
+     * @param resourceId
+     * @param owner
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     * @return the result, where <b>OPER_DENIED</b> indicates that the resource is not
+     *         currently locked by the given owner
+     */
+    public default OperResult beforeRefresh(String resourceId, String owner, int holdSec) {
+        return OperResult.OPER_UNHANDLED;
+    }
+
+    /**
+     * This method is called after a lock for a resource has been refreshed (or after the
+     * refresh has been denied).
+     * 
+     * @param resourceId
+     * @param owner
+     * @param locked {@code true} if the lock was acquired, {@code false} if it was denied
+     * @return {@code true} if the implementer handled the request, {@code false}
+     *         otherwise
+     */
+    public default boolean afterRefresh(String resourceId, String owner, boolean locked) {
+        return false;
+    }
+
+    /**
      * This method is called before a lock on a resource is released.
      * 
      * @param resourceId

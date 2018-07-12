@@ -100,10 +100,10 @@ public class SimpleLockManagerTest {
         assertFalse(mgr.isLocked(RESOURCE_B));
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
 
-        // null callback - not locked yet
+        // different owner and resource - should succeed
         assertTrue(mgr.lock(RESOURCE_C, OWNER3, MAX_AGE_SEC));
 
-        // null callback - already locked
+        // different owner - already locked
         assertFalse(mgr.lock(RESOURCE_A, OWNER3, MAX_AGE_SEC));
     }
 
@@ -149,6 +149,80 @@ public class SimpleLockManagerTest {
 
         // this should not throw an exception
         mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+    }
+
+    @Test
+    public void testRefresh() throws Exception {
+        // don't own the lock yet - cannot refresh
+        assertFalse(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // now the lock is owned
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // refresh again
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC + 1));
+
+        assertTrue(mgr.isLocked(RESOURCE_A));
+        assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
+        assertFalse(mgr.isLocked(RESOURCE_B));
+        assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER2));
+
+        // different owner
+        assertFalse(mgr.refresh(RESOURCE_A, OWNER3, MAX_AGE_SEC));
+
+        // different resource
+        assertFalse(mgr.refresh(RESOURCE_C, OWNER1, MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testRefresh_ExtendLock() throws Exception {
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+
+        // sleep half of the cycle
+        testTime.sleep(MAX_AGE_MS / 2);
+        assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
+
+        // extend the lock
+        mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+
+        // verify still locked after sleeping the other half of the cycle
+        testTime.sleep(MAX_AGE_MS / 2 + 1);
+        assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
+
+        // and should release after another half cycle
+        testTime.sleep(MAX_AGE_MS / 2);
+        
+        // cannot refresh expired lock
+        assertFalse(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+        
+        assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER1));
+    }
+
+    @Test
+    public void testRefresh_AlreadyLocked() throws Exception {
+        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+
+        // same owner
+        assertTrue(mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+
+        // different owner
+        assertFalse(mgr.refresh(RESOURCE_A, OWNER2, MAX_AGE_SEC));
+        assertFalse(mgr.lock(RESOURCE_A, OWNER2, MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testRefresh_ArgEx() {
+        IllegalArgumentException ex =
+                        expectException(IllegalArgumentException.class, () -> mgr.refresh(null, OWNER1, MAX_AGE_SEC));
+        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+
+        ex = expectException(IllegalArgumentException.class, () -> mgr.refresh(RESOURCE_A, null, MAX_AGE_SEC));
+        assertEquals(NULL_OWNER, ex.getMessage());
+
+        // this should not throw an exception
+        mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
     }
 
     @Test

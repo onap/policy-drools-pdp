@@ -73,6 +73,17 @@ public class TargetLock {
 		
 		return grabLock(holdSec);
 	}
+
+    /**
+     * refresh a lock
+     * 
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     * @return {@code true} if the lock was refreshed, {@code false} if the resource is
+     *         not currently locked by the given owner
+     */
+	public boolean refresh(int holdSec) {
+	    return updateLock(holdSec);
+	}
 	
 	/**
 	 * Unlock a resource by deleting it's associated record in the db
@@ -158,6 +169,36 @@ public class TargetLock {
 		}
 
 	}
+
+    /**
+     * Updates the DB record associated with the lock.
+     * 
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     * @return {@code true} if the record was updated, {@code false} otherwise
+     */
+    private boolean updateLock(int holdSec) {
+
+        try (Connection conn = dataSource.getConnection();
+
+                        PreparedStatement updateStatement = conn.prepareStatement(
+                                        "UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = timestampadd(second, ?, now()) WHERE resourceId = ? AND owner = ? AND expirationTime >= now()")) {
+
+            int i = 1;
+            updateStatement.setString(i++, this.uuid.toString());
+            updateStatement.setString(i++, this.owner);
+            updateStatement.setInt(i++, holdSec);
+            updateStatement.setString(i++, this.resourceId);
+            updateStatement.setString(i++, this.owner);
+
+            // refresh succeeded iff a record was updated
+            return (updateStatement.executeUpdate() == 1);
+
+        } catch (SQLException e) {
+            logger.error("error in TargetLock.refreshLock()", e);
+            return false;
+        }
+
+    }
 	
 	/**
 	 *To remove a lock we simply delete the record from the db 
