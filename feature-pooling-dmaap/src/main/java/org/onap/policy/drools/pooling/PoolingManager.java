@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.pooling;
 
-import java.util.concurrent.CountDownLatch;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Forward;
 import org.onap.policy.drools.pooling.message.Message;
@@ -55,22 +54,11 @@ public interface PoolingManager {
     public String getTopic();
 
     /**
-     * Indicates that communication with internal DMaaP topic failed, typically due to a
-     * missed heart beat. Stops the PolicyController.
-     * 
-     * @return a latch that can be used to determine when the controller's stop() method
-     *         has completed
-     */
-    public CountDownLatch internalTopicFailed();
-
-    /**
      * Starts distributing requests according to the given bucket assignments.
      * 
      * @param assignments must <i>not</i> be {@code null}
-     * @return a latch that can be used to determine when the events in the event queue
-     *         have all be processed
      */
-    public CountDownLatch startDistributing(BucketAssignments assignments);
+    public void startDistributing(BucketAssignments assignments);
 
     /**
      * Gets the current bucket assignments.

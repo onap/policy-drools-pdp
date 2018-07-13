@@ -147,11 +147,12 @@ public abstract class State {
      * @return the new state, or {@code null} if the state is unchanged
      */
     public State process(Forward msg) {
-        if(!getHost().equals(msg.getChannel())) {
-            logger.info("discard Forward message to {} from {} on topic {}", msg.getChannel(), msg.getSource(), getTopic());
+        if (!getHost().equals(msg.getChannel())) {
+            logger.info("discard Forward message to {} from {} on topic {}", msg.getChannel(), msg.getSource(),
+                            getTopic());
             return null;
         }
-        
+
         logger.info("received Forward message from {} on topic {}", msg.getSource(), getTopic());
         mgr.handle(msg);
         return null;
@@ -337,26 +338,26 @@ public abstract class State {
 
     /**
      * Indicates that we failed to see our own heartbeat; must be a problem with the
-     * internal topic.
+     * internal topic. Assumes the problem is temporary and continues to use the current
+     * bucket assignments.
      * 
      * @return a new {@link StartState}
      */
     protected final State missedHeartbeat() {
         publish(makeOffline());
-        mgr.startDistributing(null);
 
         return mgr.goStart();
     }
 
     /**
      * Indicates that the internal topic failed; this should only be invoked from the
-     * StartState.
+     * StartState. Discards bucket assignments and begins processing everything locally.
      * 
      * @return a new {@link InactiveState}
      */
     protected final State internalTopicFailed() {
         publish(makeOffline());
-        mgr.internalTopicFailed();
+        mgr.startDistributing(null);
 
         return mgr.goInactive();
     }

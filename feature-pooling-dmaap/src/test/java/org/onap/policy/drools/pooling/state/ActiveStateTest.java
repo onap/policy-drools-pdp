@@ -394,8 +394,8 @@ public class ActiveStateTest extends BasicStateTester {
         // fire the task - should transition
         assertEquals(next, task.third().fire());
 
-        // should stop distributing
-        verify(mgr).startDistributing(null);
+        // should continue to distribute
+        verify(mgr, never()).startDistributing(null);
 
         // should publish an offline message
         Offline msg = captureAdminMessage(Offline.class);
