@@ -257,8 +257,8 @@ public class QueryStateTest extends BasicStateTester {
 
         assertEquals(next, timer.second().fire());
 
-        // should stop distributing
-        verify(mgr).startDistributing(null);
+        // should continue distributing
+        verify(mgr, never()).startDistributing(null);
 
         Offline msg = captureAdminMessage(Offline.class);
         assertEquals(MY_HOST, msg.getSource());

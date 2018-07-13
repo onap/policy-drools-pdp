@@ -28,9 +28,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
@@ -121,11 +123,17 @@ public class FeatureTest2 {
     // these are saved and restored on exit from this test class
     private static PoolingFeature.Factory saveFeatureFactory;
     private static PoolingManagerImpl.Factory saveManagerFactory;
+    private static DmaapManager.Factory saveDmaapFactory;
 
     /**
      * Sink for external DMaaP topic.
      */
     private static TopicSink externalSink;
+
+    /**
+     * Sink for internal DMaaP topic.
+     */
+    private static TopicSink internalSink;
 
     /**
      * Context for the current test case.
@@ -137,18 +145,23 @@ public class FeatureTest2 {
     public static void setUpBeforeClass() {
         saveFeatureFactory = PoolingFeature.getFactory();
         saveManagerFactory = PoolingManagerImpl.getFactory();
+        saveDmaapFactory = DmaapManager.getFactory();
 
-        Properties props = makeSinkProperties(EXTERNAL_TOPIC);
-        externalSink = TopicEndpoint.manager.addTopicSinks(props).get(0);
+        externalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
         externalSink.start();
+
+        internalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(INTERNAL_TOPIC)).get(0);
+        internalSink.start();
     }
 
     @AfterClass
     public static void tearDownAfterClass() {
         PoolingFeature.setFactory(saveFeatureFactory);
         PoolingManagerImpl.setFactory(saveManagerFactory);
+        DmaapManager.setFactory(saveDmaapFactory);
 
         externalSink.stop();
+        internalSink.stop();
     }
 
     @Before
@@ -163,7 +176,7 @@ public class FeatureTest2 {
         }
     }
 
-    @Ignore
+     @Ignore
     @Test
     public void test_SingleHost() throws Exception {
         run(70, 1);
@@ -443,6 +456,7 @@ public class FeatureTest2 {
         private final AtomicBoolean sawMsg = new AtomicBoolean(false);
 
         private final TopicSource externalSource;
+        private final TopicSource internalSource;
 
         // mock objects
         private final PolicyEngine engine = mock(PolicyEngine.class);
@@ -458,8 +472,8 @@ public class FeatureTest2 {
             when(controller.getName()).thenReturn(CONTROLLER1);
             when(controller.getDrools()).thenReturn(drools);
 
-            Properties props = makeSourceProperties(EXTERNAL_TOPIC);
-            externalSource = TopicEndpoint.manager.addTopicSources(props).get(0);
+            externalSource = TopicEndpoint.manager.addTopicSources(makeSourceProperties(EXTERNAL_TOPIC)).get(0);
+            internalSource = TopicEndpoint.manager.addTopicSources(makeSourceProperties(INTERNAL_TOPIC)).get(0);
 
             // stop consuming events if the controller stops
             when(controller.stop()).thenAnswer(args -> {
@@ -489,6 +503,18 @@ public class FeatureTest2 {
          * "DMaaP" topic and its own internal "DMaaP" topic.
          */
         public void start() {
+            DmaapManager.setFactory(new DmaapManager.Factory() {
+                @Override
+                public List<TopicSource> getTopicSources() {
+                    return Arrays.asList(internalSource, externalSource);
+                }
+
+                @Override
+                public List<TopicSink> getTopicSinks() {
+                    return Arrays.asList(internalSink, externalSink);
+                }
+            });
+
             feature.beforeStart(engine);
             feature.afterCreate(controller);
 

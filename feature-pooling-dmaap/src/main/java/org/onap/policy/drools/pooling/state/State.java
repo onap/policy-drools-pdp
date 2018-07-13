@@ -337,13 +337,13 @@ public abstract class State {
 
     /**
      * Indicates that we failed to see our own heartbeat; must be a problem with the
-     * internal topic.
+     * internal topic.  Assumes the problem is temporary and continues to use the
+     * current bucket assignments.
      * 
      * @return a new {@link StartState}
      */
     protected final State missedHeartbeat() {
         publish(makeOffline());
-        mgr.startDistributing(null);
 
         return mgr.goStart();
     }
@@ -356,7 +356,7 @@ public abstract class State {
      */
     protected final State internalTopicFailed() {
         publish(makeOffline());
-        mgr.internalTopicFailed();
+        mgr.startDistributing(null);
 
         return mgr.goInactive();
     }

@@ -111,7 +111,7 @@ public class StartStateTest extends BasicStateTester {
 
         assertEquals(next, checker.second().fire());
 
-        verify(mgr).internalTopicFailed();
+        verify(mgr).startDistributing(null);
     }
 
     @Test

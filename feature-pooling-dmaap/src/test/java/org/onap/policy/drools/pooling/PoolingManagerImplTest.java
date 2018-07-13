@@ -23,7 +23,6 @@ package org.onap.policy.drools.pooling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -106,7 +105,6 @@ public class PoolingManagerImplTest {
     private Properties plainProps;
     private PoolingProperties poolProps;
     private ListeningController controller;
-    private EventQueue eventQueue;
     private ClassExtractors extractors;
     private DmaapManager dmaap;
     private ScheduledThreadPoolExecutor sched;
@@ -146,14 +144,12 @@ public class PoolingManagerImplTest {
         active = new CountDownLatch(1);
 
         factory = mock(Factory.class);
-        eventQueue = mock(EventQueue.class);
         extractors = mock(ClassExtractors.class);
         dmaap = mock(DmaapManager.class);
         controller = mock(ListeningController.class);
         sched = mock(ScheduledThreadPoolExecutor.class);
         drools = mock(DroolsController.class);
 
-        when(factory.makeEventQueue(any())).thenReturn(eventQueue);
         when(factory.makeClassExtractors(any())).thenReturn(extractors);
         when(factory.makeDmaapManager(any())).thenReturn(dmaap);
         when(factory.makeScheduler()).thenReturn(sched);
@@ -304,24 +300,25 @@ public class PoolingManagerImplTest {
     @Test
     public void testBeforeStop() throws Exception {
         startMgr();
-        mgr.startDistributing(makeAssignments(true));
+        mgr.startDistributing(makeAssignments(false));
 
-        // verify that this message is not queued
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
-        verify(eventQueue, never()).add(msg);
+        verify(dmaap, times(START_PUB+1)).publish(any());
         
         mgr.beforeStop();
 
         verify(dmaap).stopConsumer(mgr);
         verify(sched).shutdownNow();
+        verify(dmaap, times(START_PUB+2)).publish(any());
         verify(dmaap).publish(contains("offline"));
 
         assertTrue(mgr.getCurrent() instanceof IdleState);
 
-        // verify that next message is queued
-        mgr.handle(msg);        
-        verify(eventQueue).add(msg);
+        // verify that next message is handled locally
+        mgr.handle(msg);
+        verify(dmaap, times(START_PUB+2)).publish(any());
+        verify(controller).onTopicEvent(CommInfrastructure.UEB, TOPIC2, THE_EVENT);
     }
 
     @Test
@@ -360,26 +357,8 @@ public class PoolingManagerImplTest {
         startMgr();
         mgr.beforeStop();
 
-        when(eventQueue.isEmpty()).thenReturn(false);
-        when(eventQueue.size()).thenReturn(3);
-
         mgr.afterStop();
 
-        verify(eventQueue).clear();
-        verify(dmaap).stopPublisher(STD_OFFLINE_PUB_WAIT_MS);
-    }
-
-    @Test
-    public void testAfterStop_EmptyQueue() throws Exception {
-        startMgr();
-        mgr.beforeStop();
-
-        when(eventQueue.isEmpty()).thenReturn(true);
-        when(eventQueue.size()).thenReturn(0);
-
-        mgr.afterStop();
-
-        verify(eventQueue, never()).clear();
         verify(dmaap).stopPublisher(STD_OFFLINE_PUB_WAIT_MS);
     }
 
@@ -496,18 +475,6 @@ public class PoolingManagerImplTest {
         startMgr();
 
         // no exception, means success
-    }
-
-    @Test
-    public void testInternalTopicFailed() throws Exception {
-        startMgr();
-
-        CountDownLatch latch = mgr.internalTopicFailed();
-
-        // wait for the thread to complete
-        assertTrue(latch.await(2, TimeUnit.SECONDS));
-
-        verify(controller).stop();
     }
 
     @Test
@@ -693,14 +660,7 @@ public class PoolingManagerImplTest {
     public void testBeforeInsert_NoIntercept() throws Exception {
         startMgr();
 
-        long tbegin = System.currentTimeMillis();
-
-        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        ArgumentCaptor<Forward> msgCap = ArgumentCaptor.forClass(Forward.class);
-        verify(eventQueue).add(msgCap.capture());
-
-        validateMessageContent(tbegin, msgCap.getValue());
+        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
     }
 
     @Test
@@ -726,37 +686,20 @@ public class PoolingManagerImplTest {
         startMgr();
 
         assertTrue(mgr.beforeInsert(null, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        // should not have tried to enqueue a message
-        verify(eventQueue, never()).add(any());
     }
 
     @Test
     public void testHandleExternalCommInfrastructureStringStringString() throws Exception {
         startMgr();
 
-        long tbegin = System.currentTimeMillis();
-
-        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        ArgumentCaptor<Forward> msgCap = ArgumentCaptor.forClass(Forward.class);
-        verify(eventQueue).add(msgCap.capture());
-
-        validateMessageContent(tbegin, msgCap.getValue());
+        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
     }
 
     @Test
     public void testHandleExternalForward_NoAssignments() throws Exception {
         startMgr();
 
-        long tbegin = System.currentTimeMillis();
-
-        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        ArgumentCaptor<Forward> msgCap = ArgumentCaptor.forClass(Forward.class);
-        verify(eventQueue).add(msgCap.capture());
-
-        validateMessageContent(tbegin, msgCap.getValue());
+        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
     }
 
     @Test
@@ -921,25 +864,26 @@ public class PoolingManagerImplTest {
     @Test
     public void testMakeForward() throws Exception {
         startMgr();
-
-        long tbegin = System.currentTimeMillis();
+        
+        // route the message to another host
+        mgr.startDistributing(makeAssignments(false));
 
         assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        ArgumentCaptor<Forward> msgCap = ArgumentCaptor.forClass(Forward.class);
-        verify(eventQueue).add(msgCap.capture());
-
-        validateMessageContent(tbegin, msgCap.getValue());
+        
+        verify(dmaap, times(START_PUB+1)).publish(any());
     }
 
     @Test
     public void testMakeForward_InvalidMsg() throws Exception {
         startMgr();
+        
+        // route the message to another host
+        mgr.startDistributing(makeAssignments(false));
 
         assertTrue(mgr.beforeInsert(null, TOPIC2, THE_EVENT, DECODED_EVENT));
 
-        // should not have tried to enqueue a message
-        verify(eventQueue, never()).add(any());
+        // should not have tried to publish a message
+        verify(dmaap, times(START_PUB)).publish(any());
     }
 
     @Test
@@ -1064,69 +1008,27 @@ public class PoolingManagerImplTest {
         startMgr();
 
         // route the message to this host
-        assertNotNull(mgr.startDistributing(makeAssignments(true)));
+        mgr.startDistributing(makeAssignments(true));
         assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        verify(eventQueue, never()).add(any());
+        verify(dmaap, times(START_PUB)).publish(any());
 
 
-        // null assignments should cause message to be queued
-        assertNull(mgr.startDistributing(null));
-        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        verify(eventQueue).add(any());
+        // null assignments should cause message to be processed locally
+        mgr.startDistributing(null);
+        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        verify(dmaap, times(START_PUB)).publish(any());
 
 
         // route the message to this host
-        assertNotNull(mgr.startDistributing(makeAssignments(true)));
+        mgr.startDistributing(makeAssignments(true));
         assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        verify(eventQueue).add(any());
+        verify(dmaap, times(START_PUB)).publish(any());
 
 
         // route the message to the other host
-        assertNotNull(mgr.startDistributing(makeAssignments(false)));
+        mgr.startDistributing(makeAssignments(false));
         assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        verify(eventQueue).add(any());
-    }
-
-    @Test
-    public void testStartDistributing_EventsInQueue_ProcessLocally() throws Exception {
-        startMgr();
-
-        // put items in the queue
-        LinkedList<Forward> lst = new LinkedList<>();
-        lst.add(new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID));
-        lst.add(new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID));
-        lst.add(new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID));
-
-        when(eventQueue.poll()).thenAnswer(args -> lst.poll());
-
-        // route the messages to this host
-        CountDownLatch latch = mgr.startDistributing(makeAssignments(true));
-        assertTrue(latch.await(2, TimeUnit.SECONDS));
-
-        // all of the events should have been processed locally
-        verify(dmaap, times(START_PUB)).publish(any());
-        verify(controller, times(3)).onTopicEvent(CommInfrastructure.UEB, TOPIC2, THE_EVENT);
-    }
-
-    @Test
-    public void testStartDistributing_EventsInQueue_Forward() throws Exception {
-        startMgr();
-
-        // put items in the queue
-        LinkedList<Forward> lst = new LinkedList<>();
-        lst.add(new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID));
-        lst.add(new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID));
-        lst.add(new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID));
-
-        when(eventQueue.poll()).thenAnswer(args -> lst.poll());
-
-        // route the messages to the OTHER host
-        CountDownLatch latch = mgr.startDistributing(makeAssignments(false));
-        assertTrue(latch.await(2, TimeUnit.SECONDS));
-
-        // all of the events should have been forwarded
-        verify(dmaap, times(4)).publish(any());
-        verify(controller, never()).onTopicEvent(CommInfrastructure.UEB, TOPIC2, THE_EVENT);
+        verify(dmaap, times(START_PUB+1)).publish(any());
     }
 
     @Test
@@ -1225,22 +1127,6 @@ public class PoolingManagerImplTest {
 
         // it should NOT have counted down
         assertEquals(1, latch.getCount());
-    }
-
-    /**
-     * Validates the message content.
-     * 
-     * @param tbegin creation time stamp must be no less than this
-     * @param msg message to be validated
-     */
-    private void validateMessageContent(long tbegin, Forward msg) {
-        assertEquals(0, msg.getNumHops());
-        assertTrue(msg.getCreateTimeMs() >= tbegin);
-        assertEquals(mgr.getHost(), msg.getSource());
-        assertEquals(CommInfrastructure.UEB, msg.getProtocol());
-        assertEquals(TOPIC2, msg.getTopic());
-        assertEquals(THE_EVENT, msg.getPayload());
-        assertEquals(REQUEST_ID, msg.getRequestId());
     }
 
     /**

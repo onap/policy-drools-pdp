@@ -423,7 +423,8 @@ public class StateTest extends BasicStateTester {
         State next2 = state.missedHeartbeat();
         assertEquals(next, next2);
 
-        verify(mgr).startDistributing(null);
+        // should continue to distribute
+        verify(mgr, never()).startDistributing(null);
 
         Offline msg = captureAdminMessage(Offline.class);
         assertEquals(MY_HOST, msg.getSource());
@@ -437,7 +438,8 @@ public class StateTest extends BasicStateTester {
         State next2 = state.internalTopicFailed();
         assertEquals(next, next2);
 
-        verify(mgr).internalTopicFailed();
+        // should stop distributing
+        verify(mgr).startDistributing(null);
 
         Offline msg = captureAdminMessage(Offline.class);
         assertEquals(MY_HOST, msg.getSource());
