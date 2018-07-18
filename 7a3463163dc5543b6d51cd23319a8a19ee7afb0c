@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a9dcd25_5857fc02",
+        "filename": "policy-endpoints/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-07-18T13:08:19Z",
+      "side": 1,
+      "message": "can this be removed since it now appears in the parent pom?",
+      "revId": "7a3463163dc5543b6d51cd23319a8a19ee7afb0c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
