@@ -71,8 +71,7 @@ public interface PolicyResourceLockFeatureAPI extends OrderedService {
     }
 
     /**
-     * This method is called before a lock is acquired on a resource.  It may be
-     * invoked repeatedly to extend the time that a lock is held.
+     * This method is called before a lock is acquired on a resource.
      * 
      * @param resourceId
      * @param owner

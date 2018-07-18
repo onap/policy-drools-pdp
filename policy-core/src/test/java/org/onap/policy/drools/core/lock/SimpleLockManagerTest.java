@@ -116,7 +116,7 @@ public class SimpleLockManagerTest {
         assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
         
         // extend the lock
-        mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
+        mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         
         // verify still locked after sleeping the other half of the cycle
         testTime.sleep(MAX_AGE_MS/2+1);
@@ -132,7 +132,7 @@ public class SimpleLockManagerTest {
         mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         
         // same owner
-        assertTrue(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
+        assertFalse(mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC));
 
         // different owner
         assertFalse(mgr.lock(RESOURCE_A, OWNER2, MAX_AGE_SEC));

@@ -92,8 +92,10 @@ public class TargetLockTest {
 		
 		assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
 
-		// extend the lock
-        assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
+		// cannot re-lock
+        assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC));
+
+        assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
 	}
 
 	@Test
@@ -131,6 +133,8 @@ public class TargetLockTest {
         // refresh should work now
         assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
         
+        assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+        
         // expire the lock
         try (PreparedStatement updateStatement = conn.prepareStatement("UPDATE pooling.locks SET expirationTime = timestampadd(second, -1, now()) WHERE resourceId = ?");)
         {
@@ -144,6 +148,8 @@ public class TargetLockTest {
         
         // refresh should fail now
         assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
+
+        assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
     }
 	
 	

@@ -132,7 +132,7 @@ public class TargetLock {
 		try (Connection conn = dataSource.getConnection();
 
 				PreparedStatement updateStatement = conn.prepareStatement(
-						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = timestampadd(second, ?, now()) WHERE resourceId = ? AND (owner = ? OR expirationTime < now())");
+						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = timestampadd(second, ?, now()) WHERE resourceId = ? AND expirationTime < now()");
 
 				PreparedStatement insertStatement = conn.prepareStatement(
 						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, timestampadd(second, ?, now()))");) {
@@ -142,7 +142,6 @@ public class TargetLock {
 			updateStatement.setString(i++, this.owner);
 			updateStatement.setInt(i++, holdSec);
             updateStatement.setString(i++, this.resourceId);
-            updateStatement.setString(i++, this.owner);
 
 			// The lock was expired and we grabbed it.
 			// return true
