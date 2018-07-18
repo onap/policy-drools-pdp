@@ -73,6 +73,7 @@
 		<commons.io.version>2.5</commons.io.version>
 		<guava.version>23.0</guava.version>
 		<xml.apis.version>1.4.01</xml.apis.version>
+		<jetty.version>9.3.24.v20180605</jetty.version>
 	</properties>
 
 	<modules>
