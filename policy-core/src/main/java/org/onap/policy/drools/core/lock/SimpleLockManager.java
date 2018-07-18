@@ -93,25 +93,19 @@ public class SimpleLockManager {
             throw makeNullArgException(MSG_NULL_OWNER);
         }
 
-        Data existingLock;
+        boolean locked = false;
         
         synchronized(locker) {
             cleanUpLocks();
 
-            if ((existingLock = resource2data.get(resourceId)) != null && existingLock.getOwner().equals(owner)) {
-                // replace the existing lock with an extended lock
-                locks.remove(existingLock);
-                existingLock = null;
-            }
-
-            if (existingLock == null) {
+            if(!resource2data.containsKey(resourceId)) {
                 Data data = new Data(owner, resourceId, currentTime.getMillis() + TimeUnit.SECONDS.toMillis(holdSec));
                 resource2data.put(resourceId, data);
                 locks.add(data);
+                locked = true;
             }
         }
 
-        boolean locked = (existingLock == null);
         logger.info("lock {} for resource {} owner {}", locked, resourceId, owner);
 
         return locked;
