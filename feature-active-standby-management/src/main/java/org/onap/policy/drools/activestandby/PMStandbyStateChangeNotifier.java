@@ -66,7 +66,7 @@ import org.onap.policy.drools.system.PolicyEngine;
  * the demote), but providingservice (as reset by the election handling logic) and conn.standDownPdp() would not get called!
  * 
  * To fix this bug, we consolidated StandbyStateChangeNotifier and PMStandbyStateChangeNotifier, with the standDownPdp() always 
- * being invoked prior to the TopicEndpoint.manager.lock().  In this way, when the election handling logic is invoked 
+ * being invoked prior to the ProxyTopicEndpointManager.getInstance().lock().  In this way, when the election handling logic is invoked 
  * during the controller stoppages, the PDP is in hotstandby and the standdown occurs.
  * 
  */

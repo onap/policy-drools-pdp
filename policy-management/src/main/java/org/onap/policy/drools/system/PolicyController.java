@@ -23,86 +23,82 @@ package org.onap.policy.drools.system;
 import java.util.List;
 import java.util.Properties;
 
+import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.properties.Lockable;
+import org.onap.policy.common.properties.Startable;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.event.comm.TopicSource;
-import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.drools.event.comm.TopicSink;
-import org.onap.policy.drools.properties.Lockable;
-import org.onap.policy.drools.properties.Startable;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 
 /**
- * A Policy Controller is the higher level unit of control.  It corresponds to
- * the ncomp equivalent of a controller.  It provides management of underlying
- * resources associated with the policy controller, which is a) communication
- * infrastructure, and b) policy-core (drools) session infrastructure
+ * A Policy Controller is the higher level unit of control. It corresponds to the ncomp equivalent
+ * of a controller. It provides management of underlying resources associated with the policy
+ * controller, which is a) communication infrastructure, and b) policy-core (drools) session
+ * infrastructure
  *
  */
 public interface PolicyController extends Startable, Lockable {
-	
-	/**
-	 * Factory that tracks and manages Policy Controllers
-	 */
-	public static PolicyControllerFactory factory =
-						new IndexedPolicyControllerFactory();
-	
-	/**
-	 * name of this Policy Controller
-	 */
-	public String getName();
-	
-	/**
-	 * Get the topic readers of interest for this controller
-	 */
-	public List<? extends TopicSource> getTopicSources();
-	
-	/**
-	 * Get the topic readers of interest for this controller
-	 */
-	public List<? extends TopicSink> getTopicSinks();
-	
-	/**
-	 * Get the Drools Controller
-	 */
-	public DroolsController getDrools();
-	
-	/**
-	 * update maven configuration
-	 * 
-	 * @param newDroolsConfiguration new drools configuration
-	 * @return true if the update was successful, false otherwise
-	 */	
-	public boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
-	
-	/**
-	 * Get the Properties
-	 */
-	public Properties getProperties();
-	
-	/**
-	 * Attempts delivering of an String over communication 
-	 * infrastructure "busType"
-	 * 
-	 * @param eventBus Communication infrastructure identifier
-	 * @param topic topic
-	 * @param event the event object to send
-	 * 
-	 * @return true if successful, false if a failure has occurred.
-	 * @throws IllegalArgumentException when invalid or insufficient 
-	 *         properties are provided
-	 * @throws IllegalStateException when the engine is in a state where
-	 *         this operation is not permitted (ie. locked or stopped).
-	 * @throws UnsupportedOperationException when the engine cannot deliver due
-	 *         to the functionality missing (ie. communication infrastructure
-	 *         not supported.
-	 */
-	public boolean deliver(CommInfrastructure busType, String topic, 
-			               Object event);
-	
-	/**
-	 * halts and permanently releases all resources
-	 * @throws IllegalStateException
-	 */
-	public void halt();
-	
+
+    /**
+     * Factory that tracks and manages Policy Controllers
+     */
+    public static PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
+
+    /**
+     * name of this Policy Controller
+     */
+    public String getName();
+
+    /**
+     * Get the topic readers of interest for this controller
+     */
+    public List<? extends TopicSource> getTopicSources();
+
+    /**
+     * Get the topic readers of interest for this controller
+     */
+    public List<? extends TopicSink> getTopicSinks();
+
+    /**
+     * Get the Drools Controller
+     */
+    public DroolsController getDrools();
+
+    /**
+     * update maven configuration
+     * 
+     * @param newDroolsConfiguration new drools configuration
+     * @return true if the update was successful, false otherwise
+     */
+    public boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
+
+    /**
+     * Get the Properties
+     */
+    public Properties getProperties();
+
+    /**
+     * Attempts delivering of an String over communication infrastructure "busType"
+     * 
+     * @param eventBus Communication infrastructure identifier
+     * @param topic topic
+     * @param event the event object to send
+     * 
+     * @return true if successful, false if a failure has occurred.
+     * @throws IllegalArgumentException when invalid or insufficient properties are provided
+     * @throws IllegalStateException when the engine is in a state where this operation is not
+     *         permitted (ie. locked or stopped).
+     * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
+     *         missing (ie. communication infrastructure not supported.
+     */
+    public boolean deliver(CommInfrastructure busType, String topic, Object event);
+
+    /**
+     * halts and permanently releases all resources
+     * 
+     * @throws IllegalStateException
+     */
+    public void halt();
+
 }

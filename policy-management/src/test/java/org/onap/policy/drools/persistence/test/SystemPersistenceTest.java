@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.policy.drools.persistence.FileSystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.properties.PolicyProperties;
+import org.onap.policy.drools.properties.DroolsProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +149,7 @@ public class SystemPersistenceTest {
     assertTrue(Files.notExists(controllerBakPath));
 
     Properties properties = new Properties();
-    properties.put(PolicyProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
+    properties.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
     SystemPersistence.manager.storeController(TEST_CONTROLLER_NAME, properties);
 
     assertTrue(Files.exists(controllerPath));

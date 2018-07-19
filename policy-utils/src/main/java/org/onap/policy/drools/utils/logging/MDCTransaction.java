@@ -24,7 +24,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
-import org.onap.policy.drools.utils.NetworkUtil;
+
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -32,51 +33,28 @@ import org.slf4j.MDC;
 /**
  * MDC Transaction Utility Class.
  *
- * There is an implicit 2-level tree of Transactions in ONAP: transactions
- * and subtransactions.
+ * There is an implicit 2-level tree of Transactions in ONAP: transactions and subtransactions.
  *
- * 1. The top level transaction relates to the overarching transaction
- *    id (ie. RequestId) and should be made available to subtransactions
- *    for reuse in the ThreadLocal MDC structure.
+ * 1. The top level transaction relates to the overarching transaction id (ie. RequestId) and should
+ * be made available to subtransactions for reuse in the ThreadLocal MDC structure.
  *
- *    This is the data to be inherited and common to all subtransactions
- *    (not a common case but could be modified by subtransactions):
+ * This is the data to be inherited and common to all subtransactions (not a common case but could
+ * be modified by subtransactions):
  *
- *    Request ID
- *    Virtual Server Name
- *    Partner Name
- *    Server
- *    Server IP Address
- *    Server FQDN
+ * Request ID Virtual Server Name Partner Name Server Server IP Address Server FQDN
  *
- * 2. The second level at the leaves is formed by subtransactions and the key
- *    identifier is the invocation id.
+ * 2. The second level at the leaves is formed by subtransactions and the key identifier is the
+ * invocation id.
  *
- *    Begin Timestamp
- *    End Timestamp
- *    Elapsed Time
- *    Service Instance ID
- *    Service Name
- *    Status Code
- *    Response Code
- *    Response Description
- *    Instance UUID
- *    Severity
- *    Target Entity
- *    Target Service Name
- *    Server
- *    Server IP Address
- *    Server FQDN
- *    Client IP Address
- *    Process Key
- *    Remote Host
- *    Alert Severity
- *    Target Virtual Entity
+ * Begin Timestamp End Timestamp Elapsed Time Service Instance ID Service Name Status Code Response
+ * Code Response Description Instance UUID Severity Target Entity Target Service Name Server Server
+ * IP Address Server FQDN Client IP Address Process Key Remote Host Alert Severity Target Virtual
+ * Entity
  *
  *
  * The naming convention for the fields must match the naming given at
  *
- *      https://wiki.onap.org/pages/viewpage.action?pageId=20087036
+ * https://wiki.onap.org/pages/viewpage.action?pageId=20087036
  */
 public interface MDCTransaction {
     /*
@@ -165,8 +143,8 @@ public interface MDCTransaction {
     String TARGET_SERVICE_NAME = "TargetServiceName";
 
     /**
-     * Server Subtransactions inherit this value.    if (this.getSources().size() == 1)
-      this.getSources().get(0).getTopic();
+     * Server Subtransactions inherit this value. if (this.getSources().size() == 1)
+     * this.getSources().get(0).getTopic();
      */
     String SERVER = "Server";
 
@@ -246,16 +224,14 @@ public interface MDCTransaction {
     MDCTransaction flush();
 
     /**
-     * convenience method to log a metric.  Alternatively caller
-     * could call flush() and the logging statement directly for
-     * further granularity.
+     * convenience method to log a metric. Alternatively caller could call flush() and the logging
+     * statement directly for further granularity.
      */
     MDCTransaction metric();
 
     /**
-     * convenience method to log a transaction record.  Alternatively caller
-     * could call flush() and the logging statement directly for
-     * further granularity.
+     * convenience method to log a transaction record. Alternatively caller could call flush() and
+     * the logging statement directly for further granularity.
      */
     MDCTransaction transaction();
 
@@ -348,6 +324,7 @@ public interface MDCTransaction {
      * set virtual server
      */
     MDCTransaction setVirtualServerName(String virtualServerName);
+
     /**
      * sets end time
      */
@@ -549,6 +526,7 @@ public interface MDCTransaction {
 
 }
 
+
 class MDCTransactionImpl implements MDCTransaction {
 
     private final static Logger logger = LoggerFactory.getLogger(MDCTransactionImpl.class.getName());
@@ -602,8 +580,8 @@ class MDCTransactionImpl implements MDCTransaction {
     /**
      * MDC Transaction
      *
-     * @param requestId  transaction id
-     * @param partner    transaction origin
+     * @param requestId transaction id
+     * @param partner transaction origin
      */
     public MDCTransactionImpl(String requestId, String partner) {
         MDC.clear();
@@ -680,24 +658,24 @@ class MDCTransactionImpl implements MDCTransaction {
      */
     @Override
     public MDCTransaction resetSubTransaction() {
-       MDC.remove(INVOCATION_ID);
-       MDC.remove(BEGIN_TIMESTAMP);
-       MDC.remove(END_TIMESTAMP);
-       MDC.remove(ELAPSED_TIME);
-       MDC.remove(SERVICE_INSTANCE_ID);
-       MDC.remove(STATUS_CODE);
-       MDC.remove(RESPONSE_CODE);
-       MDC.remove(RESPONSE_DESCRIPTION);
-       MDC.remove(INSTANCE_UUID);
-       MDC.remove(TARGET_ENTITY);
-       MDC.remove(TARGET_SERVICE_NAME);
-       MDC.remove(PROCESS_KEY);
-       MDC.remove(CLIENT_IP_ADDRESS);
-       MDC.remove(REMOTE_HOST);
-       MDC.remove(ALERT_SEVERITY);
-       MDC.remove(TARGET_VIRTUAL_ENTITY);
+        MDC.remove(INVOCATION_ID);
+        MDC.remove(BEGIN_TIMESTAMP);
+        MDC.remove(END_TIMESTAMP);
+        MDC.remove(ELAPSED_TIME);
+        MDC.remove(SERVICE_INSTANCE_ID);
+        MDC.remove(STATUS_CODE);
+        MDC.remove(RESPONSE_CODE);
+        MDC.remove(RESPONSE_DESCRIPTION);
+        MDC.remove(INSTANCE_UUID);
+        MDC.remove(TARGET_ENTITY);
+        MDC.remove(TARGET_SERVICE_NAME);
+        MDC.remove(PROCESS_KEY);
+        MDC.remove(CLIENT_IP_ADDRESS);
+        MDC.remove(REMOTE_HOST);
+        MDC.remove(ALERT_SEVERITY);
+        MDC.remove(TARGET_VIRTUAL_ENTITY);
 
-       return this;
+        return this;
     }
 
     @Override
@@ -711,32 +689,41 @@ class MDCTransactionImpl implements MDCTransaction {
      */
     @Override
     public MDCTransaction flush() {
-        if (this.requestId != null && !this.requestId.isEmpty())
+        if (this.requestId != null && !this.requestId.isEmpty()) {
             MDC.put(REQUEST_ID, this.requestId);
+        }
 
-        if (this.invocationId != null && !this.invocationId.isEmpty())
+        if (this.invocationId != null && !this.invocationId.isEmpty()) {
             MDC.put(INVOCATION_ID, this.invocationId);
+        }
 
-        if (this.partner != null)
+        if (this.partner != null) {
             MDC.put(PARTNER_NAME, this.partner);
+        }
 
-        if (this.virtualServerName != null)
+        if (this.virtualServerName != null) {
             MDC.put(VIRTUAL_SERVER_NAME, this.virtualServerName);
+        }
 
-        if (this.server != null)
+        if (this.server != null) {
             MDC.put(SERVER, this.server);
+        }
 
-        if (this.serverIpAddress != null)
+        if (this.serverIpAddress != null) {
             MDC.put(SERVER_IP_ADDRESS, this.serverIpAddress);
+        }
 
-        if (this.serverFqdn != null)
+        if (this.serverFqdn != null) {
             MDC.put(SERVER_FQDN, this.serverFqdn);
+        }
 
-        if (this.serviceName != null)
+        if (this.serviceName != null) {
             MDC.put(SERVICE_NAME, this.serviceName);
+        }
 
-        if (this.startTime != null)
+        if (this.startTime != null) {
             MDC.put(BEGIN_TIMESTAMP, timestamp(this.startTime));
+        }
 
         if (this.endTime != null) {
             MDC.put(END_TIMESTAMP, timestamp(this.endTime));
@@ -749,49 +736,62 @@ class MDCTransactionImpl implements MDCTransaction {
             MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
         } else {
             if (endTime != null && startTime != null) {
-                 this.elapsedTime = Duration.between(startTime, endTime).toMillis();
+                this.elapsedTime = Duration.between(startTime, endTime).toMillis();
                 MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
             }
         }
 
-        if (this.serviceInstanceId != null)
+        if (this.serviceInstanceId != null) {
             MDC.put(SERVICE_INSTANCE_ID, this.serviceInstanceId);
+        }
 
-        if (this.instanceUUID != null)
+        if (this.instanceUUID != null) {
             MDC.put(INSTANCE_UUID, this.instanceUUID);
+        }
 
-        if (this.processKey != null)
+        if (this.processKey != null) {
             MDC.put(PROCESS_KEY, this.processKey);
+        }
 
-        if (this.statusCode != null)
+        if (this.statusCode != null) {
             MDC.put(STATUS_CODE, this.statusCode);
+        }
 
-        if (this.responseCode != null)
+        if (this.responseCode != null) {
             MDC.put(RESPONSE_CODE, this.responseCode);
+        }
 
-        if (this.responseDescription != null)
+        if (this.responseDescription != null) {
             MDC.put(RESPONSE_DESCRIPTION, this.responseDescription);
+        }
 
-        if (this.severity != null)
+        if (this.severity != null) {
             MDC.put(SEVERITY, this.severity);
+        }
 
-        if (this.alertSeverity != null)
+        if (this.alertSeverity != null) {
             MDC.put(ALERT_SEVERITY, this.alertSeverity);
+        }
 
-        if (this.targetEntity != null)
+        if (this.targetEntity != null) {
             MDC.put(TARGET_ENTITY, this.targetEntity);
+        }
 
-        if (this.targetServiceName != null)
+        if (this.targetServiceName != null) {
             MDC.put(TARGET_SERVICE_NAME, this.targetServiceName);
+        }
 
-        if (this.targetVirtualEntity != null)
+        if (this.targetVirtualEntity != null) {
             MDC.put(TARGET_VIRTUAL_ENTITY, this.targetVirtualEntity);
+        }
 
-        if (this.clientIpAddress != null)
+        if (this.clientIpAddress != null) {
             MDC.put(CLIENT_IP_ADDRESS, this.clientIpAddress);
+        }
 
-        if (this.remoteHost != null)
+        if (this.remoteHost != null) {
             MDC.put(REMOTE_HOST, this.remoteHost);
+        }
 
         return this;
     }

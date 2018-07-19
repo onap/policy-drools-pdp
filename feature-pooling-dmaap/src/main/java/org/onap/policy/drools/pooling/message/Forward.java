@@ -20,7 +20,7 @@
 
 package org.onap.policy.drools.pooling.message;
 
-import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -33,7 +33,7 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.properties.PolicyProperties;
+import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -76,7 +76,7 @@ public class TestTransactionTest {
   @Test
   public void registerUnregisterTest() throws InterruptedException {
     final Properties controllerProperties = new Properties();
-    controllerProperties.put(PolicyProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
+    controllerProperties.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
     final PolicyController controller =
         PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
     assertNotNull(PolicyController.factory.get(TEST_CONTROLLER_NAME));

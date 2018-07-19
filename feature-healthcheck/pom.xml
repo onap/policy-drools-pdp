@@ -104,7 +104,7 @@
 	       <scope>provided</scope>
 	</dependency>
 	<dependency>
-		<groupId>org.onap.policy.drools-pdp</groupId>
+		<groupId>org.onap.policy.common</groupId>
 		<artifactId>policy-endpoints</artifactId>
 		<version>${project.version}</version>
 		<scope>provided</scope>

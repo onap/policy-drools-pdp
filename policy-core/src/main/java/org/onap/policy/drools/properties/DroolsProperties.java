@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-endpoints
+ * policy-core
  * ================================================================================
  * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -18,20 +18,25 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.event.comm;
+package org.onap.policy.drools.properties;
 
-/**
- * Marker for a Topic Entity, indicating that the entity is able to read
- * over a topic
- */
-public interface TopicSource extends Topic {
-	
-	/**
-	 * pushes an event into the source programatically
-	 * 
-	 * @param event the event in json format
-	 * @return true if it can be processed correctly, false otherwise
-	 */
-	public boolean offer(String event);
+public interface DroolsProperties {
+
+    /* Controller Properties */
+
+    public static final String PROPERTY_CONTROLLER_NAME = "controller.name";
+
+    /* Drools Properties */
+
+    public static final String RULES_GROUPID = "rules.groupId";
+    public static final String RULES_ARTIFACTID = "rules.artifactId";
+    public static final String RULES_VERSION = "rules.version";
+
+    /* Management Server Properties */
+
+    public static final String ENV_MANAGEMENT_SERVER_PORT = "ENGINE_MANAGEMENT_PORT";
+    public static final String ENV_MANAGEMENT_SERVER_HOST = "ENGINE_MANAGEMENT_HOST";
+    public static final String ENV_MANAGEMENT_AUTH_USER = "ENGINE_MANAGEMENT_USER";
+    public static final String ENV_MANAGEMENT_AUTH_PASSWD = "ENGINE_MANAGEMENT_PASSWORD";
 
 }
