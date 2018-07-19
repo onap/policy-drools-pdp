@@ -37,10 +37,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.event.comm.FilterableTopicSource;
-import org.onap.policy.drools.event.comm.TopicListener;
-import org.onap.policy.drools.event.comm.TopicSink;
-import org.onap.policy.drools.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
+import org.onap.policy.common.endpoints.event.comm.TopicListener;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.pooling.DmaapManager.Factory;
 
 public class DmaapManagerTest {

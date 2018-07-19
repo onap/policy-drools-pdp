@@ -27,6 +27,10 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Deque;
@@ -39,6 +43,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,36 +52,26 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.TopicListener;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
+import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.drools.event.comm.TopicEndpoint;
-import org.onap.policy.drools.event.comm.TopicListener;
-import org.onap.policy.drools.event.comm.TopicSink;
-import org.onap.policy.drools.event.comm.TopicSource;
-import org.onap.policy.drools.properties.PolicyProperties;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * End-to-end tests of the pooling feature. Launches one or more "hosts", each one having
- * its own feature object. Uses real feature objects, as well as real DMaaP sources and
- * sinks. However, the following are not:
- * <dl>
- * <dt>PolicyEngine, PolicyController, DroolsController</dt>
- * <dd>mocked</dd>
+ * End-to-end tests of the pooling feature. Launches one or more "hosts", each one having its own
+ * feature object. Uses real feature objects, as well as real DMaaP sources and sinks. However, the
+ * following are not: <dl> <dt>PolicyEngine, PolicyController, DroolsController</dt> <dd>mocked</dd>
  * </dl>
  * 
- * <p>
- * The following fields must be set before executing this:
- * <ul>
- * <li>UEB_SERVERS</li>
- * <li>INTERNAL_TOPIC</li>
- * <li>EXTERNAL_TOPIC</li>
- * </ul>
+ * <p> The following fields must be set before executing this: <ul> <li>UEB_SERVERS</li>
+ * <li>INTERNAL_TOPIC</li> <li>EXTERNAL_TOPIC</li> </ul>
  */
 public class FeatureTest2 {
 
@@ -147,10 +142,10 @@ public class FeatureTest2 {
         saveManagerFactory = PoolingManagerImpl.getFactory();
         saveDmaapFactory = DmaapManager.getFactory();
 
-        externalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
+        externalSink = ProxyTopicEndpointManager.getInstance().addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
         externalSink.start();
 
-        internalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(INTERNAL_TOPIC)).get(0);
+        internalSink = ProxyTopicEndpointManager.getInstance().addTopicSinks(makeSinkProperties(INTERNAL_TOPIC)).get(0);
         internalSink.start();
     }
 
@@ -222,14 +217,15 @@ public class FeatureTest2 {
     private static Properties makeSinkProperties(String topic) {
         Properties props = new Properties();
 
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS, topic);
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS, topic);
 
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
-                        + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
-                        + PolicyProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX, "0");
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
-                        + PolicyProperties.PROPERTY_MANAGED_SUFFIX, "false");
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
+                + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
+                + PolicyEndPointProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX, "0");
+        props.setProperty(
+                PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX,
+                "false");
 
         return props;
     }
@@ -237,21 +233,20 @@ public class FeatureTest2 {
     private static Properties makeSourceProperties(String topic) {
         Properties props = new Properties();
 
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS, topic);
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS, topic);
 
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
-                        + PolicyProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
-                        + PolicyProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX, FETCH_LIMIT);
-        props.setProperty(PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
-                        + PolicyProperties.PROPERTY_MANAGED_SUFFIX, "false");
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                + PolicyEndPointProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX, FETCH_LIMIT);
+        props.setProperty(
+                PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX,
+                "false");
 
         if (EXTERNAL_TOPIC.equals(topic)) {
             // consumer group is a constant
-            props.setProperty(
-                            PolicyProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
-                                            + PolicyProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX,
-                            EXTERNAL_GROUP);
+            props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                    + PolicyEndPointProperties.PROPERTY_TOPIC_SOURCE_CONSUMER_GROUP_SUFFIX, EXTERNAL_GROUP);
 
             // consumer instance is generated by the BusConsumer code
         }
@@ -378,8 +373,8 @@ public class FeatureTest2 {
 
         /**
          * @param droolsController
-         * @return the controller associated with a drools controller, or {@code null} if
-         *         it has no associated controller
+         * @return the controller associated with a drools controller, or {@code null} if it has no
+         *         associated controller
          */
         public PolicyController getController(DroolsController droolsController) {
             return drools2policy.get(droolsController);
@@ -472,8 +467,10 @@ public class FeatureTest2 {
             when(controller.getName()).thenReturn(CONTROLLER1);
             when(controller.getDrools()).thenReturn(drools);
 
-            externalSource = TopicEndpoint.manager.addTopicSources(makeSourceProperties(EXTERNAL_TOPIC)).get(0);
-            internalSource = TopicEndpoint.manager.addTopicSources(makeSourceProperties(INTERNAL_TOPIC)).get(0);
+            externalSource = ProxyTopicEndpointManager.getInstance()
+                    .addTopicSources(makeSourceProperties(EXTERNAL_TOPIC)).get(0);
+            internalSource = ProxyTopicEndpointManager.getInstance()
+                    .addTopicSources(makeSourceProperties(INTERNAL_TOPIC)).get(0);
 
             // stop consuming events if the controller stops
             when(controller.stop()).thenAnswer(args -> {
@@ -490,8 +487,8 @@ public class FeatureTest2 {
          * Waits, for a period of time, for the host to enter the Active state.
          * 
          * @param timeMs time to wait, in milliseconds
-         * @return {@code true} if the host entered the Active state within the given
-         *         amount of time, {@code false} otherwise
+         * @return {@code true} if the host entered the Active state within the given amount of
+         *         time, {@code false} otherwise
          * @throws InterruptedException
          */
         public boolean awaitActive(long timeMs) throws InterruptedException {
@@ -499,8 +496,8 @@ public class FeatureTest2 {
         }
 
         /**
-         * Starts threads for the host so that it begins consuming from both the external
-         * "DMaaP" topic and its own internal "DMaaP" topic.
+         * Starts threads for the host so that it begins consuming from both the external "DMaaP"
+         * topic and its own internal "DMaaP" topic.
          */
         public void start() {
             DmaapManager.setFactory(new DmaapManager.Factory() {
@@ -592,8 +589,7 @@ public class FeatureTest2 {
 
         /**
          * 
-         * @return {@code true} if a message was seen for this host, {@code false}
-         *         otherwise
+         * @return {@code true} if a message was seen for this host, {@code false} otherwise
          */
         public boolean messageSeen() {
             return sawMsg.get();
@@ -664,8 +660,8 @@ public class FeatureTest2 {
             this.context = context;
 
             /*
-             * Note: do NOT extract anything from "context" at this point, because it
-             * hasn't been fully initialized yet
+             * Note: do NOT extract anything from "context" at this point, because it hasn't been
+             * fully initialized yet
              */
         }
 
@@ -680,15 +676,15 @@ public class FeatureTest2 {
             props.setProperty(specialize(PoolingProperties.OFFLINE_LIMIT, CONTROLLER1), "10000");
             props.setProperty(specialize(PoolingProperties.OFFLINE_AGE_MS, CONTROLLER1), "1000000");
             props.setProperty(specialize(PoolingProperties.OFFLINE_PUB_WAIT_MS, CONTROLLER1),
-                            "" + STD_OFFLINE_PUB_WAIT_MS);
+                    "" + STD_OFFLINE_PUB_WAIT_MS);
             props.setProperty(specialize(PoolingProperties.START_HEARTBEAT_MS, CONTROLLER1),
-                            "" + STD_START_HEARTBEAT_MS);
+                    "" + STD_START_HEARTBEAT_MS);
             props.setProperty(specialize(PoolingProperties.REACTIVATE_MS, CONTROLLER1), "" + STD_REACTIVATE_WAIT_MS);
             props.setProperty(specialize(PoolingProperties.IDENTIFICATION_MS, CONTROLLER1), "" + STD_IDENTIFICATION_MS);
             props.setProperty(specialize(PoolingProperties.ACTIVE_HEARTBEAT_MS, CONTROLLER1),
-                            "" + STD_ACTIVE_HEARTBEAT_MS);
+                    "" + STD_ACTIVE_HEARTBEAT_MS);
             props.setProperty(specialize(PoolingProperties.INTER_HEARTBEAT_MS, CONTROLLER1),
-                            "" + STD_INTER_HEARTBEAT_MS);
+                    "" + STD_INTER_HEARTBEAT_MS);
 
             props.putAll(makeSinkProperties(INTERNAL_TOPIC));
             props.putAll(makeSourceProperties(INTERNAL_TOPIC));
@@ -741,8 +737,8 @@ public class FeatureTest2 {
         public ManagerFactory(Context context) {
 
             /*
-             * Note: do NOT extract anything from "context" at this point, because it
-             * hasn't been fully initialized yet
+             * Note: do NOT extract anything from "context" at this point, because it hasn't been
+             * fully initialized yet
              */
         }
 

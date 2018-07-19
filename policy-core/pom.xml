@@ -91,6 +91,11 @@
     </dependency>
     <dependency>
       <groupId>org.onap.policy.common</groupId>
+      <artifactId>capabilities</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.onap.policy.common</groupId>
       <artifactId>utils</artifactId>
       <version>${project.version}</version>
     </dependency>

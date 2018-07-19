@@ -79,7 +79,6 @@
 	<modules>
 		<module>policy-utils</module>
 		<module>policy-core</module>
-		<module>policy-endpoints</module>
 		<module>policy-management</module>
 		<module>feature-healthcheck</module>
 		<module>feature-eelf</module>

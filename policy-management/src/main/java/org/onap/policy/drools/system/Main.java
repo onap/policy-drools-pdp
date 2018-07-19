@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.properties.PolicyProperties;
+import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MDCTransaction;
 import org.slf4j.Logger;
@@ -134,7 +134,7 @@ public class Main {
     for (final Properties controllerProperties : SystemPersistence.manager
         .getControllerProperties()) {
       final String controllerName =
-          controllerProperties.getProperty(PolicyProperties.PROPERTY_CONTROLLER_NAME);
+          controllerProperties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME);
       try {
         trans =
             MDCTransaction.newTransaction(null, null).setServiceName(Main.class.getSimpleName()).

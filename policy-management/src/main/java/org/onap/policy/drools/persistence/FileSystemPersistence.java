@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.onap.policy.drools.properties.PolicyProperties;
+import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,9 +226,9 @@ public class FileSystemPersistence implements SystemPersistence {
         try {
           final Properties controllerProperties = this.getControllerProperties(name);
           final String controllerName =
-              controllerProperties.getProperty(PolicyProperties.PROPERTY_CONTROLLER_NAME);
+              controllerProperties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME);
           if (controllerName == null) {
-            controllerProperties.setProperty(PolicyProperties.PROPERTY_CONTROLLER_NAME, name);
+            controllerProperties.setProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME, name);
           } else if (!controllerName.equals(name)) {
             logger.error("{}: mismatch controller named {} with file name {}", this, controllerName,
                 controllerFile.getName());

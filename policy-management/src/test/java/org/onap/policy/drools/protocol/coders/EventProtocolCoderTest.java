@@ -25,10 +25,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
-
 import org.junit.Test;
-import org.onap.policy.drools.event.comm.TopicEndpoint;
-import org.onap.policy.drools.properties.PolicyProperties;
+import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
+import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 
 /**
@@ -81,16 +80,16 @@ public class EventProtocolCoderTest {
     public void test() {
 
         final Properties noopSinkProperties = new Properties();
-        noopSinkProperties.put(PolicyProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+        noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
-        TopicEndpoint.manager.addTopicSinks(noopSinkProperties);
+        ProxyTopicEndpointManager.getInstance().addTopicSinks(noopSinkProperties);
 
         EventProtocolCoder.manager.addEncoder(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC,
-            DroolsConfiguration.class.getCanonicalName(), new JsonProtocolFilter(), null, null,
-            DroolsConfiguration.class.getName().hashCode());
+                DroolsConfiguration.class.getCanonicalName(), new JsonProtocolFilter(), null, null,
+                DroolsConfiguration.class.getName().hashCode());
 
         final String json = EventProtocolCoder.manager.encode(NOOP_TOPIC,
-            new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION));
+                new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION));
 
         assertTrue(json.contains(ENCODER_GROUP));
         assertTrue(json.contains(ENCODER_ARTIFACT));

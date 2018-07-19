@@ -21,11 +21,13 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.List;
-import org.onap.policy.drools.event.comm.FilterableTopicSource;
-import org.onap.policy.drools.event.comm.TopicEndpoint;
-import org.onap.policy.drools.event.comm.TopicListener;
-import org.onap.policy.drools.event.comm.TopicSink;
-import org.onap.policy.drools.event.comm.TopicSource;
+
+import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicListener;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,8 +99,7 @@ public class DmaapManager {
     }
 
     /**
-     * Used by junit tests to set the factory used to create various objects used by this
-     * class.
+     * Used by junit tests to set the factory used to create various objects used by this class.
      * 
      * @param factory the new factory
      */
@@ -162,8 +163,8 @@ public class DmaapManager {
     /**
      * Stops the publisher.
      * 
-     * @param waitMs time, in milliseconds, to wait for the sink to transmit any queued
-     *        messages and close
+     * @param waitMs time, in milliseconds, to wait for the sink to transmit any queued messages and
+     *        close
      */
     public void stopPublisher(long waitMs) {
         if (!publishing) {
@@ -171,8 +172,8 @@ public class DmaapManager {
         }
 
         /*
-         * Give the sink a chance to transmit messages in the queue. It would be better if
-         * "waitMs" could be passed to sink.stop(), but that isn't an option at this time.
+         * Give the sink a chance to transmit messages in the queue. It would be better if "waitMs"
+         * could be passed to sink.stop(), but that isn't an option at this time.
          */
         try {
             Thread.sleep(waitMs);
@@ -262,14 +263,14 @@ public class DmaapManager {
          * @return the topic sources
          */
         public List<TopicSource> getTopicSources() {
-            return TopicEndpoint.manager.getTopicSources();
+            return ProxyTopicEndpointManager.getInstance().getTopicSources();
         }
 
         /**
          * @return the topic sinks
          */
         public List<TopicSink> getTopicSinks() {
-            return TopicEndpoint.manager.getTopicSinks();
+            return ProxyTopicEndpointManager.getInstance().getTopicSinks();
         }
 
     }

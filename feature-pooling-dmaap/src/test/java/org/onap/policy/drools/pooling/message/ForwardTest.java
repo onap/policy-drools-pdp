@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import org.onap.policy.drools.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 
 public class ForwardTest extends BasicMessageTester<Forward> {
     // values set by makeValidMessage()

@@ -39,7 +39,7 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.jmx.PdpJmx;
-import org.onap.policy.drools.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;

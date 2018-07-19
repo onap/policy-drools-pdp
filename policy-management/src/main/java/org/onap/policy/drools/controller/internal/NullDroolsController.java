@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
-import org.onap.policy.drools.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
 /**
