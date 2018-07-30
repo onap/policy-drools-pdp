@@ -27,9 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.onap.policy.common.utils.properties.SpecProperties;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 import org.onap.policy.drools.controller.DroolsController;
@@ -432,7 +432,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
          * @return the topic sources
          */
         public List<TopicSource> initTopicSources(Properties props) {
-            return ProxyTopicEndpointManager.getInstance().addTopicSources(props);
+            return TopicEndpoint.manager.addTopicSources(props);
         }
 
         /**
@@ -442,7 +442,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
          * @return the topic sinks
          */
         public List<TopicSink> initTopicSinks(Properties props) {
-            return ProxyTopicEndpointManager.getInstance().addTopicSinks(props);
+            return TopicEndpoint.manager.addTopicSinks(props);
         }
     }
 }

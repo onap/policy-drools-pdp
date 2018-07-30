@@ -53,7 +53,6 @@ import org.onap.policy.common.endpoints.event.comm.bus.DmaapTopicSource;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicSink;
 import org.onap.policy.common.endpoints.event.comm.bus.UebTopicSink;
 import org.onap.policy.common.endpoints.event.comm.bus.UebTopicSource;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
@@ -1451,7 +1450,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the managed topics", notes = "Network Topics Aggregation",
             response = TopicEndpoint.class)
     public Response topics() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance()).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager).build();
     }
 
     @GET
@@ -1469,9 +1468,9 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response topicsLock() {
-        final boolean success = ProxyTopicEndpointManager.getInstance().lock();
+        final boolean success = TopicEndpoint.manager.lock();
         if (success) {
-            return Response.status(Status.OK).entity(ProxyTopicEndpointManager.getInstance()).build();
+            return Response.status(Status.OK).entity(TopicEndpoint.manager).build();
         } else {
             return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("cannot perform operation")).build();
         }
@@ -1484,9 +1483,9 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response topicsUnlock() {
-        final boolean success = ProxyTopicEndpointManager.getInstance().unlock();
+        final boolean success = TopicEndpoint.manager.unlock();
         if (success) {
-            return Response.status(Status.OK).entity(ProxyTopicEndpointManager.getInstance()).build();
+            return Response.status(Status.OK).entity(TopicEndpoint.manager).build();
         } else {
             return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("cannot perform operation")).build();
         }
@@ -1497,8 +1496,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the managed topic sources", notes = "Network Topic Sources Agregation",
             responseContainer = "List", response = TopicSource.class)
     public Response sources() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance().getTopicSources())
-                .build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getTopicSources()).build();
     }
 
     @GET
@@ -1506,8 +1504,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the managed topic sinks", notes = "Network Topic Sinks Agregation",
             responseContainer = "List", response = TopicSink.class)
     public Response sinks() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance().getTopicSinks())
-                .build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getTopicSinks()).build();
     }
 
     @GET
@@ -1515,8 +1512,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the UEB managed topic sources", notes = "UEB Topic Sources Agregation",
             responseContainer = "List", response = UebTopicSource.class)
     public Response uebSources() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance().getUebTopicSources())
-                .build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSources()).build();
     }
 
     @GET
@@ -1524,8 +1520,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the UEB managed topic sinks", notes = "UEB Topic Sinks Agregation",
             responseContainer = "List", response = UebTopicSink.class)
     public Response uebSinks() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance().getUebTopicSinks())
-                .build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSinks()).build();
     }
 
     @GET
@@ -1533,8 +1528,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the DMaaP managed topic sources", notes = "DMaaP Topic Sources Agregation",
             responseContainer = "List", response = DmaapTopicSource.class)
     public Response dmaapSources() {
-        return Response.status(Response.Status.OK)
-                .entity(ProxyTopicEndpointManager.getInstance().getDmaapTopicSources()).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSources()).build();
     }
 
     @GET
@@ -1542,8 +1536,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the DMaaP managed topic sinks", notes = "DMaaP Topic Sinks Agregation",
             responseContainer = "List", response = DmaapTopicSink.class)
     public Response dmaapSinks() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance().getDmaapTopicSinks())
-                .build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSinks()).build();
     }
 
     @GET
@@ -1552,8 +1545,7 @@ public class RestManager {
             notes = "This is an UEB Network Communicaton Endpoint source of messages for the Engine",
             response = UebTopicSource.class)
     public Response uebSourceTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK)
-                .entity(ProxyTopicEndpointManager.getInstance().getUebTopicSource(topic)).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSource(topic)).build();
     }
 
     @GET
@@ -1562,8 +1554,7 @@ public class RestManager {
             notes = "This is an UEB Network Communicaton Endpoint destination of messages from the Engine",
             response = UebTopicSink.class)
     public Response uebSinkTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK)
-                .entity(ProxyTopicEndpointManager.getInstance().getUebTopicSink(topic)).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSink(topic)).build();
     }
 
     @GET
@@ -1573,8 +1564,7 @@ public class RestManager {
             response = DmaapTopicSource.class)
     public Response dmaapSourceTopic(
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK)
-                .entity(ProxyTopicEndpointManager.getInstance().getDmaapTopicSource(topic)).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSource(topic)).build();
     }
 
     @GET
@@ -1583,8 +1573,7 @@ public class RestManager {
             notes = "This is a DMaaP Network Communicaton Endpoint destination of messages from the Engine",
             response = DmaapTopicSink.class)
     public Response dmaapSinkTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK)
-                .entity(ProxyTopicEndpointManager.getInstance().getDmaapTopicSink(topic)).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSink(topic)).build();
     }
 
     @GET
@@ -1594,9 +1583,7 @@ public class RestManager {
             responseContainer = "List")
     public Response uebSourceEvents(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays
-                        .asList(ProxyTopicEndpointManager.getInstance().getUebTopicSource(topic).getRecentEvents()))
-                .build();
+                .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents())).build();
     }
 
     @GET
@@ -1606,8 +1593,7 @@ public class RestManager {
             responseContainer = "List")
     public Response uebSinkEvents(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays.asList(ProxyTopicEndpointManager.getInstance().getUebTopicSink(topic).getRecentEvents()))
-                .build();
+                .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSink(topic).getRecentEvents())).build();
     }
 
     @GET
@@ -1618,9 +1604,7 @@ public class RestManager {
     public Response dmaapSourceEvents(
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays
-                        .asList(ProxyTopicEndpointManager.getInstance().getDmaapTopicSource(topic).getRecentEvents()))
-                .build();
+                .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents())).build();
     }
 
     @GET
@@ -1630,9 +1614,7 @@ public class RestManager {
             responseContainer = "List")
     public Response dmaapSinkEvents(@PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays
-                        .asList(ProxyTopicEndpointManager.getInstance().getDmaapTopicSink(topic).getRecentEvents()))
-                .build();
+                .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSink(topic).getRecentEvents())).build();
     }
 
     @GET
@@ -1640,8 +1622,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the NOOP managed topic sinks", notes = "NOOP Topic Sinks Agregation",
             responseContainer = "List", response = NoopTopicSink.class)
     public Response noopSinks() {
-        return Response.status(Response.Status.OK).entity(ProxyTopicEndpointManager.getInstance().getNoopTopicSinks())
-                .build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSinks()).build();
     }
 
     @GET
@@ -1649,8 +1630,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves a NOOP managed topic sink",
             notes = "NOOP is an dev/null Network Communicaton Sink", response = NoopTopicSink.class)
     public Response noopSinkTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK)
-                .entity(ProxyTopicEndpointManager.getInstance().getNoopTopicSink(topic)).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSink(topic)).build();
     }
 
     @GET
@@ -1659,9 +1639,7 @@ public class RestManager {
             notes = "NOOP is an dev/null Network Communicaton Sink", responseContainer = "List")
     public Response noopSinkEvents(@PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays
-                        .asList(ProxyTopicEndpointManager.getInstance().getNoopTopicSink(topic).getRecentEvents()))
-                .build();
+                .entity(Arrays.asList(TopicEndpoint.manager.getNoopTopicSink(topic).getRecentEvents())).build();
     }
 
     @GET
@@ -1678,7 +1656,7 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response uebTopicLock(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final UebTopicSource source = ProxyTopicEndpointManager.getInstance().getUebTopicSource(topic);
+        final UebTopicSource source = TopicEndpoint.manager.getUebTopicSource(topic);
         final boolean success = source.lock();
         if (success) {
             return Response.status(Status.OK).entity(source).build();
@@ -1693,7 +1671,7 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response uebTopicUnlock(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final UebTopicSource source = ProxyTopicEndpointManager.getInstance().getUebTopicSource(topic);
+        final UebTopicSource source = TopicEndpoint.manager.getUebTopicSource(topic);
         final boolean success = source.unlock();
         if (success) {
             return Response.status(Status.OK).entity(source).build();
@@ -1720,7 +1698,7 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response dmmapTopicLock(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final DmaapTopicSource source = ProxyTopicEndpointManager.getInstance().getDmaapTopicSource(topic);
+        final DmaapTopicSource source = TopicEndpoint.manager.getDmaapTopicSource(topic);
         final boolean success = source.lock();
         if (success) {
             return Response.status(Status.OK).entity(source).build();
@@ -1736,7 +1714,7 @@ public class RestManager {
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response dmaapTopicUnlock(
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final DmaapTopicSource source = ProxyTopicEndpointManager.getInstance().getDmaapTopicSource(topic);
+        final DmaapTopicSource source = TopicEndpoint.manager.getDmaapTopicSource(topic);
         final boolean success = source.unlock();
         if (success) {
             return Response.status(Status.OK).entity(source).build();
@@ -1757,12 +1735,11 @@ public class RestManager {
     public Response uebOffer(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Network Message", required = true) String json) {
         try {
-            final UebTopicSource uebReader = ProxyTopicEndpointManager.getInstance().getUebTopicSource(topic);
+            final UebTopicSource uebReader = TopicEndpoint.manager.getUebTopicSource(topic);
             final boolean success = uebReader.offer(json);
             if (success) {
                 return Response.status(Status.OK)
-                        .entity(Arrays.asList(
-                                ProxyTopicEndpointManager.getInstance().getUebTopicSource(topic).getRecentEvents()))
+                        .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents()))
                         .build();
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("Failure to inject event over " + topic))
@@ -1797,12 +1774,11 @@ public class RestManager {
     public Response dmaapOffer(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Network Message", required = true) String json) {
         try {
-            final DmaapTopicSource dmaapReader = ProxyTopicEndpointManager.getInstance().getDmaapTopicSource(topic);
+            final DmaapTopicSource dmaapReader = TopicEndpoint.manager.getDmaapTopicSource(topic);
             final boolean success = dmaapReader.offer(json);
             if (success) {
                 return Response.status(Status.OK)
-                        .entity(Arrays.asList(
-                                ProxyTopicEndpointManager.getInstance().getDmaapTopicSource(topic).getRecentEvents()))
+                        .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents()))
                         .build();
             } else {
                 return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("Failure to inject event over " + topic))

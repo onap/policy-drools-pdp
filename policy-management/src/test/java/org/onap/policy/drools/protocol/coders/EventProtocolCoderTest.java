@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Properties;
 
 import org.junit.Test;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 
@@ -82,7 +82,7 @@ public class EventProtocolCoderTest {
         final Properties noopSinkProperties = new Properties();
         noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
-        ProxyTopicEndpointManager.getInstance().addTopicSinks(noopSinkProperties);
+        TopicEndpoint.manager.addTopicSinks(noopSinkProperties);
 
         EventProtocolCoder.manager.addEncoder(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC,
                 DroolsConfiguration.class.getCanonicalName(), new JsonProtocolFilter(), null, null,

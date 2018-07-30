@@ -28,9 +28,7 @@ import javax.ws.rs.core.Response;
 
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
-import org.onap.policy.common.endpoints.http.client.impl.IndexedHttpClientFactory;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
-import org.onap.policy.common.endpoints.http.server.impl.IndexedHttpServletServerFactory;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -252,8 +250,8 @@ class HealthCheckMonitor implements HealthCheck {
         try {
             this.healthCheckProperties =
                     SystemPersistence.manager.getProperties(HealthCheckFeature.CONFIGURATION_PROPERTIES_NAME);
-            this.servers = IndexedHttpServletServerFactory.getInstance().build(healthCheckProperties);
-            this.clients = IndexedHttpClientFactory.getInstance().build(healthCheckProperties);
+            this.servers = HttpServletServer.factory.build(healthCheckProperties);
+            this.clients = HttpClient.factory.build(healthCheckProperties);
 
             for (HttpServletServer server : servers) {
                 startServer(server);

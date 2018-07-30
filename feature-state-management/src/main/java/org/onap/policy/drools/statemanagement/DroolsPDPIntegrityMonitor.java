@@ -26,7 +26,6 @@ import java.util.Properties;
 
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
-import org.onap.policy.common.endpoints.http.server.impl.IndexedHttpServletServerFactory;
 import org.onap.policy.common.im.IntegrityMonitor;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -372,8 +371,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         @Override
         public boolean start() {
             try {
-                List<HttpServletServer> servers =
-                        IndexedHttpServletServerFactory.getInstance().build(integrityMonitorRestServerProperties);
+                List<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
 
                 if (!servers.isEmpty()) {
                     server = servers.get(0);

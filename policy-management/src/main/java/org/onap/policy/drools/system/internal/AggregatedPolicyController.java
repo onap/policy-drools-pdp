@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Properties;
 
 import org.onap.policy.common.endpoints.event.comm.Topic;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -115,8 +115,8 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         // Create/Reuse Readers/Writers for all event sources endpoints
 
-        this.sources = ProxyTopicEndpointManager.getInstance().addTopicSources(properties);
-        this.sinks = ProxyTopicEndpointManager.getInstance().addTopicSinks(properties);
+        this.sources = TopicEndpoint.manager.addTopicSources(properties);
+        this.sinks = TopicEndpoint.manager.addTopicSinks(properties);
 
         initDrools(properties);
         initSinks();

@@ -33,12 +33,11 @@ import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
-import org.onap.policy.common.endpoints.http.server.impl.IndexedHttpServletServerFactory;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -499,7 +498,7 @@ class PolicyEngineManager implements PolicyEngine {
         this.properties = properties;
 
         try {
-            this.sources = ProxyTopicEndpointManager.getInstance().addTopicSources(properties);
+            this.sources = TopicEndpoint.manager.addTopicSources(properties);
             for (final TopicSource source : this.sources) {
                 source.register(this);
             }
@@ -508,13 +507,13 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            this.sinks = ProxyTopicEndpointManager.getInstance().addTopicSinks(properties);
+            this.sinks = TopicEndpoint.manager.addTopicSinks(properties);
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-sinks failed", this, e);
         }
 
         try {
-            this.httpServers = IndexedHttpServletServerFactory.getInstance().build(properties);
+            this.httpServers = HttpServletServer.factory.build(properties);
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-http-servers failed", this, e);
         }
@@ -817,7 +816,7 @@ class PolicyEngineManager implements PolicyEngine {
         /* Start managed Topic Endpoints */
 
         try {
-            if (!ProxyTopicEndpointManager.getInstance().start()) {
+            if (!TopicEndpoint.manager.start()) {
                 success = false;
             }
         } catch (final IllegalStateException e) {
@@ -903,7 +902,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* stop all managed topics sources and sinks */
-        if (!ProxyTopicEndpointManager.getInstance().stop()) {
+        if (!TopicEndpoint.manager.stop()) {
             success = false;
         }
 
@@ -1009,8 +1008,8 @@ class PolicyEngineManager implements PolicyEngine {
 
         /* Shutdown managed resources */
         PolicyController.factory.shutdown();
-        ProxyTopicEndpointManager.getInstance().shutdown();
-        IndexedHttpServletServerFactory.getInstance().destroy();
+        TopicEndpoint.manager.shutdown();
+        HttpServletServer.factory.destroy();
 
         // Stop the JMX listener
 
@@ -1069,7 +1068,7 @@ class PolicyEngineManager implements PolicyEngine {
             }
         }
 
-        success = ProxyTopicEndpointManager.getInstance().lock() && success;
+        success = TopicEndpoint.manager.lock() && success;
 
         /* policy-engine dispatch post lock hook */
         for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
@@ -1119,7 +1118,7 @@ class PolicyEngineManager implements PolicyEngine {
             }
         }
 
-        success = ProxyTopicEndpointManager.getInstance().unlock() && success;
+        success = TopicEndpoint.manager.unlock() && success;
 
         /* policy-engine dispatch after unlock hook */
         for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
@@ -1255,7 +1254,7 @@ class PolicyEngineManager implements PolicyEngine {
             throw new IllegalStateException(ENGINE_LOCKED_MSG);
         }
 
-        final List<? extends TopicSink> topicSinks = ProxyTopicEndpointManager.getInstance().getTopicSinks(topic);
+        final List<? extends TopicSink> topicSinks = TopicEndpoint.manager.getTopicSinks(topic);
         if (topicSinks == null || topicSinks.isEmpty() || topicSinks.size() > 1) {
             throw new IllegalStateException("Cannot ensure correct delivery on topic " + topic + ": " + topicSinks);
         }
@@ -1376,7 +1375,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            final TopicSink sink = ProxyTopicEndpointManager.getInstance().getTopicSink(busType, topic);
+            final TopicSink sink = TopicEndpoint.manager.getTopicSink(busType, topic);
 
             if (sink == null) {
                 throw new IllegalStateException("Inconsistent State: " + this);
