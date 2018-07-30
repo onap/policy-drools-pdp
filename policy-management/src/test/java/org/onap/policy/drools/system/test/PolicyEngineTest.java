@@ -34,9 +34,9 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.event.comm.bus.impl.IndexedNoopTopicSinkFactory;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
+import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicSink;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
@@ -198,7 +198,7 @@ public class PolicyEngineTest {
         final Properties noopSinkProperties = new Properties();
         noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
-        ProxyTopicEndpointManager.getInstance().addTopicSinks(noopSinkProperties).get(0).start();
+        TopicEndpoint.manager.addTopicSinks(noopSinkProperties).get(0).start();
 
         EventProtocolCoder.manager.addEncoder(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC,
                 DroolsConfiguration.class.getCanonicalName(), new JsonProtocolFilter(), null, null,
@@ -207,7 +207,7 @@ public class PolicyEngineTest {
         assertTrue(PolicyEngine.manager.deliver(NOOP_TOPIC,
                 new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION)));
 
-        final TopicSink sink = IndexedNoopTopicSinkFactory.getInstance().get(NOOP_TOPIC);
+        final TopicSink sink = NoopTopicSink.factory.get(NOOP_TOPIC);
         assertTrue(sink.getRecentEvents()[0].contains(ENCODER_GROUP));
         assertTrue(sink.getRecentEvents()[0].contains(ENCODER_ARTIFACT));
 
@@ -280,7 +280,7 @@ public class PolicyEngineTest {
 
         /* Shutdown managed resources */
         PolicyController.factory.shutdown();
-        ProxyTopicEndpointManager.getInstance().shutdown();
+        TopicEndpoint.manager.shutdown();
         PolicyEngine.manager.stop();
 
         Thread.sleep(10000L);

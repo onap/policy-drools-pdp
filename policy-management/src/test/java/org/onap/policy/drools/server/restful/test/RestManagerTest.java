@@ -43,7 +43,7 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyController;
@@ -65,10 +65,10 @@ public class RestManagerTest {
 
     private static final String UEB_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "."
             + UEB_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
-    private static final String UEB_SINK_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + UEB_TOPIC
-            + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
-    private static final String DMAAP_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
-            + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String UEB_SINK_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "."
+            + UEB_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+    private static final String DMAAP_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS
+            + "." + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
     private static final String DMAAP_SINK_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
             + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
     private static final String UEB_SERVER = "localhost";
@@ -81,10 +81,10 @@ public class RestManagerTest {
     private static final String DMAAP_SOURCE_PASSWD_KEY = PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + "."
             + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX;
 
-    private static final String DMAAP_SINK_MECHID_KEY = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + DMAAP_TOPIC
-            + PolicyEndPointProperties.PROPERTY_TOPIC_AAF_MECHID_SUFFIX;
-    private static final String DMAAP_SINK_PASSWD_KEY = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + "." + DMAAP_TOPIC
-            + PolicyEndPointProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX;
+    private static final String DMAAP_SINK_MECHID_KEY = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+            + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_AAF_MECHID_SUFFIX;
+    private static final String DMAAP_SINK_PASSWD_KEY = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
+            + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX;
 
 
     private static final String FOO_CONTROLLER_FILE = FOO_CONTROLLER + "-controller.properties";
@@ -137,7 +137,7 @@ public class RestManagerTest {
     public static void tearDown() throws IOException, InterruptedException {
         /* Shutdown managed resources */
         PolicyController.factory.shutdown();
-        ProxyTopicEndpointManager.getInstance().shutdown();
+        TopicEndpoint.manager.shutdown();
         PolicyEngine.manager.stop();
         Thread.sleep(10000L);
         client.close();

@@ -53,10 +53,10 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.system.PolicyController;
@@ -142,10 +142,10 @@ public class FeatureTest2 {
         saveManagerFactory = PoolingManagerImpl.getFactory();
         saveDmaapFactory = DmaapManager.getFactory();
 
-        externalSink = ProxyTopicEndpointManager.getInstance().addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
+        externalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
         externalSink.start();
 
-        internalSink = ProxyTopicEndpointManager.getInstance().addTopicSinks(makeSinkProperties(INTERNAL_TOPIC)).get(0);
+        internalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(INTERNAL_TOPIC)).get(0);
         internalSink.start();
     }
 
@@ -223,9 +223,8 @@ public class FeatureTest2 {
                 + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
         props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
                 + PolicyEndPointProperties.PROPERTY_TOPIC_SINK_PARTITION_KEY_SUFFIX, "0");
-        props.setProperty(
-                PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX,
-                "false");
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "." + topic
+                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "false");
 
         return props;
     }
@@ -239,9 +238,8 @@ public class FeatureTest2 {
                 + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX, UEB_SERVERS);
         props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
                 + PolicyEndPointProperties.PROPERTY_TOPIC_SOURCE_FETCH_LIMIT_SUFFIX, FETCH_LIMIT);
-        props.setProperty(
-                PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX,
-                "false");
+        props.setProperty(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "." + topic
+                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "false");
 
         if (EXTERNAL_TOPIC.equals(topic)) {
             // consumer group is a constant
@@ -467,10 +465,8 @@ public class FeatureTest2 {
             when(controller.getName()).thenReturn(CONTROLLER1);
             when(controller.getDrools()).thenReturn(drools);
 
-            externalSource = ProxyTopicEndpointManager.getInstance()
-                    .addTopicSources(makeSourceProperties(EXTERNAL_TOPIC)).get(0);
-            internalSource = ProxyTopicEndpointManager.getInstance()
-                    .addTopicSources(makeSourceProperties(INTERNAL_TOPIC)).get(0);
+            externalSource = TopicEndpoint.manager.addTopicSources(makeSourceProperties(EXTERNAL_TOPIC)).get(0);
+            internalSource = TopicEndpoint.manager.addTopicSources(makeSourceProperties(INTERNAL_TOPIC)).get(0);
 
             // stop consuming events if the controller stops
             when(controller.stop()).thenAnswer(args -> {

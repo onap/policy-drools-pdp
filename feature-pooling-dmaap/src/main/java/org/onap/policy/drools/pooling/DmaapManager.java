@@ -27,7 +27,6 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.event.comm.impl.ProxyTopicEndpointManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -263,14 +262,14 @@ public class DmaapManager {
          * @return the topic sources
          */
         public List<TopicSource> getTopicSources() {
-            return ProxyTopicEndpointManager.getInstance().getTopicSources();
+            return TopicEndpoint.manager.getTopicSources();
         }
 
         /**
          * @return the topic sinks
          */
         public List<TopicSink> getTopicSinks() {
-            return ProxyTopicEndpointManager.getInstance().getTopicSinks();
+            return TopicEndpoint.manager.getTopicSinks();
         }
 
     }
