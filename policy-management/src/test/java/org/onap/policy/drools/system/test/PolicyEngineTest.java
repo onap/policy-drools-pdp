@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.junit.runners.MethodSorters;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicSink;
+import org.onap.policy.common.endpoints.properties.HttpServerPropertiesHelper;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
@@ -146,9 +147,8 @@ public class PolicyEngineTest {
         final Properties engineProps = PolicyEngine.manager.defaultTelemetryConfig();
 
         /* override default port */
-        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
-                "" + DEFAULT_TELEMETRY_PORT);
+        new HttpServerPropertiesHelper(engineProps).
+                setPort(PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME, DEFAULT_TELEMETRY_PORT);
 
         assertFalse(PolicyEngine.manager.isAlive());
         PolicyEngine.manager.configure(engineProps);

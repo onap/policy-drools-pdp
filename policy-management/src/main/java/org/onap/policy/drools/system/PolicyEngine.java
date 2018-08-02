@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -38,7 +38,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.endpoints.properties.HttpServerPropertiesHelper;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.jmx.PdpJmxListener;
@@ -456,21 +456,13 @@ class PolicyEngineManager implements PolicyEngine {
     public final Properties defaultTelemetryConfig() {
         final Properties defaultConfig = new Properties();
 
-        defaultConfig.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES, "TELEMETRY");
-        defaultConfig.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
-                + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, TELEMETRY_SERVER_DEFAULT_HOST);
-        defaultConfig.put(
-                PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
-                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
-                "" + Integer.toString(TELEMETRY_SERVER_DEFAULT_PORT));
-        defaultConfig.put(
-                PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
-                        + PolicyEndPointProperties.PROPERTY_HTTP_REST_PACKAGES_SUFFIX,
-                RestManager.class.getPackage().getName());
-        defaultConfig.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
-                + PolicyEndPointProperties.PROPERTY_HTTP_SWAGGER_SUFFIX, "" + Boolean.TRUE);
-        defaultConfig.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "" + Boolean.FALSE);
+        HttpServerPropertiesHelper defaultConfigHelper = new HttpServerPropertiesHelper(defaultConfig);
+        defaultConfigHelper.setEndpointNames("TELEMETRY");
+        defaultConfigHelper.setHost("TELEMETRY", TELEMETRY_SERVER_DEFAULT_HOST);
+        defaultConfigHelper.setPort("TELEMETRY",  TELEMETRY_SERVER_DEFAULT_PORT);
+        defaultConfigHelper.setRestPackages("TELEMETRY",  RestManager.class.getPackage().getName());
+        defaultConfigHelper.setSwagger("TELEMETRY",  true);
+        defaultConfigHelper.setManaged("TELEMETRY",  false);
 
         return defaultConfig;
     }

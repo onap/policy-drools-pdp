@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * feature-healthcheck
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ import java.util.Properties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.endpoints.properties.HttpClientPropertiesHelper;
+import org.onap.policy.common.endpoints.properties.HttpServerPropertiesHelper;
 import org.onap.policy.drools.healthcheck.HealthCheck.Report;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -63,43 +64,29 @@ public class HealthCheckFeatureTest {
 
     private static Properties httpProperties = new Properties();
 
-
     @BeforeClass
     public static void setup() {
-
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES, "HEALTHCHECK");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
-        httpProperties.setProperty(
-                PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX,
-                org.onap.policy.drools.healthcheck.RestMockHealthCheck.class.getName());
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
+        HttpServerPropertiesHelper propsServerHelper = new HttpServerPropertiesHelper(httpProperties);
+        propsServerHelper.setEndpointNames("HEALTHCHECK");
+        propsServerHelper.setHost("HEALTHCHECK", "localhost");
+        propsServerHelper.setPort("HEALTHCHECK", 7777);
+        propsServerHelper.setUserName("HEALTHCHECK",  "username");
+        propsServerHelper.setPassword("HEALTHCHECK",  "password");
+        propsServerHelper.setRestClasses("HEALTHCHECK",
+            org.onap.policy.drools.healthcheck.RestMockHealthCheck.class.getName());
+        propsServerHelper.setSwagger("HEALTHCHECK",  false);
+        propsServerHelper.setManaged("HEALTHCHECK", true);
 
 
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES, "HEALTHCHECK");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_URL_SUFFIX, "healthcheck/test");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_HTTPS_SUFFIX, "false");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
-
+        HttpClientPropertiesHelper propsClientHelper = new HttpClientPropertiesHelper(httpProperties);
+        propsClientHelper.setEndpointNames("HEALTHCHECK");
+        propsClientHelper.setHost("HEALTHCHECK", "localhost");
+        propsClientHelper.setPort("HEALTHCHECK", 7777);
+        propsClientHelper.setUserName("HEALTHCHECK",  "username");
+        propsClientHelper.setPassword("HEALTHCHECK",  "password");
+        propsClientHelper.setContextUriPath("HEALTHCHECK", "healthcheck/test");
+        propsClientHelper.setHttps("HEALTHCHECK", false);
+        propsClientHelper.setManaged("HEALTHCHECK", true);
 
         configDirSetup();
 

@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * feature-state-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ package org.onap.policy.drools.statemanagement;
 
 import java.util.Properties;
 
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.endpoints.properties.HttpServerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,20 +39,20 @@ public class StateManagementProperties {
     public static final String DB_USER = "javax.persistence.jdbc.user";
     public static final String DB_PWD = "javax.persistence.jdbc.password";
 
-    public static final String TEST_SERVICES = PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES;
+    public static final String TEST_SERVICES = HttpServerProperties.PROPERTY_HTTP_SERVER_SERVICES;
     public static final String TEST_SERVICES_DEFAULT = "TEST";
     public static final String TEST_HOST =
-            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX;
+            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + HttpServerProperties.PROPERTY_HTTP_HOST_SUFFIX;
     public static final String TEST_PORT =
-            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX;
+            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + HttpServerProperties.PROPERTY_HTTP_PORT_SUFFIX;
     public static final String TEST_REST_CLASSES =
-            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX;
+            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + HttpServerProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX;
     public static final String TEST_REST_CLASSES_DEFAULT = IntegrityMonitorRestManager.class.getName();
     public static final String TEST_MANAGED =
-            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX;
+            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + HttpServerProperties.PROPERTY_MANAGED_SUFFIX;
     public static final String TEST_MANAGED_DEFAULT = "false";
     public static final String TEST_SWAGGER =
-            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + PolicyEndPointProperties.PROPERTY_HTTP_SWAGGER_SUFFIX;
+            TEST_SERVICES + "." + TEST_SERVICES_DEFAULT + HttpServerProperties.PROPERTY_HTTP_SWAGGER_SUFFIX;
     public static final String TEST_SWAGGER_DEFAULT = "true";
     public static final String RESOURCE_NAME = "resource.name";
     public static final String FP_MONITOR_INTERVAL = "fp_monitor_interval";
