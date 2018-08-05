@@ -43,27 +43,27 @@ public interface PolicyController extends Startable, Lockable {
     /**
      * Factory that tracks and manages Policy Controllers
      */
-    public static PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
+    static PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
 
     /**
      * name of this Policy Controller
      */
-    public String getName();
+    String getName();
 
     /**
      * Get the topic readers of interest for this controller
      */
-    public List<? extends TopicSource> getTopicSources();
+    List<? extends TopicSource> getTopicSources();
 
     /**
      * Get the topic readers of interest for this controller
      */
-    public List<? extends TopicSink> getTopicSinks();
+    List<? extends TopicSink> getTopicSinks();
 
     /**
      * Get the Drools Controller
      */
-    public DroolsController getDrools();
+    DroolsController getDrools();
 
     /**
      * update maven configuration
@@ -71,17 +71,18 @@ public interface PolicyController extends Startable, Lockable {
      * @param newDroolsConfiguration new drools configuration
      * @return true if the update was successful, false otherwise
      */
-    public boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
+    boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
 
     /**
      * Get the Properties
      */
-    public Properties getProperties();
+    Properties getProperties();
 
     /**
      * Attempts delivering of an String over communication infrastructure "busType"
      * 
-     * @param eventBus Communication infrastructure identifier
+     * @param event Communication infrastructure identifier
+     * @param busType
      * @param topic topic
      * @param event the event object to send
      * 
@@ -92,13 +93,13 @@ public interface PolicyController extends Startable, Lockable {
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
      *         missing (ie. communication infrastructure not supported.
      */
-    public boolean deliver(CommInfrastructure busType, String topic, Object event);
+    boolean deliver(CommInfrastructure busType, String topic, Object event);
 
     /**
      * halts and permanently releases all resources
      * 
      * @throws IllegalStateException
      */
-    public void halt();
+    void halt();
 
 }
