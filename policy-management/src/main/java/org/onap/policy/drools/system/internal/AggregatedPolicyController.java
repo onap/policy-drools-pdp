@@ -49,50 +49,50 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Logger
      */
-    private static Logger logger = LoggerFactory.getLogger(AggregatedPolicyController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AggregatedPolicyController.class);
 
     /**
      * identifier for this policy controller
      */
-    protected final String name;
+    private final String name;
 
     /**
      * Abstracted Event Sources List regardless communication technology
      */
-    protected final List<? extends TopicSource> sources;
+    private final List<? extends TopicSource> sources;
 
     /**
      * Abstracted Event Sinks List regardless communication technology
      */
-    protected final List<? extends TopicSink> sinks;
+    private final List<? extends TopicSink> sinks;
 
     /**
      * Mapping topics to sinks
      */
     @JsonIgnore
-    protected final HashMap<String, TopicSink> topic2Sinks = new HashMap<>();
+    private final HashMap<String, TopicSink> topic2Sinks = new HashMap<>();
 
     /**
      * Is this Policy Controller running (alive) ? reflects invocation of start()/stop() only
      */
-    protected volatile boolean alive;
+    private volatile boolean alive;
 
     /**
      * Is this Policy Controller locked ? reflects if i/o controller related operations and start
      * are permitted, more specifically: start(), deliver() and onTopicEvent(). It does not affect
      * the ability to stop the underlying drools infrastructure
      */
-    protected volatile boolean locked;
+    private volatile boolean locked;
 
     /**
      * Policy Drools Controller
      */
-    protected volatile DroolsController droolsController;
+    private volatile DroolsController droolsController;
 
     /**
      * Properties used to initialize controller
      */
-    protected final Properties properties;
+    private final Properties properties;
 
     /**
      * Constructor version mainly used for bootstrapping at initialization time a policy engine
@@ -131,7 +131,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * 
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
-    protected void initDrools(Properties properties) {
+    private void initDrools(Properties properties) {
         try {
             // Register with drools infrastructure
             this.droolsController = DroolsController.factory.build(properties, sources, sinks);
@@ -146,7 +146,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * 
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
-    protected void initSinks() {
+    private void initSinks() {
         this.topic2Sinks.clear();
         for (TopicSink sink : sinks) {
             this.topic2Sinks.put(sink.getTopic(), sink);
@@ -474,7 +474,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         if (!this.topic2Sinks.containsKey(topic)) {
             logger.warn("{}: cannot deliver event because the sink {}:{} is not registered: {}", this, commType, topic,
                     event);
-            throw new IllegalArgumentException("Unsuported topic " + topic + " for delivery");
+            throw new IllegalArgumentException("Unsupported topic " + topic + " for delivery");
         }
 
         boolean success = this.droolsController.deliver(this.topic2Sinks.get(topic), event);
@@ -633,10 +633,9 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("AggregatedPolicyController [name=").append(name).append(", alive=").append(alive)
-                .append(", locked=").append(locked).append(", droolsController=").append(droolsController).append("]");
-        return builder.toString();
+        String builder = "AggregatedPolicyController [name=" + name + ", alive=" + alive +
+                ", locked=" + locked + ", droolsController=" + droolsController + "]";
+        return builder;
     }
 
 }
