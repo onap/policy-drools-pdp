@@ -39,477 +39,475 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * and retrieval for management interfaces
  */
 public interface PolicyControllerFactory {
-	/**
-	 * Build a controller from a properties file
-	 * 
-	 * @param name the global name of this controller
-	 * @param properties input parameters in form of properties for controller
-	 * initialization.
-	 * 
-	 * @return a Policy Controller
-	 * 
-	 * @throws IllegalArgumentException invalid values provided in properties
-	 */
-	public PolicyController build(String name, Properties properties);
-	
-	/**
-	 * patches (updates) a controller from a critical configuration update.
-	 * 
-	 * @param name
-	 * @param configController
-	 * 
-	 * @return a Policy Controller
-	 */
-	public PolicyController patch(String name, DroolsConfiguration configController);
-	
-	/**
-	 * rebuilds (updates) a controller from a configuration update.
-	 * 
-	 * @param controller
-	 * @param configController
-	 * 
-	 * @return a Policy Controller
-	 */
-	public PolicyController patch(PolicyController controller, 
-			                      DroolsConfiguration configController);
-	
-	/**
-	 * get PolicyController from DroolsController
-	 * 
-	 * @param droolsController
-	 * @return
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
-	 */
-	public PolicyController get(DroolsController droolsController);
-	
-	/**
-	 * Makes the Policy Controller identified by controllerName not operational, but
-	 * does not delete its associated data
-	 * 
-	 * @param controllerName  name of the policy controller
-	 * @throws IllegalArgumentException invalid arguments
-	 */
-	public void shutdown(String controllerName);
-	
-	/**
-	 * Makes the Policy Controller identified by controller not operational, but
-	 * does not delete its associated data
-	 * 
-	 * @param controller a Policy Controller
-	 * @throws IllegalArgumentException invalid arguments
-	 */
-	public void shutdown(PolicyController controller);
-	
-	/**
-	 * Releases all Policy Controllers from operation
-	 */
-	public void shutdown();
+    /**
+     * Build a controller from a properties file
+     *
+     * @param name the global name of this controller
+     * @param properties input parameters in form of properties for controller
+     * initialization.
+     *
+     * @return a Policy Controller
+     *
+     * @throws IllegalArgumentException invalid values provided in properties
+     */
+    PolicyController build(String name, Properties properties);
 
-	/**
-	 * Destroys this Policy Controller
-	 * 
-	 * @param controllerName  name of the policy controller
-	 * @throws IllegalArgumentException invalid arguments
-	 */
-	public void destroy(String controllerName);
-	
-	/**
-	 * Destroys this Policy Controller
-	 * 
-	 * @param controller a Policy Controller
-	 * @throws IllegalArgumentException invalid arguments
-	 */
-	public void destroy(PolicyController controller);
-	
-	/**
-	 * Releases all Policy Controller resources
-	 */
-	public void destroy();
-	
-	/**
-	 * gets the Policy Controller identified by its name
-	 * 
-	 * @param policyControllerName
-	 * @return
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
-	 */
-	public PolicyController get(String policyControllerName);
-	
-	/**
-	 * gets the Policy Controller identified by group and artifact ids
-	 * 
-	 * @param groupId group id
-	 * @param artifactId artifact id
-	 * @return
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
-	 */
-	public PolicyController get(String groupId, String artifactId);
-	
-	/**
-	 * get features attached to the Policy Controllers
-	 * @return list of features
-	 */
-	public List<PolicyControllerFeatureAPI> getFeatureProviders();
-	
-	/**
-	 * get named feature attached to the Policy Controllers
-	 * @return the feature
-	 */
-	public PolicyControllerFeatureAPI getFeatureProvider(String featureName);
-	
-	/**
-	 * get features attached to the Policy Controllers
-	 * @return list of features
-	 */
-	public List<String> getFeatures();
-	
-	/**
-	 * returns the current inventory of Policy Controllers
-	 * 
-	 * @return a list of Policy Controllers
-	 */
-	public List<PolicyController> inventory();
+    /**
+     * patches (updates) a controller from a critical configuration update.
+     *
+     * @param name
+     * @param configController
+     *
+     * @return a Policy Controller
+     */
+    PolicyController patch(String name, DroolsConfiguration configController);
+
+    /**
+     * rebuilds (updates) a controller from a configuration update.
+     *
+     * @param controller
+     * @param configController
+     *
+     * @return a Policy Controller
+     */
+    void patch(PolicyController controller,
+               DroolsConfiguration configController);
+
+    /**
+     * get PolicyController from DroolsController
+     *
+     * @param droolsController
+     * @return
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
+    PolicyController get(DroolsController droolsController);
+
+    /**
+     * Makes the Policy Controller identified by controllerName not operational, but
+     * does not delete its associated data
+     *
+     * @param controllerName  name of the policy controller
+     * @throws IllegalArgumentException invalid arguments
+     */
+    void shutdown(String controllerName);
+
+    /**
+     * Makes the Policy Controller identified by controller not operational, but
+     * does not delete its associated data
+     *
+     * @param controller a Policy Controller
+     * @throws IllegalArgumentException invalid arguments
+     */
+    void shutdown(PolicyController controller);
+
+    /**
+     * Releases all Policy Controllers from operation
+     */
+    void shutdown();
+
+    /**
+     * Destroys this Policy Controller
+     *
+     * @param controllerName  name of the policy controller
+     * @throws IllegalArgumentException invalid arguments
+     */
+    void destroy(String controllerName);
+
+    /**
+     * Destroys this Policy Controller
+     *
+     * @param controller a Policy Controller
+     * @throws IllegalArgumentException invalid arguments
+     */
+    void destroy(PolicyController controller);
+
+    /**
+     * Releases all Policy Controller resources
+     */
+    void destroy();
+
+    /**
+     * gets the Policy Controller identified by its name
+     *
+     * @param policyControllerName
+     * @return
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
+    PolicyController get(String policyControllerName);
+
+    /**
+     * gets the Policy Controller identified by group and artifact ids
+     *
+     * @param groupId group id
+     * @param artifactId artifact id
+     * @return
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
+    PolicyController get(String groupId, String artifactId);
+
+    /**
+     * get features attached to the Policy Controllers
+     * @return list of features
+     */
+    List<PolicyControllerFeatureAPI> getFeatureProviders();
+
+    /**
+     * get named feature attached to the Policy Controllers
+     * @return the feature
+     */
+    PolicyControllerFeatureAPI getFeatureProvider(String featureName);
+
+    /**
+     * get features attached to the Policy Controllers
+     * @return list of features
+     */
+    List<String> getFeatures();
+
+    /**
+     * returns the current inventory of Policy Controllers
+     *
+     * @return a list of Policy Controllers
+     */
+    List<PolicyController> inventory();
 }
 
 /**
  * Factory of Policy Controllers indexed by the name of the Policy Controller
  */
 class IndexedPolicyControllerFactory implements PolicyControllerFactory {
-	// get an instance of logger 
-	private static Logger  logger = LoggerFactory.getLogger(PolicyControllerFactory.class);		
-	
-	/**
-	 * Policy Controller Name Index
-	 */
-	protected HashMap<String,PolicyController> policyControllers =
-			new HashMap<>();
-	
-	/**
-	 * Group/Artifact Ids Index
-	 */
-	protected HashMap<String,PolicyController> coordinates2Controller = 
-			new HashMap<>();
-	
-	/**
-	 * produces key for indexing controller names
-	 * 
-	 * @param group group id
-	 * @param artifactId artifact id
-	 * @return index key
-	 */
-	protected String toKey(String groupId, String artifactId) {
-		return groupId + ":" + artifactId;
-	}
-		
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public synchronized PolicyController build(String name, Properties properties) {
-		
-		if (this.policyControllers.containsKey(name)) {
-			return this.policyControllers.get(name);
-		}
-		
-		/* A PolicyController does not exist */
-		
-		PolicyController controller =
-				new AggregatedPolicyController(name, properties);
-		
-		String coordinates = toKey(controller.getDrools().getGroupId(),
-				                   controller.getDrools().getArtifactId());
-		
-		this.policyControllers.put(name, controller);	
-		
+    // get an instance of logger
+    private static final Logger  logger = LoggerFactory.getLogger(PolicyControllerFactory.class);
 
-		if (controller.getDrools().isBrained())
-			this.coordinates2Controller.put(coordinates, controller);
-		
-		return controller;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public synchronized PolicyController patch(String name, DroolsConfiguration droolsConfig) {
-		
-		if (name == null || name.isEmpty() || !this.policyControllers.containsKey(name)) {
-			throw makeArgEx(name);
-		}
-		
-		if (droolsConfig == null)
-			throw new IllegalArgumentException("Invalid Drools Configuration");
-		
-		PolicyController controller = this.get(name);
-		
-		if (controller == null) {
-			logger.warn("A POLICY CONTROLLER of name " + name + 
-					    "does not exist for patch operation: " + droolsConfig);
-			
-			throw new IllegalArgumentException("Not a valid controller of name " + name);
-		}
-		
-		this.patch(controller, droolsConfig);
-		
-		if (logger.isInfoEnabled())
-			logger.info("UPDATED drools configuration: " + droolsConfig + " on " + this);
-		
-		return controller;
-	}
-	
+    /**
+     * Policy Controller Name Index
+     */
+    private final HashMap<String,PolicyController> policyControllers =
+            new HashMap<>();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PolicyController patch(PolicyController controller, DroolsConfiguration droolsConfig) {
+    /**
+     * Group/Artifact Ids Index
+     */
+    private final HashMap<String,PolicyController> coordinates2Controller =
+            new HashMap<>();
 
-		if (controller == null)
-			throw new IllegalArgumentException("Not a valid controller:  null");
-		
-		if (!controller.updateDrools(droolsConfig)) {
-			logger.warn("Cannot update drools configuration: " + droolsConfig + " on " + this);
-			throw new IllegalArgumentException("Cannot update drools configuration Drools Configuration");
-		}
-		
-		if (logger.isInfoEnabled())
-			logger.info("UPDATED drools configuration: " + droolsConfig + " on " + this);
-		
-		String coordinates = toKey(controller.getDrools().getGroupId(),
-				                   controller.getDrools().getArtifactId());
-		
-		if (controller.getDrools().isBrained())
-			this.coordinates2Controller.put(coordinates, controller);
-		
-		return controller;
-	}
+    /**
+     * produces key for indexing controller names
+     *
+     * @param groupId group id
+     * @param artifactId artifact id
+     * @return index key
+     */
+    private String toKey(String groupId, String artifactId) {
+        return groupId + ":" + artifactId;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void shutdown(String controllerName) {
-		
-		if (controllerName == null || controllerName.isEmpty()) {
-			throw makeArgEx(controllerName);
-		}
-		
-		synchronized(this) {
-			if (!this.policyControllers.containsKey(controllerName)) {
-				return;
-			}
-					
-			PolicyController controller = this.policyControllers.get(controllerName);
-			this.shutdown(controller);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void shutdown(PolicyController controller) {		
-		this.unmanage(controller);
-		controller.shutdown();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized PolicyController build(String name, Properties properties) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void shutdown() {
-		List<PolicyController> controllers = this.inventory();
-		for (PolicyController controller: controllers) {
-			controller.shutdown();
-		}
-		
-		synchronized(this) {
-			this.policyControllers.clear();
-			this.coordinates2Controller.clear();
-		}
-	}
-	
-	/**
-	 * unmanage the controller
-	 * 
-	 * @param controller
-	 * @return
-	 * @throws IllegalArgumentException
-	 */
-	protected void unmanage(PolicyController controller) {
-	    PolicyController tempController = controller;
-		if (tempController == null) {
-			throw new IllegalArgumentException("Invalid Controller");
-		}
-		
-		synchronized(this) {
-			if (!this.policyControllers.containsKey(tempController.getName())) {
-				return;
-			}
-			tempController = this.policyControllers.remove(tempController.getName());
-			
-			String coordinates = toKey(tempController.getDrools().getGroupId(),
-			        tempController.getDrools().getArtifactId());
-			this.coordinates2Controller.remove(coordinates);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void destroy(String controllerName) {
-		
-		if (controllerName == null || controllerName.isEmpty()) {
-			throw makeArgEx(controllerName);
-		}
-		
-		synchronized(this) {
-			if (!this.policyControllers.containsKey(controllerName)) {
-				return;
-			}
-					
-			PolicyController controller = this.policyControllers.get(controllerName);
-			this.destroy(controller);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void destroy(PolicyController controller) {
-		this.unmanage(controller);
-		controller.halt();
-	}
+        if (this.policyControllers.containsKey(name)) {
+            return this.policyControllers.get(name);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void destroy() {
-		List<PolicyController> controllers = this.inventory();
-		for (PolicyController controller: controllers) {
-			controller.halt();
-		}
-		
-		synchronized(this) {
-			this.policyControllers.clear();
-			this.coordinates2Controller.clear();
-		}
-	}
+        /* A PolicyController does not exist */
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PolicyController get(String name) {
+        PolicyController controller =
+                new AggregatedPolicyController(name, properties);
 
-		if (name == null || name.isEmpty()) {
-			throw makeArgEx(name);
-		}
-		
-		synchronized(this) {
-			if (this.policyControllers.containsKey(name)) {
-				return this.policyControllers.get(name);
-			} else {
-				throw makeArgEx(name);
-			}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PolicyController get(String groupId, String artifactId) {
+        String coordinates = toKey(controller.getDrools().getGroupId(),
+                                   controller.getDrools().getArtifactId());
 
-		if (groupId == null || groupId.isEmpty() || 
-			artifactId == null || artifactId.isEmpty()) {
-			throw new IllegalArgumentException("Invalid group/artifact ids");
-		}
-		
-		synchronized(this) {
-			String key = toKey(groupId,artifactId);
-			if (this.coordinates2Controller.containsKey(key)) {
-				return this.coordinates2Controller.get(key);
-			} else {
-				throw makeArgEx(key);
-			}
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PolicyController get(DroolsController droolsController) {
+        this.policyControllers.put(name, controller);
 
-		if (droolsController == null) {
-			throw new IllegalArgumentException("No Drools Controller provided");
-		}
-		
-		synchronized(this) {
-			String key = toKey(droolsController.getGroupId(), droolsController.getArtifactId());
-			if (this.coordinates2Controller.containsKey(key)) {
-				return this.coordinates2Controller.get(key);
-			} else {
-				logger.error("Drools Controller not associated with Policy Controller " + droolsController + ":" + this);
-				throw new IllegalStateException("Drools Controller not associated with Policy Controller " + droolsController + ":" + this);
-			}
-		}
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<PolicyController> inventory() {
-		 return new ArrayList<>(this.policyControllers.values());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override 
-	public List<String> getFeatures() {
-		List<String> features = new ArrayList<>();
-		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
-			features.add(feature.getName());
-		}
-		return features;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@JsonIgnore
-	@Override
-	public List<PolicyControllerFeatureAPI> getFeatureProviders() {
-		return PolicyControllerFeatureAPI.providers.getList();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PolicyControllerFeatureAPI getFeatureProvider(String featureName) {
-		if (featureName == null || featureName.isEmpty())
-			throw new IllegalArgumentException("A feature name must be provided");
-		
-		for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
-			if (feature.getName().equals(featureName))
-				return feature;
-		}
-		
-		throw new IllegalArgumentException("Invalid Feature Name: " + featureName);
-	}
+        if (controller.getDrools().isBrained())
+            this.coordinates2Controller.put(coordinates, controller);
 
-	private IllegalArgumentException makeArgEx(String argName) {
-		return new IllegalArgumentException("Invalid " + argName);
-	}
+        return controller;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized PolicyController patch(String name, DroolsConfiguration droolsConfig) {
+
+        if (name == null || name.isEmpty() || !this.policyControllers.containsKey(name)) {
+            throw makeArgEx(name);
+        }
+
+        if (droolsConfig == null)
+            throw new IllegalArgumentException("Invalid Drools Configuration");
+
+        PolicyController controller = this.get(name);
+
+        if (controller == null) {
+            logger.warn("A POLICY CONTROLLER of name " + name +
+                        "does not exist for patch operation: " + droolsConfig);
+
+            throw new IllegalArgumentException("Not a valid controller of name " + name);
+        }
+
+        this.patch(controller, droolsConfig);
+
+        if (logger.isInfoEnabled())
+            logger.info("UPDATED drools configuration: " + droolsConfig + " on " + this);
+
+        return controller;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void patch(PolicyController controller, DroolsConfiguration droolsConfig) {
+
+        if (controller == null)
+            throw new IllegalArgumentException("Not a valid controller:  null");
+
+        if (!controller.updateDrools(droolsConfig)) {
+            logger.warn("Cannot update drools configuration: " + droolsConfig + " on " + this);
+            throw new IllegalArgumentException("Cannot update drools configuration Drools Configuration");
+        }
+
+        if (logger.isInfoEnabled())
+            logger.info("UPDATED drools configuration: " + droolsConfig + " on " + this);
+
+        String coordinates = toKey(controller.getDrools().getGroupId(),
+                                   controller.getDrools().getArtifactId());
+
+        if (controller.getDrools().isBrained())
+            this.coordinates2Controller.put(coordinates, controller);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shutdown(String controllerName) {
+
+        if (controllerName == null || controllerName.isEmpty()) {
+            throw makeArgEx(controllerName);
+        }
+
+        synchronized(this) {
+            if (!this.policyControllers.containsKey(controllerName)) {
+                return;
+            }
+
+            PolicyController controller = this.policyControllers.get(controllerName);
+            this.shutdown(controller);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shutdown(PolicyController controller) {
+        this.unmanage(controller);
+        controller.shutdown();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shutdown() {
+        List<PolicyController> controllers = this.inventory();
+        for (PolicyController controller: controllers) {
+            controller.shutdown();
+        }
+
+        synchronized(this) {
+            this.policyControllers.clear();
+            this.coordinates2Controller.clear();
+        }
+    }
+
+    /**
+     * unmanage the controller
+     *
+     * @param controller
+     * @throws IllegalArgumentException
+     */
+    private void unmanage(PolicyController controller) {
+        PolicyController tempController = controller;
+        if (tempController == null) {
+            throw new IllegalArgumentException("Invalid Controller");
+        }
+
+        synchronized(this) {
+            if (!this.policyControllers.containsKey(tempController.getName())) {
+                return;
+            }
+            tempController = this.policyControllers.remove(tempController.getName());
+
+            String coordinates = toKey(tempController.getDrools().getGroupId(),
+                    tempController.getDrools().getArtifactId());
+            this.coordinates2Controller.remove(coordinates);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy(String controllerName) {
+
+        if (controllerName == null || controllerName.isEmpty()) {
+            throw makeArgEx(controllerName);
+        }
+
+        synchronized(this) {
+            if (!this.policyControllers.containsKey(controllerName)) {
+                return;
+            }
+
+            PolicyController controller = this.policyControllers.get(controllerName);
+            this.destroy(controller);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy(PolicyController controller) {
+        this.unmanage(controller);
+        controller.halt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void destroy() {
+        List<PolicyController> controllers = this.inventory();
+        for (PolicyController controller: controllers) {
+            controller.halt();
+        }
+
+        synchronized(this) {
+            this.policyControllers.clear();
+            this.coordinates2Controller.clear();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PolicyController get(String name) {
+
+        if (name == null || name.isEmpty()) {
+            throw makeArgEx(name);
+        }
+
+        synchronized(this) {
+            if (this.policyControllers.containsKey(name)) {
+                return this.policyControllers.get(name);
+            } else {
+                throw makeArgEx(name);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PolicyController get(String groupId, String artifactId) {
+
+        if (groupId == null || groupId.isEmpty() ||
+            artifactId == null || artifactId.isEmpty()) {
+            throw new IllegalArgumentException("Invalid group/artifact ids");
+        }
+
+        synchronized(this) {
+            String key = toKey(groupId,artifactId);
+            if (this.coordinates2Controller.containsKey(key)) {
+                return this.coordinates2Controller.get(key);
+            } else {
+                throw makeArgEx(key);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PolicyController get(DroolsController droolsController) {
+
+        if (droolsController == null) {
+            throw new IllegalArgumentException("No Drools Controller provided");
+        }
+
+        synchronized(this) {
+            String key = toKey(droolsController.getGroupId(), droolsController.getArtifactId());
+            if (this.coordinates2Controller.containsKey(key)) {
+                return this.coordinates2Controller.get(key);
+            } else {
+                logger.error("Drools Controller not associated with Policy Controller " + droolsController + ":" + this);
+                throw new IllegalStateException("Drools Controller not associated with Policy Controller " + droolsController + ":" + this);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<PolicyController> inventory() {
+         return new ArrayList<>(this.policyControllers.values());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getFeatures() {
+        List<String> features = new ArrayList<>();
+        for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
+            features.add(feature.getName());
+        }
+        return features;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @JsonIgnore
+    @Override
+    public List<PolicyControllerFeatureAPI> getFeatureProviders() {
+        return PolicyControllerFeatureAPI.providers.getList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PolicyControllerFeatureAPI getFeatureProvider(String featureName) {
+        if (featureName == null || featureName.isEmpty())
+            throw new IllegalArgumentException("A feature name must be provided");
+
+        for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
+            if (feature.getName().equals(featureName))
+                return feature;
+        }
+
+        throw new IllegalArgumentException("Invalid Feature Name: " + featureName);
+    }
+
+    private IllegalArgumentException makeArgEx(String argName) {
+        return new IllegalArgumentException("Invalid " + argName);
+    }
 }

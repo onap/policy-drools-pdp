@@ -71,29 +71,29 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     /**
      * Policy Engine Manager
      */
-    public static final PolicyEngine manager = new PolicyEngineManager();
+    PolicyEngine manager = new PolicyEngineManager();
 
     /**
      * Default Telemetry Server Port
      */
-    public static final int TELEMETRY_SERVER_DEFAULT_PORT = 9696;
+    int TELEMETRY_SERVER_DEFAULT_PORT = 9696;
 
     /**
      * Default Telemetry Server Hostname
      */
-    public static final String TELEMETRY_SERVER_DEFAULT_HOST = "localhost";
+    String TELEMETRY_SERVER_DEFAULT_HOST = "localhost";
 
     /**
      * Default Telemetry Server Name
      */
-    public static final String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
+    String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
 
     /**
      * Boot the engine
      *
      * @param cliArgs command line arguments
      */
-    public void boot(String[] cliArgs);
+    void boot(String[] cliArgs);
 
     /**
      * configure the policy engine according to the given properties
@@ -101,7 +101,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @param properties Policy Engine properties
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
      */
-    public void configure(Properties properties);
+    void configure(Properties properties);
 
     /**
      * configure the engine's environment. General lab installation configuration is made available
@@ -111,14 +111,14 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      *
      * @param properties an environment properties
      */
-    public void setEnvironment(Properties properties);
+    void setEnvironment(Properties properties);
 
     /**
      * gets the engine's environment
      *
      * @return
      */
-    public Properties getEnvironment();
+    Properties getEnvironment();
 
     /**
      * gets an environment's value, by 1) first from the engine's environment, and 2) from the OS
@@ -127,7 +127,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @param key environment key
      * @return environment value or null if absent
      */
-    public String getEnvironmentProperty(String key);
+    String getEnvironmentProperty(String key);
 
     /**
      * sets an engine's environment property
@@ -136,18 +136,18 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @param value
      * @return
      */
-    public String setEnvironmentProperty(String key, String value);
+    String setEnvironmentProperty(String key, String value);
 
     /**
      * registers a new Policy Controller with the Policy Engine initialized per properties.
      *
      * @param properties properties to initialize the Policy Controller
-     * @throws IllegalArgumentException when invalid or insufficient properties are provided
-     * @throws IllegalStateException when the engine is in a state where this operation is not
-     *         permitted.
      * @return the newly instantiated Policy Controller
+     * @throws IllegalArgumentException when invalid or insufficient properties are provided
+     * @throws IllegalStateException    when the engine is in a state where this operation is not
+     *                                  permitted.
      */
-    public PolicyController createPolicyController(String name, Properties properties);
+    PolicyController createPolicyController(String name, Properties properties);
 
     /**
      * updates the Policy Engine with the given configuration
@@ -155,9 +155,9 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @param configuration the configuration
      * @return success or failure
      * @throws IllegalArgumentException if invalid argument provided
-     * @throws IllegalStateException if the system is in an invalid state
+     * @throws IllegalStateException    if the system is in an invalid state
      */
-    public boolean configure(PdpdConfiguration configuration);
+    boolean configure(PdpdConfiguration configuration);
 
     /**
      * updates a set of Policy Controllers with configuration information
@@ -167,19 +167,18 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @throws IllegalArgumentException
      * @throws IllegalStateException
      */
-    public List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configuration);
+    List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configuration);
 
     /**
      * updates an already existing Policy Controller with configuration information
      *
      * @param configuration configuration
-     *
      * @return the updated Policy Controller
      * @throws IllegalArgumentException in the configuration is invalid
-     * @throws IllegalStateException if the controller is in a bad state
-     * @throws Exception any other reason
+     * @throws IllegalStateException    if the controller is in a bad state
+     * @throws Exception                any other reason
      */
-    public PolicyController updatePolicyController(ControllerConfiguration configuration);
+    PolicyController updatePolicyController(ControllerConfiguration configuration);
 
     /**
      * removes the Policy Controller identified by its name from the Policy Engine
@@ -187,21 +186,21 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @param name name of the Policy Controller
      * @return the removed Policy Controller
      */
-    public void removePolicyController(String name);
+    void removePolicyController(String name);
 
     /**
      * removes a Policy Controller from the Policy Engine
      *
      * @param controller the Policy Controller to remove from the Policy Engine
      */
-    public void removePolicyController(PolicyController controller);
+    void removePolicyController(PolicyController controller);
 
     /**
      * returns a list of the available Policy Controllers
      *
      * @return list of Policy Controllers
      */
-    public List<PolicyController> getPolicyControllers();
+    List<PolicyController> getPolicyControllers();
 
 
     /**
@@ -209,131 +208,127 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      *
      * @return list of controller names
      */
-    public List<String> getPolicyControllerIds();
+    List<String> getPolicyControllerIds();
 
     /**
      * get unmanaged sources
      *
      * @return unmanaged sources
      */
-    public List<TopicSource> getSources();
+    List<TopicSource> getSources();
 
     /**
      * get unmanaged sinks
      *
      * @return unmanaged sinks
      */
-    public List<TopicSink> getSinks();
+    List<TopicSink> getSinks();
 
     /**
      * get unmmanaged http servers list
      *
      * @return http servers
      */
-    public List<HttpServletServer> getHttpServers();
+    List<HttpServletServer> getHttpServers();
 
     /**
      * get properties configuration
      *
      * @return properties objects
      */
-    public Properties getProperties();
+    Properties getProperties();
 
     /**
      * get features attached to the Policy Engine
      *
      * @return list of features
      */
-    public List<PolicyEngineFeatureAPI> getFeatureProviders();
+    List<PolicyEngineFeatureAPI> getFeatureProviders();
 
     /**
      * get named feature attached to the Policy Engine
      *
      * @return the feature
      */
-    public PolicyEngineFeatureAPI getFeatureProvider(String featureName);
+    PolicyEngineFeatureAPI getFeatureProvider(String featureName);
 
     /**
      * get features attached to the Policy Engine
      *
      * @return list of features
      */
-    public List<String> getFeatures();
+    List<String> getFeatures();
 
     /**
      * Attempts the dispatching of an "event" object
      *
      * @param topic topic
      * @param event the event object to send
-     *
      * @return true if successful, false if a failure has occurred.
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
-     * @throws IllegalStateException when the engine is in a state where this operation is not
-     *         permitted (ie. locked or stopped).
+     * @throws IllegalStateException    when the engine is in a state where this operation is not
+     *                                  permitted (ie. locked or stopped).
      */
-    public boolean deliver(String topic, Object event);
+    boolean deliver(String topic, Object event);
 
     /**
      * Attempts the dispatching of an "event" object over communication infrastructure "busType"
      *
      * @param topic topic
      * @param event the event object to send
-     *
      * @return true if successful, false if a failure has occurred.
-     * @throws IllegalArgumentException when invalid or insufficient properties are provided
-     * @throws IllegalStateException when the engine is in a state where this operation is not
-     *         permitted (ie. locked or stopped).
+     * @throws IllegalArgumentException      when invalid or insufficient properties are provided
+     * @throws IllegalStateException         when the engine is in a state where this operation is not
+     *                                       permitted (ie. locked or stopped).
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
-     *         missing (ie. communication infrastructure not supported.
+     *                                       missing (ie. communication infrastructure not supported.
      */
-    public boolean deliver(String busType, String topic, Object event);
+    boolean deliver(String busType, String topic, Object event);
 
     /**
      * Attempts the dispatching of an "event" object over communication infrastructure "busType"
      *
      * @param topic topic
      * @param event the event object to send
-     *
      * @return true if successful, false if a failure has occurred.
-     * @throws IllegalArgumentException when invalid or insufficient properties are provided
-     * @throws IllegalStateException when the engine is in a state where this operation is not
-     *         permitted (ie. locked or stopped).
+     * @throws IllegalArgumentException      when invalid or insufficient properties are provided
+     * @throws IllegalStateException         when the engine is in a state where this operation is not
+     *                                       permitted (ie. locked or stopped).
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
-     *         missing (ie. communication infrastructure not supported.
+     *                                       missing (ie. communication infrastructure not supported.
      */
-    public boolean deliver(CommInfrastructure busType, String topic, Object event);
+    boolean deliver(CommInfrastructure busType, String topic, Object event);
 
     /**
      * Attempts delivering of an String over communication infrastructure "busType"
      *
      * @param topic topic
      * @param event the event object to send
-     *
      * @return true if successful, false if a failure has occurred.
-     * @throws IllegalArgumentException when invalid or insufficient properties are provided
-     * @throws IllegalStateException when the engine is in a state where this operation is not
-     *         permitted (ie. locked or stopped).
+     * @throws IllegalArgumentException      when invalid or insufficient properties are provided
+     * @throws IllegalStateException         when the engine is in a state where this operation is not
+     *                                       permitted (ie. locked or stopped).
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
-     *         missing (ie. communication infrastructure not supported.
+     *                                       missing (ie. communication infrastructure not supported.
      */
-    public boolean deliver(CommInfrastructure busType, String topic, String event);
+    boolean deliver(CommInfrastructure busType, String topic, String event);
 
     /**
      * Invoked when the host goes into the active state.
      */
-    public void activate();
+    void activate();
 
     /**
      * Invoked when the host goes into the standby state.
      */
-    public void deactivate();
+    void deactivate();
 
     /**
      * produces a default telemetry configuration
      *
      * @return policy engine configuration
      */
-    public Properties defaultTelemetryConfig();
+    Properties defaultTelemetryConfig();
 }
 
 
@@ -357,42 +352,42 @@ class PolicyEngineManager implements PolicyEngine {
     /**
      * Is the Policy Engine running?
      */
-    protected volatile boolean alive = false;
+    private volatile boolean alive = false;
 
     /**
      * Is the engine locked?
      */
-    protected volatile boolean locked = false;
+    private volatile boolean locked = false;
 
     /**
      * Properties used to initialize the engine
      */
-    protected Properties properties;
+    private Properties properties;
 
     /**
      * Environment Properties
      */
-    protected final Properties environment = new Properties();
+    private final Properties environment = new Properties();
 
     /**
      * Policy Engine Sources
      */
-    protected List<? extends TopicSource> sources = new ArrayList<>();
+    private List<? extends TopicSource> sources = new ArrayList<>();
 
     /**
      * Policy Engine Sinks
      */
-    protected List<? extends TopicSink> sinks = new ArrayList<>();
+    private List<? extends TopicSink> sinks = new ArrayList<>();
 
     /**
      * Policy Engine HTTP Servers
      */
-    protected List<HttpServletServer> httpServers = new ArrayList<>();
+    private List<HttpServletServer> httpServers = new ArrayList<>();
 
     /**
      * gson parser to decode configuration requests
      */
-    protected final Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
+    private final Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
 
 
     @Override
@@ -529,8 +524,6 @@ class PolicyEngineManager implements PolicyEngine {
                         e.getMessage(), e);
             }
         }
-
-        return;
     }
 
     @Override
@@ -1473,7 +1466,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
     }
 
-    public boolean controllerConfig(PdpdConfiguration config) {
+    private boolean controllerConfig(PdpdConfiguration config) {
         /* only this one supported for now */
         final List<ControllerConfiguration> configControllers = config.getControllers();
         if (configControllers == null || configControllers.isEmpty()) {
@@ -1482,26 +1475,18 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         final List<PolicyController> policyControllers = this.updatePolicyControllers(config.getControllers());
-
-        boolean success;
-
-        if (policyControllers == null || policyControllers.isEmpty()) {
-            success = false;
-        } else if (policyControllers.size() == configControllers.size()) {
+        boolean success = false;
+        if (!(policyControllers == null || policyControllers.isEmpty())
+                && (policyControllers.size() == configControllers.size())) {
             success = true;
-        } else {
-            success = false;
         }
-
         return success;
     }
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("PolicyEngineManager [alive=").append(this.alive).append(", locked=").append(this.locked)
-                .append("]");
-        return builder.toString();
+        return "PolicyEngineManager [alive=" + this.alive + ", locked=" + this.locked +
+                "]";
     }
 
 }
