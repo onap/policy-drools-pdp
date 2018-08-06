@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_2b3f3f27",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-08-06T08:59:16Z",
+      "side": 1,
+      "message": "As the changes are small here perhaps its OK to strip the tabs in this review.",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 2
+      },
+      "revId": "96045fd58cb43429caab1f1ec81779699b7285f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
