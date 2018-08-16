@@ -3,6 +3,7 @@
  * policy-core
  * ================================================================================
  * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Modified Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -237,42 +238,44 @@ public class PolicyContainer implements Startable {
         synchronized (sessions) {
             logger.info("activatePolicySession:name :" + name);
             PolicySession session = sessions.get(name);
-            if (session == null) {
-                KieSession kieSession = null;
+            if (session != null) {
+                logger.info("activatePolicySession:session - " + session.getFullName() + " is returned.");
+                return session;
+            }
+            KieSession kieSession = null;
 
-                // loop through all of the features, and give each one
-                // a chance to create the 'KieSession'
+            // loop through all of the features, and give each one
+            // a chance to create the 'KieSession'
+            for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+                try {
+                    if ((kieSession = feature.activatePolicySession(this, name, kieBaseName)) != null) {
+                        break;
+                    }
+                } catch (Exception e) {
+                    logger.error(ERROR_STRING + feature.getClass().getName(), e);
+                }
+            }
+
+            // if none of the features created the session, create one now
+            if (kieSession == null) {
+                kieSession = kieContainer.newKieSession(name);
+            }
+
+            if (kieSession != null) {
+                // creation of 'KieSession' was successful - build
+                // a PolicySession
+                session = new PolicySession(name, this, kieSession);
+                sessions.put(name, session);
+
+                // notify features
                 for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
                     try {
-                        if ((kieSession = feature.activatePolicySession(this, name, kieBaseName)) != null) {
-                            break;
-                        }
+                        feature.newPolicySession(session);
                     } catch (Exception e) {
                         logger.error(ERROR_STRING + feature.getClass().getName(), e);
                     }
                 }
-
-                // if none of the features created the session, create one now
-                if (kieSession == null) {
-                    kieSession = kieContainer.newKieSession(name);
-                }
-
-                if (kieSession != null) {
-                    // creation of 'KieSession' was successful - build
-                    // a PolicySession
-                    session = new PolicySession(name, this, kieSession);
-                    sessions.put(name, session);
-
-                    // notify features
-                    for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
-                        try {
-                            feature.newPolicySession(session);
-                        } catch (Exception e) {
-                            logger.error(ERROR_STRING + feature.getClass().getName(), e);
-                        }
-                    }
-                    logger.info("activatePolicySession:new session was added in sessions with name " + name);
-                }
+                logger.info("activatePolicySession:new session was added in sessions with name " + name);
             }
             logger.info("activatePolicySession:session - " + (session == null ? "null" : session.getFullName())
                     + " is returned.");
@@ -497,21 +500,23 @@ public class PolicyContainer implements Startable {
      */
     @Override
     public synchronized boolean start() {
-        if (!isStarted) {
-            // This will create all 'PolicySession' instances specified in the
-            // 'kmodule.xml' file that don't exist yet
-            for (String kieBaseName : kieContainer.getKieBaseNames()) {
-                for (String kieSessionName : kieContainer.getKieSessionNamesInKieBase(kieBaseName)) {
-                    // if the 'PolicySession' does not currently exist, this method
-                    // call will attempt to create it
-                    PolicySession session = activatePolicySession(kieSessionName, kieBaseName);
-                    if (session != null) {
-                        session.startThread();
-                    }
+        if (isStarted) {
+            return true;
+        }
+
+        // This will create all 'PolicySession' instances specified in the
+        // 'kmodule.xml' file that don't exist yet
+        for (String kieBaseName : kieContainer.getKieBaseNames()) {
+            for (String kieSessionName : kieContainer.getKieSessionNamesInKieBase(kieBaseName)) {
+                // if the 'PolicySession' does not currently exist, this method
+                // call will attempt to create it
+                PolicySession session = activatePolicySession(kieSessionName, kieBaseName);
+                if (session != null) {
+                    session.startThread();
                 }
             }
-            isStarted = true;
         }
+        isStarted = true;
         return true;
     }
 
@@ -520,34 +525,37 @@ public class PolicyContainer implements Startable {
      */
     @Override
     public synchronized boolean stop() {
-        if (isStarted) {
-            Collection<PolicySession> localSessions;
+        if (!isStarted) {
+            return true;
+        }
 
-            synchronized (sessions) {
-                // local set containing all of the sessions
-                localSessions = new HashSet<>(sessions.values());
+        Collection<PolicySession> localSessions;
 
-                // clear the 'name->session' map in 'PolicyContainer'
-                sessions.clear();
-            }
-            for (PolicySession session : localSessions) {
-                // stop session thread
-                session.stopThread();
+        synchronized (sessions) {
+            // local set containing all of the sessions
+            localSessions = new HashSet<>(sessions.values());
 
-                // free KieSession resources
-                session.getKieSession().dispose();
+            // clear the 'name->session' map in 'PolicyContainer'
+            sessions.clear();
+        }
+        for (PolicySession session : localSessions) {
+            // stop session thread
+            session.stopThread();
 
-                // notify features
-                for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
-                    try {
-                        feature.disposeKieSession(session);
-                    } catch (Exception e) {
-                        logger.error(ERROR_STRING + feature.getClass().getName(), e);
-                    }
+            // free KieSession resources
+            session.getKieSession().dispose();
+
+            // notify features
+            for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+                try {
+                    feature.disposeKieSession(session);
+                } catch (Exception e) {
+                    logger.error(ERROR_STRING + feature.getClass().getName(), e);
                 }
             }
-            isStarted = false;
         }
+        isStarted = false;
+
         return true;
     }
 
