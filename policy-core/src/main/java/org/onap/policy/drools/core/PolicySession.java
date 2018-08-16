@@ -134,32 +134,34 @@ public class PolicySession
    */
   public synchronized void startThread()
   {
-	if (threadModel == null)
-	  {
-		// loop through all of the features, and give each one
-		// a chance to create the 'ThreadModel'
-		for (PolicySessionFeatureAPI feature :
-			   PolicySessionFeatureAPI.impl.getList())
-		  {
-			try
-			  {
-				if ((threadModel = feature.selectThreadModel(this)) != null)
-				  break;
-			  }
-			catch (Exception e)
-			  {
-				logger.error("ERROR: Feature API: "
-							 + feature.getClass().getName(), e);
-			  }
-		  }		
-		if (threadModel == null)
-		  {
-			// no feature created a ThreadModel -- select the default
-			threadModel = new DefaultThreadModel(this);
-		  }
-		logger.info("starting ThreadModel for session " + getFullName());
-		threadModel.start();
-	  }
+    if (threadModel != null)
+      {
+        return;
+      }
+
+    // loop through all of the features, and give each one
+    // a chance to create the 'ThreadModel'
+    for (PolicySessionFeatureAPI feature :
+           PolicySessionFeatureAPI.impl.getList())
+      {
+        try
+          {
+            if ((threadModel = feature.selectThreadModel(this)) != null)
+              break;
+          }
+        catch (Exception e)
+          {
+            logger.error("ERROR: Feature API: "
+                         + feature.getClass().getName(), e);
+          }
+      }
+    if (threadModel == null)
+      {
+        // no feature created a ThreadModel -- select the default
+        threadModel = new DefaultThreadModel(this);
+      }
+    logger.info("starting ThreadModel for session " + getFullName());
+    threadModel.start();
   }
 
   /**
