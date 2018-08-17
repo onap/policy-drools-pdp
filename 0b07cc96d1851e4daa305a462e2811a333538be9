@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_90a9aae1",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-08-17T12:06:03Z",
+      "side": 1,
+      "message": "FYI: Per the ONAP FOSS, the correct term is \"Modifications\" instead of \"Modified\".",
+      "revId": "0b07cc96d1851e4daa305a462e2811a333538be9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
