@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_0eaed685",
+        "filename": "config/policy-engine.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-08-20T15:26:45Z",
+      "side": 1,
+      "message": "2018",
+      "revId": "56920c13e4b9d8965ebec3fe5602f814ff45bdc2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
