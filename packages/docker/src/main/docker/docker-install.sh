@@ -154,6 +154,7 @@ function configure_component() {
 	SED_LINE+=" -e 's!\${{POLICY_USER}}!${POLICY_USER}!g' "
 	SED_LINE+=" -e 's!\${{POLICY_GROUP}}!${POLICY_GROUP}!g' "
 	SED_LINE+=" -e 's!\${{KEYSTORE_PASSWD}}!${KEYSTORE_PASSWD}!g' "
+	SED_LINE+=" -e 's!\${{TRUSTSTORE_PASSWD}}!${TRUSTSTORE_PASSWD}!g' "
 	SED_LINE+=" -e 's!\${{JAVA_HOME}}!${JAVA_HOME}!g' "
 		
 	while read line || [ -n "${line}" ]; do
@@ -245,11 +246,17 @@ function configure_keystore() {
 		set -x
 	fi
 
-    local DEFAULT_KEYSTORE_PASSWORD="Pol1cy_0nap"
+    local DEFAULT_TRUSTSTORE_PASSWORD='Pol1cy_0nap'
+    local DEFAULT_KEYSTORE_PASSWORD='Pol1cy_0nap'
+
+	if [[ -n ${TRUSTSTORE_PASSWD} ]]; then
+	    keytool -storepasswd -storepass "${DEFAULT_TRUSTSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-truststore" -new "${TRUSTSTORE_PASSWD}"
+	    keytool -list -keystore "${POLICY_HOME}/etc/ssl/policy-truststore" -storepass "${TRUSTSTORE_PASSWD}"
+	fi
 
 	if [[ -n ${KEYSTORE_PASSWD} ]]; then
-	    keytool -storepasswd -storepass ${DEFAULT_KEYSTORE_PASSWORD} -keystore ${POLICY_HOME}/etc/ssl/policy-keystore -new ${KEYSTORE_PASSWD}
-	    keytool -list -keystore ${POLICY_HOME}/etc/ssl/policy-keystore -storepass ${KEYSTORE_PASSWD}
+	    keytool -storepasswd -storepass "${DEFAULT_KEYSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-keystore" -new "${KEYSTORE_PASSWD}"
+	    keytool -list -keystore "${POLICY_HOME}/etc/ssl/policy-keystore" -storepass "${KEYSTORE_PASSWD}"
 	fi
 }
 
