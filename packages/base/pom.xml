@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   Policy Packages
   ================================================================================
-  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,79 +18,84 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.onap.policy.drools-pdp</groupId>
-		<artifactId>packages</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>org.onap.policy.drools-pdp</groupId>
+        <artifactId>packages</artifactId>
+        <version>1.3.0-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>base</artifactId>
-	<packaging>pom</packaging>
+    <artifactId>base</artifactId>
+    <packaging>pom</packaging>
 
-	<name>Base Package</name>
-	<description>ONAP Policy Drools PDP Packaging</description>
+    <name>Base Package</name>
+    <description>ONAP Policy Drools PDP Packaging</description>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<descriptors>
-								<descriptor>src/assembly/zip.xml</descriptor>
-							</descriptors>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/assembly/zip.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
-	<profiles>
-		<profile>
-			<id>unix_pe_version</id>
-			<activation>
-				<os>
-					<family>!windows</family>
-				</os>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.5.0</version>
-						<executions>
-							<execution>
-								<id>create-version-file</id>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-								<phase>prepare-package</phase>
-								<configuration>
-									<executable>/bin/bash</executable>
-									<arguments>
-										<argument>-c</argument>
-										<argument>mkdir -p target ; echo -e 'version="${project.version}"\ndescription="ONAP Drools PDP"\nbuildTag="'"${BUILD_TAG}"'"\ncommit="'"${GIT_COMMIT}"'"\ntimestamp="${maven.build.timestamp}"' >target/build.info</argument>
-									</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>unix_pe_version</id>
+            <activation>
+                <os>
+                    <family>!windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>create-version-file</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>prepare-package</phase>
+                                <configuration>
+                                    <executable>/bin/bash</executable>
+                                    <arguments>
+                                        <argument>-c</argument>
+                                        <argument>mkdir -p target ; echo
+                                            -e
+                                            'version="${project.version}"\ndescription="ONAP
+                                            Drools
+                                            PDP"\nbuildTag="'"${BUILD_TAG}"'"\ncommit="'"${GIT_COMMIT}"'"\ntimestamp="${maven.build.timestamp}"'
+                                            >target/build.info</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
