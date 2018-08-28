@@ -63,7 +63,7 @@ else
 	fi
 
 	if [[ -f config/policy-truststore ]]; then
-	    cp -f config/policy-trustore ${POLICY_HOME}/etc/ssl
+	    cp -f config/policy-truststore ${POLICY_HOME}/etc/ssl
 	fi
 
 	if [[ -f config/drools-tweaks.sh ]] ; then
