@@ -22,12 +22,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.onap.oparent</groupId>
-		<artifactId>oparent</artifactId>
-		<version>1.1.0</version>
-		<relativePath />
-	</parent>
+    <parent>
+        <groupId>org.onap.policy.parent</groupId>
+        <artifactId>integration</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
 
 	<groupId>org.onap.policy.drools-pdp</groupId>
 	<artifactId>drools-pdp</artifactId>
@@ -274,7 +274,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
 				<configuration>
 					<encoding>${project.encoding}</encoding>
 					<source>${project.source.version}</source>
@@ -284,7 +283,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
 				<configuration>
 					<encoding>${project.encoding}</encoding>
 				</configuration>
