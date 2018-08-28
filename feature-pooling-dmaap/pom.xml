@@ -45,7 +45,6 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.6</version>
 				<executions>
 					<execution>
 						<id>zipfile</id>
@@ -67,7 +66,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.8</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -98,7 +96,6 @@
 		<dependency>
 			<groupId>com.att.nsa</groupId>
 			<artifactId>cambriaClient</artifactId>
-			<version>${cambria.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
