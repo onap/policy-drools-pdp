@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_09e3fda4",
+        "filename": "packages/docker/pom.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-08-29T17:54:56Z",
+      "side": 1,
+      "message": "license date",
+      "revId": "9cfd7929ec7344e509200344a658218e0b56d1c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
