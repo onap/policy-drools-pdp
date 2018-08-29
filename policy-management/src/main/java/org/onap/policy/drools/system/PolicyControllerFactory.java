@@ -241,9 +241,6 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
             throw makeArgEx(name);
         }
 
-        if (droolsConfig == null)
-            throw new IllegalArgumentException("Invalid Drools Configuration");
-
         PolicyController controller = this.get(name);
 
         if (controller == null) {
@@ -270,6 +267,9 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 
         if (controller == null)
             throw new IllegalArgumentException("Not a valid controller:  null");
+
+        if (droolsConfig == null)
+            throw new IllegalArgumentException("Invalid Drools Configuration");
 
         if (!controller.updateDrools(droolsConfig)) {
             logger.warn("Cannot update drools configuration: " + droolsConfig + " on " + this);
