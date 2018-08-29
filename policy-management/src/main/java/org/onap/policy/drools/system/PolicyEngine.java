@@ -619,7 +619,7 @@ class PolicyEngineManager implements PolicyEngine {
         for (final ControllerConfiguration configController : configControllers) {
             MDCTransaction mdcTrans = MDCTransaction.newSubTransaction(null).setTargetEntity(configController.getName())
                     .setTargetServiceName(configController.getOperation())
-                    .setTargetVirtualEntity(configController.getDrools().toString());
+                    .setTargetVirtualEntity(""+configController.getDrools());
             try {
                 final PolicyController policyController = this.updatePolicyController(configController);
                 policyControllers.add(policyController);
