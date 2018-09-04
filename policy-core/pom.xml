@@ -39,7 +39,7 @@
     <dependencies>
     <!--
     Issue: 1 of 2
-    These 2 dependencies are trying to upgrade security fixes
+    These 3 dependencies are trying to upgrade security fixes
     identified. If they are removed or manipulated then please
     fix the 2nd change as noted below. 
     -->
@@ -51,6 +51,10 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>
@@ -76,6 +80,10 @@
                 <exclusion>
                     <groupId>com.thoughtworks.xstream</groupId>
                     <artifactId>xstream</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
