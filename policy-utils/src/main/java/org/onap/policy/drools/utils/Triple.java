@@ -21,7 +21,7 @@
 package org.onap.policy.drools.utils;
 
 public class Triple<F,S,T> {
-	
+
     private F first;
     private S second;
     private T third;
@@ -30,22 +30,29 @@ public class Triple<F,S,T> {
         // empty constructor
     }
 
-    public Triple(F first, S second, T third){
+    /**
+     * Constructor.
+     * 
+     * @param first first
+     * @param second second
+     * @param third third
+     */
+    public Triple(F first, S second, T third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    public F first(){
+    public F first() {
         return this.getFirst();
-    }
-
-    public F getFirst() {
-        return first;
     }
 
     public void first(F first) {
         this.setFirst(first);
+    }
+
+    public F getFirst() {
+        return first;
     }
 
     public void setFirst(F first) {
@@ -56,12 +63,12 @@ public class Triple<F,S,T> {
         return this.getSecond();
     }
 
-    public S getSecond() {
-        return second;
-    }
-
     public void second(S second) {
         this.setSecond(second);
+    }
+
+    public S getSecond() {
+        return second;
     }
 
     public void setSecond(S second) {
@@ -72,12 +79,12 @@ public class Triple<F,S,T> {
         return this.getThird();
     }
 
-    public T getThird() {
-        return this.third;
-    }
-
     public void third(T third) {
         this.setThird(third);
+    }
+
+    public T getThird() {
+        return this.third;
     }
 
     public void setThird(T third) {

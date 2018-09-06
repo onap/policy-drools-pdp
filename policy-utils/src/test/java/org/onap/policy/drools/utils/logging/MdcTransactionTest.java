@@ -16,16 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.onap.policy.drools.utils.logging;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.time.Duration;
 import java.time.Instant;
 import org.junit.Test;
 import org.slf4j.MDC;
 
-public class MDCTransactionTest {
+public class MdcTransactionTest {
 
     @Test
     public void resetSubTransaction() {
@@ -114,31 +118,31 @@ public class MDCTransactionTest {
     @Test
     public void flush() {
         MDCTransaction trans =
-            MDCTransaction.newTransaction().
-                setRequestId(null).
-                setInvocationId(null).
-                setPartner(null).
-                setVirtualServerName(null).
-                setServer(null).
-                setServerIpAddress(null).
-                setServerFqdn(null).
-                setServiceName(null).
-                setStartTime(null).
-                setEndTime(null).
-                setServiceInstanceId("service-instance-id").
-                setInstanceUUID(null).
-                setProcessKey("process-key").
-                setStatusCode("status-code").
-                setResponseCode("response-code").
-                setResponseDescription("response-description").
-                setSeverity("severity").
-                setAlertSeverity("alert-severity").
-                setTargetEntity("target-entity").
-                setTargetServiceName("target-service-name").
-                setTargetVirtualEntity("target-virtual-entity").
-                setClientIpAddress("client-ip-address").
-                setRemoteHost("remote-host").
-                flush();
+            MDCTransaction.newTransaction()
+                .setRequestId(null)
+                .setInvocationId(null)
+                .setPartner(null)
+                .setVirtualServerName(null)
+                .setServer(null)
+                .setServerIpAddress(null)
+                .setServerFqdn(null)
+                .setServiceName(null)
+                .setStartTime(null)
+                .setEndTime(null)
+                .setServiceInstanceId("service-instance-id")
+                .setInstanceUUID(null)
+                .setProcessKey("process-key")
+                .setStatusCode("status-code")
+                .setResponseCode("response-code")
+                .setResponseDescription("response-description")
+                .setSeverity("severity")
+                .setAlertSeverity("alert-severity")
+                .setTargetEntity("target-entity")
+                .setTargetServiceName("target-service-name")
+                .setTargetVirtualEntity("target-virtual-entity")
+                .setClientIpAddress("client-ip-address")
+                .setRemoteHost("remote-host")
+                .flush();
 
         assertTransactionFields(trans);
 
@@ -180,18 +184,18 @@ public class MDCTransactionTest {
         assertEquals(trans.getClientIpAddress(), MDC.get(MDCTransaction.CLIENT_IP_ADDRESS));
         assertEquals(trans.getRemoteHost(), MDC.get(MDCTransaction.REMOTE_HOST));
 
-        assertEquals(trans.getServiceInstanceId(),"service-instance-id");
-        assertEquals(trans.getProcessKey(),"process-key");
-        assertEquals(trans.getStatusCode(),"status-code");
-        assertEquals(trans.getResponseCode(),"response-code");
-        assertEquals(trans.getResponseDescription(),"response-description");
-        assertEquals(trans.getSeverity(),"severity");
-        assertEquals(trans.getAlertSeverity(),"alert-severity");
-        assertEquals(trans.getTargetEntity(),"target-entity");
-        assertEquals(trans.getTargetServiceName(),"target-service-name");
-        assertEquals(trans.getTargetVirtualEntity(),"target-virtual-entity");
-        assertEquals(trans.getClientIpAddress(),"client-ip-address");
-        assertEquals(trans.getRemoteHost(),"remote-host");
+        assertEquals("service-instance-id", trans.getServiceInstanceId());
+        assertEquals("process-key", trans.getProcessKey());
+        assertEquals("status-code", trans.getStatusCode());
+        assertEquals("response-code", trans.getResponseCode());
+        assertEquals("response-description", trans.getResponseDescription());
+        assertEquals("severity", trans.getSeverity());
+        assertEquals("alert-severity", trans.getAlertSeverity());
+        assertEquals("target-entity", trans.getTargetEntity());
+        assertEquals("target-service-name", trans.getTargetServiceName());
+        assertEquals("target-virtual-entity", trans.getTargetVirtualEntity());
+        assertEquals("client-ip-address", trans.getClientIpAddress());
+        assertEquals("remote-host", trans.getRemoteHost());
     }
 
     @Test
@@ -235,20 +239,20 @@ public class MDCTransactionTest {
         assertNotNull(subTrans.getStartTime());
         assertNullSubTransactionFieldsButInvocationId(trans);
 
-        subTrans.setServiceInstanceId("service-instance-id").
-            setInstanceUUID(null).
-            setProcessKey("process-key").
-            setStatusCode("status-code").
-            setResponseCode("response-code").
-            setResponseDescription("response-description").
-            setSeverity("severity").
-            setAlertSeverity("alert-severity").
-            setTargetEntity("target-entity").
-            setTargetServiceName("target-service-name").
-            setTargetVirtualEntity("target-virtual-entity").
-            setClientIpAddress("client-ip-address").
-            setRemoteHost("remote-host").
-            setEndTime(Instant.now());
+        subTrans.setServiceInstanceId("service-instance-id")
+            .setInstanceUUID(null)
+            .setProcessKey("process-key")
+            .setStatusCode("status-code")
+            .setResponseCode("response-code")
+            .setResponseDescription("response-description")
+            .setSeverity("severity")
+            .setAlertSeverity("alert-severity")
+            .setTargetEntity("target-entity")
+            .setTargetServiceName("target-service-name")
+            .setTargetVirtualEntity("target-virtual-entity")
+            .setClientIpAddress("client-ip-address")
+            .setRemoteHost("remote-host")
+            .setEndTime(Instant.now());
 
         subTrans.setStatusCode(false).setResponseCode("400");
 

@@ -17,6 +17,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.drools.utils.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -33,7 +34,7 @@ public abstract class LoggerMarkerFilter extends AbstractMatcherFilter<ILoggingE
     protected final Marker marker;
 
     public LoggerMarkerFilter(Marker marker) {
-       this.marker = marker;
+        this.marker = marker;
     }
 
     @Override
@@ -55,7 +56,7 @@ public abstract class LoggerMarkerFilter extends AbstractMatcherFilter<ILoggingE
     }
 
     /**
-     * Metric Logger Marker Filter
+     * Metric Logger Marker Filter.
      */
     public static class MetricLoggerMarkerFilter extends LoggerMarkerFilter {
 
@@ -66,7 +67,7 @@ public abstract class LoggerMarkerFilter extends AbstractMatcherFilter<ILoggingE
     }
 
     /**
-     * Transaction Logger Marker Filter
+     * Transaction Logger Marker Filter.
      */
     public static class TransactionLoggerMarkerFilter extends LoggerMarkerFilter {
 

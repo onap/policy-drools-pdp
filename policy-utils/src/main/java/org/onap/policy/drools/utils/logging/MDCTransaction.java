@@ -33,28 +33,28 @@ import org.slf4j.MDC;
 /**
  * MDC Transaction Utility Class.
  *
- * There is an implicit 2-level tree of Transactions in ONAP: transactions and subtransactions.
+ * <p>There is an implicit 2-level tree of Transactions in ONAP: transactions and subtransactions.
  *
- * 1. The top level transaction relates to the overarching transaction id (ie. RequestId) and should
+ * <p>1. The top level transaction relates to the overarching transaction id (ie. RequestId) and should
  * be made available to subtransactions for reuse in the ThreadLocal MDC structure.
  *
- * This is the data to be inherited and common to all subtransactions (not a common case but could
+ * <p>This is the data to be inherited and common to all subtransactions (not a common case but could
  * be modified by subtransactions):
  *
- * Request ID Virtual Server Name Partner Name Server Server IP Address Server FQDN
+ * <p>Request ID Virtual Server Name Partner Name Server Server IP Address Server FQDN
  *
- * 2. The second level at the leaves is formed by subtransactions and the key identifier is the
+ * <p>2. The second level at the leaves is formed by subtransactions and the key identifier is the
  * invocation id.
  *
- * Begin Timestamp End Timestamp Elapsed Time Service Instance ID Service Name Status Code Response
+ * <p>Begin Timestamp End Timestamp Elapsed Time Service Instance ID Service Name Status Code Response
  * Code Response Description Instance UUID Severity Target Entity Target Service Name Server Server
  * IP Address Server FQDN Client IP Address Process Key Remote Host Alert Severity Target Virtual
  * Entity
  *
  *
- * The naming convention for the fields must match the naming given at
+ * <p>The naming convention for the fields must match the naming given at
  *
- * https://wiki.onap.org/pages/viewpage.action?pageId=20087036
+ * <p>https://wiki.onap.org/pages/viewpage.action?pageId=20087036
  */
 public interface MDCTransaction {
     /*
@@ -184,42 +184,42 @@ public interface MDCTransaction {
     String TARGET_VIRTUAL_ENTITY = "TargetVirtualEntity";
 
     /**
-     * Default Service Name
+     * Default Service Name.
      */
     String DEFAULT_SERVICE_NAME = "PDP-D";
 
     /**
-     * Default Host Name
+     * Default Host Name.
      */
     String DEFAULT_HOSTNAME = NetworkUtil.getHostname();
 
     /**
-     * Default Host IP
+     * Default Host IP.
      */
     String DEFAULT_HOSTIP = NetworkUtil.getHostIp();
 
     /**
-     * Status Code Complete
+     * Status Code Complete.
      */
     String STATUS_CODE_COMPLETE = "COMPLETE";
 
     /**
-     * Status Code Error
+     * Status Code Error.
      */
     String STATUS_CODE_FAILURE = "ERROR";
 
     /**
-     * reset subtransaction data
+     * reset subtransaction data.
      */
     MDCTransaction resetSubTransaction();
 
     /**
-     * resets transaction data
+     * resets transaction data.
      */
     MDCTransaction resetTransaction();
 
     /**
-     * flush to MDC structure
+     * flush to MDC structure.
      */
     MDCTransaction flush();
 
@@ -236,102 +236,102 @@ public interface MDCTransaction {
     MDCTransaction transaction();
 
     /**
-     * get invocation id
+     * get invocation id.
      */
     MDCTransaction setInvocationId(String invocationId);
 
     /**
-     * set start time
+     * set start time.
      */
     MDCTransaction setStartTime(Instant startTime);
 
     /**
-     * set service name
+     * set service name.
      */
     MDCTransaction setServiceName(String serviceName);
 
     /**
-     * set status code
+     * set status code.
      */
     MDCTransaction setStatusCode(String statusCode);
 
     /**
-     * set status code
+     * set status code.
      */
     MDCTransaction setStatusCode(boolean success);
 
     /**
-     * sets response code
+     * sets response code.
      */
     MDCTransaction setResponseCode(String responseCode);
 
     /**
-     * sets response description
+     * sets response description.
      */
     MDCTransaction setResponseDescription(String responseDescription);
 
     /**
-     * sets instance uuid
+     * sets instance uuid.
      */
     MDCTransaction setInstanceUUID(String instanceUUID);
 
     /**
-     * set severity
+     * set severity.
      */
     MDCTransaction setSeverity(String severity);
 
     /**
-     * set target entity
+     * set target entity.
      */
     MDCTransaction setTargetEntity(String targetEntity);
 
     /**
-     * set target service name
+     * set target service name.
      */
     MDCTransaction setTargetServiceName(String targetServiceName);
 
     /**
-     * set target virtual entity
+     * set target virtual entity.
      */
     MDCTransaction setTargetVirtualEntity(String targetVirtualEntity);
 
     /**
-     * set request id
+     * set request id.
      */
     MDCTransaction setRequestId(String requestId);
 
     /**
-     * set partner
+     * set partner.
      */
     MDCTransaction setPartner(String partner);
 
     /**
-     * set server
+     * set server.
      */
     MDCTransaction setServer(String server);
 
     /**
-     * set server ip address
+     * set server ip address.
      */
     MDCTransaction setServerIpAddress(String serverIpAddress);
 
     /**
-     * set server fqdn
+     * set server fqdn.
      */
     MDCTransaction setServerFqdn(String serverFqdn);
 
     /**
-     * set virtual server
+     * set virtual server.
      */
     MDCTransaction setVirtualServerName(String virtualServerName);
 
     /**
-     * sets end time
+     * sets end time.
      */
     MDCTransaction setEndTime(Instant endTime);
 
     /**
-     * sets elapsed time
+     * sets elapsed time.
      */
     MDCTransaction setElapsedTime(Long elapsedTime);
 
@@ -341,152 +341,152 @@ public interface MDCTransaction {
     MDCTransaction setServiceInstanceId(String serviceInstanceId);
 
     /**
-     * sets process key
+     * sets process key.
      */
     MDCTransaction setProcessKey(String processKey);
 
     /**
-     * sets alert severity
+     * sets alert severity.
      */
     MDCTransaction setAlertSeverity(String alertSeverity);
 
     /**
-     * sets client ip address
+     * sets client ip address.
      */
     MDCTransaction setClientIpAddress(String clientIpAddress);
 
     /**
-     * sets remote host
+     * sets remote host.
      */
     MDCTransaction setRemoteHost(String remoteHost);
 
     /**
-     * get start time
+     * get start time.
      */
     Instant getStartTime();
 
     /**
-     * get server
+     * get server.
      */
     String getServer();
 
     /**
-     * get end time
+     * get end time.
      */
     Instant getEndTime();
 
     /**
-     * get elapsed time
+     * get elapsed time.
      */
     Long getElapsedTime();
 
     /**
-     * get remote host
+     * get remote host.
      */
     String getRemoteHost();
 
     /**
-     * get client ip address
+     * get client ip address.
      */
     String getClientIpAddress();
 
     /**
-     * get alert severity
+     * get alert severity.
      */
     String getAlertSeverity();
 
     /**
-     * get process key
+     * get process key.
      */
     String getProcessKey();
 
     /**
-     * get service instance id
+     * get service instance id.
      */
     String getServiceInstanceId();
 
     /**
-     * get invocation id
+     * get invocation id.
      */
     String getInvocationId();
 
     /**
-     * get service name
+     * get service name.
      */
     String getServiceName();
 
     /**
-     * get status code
+     * get status code.
      */
     String getStatusCode();
 
     /**
-     * get response description
+     * get response description.
      */
     String getResponseDescription();
 
     /**
-     * get instance uuid
+     * get instance uuid.
      */
     String getInstanceUUID();
 
     /**
-     * get severity
+     * get severity.
      */
     String getSeverity();
 
     /**
-     * get target entity
+     * get target entity.
      */
     String getTargetEntity();
 
     /**
-     * get service name
+     * get service name.
      */
     String getTargetServiceName();
 
     /**
-     * get target virtual entity
+     * get target virtual entity.
      */
     String getTargetVirtualEntity();
 
     /**
-     * get response code
+     * get response code.
      */
     String getResponseCode();
 
     /**
-     * get request id
+     * get request id.
      */
     String getRequestId();
 
     /**
-     * get partner
+     * get partner.
      */
     String getPartner();
 
     /**
-     * get server fqdn
+     * get server fqdn.
      */
     String getServerFqdn();
 
     /**
-     * get virtual server name
+     * get virtual server name.
      */
     String getVirtualServerName();
 
     /**
-     * get server ip
+     * get server ip.
      */
     String getServerIpAddress();
 
     /**
-     * generate timestamp used for logging
+     * generate timestamp used for logging.
      */
     String timestamp(Instant time);
 
     /**
-     * create new MDC Transaction
+     * create new MDC Transaction.
      *
      * @param requestId transaction Id
      * @param partner requesting partner
@@ -498,14 +498,14 @@ public interface MDCTransaction {
     }
 
     /**
-     * create new MDC Transaction
+     * create new MDC Transaction.
      */
     static MDCTransaction newTransaction() {
         return new MDCTransactionImpl();
     }
 
     /**
-     * create new subtransaction
+     * create new subtransaction.
      *
      * @param invocationId sub-transaction od
      * @return MDC Transaction
@@ -515,7 +515,7 @@ public interface MDCTransaction {
     }
 
     /**
-     * create transaction from an existing one
+     * create transaction from an existing one.
      *
      * @param transaction transaction
      * @return MDC Transaction
@@ -529,10 +529,10 @@ public interface MDCTransaction {
 
 class MDCTransactionImpl implements MDCTransaction {
 
-    private final static Logger logger = LoggerFactory.getLogger(MDCTransactionImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(MDCTransactionImpl.class.getName());
 
     /**
-     * Logging Format for Timestamps
+     * Logging Format for Timestamps.
      */
 
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS+00:00";
@@ -571,14 +571,14 @@ class MDCTransactionImpl implements MDCTransaction {
     private String remoteHost;
 
     /**
-     * Transaction with no information set
+     * Transaction with no information set.
      */
     public MDCTransactionImpl() {
         MDC.clear();
     }
 
     /**
-     * MDC Transaction
+     * MDC Transaction.
      *
      * @param requestId transaction id
      * @param partner transaction origin
@@ -599,7 +599,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     /**
-     * create subtransaction
+     * create subtransaction.
      *
      * @param invocationId subtransaction id
      */
@@ -619,9 +619,9 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     /**
-     * copy constructor transaction/subtransaction
+     * copy constructor transaction/subtransaction.
      *
-     * @param transaction
+     * @param transaction transaction
      */
     public MDCTransactionImpl(MDCTransaction transaction) {
         MDC.clear();
@@ -652,7 +652,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     /**
-     * reset subtransaction portion
+     * reset subtransaction portion.
      *
      * @return MDCTransaction
      */
@@ -685,7 +685,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     /**
-     * flush transaction to MDC
+     * flush transaction to MDC.
      */
     @Override
     public MDCTransaction flush() {
@@ -971,11 +971,11 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setInstanceUUID(String instanceUUID) {
-        if (instanceUUID == null) {
+    public MDCTransaction setInstanceUUID(String instanceUuid) {
+        if (instanceUuid == null) {
             this.instanceUUID = UUID.randomUUID().toString();
         } else {
-            this.instanceUUID = instanceUUID;
+            this.instanceUUID = instanceUuid;
         }
 
         MDC.put(INSTANCE_UUID, this.instanceUUID);

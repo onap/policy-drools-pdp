@@ -30,14 +30,17 @@ public class Reference<T> {
     private T value;
 
     /**
+     * Constructor.
      * 
-     * @param value
+     * @param value value
      */
     public Reference(T value) {
         this.value = value;
     }
 
     /**
+     * Get the value.
+     * 
      * @return the current value
      */
     public final T get() {
@@ -47,7 +50,7 @@ public class Reference<T> {
     /**
      * Sets the reference to point to a new value.
      * 
-     * @param newValue
+     * @param newValue the new value
      */
     public final void set(T newValue) {
         this.value = newValue;
@@ -56,8 +59,8 @@ public class Reference<T> {
     /**
      * Sets the value to a new value, if the value is currently the same as the old value.
      * 
-     * @param oldValue
-     * @param newValue
+     * @param oldValue old value
+     * @param newValue new value
      * @return {@code true} if the value was updated, {@code false} otherwise
      */
     public boolean compareAndSet(T oldValue, T newValue) {

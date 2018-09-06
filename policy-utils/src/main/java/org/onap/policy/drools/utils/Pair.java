@@ -21,31 +21,43 @@
 package org.onap.policy.drools.utils;
 
 public class Pair<F,S> {
-	
+
     protected F first;
     protected S second;
     
-	public Pair(F first, S second){
+    public Pair(F first, S second) {
         this.first = first;
         this.second = second;
     }
-	
-    public F first() {return this.first;}
-    
-    public S second() {return this.second;}
-    
-    public F getFirst() {return this.first;}
 
-	public S getSecond() {return this.second;}
-    
-    public void first(F first) {this.first = first;}
-    
-    public void second(S second) {this.second = second;}
-    
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Pair [first=").append(first).append(", second=").append(second).append("]");
-		return builder.toString();
-	}
+    public F first() {
+        return this.first;
+    }
+
+    public void first(F first) {
+        this.first = first;
+    }
+
+    public S second() {
+        return this.second;
+    }
+
+    public void second(S second) {
+        this.second = second;
+    }
+
+    public F getFirst() {
+        return this.first;
+    }
+
+    public S getSecond() {
+        return this.second;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Pair [first=").append(first).append(", second=").append(second).append("]");
+        return builder.toString();
+    }
 }

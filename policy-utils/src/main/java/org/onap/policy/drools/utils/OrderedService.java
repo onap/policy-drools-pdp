@@ -26,17 +26,22 @@ package org.onap.policy.drools.utils;
  * 'OrderedServiceImpl' for more details.
  */
 @FunctionalInterface
-public interface OrderedService
-{
-  /**
-   * @return an integer sequence number, which determines the order of a list
-   *	of objects implementing this interface
-   */
-  public int getSequenceNumber();
-  
-  
-  /**
-   * @return the name of the ordered service
-   */
-  public default String getName() {return this.getClass().getName();}
+public interface OrderedService {
+    /**
+     * Get sequence number.
+     * 
+     * @return an integer sequence number, which determines the order of a list
+     *     of objects implementing this interface
+     */
+    public int getSequenceNumber();
+
+
+    /**
+     * Get the name.
+     * 
+     * @return the name of the ordered service
+     */
+    public default String getName() {
+        return this.getClass().getName();
+    }
 }
