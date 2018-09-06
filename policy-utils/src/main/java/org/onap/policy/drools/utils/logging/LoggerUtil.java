@@ -17,41 +17,41 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.drools.utils.logging;
 
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- * Loger Utils
+ * Loger Utils.
  */
 public class LoggerUtil {
 
     /**
-     * Root logger
+     * Root logger.
      */
     public static final String ROOT_LOGGER = "ROOT";
 
     /**
-     * Metric Log Marker Name
+     * Metric Log Marker Name.
      */
     public static final String METRIC_LOG_MARKER_NAME = "metric";
 
     /**
-     * Transaction Log Marker Name
+     * Transaction Log Marker Name.
      */
     public static final String TRANSACTION_LOG_MARKER_NAME = "transaction";
 
     /**
-     * Marks a logging record as a metric
+     * Marks a logging record as a metric.
      */
     public static final Marker METRIC_LOG_MARKER = MarkerFactory.getMarker(METRIC_LOG_MARKER_NAME);
 
     /**
-     * Marks a logging record as an end-to-end transaction
+     * Marks a logging record as an end-to-end transaction.
      */
     public static final Marker TRANSACTION_LOG_MARKER = MarkerFactory.getMarker(TRANSACTION_LOG_MARKER_NAME);
 
@@ -61,7 +61,7 @@ public class LoggerUtil {
     }
 
     /**
-     * set the log level of a logger
+     * Set the log level of a logger.
      *
      * @param loggerName logger name
      * @param loggerLevel logger level

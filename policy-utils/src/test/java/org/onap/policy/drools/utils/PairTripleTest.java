@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,40 +29,40 @@ public class PairTripleTest {
     
     @Test
     public void pairTest() {
-        Pair<String, String> p = new Pair<String, String>("foo", "bar");
+        Pair<String, String> pair = new Pair<String, String>("foo", "bar");
         
-       assertEquals("foo", p.first());
-       assertEquals("bar", p.second());
-       assertEquals("foo", p.getFirst());
-       assertEquals("bar", p.getSecond());
-       
-       p.first("one");
-       p.second("two");
+        assertEquals("foo", pair.first());
+        assertEquals("bar", pair.second());
+        assertEquals("foo", pair.getFirst());
+        assertEquals("bar", pair.getSecond());
 
-       assertEquals("one", p.first());
-       assertEquals("two", p.second());
-       assertEquals("one", p.getFirst());
-       assertEquals("two", p.getSecond());
-       
-       assertNotNull(p.toString());
+        pair.first("one");
+        pair.second("two");
+
+        assertEquals("one", pair.first());
+        assertEquals("two", pair.second());
+        assertEquals("one", pair.getFirst());
+        assertEquals("two", pair.getSecond());
+
+        assertNotNull(pair.toString());
         
     } 
 
     @Test
     public void tripleTest() {
-        Triple<String, String, String> t = new Triple<String, String,String>("foo", "bar", "fiz");
+        Triple<String, String, String> triple = new Triple<String, String,String>("foo", "bar", "fiz");
         
-       assertEquals("foo", t.first());
-       assertEquals("bar", t.second());
-       assertEquals("fiz", t.third());
-       
-       t.first("one");
-       t.second("two");
-       t.third("three");
+        assertEquals("foo", triple.first());
+        assertEquals("bar", triple.second());
+        assertEquals("fiz", triple.third());
 
-       assertEquals("one", t.first());
-       assertEquals("two", t.second());
-       assertEquals("three", t.third());   
+        triple.first("one");
+        triple.second("two");
+        triple.third("three");
+
+        assertEquals("one", triple.first());
+        assertEquals("two", triple.second());
+        assertEquals("three", triple.third());   
     }
 
 }

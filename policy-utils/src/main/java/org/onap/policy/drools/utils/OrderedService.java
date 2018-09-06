@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,22 @@ package org.onap.policy.drools.utils;
  * 'OrderedServiceImpl' for more details.
  */
 @FunctionalInterface
-public interface OrderedService
-{
-  /**
-   * @return an integer sequence number, which determines the order of a list
-   *	of objects implementing this interface
-   */
-  public int getSequenceNumber();
-  
-  
-  /**
-   * @return the name of the ordered service
-   */
-  public default String getName() {return this.getClass().getName();}
+public interface OrderedService {
+    /**
+     * Get sequence number.
+     * 
+     * @return an integer sequence number, which determines the order of a list
+     *     of objects implementing this interface
+     */
+    public int getSequenceNumber();
+
+
+    /**
+     * Get the name.
+     * 
+     * @return the name of the ordered service
+     */
+    public default String getName() {
+        return this.getClass().getName();
+    }
 }

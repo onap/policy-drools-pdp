@@ -17,9 +17,11 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.drools.utils.logging;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -27,30 +29,30 @@ import org.slf4j.LoggerFactory;
 
 public class LoggerUtilTest {
 
-	@Test
-	public void test() {
+    @Test
+    public void test() {
 
-		Logger logger = LoggerFactory.getLogger(LoggerUtilTest.class);
+        Logger logger = LoggerFactory.getLogger(LoggerUtilTest.class);
 
-		assertTrue(logger.isInfoEnabled());
+        assertTrue(logger.isInfoEnabled());
 
-	    logger.info("line 1");
-		logger.info(LoggerUtil.METRIC_LOG_MARKER, "line 1 Metric");
-		logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "line 1 Transaction");
+        logger.info("line 1");
+        logger.info(LoggerUtil.METRIC_LOG_MARKER, "line 1 Metric");
+        logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "line 1 Transaction");
 
-		LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "warn");
-		logger.info("line 2");
-		logger.info(LoggerUtil.METRIC_LOG_MARKER, "line 2 Metric");
-		logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "line 2 Transaction");
+        LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "warn");
+        logger.info("line 2");
+        logger.info(LoggerUtil.METRIC_LOG_MARKER, "line 2 Metric");
+        logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "line 2 Transaction");
 
-		assertFalse(logger.isInfoEnabled());
+        assertFalse(logger.isInfoEnabled());
 
-		LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "debug");
-		logger.debug("line 3");
-		logger.debug(LoggerUtil.METRIC_LOG_MARKER, "line 3 Metric");
-		logger.debug(LoggerUtil.TRANSACTION_LOG_MARKER, "line 3 Transaction");
+        LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "debug");
+        logger.debug("line 3");
+        logger.debug(LoggerUtil.METRIC_LOG_MARKER, "line 3 Metric");
+        logger.debug(LoggerUtil.TRANSACTION_LOG_MARKER, "line 3 Transaction");
 
-		assertTrue(logger.isDebugEnabled());
-	}
+        assertTrue(logger.isDebugEnabled());
+    }
 
 }

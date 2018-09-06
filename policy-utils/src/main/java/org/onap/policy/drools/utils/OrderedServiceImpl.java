@@ -33,111 +33,103 @@ import org.slf4j.LoggerFactory;
  * This class is a template for building a sorted list of service instances,
  * which are discovered and created using 'ServiceLoader'. 
  */
-public class OrderedServiceImpl<T extends OrderedService>
-{
-  // logger
-  private static Logger  logger = LoggerFactory.getLogger(OrderedServiceImpl.class); 
-  
-  // sorted list of instances implementing the service
-  private List<T> implementers = null;
+public class OrderedServiceImpl<T extends OrderedService> {
+    // logger
+    private static Logger  logger = LoggerFactory.getLogger(OrderedServiceImpl.class); 
 
-  // 'ServiceLoader' that is used to discover and create the services
-  private ServiceLoader<T> serviceLoader = null;
+    // sorted list of instances implementing the service
+    private List<T> implementers = null;
 
-  // use this to ensure that we only use one unique instance of each class
-  @SuppressWarnings("rawtypes")
-  private static HashMap<Class,OrderedService> classToSingleton =
-	new HashMap<>();
+    // 'ServiceLoader' that is used to discover and create the services
+    private ServiceLoader<T> serviceLoader = null;
 
-  /**
-   * Constructor - create the 'ServiceLoader' instance
-   *
-   * @param clazz the class object associated with 'T' (I supposed it could
-   *	be a subclass, but I'm not sure this is useful)
-   */
-  public OrderedServiceImpl(Class<T> clazz)
-  {
-	// This constructor wouldn't be needed if 'T.class' was legal
-	serviceLoader = ServiceLoader.load(clazz);
-  }
+    // use this to ensure that we only use one unique instance of each class
+    @SuppressWarnings("rawtypes")
+    private static HashMap<Class,OrderedService> classToSingleton = new HashMap<>();
 
-  /**
-   * @return the sorted list of services implementing interface 'T' discovered
-   *	by 'ServiceLoader'.
-   */
-  public synchronized List<T> getList()
-  {
-	if (implementers == null)
-	  {
-		rebuildList();
-	  }
-	return implementers;
-  }
+    /**
+     * Constructor - create the 'ServiceLoader' instance.
+     *
+     * @param clazz the class object associated with 'T' (I supposed it could
+     *     be a subclass, but I'm not sure this is useful)
+     */
+    public OrderedServiceImpl(Class<T> clazz) {
+        // This constructor wouldn't be needed if 'T.class' was legal
+        serviceLoader = ServiceLoader.load(clazz);
+    }
 
-  /**
-   * This method is called by 'getList', but could also be called directly if
-   * we were running with a 'ClassLoader' that supported the dynamic addition
-   * of JAR files. In this case, it could be invoked in order to discover any
-   * new services implementing interface 'T'. This is probably a relatively
-   * expensive operation in terms of CPU and elapsed time, so it is best if it
-   * isn't invoked too frequently.
-   *
-   * @return the sorted list of services implementing interface 'T' discovered
-   *	by 'ServiceLoader'.
-   */
-  @SuppressWarnings("unchecked")
-  public synchronized List<T> rebuildList()
-  {
-	// build a list of all of the current implementors
-	List<T> tmp = new LinkedList<>();
-	for (T service : serviceLoader)
-	  {
-		tmp.add((T)getSingleton(service));
-	  }
+    /**
+     * Get List of implementers.
+     * 
+     * @return the sorted list of services implementing interface 'T' discovered
+     *     by 'ServiceLoader'.
+     */
+    public synchronized List<T> getList() {
+        if (implementers == null) {
+            rebuildList();
+        }
+        return implementers;
+    }
 
-	// Sort the list according to sequence number, and then alphabetically
-	// according to full class name.
-	Collections.sort(tmp, (o1, o2) -> {
-			int s1 = o1.getSequenceNumber();
-			int s2 = o2.getSequenceNumber();
-			if (s1 < s2) {
-				return -1;
-			} else if (s1 > s2) {
-				return 1;
-			} else {
-				return o1.getClass().getName().compareTo(o2.getClass().getName());
-			}
-		});
+    /**
+     * This method is called by 'getList', but could also be called directly if
+     * we were running with a 'ClassLoader' that supported the dynamic addition
+     * of JAR files. In this case, it could be invoked in order to discover any
+     * new services implementing interface 'T'. This is probably a relatively
+     * expensive operation in terms of CPU and elapsed time, so it is best if it
+     * isn't invoked too frequently.
+     *
+     * @return the sorted list of services implementing interface 'T' discovered
+     *      by 'ServiceLoader'.
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized List<T> rebuildList() {
+        // build a list of all of the current implementors
+        List<T> tmp = new LinkedList<>();
+        for (T service : serviceLoader) {
+            tmp.add((T)getSingleton(service));
+        }
 
-	// create an unmodifiable version of this list
-	implementers = Collections.unmodifiableList(tmp);
-	logger.info("***** OrderedServiceImpl implementers:\n {}", implementers);
-	return implementers;
-  }
+        // Sort the list according to sequence number, and then alphabetically
+        // according to full class name.
+        Collections.sort(tmp, (o1, o2) -> {
+            int s1 = o1.getSequenceNumber();
+            int s2 = o2.getSequenceNumber();
+            if (s1 < s2) {
+                return -1;
+            } else if (s1 > s2) {
+                return 1;
+            } else {
+                return o1.getClass().getName().compareTo(o2.getClass().getName());
+            }
+        });
 
-  /**
-   * If a service implements multiple APIs managed by 'ServiceLoader', a
-   * separate instance is created for each API. This method ensures that
-   * the first instance is used in all of the lists.
-   *
-   * @param service this is the object created by ServiceLoader
-   * @return the object to use in place of 'service'. If 'service' is the first
-   *	object of this class created by ServiceLoader, it is returned. If not,
-   *	the object of this class that was initially created is returned
-   *	instead.
-   */
-  private static synchronized OrderedService
-	getSingleton(OrderedService service)
-  {
-	// see if we already have an instance of this class
-	OrderedService rval = classToSingleton.get(service.getClass());
-	if (rval == null)
-	  {
-		// No previous instance of this class exists -- use the supplied
-		// instance, and place it in the table.
-		rval = service;
-		classToSingleton.put(service.getClass(), service);
-	  }
-	return rval;
-  }
+        // create an unmodifiable version of this list
+        implementers = Collections.unmodifiableList(tmp);
+        logger.info("***** OrderedServiceImpl implementers:\n {}", implementers);
+        return implementers;
+    }
+
+    /**
+     * If a service implements multiple APIs managed by 'ServiceLoader', a
+     * separate instance is created for each API. This method ensures that
+     * the first instance is used in all of the lists.
+     *
+     * @param service this is the object created by ServiceLoader
+     * @return the object to use in place of 'service'. If 'service' is the first
+     *     object of this class created by ServiceLoader, it is returned. If not,
+     *     the object of this class that was initially created is returned
+     *     instead.
+     */
+    private static synchronized OrderedService getSingleton(OrderedService service) {
+        // see if we already have an instance of this class
+        OrderedService rval = classToSingleton.get(service.getClass());
+        if (rval == null) {
+            // No previous instance of this class exists -- use the supplied
+            // instance, and place it in the table.
+            rval = service;
+            classToSingleton.put(service.getClass(), service);
+        }
+        return rval;
+    }
 }

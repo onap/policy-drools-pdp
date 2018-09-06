@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.drools.utils;
 
 import static org.junit.Assert.assertEquals;
@@ -62,23 +63,23 @@ public class ReflectionUtilTest {
     
     @Test(expected = IllegalArgumentException.class)
     public void testException1() {
-    	ReflectionUtil.fetchClass(null, "org.onap.policy.drools.utils.ReflectionUtil");
+        ReflectionUtil.fetchClass(null, "org.onap.policy.drools.utils.ReflectionUtil");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testException2() {
         Class<?> class1;
-		try {
-			class1 = Class.forName("org.onap.policy.drools.utils.ReflectionUtil");
-	        ClassLoader classLoader = class1.getClassLoader();
-	    	ReflectionUtil.fetchClass(classLoader, null);
-		} catch (ClassNotFoundException e) {
-			fail();
-		}
+        try {
+            class1 = Class.forName("org.onap.policy.drools.utils.ReflectionUtil");
+            ClassLoader classLoader = class1.getClassLoader();
+            ReflectionUtil.fetchClass(classLoader, null);
+        } catch (ClassNotFoundException e) {
+            fail();
+        }
     }
 
     @Test
     public void testException3() throws ClassNotFoundException {
-    	assertNull(ReflectionUtil.fetchClass(ClassLoader.getSystemClassLoader(), "foo.bar"));
+        assertNull(ReflectionUtil.fetchClass(ClassLoader.getSystemClassLoader(), "foo.bar"));
     }
 }

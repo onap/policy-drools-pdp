@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.onap.policy.drools.utils.Reference;
 
@@ -54,22 +55,22 @@ public class ReferenceTest {
     public void testCompareAndSet() {
         Reference<Integer> val = new Reference<>(null);
 
-        Integer v = 100;
+        Integer valCompare = 100;
 
         // try an incorrect value - should fail and leave value unchanged
-        assertFalse(val.compareAndSet(500, v));
+        assertFalse(val.compareAndSet(500, valCompare));
         assertNull(val.get());
 
-        assertTrue(val.compareAndSet(null, v));
-        assertEquals(v, val.get());
+        assertTrue(val.compareAndSet(null, valCompare));
+        assertEquals(valCompare, val.get());
 
         // try an incorrect value - should fail and leave value unchanged
         Integer v2 = 200;
         assertFalse(val.compareAndSet(600, v2));
-        assertEquals(v, val.get());
+        assertEquals(valCompare, val.get());
 
         // now try again, this time with the correct value
-        assertTrue(val.compareAndSet(v, v2));
+        assertTrue(val.compareAndSet(valCompare, v2));
         assertEquals(v2, val.get());
 
         Integer v3 = 300;
