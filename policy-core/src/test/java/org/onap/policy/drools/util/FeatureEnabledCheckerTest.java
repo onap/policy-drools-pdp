@@ -22,6 +22,7 @@ package org.onap.policy.drools.util;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Properties;
 import org.junit.Test;
 
