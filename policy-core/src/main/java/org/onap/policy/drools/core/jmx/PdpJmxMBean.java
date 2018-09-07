@@ -22,6 +22,7 @@ package org.onap.policy.drools.core.jmx;
 
 public interface PdpJmxMBean {
 
-	public long getRulesFired();
-	public long getUpdates();
+    public long getRulesFired();
+    
+    public long getUpdates();
 }

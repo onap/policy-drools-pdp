@@ -35,36 +35,41 @@ import org.slf4j.LoggerFactory;
 
 public class PdpJmxListener {
 
-	public static final Logger logger = LoggerFactory.getLogger(PdpJmxListener.class);
+    public static final Logger logger = LoggerFactory.getLogger(PdpJmxListener.class);
 
-	private PdpJmxListener() {
-	}
+    private PdpJmxListener() {
+    }
 
-	public static void stop() {
-		final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-		try {
-			server.unregisterMBean(new ObjectName("PolicyEngine:type=PdpJmx"));
-		} catch (MBeanRegistrationException | InstanceNotFoundException
-				| MalformedObjectNameException e) {
-			logger.error("PdpJmxListener.stop(): " + 
-				         "Could not unregister PolicyEngine:type=PdpJmx MBean " +
-					     "with the MBean server", e);
-		}
-		
-	}
+    /**
+     * Stop the listener.
+     */
+    public static void stop() {
+        final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        try {
+            server.unregisterMBean(new ObjectName("PolicyEngine:type=PdpJmx"));
+        } catch (MBeanRegistrationException | InstanceNotFoundException
+                | MalformedObjectNameException e) {
+            logger.error("PdpJmxListener.stop(): " 
+                    + "Could not unregister PolicyEngine:type=PdpJmx MBean "
+                    + "with the MBean server", e);
+        }
 
-	
-	public static void start() {
-		final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-		try {
-			server.registerMBean(PdpJmx.getInstance(), new ObjectName("PolicyEngine:type=PdpJmx"));
-		} catch (InstanceAlreadyExistsException | MBeanRegistrationException
-				| NotCompliantMBeanException | MalformedObjectNameException e) {
-			logger.error("PdpJmxListener.start(): " + 
-			             "Could not unregister PolicyEngine:type=PdpJmx MBean " +
-				         "with the MBean server", e);
-		}
-		
-	}
+    }
+
+    /**
+     *  Start.
+     */
+    public static void start() {
+        final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        try {
+            server.registerMBean(PdpJmx.getInstance(), new ObjectName("PolicyEngine:type=PdpJmx"));
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException
+                | NotCompliantMBeanException | MalformedObjectNameException e) {
+            logger.error("PdpJmxListener.start(): "
+                    + "Could not unregister PolicyEngine:type=PdpJmx MBean "
+                    + "with the MBean server", e);
+        }
+
+    }
 
 }

@@ -59,7 +59,7 @@ public class Lock<T> {
          * The requester was not the owner, nor was it waiting in the queue.
          */
         NOT_FOUND
-    };
+    }
 
     /**
      * The last owner to grab the lock, never {@code null}.
@@ -75,6 +75,7 @@ public class Lock<T> {
     private LinkedHashMap<String, T> requester2item = new LinkedHashMap<>(5);
 
     /**
+     * Constructor.
      * 
      * @param owner the current owner of this lock
      */
@@ -83,6 +84,7 @@ public class Lock<T> {
     }
 
     /**
+     * Get owner.
      * 
      * @return the current owner of the lock, or the last owner of the lock, if the lock
      *         is not currently owned. (This will never be {@code null}.)
@@ -94,7 +96,7 @@ public class Lock<T> {
     /**
      * Adds a new requester to the queue of requesters.
      * 
-     * @param requester
+     * @param requester the requester
      * @param item to be associated with the requester, must not be {@code null}
      * @return {@code true} if the requester was added, {@code false} if it already owns
      *         the lock or is already in the queue
@@ -123,7 +125,7 @@ public class Lock<T> {
      * item associated with the requester, it is unable to notify the new owner that it's
      * the new owner; that is left up to the code that invokes this method.
      * 
-     * @param requester
+     * @param requester the requester
      * @param newOwner the new owner info is placed here, if the result is <i>RELOCKED</i>
      * @return the result
      */

@@ -32,76 +32,71 @@ import org.onap.policy.drools.utils.OrderedServiceImpl;
  * return a 'void' value. In other cases, such as 'activatePolicySession',
  * may 
  */
-public interface PolicySessionFeatureAPI extends OrderedService
-{
-  /**
-   * 'FeatureAPI.impl.getList()' returns an ordered list of objects
-   * implementing the 'FeatureAPI' interface.
-   */
-  public static OrderedServiceImpl<PolicySessionFeatureAPI> impl =
-	new OrderedServiceImpl<>(PolicySessionFeatureAPI.class);
+public interface PolicySessionFeatureAPI extends OrderedService {
+    /**
+     * 'FeatureAPI.impl.getList()' returns an ordered list of objects
+     * implementing the 'FeatureAPI' interface.
+     */
+    public static OrderedServiceImpl<PolicySessionFeatureAPI> impl =
+            new OrderedServiceImpl<>(PolicySessionFeatureAPI.class);
 
-  /**
-   * This method is called during initialization at a point right after
-   * 'PolicyContainer' initialization has completed.
-   *
-   * @param args standard 'main' arguments, which are currently ignored
-   * @param configDir the relative directory containing configuration files
-   */
-  public default void globalInit(String[] args, String configDir) {}
+    /**
+     * This method is called during initialization at a point right after
+     * 'PolicyContainer' initialization has completed.
+     *
+     * @param args standard 'main' arguments, which are currently ignored
+     * @param configDir the relative directory containing configuration files
+     */
+    public default void globalInit(String[] args, String configDir) {}
 
-  /**
-   * This method is used to create a 'KieSession' as part of a
-   * 'PolicyContainer'. The caller of this method will iterate over the
-   * implementers of this interface until one returns a non-null value.
-   *
-   * @param policyContainer the 'PolicyContainer' instance containing this
-   *	session
-   * @param name the name of the KieSession (which is also the name of
-   *	the associated PolicySession)
-   * @param kieBaseName the name of the 'KieBase' instance containing
-   *	this session
-   * @return a new KieSession, if one was created, or 'null' if not
-   *	(this depends on the capabilities and state of the object implementing
-   *	this interface)
-   */
-  public default KieSession activatePolicySession
-	(PolicyContainer policyContainer, String name, String kieBaseName)
-  {
-	return null;
-  }
+    /**
+     * This method is used to create a 'KieSession' as part of a
+     * 'PolicyContainer'. The caller of this method will iterate over the
+     * implementers of this interface until one returns a non-null value.
+     *
+     * @param policyContainer the 'PolicyContainer' instance containing this
+     *     session
+     * @param name the name of the KieSession (which is also the name of
+     *     the associated PolicySession)
+     * @param kieBaseName the name of the 'KieBase' instance containing
+     *     this session
+     * @return a new KieSession, if one was created, or 'null' if not
+     *     (this depends on the capabilities and state of the object implementing
+     *     this interface)
+     */
+    public default KieSession activatePolicySession(PolicyContainer policyContainer, String name, String kieBaseName) {
+        return null;
+    }
 
-  /**
-   * This method is called after a new 'PolicySession' has been initialized,
-   * and linked to the 'PolicyContainer'.
-   *
-   * @param policySession the new 'PolicySession' instance
-   */
-  public default void newPolicySession(PolicySession policySession) {}
+    /**
+     * This method is called after a new 'PolicySession' has been initialized,
+     * and linked to the 'PolicyContainer'.
+     *
+     * @param policySession the new 'PolicySession' instance
+     */
+    public default void newPolicySession(PolicySession policySession) {}
 
-  /**
-   * This method is called to select the 'ThreadModel' instance associated
-   * with a 'PolicySession' instance.
-   */
-  public default PolicySession.ThreadModel selectThreadModel
-	(PolicySession session)
-  {
-	return null;
-  }
+    /**
+     * This method is called to select the 'ThreadModel' instance associated
+     * with a 'PolicySession' instance.
+     */
+    public default PolicySession.ThreadModel selectThreadModel(PolicySession session) {
+        return null;
+    }
 
-  /**
-   * This method is called after 'KieSession.dispose()' is called
-   *
-   * @param policySession the 'PolicySession' object that wrapped the
-   *	'KieSession'
-   */
-  public default void disposeKieSession(PolicySession policySession) {}
+    /**
+     * This method is called after 'KieSession.dispose()' is called.
+     *
+     * @param policySession the 'PolicySession' object that wrapped the
+     *     'KieSession'
+     */
+    public default void disposeKieSession(PolicySession policySession) {}
 
-  /**
-   * This method is called after 'KieSession.destroy()' is called
-   *
-   * @param policySession the 'PolicySession' object that wrapped the
-   *	'KieSession'
-   */
-  public default void destroyKieSession(PolicySession policySession) {}
+    /**
+     * This method is called after 'KieSession.destroy()' is called.
+     *
+     * @param policySession the 'PolicySession' object that wrapped the
+     *     'KieSession'
+     */
+    public default void destroyKieSession(PolicySession policySession) {}
 }

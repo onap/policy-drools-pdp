@@ -67,7 +67,7 @@ public class SimpleLockManager {
     private final SortedSet<Data> locks = new TreeSet<>();
 
     /**
-     * 
+     * Constructor.
      */
     public SimpleLockManager() {
         super();
@@ -78,8 +78,8 @@ public class SimpleLockManager {
      * it's the same owner; the same owner can use {@link #refresh(String, String, int)
      * refresh()}, instead, to extend a lock on a resource.
      * 
-     * @param resourceId
-     * @param owner
+     * @param resourceId resource id
+     * @param owner owner
      * @param holdSec the amount of time, in seconds, that the lock should be held
      * @return {@code true} if locked, {@code false} if the resource is already locked by
      *         a different owner
@@ -97,10 +97,10 @@ public class SimpleLockManager {
 
         boolean locked = false;
         
-        synchronized(locker) {
+        synchronized (locker) {
             cleanUpLocks();
 
-            if(!resource2data.containsKey(resourceId)) {
+            if (!resource2data.containsKey(resourceId)) {
                 Data data = new Data(owner, resourceId, currentTime.getMillis() + TimeUnit.SECONDS.toMillis(holdSec));
                 resource2data.put(resourceId, data);
                 locks.add(data);
@@ -116,8 +116,8 @@ public class SimpleLockManager {
     /**
      * Attempts to refresh a lock on a resource.
      * 
-     * @param resourceId
-     * @param owner
+     * @param resourceId resource id
+     * @param owner owner
      * @param holdSec the amount of time, in seconds, that the lock should be held
      * @return {@code true} if locked, {@code false} if the resource is not currently
      *         locked by the given owner
@@ -135,7 +135,7 @@ public class SimpleLockManager {
 
         boolean refreshed = false;
         
-        synchronized(locker) {
+        synchronized (locker) {
             cleanUpLocks();
 
             Data existingLock = resource2data.get(resourceId);
@@ -159,8 +159,8 @@ public class SimpleLockManager {
     /**
      * Unlocks a resource.
      * 
-     * @param resourceId
-     * @param owner
+     * @param resourceId resource id
+     * @param owner owner
      * @return {@code true} if unlocked, {@code false} if the given owner does not
      *         currently hold a lock on the resource
      * @throws IllegalArgumentException if the resourceId or owner is {@code null}
@@ -176,11 +176,11 @@ public class SimpleLockManager {
         
         Data data;
         
-        synchronized(locker) {
+        synchronized (locker) {
             cleanUpLocks();
             
-            if((data = resource2data.get(resourceId)) != null) {
-                if(owner.equals(data.getOwner())) {
+            if ((data = resource2data.get(resourceId)) != null) {
+                if (owner.equals(data.getOwner())) {
                     resource2data.remove(resourceId);
                     locks.remove(data);
                     
@@ -199,7 +199,7 @@ public class SimpleLockManager {
     /**
      * Determines if a resource is locked by anyone.
      * 
-     * @param resourceId
+     * @param resourceId resource id
      * @return {@code true} if the resource is locked, {@code false} otherwise
      * @throws IllegalArgumentException if the resourceId is {@code null}
      */
@@ -211,7 +211,7 @@ public class SimpleLockManager {
 
         boolean locked;
         
-        synchronized(locker) {
+        synchronized (locker) {
             cleanUpLocks();
             
             locked = resource2data.containsKey(resourceId);
@@ -225,8 +225,8 @@ public class SimpleLockManager {
     /**
      * Determines if a resource is locked by a particular owner.
      * 
-     * @param resourceId
-     * @param owner
+     * @param resourceId resource id
+     * @param owner owner
      * @return {@code true} if the resource is locked, {@code false} otherwise
      * @throws IllegalArgumentException if the resourceId or owner is {@code null}
      */
@@ -242,7 +242,7 @@ public class SimpleLockManager {
 
         Data data;
         
-        synchronized(locker) {
+        synchronized (locker) {
             cleanUpLocks();
             
             data = resource2data.get(resourceId);
@@ -260,14 +260,13 @@ public class SimpleLockManager {
     private void cleanUpLocks() {
         long tcur = currentTime.getMillis();
         
-        synchronized(locker) {
+        synchronized (locker) {
             Iterator<Data> it = locks.iterator();
-            while(it.hasNext()) {
-                Data d = it.next();
-                if(d.getExpirationMs() <= tcur) {
+            while (it.hasNext()) {
+                Data data = it.next();
+                if (data.getExpirationMs() <= tcur) {
                     it.remove();
-                    resource2data.remove(d.getResource());
-                    
+                    resource2data.remove(data.getResource());
                 } else {
                     break;
                 }
@@ -307,10 +306,11 @@ public class SimpleLockManager {
         private final long texpireMs;
         
         /**
+         * Constructor.
          * 
-         * @param resource
-         * @param owner
-         * @param texpireMs
+         * @param resource resource
+         * @param owner owner
+         * @param texpireMs time expire in milliseconds
          */
         public Data(String owner, String resource, long texpireMs) {
             this.owner = owner;
@@ -331,12 +331,14 @@ public class SimpleLockManager {
         }
 
         @Override
-        public int compareTo(Data o) {
-            int diff = Long.compare(texpireMs, o.texpireMs);
-            if(diff == 0)
-                diff = resource.compareTo(o.resource);
-            if(diff == 0)
-                diff = owner.compareTo(o.owner);
+        public int compareTo(Data data) {
+            int diff = Long.compare(texpireMs, data.texpireMs);
+            if (diff == 0) {
+                diff = resource.compareTo(data.resource);
+            }
+            if (diff == 0) {
+                diff = owner.compareTo(data.owner);
+            }
             return diff;
         }
 
@@ -352,23 +354,30 @@ public class SimpleLockManager {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             Data other = (Data) obj;
             if (owner == null) {
-                if (other.owner != null)
+                if (other.owner != null) {
                     return false;
-            } else if (!owner.equals(other.owner))
+                }
+            } else if (!owner.equals(other.owner)) {
                 return false;
+            }
             if (resource == null) {
-                if (other.resource != null)
+                if (other.resource != null) {
                     return false;
-            } else if (!resource.equals(other.resource))
+                }
+            } else if (!resource.equals(other.resource)) {
                 return false;
+            }
             return (texpireMs == other.texpireMs);
         }
     }

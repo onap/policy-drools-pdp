@@ -33,6 +33,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.onap.policy.drools.core.lock.TestUtils.expectException;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,6 +80,9 @@ public class PolicyResourceLockManagerTest {
         PolicyResourceLockManager.setFactory(saveFactory);
     }
 
+    /**
+     * Set up.
+     */
     @Before
     public void setUp() {
         impl1 = mock(PolicyResourceLockFeatureAPI.class);
@@ -104,7 +108,7 @@ public class PolicyResourceLockManagerTest {
     /**
      * Initializes an implementer so it always returns {@code null}.
      * 
-     * @param impl
+     * @param impl implementer
      */
     private void initImplementer(PolicyResourceLockFeatureAPI impl) {
         when(impl.beforeLock(anyString(), anyString(), anyInt())).thenReturn(OperResult.OPER_UNHANDLED);

@@ -24,29 +24,29 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class PdpJmx implements PdpJmxMBean  {
 
-	private static PdpJmx instance = new PdpJmx();
-	private final AtomicLong updates = new AtomicLong();
-	private final AtomicLong actions = new AtomicLong();
+    private static PdpJmx instance = new PdpJmx();
+    private final AtomicLong updates = new AtomicLong();
+    private final AtomicLong actions = new AtomicLong();
 
-	public static PdpJmx getInstance() {
-		return instance;
-	}
+    public static PdpJmx getInstance() {
+        return instance;
+    }
 
-	@Override	
-	public long getUpdates(){
-		return updates.longValue();
-	}
+    @Override
+    public long getUpdates() {
+        return updates.longValue();
+    }
 
-	@Override
-	public long getRulesFired(){
-		return actions.longValue();
-	}
+    @Override
+    public long getRulesFired() {
+        return actions.longValue();
+    }
 
-	public void updateOccured(){
-		updates.incrementAndGet();
-	}
+    public void updateOccured() {
+        updates.incrementAndGet();
+    }
 
-	public void ruleFired(){
-		actions.incrementAndGet();
-	}
+    public void ruleFired() {
+        actions.incrementAndGet();
+    }
 }

@@ -26,8 +26,8 @@ public class TestUtils {
      * Invokes a function that is expected to throw an exception.
      * 
      * @param clazz class of exception that is expected
-     * @param func
-     * @return
+     * @param func function
+     * @return object
      */
     public static <T> T expectException(Class<T> clazz, VoidFunction func) {
         try {
