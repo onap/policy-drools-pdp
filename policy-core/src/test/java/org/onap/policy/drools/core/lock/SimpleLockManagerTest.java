@@ -24,7 +24,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.onap.policy.drools.core.lock.TestUtils.expectException;
+import static org.onap.policy.drools.core.lock.UtilsTest.expectException;
+
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -78,6 +79,9 @@ public class SimpleLockManagerTest {
         Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, savedTime);
     }
 
+    /**
+     * Set up.
+     */
     @Before
     public void setUp() {
         testTime = new TestTime();
@@ -112,18 +116,18 @@ public class SimpleLockManagerTest {
         mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         
         // sleep half of the cycle
-        testTime.sleep(MAX_AGE_MS/2);
+        testTime.sleep(MAX_AGE_MS / 2);
         assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
         
         // extend the lock
         mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
         
         // verify still locked after sleeping the other half of the cycle
-        testTime.sleep(MAX_AGE_MS/2+1);
+        testTime.sleep(MAX_AGE_MS / 2 + 1);
         assertTrue(mgr.isLockedBy(RESOURCE_A, OWNER1));
         
         // and should release after another half cycle
-        testTime.sleep(MAX_AGE_MS/2);
+        testTime.sleep(MAX_AGE_MS / 2);
         assertFalse(mgr.isLockedBy(RESOURCE_A, OWNER1));
     }
 
@@ -338,13 +342,13 @@ public class SimpleLockManagerTest {
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
         
-        testTime.sleep(MAX_AGE_MS/4);
+        testTime.sleep(MAX_AGE_MS / 4);
         mgr.lock(RESOURCE_C, OWNER1, MAX_AGE_SEC);
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
         assertTrue(mgr.isLocked(RESOURCE_C));
         
-        testTime.sleep(MAX_AGE_MS/4);
+        testTime.sleep(MAX_AGE_MS / 4);
         mgr.lock(RESOURCE_D, OWNER1, MAX_AGE_SEC);
         assertTrue(mgr.isLocked(RESOURCE_A));
         assertTrue(mgr.isLocked(RESOURCE_B));
@@ -352,19 +356,19 @@ public class SimpleLockManagerTest {
         assertTrue(mgr.isLocked(RESOURCE_D));
         
         // sleep remainder of max age - first two should expire
-        testTime.sleep(MAX_AGE_MS/2);
+        testTime.sleep(MAX_AGE_MS / 2);
         assertFalse(mgr.isLocked(RESOURCE_A));
         assertFalse(mgr.isLocked(RESOURCE_B));
         assertTrue(mgr.isLocked(RESOURCE_C));
         assertTrue(mgr.isLocked(RESOURCE_D));
         
         // another quarter - next one should expire
-        testTime.sleep(MAX_AGE_MS/4);
+        testTime.sleep(MAX_AGE_MS / 4);
         assertFalse(mgr.isLocked(RESOURCE_C));
         assertTrue(mgr.isLocked(RESOURCE_D));
         
         // another quarter - last one should expire
-        testTime.sleep(MAX_AGE_MS/4);
+        testTime.sleep(MAX_AGE_MS / 4);
         assertFalse(mgr.isLocked(RESOURCE_D));
     }
 
@@ -389,9 +393,7 @@ public class SimpleLockManagerTest {
         long ttime = System.currentTimeMillis() + 50;
         Data data = new Data(OWNER1, RESOURCE_A, ttime);
         Data dataSame = new Data(OWNER1, RESOURCE_A, ttime);
-        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime+1);
-        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
-        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
+        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime + 1);
         
         assertEquals(0, data.compareTo(data));
         assertEquals(0, data.compareTo(dataSame));
@@ -399,6 +401,9 @@ public class SimpleLockManagerTest {
         assertTrue(data.compareTo(dataDiffExpire) < 0);
         assertTrue(dataDiffExpire.compareTo(data) > 0);
         
+        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
+        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
+
         assertTrue(data.compareTo(dataDiffOwner) < 0);
         assertTrue(dataDiffOwner.compareTo(data) > 0);
         
@@ -411,17 +416,19 @@ public class SimpleLockManagerTest {
         long ttime = System.currentTimeMillis() + 1;
         Data data = new Data(OWNER1, RESOURCE_A, ttime);
         Data dataSame = new Data(OWNER1, RESOURCE_A, ttime);
-        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime+1);
+        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime + 1);
         Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
-        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
-        Data dataNullOwner = new Data(null, RESOURCE_A, ttime);
-        Data dataNullResource = new Data(OWNER1, null, ttime);
         
         int hc1 = data.hashCode();
         assertEquals(hc1, dataSame.hashCode());
 
         assertTrue(hc1 != dataDiffExpire.hashCode());
         assertTrue(hc1 != dataDiffOwner.hashCode());
+
+        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
+        Data dataNullOwner = new Data(null, RESOURCE_A, ttime);
+        Data dataNullResource = new Data(OWNER1, null, ttime);
+        
         assertTrue(hc1 != dataDiffResource.hashCode());
         assertTrue(hc1 != dataNullOwner.hashCode());
         assertTrue(hc1 != dataNullResource.hashCode());
@@ -432,14 +439,13 @@ public class SimpleLockManagerTest {
         long ttime = System.currentTimeMillis() + 50;
         Data data = new Data(OWNER1, RESOURCE_A, ttime);
         Data dataSame = new Data(OWNER1, RESOURCE_A, ttime);
-        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime+1);
-        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
-        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
-        Data dataNullOwner = new Data(null, RESOURCE_A, ttime);
-        Data dataNullResource = new Data(OWNER1, null, ttime);
+        Data dataDiffExpire = new Data(OWNER1, RESOURCE_A, ttime + 1);
         
         assertTrue(data.equals(data));
         assertTrue(data.equals(dataSame));
+
+        Data dataDiffOwner = new Data(OWNER2, RESOURCE_A, ttime);
+        Data dataDiffResource = new Data(OWNER1, RESOURCE_B, ttime);
 
         assertFalse(data.equals(dataDiffExpire));
         assertFalse(data.equals(dataDiffOwner));
@@ -447,6 +453,9 @@ public class SimpleLockManagerTest {
 
         assertFalse(data.equals(null));
         assertFalse(data.equals("string"));
+
+        Data dataNullOwner = new Data(null, RESOURCE_A, ttime);
+        Data dataNullResource = new Data(OWNER1, null, ttime);
 
         assertFalse(dataNullOwner.equals(data));
         assertFalse(dataNullResource.equals(data));
@@ -464,7 +473,7 @@ public class SimpleLockManagerTest {
 
         String[] resources = {RESOURCE_A, RESOURCE_B};
 
-        AtomicInteger nfail = new AtomicInteger(0);
+        final AtomicInteger nfail = new AtomicInteger(0);
 
         CountDownLatch stopper = new CountDownLatch(1);
         CountDownLatch completed = new CountDownLatch(nthreads);
@@ -472,7 +481,7 @@ public class SimpleLockManagerTest {
         for (int x = 0; x < nthreads; ++x) {
             String owner = "owner." + x;
 
-            Thread t = new Thread(() -> {
+            Thread thread = new Thread(() -> {
 
                 for (int y = 0; y < nlocks; ++y) {
                     String res = resources[y % resources.length];
@@ -495,8 +504,8 @@ public class SimpleLockManagerTest {
                 completed.countDown();
             });
 
-            t.setDaemon(true);
-            threads.add(t);
+            thread.setDaemon(true);
+            threads.add(thread);
         }
 
         // start the threads

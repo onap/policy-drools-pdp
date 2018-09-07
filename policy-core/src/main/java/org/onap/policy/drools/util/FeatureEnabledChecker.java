@@ -28,7 +28,7 @@ import java.util.Properties;
 public class FeatureEnabledChecker {
 
     /**
-     * 
+     * Constructor.
      */
     private FeatureEnabledChecker() {
         super();

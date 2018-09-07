@@ -22,6 +22,7 @@ package org.onap.policy.drools.core.lock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
@@ -33,6 +34,9 @@ public class PolicyResourceLockFeatureAPITest {
 
     private PolicyResourceLockFeatureAPI api;
 
+    /**
+     * set up.
+     */
     @Before
     public void setUp() {
         api = new PolicyResourceLockFeatureAPI() {

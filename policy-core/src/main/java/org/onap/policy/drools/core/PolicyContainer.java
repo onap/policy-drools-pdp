@@ -79,7 +79,7 @@ public class PolicyContainer implements Startable {
      * dependencies from the Maven repository to create the 'PolicyContainer' and associated
      * 'KieContainer'.
      *
-     * An exception occurs if the creation of the 'KieContainer' fails.
+     * <p>An exception occurs if the creation of the 'KieContainer' fails.
      *
      * @param groupId the 'groupId' associated with the artifact
      * @param artifactId the artifact name
@@ -94,7 +94,7 @@ public class PolicyContainer implements Startable {
      * associated artifact and remaining dependencies from the Maven repository to create the
      * 'PolicyContainer' and associated 'KieContainer'.
      *
-     * An exception occurs if the creation of the 'KieContainer' fails.
+     * <p>An exception occurs if the creation of the 'KieContainer' fails.
      *
      * @param releaseId indicates the artifact that is to be installed in this container
      */
@@ -109,7 +109,7 @@ public class PolicyContainer implements Startable {
         }
         synchronized (containers) {
             if (newReleaseId != null) {
-                logger.info("Add a new kieContainer in containers: releaseId: " + newReleaseId.toString());
+                logger.info("Add a new kieContainer in containers: releaseId: {}", newReleaseId.toString());
             } else {
                 logger.warn("input releaseId is null");
             }
@@ -133,7 +133,7 @@ public class PolicyContainer implements Startable {
     private ReleaseId loadArtifact(String groupId, String artifactId, String version) {
         String[] versions = version.split(",");
         if (versions.length > 1) {
-            logger.info("Multiple KieContainer versions are specified: " + version);
+            logger.info("Multiple KieContainer versions are specified: {}", version);
         }
 
         // indicates a 'newKieContainer' call failed
@@ -147,7 +147,7 @@ public class PolicyContainer implements Startable {
             try {
                 // Create a 'ReleaseId' object describing the artifact, and
                 // create a 'KieContainer' based upon it.
-                logger.info("Create new KieContainer start, version = " + ver + " ...");
+                logger.info("Create new KieContainer start, version = {} ...", ver);
 
                 releaseId = kieServices.newReleaseId(groupId, artifactId, ver);
                 kieContainer = kieServices.newKieContainer(releaseId);
@@ -168,6 +168,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get name.
+     * 
      * @return the name of the container, which is the String equivalent of the 'ReleaseId'. It has
      *         the form:
      *
@@ -181,6 +183,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get kie container.
+     * 
      * @return the associated 'KieContainer' instance
      */
     public KieContainer getKieContainer() {
@@ -188,6 +192,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get class loader.
+     * 
      * @return the 'ClassLoader' associated with the 'KieContainer' instance
      */
     public ClassLoader getClassLoader() {
@@ -195,6 +201,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get group Id.
+     * 
      * @return the Maven GroupId of the top-level artifact wrapped by the container.
      */
     public String getGroupId() {
@@ -202,6 +210,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get artifact id.
+     * 
      * @return the Maven ArtifactId of the top-level artifact wrapped by the container.
      */
     public String getArtifactId() {
@@ -209,6 +219,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get version.
+     * 
      * @return the version of the top-level artifact wrapped by the container (this may change as
      *         updates occur)
      */
@@ -236,10 +248,10 @@ public class PolicyContainer implements Startable {
      */
     private PolicySession activatePolicySession(String name, String kieBaseName) {
         synchronized (sessions) {
-            logger.info("activatePolicySession:name :" + name);
+            logger.info("activatePolicySession:name :{}", name);
             PolicySession session = sessions.get(name);
             if (session != null) {
-                logger.info("activatePolicySession:session - " + session.getFullName() + " is returned.");
+                logger.info("activatePolicySession:session - {} is returned.", session.getFullName());
                 return session;
             }
             KieSession kieSession = null;
@@ -275,7 +287,7 @@ public class PolicyContainer implements Startable {
                         logger.error(ERROR_STRING + feature.getClass().getName(), e);
                     }
                 }
-                logger.info("activatePolicySession:new session was added in sessions with name " + name);
+                logger.info("activatePolicySession:new session was added in sessions with name {}", name);
             }
             logger.info("activatePolicySession:session - " + (session == null ? "null" : session.getFullName())
                     + " is returned.");
@@ -310,15 +322,15 @@ public class PolicyContainer implements Startable {
         // fetch KieBase, and verify it belongs to this KieContainer
         boolean match = false;
         KieBase kieBase = kieSession.getKieBase();
-        logger.info("adoptKieSession:kieBase: " + kieBase);
+        logger.info("adoptKieSession:kieBase: {}", kieBase);
         for (String kieBaseName : kieContainer.getKieBaseNames()) {
-            logger.info("adoptKieSession:kieBaseName: " + kieBaseName);
+            logger.info("adoptKieSession:kieBaseName: {}", kieBaseName);
             if (kieBase == kieContainer.getKieBase(kieBaseName)) {
                 match = true;
                 break;
             }
         }
-        logger.info("adoptKieSession:match " + match);
+        logger.info("adoptKieSession:match {}", match);
         // if we don't have a match yet, the last chance is to look at the
         // default KieBase, if it exists
         if (!match && kieBase != kieContainer.getKieBase()) {
@@ -333,7 +345,7 @@ public class PolicyContainer implements Startable {
 
             // create the new 'PolicySession', add it to the table,
             // and return the object to the caller
-            logger.info("adoptKieSession:create a new policySession with name " + name);
+            logger.info("adoptKieSession:create a new policySession with name {}", name);
             PolicySession policySession = new PolicySession(name, this, kieSession);
             sessions.put(name, policySession);
 
@@ -378,7 +390,7 @@ public class PolicyContainer implements Startable {
         if (releaseId == null) {
             logger.warn("updateToVersion:input releaseId is null");
         } else {
-            logger.info("updateToVersion:releaseId " + releaseId.toString());
+            logger.info("updateToVersion:releaseId {}", releaseId);
         }
 
         // stop all session threads
@@ -399,6 +411,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get policy containers.
+     * 
      * @return all existing 'PolicyContainer' instances
      */
     public static Collection<PolicyContainer> getPolicyContainers() {
@@ -408,6 +422,8 @@ public class PolicyContainer implements Startable {
     }
 
     /**
+     * Get policy sessions.
+     * 
      * @return all of the 'PolicySession' instances
      */
     public Collection<PolicySession> getPolicySessions() {
@@ -454,7 +470,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * Insert a fact into a specific named session
+     * Insert a fact into a specific named session.
      *
      * @param name this is the session name
      * @param object this is the fact to be inserted into the session
@@ -475,7 +491,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * Insert a fact into all sessions associated with this container
+     * Insert a fact into all sessions associated with this container.
      *
      * @param object this is the fact to be inserted into the sessions
      * @return 'true' if the fact was inserted into at least one session, 'false' if not
@@ -660,15 +676,15 @@ public class PolicyContainer implements Startable {
     /**
      * This method does the following:
      *
-     * 1) Initializes logging 2) Starts the DroolsPDP Integrity Monitor 3) Initilaizes persistence
+     * <p>1) Initializes logging 2) Starts the DroolsPDP Integrity Monitor 3) Initilaizes persistence
      *
-     * It no longer reads in properties files, o creates 'PolicyContainer' instances.
+     * <p>It no longer reads in properties files, o creates 'PolicyContainer' instances.
      *
      * @param args standard 'main' arguments, which are currently ignored
      */
     public static void globalInit(String[] args) {
         String configDir = "config";
-        logger.info("PolicyContainer.main: configDir=" + configDir);
+        logger.info("PolicyContainer.main: configDir={}", configDir);
 
         // invoke 'globalInit' on all of the features
         for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
@@ -681,7 +697,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * Fetch the adjunct object associated with a given feature
+     * Fetch the adjunct object associated with a given feature.
      *
      * @param object this is typically the singleton feature object that is used as a key, but it
      *        might also be useful to use nested objects within the feature as keys.
@@ -692,7 +708,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * Store the adjunct object associated with a given feature
+     * Store the adjunct object associated with a given feature.
      *
      * @param object this is typically the singleton feature object that is used as a key, but it
      *        might also be useful to use nested objects within the feature as keys.

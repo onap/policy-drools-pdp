@@ -37,16 +37,16 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.scanner.MavenRepository;
 
 /**
- * Kie related utilities
+ * Kie related utilities.
  */
 public class KieUtils {
 
-	private KieUtils() {
-		throw new IllegalStateException("Utility class");
-	}
-	
+    private KieUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
-     * Installs a rules artifact in the local maven repository
+     * Installs a rules artifact in the local maven repository.
      *
      * @param kmodule kmodule specification
      * @param pom pom
@@ -56,7 +56,8 @@ public class KieUtils {
      * @return releaseId result o a sucessful installation
      * @throws IOException error accessing necessary resources
      */
-    public static ReleaseId installArtifact(String kmodule, String pom, String drlKJarPath, String drl) throws IOException {
+    public static ReleaseId installArtifact(String kmodule, String pom, String drlKJarPath, 
+            String drl) throws IOException {
         KieModuleModel kieModule = KieModuleModelImpl.fromXML(kmodule);
 
         final KieFileSystem kieFileSystem = KieServices.Factory.get().newKieFileSystem();
@@ -72,15 +73,15 @@ public class KieUtils {
         pomFile.deleteOnExit();
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        MavenRepository.getMavenRepository().
-            installArtifact(releaseId,
+        MavenRepository.getMavenRepository()
+            .installArtifact(releaseId,
                             (InternalKieModule) kieBuilder.getKieModule(),
                             pomFile);
         return releaseId;
     }
 
     /**
-     * Installs a rules artifact in the local maven repository
+     * Installs a rules artifact in the local maven repository.
      *
      * @param kmodule kmodule specification
      * @param pom pom
@@ -101,16 +102,17 @@ public class KieUtils {
         KieBuilder kieBuilder = kieBuild(kieFileSystem);
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        MavenRepository.getMavenRepository().
-            installArtifact(releaseId, (InternalKieModule) kieBuilder.getKieModule(), pom);
+        MavenRepository.getMavenRepository()
+            .installArtifact(releaseId, (InternalKieModule) kieBuilder.getKieModule(), pom);
         return releaseId;
     }
 
     private static KieBuilder kieBuild(KieFileSystem kieFileSystem) {
         KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(kieFileSystem);
         List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
-        if (messages != null && !messages.isEmpty())
+        if (messages != null && !messages.isEmpty()) {
             throw new IllegalArgumentException(messages.toString());
+        }
         return kieBuilder;
     }
 }
