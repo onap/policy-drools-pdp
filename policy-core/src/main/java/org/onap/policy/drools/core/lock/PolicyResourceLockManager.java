@@ -47,6 +47,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     }
 
     /**
+     * Get instance.
      * 
      * @return the manager singleton
      */
@@ -61,7 +62,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     /**
      * Sets the factory to be used by junit tests.
      * 
-     * @param factory
+     * @param factory the factory
      */
     protected static void setFactory(Factory factory) {
         PolicyResourceLockManager.factory = factory;
@@ -134,6 +135,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     }
 
     /**
+     * Is locked.
      * 
      * @throws IllegalArgumentException if the resourceId is {@code null}
      */
@@ -146,13 +148,14 @@ public class PolicyResourceLockManager extends SimpleLockManager {
 
         return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () -> 
 
-            // implementer didn't do the work - defer to the superclass
+           // implementer didn't do the work - defer to the superclass
            super.isLocked(resourceId)
         );
     }
 
     /**
-     * 
+     *  Is locked by.
+     *  
      * @throws IllegalArgumentException if the resourceId or owner is {@code null}
      */
     @Override
@@ -177,8 +180,8 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * of them returns a result other than <b>OPER_UNHANDLED</b>. If they all return
      * <b>OPER_UNHANDLED</b>, then it returns the result of applying the default function.
      * 
-     * @param interceptFunc
-     * @param defaultFunc
+     * @param interceptFunc intercept function
+     * @param defaultFunc default function
      * @return {@code true} if success, {@code false} otherwise
      */
     private boolean doBoolIntercept(Function<PolicyResourceLockFeatureAPI, OperResult> interceptFunc,
@@ -199,8 +202,8 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * @param continueValue if the implementer returns this value, then it continues to
      *        check addition implementers
      * @param func function to be applied to the implementers
-     * @return first non-null value returned by an implementer, <i>continueValue<i/> if
-     *         they all returned <i>continueValue<i/>
+     * @return first non-null value returned by an implementer, <i>continueValue</i> if
+     *       they all returned <i>continueValue</i>
      */
     private static <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureAPI, T> func) {
 
@@ -241,6 +244,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     public static class Factory {
 
         /**
+         * Get implementers.
          * 
          * @return the list of feature implementers
          */

@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is a wrapper around 'KieSession', which adds the following:
- * <p>
- * 1) A thread running 'KieSession.fireUntilHalt()'
+ * 
+ * <p>1) A thread running 'KieSession.fireUntilHalt()'
  * 2) Access to UEB
  * 3) Logging of events
  */
@@ -75,7 +75,7 @@ public class PolicySession
             new ThreadLocal<>();
 
     /**
-     * Internal constructor - create a 'PolicySession' instance
+     * Internal constructor - create a 'PolicySession' instance.
      *
      * @param name       the name of this 'PolicySession' (and 'kieSession')
      * @param container  the 'PolicyContainer' instance containing this session
@@ -91,6 +91,8 @@ public class PolicySession
     }
 
     /**
+     * Get policy container.
+     * 
      * @return the 'PolicyContainer' object containing this session
      */
     public PolicyContainer getPolicyContainer() {
@@ -98,6 +100,8 @@ public class PolicySession
     }
 
     /**
+     * Get Kie Session.
+     * 
      * @return the associated 'KieSession' instance
      */
     public KieSession getKieSession() {
@@ -105,17 +109,21 @@ public class PolicySession
     }
 
     /**
+     * Get name.
+     * 
      * @return the local name of this session, which should either match the
-     * name specified in 'kmodule.xml' file associated with this session, or the
-     * name passed on the 'PolicyContainer.adoptKieSession' method.
+     *     name specified in 'kmodule.xml' file associated with this session, or the
+     *     name passed on the 'PolicyContainer.adoptKieSession' method.
      */
     public String getName() {
         return name;
     }
 
     /**
+     * Get full name.
+     * 
      * @return the 'PolicyContainer' name, followed by ':', followed by the
-     * local name of the session. It should be useful in log messages.
+     *     local name of the session. It should be useful in log messages.
      */
     public String getFullName() {
         return container.getName() + ":" + name;
@@ -137,8 +145,9 @@ public class PolicySession
         for (PolicySessionFeatureAPI feature :
                 PolicySessionFeatureAPI.impl.getList()) {
             try {
-                if ((threadModel = feature.selectThreadModel(this)) != null)
+                if ((threadModel = feature.selectThreadModel(this)) != null) {
                     break;
+                }
             } catch (Exception e) {
                 logger.error("ERROR: Feature API: "
                         + feature.getClass().getName(), e);
@@ -164,7 +173,7 @@ public class PolicySession
     }
 
     /**
-     * Notification that 'updateToVersion' was called on the container
+     * Notification that 'updateToVersion' was called on the container.
      */
     void updated() {
         if (threadModel != null) {
@@ -183,29 +192,31 @@ public class PolicySession
     }
 
     /**
+     * Get current session.
+     * 
      * @return the 'PolicySession' instance associated with the current thread
-     * (Note that this only works if the current thread is the one running
-     * 'kieSession.fireUntilHalt()'.)
+     *     (Note that this only works if the current thread is the one running
+     *     'kieSession.fireUntilHalt()'.)
      */
     public static PolicySession getCurrentSession() {
         return policySess.get();
     }
 
     /**
-     * Fetch the adjunct object associated with a given feature
+     * Fetch the adjunct object associated with a given feature.
      *
      * @param object this is typically the singleton feature object that is
      *               used as a key, but it might also be useful to use nested objects
      *               within the feature as keys.
      * @return a feature-specific object associated with the key, or 'null'
-     * if it is not found.
+     *     if it is not found.
      */
     public Object getAdjunct(Object object) {
         return adjuncts.get(object);
     }
 
     /**
-     * Store the adjunct object associated with a given feature
+     * Store the adjunct object associated with a given feature.
      *
      * @param object this is typically the singleton feature object that is
      *               used as a key, but it might also be useful to use nested objects
@@ -253,8 +264,7 @@ public class PolicySession
      * {@inheritDoc}
      */
     @Override
-    public void afterRuleFlowGroupDeactivated
-    (RuleFlowGroupDeactivatedEvent event) {
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("afterRuleFlowGroupDeactivated: " + getFullName()
                     + ": AgendaEventListener.afterRuleFlowGroupDeactivated("
@@ -302,8 +312,7 @@ public class PolicySession
      * {@inheritDoc}
      */
     @Override
-    public void beforeRuleFlowGroupActivated
-    (RuleFlowGroupActivatedEvent event) {
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("beforeRuleFlowGroupActivated: " + getFullName()
                     + ": AgendaEventListener.beforeRuleFlowGroupActivated("
@@ -315,8 +324,7 @@ public class PolicySession
      * {@inheritDoc}
      */
     @Override
-    public void beforeRuleFlowGroupDeactivated
-    (RuleFlowGroupDeactivatedEvent event) {
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("beforeRuleFlowGroupDeactivated: " + getFullName()
                     + ": AgendaEventListener.beforeRuleFlowGroupDeactivated("
@@ -391,12 +399,12 @@ public class PolicySession
      */
     public interface ThreadModel {
         /**
-         * Start the thread or threads that do the 'KieSession' processing
+         * Start the thread or threads that do the 'KieSession' processing.
          */
         public void start();
 
         /**
-         * Stop the thread or threads that do the 'KieSession' processing
+         * Stop the thread or threads that do the 'KieSession' processing.
          */
         public void stop();
 
@@ -425,7 +433,7 @@ public class PolicySession
         volatile boolean repeat = true;
 
         /**
-         * Constructor - initialize 'session' and create thread
+         * Constructor - initialize 'session' and create thread.
          *
          * @param session the 'PolicySession' instance
          */
@@ -435,6 +443,8 @@ public class PolicySession
         }
 
         /**
+         * Get thread name.
+         * 
          * @return the String to use as the thread name
          */
         private String getThreadName() {

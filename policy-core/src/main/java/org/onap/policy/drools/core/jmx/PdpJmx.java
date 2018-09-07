@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,29 +24,29 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class PdpJmx implements PdpJmxMBean  {
 
-	private static PdpJmx instance = new PdpJmx();
-	private final AtomicLong updates = new AtomicLong();
-	private final AtomicLong actions = new AtomicLong();
+    private static PdpJmx instance = new PdpJmx();
+    private final AtomicLong updates = new AtomicLong();
+    private final AtomicLong actions = new AtomicLong();
 
-	public static PdpJmx getInstance() {
-		return instance;
-	}
+    public static PdpJmx getInstance() {
+        return instance;
+    }
 
-	@Override	
-	public long getUpdates(){
-		return updates.longValue();
-	}
+    @Override
+    public long getUpdates() {
+        return updates.longValue();
+    }
 
-	@Override
-	public long getRulesFired(){
-		return actions.longValue();
-	}
+    @Override
+    public long getRulesFired() {
+        return actions.longValue();
+    }
 
-	public void updateOccured(){
-		updates.incrementAndGet();
-	}
+    public void updateOccured() {
+        updates.incrementAndGet();
+    }
 
-	public void ruleFired(){
-		actions.incrementAndGet();
-	}
+    public void ruleFired() {
+        actions.incrementAndGet();
+    }
 }
