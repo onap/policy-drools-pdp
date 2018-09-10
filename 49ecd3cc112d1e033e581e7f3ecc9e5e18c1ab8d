@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_2d8b33c4",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/DroolsContainerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-09-10T14:43:41Z",
+      "side": 1,
+      "message": "Sure I can do this",
+      "parentUuid": "1a76adc5_42419ea7",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_426f5e2b",
         "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
         "patchSetId": 2
@@ -54,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_4d88efc4",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-09-10T14:43:41Z",
+      "side": 1,
+      "message": "I may just save some of the abbreviation issues until a last sweep of everything. Probably do some easy ones in the initial cleanup.",
+      "parentUuid": "1a76adc5_edaa1b70",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_2244a2b5",
         "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
         "patchSetId": 2
@@ -82,6 +118,24 @@
       "writtenOn": "2018-09-10T13:05:11Z",
       "side": 1,
       "message": "This name implies that this tests the \"Utils\" class, which is incorrect.  If \"TestUtils\" is not acceptable, then perhaps \"TestingUtils\" would work, or \"SupportingUtils\", or simply, \"Utils\".",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_ed90dbee",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/UtilsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-09-10T14:43:41Z",
+      "side": 1,
+      "message": "Yep ok I will fix this",
+      "parentUuid": "1a76adc5_221b42cb",
       "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
