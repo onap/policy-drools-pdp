@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_42419ea7",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/DroolsContainerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-10T13:05:11Z",
+      "side": 1,
+      "message": "could replace this method with a call to Arrays.asList(...) (just a suggestion)",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_426f5e2b",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-10T13:05:11Z",
+      "side": 1,
+      "message": "\"API\" -\u003e \"Api\"",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_2244a2b5",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-10T13:05:11Z",
+      "side": 1,
+      "message": "capitalize \"set\"?",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_221b42cb",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/UtilsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-10T13:05:11Z",
+      "side": 1,
+      "message": "This name implies that this tests the \"Utils\" class, which is incorrect.  If \"TestUtils\" is not acceptable, then perhaps \"TestingUtils\" would work, or \"SupportingUtils\", or simply, \"Utils\".",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
