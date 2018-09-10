@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_ad4c239f",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/DroolsContainerTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 343,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-09-10T15:01:34Z",
+      "side": 1,
+      "message": "oops - let me remove this",
+      "range": {
+        "startLine": 329,
+        "startChar": 4,
+        "endLine": 343,
+        "endChar": 6
+      },
+      "revId": "9c23a631d5ac4344b03ee80c21d3a3febc6b14a5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
