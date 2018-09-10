@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_edaa1b70",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-09-10T14:07:01Z",
+      "side": 1,
+      "message": "Renaming the original class has a lot of ramifications. The test case no big deal. I was going to hold off on that until the next release.",
+      "parentUuid": "1a76adc5_426f5e2b",
+      "revId": "49ecd3cc112d1e033e581e7f3ecc9e5e18c1ab8d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_2244a2b5",
         "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureAPITest.java",
         "patchSetId": 2
