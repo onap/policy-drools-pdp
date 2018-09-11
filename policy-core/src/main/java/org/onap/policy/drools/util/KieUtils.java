@@ -26,16 +26,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import org.appformer.maven.integration.MavenRepository;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.util.IoUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.scanner.MavenRepository;
 
 /**
  * Kie related utilities.
@@ -74,10 +73,10 @@ public class KieUtils {
         pomFile.deleteOnExit();
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        MavenRepository.getMavenRepository().
-            installArtifact(releaseId,
-                            ((InternalKieModule) kieBuilder.getKieModule()).getBytes(),
-                            IoUtils.readBytes(pomFile));
+        MavenRepository.getMavenRepository()
+            .installArtifact(releaseId,
+                            (InternalKieModule) kieBuilder.getKieModule(),
+                            pomFile);
         return releaseId;
     }
 
@@ -103,8 +102,8 @@ public class KieUtils {
         KieBuilder kieBuilder = kieBuild(kieFileSystem);
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        MavenRepository.getMavenRepository().installArtifact(releaseId,
-                        ((InternalKieModule) kieBuilder.getKieModule()).getBytes(), IoUtils.readBytes(pom));
+        MavenRepository.getMavenRepository()
+            .installArtifact(releaseId, (InternalKieModule) kieBuilder.getKieModule(), pom);
         return releaseId;
     }
 
