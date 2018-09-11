@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_d65247dd",
+        "filename": "policy-management/src/main/server/config/policy-engine.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-11T12:46:06Z",
+      "side": 1,
+      "message": "why is this being changed from ueb to dmaap?  It\u0027s my understanding that the former, being dependent on cambriaClient, is much more robust.",
+      "revId": "64004833c5c71ae75c8fff71d48e4d3d670ac70e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
