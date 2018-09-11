@@ -16,6 +16,24 @@
       "revId": "64004833c5c71ae75c8fff71d48e4d3d670ac70e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_765b33f6",
+        "filename": "policy-management/src/main/server/config/policy-engine.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-09-11T12:50:03Z",
+      "side": 1,
+      "message": "The cambriaClient will still be used underneath regardless the prefix change.",
+      "parentUuid": "1a76adc5_d65247dd",
+      "revId": "64004833c5c71ae75c8fff71d48e4d3d670ac70e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
