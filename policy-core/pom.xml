@@ -60,12 +60,12 @@
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
-            <version>7.9.0.Final</version>
+            <version>6.5.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
-            <version>7.9.0.Final</version>
+            <version>6.5.0.Final</version>
       <!--
       Issue: 2 of 2
       Excluding these 2 dependencies in order to force upgrade security fixes
@@ -90,12 +90,12 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
-            <version>7.9.0.Final</version>
+            <version>6.5.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
-            <version>7.9.0.Final</version>
+            <version>6.5.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.onap.policy.common</groupId>
