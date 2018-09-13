@@ -31,153 +31,153 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
 /**
- * no-op Drools Controller
+ * no-op Drools Controller.
  */
 public class NullDroolsController implements DroolsController {
 
-	@Override
-	public boolean start() {
-		return false;
-	}
+    @Override
+    public boolean start() {
+        return false;
+    }
 
-	@Override
-	public boolean stop() {
-		return false;
-	}
+    @Override
+    public boolean stop() {
+        return false;
+    }
 
-	@Override
-	public void shutdown() {
-		return;
-	}
-	
-	@Override
-	public void halt() {
-		return;
-	}
+    @Override
+    public void shutdown() {
+        return;
+    }
 
-	@Override
-	public boolean isAlive() {
-		return false;
-	}
+    @Override
+    public void halt() {
+        return;
+    }
 
-	@Override
-	public boolean lock() {
-		return false;
-	}
+    @Override
+    public boolean isAlive() {
+        return false;
+    }
 
-	@Override
-	public boolean unlock() {
-		return false;
-	}
+    @Override
+    public boolean lock() {
+        return false;
+    }
 
-	@Override
-	public boolean isLocked() {
-		return false;
-	}
+    @Override
+    public boolean unlock() {
+        return false;
+    }
 
-	@Override
-	public String getGroupId() {
-		return NO_GROUP_ID;
-	}
+    @Override
+    public boolean isLocked() {
+        return false;
+    }
 
-	@Override
-	public String getArtifactId() {
-		return NO_ARTIFACT_ID;
-	}
+    @Override
+    public String getGroupId() {
+        return NO_GROUP_ID;
+    }
 
-	@Override
-	public String getVersion() {
-		return NO_VERSION;
-	}	
+    @Override
+    public String getArtifactId() {
+        return NO_ARTIFACT_ID;
+    }
 
-	@Override
-	public List<String> getSessionNames() {
-		return new ArrayList<>();
-	}
+    @Override
+    public String getVersion() {
+        return NO_VERSION;
+    }	
 
-	@Override
-	public List<String> getCanonicalSessionNames() {
-		return new ArrayList<>();
-	}
+    @Override
+    public List<String> getSessionNames() {
+        return new ArrayList<>();
+    }
 
-	@Override
-	public boolean offer(String topic, String event) {
-		return false;
-	}
+    @Override
+    public List<String> getCanonicalSessionNames() {
+        return new ArrayList<>();
+    }
 
-	@Override
-	public boolean deliver(TopicSink sink, Object event) {
-		throw new IllegalStateException(makeInvokeMsg());
-	}
+    @Override
+    public boolean offer(String topic, String event) {
+        return false;
+    }
 
-	@Override
-	public Object[] getRecentSourceEvents() {
-		return new String[0];
-	}
-	
-	@Override
-	public PolicyContainer getContainer() {
-		return null;
-	}
+    @Override
+    public boolean deliver(TopicSink sink, Object event) {
+        throw new IllegalStateException(makeInvokeMsg());
+    }
 
-	@Override
-	public String[] getRecentSinkEvents() {
-		return new String[0];
-	}
+    @Override
+    public Object[] getRecentSourceEvents() {
+        return new String[0];
+    }
 
-	@Override
-	public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
-		throw new IllegalStateException(makeInvokeMsg());
-	}
+    @Override
+    public PolicyContainer getContainer() {
+        return null;
+    }
 
-	@Override
-	public Class<?> fetchModelClass(String className) {
-		throw new IllegalArgumentException(makeInvokeMsg());
-	}
-	
-	@Override
-	public boolean isBrained() {
-		return false;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("NullDroolsController []");
-		return builder.toString();
-	}
+    @Override
+    public String[] getRecentSinkEvents() {
+        return new String[0];
+    }
 
-	@Override
-	public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
-			List<TopicCoderFilterConfiguration> decoderConfigurations,
-			List<TopicCoderFilterConfiguration> encoderConfigurations)
-			throws LinkageError {
-		throw new IllegalArgumentException(makeInvokeMsg());
-	}
+    @Override
+    public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
+        throw new IllegalStateException(makeInvokeMsg());
+    }
 
-	@Override
-	public Map<String, Integer> factClassNames(String sessionName) {
-		return new HashMap<>();
-	}
+    @Override
+    public Class<?> fetchModelClass(String className) {
+        throw new IllegalArgumentException(makeInvokeMsg());
+    }
 
-	@Override
-	public long factCount(String sessionName) {
-		return 0;
-	}
+    @Override
+    public boolean isBrained() {
+        return false;
+    }
 
-	@Override
-	public List<Object> facts(String sessionName, String className, boolean delete) {
-		return new ArrayList<>();
-	}
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("NullDroolsController []");
+        return builder.toString();
+    }
 
-	@Override
-	public List<Object> factQuery(String sessionName, String queryName, 
-			                      String queriedEntity, 
-			                      boolean delete, Object... queryParams) {
-		return new ArrayList<>();
-	}
+    @Override
+    public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
+            List<TopicCoderFilterConfiguration> decoderConfigurations,
+            List<TopicCoderFilterConfiguration> encoderConfigurations)
+                    throws LinkageError {
+        throw new IllegalArgumentException(makeInvokeMsg());
+    }
 
-	private String makeInvokeMsg() {
-		return this.getClass().getCanonicalName() + " invoked";
-	}
+    @Override
+    public Map<String, Integer> factClassNames(String sessionName) {
+        return new HashMap<>();
+    }
+
+    @Override
+    public long factCount(String sessionName) {
+        return 0;
+    }
+
+    @Override
+    public List<Object> facts(String sessionName, String className, boolean delete) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Object> factQuery(String sessionName, String queryName, 
+            String queriedEntity, 
+            boolean delete, Object... queryParams) {
+        return new ArrayList<>();
+    }
+
+    private String makeInvokeMsg() {
+        return this.getClass().getCanonicalName() + " invoked";
+    }
 }

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * Configuration Test
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.drools.protocol.configuration;
 
 import static org.junit.Assert.assertEquals;
@@ -50,6 +51,10 @@ public class ControllerConfigurationTest {
     private static final DroolsConfiguration DROOLS_CONFIG2 = new DroolsConfiguration(ARTIFACT2, GROUPID2, VERSION2);
     
     private static final String DROOLS_STRING = "drools";
+    
+    /**
+     * Test.
+     */
     @Test
     public void test() {
         
@@ -77,7 +82,8 @@ public class ControllerConfigurationTest {
         controllerConfig2.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
         assertEquals(controllerConfig2.getAdditionalProperties(), additionalProperties);
         
-        assertEquals(controllerConfig2, controllerConfig2.withAdditionalProperty(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE));
+        assertEquals(controllerConfig2, controllerConfig2.withAdditionalProperty(ADDITIONAL_PROPERTY_KEY, 
+                ADDITIONAL_PROPERTY_VALUE));
         
         assertTrue(controllerConfig2.declaredProperty(NAME, NAME2));
         assertTrue(controllerConfig2.declaredProperty(OPERATION, OPERATION2));
@@ -90,10 +96,9 @@ public class ControllerConfigurationTest {
         assertEquals(controllerConfig2.declaredPropertyOrNotFound(DROOLS_STRING, DROOLS_CONFIG2), DROOLS_CONFIG2);
         assertEquals(controllerConfig2.declaredPropertyOrNotFound("dummy", NAME), NAME);
         
-        int hashCode = new HashCodeBuilder().append(NAME2).append(OPERATION2).append(DROOLS_CONFIG2).append(additionalProperties).toHashCode();
+        int hashCode = new HashCodeBuilder().append(NAME2).append(OPERATION2).append(DROOLS_CONFIG2)
+                .append(additionalProperties).toHashCode();
         assertEquals(controllerConfig2.hashCode(), hashCode);
         
     }
-
-
 }

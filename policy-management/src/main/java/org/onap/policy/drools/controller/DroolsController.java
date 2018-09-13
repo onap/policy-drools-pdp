@@ -30,67 +30,67 @@ import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
 /**
- * Drools Controller is the abstractions that wraps the drools layer (policy-core)
+ * Drools Controller is the abstractions that wraps the drools layer (policy-core).
  */
 public interface DroolsController extends Startable, Lockable {
 
     /**
-     * No Group ID identifier
+     * No Group ID identifier.
      */
     public static final String NO_GROUP_ID = "NO-GROUP-ID";
 
     /**
-     * No Artifact ID identifier
+     * No Artifact ID identifier.
      */
     public static final String NO_ARTIFACT_ID = "NO-ARTIFACT-ID";
 
     /**
-     * No version identifier
+     * No version identifier.
      */
     public static final String NO_VERSION = "NO-VERSION";
 
     /**
-     * Factory to track and manage drools controllers
+     * Factory to track and manage drools controllers.
      */
     public static final DroolsControllerFactory factory = new IndexedDroolsControllerFactory();
 
     /**
-     * get group id
+     * get group id.
      * 
      * @return group id
      */
     public String getGroupId();
 
     /**
-     * get artifact id
+     * get artifact id.
      * 
      * @return artifact id
      */
     public String getArtifactId();
 
     /**
-     * get version
+     * get version.
      * 
      * @return version
      */
     public String getVersion();
 
     /**
-     * return the policy session names
+     * return the policy session names.
      * 
      * @return policy session
      */
     public List<String> getSessionNames();
 
     /**
-     * return the policy full session names
+     * return the policy full session names.
      * 
      * @return policy session
      */
     public List<String> getCanonicalSessionNames();
 
     /**
-     * offers an event to this controller for processing
+     * offers an event to this controller for processing.
      * 
      * @param topic topic associated with the event
      * @param event the event
@@ -100,10 +100,10 @@ public interface DroolsController extends Startable, Lockable {
     public boolean offer(String topic, String event);
 
     /**
-     * delivers "event" to "sink"
+     * delivers "event" to "sink".
      * 
      * @param sink destination
-     * @param event
+     * @param event event
      * @return true if successful, false if a failure has occurred.
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
      * @throws IllegalStateException when the engine is in a state where this operation is not
@@ -114,32 +114,37 @@ public interface DroolsController extends Startable, Lockable {
     public boolean deliver(TopicSink sink, Object event);
 
     /**
+     * Get recent source events.
      * 
-     * @return the most recent received events
+     * @return the most recent received events.
      */
     public Object[] getRecentSourceEvents();
 
     /**
+     * Get recent sink events.
      * 
      * @return the most recent delivered events
      */
     public String[] getRecentSinkEvents();
 
     /**
+     * Get container.
+     * 
      * @return the underlying policy container
      */
     public PolicyContainer getContainer();
 
     /**
-     * Supports this encoder?
+     * Does it owns the coder.
      * 
-     * @param encodedObject
-     * @return
+     * @param coderClass the encoder object
+     * @param modelHash the hash for the model
+     * @return true it owns it
      */
     public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash);
 
     /**
-     * fetches a class from the model
+     * fetches a class from the model.
      * 
      * @param className the class to fetch
      * @return the actual class object, or null if not found
@@ -147,12 +152,12 @@ public interface DroolsController extends Startable, Lockable {
     public Class<?> fetchModelClass(String className);
 
     /**
-     * is this controller Smart?
+     * is this controller Smart.
      */
     public boolean isBrained();
 
     /**
-     * update the new version of the maven jar rules file
+     * update the new version of the maven jar rules file.
      * 
      * @param newGroupId - new group id
      * @param newArtifactId - new artifact id
@@ -162,14 +167,13 @@ public interface DroolsController extends Startable, Lockable {
      * 
      * @throws Exception from within drools libraries
      * @throws LinkageError from within drools libraries
-     * @throws ArgumentException bad parameter passed in
      */
     public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
             List<TopicCoderFilterConfiguration> decoderConfigurations,
             List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
 
     /**
-     * gets the classnames of facts as well as the current count
+     * gets the classnames of facts as well as the current count.
      * 
      * @param sessionName the session name
      * @return map of class to count
@@ -177,16 +181,15 @@ public interface DroolsController extends Startable, Lockable {
     public Map<String, Integer> factClassNames(String sessionName);
 
     /**
-     * gets the count of facts for a given session
+     * gets the count of facts for a given session.
      * 
      * @param sessionName the session name
      * @return the fact count
-     * @throws IllegalArgumentException
      */
     public long factCount(String sessionName);
 
     /**
-     * gets all the facts of a given class for a given session
+     * gets all the facts of a given class for a given session.
      * 
      * @param sessionName the session identifier
      * @param className the class type
@@ -196,7 +199,7 @@ public interface DroolsController extends Startable, Lockable {
     public List<Object> facts(String sessionName, String className, boolean delete);
 
     /**
-     * gets the facts associated with a query for a give session for a given queried entity
+     * gets the facts associated with a query for a give session for a given queried entity.
      * 
      * @param sessionName the session
      * @param queryName the query identifier
@@ -209,9 +212,8 @@ public interface DroolsController extends Startable, Lockable {
             Object... queryParams);
 
     /**
-     * halts and permanently releases all resources
+     * halts and permanently releases all resources.
      * 
-     * @throws IllegalStateException
      */
     public void halt();
 }

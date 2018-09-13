@@ -31,32 +31,32 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 
 /**
- * Tests Coders
+ * Tests Coders.
  */
 public class EventProtocolCoderTest {
 
     /**
-     * Coder Group
+     * Coder Group.
      */
     private static final String ENCODER_GROUP = "foo";
 
     /**
-     * Coder Artifact
+     * Coder Artifact.
      */
     private static final String ENCODER_ARTIFACT = "bar";
 
     /**
-     * Coder Version
+     * Coder Version.
      */
     private static final String ENCODER_VERSION = null;
 
     /**
-     * noop topic
+     * noop topic.
      */
     private static final String NOOP_TOPIC = "JUNIT";
 
     /**
-     * Event Test Class
+     * Event Test Class.
      */
     public static class EventTest {
 

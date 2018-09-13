@@ -26,13 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
-import org.onap.policy.drools.controller.internal.MavenDroolsController;
-import org.onap.policy.drools.controller.internal.NullDroolsController;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.drools.controller.internal.MavenDroolsController;
+import org.onap.policy.drools.controller.internal.NullDroolsController;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
@@ -45,12 +45,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Drools Controller Factory to manage controller creation, destruction, and retrieval for
- * management interfaces
+ * management interfaces.
  */
 public interface DroolsControllerFactory {
 
     /**
-     * Constructs a Drools Controller based on properties
+     * Constructs a Drools Controller based on properties.
      * 
      * @param properties properties containing initialization parameters
      * @param eventSources list of event sources
@@ -64,7 +64,7 @@ public interface DroolsControllerFactory {
             List<? extends TopicSink> eventSinks) throws LinkageError;
 
     /**
-     * Explicit construction of a Drools Controller
+     * Explicit construction of a Drools Controller.
      * 
      * @param groupId maven group id of drools artifact
      * @param artifactId maven artifact id of drools artifact
@@ -81,31 +81,31 @@ public interface DroolsControllerFactory {
             List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
 
     /**
-     * Releases the Drools Controller from operation
+     * Releases the Drools Controller from operation.
      * 
      * @param controller the Drools Controller to shut down
      */
     public void shutdown(DroolsController controller);
 
     /**
-     * Disables all Drools Controllers from operation
+     * Disables all Drools Controllers from operation.
      */
     public void shutdown();
 
     /**
-     * Destroys and releases resources for a Drools Controller
+     * Destroys and releases resources for a Drools Controller.
      * 
      * @param controller the Drools Controller to destroy
      */
     public void destroy(DroolsController controller);
 
     /**
-     * Destroys all Drools Controllers
+     * Destroys all Drools Controllers.
      */
     public void destroy();
 
     /**
-     * Gets the Drools Controller associated with the maven group and artifact id
+     * Gets the Drools Controller associated with the maven group and artifact id.
      * 
      * @param groupId maven group id of drools artifact
      * @param artifactId maven artifact id of drools artifact
@@ -117,7 +117,7 @@ public interface DroolsControllerFactory {
     public DroolsController get(String groupId, String artifactId, String version);
 
     /**
-     * returns the current inventory of Drools Controllers
+     * returns the current inventory of Drools Controllers.
      * 
      * @return a list of Drools Controllers
      */
@@ -128,22 +128,22 @@ public interface DroolsControllerFactory {
 /* ---------------- implementation ----------------- */
 
 /**
- * Factory of Drools Controllers indexed by the Maven coordinates
+ * Factory of Drools Controllers indexed by the Maven coordinates.
  */
 class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     /**
-     * logger
+     * logger.
      */
     private static Logger logger = LoggerFactory.getLogger(MavenDroolsController.class);
 
     /**
-     * Policy Controller Name Index
+     * Policy Controller Name Index.
      */
     protected HashMap<String, DroolsController> droolsControllers = new HashMap<>();
 
     /**
-     * Null Drools Controller
+     * Null Drools Controller.
      */
     protected NullDroolsController nullDroolsController = new NullDroolsController();
 
@@ -184,162 +184,6 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         List<TopicCoderFilterConfiguration> topics2EncodedClasses2Filters = codersAndFilters(properties, eventSinks);
 
         return this.build(groupId, artifactId, version, topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
-    }
-
-    /**
-     * find out decoder classes and filters
-     * 
-     * @param properties properties with information about decoders
-     * @param topicEntities topic sources
-     * @return list of topics, each with associated decoder classes, each with a list of associated
-     *         filters
-     * @throws IllegalArgumentException invalid input data
-     */
-    protected List<TopicCoderFilterConfiguration> codersAndFilters(Properties properties,
-            List<? extends Topic> topicEntities) {
-
-        String propertyTopicEntityPrefix;
-
-        List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = new ArrayList<>();
-
-        if (topicEntities == null || topicEntities.isEmpty()) {
-            return topics2DecodedClasses2Filters;
-        }
-
-        for (Topic topic : topicEntities) {
-
-            /* source or sink ? ueb or dmaap? */
-            boolean isSource = topic instanceof TopicSource;
-            CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
-            if (commInfra == CommInfrastructure.UEB) {
-                if (isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
-                } else {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + ".";
-                }
-            } else if (commInfra == CommInfrastructure.DMAAP) {
-                if (isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
-                } else {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
-                }
-            } else if (commInfra == CommInfrastructure.NOOP) {
-                if (!isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
-                } else {
-                    continue;
-                }
-            } else {
-                throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
-            }
-
-            // 1. first the topic
-
-            String aTopic = topic.getTopic();
-
-            // 2. check if there is a custom decoder for this topic that the user prefers to use
-            // instead of the ones provided in the platform
-
-            String customGson = properties.getProperty(propertyTopicEntityPrefix + aTopic
-                    + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
-
-            CustomGsonCoder customGsonCoder = null;
-            if (customGson != null && !customGson.isEmpty()) {
-                try {
-                    customGsonCoder = new CustomGsonCoder(customGson);
-                } catch (IllegalArgumentException e) {
-                    logger.warn("{}: cannot create custom-gson-coder {} because of {}", this, customGson,
-                            e.getMessage(), e);
-                }
-            }
-
-            String customJackson = properties.getProperty(propertyTopicEntityPrefix + aTopic
-                    + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_JACKSON_SUFFIX);
-
-            CustomJacksonCoder customJacksonCoder = null;
-            if (customJackson != null && !customJackson.isEmpty()) {
-                try {
-                    customJacksonCoder = new CustomJacksonCoder(customJackson);
-                } catch (IllegalArgumentException e) {
-                    logger.warn("{}: cannot create custom-jackson-coder {} because of {}", this, customJackson,
-                            e.getMessage(), e);
-                }
-            }
-
-            // 3. second the list of classes associated with each topic
-
-            String eventClasses = properties
-                    .getProperty(propertyTopicEntityPrefix + aTopic + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
-
-            if (eventClasses == null || eventClasses.isEmpty()) {
-                // TODO warn
-                continue;
-            }
-
-            List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
-
-            List<String> aTopicClasses = new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
-
-            for (String aClass : aTopicClasses) {
-
-
-                // 4. third, for each coder class, get the list of field filters
-
-                String filter = properties
-                        .getProperty(propertyTopicEntityPrefix + aTopic + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
-                                + "." + aClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
-
-                List<Pair<String, String>> filters = new ArrayList<>();
-
-                if (filter == null || filter.isEmpty()) {
-                    // 4. topic -> class -> with no filters
-
-                    JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
-                    PotentialCoderFilter class2Filters = new PotentialCoderFilter(aClass, protocolFilter);
-                    classes2Filters.add(class2Filters);
-                    continue;
-                }
-
-                // There are filters associated with the applicability of
-                // this class for decoding.
-                List<String> listOfFilters = new ArrayList<>(Arrays.asList(filter.split("\\s*,\\s*")));
-
-                for (String nameValue : listOfFilters) {
-                    String fieldName;
-                    String regexValue;
-
-                    String[] nameValueSplit = nameValue.split("\\s*=\\s*");
-                    if (nameValueSplit.length <= 0 || nameValueSplit.length > 2) {
-                        // TODO warn
-                        // skip
-                        continue;
-                    }
-
-                    if (nameValueSplit.length == 2) {
-                        fieldName = nameValueSplit[0];
-                        regexValue = nameValueSplit[1];
-                    } else if (nameValueSplit.length == 1) {
-                        fieldName = nameValueSplit[0];
-                        regexValue = null;
-                    } else {
-                        // unreachable
-                        continue;
-                    }
-
-                    filters.add(new Pair<String, String>(fieldName, regexValue));
-                }
-
-                JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
-                PotentialCoderFilter class2Filters = new PotentialCoderFilter(aClass, protocolFilter);
-                classes2Filters.add(class2Filters);
-            }
-
-            TopicCoderFilterConfiguration topic2Classes2Filters =
-                    new TopicCoderFilterConfiguration(aTopic, classes2Filters, customGsonCoder, customJacksonCoder);
-            topics2DecodedClasses2Filters.add(topic2Classes2Filters);
-        }
-
-        return topics2DecodedClasses2Filters;
     }
 
     @Override
@@ -400,6 +244,164 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         return controller;
     }
 
+    /**
+     * find out decoder classes and filters.
+     * 
+     * @param properties properties with information about decoders
+     * @param topicEntities topic sources
+     * @return list of topics, each with associated decoder classes, each with a list of associated
+     *         filters
+     * @throws IllegalArgumentException invalid input data
+     */
+    protected List<TopicCoderFilterConfiguration> codersAndFilters(Properties properties,
+            List<? extends Topic> topicEntities) {
+
+        String propertyTopicEntityPrefix;
+
+        List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = new ArrayList<>();
+
+        if (topicEntities == null || topicEntities.isEmpty()) {
+            return topics2DecodedClasses2Filters;
+        }
+
+        for (Topic topic : topicEntities) {
+
+            /* source or sink ? ueb or dmaap? */
+            boolean isSource = topic instanceof TopicSource;
+            CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
+            if (commInfra == CommInfrastructure.UEB) {
+                if (isSource) {
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
+                } else {
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + ".";
+                }
+            } else if (commInfra == CommInfrastructure.DMAAP) {
+                if (isSource) {
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
+                } else {
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
+                }
+            } else if (commInfra == CommInfrastructure.NOOP) {
+                if (!isSource) {
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
+                } else {
+                    continue;
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
+            }
+
+            // 1. first the topic
+
+            String firstTopic = topic.getTopic();
+
+            // 2. check if there is a custom decoder for this topic that the user prefers to use
+            // instead of the ones provided in the platform
+
+            String customGson = properties.getProperty(propertyTopicEntityPrefix + firstTopic
+                    + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
+
+            CustomGsonCoder customGsonCoder = null;
+            if (customGson != null && !customGson.isEmpty()) {
+                try {
+                    customGsonCoder = new CustomGsonCoder(customGson);
+                } catch (IllegalArgumentException e) {
+                    logger.warn("{}: cannot create custom-gson-coder {} because of {}", this, customGson,
+                            e.getMessage(), e);
+                }
+            }
+
+            String customJackson = properties.getProperty(propertyTopicEntityPrefix + firstTopic
+                    + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_JACKSON_SUFFIX);
+
+            CustomJacksonCoder customJacksonCoder = null;
+            if (customJackson != null && !customJackson.isEmpty()) {
+                try {
+                    customJacksonCoder = new CustomJacksonCoder(customJackson);
+                } catch (IllegalArgumentException e) {
+                    logger.warn("{}: cannot create custom-jackson-coder {} because of {}", this, customJackson,
+                            e.getMessage(), e);
+                }
+            }
+
+            // 3. second the list of classes associated with each topic
+
+            String eventClasses = properties
+                    .getProperty(propertyTopicEntityPrefix + firstTopic 
+                            + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
+
+            if (eventClasses == null || eventClasses.isEmpty()) {
+                logger.warn("There are no event classes for topic {}", firstTopic);
+                continue;
+            }
+
+            List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
+
+            List<String> topicClasses = new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
+
+            for (String theClass : topicClasses) {
+
+
+                // 4. third, for each coder class, get the list of field filters
+
+                String filter = properties
+                        .getProperty(propertyTopicEntityPrefix + firstTopic 
+                                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
+                                + "." + theClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
+
+                List<Pair<String, String>> filters = new ArrayList<>();
+
+                if (filter == null || filter.isEmpty()) {
+                    // 4. topic -> class -> with no filters
+
+                    JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
+                    PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
+                    classes2Filters.add(class2Filters);
+                    continue;
+                }
+
+                // There are filters associated with the applicability of
+                // this class for decoding.
+                List<String> listOfFilters = new ArrayList<>(Arrays.asList(filter.split("\\s*,\\s*")));
+
+                for (String nameValue : listOfFilters) {
+                    String fieldName;
+                    String regexValue;
+
+                    String[] nameValueSplit = nameValue.split("\\s*=\\s*");
+                    if (nameValueSplit.length <= 0 || nameValueSplit.length > 2) {
+                        // TODO warn
+                        // skip
+                        continue;
+                    }
+
+                    if (nameValueSplit.length == 2) {
+                        fieldName = nameValueSplit[0];
+                        regexValue = nameValueSplit[1];
+                    } else if (nameValueSplit.length == 1) {
+                        fieldName = nameValueSplit[0];
+                        regexValue = null;
+                    } else {
+                        // unreachable
+                        continue;
+                    }
+
+                    filters.add(new Pair<String, String>(fieldName, regexValue));
+                }
+
+                JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
+                PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
+                classes2Filters.add(class2Filters);
+            }
+
+            TopicCoderFilterConfiguration topic2Classes2Filters =
+                    new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder, customJacksonCoder);
+            topics2DecodedClasses2Filters.add(topic2Classes2Filters);
+        }
+
+        return topics2DecodedClasses2Filters;
+    }
+
     @Override
     public void destroy(DroolsController controller) {
         unmanage(controller);
@@ -419,11 +421,9 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     }
 
     /**
-     * unmanage the drools controller
+     * unmanage the drools controller.
      * 
-     * @param controller
-     * @return
-     * @throws IllegalArgumentException
+     * @param controller the controller
      */
     protected void unmanage(DroolsController controller) {
         if (controller == null) {
