@@ -25,108 +25,107 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * System Configuration
+ * System Configuration.
  */
 public interface SystemPersistence {
-  /**
-   * configuration directory
-   */
-  public static final String DEFAULT_CONFIGURATION_DIR = "config";
+    /**
+     * configuration directory.
+     */
+    public static final String DEFAULT_CONFIGURATION_DIR = "config";
 
-  /**
-   * Persistence Manager. For now it is a file-based properties management, In the future, it will
-   * probably be DB based, so manager implementation will change.
-   */
-  public static final SystemPersistence manager = new FileSystemPersistence();
+    /**
+     * Persistence Manager. For now it is a file-based properties management, In the future, it will
+     * probably be DB based, so manager implementation will change.
+     */
+    public static final SystemPersistence manager = new FileSystemPersistence();
 
-  /**
-   * sets a configuration directory and ensures it exists
-   *
-   * @param configDir configuration directory or null to use the default one
-   */
-  public void setConfigurationDir(String configDir);
+    /**
+     * sets a configuration directory and ensures it exists.
+     *
+     * @param configDir configuration directory or null to use the default one
+     */
+    public void setConfigurationDir(String configDir);
 
-  /**
-   * get configuration directory path
-   *
-   * @return configuration directory path
-   */
-  public Path getConfigurationPath();
+    /**
+     * get configuration directory path.
+     *
+     * @return configuration directory path
+     */
+    public Path getConfigurationPath();
 
-  /**
-   * backs up a controller configuration.
-   *
-   * @param controllerName the controller name
-   * @return true if the configuration is backed up
-   */
-  public boolean backupController(String controllerName);
+    /**
+     * backs up a controller configuration.
+     *
+     * @param controllerName the controller name
+     * @return true if the configuration is backed up
+     */
+    public boolean backupController(String controllerName);
 
-  /**
-   * persists controller configuration
-   *
-   * @param controllerName the controller name
-   * @param configuration object containing the configuration
-   *
-   * @return true if storage is succesful, false otherwise
-   * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
-   *         manager
-   */
-  public boolean storeController(String controllerName, Object configuration);
+    /**
+     * persists controller configuration.
+     *
+     * @param controllerName the controller name
+     * @param configuration object containing the configuration
+     *
+     * @return true if storage is succesful, false otherwise
+     * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
+     *         manager
+     */
+    public boolean storeController(String controllerName, Object configuration);
 
-  /**
-   * delete controller configuration
-   *
-   * @param controllerName the controller name
-   * @return true if storage is succesful, false otherwise
-   */
-  public boolean deleteController(String controllerName);
+    /**
+     * delete controller configuration.
+     *
+     * @param controllerName the controller name
+     * @return true if storage is succesful, false otherwise
+     */
+    public boolean deleteController(String controllerName);
 
-  /**
-   * get controller properties
-   *
-   * @param controllerName controller name
-   * @return properties for this controller
-   *
-   * @throws IllegalArgumentException if the controller name does not lead to a properties
-   *         configuration
-   */
-  public Properties getControllerProperties(String controllerName);
+    /**
+     * get controller properties.
+     *
+     * @param controllerName controller name
+     * @return properties for this controller
+     *
+     * @throws IllegalArgumentException if the controller name does not lead to a properties
+     *         configuration
+     */
+    public Properties getControllerProperties(String controllerName);
 
-  /**
-   * get controllers configuration
-   *
-   * @return list of controllers properties
-   */
-  public List<Properties> getControllerProperties();
+    /**
+     * get controllers configuration.
+     *
+     * @return list of controllers properties
+     */
+    public List<Properties> getControllerProperties();
 
-  /**
-   * get environments
-   *
-   * @param environment name
-   */
-  public List<Properties> getEnvironmentProperties();
+    /**
+     * get environments.
+     *
+     */
+    public List<Properties> getEnvironmentProperties();
 
-  /**
-   * get environment properties
-   *
-   * @param environment name
-   */
-  public Properties getEnvironmentProperties(String environmentName);
+    /**
+     * get environment properties.
+     *
+     * @param environmentName name
+     */
+    public Properties getEnvironmentProperties(String environmentName);
 
-  /**
-   * get the engine properties
-   *
-   * @return the engine properties
-   */
-  public Properties getEngineProperties();
+    /**
+     * get the engine properties.
+     *
+     * @return the engine properties
+     */
+    public Properties getEngineProperties();
 
-  /**
-   * get properties by name
-   *
-   * @param name
-   * @return properties
-   *
-   * @throws IllegalArgumentException if the name does not lead to a properties configuration
-   */
-  public Properties getProperties(String name);
+    /**
+     * get properties by name.
+     *
+     * @param name name
+     * @return properties
+     *
+     * @throws IllegalArgumentException if the name does not lead to a properties configuration
+     */
+    public Properties getProperties(String name);
 }

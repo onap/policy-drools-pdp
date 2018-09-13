@@ -160,14 +160,14 @@ public class JsonProtocolFilterTest {
         assertTrue(protocolFilterB.getRules(NAME4).get(1).getName().equals(NAME4));
         assertTrue(protocolFilterB.getRules(NAME4).get(1).getRegex().equals(REGEX4b));
 
-        String jsonA = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
-                        "\"name3\":\"regex3\",\"name4\":\"regex4a\",\"name4\":\"regex4b\"}";
-        String jsonB = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
-                        "\"name3\":\"regex3\",\"name4\":\"regex4a-regex4b\"}";
-        String jsonC = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
-                        "\"name3\":\"regex3\",\"name4\":\"regex4a\"}";
-        String jsonD = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"," +
-                        "\"name3\":\"regex3\",\"name4\":\"regex4b\"}";
+        final String jsonA = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
+                        + "\"name3\":\"regex3\",\"name4\":\"regex4a\",\"name4\":\"regex4b\"}";
+        final String jsonB = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
+                        + "\"name3\":\"regex3\",\"name4\":\"regex4a-regex4b\"}";
+        final String jsonC = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
+                        + "\"name3\":\"regex3\",\"name4\":\"regex4a\"}";
+        final String jsonD = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
+                        + "\"name3\":\"regex3\",\"name4\":\"regex4b\"}";
 
         assertFalse(protocolFilterB.accept(jsonA));
         assertTrue(protocolFilterB.accept(jsonB));

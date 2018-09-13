@@ -51,7 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ProtocolCoder Toolset JUNITs
+ * ProtocolCoder Toolset JUNITs.
  */
 public class ProtocolCoderToolsetTest {
     public static final String JUNIT_PROTOCOL_CODER_ARTIFACT_ID = "protocolcoder";
@@ -66,6 +66,11 @@ public class ProtocolCoderToolsetTest {
 
     public static final Gson customCoder = new GsonBuilder().create();
 
+    /**
+     * Setup.
+     * 
+     * @throws IOException throws IO Exception
+     */
     @Before
     public void setUp() throws IOException {
         if (releaseId != null) {
@@ -94,6 +99,11 @@ public class ProtocolCoderToolsetTest {
         testJacksonToolset(createFilterSet());
     }
 
+    /**
+     * Test the Gson toolset.
+     * 
+     * @param protocolFilter protocol filter
+     */
     public void testGsonToolset(JsonProtocolFilter protocolFilter) {
         GsonProtocolCoderToolset gsonToolset = new GsonProtocolCoderToolset(JUNIT_PROTOCOL_CODER_TOPIC, CONTROLLER_ID,
                 this.releaseId.getGroupId(), this.releaseId.getArtifactId(), Triple.class.getCanonicalName(),
@@ -114,6 +124,11 @@ public class ProtocolCoderToolsetTest {
         return new Triple<>("v1", "v2", "v3");
     }
 
+    /**
+     * Test Jackson toolset.
+     * 
+     * @param protocolFilter protocol filter
+     */
     public void testJacksonToolset(JsonProtocolFilter protocolFilter) {
         JacksonProtocolCoderToolset jacksonToolset = new JacksonProtocolCoderToolset(JUNIT_PROTOCOL_CODER_TOPIC,
                 CONTROLLER_ID, this.releaseId.getGroupId(), this.releaseId.getArtifactId(),
@@ -242,7 +257,7 @@ public class ProtocolCoderToolsetTest {
 
         Properties sinkConfig = new Properties();
         sinkConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, JUNIT_PROTOCOL_CODER_TOPIC);
-        List<? extends TopicSink> noopTopics = TopicEndpoint.manager.addTopicSinks(sinkConfig);
+        final List<? extends TopicSink> noopTopics = TopicEndpoint.manager.addTopicSinks(sinkConfig);
 
         Properties droolsControllerConfig = new Properties();
         droolsControllerConfig.put(DroolsProperties.RULES_GROUPID, releaseId.getGroupId());

@@ -40,6 +40,11 @@ public class MavenDroolsControllerTest {
 
     private static volatile ReleaseId releaseId;
 
+    /**
+     * Set up.
+     * 
+     * @throws IOException throws an IO exception
+     */
     @BeforeClass
     public static void setUp() throws IOException {
         releaseId =
@@ -74,8 +79,9 @@ public class MavenDroolsControllerTest {
     }
 
     private DroolsController createDroolsController(long courtesyStartTimeMs) throws InterruptedException {
-        if (releaseId == null)
+        if (releaseId == null) {
             throw new IllegalStateException("no prereq artifact installed in maven repository");
+        }
 
         DroolsController controller = new MavenDroolsController(releaseId.getGroupId(),
             releaseId.getArtifactId(), releaseId.getVersion(), null, null);

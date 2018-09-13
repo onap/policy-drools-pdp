@@ -37,7 +37,7 @@ public class DroolsControllerFactoryTest {
         DroolsController droolsController = DroolsController.factory.build(droolsProps, null, null);
 
         if (!isNullController(droolsController)) {
-        		fail("drools controller is not a null controller");
+            fail("drools controller is not a null controller");
         }
     }
 
@@ -60,7 +60,7 @@ public class DroolsControllerFactoryTest {
         
         for (int i = 0; i < controllers.size(); i++) {
             if (!isNullController(controllers.get(i)) && !isActualController(controllers.get(i))) {
-            		fail("drools controller is not a null controller");
+                fail("drools controller is not a null controller");
             }
         }
     }
@@ -81,15 +81,15 @@ public class DroolsControllerFactoryTest {
 
     private boolean isNullController(DroolsController droolsController) {
         if (droolsController == null) {
-        		return false;
+            return false;
         }
         
         if (!DroolsController.NO_GROUP_ID.equals(droolsController.getGroupId())) {
-        		return false;
+            return false;
         }
         
         if (!DroolsController.NO_ARTIFACT_ID.equals(droolsController.getArtifactId())) {
-        		return false;
+            return false;
         }
 
         return DroolsController.NO_VERSION.equals(droolsController.getVersion());
@@ -97,15 +97,15 @@ public class DroolsControllerFactoryTest {
 
     private boolean isActualController(DroolsController droolsController) {
         if (droolsController == null) {
-        		return false;
+            return false;
         }
         
         if (!"org.onap.policy.drools.test".equals(droolsController.getGroupId())) {
-        		return false;
+            return false;
         }
         
         if (!"protocolcoder".equals(droolsController.getArtifactId())) {
-        		return false;
+            return false;
         }
         
         return droolsController.getVersion() != null && droolsController.getVersion().substring(0, 1).matches("[0-9]");

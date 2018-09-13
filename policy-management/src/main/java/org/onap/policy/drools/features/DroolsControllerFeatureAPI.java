@@ -29,28 +29,32 @@ import org.onap.policy.drools.utils.OrderedServiceImpl;
  */
 public interface DroolsControllerFeatureAPI extends OrderedService {
 
-	  /**
-	   * intercepts before the Drools Controller gives the Policy Container a fact to
-	   * insert into its Policy Sessions
-	   *
-	   * @return true if this feature intercepts and takes ownership
-	   * of the operation preventing the invocation of
-	   * lower priority features.   False, otherwise.
-	   */
-	  default boolean beforeInsert(DroolsController controller, Object fact) {return false;}
+    /**
+     * intercepts before the Drools Controller gives the Policy Container a fact to
+     * insert into its Policy Sessions.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean beforeInsert(DroolsController controller, Object fact) {
+        return false;
+    }
 
-	  /**
-	   * called after a fact is injected into the Policy Container
-	   *
-	   * @return true if this feature intercepts and takes ownership
-	   * of the operation preventing the invocation of
-	   * lower priority features.   False, otherwise.
-	   */
-	  default boolean afterInsert(DroolsController controller, Object fact, boolean successInsert) {return false;}
+    /**
+     * called after a fact is injected into the Policy Container.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterInsert(DroolsController controller, Object fact, boolean successInsert) {
+        return false;
+    }
 
-	  /**
-	   * Feature providers implementing this interface
-	   */
-	  public static final OrderedServiceImpl<DroolsControllerFeatureAPI> providers =
-			  						new OrderedServiceImpl<>(DroolsControllerFeatureAPI.class);
+    /**
+     * Feature providers implementing this interface.
+     */
+    public static final OrderedServiceImpl<DroolsControllerFeatureAPI> providers =
+            new OrderedServiceImpl<>(DroolsControllerFeatureAPI.class);
 }

@@ -94,6 +94,11 @@ public class RestManagerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RestManagerTest.class);
 
+    /**
+     * Set up.
+     * 
+     * @throws IOException throws an IO exception
+     */
     @BeforeClass
     public static void setUp() throws IOException {
         cleanUpWorkingDirs();
@@ -133,6 +138,12 @@ public class RestManagerTest {
 
     }
 
+    /**
+     * Tear down.
+     * 
+     * @throws IOException IO exception
+     * @throws InterruptedException Interrupted exception
+     */
     @AfterClass
     public static void tearDown() throws IOException, InterruptedException {
         /* Shutdown managed resources */
@@ -147,7 +158,6 @@ public class RestManagerTest {
 
     @Test
     public void putDeleteTest() throws ClientProtocolException, IOException, InterruptedException {
-        HttpPut httpPut;
         HttpDelete httpDelete;
         CloseableHttpResponse response;
 
@@ -172,7 +182,7 @@ public class RestManagerTest {
          * PUT: /engine/switches/lock /engine/controllers/controllername/switches/lock DELETE:
          * /engine/switches/lock /engine/controllers/controllername
          */
-        httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
+        HttpPut httpPut = new HttpPut(HOST_URL + "/engine/switches/lock");
         response = client.execute(httpPut);
         logger.info(httpPut.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(406, response.getStatusLine().getStatusCode());
@@ -351,7 +361,6 @@ public class RestManagerTest {
     public void getTest() throws ClientProtocolException, IOException, InterruptedException {
         HttpGet httpGet;
         CloseableHttpResponse response;
-        String responseBody;
 
         /*
          * GET: /engine /engine/features /engine/features/inventory /engine/features/featurename
@@ -403,7 +412,7 @@ public class RestManagerTest {
         PolicyEngine.manager.setEnvironmentProperty("foo", "bar");
         httpGet = new HttpGet(HOST_URL + "/engine/environment/foo");
         response = client.execute(httpGet);
-        responseBody = this.getResponseBody(response);
+        String responseBody = this.getResponseBody(response);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         logger.info(httpGet.getRequestLine() + " response body: {}", responseBody);
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -839,7 +848,12 @@ public class RestManagerTest {
 
     }
 
-
+    /**
+     * Get response body.
+     * 
+     * @param response incoming response
+     * @return the body or null
+     */
     public String getResponseBody(CloseableHttpResponse response) {
 
         HttpEntity entity;
@@ -848,7 +862,7 @@ public class RestManagerTest {
             return EntityUtils.toString(entity);
 
         } catch (final IOException e) {
-
+            logger.info(e.toString());
         }
 
         return null;

@@ -49,58 +49,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * PolicyEngine unit tests
+ * PolicyEngine unit tests.
  */
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PolicyEngineTest {
     /**
-     * Default Telemetry port for JUnits
+     * Default Telemetry port for JUnits.
      */
     public static final int DEFAULT_TELEMETRY_PORT = 9698;
 
     /**
-     * Test JUnit Controller Name
+     * Test JUnit Controller Name.
      */
     public static final String TEST_CONTROLLER_NAME = "foo";
 
     /**
-     * Controller Configuration File
+     * Controller Configuration File.
      */
     public static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
 
     /**
-     * Controller Configuration Backup File
+     * Controller Configuration Backup File.
      */
     public static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
 
     /**
-     * Coder Group
+     * Coder Group.
      */
     private static final String ENCODER_GROUP = "foo";
 
     /**
-     * Coder Artifact
+     * Coder Artifact.
      */
     private static final String ENCODER_ARTIFACT = "bar";
 
     /**
-     * Coder Version
+     * Coder Version.
      */
     private static final String ENCODER_VERSION = null;
 
     /**
-     * noop topic
+     * noop topic.
      */
     private static final String NOOP_TOPIC = "JUNIT";
 
     /**
-     * logger
+     * logger.
      */
     private static Logger logger = LoggerFactory.getLogger(PolicyEngineTest.class);
 
     /**
-     * clean up working directory
+     * clean up working directory.
      */
     protected static void cleanUpWorkingDir() {
         final Path testControllerPath =
@@ -120,6 +120,11 @@ public class PolicyEngineTest {
         }
     }
 
+    /**
+     * Start up.
+     * 
+     * @throws IOException throws IO exception
+     */
     @BeforeClass
     public static void startUp() throws IOException {
         logger.info("enter");
