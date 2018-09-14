@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,15 +65,16 @@ public class StateManagementProperties {
 
     private StateManagementProperties() {}
 
-    /*
-     * Initialize the parameter values from the feature-state-management.properties file values
+    /**
+     * Initialize the parameter values from the feature-state-management.properties file values.
      * 
-     * This is designed so that the Properties object is obtained from the
+     * <p>This is designed so that the Properties object is obtained from the
      * feature-state-management.properties file and then is passed to this method to initialize the
      * value of the parameters. This allows the flexibility of JUnit tests using
      * getProperties(filename) to get the properties while runtime methods can use
      * getPropertiesFromClassPath(filename).
      * 
+     * @param prop properties
      */
     public static void initProperties(Properties prop) {
         logger.info("StateManagementProperties.initProperties(Properties): entry");

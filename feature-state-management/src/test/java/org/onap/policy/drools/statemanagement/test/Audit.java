@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * Integrity Monitor
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Audit")
+@Table(name = "Audit")
 
 public class Audit implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name="name", length=64, unique=true)
-	private String name;
-	
-	public Audit() {
-		//default constructor
-	}
+    @Id
+    @Column(name = "name", length = 64, unique = true)
+    private String name;
+
+    public Audit() {
+        //default constructor
+    }
 }

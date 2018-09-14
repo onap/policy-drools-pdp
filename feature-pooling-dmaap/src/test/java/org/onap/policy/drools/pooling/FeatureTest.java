@@ -27,6 +27,9 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Deque;
@@ -51,21 +54,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * End-to-end tests of the pooling feature. Launches one or more "hosts", each one having
@@ -118,6 +119,10 @@ public class FeatureTest {
      */
     private Context ctx;
 
+    /**
+     * Setup before class.
+     * 
+     */
     @BeforeClass
     public static void setUpBeforeClass() {
         saveFeatureFactory = PoolingFeature.getFactory();
@@ -127,6 +132,9 @@ public class FeatureTest {
         // note: invoke runSlow() to slow things down
     }
 
+    /**
+     * Tear down after class.
+     */
     @AfterClass
     public static void tearDownAfterClass() {
         PoolingFeature.setFactory(saveFeatureFactory);
@@ -134,11 +142,17 @@ public class FeatureTest {
         DmaapManager.setFactory(saveDmaapFactory);
     }
 
+    /**
+     * Setup.
+     */
     @Before
     public void setUp() {
         ctx = null;
     }
 
+    /**
+     * Tear down.
+     */
     @After
     public void tearDown() {
         if (ctx != null) {
@@ -189,15 +203,15 @@ public class FeatureTest {
      * Invoke this to slow the timers down.
      */
     protected static void runSlow() {
-         stdReactivateWaitMs = 10000;
-         stdIdentificationMs = 10000;
-         stdStartHeartbeatMs = 15000;
-         stdActiveHeartbeatMs = 12000;
-         stdInterHeartbeatMs = 5000;
-         stdOfflinePubWaitMs = 2;
-         stdPollMs = 2;
-         stdInterPollMs = 2000;
-         stdEventWaitSec = 1000;
+        stdReactivateWaitMs = 10000;
+        stdIdentificationMs = 10000;
+        stdStartHeartbeatMs = 15000;
+        stdActiveHeartbeatMs = 12000;
+        stdInterHeartbeatMs = 5000;
+        stdOfflinePubWaitMs = 2;
+        stdPollMs = 2;
+        stdInterPollMs = 2000;
+        stdEventWaitSec = 1000;
     }
 
     /**
@@ -232,7 +246,7 @@ public class FeatureTest {
         /**
          * Counts the number of decode errors.
          */
-        private final AtomicInteger nDecodeErrors = new AtomicInteger(0);
+        private final AtomicInteger numDecodeErrors = new AtomicInteger(0);
 
         /**
          * Number of events we're still waiting to receive.
@@ -246,14 +260,15 @@ public class FeatureTest {
         private Host currentHost = null;
 
         /**
+         * Constructor.
          * 
          * @param nEvents number of events to be processed
          */
-        public Context(int nEvents) {
+        public Context(int events) {
             featureFactory = new FeatureFactory(this);
             managerFactory = new ManagerFactory(this);
             dmaapFactory = new DmaapFactory(this);
-            eventCounter = new CountDownLatch(nEvents);
+            eventCounter = new CountDownLatch(events);
 
             PoolingFeature.setFactory(featureFactory);
             PoolingManagerImpl.setFactory(managerFactory);
@@ -298,10 +313,10 @@ public class FeatureTest {
          * Verifies that all hosts processed at least one message.
          */
         public void checkAllSawAMsg() {
-            int x = 0;
+            int msgs = 0;
             for (Host host : hosts) {
-                assertTrue("x=" + x, host.messageSeen());
-                ++x;
+                assertTrue("msgs=" + msgs, host.messageSeen());
+                ++msgs;
             }
         }
 
@@ -309,7 +324,7 @@ public class FeatureTest {
          * Sets {@link #currentHost} to the specified host, and then invokes the given
          * function. Resets {@link #currentHost} to {@code null} before returning.
          * 
-         * @param host
+         * @param host host
          * @param func function to invoke
          */
         public void withHost(Host host, VoidFunction func) {
@@ -321,7 +336,7 @@ public class FeatureTest {
         /**
          * Offers an event to the external topic.
          * 
-         * @param event
+         * @param event event
          */
         public void offerExternal(String event) {
             externalTopic.offer(event);
@@ -330,7 +345,7 @@ public class FeatureTest {
         /**
          * Adds an internal channel to the set of channels.
          * 
-         * @param channel
+         * @param channel channel
          * @param queue the channel's queue
          */
         public void addInternal(String channel, BlockingQueue<String> queue) {
@@ -340,7 +355,7 @@ public class FeatureTest {
         /**
          * Offers a message to all internal channels.
          * 
-         * @param message
+         * @param message message
          */
         public void offerInternal(String message) {
             channel2queue.values().forEach(queue -> queue.offer(message));
@@ -349,8 +364,8 @@ public class FeatureTest {
         /**
          * Offers amessage to an internal channel.
          * 
-         * @param channel
-         * @param message
+         * @param channel channel
+         * @param message message
          */
         public void offerInternal(String channel, String message) {
             BlockingQueue<String> queue = channel2queue.get(channel);
@@ -362,7 +377,7 @@ public class FeatureTest {
         /**
          * Decodes an event.
          * 
-         * @param event
+         * @param event event
          * @return the decoded event, or {@code null} if it cannot be decoded
          */
         public Object decodeEvent(String event) {
@@ -372,15 +387,17 @@ public class FeatureTest {
         /**
          * Associates a controller with its drools controller.
          * 
-         * @param controller
-         * @param droolsController
+         * @param controller controller
+         * @param droolsController drools controller
          */
         public void addController(PolicyController controller, DroolsController droolsController) {
             drools2policy.put(droolsController, controller);
         }
 
         /**
-         * @param droolsController
+         * Get controller.
+         * 
+         * @param droolsController drools controller
          * @return the controller associated with a drools controller, or {@code null} if
          *         it has no associated controller
          */
@@ -389,6 +406,8 @@ public class FeatureTest {
         }
 
         /**
+         * Constructor.
+         * 
          * @return queue for the external topic
          */
         public BlockingQueue<String> getExternalTopic() {
@@ -396,21 +415,23 @@ public class FeatureTest {
         }
 
         /**
+         * Get decode errors.
          * 
          * @return the number of decode errors so far
          */
         public int getDecodeErrors() {
-            return nDecodeErrors.get();
+            return numDecodeErrors.get();
         }
 
         /**
          * Increments the count of decode errors.
          */
         public void bumpDecodeErrors() {
-            nDecodeErrors.incrementAndGet();
+            numDecodeErrors.incrementAndGet();
         }
 
         /**
+         * Get remaining events.
          * 
          * @return the number of events that haven't been processed
          */
@@ -428,10 +449,10 @@ public class FeatureTest {
         /**
          * Waits, for a period of time, for all events to be processed.
          * 
-         * @param time
-         * @param units
+         * @param time time
+         * @param units units
          * @return {@code true} if all events have been processed, {@code false} otherwise
-         * @throws InterruptedException
+         * @throws InterruptedException throws interrupted
          */
         public boolean awaitEvents(long time, TimeUnit units) throws InterruptedException {
             return eventCounter.await(time, units);
@@ -478,8 +499,9 @@ public class FeatureTest {
         private final DroolsController drools = mock(DroolsController.class);
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public Host(Context context) {
             this.context = context;
@@ -502,6 +524,8 @@ public class FeatureTest {
         }
 
         /**
+         * Get name.
+         * 
          * @return the host name
          */
         public String getName() {
@@ -543,9 +567,9 @@ public class FeatureTest {
         /**
          * Offers an event to the feature, before the policy controller handles it.
          * 
-         * @param protocol
-         * @param topic2
-         * @param event
+         * @param protocol protocol
+         * @param topic2 topic
+         * @param event event
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         public boolean beforeOffer(CommInfrastructure protocol, String topic2, String event) {
@@ -555,10 +579,10 @@ public class FeatureTest {
         /**
          * Offers an event to the feature, after the policy controller handles it.
          * 
-         * @param protocol
-         * @param topic
-         * @param event
-         * @param success
+         * @param protocol protocol
+         * @param topic topic
+         * @param event event
+         * @param success success
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         public boolean afterOffer(CommInfrastructure protocol, String topic, String event, boolean success) {
@@ -569,7 +593,7 @@ public class FeatureTest {
         /**
          * Offers an event to the feature, before the drools controller handles it.
          * 
-         * @param fact
+         * @param fact fact
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         public boolean beforeInsert(Object fact) {
@@ -579,7 +603,7 @@ public class FeatureTest {
         /**
          * Offers an event to the feature, after the drools controller handles it.
          * 
-         * @param fact
+         * @param fact fact
          * @param successInsert {@code true} if it was successfully inserted by the drools
          *        controller, {@code false} otherwise
          * @return {@code true} if the event was handled, {@code false} otherwise
@@ -596,6 +620,7 @@ public class FeatureTest {
         }
 
         /**
+         * Message seen.
          * 
          * @return {@code true} if a message was seen for this host, {@code false}
          *         otherwise
@@ -605,6 +630,8 @@ public class FeatureTest {
         }
 
         /**
+         * Get internal queue.
+         * 
          * @return the queue associated with this host's internal topic
          */
         public BlockingQueue<String> getInternalQueue() {
@@ -628,10 +655,10 @@ public class FeatureTest {
 
         @Override
         public Void answer(InvocationOnMock args) throws Throwable {
-            int i = 0;
-            CommInfrastructure commType = args.getArgument(i++);
-            String topic = args.getArgument(i++);
-            String event = args.getArgument(i++);
+            int index = 0;
+            CommInfrastructure commType = args.getArgument(index++);
+            String topic = args.getArgument(index++);
+            String event = args.getArgument(index++);
 
             if (host.beforeOffer(commType, topic, event)) {
                 return null;
@@ -676,8 +703,9 @@ public class FeatureTest {
         private final Serializer serializer = new Serializer();
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public TopicSinkImpl(Context context) {
             this.context = context;
@@ -732,8 +760,9 @@ public class FeatureTest {
         private AtomicReference<Pair<CountDownLatch, CountDownLatch>> pair = new AtomicReference<>(null);
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          * @param internal {@code true} if to read from the internal topic, {@code false}
          *        to read from the external topic
          */
@@ -778,7 +807,8 @@ public class FeatureTest {
                 try {
                     do {
                         processMessages(newPair.first(), listener);
-                    } while (!newPair.first().await(stdInterPollMs, TimeUnit.MILLISECONDS));
+                    } 
+                    while (!newPair.first().await(stdInterPollMs, TimeUnit.MILLISECONDS));
 
                     logger.info("topic source thread completed");
 
@@ -850,8 +880,8 @@ public class FeatureTest {
          * Polls for messages from the topic and offers them to the listener.
          * 
          * @param stopped triggered if processing should stop
-         * @param listener
-         * @throws InterruptedException
+         * @param listener listener
+         * @throws InterruptedException throws interrupted exception
          */
         private void processMessages(CountDownLatch stopped, TopicListener listener) throws InterruptedException {
 
@@ -874,7 +904,7 @@ public class FeatureTest {
     private static class TopicImpl implements Topic {
 
         /**
-         * 
+         * Constructor.
          */
         public TopicImpl() {
             super();
@@ -954,8 +984,9 @@ public class FeatureTest {
         private final Context context;
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public FeatureFactory(Context context) {
             this.context = context;
@@ -1029,8 +1060,9 @@ public class FeatureTest {
         private final TypeReference<TreeMap<String, String>> typeRef = new TypeReference<TreeMap<String, String>>() {};
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public ManagerFactory(Context context) {
 
@@ -1065,8 +1097,9 @@ public class FeatureTest {
         private final Context context;
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public DmaapFactory(Context context) {
             this.context = context;

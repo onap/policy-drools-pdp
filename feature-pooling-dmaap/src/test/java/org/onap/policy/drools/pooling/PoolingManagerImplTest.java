@@ -34,6 +34,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Queue;
@@ -46,9 +47,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
+import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.pooling.PoolingManagerImpl.Factory;
 import org.onap.policy.drools.pooling.extractor.ClassExtractors;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
@@ -125,6 +126,11 @@ public class PoolingManagerImplTest {
         PoolingManagerImpl.setFactory(saveFactory);
     }
 
+    /**
+     * Setup.
+     * 
+     * @throws Exception throws exception
+     */
     @Before
     public void setUp() throws Exception {
         plainProps = new Properties();
@@ -202,7 +208,7 @@ public class PoolingManagerImplTest {
         PolicyController ctlr = mock(PolicyController.class);
 
         PoolingFeatureRtException ex = expectException(PoolingFeatureRtException.class,
-                        () -> new PoolingManagerImpl(MY_HOST, ctlr, poolProps, active));
+            () -> new PoolingManagerImpl(MY_HOST, ctlr, poolProps, active));
         assertNotNull(ex.getCause());
         assertTrue(ex.getCause() instanceof ClassCastException);
     }
@@ -214,7 +220,7 @@ public class PoolingManagerImplTest {
         when(factory.makeDmaapManager(any())).thenThrow(ex);
 
         PoolingFeatureRtException ex2 = expectException(PoolingFeatureRtException.class,
-                        () -> new PoolingManagerImpl(MY_HOST, controller, poolProps, active));
+            () -> new PoolingManagerImpl(MY_HOST, controller, poolProps, active));
         assertEquals(ex, ex2.getCause());
     }
 
@@ -304,26 +310,26 @@ public class PoolingManagerImplTest {
 
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
-        verify(dmaap, times(START_PUB+1)).publish(any());
+        verify(dmaap, times(START_PUB + 1)).publish(any());
         
         mgr.beforeStop();
 
         verify(dmaap).stopConsumer(mgr);
         verify(sched).shutdownNow();
-        verify(dmaap, times(START_PUB+2)).publish(any());
+        verify(dmaap, times(START_PUB + 2)).publish(any());
         verify(dmaap).publish(contains("offline"));
 
         assertTrue(mgr.getCurrent() instanceof IdleState);
 
         // verify that next message is handled locally
         mgr.handle(msg);
-        verify(dmaap, times(START_PUB+2)).publish(any());
+        verify(dmaap, times(START_PUB + 2)).publish(any());
         verify(controller).onTopicEvent(CommInfrastructure.UEB, TOPIC2, THE_EVENT);
     }
 
     @Test
     public void testBeforeStop_NotRunning() throws Exception {
-        State st = mgr.getCurrent();
+        final State st = mgr.getCurrent();
 
         mgr.beforeStop();
 
@@ -339,7 +345,7 @@ public class PoolingManagerImplTest {
         // call beforeStart but not afterStart
         mgr.beforeStart();
 
-        State st = mgr.getCurrent();
+        final State st = mgr.getCurrent();
 
         mgr.beforeStop();
 
@@ -624,7 +630,7 @@ public class PoolingManagerImplTest {
         // route the message to this host
         mgr.startDistributing(makeAssignments(true));
 
-        CountDownLatch latch = catchRecursion(false);
+        final CountDownLatch latch = catchRecursion(false);
 
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
@@ -644,7 +650,7 @@ public class PoolingManagerImplTest {
         // route the message to this host
         mgr.startDistributing(makeAssignments(true));
 
-        CountDownLatch latch = catchRecursion(true);
+        final CountDownLatch latch = catchRecursion(true);
 
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
@@ -870,7 +876,7 @@ public class PoolingManagerImplTest {
 
         assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
         
-        verify(dmaap, times(START_PUB+1)).publish(any());
+        verify(dmaap, times(START_PUB + 1)).publish(any());
     }
 
     @Test
@@ -921,7 +927,7 @@ public class PoolingManagerImplTest {
         // route the message to this host
         mgr.startDistributing(makeAssignments(true));
 
-        CountDownLatch latch = catchRecursion(true);
+        final CountDownLatch latch = catchRecursion(true);
 
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
@@ -943,7 +949,7 @@ public class PoolingManagerImplTest {
         // generate RuntimeException when onTopicEvent() is invoked
         doThrow(new IllegalArgumentException("expected")).when(controller).onTopicEvent(any(), any(), any());
 
-        CountDownLatch latch = catchRecursion(true);
+        final CountDownLatch latch = catchRecursion(true);
 
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
@@ -975,7 +981,7 @@ public class PoolingManagerImplTest {
     }
 
     @Test
-    public void testHandleInternal_IOEx() throws Exception {
+    public void testHandleInternal_IoEx() throws Exception {
         startMgr();
 
         mgr.onTopicEvent(CommInfrastructure.UEB, MY_TOPIC, "invalid message");
@@ -1028,7 +1034,7 @@ public class PoolingManagerImplTest {
         // route the message to the other host
         mgr.startDistributing(makeAssignments(false));
         assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        verify(dmaap, times(START_PUB+1)).publish(any());
+        verify(dmaap, times(START_PUB + 1)).publish(any());
     }
 
     @Test

@@ -23,9 +23,10 @@ package org.onap.policy.drools.pooling.message;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Superclass used to test subclasses of {@link Message}.
@@ -49,6 +50,7 @@ public abstract class BasicMessageTester<T extends Message> {
     private final Class<T> subclazz;
 
     /**
+     * Constructor.
      * 
      * @param subclazz subclass of {@link Message} being tested
      */
@@ -60,7 +62,6 @@ public abstract class BasicMessageTester<T extends Message> {
      * Creates a default Message and verifies that the source and channel are
      * {@code null}.
      * 
-     * @return the default Message
      */
     @Test
     public final void testDefaultConstructor() {
@@ -71,8 +72,6 @@ public abstract class BasicMessageTester<T extends Message> {
      * Tests that the Message has the correct source, and that the channel is
      * {@code null}.
      * 
-     * @param msg message to be checked
-     * @param expectedSource what the source is expected to be
      */
     @Test
     public final void testConstructorWithArgs() {

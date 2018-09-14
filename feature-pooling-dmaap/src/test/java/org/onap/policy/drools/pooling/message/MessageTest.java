@@ -22,6 +22,7 @@ package org.onap.policy.drools.pooling.message;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 
 public class MessageTest extends BasicMessageTester<Message> {

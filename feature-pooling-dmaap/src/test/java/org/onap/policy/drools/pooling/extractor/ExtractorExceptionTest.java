@@ -21,6 +21,7 @@
 package org.onap.policy.drools.pooling.extractor;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.onap.policy.common.utils.test.ExceptionsTester;
 

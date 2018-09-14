@@ -66,8 +66,9 @@ public class ActiveState extends ProcessingState {
     private boolean predHeartbeatSeen = false;
 
     /**
+     * Constructor.
      * 
-     * @param mgr
+     * @param mgr pooling manager
      */
     public ActiveState(PoolingManager mgr) {
         super(mgr, mgr.getAssignments().getLeader());

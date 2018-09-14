@@ -17,6 +17,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.distributed.locking;
 
 import java.sql.Connection;
@@ -29,145 +30,149 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TargetLock {
-	
-	private static final Logger logger = LoggerFactory.getLogger(TargetLock.class);
-	
-	/**
-	 * The Target resource we want to lock
-	 */
-	private String resourceId;
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(TargetLock.class);
+
+    /**
+     * The Target resource we want to lock.
+     */
+    private String resourceId;
+
     /**
      * Data source used to connect to the DB containing locks.
      */
     private BasicDataSource dataSource;
 
-	/**
-	 * UUID 
-	 */
-	private UUID uuid;
-	
-	/**
-	 * Owner
-	 */
-	private String owner;
-	
-	/**
-	 * Constructs a TargetLock object.
-	 * 
-	 * @param resourceId ID of the entity we want to lock
-	 * @param dataSource used to connect to the DB containing locks
-	 */
-	public TargetLock (String resourceId, UUID uuid, String owner, BasicDataSource dataSource) {
-		this.resourceId = resourceId;
-		this.uuid = uuid;
-		this.owner = owner;
-		this.dataSource = dataSource;
-	}
-	
-	/**
-	 * obtain a lock
-     * @param holdSec the amount of time, in seconds, that the lock should be held
-	 */
-	public boolean lock(int holdSec) {
-		
-		return grabLock(holdSec);
-	}
+    /**
+     * UUID .
+     */
+    private UUID uuid;
 
     /**
-     * refresh a lock
+     * Owner.
+     */
+    private String owner;
+
+    /**
+     * Constructs a TargetLock object.
+     * 
+     * @param resourceId ID of the entity we want to lock
+     * @param dataSource used to connect to the DB containing locks
+     */
+    public TargetLock(String resourceId, UUID uuid, String owner, BasicDataSource dataSource) {
+        this.resourceId = resourceId;
+        this.uuid = uuid;
+        this.owner = owner;
+        this.dataSource = dataSource;
+    }
+
+    /**
+     * Obtain a lock.
+     * @param holdSec the amount of time, in seconds, that the lock should be held
+     */
+    public boolean lock(int holdSec) {
+
+        return grabLock(holdSec);
+    }
+
+    /**
+     * Refresh a lock.
      * 
      * @param holdSec the amount of time, in seconds, that the lock should be held
      * @return {@code true} if the lock was refreshed, {@code false} if the resource is
      *         not currently locked by the given owner
      */
-	public boolean refresh(int holdSec) {
-	    return updateLock(holdSec);
-	}
-	
-	/**
-	 * Unlock a resource by deleting it's associated record in the db
-	 */
-	public boolean unlock() {
-		return deleteLock();
-	}
-	
-	/**
-	 * "Grabs" lock by attempting to insert a new record in the db.
-	 *  If the insert fails due to duplicate key error resource is already locked
-	 *  so we call secondGrab. 
+    public boolean refresh(int holdSec) {
+        return updateLock(holdSec);
+    }
+
+    /**
+     * Unlock a resource by deleting it's associated record in the db.
+     */
+    public boolean unlock() {
+        return deleteLock();
+    }
+
+    /**
+     * "Grabs" lock by attempting to insert a new record in the db.
+     *  If the insert fails due to duplicate key error resource is already locked
+     *  so we call secondGrab. 
      * @param holdSec the amount of time, in seconds, that the lock should be held
-	 */
-	private boolean grabLock(int holdSec) {
+     */
+    private boolean grabLock(int holdSec) {
 
-		// try to insert a record into the table(thereby grabbing the lock)
-		try (Connection conn = dataSource.getConnection();
+        // try to insert a record into the table(thereby grabbing the lock)
+        try (Connection conn = dataSource.getConnection();
 
-				PreparedStatement statement = conn.prepareStatement(
-						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, timestampadd(second, ?, now()))")) {
-			
-		    int i = 1;
-			statement.setString(i++, this.resourceId);
-			statement.setString(i++, this.uuid.toString());
-			statement.setString(i++, this.owner);
-			statement.setInt(i++, holdSec);
-			statement.executeUpdate();
-		}
+                PreparedStatement statement = conn.prepareStatement(
+                        "INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
+                        + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
 
-		catch (SQLException e) {
-			logger.error("error in TargetLock.grabLock()", e);
-			return secondGrab(holdSec);
-		}
+            int index = 1;
+            statement.setString(index++, this.resourceId);
+            statement.setString(index++, this.uuid.toString());
+            statement.setString(index++, this.owner);
+            statement.setInt(index++, holdSec);
+            statement.executeUpdate();
+        }
 
-		return true;
-	}
+        catch (SQLException e) {
+            logger.error("error in TargetLock.grabLock()", e);
+            return secondGrab(holdSec);
+        }
 
-	/**
-	 * A second attempt at grabbing a lock. It first attempts to update the lock in case it is expired.
-	 * If that fails, it attempts to insert a new record again
+        return true;
+    }
+
+    /**
+     * A second attempt at grabbing a lock. It first attempts to update the lock in case it is expired.
+     * If that fails, it attempts to insert a new record again
      * @param holdSec the amount of time, in seconds, that the lock should be held
-	 */
-	private boolean secondGrab(int holdSec) {
+     */
+    private boolean secondGrab(int holdSec) {
 
-		try (Connection conn = dataSource.getConnection();
+        try (Connection conn = dataSource.getConnection();
 
-				PreparedStatement updateStatement = conn.prepareStatement(
-						"UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = timestampadd(second, ?, now()) WHERE resourceId = ? AND expirationTime < now()");
+                PreparedStatement updateStatement = conn.prepareStatement(
+                        "UPDATE pooling.locks SET host = ?, owner = ?, "
+                        + "expirationTime = timestampadd(second, ?, now()) "
+                        + "WHERE resourceId = ? AND expirationTime < now()");
 
-				PreparedStatement insertStatement = conn.prepareStatement(
-						"INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, timestampadd(second, ?, now()))");) {
+                PreparedStatement insertStatement = conn.prepareStatement(
+                        "INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
+                        + "values (?, ?, ?, timestampadd(second, ?, now()))");) {
 
-		    int i = 1;
-			updateStatement.setString(i++, this.uuid.toString());
-			updateStatement.setString(i++, this.owner);
-			updateStatement.setInt(i++, holdSec);
-            updateStatement.setString(i++, this.resourceId);
+            int index = 1;
+            updateStatement.setString(index++, this.uuid.toString());
+            updateStatement.setString(index++, this.owner);
+            updateStatement.setInt(index++, holdSec);
+            updateStatement.setString(index++, this.resourceId);
 
-			// The lock was expired and we grabbed it.
-			// return true
-			if (updateStatement.executeUpdate() == 1) {
-				return true;
-			}
+            // The lock was expired and we grabbed it.
+            // return true
+            if (updateStatement.executeUpdate() == 1) {
+                return true;
+            }
 
-			// If our update does not return 1 row, the lock either has not expired
-			// or it was removed. Try one last grab
-			else {
-			    i = 1;
-				insertStatement.setString(i++, this.resourceId);
-				insertStatement.setString(i++, this.uuid.toString());
-				insertStatement.setString(i++, this.owner);
-				insertStatement.setInt(i++, holdSec);
+            // If our update does not return 1 row, the lock either has not expired
+            // or it was removed. Try one last grab
+            else {
+                index = 1;
+                insertStatement.setString(index++, this.resourceId);
+                insertStatement.setString(index++, this.uuid.toString());
+                insertStatement.setString(index++, this.owner);
+                insertStatement.setInt(index++, holdSec);
 
-				// If our insert returns 1 we successfully grabbed the lock
-				return (insertStatement.executeUpdate() == 1);
-			}
+                // If our insert returns 1 we successfully grabbed the lock
+                return (insertStatement.executeUpdate() == 1);
+            }
 
-		} catch (SQLException e) {
-			logger.error("error in TargetLock.secondGrab()", e);
-			return false;
-		}
+        } catch (SQLException e) {
+            logger.error("error in TargetLock.secondGrab()", e);
+            return false;
+        }
 
-	}
+    }
 
     /**
      * Updates the DB record associated with the lock.
@@ -179,15 +184,17 @@ public class TargetLock {
 
         try (Connection conn = dataSource.getConnection();
 
-                        PreparedStatement updateStatement = conn.prepareStatement(
-                                        "UPDATE pooling.locks SET host = ?, owner = ?, expirationTime = timestampadd(second, ?, now()) WHERE resourceId = ? AND owner = ? AND expirationTime >= now()")) {
+                PreparedStatement updateStatement = conn.prepareStatement(
+                        "UPDATE pooling.locks SET host = ?, owner = ?, "
+                        + "expirationTime = timestampadd(second, ?, now()) "
+                        + "WHERE resourceId = ? AND owner = ? AND expirationTime >= now()")) {
 
-            int i = 1;
-            updateStatement.setString(i++, this.uuid.toString());
-            updateStatement.setString(i++, this.owner);
-            updateStatement.setInt(i++, holdSec);
-            updateStatement.setString(i++, this.resourceId);
-            updateStatement.setString(i++, this.owner);
+            int index = 1;
+            updateStatement.setString(index++, this.uuid.toString());
+            updateStatement.setString(index++, this.owner);
+            updateStatement.setInt(index++, holdSec);
+            updateStatement.setString(index++, this.resourceId);
+            updateStatement.setString(index++, this.owner);
 
             // refresh succeeded iff a record was updated
             return (updateStatement.executeUpdate() == 1);
@@ -198,80 +205,78 @@ public class TargetLock {
         }
 
     }
-	
-	/**
-	 *To remove a lock we simply delete the record from the db 
-	 */
-	private boolean deleteLock() {
 
-		try (Connection conn = dataSource.getConnection();
+    /**
+     *To remove a lock we simply delete the record from the db .
+     */
+    private boolean deleteLock() {
 
-				PreparedStatement deleteStatement = conn.prepareStatement(
-						"DELETE FROM pooling.locks WHERE resourceId = ? AND owner = ? AND host = ?")) {
+        try (Connection conn = dataSource.getConnection();
 
-			deleteStatement.setString(1, this.resourceId);
-			deleteStatement.setString(2, this.owner);
-			deleteStatement.setString(3, this.uuid.toString());
+                PreparedStatement deleteStatement = conn.prepareStatement(
+                        "DELETE FROM pooling.locks WHERE resourceId = ? AND owner = ? AND host = ?")) {
 
-			return (deleteStatement.executeUpdate() == 1);
+            deleteStatement.setString(1, this.resourceId);
+            deleteStatement.setString(2, this.owner);
+            deleteStatement.setString(3, this.uuid.toString());
 
-		} catch (SQLException e) {
-			logger.error("error in TargetLock.deleteLock()", e);
-			return false;
-		}
+            return (deleteStatement.executeUpdate() == 1);
 
-	}
+        } catch (SQLException e) {
+            logger.error("error in TargetLock.deleteLock()", e);
+            return false;
+        }
 
-	/**
-	 * Is the lock active
-	 */
-	public boolean isActive() {
-		try (Connection conn = dataSource.getConnection();
+    }
 
-				PreparedStatement selectStatement = conn.prepareStatement(
-						"SELECT * FROM pooling.locks WHERE resourceId = ? AND host = ? AND owner= ? AND expirationTime >= now()")) {
+    /**
+     * Is the lock active.
+     */
+    public boolean isActive() {
+        try (Connection conn = dataSource.getConnection();
 
-			selectStatement.setString(1, this.resourceId);
-			selectStatement.setString(2, this.uuid.toString());
-			selectStatement.setString(3, this.owner);
-			try (ResultSet result = selectStatement.executeQuery()) {
+                PreparedStatement selectStatement = conn.prepareStatement(
+                        "SELECT * FROM pooling.locks "
+                        + "WHERE resourceId = ? AND host = ? AND owner= ? AND expirationTime >= now()")) {
 
-				// This will return true if the
-				// query returned at least one row
-				return result.first();
-			}
+            selectStatement.setString(1, this.resourceId);
+            selectStatement.setString(2, this.uuid.toString());
+            selectStatement.setString(3, this.owner);
+            try (ResultSet result = selectStatement.executeQuery()) {
 
-		}
+                // This will return true if the
+                // query returned at least one row
+                return result.first();
+            }
 
-		catch (SQLException e) {
-			logger.error("error in TargetLock.isActive()", e);
-			return false;
-		}
+        }
 
-	}
+        catch (SQLException e) {
+            logger.error("error in TargetLock.isActive()", e);
+            return false;
+        }
 
-	/**
-	 * Is the resource locked
-	 */
-	public boolean isLocked() {
+    }
 
-		try (Connection conn = dataSource.getConnection();
-			
-				PreparedStatement selectStatement = conn
-						.prepareStatement("SELECT * FROM pooling.locks WHERE resourceId = ? AND expirationTime >= now()")) {
+    /**
+     * Is the resource locked.
+     */
+    public boolean isLocked() {
 
-			selectStatement.setString(1, this.resourceId);
-			try (ResultSet result = selectStatement.executeQuery()) {
-				// This will return true if the
-				// query returned at least one row
-				return result.first();
-			}
-		}
+        try (Connection conn = dataSource.getConnection();
+                PreparedStatement selectStatement = conn
+                    .prepareStatement("SELECT * FROM pooling.locks WHERE resourceId = ? AND expirationTime >= now()")) {
 
-		catch (SQLException e) {
-			logger.error("error in TargetLock.isActive()", e);
-			return false;
-		}
-	}
+            selectStatement.setString(1, this.resourceId);
+            try (ResultSet result = selectStatement.executeQuery()) {
+                // This will return true if the
+                // query returned at least one row
+                return result.first();
+            }
+        } catch (SQLException e) {
+            logger.error("error in TargetLock.isActive()", e);
+            return false;
+        }
+    }
 
 }

@@ -26,7 +26,7 @@ package org.onap.policy.drools.pooling.message;
 public class Query extends Message {
 
     /**
-     * 
+     * Constructor.
      */
     public Query() {
         super();
@@ -34,6 +34,7 @@ public class Query extends Message {
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
      */

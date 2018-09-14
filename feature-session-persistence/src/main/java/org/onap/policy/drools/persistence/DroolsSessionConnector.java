@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,18 @@
 
 package org.onap.policy.drools.persistence;
 
-public interface DroolsSessionConnector
-{
-	/**
-	 * Gets a session by PDP id and name.
-	 * @param sessName
-	 * @return a session, or {@code null} if it is not found
-	 */
-	public DroolsSession get(String sessName);
-	
-	/**
-	 * Replaces a session, adding it if it does not exist.
-	 * @param sess		session to be replaced
-	 */
-	public void replace(DroolsSession sess);
+public interface DroolsSessionConnector {
+    /**
+     * Gets a session by PDP id and name.
+     * @param sessName session name
+     * @return a session, or {@code null} if it is not found
+     */
+    public DroolsSession get(String sessName);
+
+    /**
+     * Replaces a session, adding it if it does not exist.
+     * @param sess session to be replaced
+     */
+    public void replace(DroolsSession sess);
 
 }

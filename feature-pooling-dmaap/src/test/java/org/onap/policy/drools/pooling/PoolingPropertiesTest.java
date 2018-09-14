@@ -32,6 +32,7 @@ import static org.onap.policy.drools.pooling.PoolingProperties.POOLING_TOPIC;
 import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 import static org.onap.policy.drools.pooling.PoolingProperties.REACTIVATE_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.START_HEARTBEAT_MS;
+
 import java.util.Properties;
 import java.util.function.Function;
 import org.junit.Before;
@@ -57,6 +58,11 @@ public class PoolingPropertiesTest {
     private Properties plain;
     private PoolingProperties pooling;
 
+    /**
+     * Setup.
+     * 
+     * @throws Exception throws an exception
+     */
     @Before
     public void setUp() throws Exception {
         plain = makeProperties();

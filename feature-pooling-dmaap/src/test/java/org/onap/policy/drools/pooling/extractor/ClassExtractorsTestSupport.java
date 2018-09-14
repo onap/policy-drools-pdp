@@ -28,7 +28,7 @@ public class ClassExtractorsTestSupport {
     private ClassExtractorsTestSupport2 nested = new ClassExtractorsTestSupport2();
 
     /**
-     * 
+     * Constructor.
      */
     public ClassExtractorsTestSupport() {
         super();

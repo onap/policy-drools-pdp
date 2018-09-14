@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-healthcheck
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
  */
 
 package org.onap.policy.drools.healthcheck;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -45,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public class HealthCheckFeatureTest {
 
     /**
-     * Healthcheck Configuration File
+     * Healthcheck Configuration File.
      */
     private static final String HEALTH_CHECK_PROPERTIES_FILE = "feature-healthcheck.properties";
 
@@ -57,13 +56,15 @@ public class HealthCheckFeatureTest {
 
 
     /**
-     * logger
+     * logger.
      */
     private static Logger logger = LoggerFactory.getLogger(HealthCheckFeatureTest.class);
 
     private static Properties httpProperties = new Properties();
 
-
+    /**
+     * Set up. 
+     */
     @BeforeClass
     public static void setup() {
 
@@ -105,6 +106,9 @@ public class HealthCheckFeatureTest {
 
     }
 
+    /**
+     * Tear down.
+     */
     @AfterClass
     public static void tearDown() {
         logger.info("-- tearDown() --");
@@ -135,7 +139,7 @@ public class HealthCheckFeatureTest {
 
 
     /**
-     * setup up config directory
+     * setup up config directory.
      */
     protected static void configDirSetup() {
 
@@ -161,7 +165,7 @@ public class HealthCheckFeatureTest {
     }
 
     /**
-     * cleanup up config directory
+     * cleanup up config directory.
      */
     protected static void configDirCleanup() {
 

@@ -31,6 +31,7 @@ import static org.onap.policy.drools.pooling.state.FilterUtils.JSON_VALUE;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeAnd;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
+
 import java.util.Map;
 import org.junit.Test;
 

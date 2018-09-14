@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.pooling;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,10 +30,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.onap.policy.common.utils.properties.SpecProperties;
-import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
+import org.onap.policy.common.utils.properties.SpecProperties;
+import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.pooling.extractor.ClassExtractors;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Forward;
@@ -50,7 +51,6 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * Implementation of a {@link PoolingManager}. Until bucket assignments have been made,
@@ -126,8 +126,8 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Current state.
-     * <p>
-     * This uses a finite state machine, wherein the state object contains all of the data
+     * 
+     * <p>This uses a finite state machine, wherein the state object contains all of the data
      * relevant to that state. Each state object has a process() method, specific to each
      * type of {@link Message} subclass. The method returns the next state object, or
      * {@code null} if the state is to remain the same.
@@ -417,10 +417,9 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Handles an event from the internal topic.
      * 
-     * @param topic2
-     * @param event
-     * @return {@code true} if the event was handled, {@code false} if the controller
-     *         should handle it
+     * @param commType comm infrastructure
+     * @param topic2 topic
+     * @param event event
      */
     @Override
     public void onTopicEvent(CommInfrastructure commType, String topic2, String event) {
@@ -440,14 +439,14 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * Called by the PolicyController before it offers the event to the DroolsController.
      * If the controller is locked, then it isn't processing events. However, they still
      * need to be forwarded, thus in that case, they are decoded and forwarded.
-     * <p>
-     * On the other hand, if the controller is not locked, then we just return immediately
+     * 
+     * <p>On the other hand, if the controller is not locked, then we just return immediately
      * and let {@link #beforeInsert(Object, String, String, Object) beforeInsert()} handle
      * it instead, as it already has the decoded message.
      * 
-     * @param protocol
-     * @param topic2
-     * @param event
+     * @param protocol protocol
+     * @param topic2 topic
+     * @param event event
      * @return {@code true} if the event was handled by the manager, {@code false} if it
      *         must still be handled by the invoker
      */
@@ -464,8 +463,8 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Called by the DroolsController before it inserts the event into the rule engine.
      * 
-     * @param protocol
-     * @param topic2
+     * @param protocol protocol
+     * @param topic2 topic
      * @param event original event text, as received from the Bus
      * @param event2 event, as an object
      * @return {@code true} if the event was handled by the manager, {@code false} if it
@@ -484,9 +483,9 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Handles an event from an external topic.
      * 
-     * @param protocol
-     * @param topic2
-     * @param event
+     * @param protocol protocol
+     * @param topic2 topic
+     * @param event event
      * @param reqid request id extracted from the event, or {@code null} if it couldn't be
      *        extracted
      * @return {@code true} if the event was handled by the manager, {@code false} if it
@@ -519,7 +518,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Handles an event from an external topic.
      * 
-     * @param event
+     * @param event event
      * @return {@code true} if the event was handled, {@code false} if the invoker should
      *         handle it
      */
@@ -539,7 +538,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Handles a {@link Forward} event, possibly forwarding it again.
      * 
-     * @param event
+     * @param event event
      * @return {@code true} if the event was handled, {@code false} if the invoker should
      *         handle it
      */
@@ -595,8 +594,8 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Decodes an event from a String into an event Object.
      * 
-     * @param topic2
-     * @param event
+     * @param topic2 topic
+     * @param event event
      * @return the decoded event object, or {@code null} if it can't be decoded
      */
     private Object decodeEvent(String topic2, String event) {
@@ -625,10 +624,10 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Makes a {@link Forward}, and validates its contents.
      * 
-     * @param protocol
-     * @param topic2
-     * @param event
-     * @param reqid
+     * @param protocol protocol
+     * @param topic2 topic
+     * @param event event
+     * @param reqid request id
      * @return a new message, or {@code null} if the message was invalid
      */
     private Forward makeForward(CommInfrastructure protocol, String topic2, String event, String reqid) {
@@ -661,7 +660,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Injects an event into the controller.
      * 
-     * @param event
+     * @param event event
      */
     private void inject(Forward event) {
         logger.info("inject event for request {} from topic {}", event.getRequestId(), event.getTopic());
@@ -760,6 +759,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
         private StateTimerTask task;
 
         /**
+         * Constructor.
          * 
          * @param task task to execute when this timer runs
          */
@@ -832,9 +832,9 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
          * @param topic topic on which the event was received
          * @param event event text to be decoded
          * @return the decoded event
-         * @throws IllegalArgumentException
-         * @throw UnsupportedOperationException
-         * @throws IllegalStateException
+         * @throws IllegalArgumentException illegal argument
+         * @throw UnsupportedOperationException unsupported operation
+         * @throws IllegalStateException illegal state
          */
         public Object decodeEvent(DroolsController drools, String topic, String event) {
             return EventProtocolCoder.manager.decode(drools.getGroupId(), drools.getArtifactId(), topic, event);

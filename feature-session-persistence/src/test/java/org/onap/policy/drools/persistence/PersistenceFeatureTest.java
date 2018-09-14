@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,12 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -83,1335 +83,1332 @@ import org.slf4j.LoggerFactory;
 
 public class PersistenceFeatureTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(PersistenceFeatureTest.class);
-
-	private static final String JDBC_DRIVER = "fake.driver";
-	private static final String JDBC_URL = "fake.url";
-	private static final String JDBC_USER = "fake.user";
-	private static final String JDBC_PASSWD = "fake.password";
-	private static final String JTA_OSDIR = "target";
-	private static final String SRC_TEST_RESOURCES = "src/test/resources";
-
-	private static Properties stdprops;
-
-	private JpaDroolsSessionConnector jpa;
-	private DroolsSession sess;
-	private KieSession kiesess;
-	private BasicDataSource bds;
-	private EntityManagerFactory emf;
-	private Connection conn;
-	private Properties props;
-	private KieServices kiesvc;
-	private Environment kieenv;
-	private KieSessionConfiguration kiecfg;
-	private KieBase kiebase;
-	private KieStoreServices kiestore;
-	private KieContainer kiecont;
-	private TransactionManager transmgr;
-	private UserTransaction usertrans;
-	private TransactionSynchronizationRegistry transreg;
-	private PolicyController polctlr;
-	private PolicyContainer polcont;
-	private PolicySession polsess;
-	private PersistenceFeature.Factory fact;
-
-	private PersistenceFeature feat;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		stdprops = new Properties();
-
-		stdprops.put(DroolsPersistenceProperties.DB_DRIVER, JDBC_DRIVER);
-		stdprops.put(DroolsPersistenceProperties.DB_URL, JDBC_URL);
-		stdprops.put(DroolsPersistenceProperties.DB_USER, JDBC_USER);
-		stdprops.put(DroolsPersistenceProperties.DB_PWD, JDBC_PASSWD);
-		stdprops.put(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR, JTA_OSDIR);
-		stdprops.put(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT, "50");
-
-		System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "target/tm");
-		System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "target/tm");
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		jpa = mock(JpaDroolsSessionConnector.class);
-		sess = mock(DroolsSession.class);
-		bds = mock(BasicDataSource.class);
-		emf = mock(EntityManagerFactory.class);
-		kiesess = mock(KieSession.class);
-		conn = null;
-		props = new Properties();
-		kiesvc = mock(KieServices.class);
-		kieenv = mock(Environment.class);
-		kiecfg = mock(KieSessionConfiguration.class);
-		kiebase = mock(KieBase.class);
-		kiestore = mock(KieStoreServices.class);
-		kiecont = mock(KieContainer.class);
-		transmgr = mock(TransactionManager.class);
-		usertrans = mock(UserTransaction.class);
-		transreg = mock(TransactionSynchronizationRegistry.class);
-		polcont = mock(PolicyContainer.class);
-		polctlr = mock(PolicyController.class);
-		polsess = mock(PolicySession.class);
-		fact = mock(PersistenceFeature.Factory.class);
-
-		feat = new PersistenceFeature();
-		feat.setFactory(fact);
-
-		props.putAll(stdprops);
-
-		System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "target/tm");
-		System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "target/tm");
-
-		when(fact.getKieServices()).thenReturn(kiesvc);
-		when(fact.getTransMgr()).thenReturn(transmgr);
-		when(fact.getUserTrans()).thenReturn(usertrans);
-		when(fact.getTransSyncReg()).thenReturn(transreg);
-		when(fact.loadProperties(anyString())).thenReturn(props);
-
-		when(kiesvc.newEnvironment()).thenReturn(kieenv);
-		when(kiesvc.getStoreServices()).thenReturn(kiestore);
-		when(kiesvc.newKieSessionConfiguration()).thenReturn(kiecfg);
-
-		when(polcont.getKieContainer()).thenReturn(kiecont);
-
-		when(polsess.getPolicyContainer()).thenReturn(polcont);
-
-		when(kiecont.getKieBase(anyString())).thenReturn(kiebase);
-	}
-
-	@After
-	public void tearDown() {
-		// this will cause the in-memory test DB to be dropped
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.warn("failed to close connection", e);
-			}
-		}
+    private static final Logger logger = LoggerFactory.getLogger(PersistenceFeatureTest.class);
+
+    private static final String JDBC_DRIVER = "fake.driver";
+    private static final String JDBC_URL = "fake.url";
+    private static final String JDBC_USER = "fake.user";
+    private static final String JDBC_PASSWD = "fake.password";
+    private static final String JTA_OSDIR = "target";
+    private static final String SRC_TEST_RESOURCES = "src/test/resources";
+
+    private static Properties stdprops;
+
+    private JpaDroolsSessionConnector jpa;
+    private DroolsSession sess;
+    private KieSession kiesess;
+    private BasicDataSource bds;
+    private EntityManagerFactory emf;
+    private Connection conn;
+    private Properties props;
+    private KieServices kiesvc;
+    private Environment kieenv;
+    private KieSessionConfiguration kiecfg;
+    private KieBase kiebase;
+    private KieStoreServices kiestore;
+    private KieContainer kiecont;
+    private TransactionManager transmgr;
+    private UserTransaction usertrans;
+    private TransactionSynchronizationRegistry transreg;
+    private PolicyController polctlr;
+    private PolicyContainer polcont;
+    private PolicySession polsess;
+    private PersistenceFeature.Factory fact;
+
+    private PersistenceFeature feat;
+
+    /**
+     * Setup before class.
+     * 
+     * @throws Exception exception
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        stdprops = new Properties();
+
+        stdprops.put(DroolsPersistenceProperties.DB_DRIVER, JDBC_DRIVER);
+        stdprops.put(DroolsPersistenceProperties.DB_URL, JDBC_URL);
+        stdprops.put(DroolsPersistenceProperties.DB_USER, JDBC_USER);
+        stdprops.put(DroolsPersistenceProperties.DB_PWD, JDBC_PASSWD);
+        stdprops.put(DroolsPersistenceProperties.JTA_OBJECTSTORE_DIR, JTA_OSDIR);
+        stdprops.put(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT, "50");
+
+        System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "target/tm");
+        System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "target/tm");
+    }
+
+    /**
+     * Setup.
+     * 
+     * @throws Exception exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        jpa = mock(JpaDroolsSessionConnector.class);
+        sess = mock(DroolsSession.class);
+        bds = mock(BasicDataSource.class);
+        emf = mock(EntityManagerFactory.class);
+        kiesess = mock(KieSession.class);
+        conn = null;
+        props = new Properties();
+        kiesvc = mock(KieServices.class);
+        kieenv = mock(Environment.class);
+        kiecfg = mock(KieSessionConfiguration.class);
+        kiebase = mock(KieBase.class);
+        kiestore = mock(KieStoreServices.class);
+        kiecont = mock(KieContainer.class);
+        transmgr = mock(TransactionManager.class);
+        usertrans = mock(UserTransaction.class);
+        transreg = mock(TransactionSynchronizationRegistry.class);
+        polcont = mock(PolicyContainer.class);
+        polctlr = mock(PolicyController.class);
+        polsess = mock(PolicySession.class);
+        fact = mock(PersistenceFeature.Factory.class);
+
+        feat = new PersistenceFeature();
+        feat.setFactory(fact);
+
+        props.putAll(stdprops);
+
+        System.setProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir", "target/tm");
+        System.setProperty("ObjectStoreEnvironmentBean.objectStoreDir", "target/tm");
+
+        when(fact.getKieServices()).thenReturn(kiesvc);
+        when(fact.getTransMgr()).thenReturn(transmgr);
+        when(fact.getUserTrans()).thenReturn(usertrans);
+        when(fact.getTransSyncReg()).thenReturn(transreg);
+        when(fact.loadProperties(anyString())).thenReturn(props);
+
+        when(kiesvc.newEnvironment()).thenReturn(kieenv);
+        when(kiesvc.getStoreServices()).thenReturn(kiestore);
+        when(kiesvc.newKieSessionConfiguration()).thenReturn(kiecfg);
+
+        when(polcont.getKieContainer()).thenReturn(kiecont);
 
-		if (emf != null) {
-			try {
-				emf.close();
-			} catch (IllegalArgumentException e) {
-				logger.trace("ignored exception", e);
-			}
-		}
-	}
+        when(polsess.getPolicyContainer()).thenReturn(polcont);
 
-	@Test
-	public void testGetContainerAdjunct_New() throws Exception {
+        when(kiecont.getKieBase(anyString())).thenReturn(kiebase);
+    }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    /**
+     * Tear down.
+     */
+    @After
+    public void tearDown() {
+        // this will cause the in-memory test DB to be dropped
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.warn("failed to close connection", e);
+            }
+        }
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        if (emf != null) {
+            try {
+                emf.close();
+            } catch (IllegalArgumentException e) {
+                logger.trace("ignored exception", e);
+            }
+        }
+    }
 
-		// force getContainerAdjunct() to be invoked
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testGetContainerAdjunct_New() throws Exception {
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		assertNotNull(adjcap.getValue());
-	}
+        // force getContainerAdjunct() to be invoked
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-	@Test
-	public void testGetContainerAdjunct_Existing() throws Exception {
+        ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertNotNull(adjcap.getValue());
+    }
 
-		// force getContainerAdjunct() to be invoked
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testGetContainerAdjunct_Existing() throws Exception {
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		// return adjunct on next call
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        // force getContainerAdjunct() to be invoked
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		// force getContainerAdjunct() to be invoked again
-		setUpKie("myname2", 999L, true);
-		feat.activatePolicySession(polcont, "myname2", "mybase");
+        ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		// ensure it isn't invoked again
-		verify(polcont, times(1)).setAdjunct(any(), any());
-	}
+        verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
 
-	@Test
-	public void testGetContainerAdjunct_WrongType() throws Exception {
+        // return adjunct on next call
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        // force getContainerAdjunct() to be invoked again
+        setUpKie("myname2", 999L, true);
+        feat.activatePolicySession(polcont, "myname2", "mybase");
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        // ensure it isn't invoked again
+        verify(polcont, times(1)).setAdjunct(any(), any());
+    }
 
-		// return false adjunct on next call
-		when(polcont.getAdjunct(any())).thenReturn("not-a-real-adjunct");
+    @Test
+    public void testGetContainerAdjunct_WrongType() throws Exception {
 
-		// force getContainerAdjunct() to be invoked
-		setUpKie("myname2", 999L, true);
-		feat.activatePolicySession(polcont, "myname2", "mybase");
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
+        // return false adjunct on next call
+        when(polcont.getAdjunct(any())).thenReturn("not-a-real-adjunct");
 
-		assertNotNull(adjcap.getValue());
-	}
+        // force getContainerAdjunct() to be invoked
+        setUpKie("myname2", 999L, true);
+        feat.activatePolicySession(polcont, "myname2", "mybase");
 
-	@Test
-	public void testGetSequenceNumber() {
-		assertEquals(1, feat.getSequenceNumber());
-	}
+        ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-	@Test
-	public void testGlobalInit() throws Exception {
+        verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        assertNotNull(adjcap.getValue());
+    }
 
-		// verify that various factory methods were invoked
-		verify(fact).getKieServices();
-		verify(fact).loadProperties("src/test/resources/feature-session-persistence.properties");
-	}
+    @Test
+    public void testGetSequenceNumber() {
+        assertEquals(1, feat.getSequenceNumber());
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void testGlobalInit_IOEx() throws Exception {
-		
-		when(fact.loadProperties(anyString())).thenThrow(new IOException("expected exception"));
+    @Test
+    public void testGlobalInit() throws Exception {
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
-	}
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testActivatePolicySession() throws Exception {
-		PreparedStatement ps = mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        // verify that various factory methods were invoked
+        verify(fact).getKieServices();
+        verify(fact).loadProperties("src/test/resources/feature-session-persistence.properties");
+    }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
-		feat.beforeActivate(null);
+    @Test(expected = NullPointerException.class)
+    public void testGlobalInitIoEx() throws Exception {
 
-		KieSession s = feat.activatePolicySession(polcont, "myname", "mybase");
+        when(fact.loadProperties(anyString())).thenThrow(new IOException("expected exception"));
 
-		verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
-		verify(kiestore, never()).newKieSession(any(), any(), any());
+        feat.globalInit(null, SRC_TEST_RESOURCES);
+    }
 
-		assertEquals(s, kiesess);
+    @Test
+    public void testActivatePolicySession() throws Exception {
+        final PreparedStatement ps = mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		verify(ps).executeUpdate();
+        feat.globalInit(null, SRC_TEST_RESOURCES);
+        feat.beforeActivate(null);
 
-		verify(kieenv, times(4)).set(anyString(), any());
+        KieSession session = feat.activatePolicySession(polcont, "myname", "mybase");
 
-		verify(jpa).get("myname");
-		verify(jpa).replace(any());
-	}
+        verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
+        verify(kiestore, never()).newKieSession(any(), any(), any());
 
-	@Test
-	public void testActivatePolicySession_NoPersistence() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        assertEquals(session, kiesess);
 
-		PreparedStatement ps = mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        verify(ps).executeUpdate();
 
-		props.remove("persistence.type");
+        verify(kieenv, times(4)).set(anyString(), any());
 
-		feat.beforeStart(null);
+        verify(jpa).get("myname");
+        verify(jpa).replace(any());
+    }
 
-		assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    @Test
+    public void testActivatePolicySession_NoPersistence() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(ps, never()).executeUpdate();
-		verify(kiestore, never()).loadKieSession(anyLong(), any(), any(), any());
-		verify(kiestore, never()).newKieSession(any(), any(), any());
-	}
+        final PreparedStatement ps = mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	/**
-	 * Verifies that a new KIE session is created when there is no existing
-	 * session entity.
-	 */
-	@Test
-	public void testActivatePolicySession_New() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.remove("persistence.type");
 
-		mockDbConn(5);
-		setUpKie("noName", 999L, true);
+        feat.beforeStart(null);
 
-		KieSession s = feat.activatePolicySession(polcont, "myname", "mybase");
+        assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
 
-		verify(kiestore, never()).loadKieSession(anyLong(), any(), any(), any());
-		verify(kiestore).newKieSession(any(), any(), any());
+        verify(ps, never()).executeUpdate();
+        verify(kiestore, never()).loadKieSession(anyLong(), any(), any(), any());
+        verify(kiestore, never()).newKieSession(any(), any(), any());
+    }
 
-		assertEquals(s, kiesess);
+    /** Verifies that a new KIE session is created when there is no existing session entity. */
+    @Test
+    public void testActivatePolicySession_New() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(kieenv, times(4)).set(anyString(), any());
+        mockDbConn(5);
+        setUpKie("noName", 999L, true);
 
-		verify(jpa).get("myname");
-		verify(jpa).replace(any());
-	}
+        KieSession session = feat.activatePolicySession(polcont, "myname", "mybase");
 
-	/**
-	 * Verifies that a new KIE session is created when there KIE fails to load
-	 * an existing session.
-	 */
-	@Test
-	public void testActivatePolicySession_LoadFailed() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(kiestore, never()).loadKieSession(anyLong(), any(), any(), any());
+        verify(kiestore).newKieSession(any(), any(), any());
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        assertEquals(session, kiesess);
 
-		KieSession s = feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(kieenv, times(4)).set(anyString(), any());
 
-		verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
-		verify(kiestore).newKieSession(any(), any(), any());
+        verify(jpa).get("myname");
+        verify(jpa).replace(any());
+    }
 
-		assertEquals(s, kiesess);
+    /**
+     * Verifies that a new KIE session is created when there KIE fails to load an existing session.
+     */
+    @Test
+    public void testActivatePolicySession_LoadFailed() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(kieenv, times(4)).set(anyString(), any());
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		verify(jpa).get("myname");
+        KieSession session = feat.activatePolicySession(polcont, "myname", "mybase");
 
-		ArgumentCaptor<DroolsSession> d = ArgumentCaptor.forClass(DroolsSession.class);
-		verify(jpa).replace(d.capture());
+        verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
+        verify(kiestore).newKieSession(any(), any(), any());
 
-		assertEquals("myname", d.getValue().getSessionName());
-		assertEquals(100L, d.getValue().getSessionId());
-	}
+        assertEquals(session, kiesess);
 
-	@Test
-	public void testLoadDataSource() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(kieenv, times(4)).set(anyString(), any());
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        verify(jpa).get("myname");
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        ArgumentCaptor<DroolsSession> drools = ArgumentCaptor.forClass(DroolsSession.class);
+        verify(jpa).replace(drools.capture());
 
-		verify(fact).makeEntMgrFact(any());
-	}
+        assertEquals("myname", drools.getValue().getSessionName());
+        assertEquals(100L, drools.getValue().getSessionId());
+    }
 
-	@Test
-	public void testConfigureSysProps() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testLoadDataSource() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		assertEquals("60", System.getProperty("com.arjuna.ats.arjuna.coordinator.defaultTimeout"));
-		assertEquals(JTA_OSDIR, System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir"));
-		assertEquals(JTA_OSDIR, System.getProperty("ObjectStoreEnvironmentBean.objectStoreDir"));
-	}
+        verify(fact).makeEntMgrFact(any());
+    }
 
-	@Test
-	public void testConfigureKieEnv() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testConfigureSysProps() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		verify(kieenv, times(4)).set(any(), any());
+        assertEquals("60", System.getProperty("com.arjuna.ats.arjuna.coordinator.defaultTimeout"));
+        assertEquals(JTA_OSDIR, System.getProperty("com.arjuna.ats.arjuna.objectstore.objectStoreDir"));
+        assertEquals(JTA_OSDIR, System.getProperty("ObjectStoreEnvironmentBean.objectStoreDir"));
+    }
 
-		verify(kieenv).set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-		verify(kieenv).set(EnvironmentName.TRANSACTION, usertrans);
-		verify(kieenv).set(EnvironmentName.TRANSACTION_MANAGER, transmgr);
-		verify(kieenv).set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, transreg);
-		
-		verify(bds, times(1)).close();
-	}
+    @Test
+    public void testConfigureKieEnv() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testConfigureKieEnv_RtEx() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
-		
-		when(fact.getUserTrans()).thenThrow(new IllegalArgumentException("expected exception"));
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		try {
-			feat.activatePolicySession(polcont, "myname", "mybase");
-			fail("missing exception");
-			
-		} catch(IllegalArgumentException ex) {
-			logger.trace("expected exception", ex);
-		}
+        verify(kieenv, times(4)).set(any(), any());
 
-		verify(bds, times(2)).close();
-	}
+        verify(kieenv).set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        verify(kieenv).set(EnvironmentName.TRANSACTION, usertrans);
+        verify(kieenv).set(EnvironmentName.TRANSACTION_MANAGER, transmgr);
+        verify(kieenv).set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, transreg);
 
-	@Test
-	public void testLoadKieSession() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(bds, times(1)).close();
+    }
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+    @Test
+    public void testConfigureKieEnv_RtEx() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		KieSession s = feat.activatePolicySession(polcont, "myname", "mybase");
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		verify(kiestore).loadKieSession(999L, kiebase, kiecfg, kieenv);
-		verify(kiestore, never()).newKieSession(any(), any(), any());
+        when(fact.getUserTrans()).thenThrow(new IllegalArgumentException("expected exception"));
 
-		assertEquals(s, kiesess);
-	}
+        try {
+            feat.activatePolicySession(polcont, "myname", "mybase");
+            fail("missing exception");
 
-	/*
-	 * Verifies that loadKieSession() returns null (thus causing newKieSession()
-	 * to be called) when an Exception occurs.
-	 */
-	@Test
-	public void testLoadKieSession_Ex() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        } catch (IllegalArgumentException ex) {
+            logger.trace("expected exception", ex);
+        }
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        verify(bds, times(2)).close();
+    }
 
-		when(kiestore.loadKieSession(anyLong(), any(), any(), any()))
-				.thenThrow(new IllegalArgumentException("expected exception"));
+    @Test
+    public void testLoadKieSession() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		KieSession s = feat.activatePolicySession(polcont, "myname", "mybase");
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
-		verify(kiestore).newKieSession(any(), any(), any());
+        KieSession session = feat.activatePolicySession(polcont, "myname", "mybase");
 
-		assertEquals(s, kiesess);
-	}
+        verify(kiestore).loadKieSession(999L, kiebase, kiecfg, kieenv);
+        verify(kiestore, never()).newKieSession(any(), any(), any());
 
-	@Test
-	public void testNewKieSession() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        assertEquals(session, kiesess);
+    }
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+    /*
+     * Verifies that loadKieSession() returns null (thus causing newKieSession()
+     * to be called) when an Exception occurs.
+     */
+    @Test
+    public void testLoadKieSession_Ex() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		KieSession s = feat.activatePolicySession(polcont, "myname", "mybase");
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		verify(kiestore).newKieSession(kiebase, null, kieenv);
+        when(kiestore.loadKieSession(anyLong(), any(), any(), any()))
+            .thenThrow(new IllegalArgumentException("expected exception"));
 
-		assertEquals(s, kiesess);
-	}
+        KieSession session = feat.activatePolicySession(polcont, "myname", "mybase");
 
-	@Test
-	public void testLoadDataSource_DiffSession() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(kiestore).loadKieSession(anyLong(), any(), any(), any());
+        verify(kiestore).newKieSession(any(), any(), any());
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        assertEquals(session, kiesess);
+    }
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+    @Test
+    public void testNewKieSession() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(polcont).setAdjunct(any(), adjcap.capture());
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        KieSession session = feat.activatePolicySession(polcont, "myname", "mybase");
 
-		setUpKie("myname2", 999L, false);
+        verify(kiestore).newKieSession(kiebase, null, kieenv);
 
-		// invoke it again
-		feat.activatePolicySession(polcont, "myname2", "mybase");
+        assertEquals(session, kiesess);
+    }
 
-		verify(fact, times(2)).makeEntMgrFact(any());
-	}
-	
-	@Test
-	public void testSelectThreadModel_Persistent() throws Exception {
-		setUpKie("myname", 999L, true);
-		
-		ThreadModel m = feat.selectThreadModel(polsess);
-		assertNotNull(m);
-		assertTrue(m instanceof PersistentThreadModel);
-		
-	}
-	
-	@Test
-	public void testSelectThreadModel_NotPersistent() throws Exception {
-		when(fact.getPolicyController(any())).thenReturn(polctlr);
-		assertNull(feat.selectThreadModel(polsess));
-		
-	}
-	
-	@Test
-	public void testSelectThreadModel_Start__Run_Update_Stop() throws Exception {
-		setUpKie("myname", 999L, true);
-		
-		ThreadModel m = feat.selectThreadModel(polsess);
-		assertNotNull(m);
-		assertTrue(m instanceof PersistentThreadModel);
-		
-		when(polsess.getKieSession()).thenReturn(kiesess);
-		
-		m.start();
-		new CountDownLatch(1).await(10, TimeUnit.MILLISECONDS);
-		m.updated();
-		m.stop();
-	}
+    @Test
+    public void testLoadDataSource_DiffSession() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testDisposeKieSession() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        verify(polcont).setAdjunct(any(), adjcap.capture());
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-		verify(emf, never()).close();
-		verify(polcont).setAdjunct(any(), adjcap.capture());
+        setUpKie("myname2", 999L, false);
 
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        // invoke it again
+        feat.activatePolicySession(polcont, "myname2", "mybase");
 
-		feat.disposeKieSession(polsess);
+        verify(fact, times(2)).makeEntMgrFact(any());
+    }
 
-		// call twice to ensure it isn't re-closed
-		feat.disposeKieSession(polsess);
+    @Test
+    public void testSelectThreadModel_Persistent() throws Exception {
+        setUpKie("myname", 999L, true);
 
-		verify(emf, times(1)).close();
-	}
+        ThreadModel model = feat.selectThreadModel(polsess);
+        assertNotNull(model);
+        assertTrue(model instanceof PersistentThreadModel);
+    }
 
-	@Test
-	public void testDisposeKieSession_NoAdjunct() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testSelectThreadModel_NotPersistent() throws Exception {
+        when(fact.getPolicyController(any())).thenReturn(polctlr);
+        assertNull(feat.selectThreadModel(polsess));
+    }
 
-		feat.disposeKieSession(polsess);
-	}
+    @Test
+    public void testSelectThreadModel_Start__Run_Update_Stop() throws Exception {
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testDisposeKieSession_NoPersistence() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        ThreadModel model = feat.selectThreadModel(polsess);
+        assertNotNull(model);
+        assertTrue(model instanceof PersistentThreadModel);
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        when(polsess.getKieSession()).thenReturn(kiesess);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        model.start();
+        new CountDownLatch(1).await(10, TimeUnit.MILLISECONDS);
+        model.updated();
+        model.stop();
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testDisposeKieSession() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(emf, never()).close();
-		verify(polcont).setAdjunct(any(), adjcap.capture());
+        final ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		// specify a session that was never loaded
-		when(polsess.getName()).thenReturn("anotherName");
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		feat.disposeKieSession(polsess);
+        verify(emf, never()).close();
+        verify(polcont).setAdjunct(any(), adjcap.capture());
 
-		verify(emf, never()).close();
-	}
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-	@Test
-	public void testDestroyKieSession() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        feat.disposeKieSession(polsess);
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        // call twice to ensure it isn't re-closed
+        feat.disposeKieSession(polsess);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        verify(emf, times(1)).close();
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testDisposeKieSession_NoAdjunct() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(emf, never()).close();
-		verify(polcont).setAdjunct(any(), adjcap.capture());
+        feat.disposeKieSession(polsess);
+    }
 
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+    @Test
+    public void testDisposeKieSession_NoPersistence() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		feat.destroyKieSession(polsess);
+        final ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		// call twice to ensure it isn't re-closed
-		feat.destroyKieSession(polsess);
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		verify(emf, times(1)).close();
-	}
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-	@Test
-	public void testDestroyKieSession_NoAdjunct() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(emf, never()).close();
+        verify(polcont).setAdjunct(any(), adjcap.capture());
 
-		feat.destroyKieSession(polsess);
-	}
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-	@Test
-	public void testDestroyKieSession_NoPersistence() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        // specify a session that was never loaded
+        when(polsess.getName()).thenReturn("anotherName");
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        feat.disposeKieSession(polsess);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
+        verify(emf, never()).close();
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testDestroyKieSession() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(emf, never()).close();
-		verify(polcont).setAdjunct(any(), adjcap.capture());
+        final ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		// specify a session that was never loaded
-		when(polsess.getName()).thenReturn("anotherName");
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		feat.destroyKieSession(polsess);
+        verify(emf, never()).close();
+        verify(polcont).setAdjunct(any(), adjcap.capture());
 
-		verify(emf, never()).close();
-	}
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-	@Test
-	public void testAfterStart() {
-		assertFalse(feat.afterStart(null));
-	}
+        feat.destroyKieSession(polsess);
 
-	@Test
-	public void testBeforeStart() {
-		assertFalse(feat.beforeStart(null));
-	}
+        // call twice to ensure it isn't re-closed
+        feat.destroyKieSession(polsess);
 
-	@Test
-	public void testBeforeShutdown() {
-		assertFalse(feat.beforeShutdown(null));
-	}
+        verify(emf, times(1)).close();
+    }
 
-	@Test
-	public void testAfterShutdown() {
-		assertFalse(feat.afterShutdown(null));
-	}
+    @Test
+    public void testDestroyKieSession_NoAdjunct() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testBeforeConfigure() {
-		assertFalse(feat.beforeConfigure(null, null));
-	}
+        feat.destroyKieSession(polsess);
+    }
 
-	@Test
-	public void testAfterConfigure() {
-		assertFalse(feat.afterConfigure(null));
-	}
+    @Test
+    public void testDestroyKieSession_NoPersistence() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testBeforeActivate() {
-		assertFalse(feat.beforeActivate(null));
-	}
+        final ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-	@Test
-	public void testAfterActivate() {
-		assertFalse(feat.afterActivate(null));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-	@Test
-	public void testBeforeDeactivate() {
-		assertFalse(feat.beforeDeactivate(null));
-	}
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-	@Test
-	public void testAfterDeactivate() {
-		assertFalse(feat.afterDeactivate(null));
-	}
+        verify(emf, never()).close();
+        verify(polcont).setAdjunct(any(), adjcap.capture());
 
-	@Test
-	public void testBeforeStop() {
-		assertFalse(feat.beforeStop(null));
-	}
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-	@Test
-	public void testAfterStop() {
-		assertFalse(feat.afterStop(null));
-	}
+        // specify a session that was never loaded
+        when(polsess.getName()).thenReturn("anotherName");
 
-	@Test
-	public void testBeforeLock() {
-		assertFalse(feat.beforeLock(null));
-	}
+        feat.destroyKieSession(polsess);
 
-	@Test
-	public void testAfterLock() {
-		assertFalse(feat.afterLock(null));
-	}
+        verify(emf, never()).close();
+    }
 
-	@Test
-	public void testBeforeUnlock() {
-		assertFalse(feat.beforeUnlock(null));
-	}
+    @Test
+    public void testAfterStart() {
+        assertFalse(feat.afterStart(null));
+    }
 
-	@Test
-	public void testAfterUnlock() {
-		assertFalse(feat.afterUnlock(null));
-	}
+    @Test
+    public void testBeforeStart() {
+        assertFalse(feat.beforeStart(null));
+    }
 
-	@Test
-	public void testGetPersistenceTimeout_Valid() throws Exception {
-		PreparedStatement s = mockDbConn(5);
+    @Test
+    public void testBeforeShutdown() {
+        assertFalse(feat.beforeShutdown(null));
+    }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testAfterShutdown() {
+        assertFalse(feat.afterShutdown(null));
+    }
 
-		setUpKie("myname", 999L, true);
+    @Test
+    public void testBeforeConfigure() {
+        assertFalse(feat.beforeConfigure(null, null));
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testAfterConfigure() {
+        assertFalse(feat.afterConfigure(null));
+    }
 
-		verify(s).executeUpdate();
-	}
+    @Test
+    public void testBeforeActivate() {
+        assertFalse(feat.beforeActivate(null));
+    }
 
-	@Test
-	public void testGetPersistenceTimeout_Missing() throws Exception {
+    @Test
+    public void testAfterActivate() {
+        assertFalse(feat.afterActivate(null));
+    }
 
-		props.remove(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT);
+    @Test
+    public void testBeforeDeactivate() {
+        assertFalse(feat.beforeDeactivate(null));
+    }
 
-		PreparedStatement s = mockDbConn(0);
+    @Test
+    public void testAfterDeactivate() {
+        assertFalse(feat.afterDeactivate(null));
+    }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testBeforeStop() {
+        assertFalse(feat.beforeStop(null));
+    }
 
-		setUpKie("myname", 999L, true);
+    @Test
+    public void testAfterStop() {
+        assertFalse(feat.afterStop(null));
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testBeforeLock() {
+        assertFalse(feat.beforeLock(null));
+    }
 
-		verify(s, never()).executeUpdate();
-	}
+    @Test
+    public void testAfterLock() {
+        assertFalse(feat.afterLock(null));
+    }
 
-	@Test
-	public void testGetPersistenceTimeout_Invalid() throws Exception {
-		props.setProperty(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT, "abc");
-		PreparedStatement s = mockDbConn(0);
+    @Test
+    public void testBeforeUnlock() {
+        assertFalse(feat.beforeUnlock(null));
+    }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testAfterUnlock() {
+        assertFalse(feat.afterUnlock(null));
+    }
 
-		setUpKie("myname", 999L, true);
+    @Test
+    public void testGetPersistenceTimeout_Valid() throws Exception {
+        final PreparedStatement statement = mockDbConn(5);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(s, never()).executeUpdate();
-	}
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testCleanUpSessionInfo() throws Exception {
-		setUpKie("myname", 999L, true);
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		// use a real DB so we can verify that the "delete" works correctly
-		fact = new PartialFactory();
-		feat.setFactory(fact);
+        verify(statement).executeUpdate();
+    }
 
-		makeSessionInfoTbl(20000);
+    @Test
+    public void testGetPersistenceTimeout_Missing() throws Exception {
 
-		// create mock entity manager for use by JPA connector
-		EntityManager em = mock(EntityManager.class);
-		when(emf.createEntityManager()).thenReturn(em);
+        props.remove(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT);
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        final PreparedStatement statement = mockDbConn(0);
 
-		feat.beforeStart(null);
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertEquals("[1, 4, 5]", getSessions().toString());
-	}
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testCleanUpSessionInfo_WithBeforeStart() throws Exception {
-		PreparedStatement s = mockDbConn(0);
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(statement, never()).executeUpdate();
+    }
 
-		setUpKie("myname", 999L, true);
+    @Test
+    public void testGetPersistenceTimeout_Invalid() throws Exception {
+        props.setProperty(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT, "abc");
+        final PreparedStatement s = mockDbConn(0);
 
-		// reset
-		feat.beforeStart(null);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(1)).executeUpdate();
+        setUpKie("myname", 999L, true);
 
-		// should not clean-up again
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(1)).executeUpdate();
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		// reset
-		feat.beforeStart(null);
+        verify(s, never()).executeUpdate();
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(2)).executeUpdate();
+    @Test
+    public void testCleanUpSessionInfo() throws Exception {
+        setUpKie("myname", 999L, true);
 
-		// should not clean-up again
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(2)).executeUpdate();
-	}
+        // use a real DB so we can verify that the "delete" works correctly
+        fact = new PartialFactory();
+        feat.setFactory(fact);
 
-	@Test
-	public void testCleanUpSessionInfo_WithBeforeActivate() throws Exception {
-		PreparedStatement s = mockDbConn(0);
+        makeSessionInfoTbl(20000);
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        // create mock entity manager for use by JPA connector
+        EntityManager em = mock(EntityManager.class);
+        when(emf.createEntityManager()).thenReturn(em);
 
-		setUpKie("myname", 999L, true);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		// reset
-		feat.beforeActivate(null);
+        feat.beforeStart(null);
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(1)).executeUpdate();
+        assertEquals("[1, 4, 5]", getSessions().toString());
+    }
 
-		// should not clean-up again
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(1)).executeUpdate();
+    @Test
+    public void testCleanUpSessionInfo_WithBeforeStart() throws Exception {
+        final PreparedStatement statement = mockDbConn(0);
 
-		// reset
-		feat.beforeActivate(null);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(2)).executeUpdate();
+        setUpKie("myname", 999L, true);
 
-		// should not clean-up again
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		feat.activatePolicySession(polcont, "myname", "mybase");
-		verify(s, times(2)).executeUpdate();
-	}
+        // reset
+        feat.beforeStart(null);
 
-	@Test
-	public void testCleanUpSessionInfo_NoTimeout() throws Exception {
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(1)).executeUpdate();
 
-		props.remove(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT);
+        // should not clean-up again
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(1)).executeUpdate();
 
-		PreparedStatement s = mockDbConn(0);
+        // reset
+        feat.beforeStart(null);
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(2)).executeUpdate();
 
-		setUpKie("myname", 999L, true);
+        // should not clean-up again
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(2)).executeUpdate();
+    }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+    @Test
+    public void testCleanUpSessionInfo_WithBeforeActivate() throws Exception {
+        final PreparedStatement statement = mockDbConn(0);
 
-		verify(s, never()).executeUpdate();
-	}
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testCleanUpSessionInfo_NoUrl() throws Exception {
-		PreparedStatement s = mockDbConn(0);
+        setUpKie("myname", 999L, true);
 
-		props.remove(DroolsPersistenceProperties.DB_URL);
+        // reset
+        feat.beforeActivate(null);
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(1)).executeUpdate();
 
-		setUpKie("myname", 999L, true);
+        // should not clean-up again
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(1)).executeUpdate();
 
-		try {
-			feat.activatePolicySession(polcont, "myname", "mybase");
-			fail("missing exception");
-		} catch (RuntimeException e) {
-			logger.trace("expected exception", e);
-		}
+        // reset
+        feat.beforeActivate(null);
 
-		verify(s, never()).executeUpdate();
-	}
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(2)).executeUpdate();
 
-	@Test
-	public void testCleanUpSessionInfo_NoUser() throws Exception {
-		PreparedStatement s = mockDbConn(0);
+        // should not clean-up again
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, times(2)).executeUpdate();
+    }
 
-		props.remove(DroolsPersistenceProperties.DB_USER);
+    @Test
+    public void testCleanUpSessionInfo_NoTimeout() throws Exception {
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.remove(DroolsPersistenceProperties.DB_SESSIONINFO_TIMEOUT);
 
-		setUpKie("myname", 999L, true);
+        final PreparedStatement statement = mockDbConn(0);
 
-		try {
-			feat.activatePolicySession(polcont, "myname", "mybase");
-			fail("missing exception");
-		} catch (RuntimeException e) {
-			logger.trace("expected exception", e);
-		}
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(s, never()).executeUpdate();
-	}
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testCleanUpSessionInfo_NoPassword() throws Exception {
-		PreparedStatement s = mockDbConn(0);
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		props.remove(DroolsPersistenceProperties.DB_PWD);
+        verify(statement, never()).executeUpdate();
+    }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testCleanUpSessionInfo_NoUrl() throws Exception {
+        final PreparedStatement statement = mockDbConn(0);
 
-		setUpKie("myname", 999L, true);
+        props.remove(DroolsPersistenceProperties.DB_URL);
 
-		try {
-			feat.activatePolicySession(polcont, "myname", "mybase");
-			fail("missing exception");
-		} catch (RuntimeException e) {
-			logger.trace("expected exception", e);
-		}
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(s, never()).executeUpdate();
-	}
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testCleanUpSessionInfo_SqlEx() throws Exception {
-		PreparedStatement s = mockDbConn(-1);
+        try {
+            feat.activatePolicySession(polcont, "myname", "mybase");
+            fail("missing exception");
+        } catch (RuntimeException e) {
+            logger.trace("expected exception", e);
+        }
 
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(statement, never()).executeUpdate();
+    }
 
-		setUpKie("myname", 999L, true);
+    @Test
+    public void testCleanUpSessionInfo_NoUser() throws Exception {
+        final PreparedStatement statement = mockDbConn(0);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        props.remove(DroolsPersistenceProperties.DB_USER);
 
-		verify(s).executeUpdate();
-	}
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testGetDroolsSessionConnector() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        setUpKie("myname", 999L, true);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        try {
+            feat.activatePolicySession(polcont, "myname", "mybase");
+            fail("missing exception");
+        } catch (RuntimeException e) {
+            logger.trace("expected exception", e);
+        }
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        verify(statement, never()).executeUpdate();
+    }
 
-		verify(fact).makeJpaConnector(emf);
-	}
+    @Test
+    public void testCleanUpSessionInfo_NoPassword() throws Exception {
+        final PreparedStatement statement = mockDbConn(0);
 
-	@Test
-	public void testReplaceSession() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.remove(DroolsPersistenceProperties.DB_PWD);
 
-		ArgumentCaptor<DroolsSession> sesscap = ArgumentCaptor.forClass(DroolsSession.class);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        setUpKie("myname", 999L, true);
 
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        try {
+            feat.activatePolicySession(polcont, "myname", "mybase");
+            fail("missing exception");
+        } catch (RuntimeException e) {
+            logger.trace("expected exception", e);
+        }
 
-		verify(jpa).replace(sesscap.capture());
+        verify(statement, never()).executeUpdate();
+    }
 
-		assertEquals("myname", sesscap.getValue().getSessionName());
-		assertEquals(999L, sesscap.getValue().getSessionId());
-	}
+    @Test
+    public void testCleanUpSessionInfo_SqlEx() throws Exception {
+        final PreparedStatement statement = mockDbConn(-1);
 
-	@Test
-	public void testIsPersistenceEnabled_Auto() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        setUpKie("myname", 999L, true);
 
-		props.setProperty("persistence.type", "auto");
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        verify(statement).executeUpdate();
+    }
 
-	@Test
-	public void testIsPersistenceEnabled_Native() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testGetDroolsSessionConnector() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		props.setProperty("persistence.type", "native");
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-		assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        verify(fact).makeJpaConnector(emf);
+    }
 
-	@Test
-	public void testIsPersistenceEnabled_None() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testReplaceSession() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        final ArgumentCaptor<DroolsSession> sesscap = ArgumentCaptor.forClass(DroolsSession.class);
 
-		props.remove("persistence.type");
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-	@Test
-	public void testGetProperties_Ex() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        verify(jpa).replace(sesscap.capture());
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertEquals("myname", sesscap.getValue().getSessionName());
+        assertEquals(999L, sesscap.getValue().getSessionId());
+    }
 
-		when(fact.getPolicyController(polcont)).thenThrow(new IllegalArgumentException("expected exception"));
+    @Test
+    public void testIsPersistenceEnabled_Auto() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testGetProperty_Specific() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.setProperty("persistence.type", "auto");
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		props.remove("persistence.type");
-		props.setProperty("persistence.myname.type", "auto");
+    @Test
+    public void testIsPersistenceEnabled_Native() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testGetProperty_Specific_None() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.setProperty("persistence.type", "native");
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		props.remove("persistence.type");
-		props.setProperty("persistence.xxx.type", "auto");
+    @Test
+    public void testIsPersistenceEnabled_None() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testGetProperty_Both_SpecificOn() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.remove("persistence.type");
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		props.setProperty("persistence.type", "other");
-		props.setProperty("persistence.myname.type", "auto");
+    @Test
+    public void testGetProperties_Ex() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testGetProperty_Both_SpecificDisabledOff() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        when(fact.getPolicyController(polcont))
+            .thenThrow(new IllegalArgumentException("expected exception"));
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		props.setProperty("persistence.type", "auto");
-		props.setProperty("persistence.myname.type", "other");
+    @Test
+    public void testGetProperty_Specific() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testGetProperty_None() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        props.remove("persistence.type");
+        props.setProperty("persistence.myname.type", "auto");
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, true);
+        assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		props.remove("persistence.type");
+    @Test
+    public void testGetProperty_Specific_None() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
-	}
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-	@Test
-	public void testPersistenceFeatureException() {
-		SecurityException secex = new SecurityException("expected exception");
-		PersistenceFeatureException ex = new PersistenceFeatureException(secex);
+        props.remove("persistence.type");
+        props.setProperty("persistence.xxx.type", "auto");
 
-		assertEquals(secex, ex.getCause());
+        assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-	}
+    @Test
+    public void testGetProperty_Both_SpecificOn() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testDsEmf_RtEx() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
-		
-		when(fact.makeEntMgrFact(any())).thenThrow(new IllegalArgumentException("expected exception"));
+        props.setProperty("persistence.type", "other");
+        props.setProperty("persistence.myname.type", "auto");
 
-		try {
-			feat.activatePolicySession(polcont, "myname", "mybase");
-			fail("missing exception");
-			
-		} catch(IllegalArgumentException ex) {
-			logger.trace("expected exception", ex);
-		}
+        assertNotNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		verify(bds, times(2)).close();
-	}
+    @Test
+    public void testGetProperty_Both_SpecificDisabledOff() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-	@Test
-	public void testDsEmf_Close_RtEx() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
-		
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        props.setProperty("persistence.type", "auto");
+        props.setProperty("persistence.myname.type", "other");
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+        assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
+    @Test
+    public void testGetProperty_None() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		// return adjunct on next call
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        mockDbConn(5);
+        setUpKie("myname", 999L, true);
 
-		try {
-			doThrow(new IllegalArgumentException("expected exception")).when(emf).close();
-			
-			feat.destroyKieSession(polsess);
-			fail("missing exception");
-			
-		} catch(IllegalArgumentException ex) {
-			logger.trace("expected exception", ex);
-		}
+        props.remove("persistence.type");
 
-		verify(bds, times(2)).close();
-	}
+        assertNull(feat.activatePolicySession(polcont, "myname", "mybase"));
+    }
 
-	@Test
-	public void testDsEmf_CloseDataSource_RtEx() throws Exception {
-		feat.globalInit(null, SRC_TEST_RESOURCES);
+    @Test
+    public void testPersistenceFeatureException() {
+        SecurityException secex = new SecurityException("expected exception");
+        PersistenceFeatureException ex = new PersistenceFeatureException(secex);
 
-		mockDbConn(5);
-		setUpKie("myname", 999L, false);
-		
-		feat.activatePolicySession(polcont, "myname", "mybase");
+        assertEquals(secex, ex.getCause());
+    }
 
-		ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap = ArgumentCaptor
-				.forClass(PersistenceFeature.ContainerAdjunct.class);
+    @Test
+    public void testDsEmf_RtEx() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		// return adjunct on next call
-		when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
+        when(fact.makeEntMgrFact(any())).thenThrow(new IllegalArgumentException("expected exception"));
 
-		try {
-			doThrow(new SQLException("expected exception")).when(bds).close();
-			
-			feat.destroyKieSession(polsess);
-			fail("missing exception");
-			
-		} catch(PersistenceFeatureException ex) {
-			logger.trace("expected exception", ex);
-		}
-	}
+        try {
+            feat.activatePolicySession(polcont, "myname", "mybase");
+            fail("missing exception");
 
-	/**
-	 * Gets an ordered list of ids of the current SessionInfo records.
-	 * 
-	 * @return ordered list of SessInfo IDs
-	 * @throws SQLException
-	 * @throws IOException
-	 */
-	private List<Integer> getSessions() throws SQLException, IOException {
-		attachDb();
+        } catch (IllegalArgumentException ex) {
+            logger.trace("expected exception", ex);
+        }
 
-		ArrayList<Integer> lst = new ArrayList<>(5);
+        verify(bds, times(2)).close();
+    }
 
-		try (PreparedStatement stmt = conn.prepareStatement("SELECT id from sessioninfo order by id");
-				ResultSet rs = stmt.executeQuery()) {
+    @Test
+    public void testDsEmf_Close_RtEx() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-			while (rs.next()) {
-				lst.add(rs.getInt(1));
-			}
-		}
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		return lst;
-	}
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-	/**
-	 * Sets up for doing invoking the newKieSession() method.
-	 * 
-	 * @param sessnm
-	 *            name to which JPA should respond with a session
-	 * @param sessid
-	 *            session id to be returned by the session
-	 * @param loadOk
-	 *            {@code true} if loadKieSession() should return a value,
-	 *            {@code false} to return null
-	 * @throws Exception 
-	 */
-	private void setUpKie(String sessnm, long sessid, boolean loadOk) throws Exception {
+        ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		when(fact.makeJpaConnector(emf)).thenReturn(jpa);
-		when(fact.makeEntMgrFact(any())).thenReturn(emf);
-		when(fact.getPolicyController(polcont)).thenReturn(polctlr);
+        verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
 
-		props.setProperty("persistence.type", "auto");
+        // return adjunct on next call
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-		when(polctlr.getProperties()).thenReturn(props);
+        try {
+            doThrow(new IllegalArgumentException("expected exception")).when(emf).close();
 
-		when(jpa.get(sessnm)).thenReturn(sess);
+            feat.destroyKieSession(polsess);
+            fail("missing exception");
 
-		when(sess.getSessionId()).thenReturn(sessid);
+        } catch (IllegalArgumentException ex) {
+            logger.trace("expected exception", ex);
+        }
 
-		when(polsess.getPolicyContainer()).thenReturn(polcont);
-		when(polsess.getName()).thenReturn(sessnm);
+        verify(bds, times(2)).close();
+    }
 
-		if (loadOk) {
-			when(kiesess.getIdentifier()).thenReturn(sessid);
-			when(kiestore.loadKieSession(anyLong(), any(), any(), any())).thenReturn(kiesess);
+    @Test
+    public void testDsEmf_CloseDataSource_RtEx() throws Exception {
+        feat.globalInit(null, SRC_TEST_RESOURCES);
 
-		} else {
-			// use an alternate id for the new session
-			when(kiesess.getIdentifier()).thenReturn(100L);
-			when(kiestore.loadKieSession(anyLong(), any(), any(), any())).thenReturn(null);
-		}
+        mockDbConn(5);
+        setUpKie("myname", 999L, false);
 
-		when(kiestore.newKieSession(any(), any(), any())).thenReturn(kiesess);
-	}
+        feat.activatePolicySession(polcont, "myname", "mybase");
 
-	/**
-	 * Creates the SessionInfo DB table and populates it with some data.
-	 * 
-	 * @param expMs
-	 *            number of milli-seconds for expired sessioninfo records
-	 * @throws SQLException
-	 * @throws IOException
-	 */
-	private void makeSessionInfoTbl(int expMs) throws SQLException, IOException {
+        ArgumentCaptor<PersistenceFeature.ContainerAdjunct> adjcap =
+                ArgumentCaptor.forClass(PersistenceFeature.ContainerAdjunct.class);
 
-		attachDb();
+        verify(polcont, times(1)).setAdjunct(any(), adjcap.capture());
 
-		try (PreparedStatement stmt = conn
-				.prepareStatement("CREATE TABLE sessioninfo(id int, lastmodificationdate timestamp)")) {
+        // return adjunct on next call
+        when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-			stmt.executeUpdate();
-		}
+        try {
+            doThrow(new SQLException("expected exception")).when(bds).close();
 
-		try (PreparedStatement stmt = conn
-				.prepareStatement("INSERT into sessioninfo(id, lastmodificationdate) values(?, ?)")) {
+            feat.destroyKieSession(polsess);
+            fail("missing exception");
 
-			Timestamp ts;
+        } catch (PersistenceFeatureException ex) {
+            logger.trace("expected exception", ex);
+        }
+    }
 
-			// current data
-			ts = new Timestamp(System.currentTimeMillis());
-			stmt.setTimestamp(2, ts);
+    /**
+     * Gets an ordered list of ids of the current SessionInfo records.
+     *
+     * @return ordered list of SessInfo IDs
+     * @throws SQLException sql exception
+     * @throws IOException io exception
+     */
+    private List<Integer> getSessions() throws SQLException, IOException {
+        attachDb();
 
-			stmt.setInt(1, 1);
-			stmt.executeUpdate();
+        ArrayList<Integer> lst = new ArrayList<>(5);
 
-			stmt.setInt(1, 4);
-			stmt.executeUpdate();
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT id from sessioninfo order by id");
+                ResultSet rs = stmt.executeQuery()) {
 
-			stmt.setInt(1, 5);
-			stmt.executeUpdate();
+            while (rs.next()) {
+                lst.add(rs.getInt(1));
+            }
+        }
 
-			// expired data
-			ts = new Timestamp(System.currentTimeMillis() - expMs);
-			stmt.setTimestamp(2, ts);
+        return lst;
+    }
 
-			stmt.setInt(1, 2);
-			stmt.executeUpdate();
+    /**
+     * Sets up for doing invoking the newKieSession() method.
+     *
+     * @param sessnm name to which JPA should respond with a session
+     * @param sessid session id to be returned by the session
+     * @param loadOk {@code true} if loadKieSession() should return a value, {@code false} to return
+     *     null
+     * @throws Exception exception
+     */
+    private void setUpKie(String sessnm, long sessid, boolean loadOk) throws Exception {
 
-			stmt.setInt(1, 3);
-			stmt.executeUpdate();
-		}
-	}
+        when(fact.makeJpaConnector(emf)).thenReturn(jpa);
+        when(fact.makeEntMgrFact(any())).thenReturn(emf);
+        when(fact.getPolicyController(polcont)).thenReturn(polctlr);
 
-	/**
-	 * Attaches {@link #conn} to the DB, if it isn't already attached.
-	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 *             if the property file cannot be read
-	 */
-	private void attachDb() throws SQLException, IOException {
-		if (conn == null) {
-			Properties p = loadDbProps();
+        props.setProperty("persistence.type", "auto");
 
-			conn = DriverManager.getConnection(p.getProperty(DroolsPersistenceProperties.DB_URL),
-					p.getProperty(DroolsPersistenceProperties.DB_USER),
-					p.getProperty(DroolsPersistenceProperties.DB_PWD));
-			conn.setAutoCommit(true);
-		}
-	}
+        when(polctlr.getProperties()).thenReturn(props);
 
-	/**
-	 * Loads the DB properties from the file,
-	 * <i>feature-session-persistence.properties</i>.
-	 * 
-	 * @return the properties that were loaded
-	 * @throws IOException
-	 *             if the property file cannot be read
-	 * @throws FileNotFoundException
-	 *             if the property file does not exist
-	 */
-	private Properties loadDbProps() throws IOException, FileNotFoundException {
+        when(jpa.get(sessnm)).thenReturn(sess);
 
-		Properties p = new Properties();
+        when(sess.getSessionId()).thenReturn(sessid);
 
-		try (FileReader rdr = new FileReader("src/test/resources/feature-session-persistence.properties")) {
-			p.load(rdr);
-		}
+        when(polsess.getPolicyContainer()).thenReturn(polcont);
+        when(polsess.getName()).thenReturn(sessnm);
 
-		return p;
-	}
+        if (loadOk) {
+            when(kiesess.getIdentifier()).thenReturn(sessid);
+            when(kiestore.loadKieSession(anyLong(), any(), any(), any())).thenReturn(kiesess);
 
-	/**
-	 * Create a mock DB connection and statement.
-	 * 
-	 * @param retval
-	 *            value to be returned when the statement is executed, or
-	 *            negative to throw an exception
-	 * @return the statement that will be returned by the connection
-	 * @throws SQLException
-	 */
-	private PreparedStatement mockDbConn(int retval) throws SQLException {
-		Connection c = mock(Connection.class);
-		PreparedStatement s = mock(PreparedStatement.class);
+        } else {
+            // use an alternate id for the new session
+            when(kiesess.getIdentifier()).thenReturn(100L);
+            when(kiestore.loadKieSession(anyLong(), any(), any(), any())).thenReturn(null);
+        }
 
-		when(bds.getConnection()).thenReturn(c);
-		when(fact.makeDataSource(any())).thenReturn(bds);
-		when(c.prepareStatement(anyString())).thenReturn(s);
+        when(kiestore.newKieSession(any(), any(), any())).thenReturn(kiesess);
+    }
 
-		if (retval < 0) {
-			// should throw an exception
-			when(s.executeUpdate()).thenThrow(new SQLException("expected exception"));
+    /**
+     * Creates the SessionInfo DB table and populates it with some data.
+     *
+     * @param expMs number of milli-seconds for expired sessioninfo records
+     * @throws SQLException exception
+     * @throws IOException exception
+     */
+    private void makeSessionInfoTbl(int expMs) throws SQLException, IOException {
 
-		} else {
-			// should return the value
-			when(s.executeUpdate()).thenReturn(retval);
-		}
+        attachDb();
 
-		return s;
-	}
+        try (PreparedStatement stmt =
+                conn.prepareStatement("CREATE TABLE sessioninfo(id int, lastmodificationdate timestamp)")) {
 
-	/**
-	 * A partial factory, which exports a few of the real methods, but overrides
-	 * the rest.
-	 */
-	private class PartialFactory extends PersistenceFeature.Factory {
+            stmt.executeUpdate();
+        }
 
-		@Override
-		public TransactionManager getTransMgr() {
-			return transmgr;
-		}
+        try (PreparedStatement stmt =
+                conn.prepareStatement("INSERT into sessioninfo(id, lastmodificationdate) values(?, ?)")) {
 
-		@Override
-		public UserTransaction getUserTrans() {
-			return usertrans;
-		}
+            Timestamp ts;
 
-		@Override
-		public TransactionSynchronizationRegistry getTransSyncReg() {
-			return transreg;
-		}
+            // current data
+            ts = new Timestamp(System.currentTimeMillis());
+            stmt.setTimestamp(2, ts);
 
-		@Override
-		public KieServices getKieServices() {
-			return kiesvc;
-		}
+            stmt.setInt(1, 1);
+            stmt.executeUpdate();
 
-		@Override
-		public EntityManagerFactory makeEntMgrFact(Map<String, Object> props) {
-			return emf;
-		}
+            stmt.setInt(1, 4);
+            stmt.executeUpdate();
 
-		@Override
-		public PolicyController getPolicyController(PolicyContainer container) {
-			return polctlr;
-		}
+            stmt.setInt(1, 5);
+            stmt.executeUpdate();
 
-	}
+            // expired data
+            ts = new Timestamp(System.currentTimeMillis() - expMs);
+            stmt.setTimestamp(2, ts);
+
+            stmt.setInt(1, 2);
+            stmt.executeUpdate();
+
+            stmt.setInt(1, 3);
+            stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Attaches {@link #conn} to the DB, if it isn't already attached.
+     *
+     * @throws SQLException sql exception
+     * @throws IOException if the property file cannot be read
+     */
+    private void attachDb() throws SQLException, IOException {
+        if (conn == null) {
+            Properties props = loadDbProps();
+
+            conn =
+                    DriverManager.getConnection(
+                            props.getProperty(DroolsPersistenceProperties.DB_URL),
+                            props.getProperty(DroolsPersistenceProperties.DB_USER),
+                            props.getProperty(DroolsPersistenceProperties.DB_PWD));
+            conn.setAutoCommit(true);
+        }
+    }
+
+    /**
+     * Loads the DB properties from the file, <i>feature-session-persistence.properties</i>.
+     *
+     * @return the properties that were loaded
+     * @throws IOException if the property file cannot be read
+     * @throws FileNotFoundException if the property file does not exist
+     */
+    private Properties loadDbProps() throws IOException, FileNotFoundException {
+
+        Properties props = new Properties();
+
+        try (FileReader rdr =
+                new FileReader("src/test/resources/feature-session-persistence.properties")) {
+            props.load(rdr);
+        }
+
+        return props;
+    }
+
+    /**
+     * Create a mock DB connection and statement.
+     *
+     * @param retval value to be returned when the statement is executed, or negative to throw an
+     *     exception
+     * @return the statement that will be returned by the connection
+     * @throws SQLException sql exception
+     */
+    private PreparedStatement mockDbConn(int retval) throws SQLException {
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+
+        when(bds.getConnection()).thenReturn(connection);
+        when(fact.makeDataSource(any())).thenReturn(bds);
+        when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        if (retval < 0) {
+            // should throw an exception
+            when(statement.executeUpdate()).thenThrow(new SQLException("expected exception"));
+
+        } else {
+            // should return the value
+            when(statement.executeUpdate()).thenReturn(retval);
+        }
+
+        return statement;
+    }
+
+    /** A partial factory, which exports a few of the real methods, but overrides the rest. */
+    private class PartialFactory extends PersistenceFeature.Factory {
+
+        @Override
+        public TransactionManager getTransMgr() {
+            return transmgr;
+        }
+
+        @Override
+        public UserTransaction getUserTrans() {
+            return usertrans;
+        }
+
+        @Override
+        public TransactionSynchronizationRegistry getTransSyncReg() {
+            return transreg;
+        }
+
+        @Override
+        public KieServices getKieServices() {
+            return kiesvc;
+        }
+
+        @Override
+        public EntityManagerFactory makeEntMgrFact(Map<String, Object> props) {
+            return emf;
+        }
+
+        @Override
+        public PolicyController getPolicyController(PolicyContainer container) {
+            return polctlr;
+        }
+    }
 }

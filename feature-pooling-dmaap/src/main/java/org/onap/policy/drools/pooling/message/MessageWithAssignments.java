@@ -20,8 +20,8 @@
 
 package org.onap.policy.drools.pooling.message;
 
-import org.onap.policy.drools.pooling.PoolingFeatureException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.onap.policy.drools.pooling.PoolingFeatureException;
 
 /**
  * A Message that includes bucket assignments.
@@ -34,16 +34,17 @@ public class MessageWithAssignments extends Message {
     private BucketAssignments assignments;
 
     /**
-     * 
+     * Constructor.
      */
     public MessageWithAssignments() {
         super();
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
-     * @param assignments
+     * @param assignments assignements
      */
     public MessageWithAssignments(String source, BucketAssignments assignments) {
         super(source);

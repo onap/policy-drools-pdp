@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * Feature-State-Management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,23 @@
 
 package org.onap.policy.drools.statemanagement;
 
-public class StateManagementPropertiesException extends Exception{
-	private static final long serialVersionUID = 1L;
-	
-	public StateManagementPropertiesException() {
-		super();
-	}
-	
-	public StateManagementPropertiesException(String message) {
-		super(message);
-	}
+public class StateManagementPropertiesException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-	public StateManagementPropertiesException(Throwable cause) {
-		super(cause);
-	}
-	public StateManagementPropertiesException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public StateManagementPropertiesException() {
+        super();
+    }
+
+    public StateManagementPropertiesException(String message) {
+        super(message);
+    }
+
+    public StateManagementPropertiesException(Throwable cause) {
+        super(cause);
+    }
+    
+    public StateManagementPropertiesException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

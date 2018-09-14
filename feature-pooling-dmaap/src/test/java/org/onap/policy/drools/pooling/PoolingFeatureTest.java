@@ -31,6 +31,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -38,8 +39,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.pooling.PoolingFeature.Factory;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
@@ -95,6 +96,11 @@ public class PoolingFeatureTest {
         PoolingFeature.setFactory(saveFactory);
     }
 
+    /**
+     * Setup.
+     * 
+     * @throws Exception exception
+     */
     @Before
     public void setUp() throws Exception {
         props = initProperties();

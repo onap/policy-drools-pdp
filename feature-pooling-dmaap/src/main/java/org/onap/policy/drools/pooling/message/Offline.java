@@ -27,7 +27,7 @@ package org.onap.policy.drools.pooling.message;
 public class Offline extends Message {
 
     /**
-     * 
+     * Constructor.
      */
     public Offline() {
         super();
@@ -35,6 +35,7 @@ public class Offline extends Message {
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
      */

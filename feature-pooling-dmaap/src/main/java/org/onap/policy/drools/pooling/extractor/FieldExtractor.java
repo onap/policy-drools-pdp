@@ -37,6 +37,7 @@ public class FieldExtractor implements Extractor {
     private final Field field;
 
     /**
+     * Constructor.
      * 
      * @param field field containing the object
      */

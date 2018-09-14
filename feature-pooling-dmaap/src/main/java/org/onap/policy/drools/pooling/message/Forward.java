@@ -20,9 +20,9 @@
 
 package org.onap.policy.drools.pooling.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Message to forward an event to another host.
@@ -67,12 +67,13 @@ public class Forward extends Message {
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
-     * @param protocol
-     * @param topic
+     * @param protocol protocol
+     * @param topic topic
      * @param payload the actual event data received on the topic
-     * @param requestId
+     * @param requestId request id
      */
     public Forward(String source, CommInfrastructure protocol, String topic, String payload, String requestId) {
         super(source);

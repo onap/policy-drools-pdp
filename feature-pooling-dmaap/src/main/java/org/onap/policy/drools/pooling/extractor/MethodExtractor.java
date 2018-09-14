@@ -38,6 +38,7 @@ public class MethodExtractor implements Extractor {
     private final Method method;
 
     /**
+     * Constructor.
      * 
      * @param method method to invoke to extract the contained object
      */

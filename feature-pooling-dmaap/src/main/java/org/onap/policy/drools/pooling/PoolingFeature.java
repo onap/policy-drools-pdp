@@ -46,7 +46,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller/session pooling. Multiple hosts may be launched, all servicing the same
  * controllers/sessions. When this feature is enabled, the requests are divided across the different
- * hosts, instead of all running on a single, active host. <p> With each controller, there is an
+ * hosts, instead of all running on a single, active host. 
+ * 
+ * <p>With each controller, there is an
  * associated DMaaP topic that is used for internal communication between the different hosts
  * serving the controller.
  */
@@ -87,7 +89,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     private ThreadLocal<OfferArgs> offerArgs = new ThreadLocal<>();
 
     /**
-     * 
+     * Constructor.
      */
     public PoolingFeature() {
         super();
@@ -113,6 +115,8 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     }
 
     /**
+     * Get active latch.
+     * 
      * @return a latch that will be decremented when a manager enters the active state
      */
     protected CountDownLatch getActiveLatch() {
@@ -126,7 +130,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     @Override
     public boolean beforeStart(PolicyEngine engine) {
-        logger.info("initializing " + PoolingProperties.FEATURE_NAME);
+        logger.info("initializing {}", PoolingProperties.FEATURE_NAME);
         featProps = factory.getProperties(PoolingProperties.FEATURE_NAME);
 
         // remove any generic pooling topic - always use controller-specific property
@@ -136,6 +140,14 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
         factory.initTopicSinks(featProps);
 
         return false;
+    }
+
+    @Override
+    public boolean beforeStart(PolicyController controller) {
+        return doManager(controller, mgr -> {
+            mgr.beforeStart();
+            return false;
+        });
     }
 
     /**
@@ -174,14 +186,6 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
 
         return false;
-    }
-
-    @Override
-    public boolean beforeStart(PolicyController controller) {
-        return doManager(controller, mgr -> {
-            mgr.beforeStart();
-            return false;
-        });
     }
 
     @Override
@@ -307,7 +311,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
      * Executes a function using the manager associated with the controller. Catches any exceptions
      * from the function and re-throws it as a runtime exception.
      * 
-     * @param controller
+     * @param controller controller
      * @param func function to be executed
      * @return {@code true} if the function handled the request, {@code false} otherwise
      * @throws PoolingFeatureRtException if an error occurs
@@ -329,7 +333,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     /**
      * Deletes the manager associated with a controller.
      * 
-     * @param controller
+     * @param controller controller
      * @throws PoolingFeatureRtException if an error occurs
      */
     private void deleteManager(PolicyController controller) {
@@ -347,10 +351,11 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     private static interface MgrFunc {
 
         /**
+         * Apply.
          * 
-         * @param mgr
+         * @param mgr manager
          * @return {@code true} if the request was handled by the manager, {@code false} otherwise
-         * @throws PoolingFeatureException
+         * @throws PoolingFeatureException feature exception
          */
         public boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
     }
@@ -376,9 +381,10 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
         private String event;
 
         /**
+         * Constructor.
          * 
-         * @param protocol
-         * @param topic
+         * @param protocol protocol
+         * @param topic topic
          * @param event the actual event data received on the topic
          */
         public OfferArgs(CommInfrastructure protocol, String topic, String event) {
@@ -394,6 +400,8 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     public static class Factory {
 
         /**
+         * Get properties.
+         * 
          * @param featName feature name
          * @return the properties for the specified feature
          */
@@ -405,7 +413,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
          * Makes a pooling manager for a controller.
          * 
          * @param host name/uuid of this host
-         * @param controller
+         * @param controller controller
          * @param props properties to use to configure the manager
          * @param activeLatch decremented when the manager goes Active
          * @return a new pooling manager
@@ -418,7 +426,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
         /**
          * Gets the policy controller associated with a drools controller.
          * 
-         * @param droolsController
+         * @param droolsController drools controller
          * @return the policy controller associated with a drools controller
          */
         public PolicyController getController(DroolsController droolsController) {

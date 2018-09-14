@@ -20,13 +20,13 @@
 
 package org.onap.policy.drools.pooling.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Bucket assignments, which is simply an array of host names.
@@ -57,13 +57,14 @@ public class BucketAssignments {
     private String[] hostArray = null;
 
     /**
-     * 
+     * Constructor.
      */
     public BucketAssignments() {
         super();
     }
 
     /**
+     * Constructor.
      * 
      * @param hostArray maps a bucket number (i.e., array index) to a host. All values
      *        must be non-null
@@ -204,12 +205,15 @@ public class BucketAssignments {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         BucketAssignments other = (BucketAssignments) obj;
         return Arrays.equals(hostArray, other.hostArray);
     }

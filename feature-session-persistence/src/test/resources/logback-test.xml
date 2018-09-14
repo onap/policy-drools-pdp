@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   feature-session-persistence
   ================================================================================
-  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,25 +22,28 @@
 
 <configuration>
 
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
-			</Pattern>
-		</encoder>
-	</appender>
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>logs/debug.log</file>
-		<encoder>
-			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
-			</Pattern>
-		</encoder>
-	</appender>
-	
-	<root level="debug">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-	</root>
+    <appender name="STDOUT"
+        class="ch.qos.logback.core.ConsoleAppender">
+        <encoder
+            class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE"
+        class="ch.qos.logback.core.FileAppender">
+        <file>logs/debug.log</file>
+        <encoder>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
 
 </configuration>

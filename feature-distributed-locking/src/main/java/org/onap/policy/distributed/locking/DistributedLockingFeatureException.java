@@ -21,14 +21,14 @@
 package org.onap.policy.distributed.locking;
 
 public class DistributedLockingFeatureException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * @param e
-	 *            exception to be wrapped
-	 */
-	public DistributedLockingFeatureException(Exception e) {
-		super(e);
-	}
+    /**
+     * Constructor.
+     * 
+     * @param ex exception to be wrapped
+     */
+    public DistributedLockingFeatureException(Exception ex) {
+        super(ex);
+    }
 }

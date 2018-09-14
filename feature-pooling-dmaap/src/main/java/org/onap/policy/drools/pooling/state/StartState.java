@@ -25,6 +25,7 @@ import static org.onap.policy.drools.pooling.state.FilterUtils.MSG_TIMESTAMP;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeAnd;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
+
 import java.util.Map;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.Heartbeat;
@@ -47,14 +48,16 @@ public class StartState extends State {
     private long hbTimestampMs = System.currentTimeMillis();
 
     /**
+     * Constructor.
      * 
-     * @param mgr
+     * @param mgr pooling manager
      */
     public StartState(PoolingManager mgr) {
         super(mgr);
     }
 
     /**
+     * Get Heart beat time stamp in milliseconds.
      * 
      * @return the time stamp inserted into the heart beat message
      */

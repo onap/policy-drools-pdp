@@ -129,6 +129,8 @@ public class PoolingProperties extends PropertyConfiguration {
     private long interHeartbeatMs;
 
     /**
+     * Constructor.
+     * 
      * @param controllerName the name of the controller
      * @param props set of properties used to configure this
      * @throws PropertyException if an error occurs

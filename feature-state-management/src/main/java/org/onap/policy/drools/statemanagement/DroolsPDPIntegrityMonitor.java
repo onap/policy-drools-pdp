@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
     private static final String PROPERTIES_NAME = "feature-state-management.properties";
 
     /**
-     * Constructor - pass arguments to superclass, but remember properties
+     * Constructor - pass arguments to superclass, but remember properties.
      * 
      * @param resourceName unique name of this Integrity Monitor
      * @param url the JMX URL of the MBean server
@@ -81,10 +81,10 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Static initialization -- create Drools Integrity Monitor, and an HTTP server to handle REST
-     * 'test' requests
+     * 'test' requests.
      * 
-     * @throws StateManagementPropertiesException
-     * @throws IntegrityMonitorException
+     * @throws StateManagementPropertiesException exception
+     * @throws IntegrityMonitorException exception
      */
     public static DroolsPDPIntegrityMonitor init(String configDir) throws IntegrityMonitorException {
 
@@ -125,9 +125,9 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         checkPropError(stateManagementProperties, StateManagementProperties.DB_USER);
         checkPropError(stateManagementProperties, StateManagementProperties.DB_PWD);
 
-        String testHost = stateManagementProperties.getProperty(StateManagementProperties.TEST_HOST);
-        String testPort = stateManagementProperties.getProperty(StateManagementProperties.TEST_PORT);
-        String resourceName = stateManagementProperties.getProperty(StateManagementProperties.RESOURCE_NAME);
+        final String testHost = stateManagementProperties.getProperty(StateManagementProperties.TEST_HOST);
+        final String testPort = stateManagementProperties.getProperty(StateManagementProperties.TEST_PORT);
+        final String resourceName = stateManagementProperties.getProperty(StateManagementProperties.RESOURCE_NAME);
 
         subsystemTestProperties = stateManagementProperties;
 
@@ -148,8 +148,8 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * 
      * @param resourceName unique name of this Integrity Monitor
      * @param properties properties used to configure the Integrity Monitor
-     * @return
-     * @throws IntegrityMonitorException
+     * @return monitor object
+     * @throws IntegrityMonitorException exception
      */
     private static DroolsPDPIntegrityMonitor makeMonitor(String resourceName, Properties properties)
             throws IntegrityMonitorException {
@@ -168,7 +168,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * @param testHost host name
      * @param testPort port
      * @param properties properties used to configure the rest server
-     * @throws IntegrityMonitorException
+     * @throws IntegrityMonitorException exception
      */
     private static void makeRestServer(String testHost, String testPort, Properties properties)
             throws IntegrityMonitorException {
@@ -190,7 +190,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * 
      * @param configDir directory containing the property file
      * @return the properties
-     * @throws IntegrityMonitorException
+     * @throws IntegrityMonitorException exception
      */
     private static Properties getProperties(String configDir) throws IntegrityMonitorException {
         try {
@@ -206,7 +206,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * 
      * @param props set of properties
      * @param name name of the property to check
-     * @throws IntegrityMonitorException
+     * @throws IntegrityMonitorException exception
      */
     private static void checkPropError(Properties props, String name) throws IntegrityMonitorException {
         String val = props.getProperty(name);
@@ -260,7 +260,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
     }
 
     /**
-     * Run tests (audits) unique to Drools PDP VM (Database + Repository)
+     * Run tests (audits) unique to Drools PDP VM (Database + Repository).
      */
     @Override
     public void subsystemTest() throws IntegrityMonitorException {
@@ -308,7 +308,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
     /* ============================================================ */
 
     /**
-     * This is the base class for audits invoked in 'subsystemTest'
+     * This is the base class for audits invoked in 'subsystemTest'.
      */
     public abstract static class AuditBase {
         // name of the audit
@@ -318,7 +318,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         protected String response;
 
         /**
-         * Constructor - initialize the name, and clear the initial response
+         * Constructor - initialize the name, and clear the initial response.
          * 
          * @param name name of the audit
          */
@@ -328,6 +328,8 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         }
 
         /**
+         * Get the name.
+         * 
          * @return the name of this audit
          */
         public String getName() {
@@ -335,6 +337,8 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         }
 
         /**
+         * Get the response.
+         * 
          * @return the response String (non-null indicates the error message)
          */
         public String getResponse() {
@@ -342,7 +346,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         }
 
         /**
-         * Set the response string to the specified value
+         * Set the response string to the specified value.
          * 
          * @param value the new value of the response string (null = no errors)
          */
@@ -351,7 +355,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         }
 
         /**
-         * Abstract method to invoke the audit
+         * Abstract method to invoke the audit.
          * 
          * @param persistenceProperties Used for DB access
          * @throws Exception passed in by the audit
@@ -416,6 +420,12 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         }
     }
 
+    /**
+     * Returns the instance.
+     * 
+     * @return DroolsPDPIntegrityMonitor object
+     * @throws IntegrityMonitorException exception
+     */
     public static DroolsPDPIntegrityMonitor getInstance() throws IntegrityMonitorException {
         if (logger.isDebugEnabled()) {
             logger.debug("getInstance() called");

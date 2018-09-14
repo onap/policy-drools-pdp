@@ -44,7 +44,7 @@ public class FilterUtils {
     protected static final String CLASS_EQUALS = "Equals";
 
     /**
-     * 
+     * Constructor.
      */
     private FilterUtils() {
         super();
