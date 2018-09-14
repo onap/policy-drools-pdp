@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_664e0e3d",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-14T14:24:03Z",
+      "side": 1,
+      "message": "could use \"{}\"",
+      "revId": "c733c08b7201ffdee81c7dab2ed50a1ce8fd5bbb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_0665dab3",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/configuration/PdpdConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-14T14:24:03Z",
+      "side": 1,
+      "message": "args reversed",
+      "revId": "c733c08b7201ffdee81c7dab2ed50a1ce8fd5bbb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_a65746c9",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/configuration/PdpdConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-14T14:24:03Z",
+      "side": 1,
+      "message": "args reversed",
+      "revId": "c733c08b7201ffdee81c7dab2ed50a1ce8fd5bbb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_c65a82f1",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/configuration/PdpdConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 231,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-14T14:24:03Z",
+      "side": 1,
+      "message": "args reversed",
+      "revId": "c733c08b7201ffdee81c7dab2ed50a1ce8fd5bbb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_6675ae62",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/configuration/PdpdConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-14T14:24:03Z",
+      "side": 1,
+      "message": "args reversed",
+      "revId": "c733c08b7201ffdee81c7dab2ed50a1ce8fd5bbb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_86700a73",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/configuration/PdpdConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-14T14:24:03Z",
+      "side": 1,
+      "message": "args reversed",
+      "revId": "c733c08b7201ffdee81c7dab2ed50a1ce8fd5bbb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
