@@ -259,6 +259,8 @@ public class DmaapManager {
     public static class Factory {
 
         /**
+         * Get topic source.
+         * 
          * @return the topic sources
          */
         public List<TopicSource> getTopicSources() {
@@ -266,6 +268,8 @@ public class DmaapManager {
         }
 
         /**
+         * Get topic sinks.
+         * 
          * @return the topic sinks
          */
         public List<TopicSink> getTopicSinks() {

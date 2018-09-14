@@ -23,6 +23,7 @@ package org.onap.policy.drools.pooling.state;
 import static org.onap.policy.drools.pooling.state.FilterUtils.MSG_CHANNEL;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +43,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A state in the finite state machine.
- * <p>
- * A state may have several timers associated with it, which must be cancelled whenever
+ * 
+ * <p>A state may have several timers associated with it, which must be cancelled whenever
  * the state is changed. Assumes that timers are not continuously added to the same state.
  */
 public abstract class State {
@@ -61,8 +62,9 @@ public abstract class State {
     private final List<CancellableScheduledTask> timers = new LinkedList<>();
 
     /**
+     * Constructor.
      * 
-     * @param mgr
+     * @param mgr pooling manager
      */
     public State(PoolingManager mgr) {
         this.mgr = mgr;
@@ -197,6 +199,28 @@ public abstract class State {
     }
 
     /**
+     * Processes a message. The default method just returns {@code null}.
+     * 
+     * @param msg message to be processed
+     * @return the new state, or {@code null} if the state is unchanged
+     */
+    public State process(Offline msg) {
+        logger.info("ignored offline message from {} on topic {}", msg.getSource(), getTopic());
+        return null;
+    }
+
+    /**
+     * Processes a message. The default method just returns {@code null}.
+     * 
+     * @param msg message to be processed
+     * @return the new state, or {@code null} if the state is unchanged
+     */
+    public State process(Query msg) {
+        logger.info("ignored Query message from {} on topic {}", msg.getSource(), getTopic());
+        return null;
+    }
+
+    /**
      * Determines if a message is valid and did not originate from this host.
      * 
      * @param msg message to be validated
@@ -224,28 +248,6 @@ public abstract class State {
         }
 
         return result;
-    }
-
-    /**
-     * Processes a message. The default method just returns {@code null}.
-     * 
-     * @param msg message to be processed
-     * @return the new state, or {@code null} if the state is unchanged
-     */
-    public State process(Offline msg) {
-        logger.info("ignored offline message from {} on topic {}", msg.getSource(), getTopic());
-        return null;
-    }
-
-    /**
-     * Processes a message. The default method just returns {@code null}.
-     * 
-     * @param msg message to be processed
-     * @return the new state, or {@code null} if the state is unchanged
-     */
-    public State process(Query msg) {
-        logger.info("ignored Query message from {} on topic {}", msg.getSource(), getTopic());
-        return null;
     }
 
     /**
@@ -287,7 +289,7 @@ public abstract class State {
     /**
      * Publishes a message on the specified channel.
      * 
-     * @param channel
+     * @param channel channel
      * @param msg message to be published
      */
     protected final void publish(String channel, Forward msg) {
@@ -297,7 +299,7 @@ public abstract class State {
     /**
      * Publishes a message on the specified channel.
      * 
-     * @param channel
+     * @param channel channel
      * @param msg message to be published
      */
     protected final void publish(String channel, Heartbeat msg) {
@@ -307,7 +309,7 @@ public abstract class State {
     /**
      * Starts distributing messages using the specified bucket assignments.
      * 
-     * @param assignments
+     * @param assignments assignments
      */
     protected final void startDistributing(BucketAssignments assignments) {
         if (assignments != null) {
@@ -318,8 +320,8 @@ public abstract class State {
     /**
      * Schedules a timer to fire after a delay.
      * 
-     * @param delayMs
-     * @param task
+     * @param delayMs delay in ms
+     * @param task task
      */
     protected final void schedule(long delayMs, StateTimerTask task) {
         timers.add(mgr.schedule(delayMs, task));
@@ -328,9 +330,9 @@ public abstract class State {
     /**
      * Schedules a timer to fire repeatedly.
      * 
-     * @param initialDelayMs
-     * @param delayMs
-     * @param task
+     * @param initialDelayMs initial delay ms
+     * @param delayMs delay ms
+     * @param task task
      */
     protected final void scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task) {
         timers.add(mgr.scheduleWithFixedDelay(initialDelayMs, delayMs, task));

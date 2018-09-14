@@ -20,11 +20,11 @@
 
 package org.onap.policy.drools.pooling;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 import org.onap.policy.drools.pooling.message.Message;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Serialization helper functions.
@@ -38,7 +38,7 @@ public class Serializer {
     private final ObjectMapper mapper = new ObjectMapper();
 
     /**
-     * 
+     * Constructor.
      */
     public Serializer() {
         super();

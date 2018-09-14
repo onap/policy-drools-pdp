@@ -20,22 +20,23 @@
 
 package org.onap.policy.drools.statemanagement;
 
-public class StateManagementPropertiesException extends Exception{
-	private static final long serialVersionUID = 1L;
-	
-	public StateManagementPropertiesException() {
-		super();
-	}
-	
-	public StateManagementPropertiesException(String message) {
-		super(message);
-	}
+public class StateManagementPropertiesException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-	public StateManagementPropertiesException(Throwable cause) {
-		super(cause);
-	}
-	public StateManagementPropertiesException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public StateManagementPropertiesException() {
+        super();
+    }
+
+    public StateManagementPropertiesException(String message) {
+        super(message);
+    }
+
+    public StateManagementPropertiesException(Throwable cause) {
+        super(cause);
+    }
+    
+    public StateManagementPropertiesException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

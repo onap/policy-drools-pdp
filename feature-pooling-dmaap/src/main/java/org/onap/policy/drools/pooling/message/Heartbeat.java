@@ -31,7 +31,7 @@ public class Heartbeat extends Message {
     private long timestampMs;
 
     /**
-     * 
+     * Constructor.
      */
     public Heartbeat() {
         super();
@@ -39,6 +39,7 @@ public class Heartbeat extends Message {
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
      * @param timestampMs time, in milliseconds, associated with the message

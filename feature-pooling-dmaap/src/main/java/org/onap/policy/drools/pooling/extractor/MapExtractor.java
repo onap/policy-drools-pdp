@@ -37,6 +37,7 @@ public class MapExtractor implements Extractor {
     private final String key;
 
     /**
+     * Constructor.
      * 
      * @param key key to the item to extract from the map
      */

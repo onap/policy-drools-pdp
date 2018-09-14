@@ -35,8 +35,9 @@ public class InactiveState extends State {
     private static final Logger logger = LoggerFactory.getLogger(InactiveState.class);
 
     /**
+     * Constructor.
      * 
-     * @param mgr
+     * @param mgr pooling manager
      */
     public InactiveState(PoolingManager mgr) {
         super(mgr);

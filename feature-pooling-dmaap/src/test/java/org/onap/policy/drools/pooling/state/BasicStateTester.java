@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,6 +114,11 @@ public class BasicStateTester {
         super();
     }
 
+    /**
+     * Setup.
+     * 
+     * @throws Exception throws exception
+     */
     public void setUp() throws Exception {
         onceSchedules = new LinkedList<>();
         onceTasks = new LinkedList<>();

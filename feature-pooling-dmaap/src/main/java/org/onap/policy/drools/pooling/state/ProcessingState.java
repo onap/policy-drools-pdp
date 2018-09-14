@@ -48,8 +48,9 @@ public class ProcessingState extends State {
     private String leader;
 
     /**
+     * Constructor.
      * 
-     * @param mgr
+     * @param mgr pooling manager
      * @param leader current known leader, which need not be the same as the assignment
      *        leader. Never {@code null}
      * @throws IllegalArgumentException if an argument is invalid
@@ -308,10 +309,10 @@ public class ProcessingState extends State {
             }
 
             // move the bucket from the larger to the smaller
-            Integer b = larger.remove();
-            smaller.add(b);
+            Integer bucket = larger.remove();
+            smaller.add(bucket);
 
-            bucket2host[b] = smaller.host;
+            bucket2host[bucket] = smaller.host;
 
             // put the items back, with their new counts
             assignments.add(larger);
@@ -349,8 +350,9 @@ public class ProcessingState extends State {
         private Queue<Integer> buckets = new LinkedList<>();
 
         /**
+         * Constructor.
          * 
-         * @param host
+         * @param host host
          */
         public HostBucket(String host) {
             this.host = host;
@@ -375,6 +377,7 @@ public class ProcessingState extends State {
         }
 
         /**
+         * Size.
          * 
          * @return the number of buckets assigned to this host
          */
@@ -388,11 +391,11 @@ public class ProcessingState extends State {
          */
         @Override
         public final int compareTo(HostBucket other) {
-            int d = buckets.size() - other.buckets.size();
-            if (d == 0) {
-                d = host.compareTo(other.host);
+            int diff = buckets.size() - other.buckets.size();
+            if (diff == 0) {
+                diff = host.compareTo(other.host);
             }
-            return d;
+            return diff;
         }
 
         @Override

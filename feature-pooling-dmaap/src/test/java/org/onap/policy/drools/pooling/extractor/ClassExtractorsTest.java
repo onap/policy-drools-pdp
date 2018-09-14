@@ -23,6 +23,7 @@ package org.onap.policy.drools.pooling.extractor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -44,6 +45,10 @@ public class ClassExtractorsTest {
     private Properties props;
     private ClassExtractors map;
 
+    /**
+     * Setup.
+     * 
+     */
     @Before
     public void setUp() {
         props = new Properties();

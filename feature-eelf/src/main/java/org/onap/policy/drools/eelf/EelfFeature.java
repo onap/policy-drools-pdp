@@ -31,43 +31,45 @@ import org.onap.policy.drools.system.Main;
 import org.onap.policy.drools.system.PolicyEngine;
 
 /**
- * Feature EELF : Enables EELF Logging Libraries 
+ * Feature EELF : Enables EELF Logging Libraries .
  */
 public class EelfFeature implements PolicyEngineFeatureAPI {
 
-	@Override
-	public final boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
-		
-		String logback = System.getProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, 
-				                            Main.LOGBACK_CONFIGURATION_FILE_DEFAULT);		
-		Path logbackPath = Paths.get(logback);
-		
-		if (System.getProperty(Configuration.PROPERTY_LOGGING_FILE_PATH) == null)
-			System.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, 
-					           logbackPath.toAbsolutePath().getParent().toString());
-		
-		if (System.getProperty(Configuration.PROPERTY_LOGGING_FILE_NAME) == null)
-			System.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, 
-					           logbackPath.getFileName().toString());
-		
-		Logger logger = FlexLogger.getLogger(this.getClass(), true);
-		
-		if (logger.isInfoEnabled()) {
-			logProperty(logger, Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY);
-			logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_PATH);
-			logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_NAME);
-		}
-		
-		return false;
-	}
-	
-	private void logProperty(Logger logger, String propnm) {
-		logger.info("eelf-feature: Property " + propnm + "=" + System.getProperty(propnm));
-	}
-	
-	@Override
-	public int getSequenceNumber() {
-		return 0;
-	}
+    @Override
+    public final boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
+
+        String logback = System.getProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, 
+                Main.LOGBACK_CONFIGURATION_FILE_DEFAULT);
+        Path logbackPath = Paths.get(logback);
+
+        if (System.getProperty(Configuration.PROPERTY_LOGGING_FILE_PATH) == null) {
+            System.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH, 
+                    logbackPath.toAbsolutePath().getParent().toString());
+        }
+
+        if (System.getProperty(Configuration.PROPERTY_LOGGING_FILE_NAME) == null) {
+            System.setProperty(Configuration.PROPERTY_LOGGING_FILE_NAME, 
+                    logbackPath.getFileName().toString());
+        }
+
+        Logger logger = FlexLogger.getLogger(this.getClass(), true);
+
+        if (logger.isInfoEnabled()) {
+            logProperty(logger, Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY);
+            logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_PATH);
+            logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_NAME);
+        }
+
+        return false;
+    }
+
+    private void logProperty(Logger logger, String propnm) {
+        logger.info("eelf-feature: Property " + propnm + "=" + System.getProperty(propnm));
+    }
+
+    @Override
+    public int getSequenceNumber() {
+        return 0;
+    }
 
 }

@@ -26,11 +26,11 @@ import org.junit.Test;
 import org.onap.policy.common.utils.test.ExceptionsTester;
 import org.onap.policy.distributed.locking.DistributedLockingFeatureException;
 
-public class DistributedLockingFeatureExceptionTest extends ExceptionsTester{
-	
-	@Test
-	public void test() {
-		assertEquals(1, test(DistributedLockingFeatureException.class)); 
-	}
+public class DistributedLockingFeatureExceptionTest extends ExceptionsTester {
+
+    @Test
+    public void test() {
+        assertEquals(1, test(DistributedLockingFeatureException.class)); 
+    }
 
 }

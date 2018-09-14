@@ -44,6 +44,9 @@ public class DMaaPSimulatorTest {
 
     private static final int DMAAPSIM_SERVER_PORT = 6670;
 
+    /**
+     * Setup the simulator.
+     */
     @BeforeClass
     public static void setUpSimulator() {
         LoggerUtil.setLevel("ROOT", "INFO");
@@ -71,8 +74,8 @@ public class DMaaPSimulatorTest {
         int timeout = 1000;
         Pair<Integer, String> response = dmaapGet("myTopicNoData", timeout);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals("No topic", response.b);
+        assertNotNull(response.first);
+        assertEquals("No topic", response.second);
     }
 
     @Test
@@ -81,13 +84,13 @@ public class DMaaPSimulatorTest {
         String testData = "This is some test data";
         Pair<Integer, String> response = dmaapPost(myTopic, testData);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(testData, response.b);
+        assertNotNull(response.first);
+        assertEquals(testData, response.second);
     }
 
     @Test
@@ -96,118 +99,118 @@ public class DMaaPSimulatorTest {
         String myTopic = "myTopicMultiPost";
         Pair<Integer, String> response = dmaapPost(myTopic, data[0]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapPost(myTopic, data[1]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapPost(myTopic, data[2]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[0], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[0], response.second);
 
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[1], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[1], response.second);
 
         response = dmaapGet(myTopic, 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[2], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[2], response.second);
     }
 
     @Test
     public void testMultiTopic() {
         String[][] data = {{"Topic one message one", "Topic one message two"},
-                {"Topic two message one", "Topic two message two"}};
+            {"Topic two message one", "Topic two message two"}};
         String[] topics = {"topic1", "topic2"};
 
         Pair<Integer, String> response = dmaapPost(topics[0], data[0][0]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[0][0], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[0][0], response.second);
 
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals("No topic", response.b);
+        assertNotNull(response.first);
+        assertEquals("No topic", response.second);
 
         response = dmaapPost(topics[1], data[1][0]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapPost(topics[1], data[1][1]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapPost(topics[0], data[0][1]);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[1][0], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[1][0], response.second);
 
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[0][1], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[0][1], response.second);
 
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals(data[1][1], response.b);
+        assertNotNull(response.first);
+        assertEquals(data[1][1], response.second);
 
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertEquals("No Data", response.b);
+        assertNotNull(response.first);
+        assertEquals("No Data", response.second);
     }
 
     @Test
     public void testResponseCode() {
         Pair<Integer, String> response = dmaapPost("myTopic", "myTopicData");
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = setStatus(503);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapGet("myTopic", 500);
         assertNotNull(response);
-        assertEquals(503, response.a.intValue());
-        assertEquals("You got response code: 503", response.b);
+        assertEquals(503, response.first.intValue());
+        assertEquals("You got response code: 503", response.second);
 
         response = setStatus(202);
         assertNotNull(response);
-        assertNotNull(response.a);
-        assertNotNull(response.b);
+        assertNotNull(response.first);
+        assertNotNull(response.second);
 
         response = dmaapGet("myTopic", 500);
         assertNotNull(response);
-        assertEquals(202, response.a.intValue());
-        assertEquals("myTopicData", response.b);
+        assertEquals(202, response.first.intValue());
+        assertEquals("myTopicData", response.second);
     }
 
     private static Pair<Integer, String> dmaapGet(String topic, int timeout) {
@@ -345,12 +348,12 @@ public class DMaaPSimulatorTest {
     }
 
     private static class Pair<A, B> {
-        public final A a;
-        public final B b;
+        public final A first;
+        public final B second;
 
-        public Pair(A a, B b) {
-            this.a = a;
-            this.b = b;
+        public Pair(A first, B second) {
+            this.first = first;
+            this.second = second;
         }
     }
 }

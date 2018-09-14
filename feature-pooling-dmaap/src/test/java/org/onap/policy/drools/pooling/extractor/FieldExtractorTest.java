@@ -22,6 +22,7 @@ package org.onap.policy.drools.pooling.extractor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
 import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;

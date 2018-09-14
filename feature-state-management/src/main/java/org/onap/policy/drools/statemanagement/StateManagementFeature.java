@@ -38,227 +38,218 @@ import org.slf4j.LoggerFactory;
  * active/standby state management and IntegrityMonitor. For now, they are
  * all treated as a single feature, but it would be nice to separate them.
  *
- * The bulk of the code here was once in other classes, such as
+ * <p>The bulk of the code here was once in other classes, such as
  * 'PolicyContainer' and 'Main'. It was moved here as part of making this
  * a separate optional feature.
  */
 
 public class StateManagementFeature implements StateManagementFeatureAPI, 
-				PolicySessionFeatureAPI, PolicyEngineFeatureAPI
-{
-	// get an instance of logger
-	private static final Logger logger =
-			LoggerFactory.getLogger(StateManagementFeature.class);
-	
-	private DroolsPDPIntegrityMonitor droolsPdpIntegrityMonitor = null;
-	private StateManagement stateManagement = null;
+    PolicySessionFeatureAPI, PolicyEngineFeatureAPI {
+    // get an instance of logger
+    private static final Logger logger =
+            LoggerFactory.getLogger(StateManagementFeature.class);
 
-	/**************************/
-	/* 'FeatureAPI' interface */
-	/**************************/
+    private DroolsPDPIntegrityMonitor droolsPdpIntegrityMonitor = null;
+    private StateManagement stateManagement = null;
 
-	public StateManagementFeature(){
-		logger.debug("StateManagementFeature() constructor");
-	}
-	
-	@Override
-	public void globalInit(String[] args, String configDir)
-	{
-		// Initialization code associated with 'PolicyContainer'
-		logger.debug("StateManagementFeature.globalInit({}) entry", configDir);
+    public StateManagementFeature() {
+        logger.debug("StateManagementFeature() constructor");
+    }
 
-		try
-		{
-			droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.init(configDir);
-		}
-		catch (Exception e)
-		{
-			logger.debug("DroolsPDPIntegrityMonitor initialization exception: ", e);
-			logger.error("DroolsPDPIntegrityMonitor.init()", e);
-		}
+    @Override
+    public void globalInit(String[] args, String configDir) {
+        // Initialization code associated with 'PolicyContainer'
+        logger.debug("StateManagementFeature.globalInit({}) entry", configDir);
 
-		initializeProperties(configDir);
+        try {
+            droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.init(configDir);
+        } catch (Exception e) {
+            logger.debug("DroolsPDPIntegrityMonitor initialization exception: ", e);
+            logger.error("DroolsPDPIntegrityMonitor.init()", e);
+        }
 
-		//At this point the DroolsPDPIntegrityMonitor instance must exist. Let's check it.
-		try {
-			droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
-			stateManagement = droolsPdpIntegrityMonitor.getStateManager();
-			
-			if (stateManagement == null) {
-				logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
-			}
-			else {
-				logger.debug("StateManagementFeature.globalInit(): "
-						+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
-			}
-		} catch (Exception e1) {
-			logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
-				+ " initialization failed with exception:", e1);
-			logger.error("DroolsPDPIntegrityMonitor.init(): StateManagementFeature startup failed "
-					+ "to get DroolsPDPIntegrityMonitor instance:", e1);
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addObserver(Observer stateChangeObserver) {
-		logger.debug("StateManagementFeature.addObserver() entry\n"
-				+ "StateManagementFeature.addObserver(): "
-				+ "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
-		
-		stateManagement.addObserver(stateChangeObserver);
-		
-		logger.debug("StateManagementFeature.addObserver() exit");
-	}
+        initializeProperties(configDir);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getAdminState() {
-		return stateManagement.getAdminState();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getOpState() {
-		return stateManagement.getOpState();
-	}
+        //At this point the DroolsPDPIntegrityMonitor instance must exist. Let's check it.
+        try {
+            droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
+            stateManagement = droolsPdpIntegrityMonitor.getStateManager();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getAvailStatus() {
-		return stateManagement.getAvailStatus();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getStandbyStatus() {
-		return stateManagement.getStandbyStatus();
-	}
+            if (stateManagement == null) {
+                logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
+            }
+            else {
+                logger.debug("StateManagementFeature.globalInit(): "
+                        + "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
+            }
+        } catch (Exception e1) {
+            logger.debug("StateManagementFeature.globalInit(): DroolsPDPIntegrityMonitor"
+                    + " initialization failed with exception:", e1);
+            logger.error("DroolsPDPIntegrityMonitor.init(): StateManagementFeature startup failed "
+                    + "to get DroolsPDPIntegrityMonitor instance:", e1);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getStandbyStatus(String resourceName) {
-		return stateManagement.getStandbyStatus(resourceName);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addObserver(Observer stateChangeObserver) {
+        logger.debug("StateManagementFeature.addObserver() entry\n"
+                + "StateManagementFeature.addObserver(): "
+                + "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void disableFailed(String resourceName) throws Exception {
-		stateManagement.disableFailed(resourceName);
+        stateManagement.addObserver(stateChangeObserver);
 
-	}
+        logger.debug("StateManagementFeature.addObserver() exit");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void disableFailed() throws Exception {
-		stateManagement.disableFailed();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getAdminState() {
+        return stateManagement.getAdminState();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void promote() throws Exception {
-		stateManagement.promote();		
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getOpState() {
+        return stateManagement.getOpState();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void demote() throws Exception {
-		stateManagement.demote();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getResourceName() {
-		return StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @return 
-	 */
-	@Override
-	public boolean lock(){
-		try{
-			stateManagement.lock();
-		}catch(Exception e){
-			logger.error("StateManagementFeature.lock() failed with exception: {}", e);
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws Exception 
-	 */
-	@Override
-	public boolean unlock(){
-		try{
-			stateManagement.unlock();
-		}catch(Exception e){
-			logger.error("StateManagementFeature.unlock() failed with exception: {}", e);
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @throws Exception 
-	 */
-	@Override
-	public boolean isLocked(){
-		return StateManagement.LOCKED.equals(stateManagement.getAdminState());
-	}
-	
-	@Override
-	public int getSequenceNumber() {
-		return SEQ_NUM;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getAvailStatus() {
+        return stateManagement.getAvailStatus();
+    }
 
-	/**
-	 * Read in the properties and initialize the StateManagementProperties.
-	 */
-	private static void initializeProperties(String configDir)
-	{
-		//Get the state management properties 
-		try {
-			Properties pIm =
-					PropertyUtil.getProperties(configDir + "/feature-state-management.properties");
-			StateManagementProperties.initProperties(pIm);
-			logger.info("initializeProperties: resourceName= {}", StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME));
-		} catch (IOException e1) {
-			logger.error("initializeProperties", e1);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getStandbyStatus() {
+        return stateManagement.getStandbyStatus();
+    }
 
-	@Override
-	public void allSeemsWell(String key, Boolean asw, String msg)
-			throws AllSeemsWellException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getStandbyStatus(String resourceName) {
+        return stateManagement.getStandbyStatus(resourceName);
+    }
 
-		droolsPdpIntegrityMonitor.allSeemsWell(key, asw, msg);
-		
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void disableFailed(String resourceName) throws Exception {
+        stateManagement.disableFailed(resourceName);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void disableFailed() throws Exception {
+        stateManagement.disableFailed();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void promote() throws Exception {
+        stateManagement.promote();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void demote() throws Exception {
+        stateManagement.demote();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResourceName() {
+        return StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return 
+     */
+    @Override
+    public boolean lock() {
+        try {
+            stateManagement.lock();
+        } catch (Exception e) {
+            logger.error("StateManagementFeature.lock() failed with exception: {}", e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws Exception exception
+     */
+    @Override
+    public boolean unlock() {
+        try {
+            stateManagement.unlock();
+        } catch (Exception e) {
+            logger.error("StateManagementFeature.unlock() failed with exception: {}", e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws Exception exception 
+     */
+    @Override
+    public boolean isLocked() {
+        return StateManagement.LOCKED.equals(stateManagement.getAdminState());
+    }
+
+    @Override
+    public int getSequenceNumber() {
+        return SEQ_NUM;
+    }
+
+    /**
+     * Read in the properties and initialize the StateManagementProperties.
+     */
+    private static void initializeProperties(String configDir) {
+        //Get the state management properties 
+        try {
+            Properties props =
+                    PropertyUtil.getProperties(configDir + "/feature-state-management.properties");
+            StateManagementProperties.initProperties(props);
+            logger.info("initializeProperties: resourceName= {}", 
+                    StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME));
+        } catch (IOException e1) {
+            logger.error("initializeProperties", e1);
+        }
+    }
+
+    @Override
+    public void allSeemsWell(String key, Boolean asw, String msg)
+            throws AllSeemsWellException {
+
+        droolsPdpIntegrityMonitor.allSeemsWell(key, asw, msg);
+
+    }
 }

@@ -20,11 +20,11 @@
 
 package org.onap.policy.drools.pooling.message;
 
-import org.onap.policy.drools.pooling.PoolingFeatureException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.onap.policy.drools.pooling.PoolingFeatureException;
 
 /**
  * Messages sent on the internal topic.
@@ -53,13 +53,14 @@ public class Message {
     private String channel;
 
     /**
-     * 
+     * Constructor.
      */
     public Message() {
         super();
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
      */

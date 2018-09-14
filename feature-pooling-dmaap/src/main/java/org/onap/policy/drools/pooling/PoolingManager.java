@@ -86,7 +86,7 @@ public interface PoolingManager {
     /**
      * Handles a {@link Forward} event that was received from the internal topic.
      * 
-     * @param event
+     * @param event event
      */
     public void handle(Forward event);
 
@@ -94,7 +94,7 @@ public interface PoolingManager {
      * Schedules a timer to fire after a delay.
      * 
      * @param delayMs delay, in milliseconds
-     * @param task
+     * @param task task
      * @return a new scheduled task
      */
     public CancellableScheduledTask schedule(long delayMs, StateTimerTask task);
@@ -104,7 +104,7 @@ public interface PoolingManager {
      * 
      * @param initialDelayMs initial delay, in milliseconds
      * @param delayMs delay, in milliseconds
-     * @param task
+     * @param task task
      * @return a new scheduled task
      */
     public CancellableScheduledTask scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);

@@ -51,24 +51,32 @@ import org.slf4j.LoggerFactory;
 
 /*
  * Some background:
+ *
+ * Originally, there was a "StandbyStateChangeNotifier" that belonged to policy-core, and this class's 
+ * handleStateChange() method used to take care of invoking conn.standDownPdp().   
  * 
- * Originally, there was a "StandbyStateChangeNotifier" that belonged to policy-core, and this class's handleStateChange() method
- * used to take care of invoking conn.standDownPdp().   But testing revealed that when a state change to hot standby occurred 
- * from a demote() operation, first the PMStandbyStateChangeNotifier.handleStateChange() method would be invoked and then the 
- * StandbyStateChangeNotifier.handleStateChange() method would be invoked, and this ordering was creating the following problem:
+ * But testing revealed that when a state change to hot standby 
+ * occurred from a demote() operation, first the PMStandbyStateChangeNotifier.handleStateChange() method 
+ * would be invoked and then the StandbyStateChangeNotifier.handleStateChange() method would be invoked, 
+ * and this ordering was creating the following problem:
+ *
+ * When PMStandbyStateChangeNotifier.handleStateChange() was invoked it would take a long time to finish, 
+ * because it would result in SingleThreadedUebTopicSource.stop() being invoked, which can potentially do a 
+ * 5 second sleep for each controller being stopped.
  * 
- * When PMStandbyStateChangeNotifier.handleStateChange() was invoked it would take a long time to finish, because it would result
- * in SingleThreadedUebTopicSource.stop() being invoked, which can potentially do a 5 second sleep for each controller being stopped.   
- * Meanwhile, as these controller stoppages and their associated sleeps were occurring, the election handler would discover the
- * demoted PDP in hotstandby (but still designated!) and promote it, resulting in the standbyStatus going from hotstandby
- * to providingservice.  So then, by the time that PMStandbyStateChangeNotifier.handleStateChange() finished its work and
- * StandbyStateChangeNotifier.handleStateChange() started executing, the standbyStatus was no longer hotstandby (as effected by
- * the demote), but providingservice (as reset by the election handling logic) and conn.standDownPdp() would not get called!
- * 
- * To fix this bug, we consolidated StandbyStateChangeNotifier and PMStandbyStateChangeNotifier, with the standDownPdp() always 
- * being invoked prior to the TopicEndpoint.manager.lock().  In this way, when the election handling logic is invoked 
+ * Meanwhile, as these controller stoppages and their associated sleeps were occurring, the election handler 
+ * would discover the demoted PDP in hotstandby (but still designated!) and promote it, resulting in the 
+ * standbyStatus going from hotstandby to providingservice.  So then, by the time that 
+ * PMStandbyStateChangeNotifier.handleStateChange() finished its work and
+ * StandbyStateChangeNotifier.handleStateChange() started executing, the standbyStatus was no longer hotstandby 
+ * (as effected by the demote), but providingservice (as reset by the election handling logic) and 
+ * conn.standDownPdp() would not get called!
+ *
+ * To fix this bug, we consolidated StandbyStateChangeNotifier and PMStandbyStateChangeNotifier, 
+ * with the standDownPdp() always
+ * being invoked prior to the TopicEndpoint.manager.lock().  In this way, when the election handling logic is invoked
  * during the controller stoppages, the PDP is in hotstandby and the standdown occurs.
- * 
+ *
  */
 public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
     // get an instance of logger
@@ -84,6 +92,10 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
     public static final String UNSUPPORTED = "unsupported";
     public static final String HOTSTANDBY_OR_COLDSTANDBY = "hotstandby_or_coldstandby";
 
+    /**
+     * Constructor.
+     * 
+     */
     public PMStandbyStateChangeNotifier() {
         pdpUpdateInterval =
                 Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
@@ -122,8 +134,9 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
                 // We were just here and did this successfully
                 if (logger.isDebugEnabled()) {
                     logger.debug(
-                            "handleStateChange: Is returning because standbyStatus is null and was previously 'null'; PDP={}",
-                            pdpId);
+                        "handleStateChange: "
+                        + "Is returning because standbyStatus is null and was previously 'null'; PDP={}",
+                        pdpId);
                 }
                 return;
             }
@@ -230,16 +243,16 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
                     if (waitTimeMs > 3 * waitInterval) {
                         if (logger.isDebugEnabled()) {
                             logger.debug(
-                                    "handleStateChange: PROVIDING_SERVICE looks like the activation wait timer may be hung,"
-                                            + " waitTimeMs = {} and allowable waitInterval = {}"
-                                            + " Checking whether it is currently in activation. isNowActivating = {}",
-                                    waitTimeMs, waitInterval, isNowActivating);
+                                "handleStateChange: PROVIDING_SERVICE looks like the activation wait timer may be hung,"
+                                + " waitTimeMs = {} and allowable waitInterval = {}"
+                                + " Checking whether it is currently in activation. isNowActivating = {}",
+                                waitTimeMs, waitInterval, isNowActivating);
                         }
                         // Now check that it is not currently executing an activation
                         if (!isNowActivating) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug(
-                                        "handleStateChange: PROVIDING_SERVICE looks like the activation wait timer died");
+                                    "handleStateChange: PROVIDING_SERVICE looks like the activation wait timer died");
                             }
                             // This will assure the timer is cancelled and rescheduled.
                             isWaitingForActivation = false;

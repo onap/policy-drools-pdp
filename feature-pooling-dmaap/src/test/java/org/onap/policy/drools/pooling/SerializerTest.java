@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeAnd;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
 import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
+
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class SerializerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testEncodeFilter() throws Exception {
-        Serializer ser = new Serializer();
+        final Serializer ser = new Serializer();
 
         /*
          * Ensure raw maps serialize as expected. Use a TreeMap so the field

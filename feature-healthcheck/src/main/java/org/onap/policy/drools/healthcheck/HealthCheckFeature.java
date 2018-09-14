@@ -26,53 +26,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This feature provides healthcheck verification of remotely associated RESTful components
+ * This feature provides healthcheck verification of remotely associated RESTful components.
  */
-public class HealthCheckFeature implements PolicyEngineFeatureAPI {	
-	
-	/**
-	 * Logger
-	 */
-	private static Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class); 
-	
-	/**
-	 * Properties Configuration Name
-	 */
-	public static final String CONFIGURATION_PROPERTIES_NAME = "feature-healthcheck";
+public class HealthCheckFeature implements PolicyEngineFeatureAPI {
 
-	@Override
-	public int getSequenceNumber() {
-		return 1000;
-	}
+    /**
+     * Logger.
+     */
+    private static Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class); 
 
-	@Override
-	public boolean afterStart(PolicyEngine engine) {
-		try {
-			HealthCheck.monitor.start();
-		} catch (IllegalStateException e) {
-			logger.error("Healthcheck Monitor cannot be started", e);
-		}
-		
-		return false;
-	}
+    /**
+     * Properties Configuration Name.
+     */
+    public static final String CONFIGURATION_PROPERTIES_NAME = "feature-healthcheck";
 
-	@Override
-	public boolean afterShutdown(PolicyEngine engine) {
-		try {
-			HealthCheck.monitor.stop();
-		} catch (IllegalStateException e) {
-			logger.error("Healthcheck Monitor cannot be stopped", e);
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * gets the monitor
-	 * @return the healthcheck monitor
-	 */
-	public HealthCheck getMonitor() {
-		return HealthCheck.monitor;
-	}
+    @Override
+    public int getSequenceNumber() {
+        return 1000;
+    }
+
+    @Override
+    public boolean afterStart(PolicyEngine engine) {
+        try {
+            HealthCheck.monitor.start();
+        } catch (IllegalStateException e) {
+            logger.error("Healthcheck Monitor cannot be started", e);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean afterShutdown(PolicyEngine engine) {
+        try {
+            HealthCheck.monitor.stop();
+        } catch (IllegalStateException e) {
+            logger.error("Healthcheck Monitor cannot be stopped", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the monitor.
+     * 
+     * @return the healthcheck monitor
+     */
+    public HealthCheck getMonitor() {
+        return HealthCheck.monitor;
+    }
 
 }

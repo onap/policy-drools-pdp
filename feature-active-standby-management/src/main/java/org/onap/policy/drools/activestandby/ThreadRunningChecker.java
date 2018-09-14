@@ -22,6 +22,6 @@ package org.onap.policy.drools.activestandby;
 
 @FunctionalInterface
 public interface ThreadRunningChecker {
-	public void checkThreadStatus();
+    public void checkThreadStatus();
 
 }

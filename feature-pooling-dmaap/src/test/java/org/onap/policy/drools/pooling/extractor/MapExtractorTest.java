@@ -20,7 +20,9 @@
 
 package org.onap.policy.drools.pooling.extractor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
@@ -48,7 +50,7 @@ public class MapExtractorTest {
     public void testExtract_MissingValue() {
 
         Map<String,Object> map = new HashMap<>();
-        map.put(KEY+"x", VALUE+"x");
+        map.put(KEY + "x", VALUE + "x");
         
         // object is a map, but doesn't have the key
         assertNull(ext.extract(map));
@@ -58,7 +60,7 @@ public class MapExtractorTest {
     public void testExtract() {
 
         Map<String,Object> map = new HashMap<>();
-        map.put(KEY+"x", VALUE+"x");
+        map.put(KEY + "x", VALUE + "x");
         map.put(KEY, VALUE);
         
         // object is a map and contains the key

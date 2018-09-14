@@ -28,16 +28,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Audit")
+@Table(name = "Audit")
 
 public class Audit implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name="name", length=64, unique=true)
-	private String name;
-	
-	public Audit() {
-		//default constructor
-	}
+    @Id
+    @Column(name = "name", length = 64, unique = true)
+    private String name;
+
+    public Audit() {
+        //default constructor
+    }
 }

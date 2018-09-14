@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -41,7 +42,7 @@ public class BucketAssignmentsTest {
 
     @Test
     public void testBucketAssignmentsStringArray() {
-        String arr[] = {"abc", "def"};
+        String[] arr = {"abc", "def"};
         BucketAssignments asgn = new BucketAssignments(arr);
 
         assertNotNull(asgn.getHostArray());
@@ -51,13 +52,13 @@ public class BucketAssignmentsTest {
     @Test
     public void testGetHostArray_testSetHostArray() {
 
-        String arr[] = {"abc", "def"};
+        String[] arr = {"abc", "def"};
         BucketAssignments asgn = new BucketAssignments(arr);
 
         assertNotNull(asgn.getHostArray());
         assertEquals(arr.toString(), asgn.getHostArray().toString());
 
-        String arr2[] = {"xyz"};
+        String[] arr2 = {"xyz"};
         asgn.setHostArray(arr2);
 
         assertNotNull(asgn.getHostArray());

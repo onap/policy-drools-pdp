@@ -40,101 +40,93 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestTransactionTest {
-  /**
-   * Test JUnit Controller Name
-   */
-  public static final String TEST_CONTROLLER_NAME = "unnamed";
-  /**
-   * Controller Configuration File
-   */
-  public static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
+    /** Test JUnit Controller Name. */
+    public static final String TEST_CONTROLLER_NAME = "unnamed";
+    /** Controller Configuration File. */
+    public static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
 
-  /**
-   * Controller Configuration Backup File
-   */
-  public static final String TEST_CONTROLLER_FILE_BAK =
-      TEST_CONTROLLER_NAME + "-controller.properties.bak";
+    /** Controller Configuration Backup File. */
+    public static final String TEST_CONTROLLER_FILE_BAK =
+            TEST_CONTROLLER_NAME + "-controller.properties.bak";
 
+    /** logger. */
+    private static Logger logger = LoggerFactory.getLogger(TestTransactionTest.class);
 
-  /**
-   * logger
-   */
-  private static Logger logger = LoggerFactory.getLogger(TestTransactionTest.class);
-
-
-
-  @BeforeClass
-  public static void startUp() throws IOException {
-    logger.info("enter");
-
-    cleanUpWorkingDir();
-
-    /* ensure presence of config directory */
-    SystemPersistence.manager.setConfigurationDir(null);
-  }
-
-  @Test
-  public void registerUnregisterTest() throws InterruptedException {
-    final Properties controllerProperties = new Properties();
-    controllerProperties.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
-    final PolicyController controller =
-        PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
-    assertNotNull(PolicyController.factory.get(TEST_CONTROLLER_NAME));
-    logger.info(controller.toString());
-
-    Thread ttThread = null;
-
-    TestTransaction.manager.register(controller);
-    assertNotNull(TestTransaction.manager);
-
-    /*
-     * Unregistering the controller should terminate its TestTransaction thread if it hasn't already
-     * been terminated
+    /**
+     * Start up.
+     * 
+     * @throws IOException exception
      */
-    TestTransaction.manager.unregister(controller);
+    @BeforeClass
+    public static void startUp() throws IOException {
+        logger.info("enter");
 
-    ttThread = this.getThread("tt-controller-task-" + TEST_CONTROLLER_NAME);
-    assertEquals(null, ttThread);
+        cleanUpWorkingDir();
 
-
-  }
-
-  /*
-   * Returns thread object based on String name
-   */
-  public Thread getThread(String threadName) throws InterruptedException {
-    // give a chance to the transaction thread to be spawned/destroyed
-    Thread.sleep(5000L);
-
-    final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-    for (final Thread thread : threadSet) {
-      if (thread.getName().equals(threadName)) {
-        return thread;
-      }
-
-    }
-    return null;
-  }
-
-  /**
-   * clean up working directory
-   */
-  protected static void cleanUpWorkingDir() {
-    final Path testControllerPath = Paths
-        .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
-    try {
-      Files.deleteIfExists(testControllerPath);
-    } catch (final Exception e) {
-      logger.info("Problem cleaning {}", testControllerPath, e);
+        /* ensure presence of config directory */
+        SystemPersistence.manager.setConfigurationDir(null);
     }
 
-    final Path testControllerBakPath = Paths
-        .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
-    try {
-      Files.deleteIfExists(testControllerBakPath);
-    } catch (final Exception e) {
-      logger.info("Problem cleaning {}", testControllerBakPath, e);
-    }
-  }
+    @Test
+    public void registerUnregisterTest() throws InterruptedException {
+        final Properties controllerProperties = new Properties();
+        controllerProperties.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
+        final PolicyController controller =
+                PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
+        assertNotNull(PolicyController.factory.get(TEST_CONTROLLER_NAME));
+        logger.info(controller.toString());
 
+        TestTransaction.manager.register(controller);
+        assertNotNull(TestTransaction.manager);
+
+        /*
+         * Unregistering the controller should terminate its TestTransaction thread if it hasn't already
+         * been terminated
+         */
+        TestTransaction.manager.unregister(controller);
+
+        Thread ttThread = this.getThread("tt-controller-task-" + TEST_CONTROLLER_NAME);
+        assertEquals(null, ttThread);
+    }
+
+    /**
+     * Returns thread object based on String name.
+     * 
+     * @param threadName thread name
+     * @return the thread
+     * @throws InterruptedException exception
+     */
+    public Thread getThread(String threadName) throws InterruptedException {
+        // give a chance to the transaction thread to be spawned/destroyed
+        Thread.sleep(5000L);
+
+        final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (final Thread thread : threadSet) {
+            if (thread.getName().equals(threadName)) {
+                return thread;
+            }
+        }
+        return null;
+    }
+
+    /** clean up working directory. */
+    protected static void cleanUpWorkingDir() {
+        final Path testControllerPath =
+                Paths.get(
+                        SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
+        try {
+            Files.deleteIfExists(testControllerPath);
+        } catch (final Exception e) {
+            logger.info("Problem cleaning {}", testControllerPath, e);
+        }
+
+        final Path testControllerBakPath =
+                Paths.get(
+                        SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
+        try {
+            Files.deleteIfExists(testControllerBakPath);
+        } catch (final Exception e) {
+            logger.info("Problem cleaning {}", testControllerBakPath, e);
+        }
+    }
 }

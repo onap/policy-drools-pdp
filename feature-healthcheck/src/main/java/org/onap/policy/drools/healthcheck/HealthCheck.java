@@ -35,41 +35,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Healthcheck
+ * Healthcheck.
  */
 public interface HealthCheck extends Startable {
 
     /**
-     * Healthcheck Monitor
+     * Healthcheck Monitor.
      */
     public static final HealthCheck monitor = new HealthCheckMonitor();
 
     /**
-     * Healthcheck Report
+     * Healthcheck Report.
      */
     public static class Report {
         /**
-         * Named Entity in the report
+         * Named Entity in the report.
          */
         private String name;
 
         /**
-         * URL queried
+         * URL queried.
          */
         private String url;
 
         /**
-         * healthy?
+         * healthy.
          */
         private boolean healthy;
 
         /**
-         * return code
+         * return code.
          */
         private int code;
 
         /**
-         * Message from remote entity
+         * Message from remote entity.
          */
         private String message;
 
@@ -132,7 +132,7 @@ public interface HealthCheck extends Startable {
     }
 
     /**
-     * Report aggregation
+     * Report aggregation.
      */
     public static class Reports {
         private boolean healthy;
@@ -167,7 +167,7 @@ public interface HealthCheck extends Startable {
     }
 
     /**
-     * perform a healthcheck
+     * Perform a healthcheck.
      * 
      * @return a report
      */
@@ -176,27 +176,27 @@ public interface HealthCheck extends Startable {
 
 
 /**
- * Healthcheck Monitor
+ * Healthcheck Monitor.
  */
 class HealthCheckMonitor implements HealthCheck {
 
     /**
-     * Logger
+     * Logger.
      */
     private static Logger logger = LoggerFactory.getLogger(HealthCheckMonitor.class);
 
     /**
-     * attached http servers
+     * attached http servers.
      */
     protected volatile List<HttpServletServer> servers = new ArrayList<>();
 
     /**
-     * attached http clients
+     * attached http clients.
      */
     protected volatile List<HttpClient> clients = new ArrayList<>();
 
     /**
-     * healthcheck configuration
+     * healthcheck configuration.
      */
     protected volatile Properties healthCheckProperties = null;
 
@@ -306,6 +306,8 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     /**
+     * Get servers.
+     * 
      * @return list of attached Http Servers
      */
     public List<HttpServletServer> getServers() {
@@ -313,6 +315,8 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     /**
+     * Get clients.
+     * 
      * @return list of attached Http Clients
      */
     public List<HttpClient> getClients() {

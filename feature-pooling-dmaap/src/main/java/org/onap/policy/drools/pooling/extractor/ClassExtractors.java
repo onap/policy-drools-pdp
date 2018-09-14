@@ -70,6 +70,7 @@ public class ClassExtractors {
     private final ConcurrentHashMap<String, Extractor> class2extractor = new ConcurrentHashMap<>();
 
     /**
+     * Constructor.
      * 
      * @param props properties that specify how the data is to be extracted from
      *        a given class
@@ -267,8 +268,8 @@ public class ClassExtractors {
      * hierarchically, where each name identifies a particular component within
      * the hierarchy. Supports retrieval from {@link Map} objects, as well as
      * via getXxx() methods, or by direct field retrieval.
-     * <p>
-     * Note: this will <i>not</i> work if POJOs are contained within a Map.
+     * 
+     * <p>Note: this will <i>not</i> work if POJOs are contained within a Map.
      */
     private class ComponetizedExtractor implements Extractor {
 
@@ -278,11 +279,12 @@ public class ClassExtractors {
         private final Extractor[] extractors;
 
         /**
+         * Constructor.
          * 
          * @param clazz the class associated with the object at the root of the
          *        hierarchy
          * @param names name associated with each component
-         * @throws ExtractorException
+         * @throws ExtractorException extractor exception
          */
         public ComponetizedExtractor(Class<?> clazz, String[] names) throws ExtractorException {
             this.extractors = new Extractor[names.length];
@@ -307,15 +309,12 @@ public class ClassExtractors {
          * @param comp name of the component to extract
          * @return a pair containing the extractor and the extracted object's
          *         type
-         * @throws ExtractorException
+         * @throws ExtractorException extrator exception
          */
         private Pair<Extractor, Class<?>> buildExtractor(Class<?> clazz, String comp) throws ExtractorException {
-            Pair<Extractor, Class<?>> pair = null;
-
-            if (pair == null) {
-                pair = getMethodExtractor(clazz, comp);
-            }
-
+            
+            Pair<Extractor, Class<?>> pair = getMethodExtractor(clazz, comp);
+ 
             if (pair == null) {
                 pair = getFieldExtractor(clazz, comp);
             }

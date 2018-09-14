@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * following are not: <dl> <dt>PolicyEngine, PolicyController, DroolsController</dt> <dd>mocked</dd>
  * </dl>
  * 
- * <p> The following fields must be set before executing this: <ul> <li>UEB_SERVERS</li>
+ * <p>The following fields must be set before executing this: <ul> <li>UEB_SERVERS</li>
  * <li>INTERNAL_TOPIC</li> <li>EXTERNAL_TOPIC</li> </ul>
  */
 public class FeatureTest2 {
@@ -135,7 +135,10 @@ public class FeatureTest2 {
      */
     private Context ctx;
 
-
+    /**
+     * Setup before class.
+     * 
+     */
     @BeforeClass
     public static void setUpBeforeClass() {
         saveFeatureFactory = PoolingFeature.getFactory();
@@ -149,6 +152,10 @@ public class FeatureTest2 {
         internalSink.start();
     }
 
+    /**
+     * Tear down after class.
+     * 
+     */
     @AfterClass
     public static void tearDownAfterClass() {
         PoolingFeature.setFactory(saveFeatureFactory);
@@ -159,11 +166,17 @@ public class FeatureTest2 {
         internalSink.stop();
     }
 
+    /**
+     * Setup.
+     */
     @Before
     public void setUp() {
         ctx = null;
     }
 
+    /**
+     * Tear down.
+     */
     @After
     public void tearDown() {
         if (ctx != null) {
@@ -275,7 +288,7 @@ public class FeatureTest2 {
         /**
          * Counts the number of decode errors.
          */
-        private final AtomicInteger nDecodeErrors = new AtomicInteger(0);
+        private final AtomicInteger decodeErrors = new AtomicInteger(0);
 
         /**
          * Number of events we're still waiting to receive.
@@ -283,13 +296,14 @@ public class FeatureTest2 {
         private final CountDownLatch eventCounter;
 
         /**
+         * Constructor.
          * 
          * @param nEvents number of events to be processed
          */
-        public Context(int nEvents) {
+        public Context(int events) {
             featureFactory = new FeatureFactory(this);
             managerFactory = new ManagerFactory(this);
-            eventCounter = new CountDownLatch(nEvents);
+            eventCounter = new CountDownLatch(events);
 
             PoolingFeature.setFactory(featureFactory);
             PoolingManagerImpl.setFactory(managerFactory);
@@ -333,17 +347,17 @@ public class FeatureTest2 {
          * Verifies that all hosts processed at least one message.
          */
         public void checkAllSawAMsg() {
-            int x = 0;
+            int msgs = 0;
             for (Host host : hosts) {
-                assertTrue("x=" + x, host.messageSeen());
-                ++x;
+                assertTrue("msgs=" + msgs, host.messageSeen());
+                ++msgs;
             }
         }
 
         /**
          * Offers an event to the external topic.
          * 
-         * @param event
+         * @param event event
          */
         public void offerExternal(String event) {
             externalSink.send(event);
@@ -352,7 +366,7 @@ public class FeatureTest2 {
         /**
          * Decodes an event.
          * 
-         * @param event
+         * @param event event
          * @return the decoded event, or {@code null} if it cannot be decoded
          */
         public Object decodeEvent(String event) {
@@ -362,15 +376,17 @@ public class FeatureTest2 {
         /**
          * Associates a controller with its drools controller.
          * 
-         * @param controller
-         * @param droolsController
+         * @param controller controller
+         * @param droolsController drools controller
          */
         public void addController(PolicyController controller, DroolsController droolsController) {
             drools2policy.put(droolsController, controller);
         }
 
         /**
-         * @param droolsController
+         * Get controller.
+         * 
+         * @param droolsController drools controller
          * @return the controller associated with a drools controller, or {@code null} if it has no
          *         associated controller
          */
@@ -379,21 +395,23 @@ public class FeatureTest2 {
         }
 
         /**
+         * Get decode errors.
          * 
          * @return the number of decode errors so far
          */
         public int getDecodeErrors() {
-            return nDecodeErrors.get();
+            return decodeErrors.get();
         }
 
         /**
          * Increments the count of decode errors.
          */
         public void bumpDecodeErrors() {
-            nDecodeErrors.incrementAndGet();
+            decodeErrors.incrementAndGet();
         }
 
         /**
+         * Get remaining events.
          * 
          * @return the number of events that haven't been processed
          */
@@ -411,10 +429,10 @@ public class FeatureTest2 {
         /**
          * Waits, for a period of time, for all events to be processed.
          * 
-         * @param time
-         * @param units
+         * @param time time
+         * @param units units
          * @return {@code true} if all events have been processed, {@code false} otherwise
-         * @throws InterruptedException
+         * @throws InterruptedException throws interrupted exception
          */
         public boolean awaitEvents(long time, TimeUnit units) throws InterruptedException {
             return eventCounter.await(time, units);
@@ -424,7 +442,7 @@ public class FeatureTest2 {
          * Waits, for a period of time, for all hosts to enter the Active state.
          * 
          * @param timeMs maximum time to wait, in milliseconds
-         * @throws InterruptedException
+         * @throws InterruptedException throws interrupted exception
          */
         public void awaitAllActive(long timeMs) throws InterruptedException {
             long tend = timeMs + System.currentTimeMillis();
@@ -457,8 +475,9 @@ public class FeatureTest2 {
         private final DroolsController drools = mock(DroolsController.class);
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public Host(Context context) {
 
@@ -485,7 +504,7 @@ public class FeatureTest2 {
          * @param timeMs time to wait, in milliseconds
          * @return {@code true} if the host entered the Active state within the given amount of
          *         time, {@code false} otherwise
-         * @throws InterruptedException
+         * @throws InterruptedException throws interrupted exception
          */
         public boolean awaitActive(long timeMs) throws InterruptedException {
             return feature.getActiveLatch().await(timeMs, TimeUnit.MILLISECONDS);
@@ -531,9 +550,9 @@ public class FeatureTest2 {
         /**
          * Offers an event to the feature, before the policy controller handles it.
          * 
-         * @param protocol
-         * @param topic2
-         * @param event
+         * @param protocol protocol
+         * @param topic2 topic
+         * @param event event
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         public boolean beforeOffer(CommInfrastructure protocol, String topic2, String event) {
@@ -543,10 +562,10 @@ public class FeatureTest2 {
         /**
          * Offers an event to the feature, after the policy controller handles it.
          * 
-         * @param protocol
-         * @param topic
-         * @param event
-         * @param success
+         * @param protocol protocol
+         * @param topic topic
+         * @param event event
+         * @param success success
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         public boolean afterOffer(CommInfrastructure protocol, String topic, String event, boolean success) {
@@ -557,7 +576,7 @@ public class FeatureTest2 {
         /**
          * Offers an event to the feature, before the drools controller handles it.
          * 
-         * @param fact
+         * @param fact fact
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         public boolean beforeInsert(Object fact) {
@@ -567,7 +586,7 @@ public class FeatureTest2 {
         /**
          * Offers an event to the feature, after the drools controller handles it.
          * 
-         * @param fact
+         * @param fact fact
          * @param successInsert {@code true} if it was successfully inserted by the drools
          *        controller, {@code false} otherwise
          * @return {@code true} if the event was handled, {@code false} otherwise
@@ -584,6 +603,7 @@ public class FeatureTest2 {
         }
 
         /**
+         * Message seen.
          * 
          * @return {@code true} if a message was seen for this host, {@code false} otherwise
          */
@@ -608,10 +628,10 @@ public class FeatureTest2 {
 
         @Override
         public Void answer(InvocationOnMock args) throws Throwable {
-            int i = 0;
-            CommInfrastructure commType = args.getArgument(i++);
-            String topic = args.getArgument(i++);
-            String event = args.getArgument(i++);
+            int index = 0;
+            CommInfrastructure commType = args.getArgument(index++);
+            String topic = args.getArgument(index++);
+            String event = args.getArgument(index++);
 
             if (host.beforeOffer(commType, topic, event)) {
                 return null;
@@ -649,8 +669,9 @@ public class FeatureTest2 {
         private final Context context;
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public FeatureFactory(Context context) {
             this.context = context;
@@ -727,8 +748,9 @@ public class FeatureTest2 {
         private final TypeReference<TreeMap<String, String>> typeRef = new TypeReference<TreeMap<String, String>>() {};
 
         /**
+         * Constructor.
          * 
-         * @param context
+         * @param context context
          */
         public ManagerFactory(Context context) {
 

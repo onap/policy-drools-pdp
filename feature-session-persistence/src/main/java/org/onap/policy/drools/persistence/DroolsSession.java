@@ -24,12 +24,19 @@ import java.util.Date;
 
 public interface DroolsSession {
 
-	public String getSessionName();
-	public void setSessionName(String sessionName);
-	public long getSessionId();
-	public void setSessionId(long sessionId);
-	public Date getCreatedDate();
-	public void setCreatedDate(Date createdDate);
-	public Date getUpdatedDate();
-	public void setUpdatedDate(Date updatedDate);
+    public String getSessionName();
+    
+    public void setSessionName(String sessionName);
+    
+    public long getSessionId();
+    
+    public void setSessionId(long sessionId);
+    
+    public Date getCreatedDate();
+    
+    public void setCreatedDate(Date createdDate);
+    
+    public Date getUpdatedDate();
+    
+    public void setUpdatedDate(Date updatedDate);
 }

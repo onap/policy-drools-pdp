@@ -20,8 +20,8 @@
 
 package org.onap.policy.drools.pooling.message;
 
-import org.onap.policy.drools.pooling.PoolingFeatureException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.onap.policy.drools.pooling.PoolingFeatureException;
 
 /**
  * Indicates that the "source" of this message is now the "lead" host.
@@ -29,16 +29,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Leader extends MessageWithAssignments {
 
     /**
-     * 
+     * Constructor.
      */
     public Leader() {
         super();
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
-     * @param assignments
+     * @param assignments assignments
      */
     public Leader(String source, BucketAssignments assignments) {
         super(source, assignments);
@@ -61,7 +62,7 @@ public class Leader extends MessageWithAssignments {
 
         String leader = getSource();
         
-        if(!assignments.hasAssignment(leader)) {
+        if (!assignments.hasAssignment(leader)) {
             throw new PoolingFeatureException("leader " + leader + " has no bucket assignments");            
         }
         

@@ -17,6 +17,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.policy.distributed.locking;
 
 import java.util.Properties;
@@ -42,25 +43,25 @@ public class DistributedLockingProperties extends PropertyConfiguration {
     private Properties source;
 
     /**
-     * Database driver
+     * Database driver.
      */
     @Property(name = DB_DRIVER)
     private String dbDriver;
 
     /**
-     * Database url
+     * Database url.
      */
     @Property(name = DB_URL)
     private String dbUrl;
 
     /**
-     * Database user
+     * Database user.
      */
     @Property(name = DB_USER)
     private String dbUser;
 
     /**
-     * Database password
+     * Database password.
      */
     @Property(name = DB_PWD)
     private String dbPwd;

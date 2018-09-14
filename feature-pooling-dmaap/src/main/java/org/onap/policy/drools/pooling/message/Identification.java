@@ -26,7 +26,7 @@ package org.onap.policy.drools.pooling.message;
 public class Identification extends MessageWithAssignments {
 
     /**
-     * 
+     * Constructor.
      */
     public Identification() {
         super();
@@ -34,9 +34,10 @@ public class Identification extends MessageWithAssignments {
     }
 
     /**
+     * Constructor.
      * 
      * @param source host on which the message originated
-     * @param assignments
+     * @param assignments assignments
      */
     public Identification(String source, BucketAssignments assignments) {
         super(source, assignments);

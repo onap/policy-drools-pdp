@@ -51,8 +51,9 @@ public class QueryState extends ProcessingState {
     private boolean sawSelfIdent = false;
 
     /**
+     * Constructor.
      * 
-     * @param mgr
+     * @param mgr manager
      */
     public QueryState(PoolingManager mgr) {
         // this host is the leader, until a better candidate identifies itself
