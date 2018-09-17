@@ -1,4 +1,4 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
@@ -21,7 +21,7 @@
 package org.onap.policy.drools.persistence;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -29,7 +29,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -37,7 +41,6 @@ import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -56,8 +59,7 @@ public class EntityMgrTransTest {
     private EntityManager mgr;
 
     /**
-     * Setup before the class.
-     * 
+     * Configure properties for JTA.
      */
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -73,33 +75,61 @@ public class EntityMgrTransTest {
     }
 
     /**
-     * Setup.
-     * 
-     * @throws Exception exception
+     * Creates a mock transaction and entity manager. Resets the "userTrans" field of the
+     * class under test.
+     *
+     * @throws Exception if an error occurs
      */
     @Before
     public void setUp() throws Exception {
         trans = mock(UserTransaction.class);
         mgr = mock(EntityManager.class);
 
+        when(trans.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION, Status.STATUS_ACTIVE);
+
         EntityMgrTrans.setUserTrans(trans);
     }
 
     /**
-     * Verifies that the constructor starts a transaction, but does not do anything extra before being
-     * closed.
+     * Verifies that the constructor starts a transaction, but does not do anything extra
+     * before being closed.
      *
-     * @throws Exception exception
+     * @throws Exception
      */
     @Test
-    public void testEntityMgrTrans() throws Exception {
-
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
-
-        final EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
+    public void testEntityMgrTrans_Inactive() throws Exception {
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
 
         // verify that transaction was started
         verify(trans).begin();
+        verify(mgr).joinTransaction();
+
+        // verify not closed, committed, or rolled back yet
+        verify(trans, never()).commit();
+        verify(trans, never()).rollback();
+        verify(mgr, never()).close();
+
+        newTrans.close();
+    }
+
+    /**
+     * Verifies that the constructor does not start a transaction, because one is already
+     * active.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEntityMgrTrans_Active() throws Exception {
+
+        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
+
+        // verify that transaction was not re-started started
+        verify(trans, never()).begin();
+
+        // verify that transaction was joined
+        verify(mgr).joinTransaction();
 
         // verify not closed, committed, or rolled back yet
         verify(trans, never()).commit();
@@ -114,7 +144,7 @@ public class EntityMgrTransTest {
 
         doThrow(new IllegalArgumentException("expected exception")).when(trans).begin();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
     }
@@ -124,7 +154,7 @@ public class EntityMgrTransTest {
 
         doThrow(new NotSupportedException("expected exception")).when(trans).begin();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
     }
@@ -134,20 +164,35 @@ public class EntityMgrTransTest {
 
         doThrow(new SystemException("expected exception")).when(trans).begin();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
     }
 
     /**
-     * Verifies that the transaction is rolled back and the manager is closed when and a transaction
-     * is active.
+     * Verifies that the transaction is not rolled back, but the manager is closed when a
+     * transaction is already active.
      */
     @Test
     public void testClose_Active() throws Exception {
-        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
-
         when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
+        newTrans.close();
+
+        // closed and rolled back, but not committed
+        verify(trans, never()).commit();
+        verify(trans, never()).rollback();
+        verify(mgr).close();
+    }
+
+    /**
+     * Verifies that the transaction is rolled back and the manager is closed when a
+     * transaction is begun by the constructor.
+     */
+    @Test
+    public void testClose_Begun() throws Exception {
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
 
         newTrans.close();
 
@@ -158,14 +203,14 @@ public class EntityMgrTransTest {
     }
 
     /**
-     * Verifies that the manager is closed, but that the transaction is <i>not</i> rolled back when
-     * and no transaction is active.
+     * Verifies that the manager is closed, but that the transaction is <i>not</i> rolled
+     * back when no transaction is active.
      */
     @Test
     public void testClose_Inactive() throws Exception {
-        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
-
         when(trans.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
+
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
 
         newTrans.close();
 
@@ -178,10 +223,9 @@ public class EntityMgrTransTest {
     @Test(expected = EntityMgrException.class)
     public void testClose_IllStateEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new IllegalStateException("expected exception")).when(trans).rollback();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
     }
@@ -189,10 +233,9 @@ public class EntityMgrTransTest {
     @Test(expected = EntityMgrException.class)
     public void testClose_SecEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new SecurityException("expected exception")).when(trans).rollback();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
     }
@@ -200,23 +243,20 @@ public class EntityMgrTransTest {
     @Test(expected = EntityMgrException.class)
     public void testClose_SysEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new SystemException("expected exception")).when(trans).rollback();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
     }
 
     /**
-     * Verifies that the manager is closed and the transaction rolled back when "try" block exits
-     * normally and a transaction is active.
+     * Verifies that the manager is closed and the transaction rolled back when "try"
+     * block exits normally and a transaction is active.
      */
     @Test
     public void testClose_TryWithoutExcept_Active() throws Exception {
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
-
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
 
@@ -227,15 +267,15 @@ public class EntityMgrTransTest {
     }
 
     /**
-     * Verifies that the manager is closed, but that the transaction is <i>not</i> rolled back when
-     * "try" block exits normally and no transaction is active.
+     * Verifies that the manager is closed, but that the transaction is <i>not</i> rolled
+     * back when "try" block exits normally and no transaction is active.
      */
     @Test
     public void testClose_TryWithoutExcept_Inactive() throws Exception {
 
         when(trans.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
             // Empty
         }
 
@@ -246,16 +286,13 @@ public class EntityMgrTransTest {
     }
 
     /**
-     * Verifies that the manager is closed and the transaction rolled back when "try" block throws an
-     * exception and a transaction is active.
+     * Verifies that the manager is closed and the transaction rolled back when "try"
+     * block throws an exception and a transaction is active.
      */
     @Test
     public void testClose_TryWithExcept_Active() throws Exception {
-
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
-
         try {
-            try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+            try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
                 throw new SystemException("expected exception");
             }
 
@@ -270,8 +307,8 @@ public class EntityMgrTransTest {
     }
 
     /**
-     * Verifies that the manager is closed, but that the transaction is <i>not</i> rolled back when
-     * "try" block throws an exception and no transaction is active.
+     * Verifies that the manager is closed, but that the transaction is <i>not</i> rolled
+     * back when "try" block throws an exception and no transaction is active.
      */
     @Test
     public void testClose_TryWithExcept_Inactive() throws Exception {
@@ -279,7 +316,7 @@ public class EntityMgrTransTest {
         when(trans.getStatus()).thenReturn(Status.STATUS_NO_TRANSACTION);
 
         try {
-            try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
+            try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
                 throw new SystemException("expected exception");
             }
 
@@ -293,11 +330,13 @@ public class EntityMgrTransTest {
         verify(mgr).close();
     }
 
-    /** Verifies that commit() only commits, and that the subsequent close() does not re-commit. */
+    /**
+     * Verifies that commit() only commits, and that the subsequent close() does not
+     * re-commit.
+     */
     @Test
     public void testCommit() throws Exception {
         EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
         newTrans.commit();
 
@@ -315,80 +354,99 @@ public class EntityMgrTransTest {
         verify(mgr).close();
     }
 
+    /**
+     * Verifies that commit() does nothing, and that the subsequent close() does not
+     * re-commit when a transaction is already active.
+     */
+    @Test
+    public void testCommit_Active() throws Exception {
+        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
+
+        newTrans.commit();
+
+        // nothing happened yet
+        verify(trans, never()).commit();
+        verify(trans, never()).rollback();
+        verify(mgr, never()).close();
+
+        // closed, but not re-committed
+        newTrans.close();
+
+        // still no commit or rollback
+        verify(trans, never()).commit();
+        verify(trans, never()).rollback();
+        verify(mgr).close();
+    }
+
     @Test(expected = EntityMgrException.class)
     public void testCommit_SecEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new SecurityException("expected exception")).when(trans).commit();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.commit();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.commit();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testCommit_IllStateEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new IllegalStateException("expected exception")).when(trans).commit();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.commit();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.commit();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testCommit_RbEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new RollbackException("expected exception")).when(trans).commit();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.commit();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.commit();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testCommit_HmEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new HeuristicMixedException("expected exception")).when(trans).commit();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.commit();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.commit();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testCommit_HrbEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new HeuristicRollbackException("expected exception")).when(trans).commit();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.commit();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.commit();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testCommit_SysEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new SystemException("expected exception")).when(trans).commit();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.commit();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.commit();
         }
     }
 
     /**
-     * Verifies that rollback() only rolls back, and that the subsequent close() does not re-roll
-     * back.
+     * Verifies that rollback() only rolls back, and that the subsequent close() does not
+     * re-roll back.
      */
     @Test
     public void testRollback() throws Exception {
         EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
         newTrans.rollback();
 
@@ -402,40 +460,63 @@ public class EntityMgrTransTest {
         // closed, but not re-rolled back
         newTrans.close();
 
-        verify(trans, times(1)).rollback();
+        // still no commit or rollback
+        verify(trans, never()).commit();
+        verify(trans).rollback();
+        verify(mgr).close();
+    }
+
+    /**
+     * Verifies that rollback() does nothing, and that the subsequent close() does not
+     * re-roll back when a transaction is already active.
+     */
+    @Test
+    public void testRollback_Active() throws Exception {
+        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
+        EntityMgrTrans newTrans = new EntityMgrTrans(mgr);
+
+        newTrans.rollback();
+
+        // nothing happens
+        verify(trans, never()).commit();
+        verify(trans, never()).rollback();
+        verify(mgr, never()).close();
+
+        newTrans.close();
+
+        // still no commit or rollback
+        verify(trans, never()).commit();
+        verify(trans, never()).rollback();
         verify(mgr).close();
     }
 
     @Test(expected = EntityMgrException.class)
     public void testRollback_IllStateEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new IllegalStateException("expected exception")).when(trans).rollback();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.rollback();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.rollback();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testRollback_SecEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new SecurityException("expected exception")).when(trans).rollback();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.rollback();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.rollback();
         }
     }
 
     @Test(expected = EntityMgrException.class)
     public void testRollback_SysEx() throws Exception {
 
-        when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
         doThrow(new SystemException("expected exception")).when(trans).rollback();
 
-        try (EntityMgrTrans t = new EntityMgrTrans(mgr)) {
-            t.rollback();
+        try (EntityMgrTrans newTrans = new EntityMgrTrans(mgr)) {
+            newTrans.rollback();
         }
     }
 
@@ -445,5 +526,37 @@ public class EntityMgrTransTest {
         EntityMgrException ex = new EntityMgrException(secex);
 
         assertEquals(secex, ex.getCause());
+
+    }
+
+    /**
+     * Tests using real (i.e., not mocked) Persistence classes.
+     */
+    @Test
+    public void testReal() {
+        EntityMgrTrans.setUserTrans(savetrans);
+
+        Map<String, Object> propMap = new HashMap<>();
+
+        propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
+        propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:EntityMgrTransTest");
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("junitDroolsSessionEntityPU", propMap);
+
+        try (EntityMgrTrans trans = new EntityMgrTrans(emf.createEntityManager())) {
+
+            // nest a transaction - should still be OK
+            
+            try (EntityMgrTrans trans2 = new EntityMgrTrans(emf.createEntityManager())) {                
+                // Empty
+            }
+
+        } catch (Exception e) {
+            logger.info("persistence error", e);
+            emf.close();
+            fail("persistence error");
+        }
+
+        emf.close();
     }
 }
