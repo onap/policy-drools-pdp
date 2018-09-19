@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_278794b6",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-19T20:08:39Z",
+      "side": 1,
+      "message": "need to verify that there was at least one HEALTHCHECK report?",
+      "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_e7519c30",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/TestAafHealthCheckFilter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-19T20:08:39Z",
+      "side": 1,
+      "message": "\"Test\" should be a class name suffix, not a prefix",
+      "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_4743b06b",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-19T20:08:39Z",
+      "side": 1,
+      "message": "use the telemetry username \u0026 password constants?",
+      "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_a73724fe",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/TestAafTelemetryAuthFilter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-19T20:08:39Z",
+      "side": 1,
+      "message": "\"Test\" should be a class name suffix, not a prefix",
+      "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
