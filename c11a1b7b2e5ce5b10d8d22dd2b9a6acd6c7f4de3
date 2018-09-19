@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_aa7a8985",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/TestAafHealthCheckFilter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-09-19T20:29:27Z",
+      "side": 1,
+      "message": "Thought about it .. I think we have the implicit convention in this repo to suffix \"Junit\" classes with \"Test\" suffix.   Nevertheless, this is not a \"JUnit\" perse but rather a helper class for testing that not necessarily can be used only with Junits.   I think there are some classes in this repo like this ..\n\nBottomline, that was my rationale above, now it seems to me a little bit fuzzy based now that.  If there is consensus that should be changed, let me know and I will change file names accordingly, please also suggest the full name to change it to.",
+      "parentUuid": "1a76adc5_e7519c30",
+      "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_4743b06b",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
         "patchSetId": 1
@@ -64,6 +82,24 @@
       "writtenOn": "2018-09-19T20:08:39Z",
       "side": 1,
       "message": "\"Test\" should be a class name suffix, not a prefix",
+      "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_6a70f1a3",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/TestAafTelemetryAuthFilter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-09-19T20:29:27Z",
+      "side": 1,
+      "message": "see my previous reply ..",
+      "parentUuid": "1a76adc5_a73724fe",
       "revId": "c11a1b7b2e5ce5b10d8d22dd2b9a6acd6c7f4de3",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
