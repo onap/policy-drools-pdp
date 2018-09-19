@@ -29,14 +29,17 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -45,6 +48,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
@@ -53,10 +57,12 @@ import org.slf4j.LoggerFactory;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RestManagerTest {
-    public static final int DEFAULT_TELEMETRY_PORT = 7887;
+    private static final int DEFAULT_TELEMETRY_PORT = 7887;
     private static final String HOST = "localhost";
     private static final String REST_MANAGER_PATH = "/policy/pdp";
     private static final String HOST_URL = "http://" + HOST + ":" + DEFAULT_TELEMETRY_PORT + REST_MANAGER_PATH;
+    private static final String TELEMETRY_USER = "x";
+    private static final String TELEMETRY_PASSWORD = "y";
     private static final String FOO_CONTROLLER = "foo";
 
     private static final String UEB_TOPIC = "UEB-TOPIC-TEST";
@@ -100,7 +106,7 @@ public class RestManagerTest {
      * @throws IOException throws an IO exception
      */
     @BeforeClass
-    public static void setUp() throws IOException {
+    public static void setUp() throws IOException, InterruptedException {
         cleanUpWorkingDirs();
 
         SystemPersistence.manager.setConfigurationDir(null);
@@ -110,6 +116,15 @@ public class RestManagerTest {
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
                 "" + DEFAULT_TELEMETRY_PORT);
+        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
+            TestAafTelemetryAuthFilter.class.getName());
+        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
+            TELEMETRY_USER);
+        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
+            TELEMETRY_PASSWORD);
 
         /* other properties */
         engineProps.put(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS, UEB_TOPIC);
@@ -132,10 +147,16 @@ public class RestManagerTest {
         Properties controllerProps = new Properties();
         PolicyEngine.manager.createPolicyController(FOO_CONTROLLER, controllerProps);
 
+        // client = HttpClients.createDefault();
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("x", "y");
+        provider.setCredentials(AuthScope.ANY, credentials);
 
-        client = HttpClients.createDefault();
+        client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
 
-
+        if (!NetworkUtil.isTcpPortOpen("localhost", DEFAULT_TELEMETRY_PORT, 5, 10000L)) {
+            throw new IllegalStateException("cannot connect to port " + DEFAULT_TELEMETRY_PORT);
+        }
     }
 
     /**
@@ -157,7 +178,7 @@ public class RestManagerTest {
 
 
     @Test
-    public void putDeleteTest() throws ClientProtocolException, IOException, InterruptedException {
+    public void putDeleteTest() throws IOException {
         HttpDelete httpDelete;
         CloseableHttpResponse response;
 
@@ -358,7 +379,7 @@ public class RestManagerTest {
 
 
     @Test
-    public void getTest() throws ClientProtocolException, IOException, InterruptedException {
+    public void getTest() throws IOException {
         HttpGet httpGet;
         CloseableHttpResponse response;
 
@@ -854,7 +875,7 @@ public class RestManagerTest {
      * @param response incoming response
      * @return the body or null
      */
-    public String getResponseBody(CloseableHttpResponse response) {
+    private String getResponseBody(CloseableHttpResponse response) {
 
         HttpEntity entity;
         try {

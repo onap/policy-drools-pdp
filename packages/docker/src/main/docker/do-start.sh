@@ -56,7 +56,7 @@ else
 
 	. /opt/app/policy/etc/profile.d/env.sh
 
-	# override the policy keystore and truststore if present
+	# allow user to override the key or/and the trust stores
 
 	if [[ -f config/policy-keystore ]]; then
 	    cp -f config/policy-keystore ${POLICY_HOME}/etc/ssl
@@ -64,6 +64,24 @@ else
 
 	if [[ -f config/policy-truststore ]]; then
 	    cp -f config/policy-truststore ${POLICY_HOME}/etc/ssl
+	fi
+
+	# allow user to override all or some aaf configuration
+
+	if [[ -f config/aaf.properties ]]; then
+	    cp -f config/aaf.properties ${POLICY_HOME}/config/aaf.properties
+	fi
+
+	if [[ -f config/aaf-location.properties ]]; then
+	    cp -f config/aaf-location.properties ${POLICY_HOME}/config/aaf-location.properties
+	fi
+
+	if [[ -f config/aaf-credentials.properties ]]; then
+	    cp -f config/aaf-credentials.properties ${POLICY_HOME}/config/aaf-credentials.properties
+	fi
+
+	if [[ -f config/aaf-cadi.keyfile ]]; then
+	    cp -f config/aaf-cadi.keyfile ${POLICY_HOME}/config/aaf-cadi.keyfile
 	fi
 
 	if [[ -f config/drools-tweaks.sh ]] ; then

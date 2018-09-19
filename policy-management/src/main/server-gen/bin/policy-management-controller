@@ -96,9 +96,9 @@ function um_stop() {
        remove_pid_file
     else
 	if [[ -n ${ENGINE_MANAGEMENT_PASSWORD} ]]; then
-	    http_proxy= curl --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X DELETE http://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
+	    http_proxy= curl -k --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X DELETE https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
 	else
-	    http_proxy= curl --silent -X DELETE http://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
+	    http_proxy= curl -k --silent -X DELETE https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
 	fi
 	sleep 5
 	echo "Stopping $SNAME..."
