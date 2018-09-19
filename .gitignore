@@ -10,8 +10,8 @@
 .metadata/
 .idea/
 target/
+*/config/
 */logs/
 */sql/
 */testingLogs/
-*/config/
 **/*.iml

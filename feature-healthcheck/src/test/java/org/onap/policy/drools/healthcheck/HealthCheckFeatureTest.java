@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,6 +35,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.healthcheck.HealthCheck.Report;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -81,7 +83,11 @@ public class HealthCheckFeatureTest {
                 PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
                         + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX,
                 org.onap.policy.drools.healthcheck.RestMockHealthCheck.class.getName());
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
+        httpProperties.setProperty(
+                PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
+                    + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
+                org.onap.policy.drools.healthcheck.TestAafHealthCheckFilter.class.getName());
+        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
                 + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
 
 
@@ -101,7 +107,6 @@ public class HealthCheckFeatureTest {
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
                 + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
 
-
         configDirSetup();
 
     }
@@ -117,15 +122,21 @@ public class HealthCheckFeatureTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws IOException, InterruptedException {
 
         HealthCheckFeature feature = new HealthCheckFeature();
         feature.afterStart(PolicyEngine.manager);
 
+        if (!NetworkUtil.isTcpPortOpen("localhost", 7777, 5, 10000L)) {
+            throw new IllegalStateException("cannot connect to port " + 7777);
+        }
+
         Reports reports = HealthCheck.monitor.healthCheck();
 
+        assertTrue(reports.getDetails().size() > 0);
+
         for (Report rpt : reports.getDetails()) {
-            if (rpt.getName() == "HEALTHCHECK") {
+            if ("HEALTHCHECK".equals(rpt.getName())) {
                 assertTrue(rpt.isHealthy());
                 assertEquals(200, rpt.getCode());
                 assertEquals("All Alive", rpt.getMessage());
@@ -141,7 +152,7 @@ public class HealthCheckFeatureTest {
     /**
      * setup up config directory.
      */
-    protected static void configDirSetup() {
+    private static void configDirSetup() {
 
         File origPropsFile = new File(healthCheckPropsPath.toString());
         File backupPropsFile = new File(healthCheckPropsBackupPath.toString());
@@ -167,7 +178,7 @@ public class HealthCheckFeatureTest {
     /**
      * cleanup up config directory.
      */
-    protected static void configDirCleanup() {
+    private static void configDirCleanup() {
 
         File origPropsFile = new File(healthCheckPropsBackupPath.toString());
         File backupPropsFile = new File(healthCheckPropsPath.toString());

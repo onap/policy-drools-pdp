@@ -26,11 +26,11 @@ json=$1-controller.rest.json
 
 if [ -f ${json} ]; then
 	if [[ -n ${ENGINE_MANAGEMENT_PASSWORD} ]]; then
-	curl --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X POST --data @${json} --header "Content-Type: application/json" \
-			http://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine/controllers
+	curl -k --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X POST --data @${json} --header "Content-Type: application/json" \
+			https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine/controllers
 	else
-		curl --silent -X POST --data @${json} --header "Content-Type: application/json" \
-			http://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine/controllers
+		curl -k --silent -X POST --data @${json} --header "Content-Type: application/json" \
+			https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine/controllers
 	fi
 else
 	echo "Usage: rest-add-controller.sh closed-loop-sample|reporter|sepc|vsegw|.. (or any other config file ending with *-controller.rest.json)"	
