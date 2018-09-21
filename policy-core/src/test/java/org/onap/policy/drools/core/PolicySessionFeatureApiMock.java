@@ -28,7 +28,7 @@ import org.kie.api.runtime.KieSession;
  * 'PolicySessionFeatureAPI', and providing a means to indicate
  * which hooks have been invoked.
  */
-public class PolicySessionFeatureApiTest implements PolicySessionFeatureAPI {
+public class PolicySessionFeatureApiMock implements PolicySessionFeatureAPI {
     // contains the log entries since the most recent 'getLog()' call
     private static ArrayList<String> log = new ArrayList<>();
 

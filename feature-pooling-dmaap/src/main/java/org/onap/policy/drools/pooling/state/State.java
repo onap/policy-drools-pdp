@@ -86,7 +86,7 @@ public abstract class State {
      * Cancels the timers added by this state.
      */
     public final void cancelTimers() {
-        timers.forEach(timer -> timer.cancel());
+        timers.forEach(CancellableScheduledTask::cancel);
     }
 
     /**

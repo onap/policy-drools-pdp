@@ -67,12 +67,12 @@ public class DroolsContainerTest {
     @Test
     public void createAndUpdate() throws Exception {
         // make sure feature log starts out clean
-        PolicySessionFeatureApiTest.getLog();
+        PolicySessionFeatureApiMock.getLog();
 
         // run 'globalInit', and verify expected feature hook fired
         PolicyContainer.globalInit(new String[0]);
         assertEquals(Arrays.asList("globalInit"),
-                PolicySessionFeatureApiTest.getLog());
+                PolicySessionFeatureApiMock.getLog());
 
         // initial conditions -- there should be no containers
         assertEquals(0, PolicyContainer.getPolicyContainers().size());
@@ -88,7 +88,7 @@ public class DroolsContainerTest {
         assertEquals(Arrays.asList("activatePolicySession",
                 "newPolicySession",
                 "selectThreadModel"),
-                PolicySessionFeatureApiTest.getLog());
+                PolicySessionFeatureApiMock.getLog());
 
         // this container should be on the list
         {
@@ -137,7 +137,7 @@ public class DroolsContainerTest {
 
             // verify expected feature hooks fired
             assertEquals(Arrays.asList("selectThreadModel"),
-                    PolicySessionFeatureApiTest.getLog());
+                    PolicySessionFeatureApiMock.getLog());
 
             // verify new container attributes
             assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.2.0-SNAPSHOT",
@@ -163,7 +163,7 @@ public class DroolsContainerTest {
 
             // verify expected feature hooks fired
             assertEquals(Arrays.asList("disposeKieSession"),
-                    PolicySessionFeatureApiTest.getLog());
+                    PolicySessionFeatureApiMock.getLog());
         }
 
         // final conditions -- there should be no containers
@@ -179,15 +179,15 @@ public class DroolsContainerTest {
     @Test
     public void versionList() throws Exception {
         // make sure feature log starts out clean
-        PolicySessionFeatureApiTest.getLog();
+        PolicySessionFeatureApiMock.getLog();
 
         // trigger exceptions in all feature hooks
-        PolicySessionFeatureApiTest.setExceptionTrigger(true);
+        PolicySessionFeatureApiMock.setExceptionTrigger(true);
 
         // run 'globalInit', and verify expected feature hook fired
         PolicyContainer.globalInit(new String[0]);
         assertEquals(Arrays.asList("globalInit-exception"),
-                PolicySessionFeatureApiTest.getLog());
+                PolicySessionFeatureApiMock.getLog());
 
         // initial conditions -- there should be no containers
         assertEquals(0, PolicyContainer.getPolicyContainers().size());
@@ -208,7 +208,7 @@ public class DroolsContainerTest {
         assertEquals(Arrays.asList("activatePolicySession-exception",
                 "newPolicySession-exception",
                 "selectThreadModel-exception"),
-                PolicySessionFeatureApiTest.getLog());
+                PolicySessionFeatureApiMock.getLog());
 
         // this container should be on the list
         {
@@ -292,10 +292,10 @@ public class DroolsContainerTest {
 
             // verify expected feature hooks fired
             assertEquals(Arrays.asList("destroyKieSession-exception"),
-                    PolicySessionFeatureApiTest.getLog());
+                    PolicySessionFeatureApiMock.getLog());
 
             // clear exception trigger
-            PolicySessionFeatureApiTest.setExceptionTrigger(false);
+            PolicySessionFeatureApiMock.setExceptionTrigger(false);
         }
 
         // final conditions -- there should be no containers
