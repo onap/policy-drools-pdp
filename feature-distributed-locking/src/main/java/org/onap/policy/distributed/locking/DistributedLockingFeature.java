@@ -28,14 +28,14 @@ import java.util.UUID;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DistributedLockingFeature implements PolicyEngineFeatureAPI, PolicyResourceLockFeatureAPI {
+public class DistributedLockingFeature implements PolicyEngineFeatureAPI, PolicyResourceLockFeatureApi {
 
     /**
      * Logger instance.
@@ -165,7 +165,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
 
         try (Connection conn = dataSource.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
-                        "DELETE FROM pooling.locks WHERE host = ? OR expirationTime < now()");
+                        "DELETE FROM pooling.locks WHERE host = ? OR expirationTime < now()")
                 ) {
 
             statement.setString(1, uuid.toString());

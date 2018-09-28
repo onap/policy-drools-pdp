@@ -637,7 +637,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      * Sanitize designated list.
      * 
      * @param listOfDesignated list of designated pdps
-     * @return
+     * @return list of drools pdps
      */
     public List<DroolsPdp> santizeDesignatedList(List<DroolsPdp> listOfDesignated) {
 
@@ -668,7 +668,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      * 
      * @param pdps collection of pdps
      * @param listOfDesignated list of designated pdps
-     * @return
+     * @return drools pdp object
      */
     public DroolsPdp computeMostRecentPrimary(Collection<DroolsPdp> pdps, List<DroolsPdp> listOfDesignated) {
         boolean containsDesignated = false;
@@ -778,7 +778,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      * 
      * @param listOfDesignated list of designated pdps
      * @param mostRecentPrimary most recent primary pdpd
-     * @return
+     * @return drools pdp object
      */
     public DroolsPdp computeDesignatedPdp(List<DroolsPdp> listOfDesignated, DroolsPdp mostRecentPrimary) {
         DroolsPdp designatedPdp = null;

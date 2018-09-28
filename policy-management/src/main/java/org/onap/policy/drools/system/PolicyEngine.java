@@ -69,39 +69,49 @@ import org.slf4j.LoggerFactory;
  */
 public interface PolicyEngine extends Startable, Lockable, TopicListener {
     /**
-     * Policy Engine Manager
+     * Policy Engine Manager.
      */
     PolicyEngine manager = new PolicyEngineManager();
 
     /**
-     * Default Telemetry Server Port
+     * Default Telemetry Server Port.
      */
     int TELEMETRY_SERVER_DEFAULT_PORT = 9696;
 
     /**
-     * Default Telemetry Server Hostname
+     * Default Telemetry Server Hostname.
      */
     String TELEMETRY_SERVER_DEFAULT_HOST = "localhost";
 
     /**
-     * Default Telemetry Server Name
+     * Default Telemetry Server Name.
      */
     String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
 
     /**
-     * Boot the engine
+     * Boot the engine.
      *
      * @param cliArgs command line arguments
      */
     void boot(String[] cliArgs);
 
     /**
-     * configure the policy engine according to the given properties
+     * configure the policy engine according to the given properties.
      *
      * @param properties Policy Engine properties
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
      */
     void configure(Properties properties);
+
+    /**
+     * updates the Policy Engine with the given configuration.
+     *
+     * @param configuration the configuration
+     * @return success or failure
+     * @throws IllegalArgumentException if invalid argument provided
+     * @throws IllegalStateException    if the system is in an invalid state
+     */
+    boolean configure(PdpdConfiguration configuration);
 
     /**
      * configure the engine's environment. General lab installation configuration is made available
@@ -114,15 +124,15 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     void setEnvironment(Properties properties);
 
     /**
-     * gets the engine's environment
+     * gets the engine's environment.
      *
-     * @return
+     * @return properties object
      */
     Properties getEnvironment();
 
     /**
      * gets an environment's value, by 1) first from the engine's environment, and 2) from the OS
-     * environment
+     * environment.
      *
      * @param key environment key
      * @return environment value or null if absent
@@ -130,11 +140,11 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     String getEnvironmentProperty(String key);
 
     /**
-     * sets an engine's environment property
+     * sets an engine's environment property.
      *
-     * @param key
-     * @param value
-     * @return
+     * @param key key
+     * @param value value
+     * @return property string
      */
     String setEnvironmentProperty(String key, String value);
 
@@ -150,27 +160,17 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     PolicyController createPolicyController(String name, Properties properties);
 
     /**
-     * updates the Policy Engine with the given configuration
+     * updates a set of Policy Controllers with configuration information.
      *
-     * @param configuration the configuration
-     * @return success or failure
-     * @throws IllegalArgumentException if invalid argument provided
-     * @throws IllegalStateException    if the system is in an invalid state
-     */
-    boolean configure(PdpdConfiguration configuration);
-
-    /**
-     * updates a set of Policy Controllers with configuration information
-     *
-     * @param configuration
-     * @return
-     * @throws IllegalArgumentException
-     * @throws IllegalStateException
+     * @param configuration list of configurations
+     * @return list of controllers
+     * @throws IllegalArgumentException exception
+     * @throws IllegalStateException exception
      */
     List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configuration);
 
     /**
-     * updates an already existing Policy Controller with configuration information
+     * updates an already existing Policy Controller with configuration information.
      *
      * @param configuration configuration
      * @return the updated Policy Controller
@@ -181,22 +181,21 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     PolicyController updatePolicyController(ControllerConfiguration configuration);
 
     /**
-     * removes the Policy Controller identified by its name from the Policy Engine
+     * removes the Policy Controller identified by its name from the Policy Engine.
      *
      * @param name name of the Policy Controller
-     * @return the removed Policy Controller
      */
     void removePolicyController(String name);
 
     /**
-     * removes a Policy Controller from the Policy Engine
+     * removes a Policy Controller from the Policy Engine.
      *
      * @param controller the Policy Controller to remove from the Policy Engine
      */
     void removePolicyController(PolicyController controller);
 
     /**
-     * returns a list of the available Policy Controllers
+     * returns a list of the available Policy Controllers.
      *
      * @return list of Policy Controllers
      */
@@ -204,63 +203,63 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 
 
     /**
-     * get policy controller names
+     * get policy controller names.
      *
      * @return list of controller names
      */
     List<String> getPolicyControllerIds();
 
     /**
-     * get unmanaged sources
+     * get unmanaged sources.
      *
      * @return unmanaged sources
      */
     List<TopicSource> getSources();
 
     /**
-     * get unmanaged sinks
+     * get unmanaged sinks.
      *
      * @return unmanaged sinks
      */
     List<TopicSink> getSinks();
 
     /**
-     * get unmmanaged http servers list
+     * get unmmanaged http servers list.
      *
      * @return http servers
      */
     List<HttpServletServer> getHttpServers();
 
     /**
-     * get properties configuration
+     * get properties configuration.
      *
      * @return properties objects
      */
     Properties getProperties();
 
     /**
-     * get features attached to the Policy Engine
+     * get features attached to the Policy Engine.
      *
      * @return list of features
      */
     List<PolicyEngineFeatureAPI> getFeatureProviders();
 
     /**
-     * get named feature attached to the Policy Engine
+     * get named feature attached to the Policy Engine.
      *
      * @return the feature
      */
     PolicyEngineFeatureAPI getFeatureProvider(String featureName);
 
     /**
-     * get features attached to the Policy Engine
+     * get features attached to the Policy Engine.
      *
      * @return list of features
      */
     List<String> getFeatures();
 
     /**
-     * Attempts the dispatching of an "event" object
+     * Attempts the dispatching of an "event" object.
      *
      * @param topic topic
      * @param event the event object to send
@@ -272,7 +271,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     boolean deliver(String topic, Object event);
 
     /**
-     * Attempts the dispatching of an "event" object over communication infrastructure "busType"
+     * Attempts the dispatching of an "event" object over communication infrastructure "busType".
      *
      * @param topic topic
      * @param event the event object to send
@@ -286,7 +285,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     boolean deliver(String busType, String topic, Object event);
 
     /**
-     * Attempts the dispatching of an "event" object over communication infrastructure "busType"
+     * Attempts the dispatching of an "event" object over communication infrastructure "busType".
      *
      * @param topic topic
      * @param event the event object to send
@@ -300,7 +299,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     boolean deliver(CommInfrastructure busType, String topic, Object event);
 
     /**
-     * Attempts delivering of an String over communication infrastructure "busType"
+     * Attempts delivering of an String over communication infrastructure "busType".
      *
      * @param topic topic
      * @param event the event object to send
@@ -324,7 +323,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     void deactivate();
 
     /**
-     * produces a default telemetry configuration
+     * produces a default telemetry configuration.
      *
      * @return policy engine configuration
      */
@@ -333,7 +332,7 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
 
 
 /**
- * Policy Engine Manager Implementation
+ * Policy Engine Manager Implementation.
  */
 class PolicyEngineManager implements PolicyEngine {
     private static final String INVALID_TOPIC_MSG = "Invalid Topic";
@@ -345,47 +344,47 @@ class PolicyEngineManager implements PolicyEngine {
     private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
 
     /**
-     * logger
+     * logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(PolicyEngineManager.class);
 
     /**
-     * Is the Policy Engine running?
+     * Is the Policy Engine running.
      */
     private volatile boolean alive = false;
 
     /**
-     * Is the engine locked?
+     * Is the engine locked.
      */
     private volatile boolean locked = false;
 
     /**
-     * Properties used to initialize the engine
+     * Properties used to initialize the engine.
      */
     private Properties properties;
 
     /**
-     * Environment Properties
+     * Environment Properties.
      */
     private final Properties environment = new Properties();
 
     /**
-     * Policy Engine Sources
+     * Policy Engine Sources.
      */
     private List<? extends TopicSource> sources = new ArrayList<>();
 
     /**
-     * Policy Engine Sinks
+     * Policy Engine Sinks.
      */
     private List<? extends TopicSink> sinks = new ArrayList<>();
 
     /**
-     * Policy Engine HTTP Servers
+     * Policy Engine HTTP Servers.
      */
     private List<HttpServletServer> httpServers = new ArrayList<>();
 
     /**
-     * gson parser to decode configuration requests
+     * gson parser to decode configuration requests.
      */
     private final Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
 
@@ -527,6 +526,35 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
+    public boolean configure(PdpdConfiguration config) {
+
+        if (config == null) {
+            throw new IllegalArgumentException("No configuration provided");
+        }
+
+        final String entity = config.getEntity();
+
+        MDCTransaction mdcTrans = MDCTransaction.newTransaction(config.getRequestID(), "brmsgw");
+        if (this.getSources().size() == 1) {
+            Topic topic = this.getSources().get(0);
+            mdcTrans.setServiceName(topic.getTopic()).setRemoteHost(topic.getServers().toString())
+                    .setTargetEntity(config.getEntity());
+        }
+
+        switch (entity) {
+            case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:
+                boolean success = controllerConfig(config);
+                mdcTrans.resetSubTransaction().setStatusCode(success).transaction();
+                return success;
+            default:
+                final String msg = "Configuration Entity is not supported: " + entity;
+                mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
+                logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, msg);
+                throw new IllegalArgumentException(msg);
+        }
+    }
+
+    @Override
     public synchronized PolicyController createPolicyController(String name, Properties properties) {
 
         String tempName = name;
@@ -577,35 +605,6 @@ class PolicyEngineManager implements PolicyEngine {
 
 
     @Override
-    public boolean configure(PdpdConfiguration config) {
-
-        if (config == null) {
-            throw new IllegalArgumentException("No configuration provided");
-        }
-
-        final String entity = config.getEntity();
-
-        MDCTransaction mdcTrans = MDCTransaction.newTransaction(config.getRequestID(), "brmsgw");
-        if (this.getSources().size() == 1) {
-            Topic topic = this.getSources().get(0);
-            mdcTrans.setServiceName(topic.getTopic()).setRemoteHost(topic.getServers().toString())
-                    .setTargetEntity(config.getEntity());
-        }
-
-        switch (entity) {
-            case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:
-                boolean success = controllerConfig(config);
-                mdcTrans.resetSubTransaction().setStatusCode(success).transaction();
-                return success;
-            default:
-                final String msg = "Configuration Entity is not supported: " + entity;
-                mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
-                logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, msg);
-                throw new IllegalArgumentException(msg);
-        }
-    }
-
-    @Override
     public List<PolicyController> updatePolicyControllers(List<ControllerConfiguration> configControllers) {
 
         final List<PolicyController> policyControllers = new ArrayList<>();
@@ -619,7 +618,7 @@ class PolicyEngineManager implements PolicyEngine {
         for (final ControllerConfiguration configController : configControllers) {
             MDCTransaction mdcTrans = MDCTransaction.newSubTransaction(null).setTargetEntity(configController.getName())
                     .setTargetServiceName(configController.getOperation())
-                    .setTargetVirtualEntity(""+configController.getDrools());
+                    .setTargetVirtualEntity("" + configController.getDrools());
             try {
                 final PolicyController policyController = this.updatePolicyController(configController);
                 policyControllers.add(policyController);
@@ -672,7 +671,7 @@ class PolicyEngineManager implements PolicyEngine {
 
                 /* Recovery case */
 
-                logger.warn("controller " + controllerName + " does not exist.  " + "Attempting recovery from disk");
+                logger.warn("controller {} does not exist. Attempting recovery from disk", controllerName);
 
                 final Properties controllerProperties =
                         SystemPersistence.manager.getControllerProperties(controllerName);
@@ -686,8 +685,8 @@ class PolicyEngineManager implements PolicyEngine {
                     throw new IllegalArgumentException(controllerName + " is invalid");
                 }
 
-                logger.warn("controller " + controllerName + " being recovered. "
-                        + "Reset controller's bad maven coordinates to brainless");
+                logger.warn("controller being recovered. {} Reset controller's bad maven coordinates to brainless", 
+                        controllerName);
 
                 /*
                  * try to bring up bad controller in brainless mode, after having it working, apply
@@ -1470,7 +1469,7 @@ class PolicyEngineManager implements PolicyEngine {
         /* only this one supported for now */
         final List<ControllerConfiguration> configControllers = config.getControllers();
         if (configControllers == null || configControllers.isEmpty()) {
-            logger.info("No controller configuration provided: {}" + config);
+            logger.info("No controller configuration provided: {}", config);
             return false;
         }
 
@@ -1485,8 +1484,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     public String toString() {
-        return "PolicyEngineManager [alive=" + this.alive + ", locked=" + this.locked +
-                "]";
+        return "PolicyEngineManager [alive=" + this.alive + ", locked=" + this.locked + "]";
     }
 
 }

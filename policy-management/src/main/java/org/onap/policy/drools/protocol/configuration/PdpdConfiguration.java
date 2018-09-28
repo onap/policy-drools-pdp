@@ -20,84 +20,65 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 
 /**
- * ENGINE-CONFIGURATION
- * <p>
- * 
- * 
+ * ENGINE-CONFIGURATION.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdpdConfiguration {
-	
-	/**
-	 * Controller Entity ID
-	 */
-	public static final String CONFIG_ENTITY_CONTROLLER = "controller";
 
-    /**
-     * Unique Transaction ID.   This is an UUID.
-     * (Required)
-     * 
-     */
+    /** Controller Entity ID. */
+    public static final String CONFIG_ENTITY_CONTROLLER = "controller";
+
+    /** Unique Transaction ID. This is an UUID. (Required) */
     @JsonProperty("requestID")
     private String requestID;
-    /**
-     * Set of entities on which configuration can be performed: controller
-     * (Required)
-     * 
-     */
+    /* Set of entities on which configuration can be performed: controller (Required) */
     @JsonProperty("entity")
     private String entity;
-    /**
-     * Controller Information, only applicable when the entity is set to controller
-     * 
-     */
+    /* Controller Information, only applicable when the entity is set to controller */
     @JsonProperty("controllers")
     private List<ControllerConfiguration> controllers = new ArrayList<>();
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+
+    @JsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
     protected static final Object NOT_FOUND_VALUE = new Object();
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
+    /** No args constructor for use in serialization. */
     public PdpdConfiguration() {
-    	// Empty
+        // Empty
     }
 
     /**
+     * Constructor.
      * 
-     * @param controller
-     * @param requestID
-     * @param entity
+     * @param requestID request id
+     * @param entity entity
+     * @param controllers controllers
      */
-    public PdpdConfiguration(String requestID, String entity, List<ControllerConfiguration> controllers) {
+    public PdpdConfiguration(
+            String requestID, String entity, List<ControllerConfiguration> controllers) {
         this.requestID = requestID;
         this.entity = entity;
         this.controllers = controllers;
     }
 
     /**
-     * Unique Transaction ID.   This is an UUID.
-     * (Required)
-     * 
-     * @return
-     *     The requestID
+     * Unique Transaction ID. This is an UUID. (Required)
+     *
+     * @return The requestID
      */
     @JsonProperty("requestID")
     public String getRequestID() {
@@ -105,11 +86,9 @@ public class PdpdConfiguration {
     }
 
     /**
-     * Unique Transaction ID.   This is an UUID.
-     * (Required)
-     * 
-     * @param requestID
-     *     The requestID
+     * Unique Transaction ID. This is an UUID. (Required)
+     *
+     * @param requestID The requestID
      */
     @JsonProperty("requestID")
     public void setRequestID(String requestID) {
@@ -122,11 +101,9 @@ public class PdpdConfiguration {
     }
 
     /**
-     * Set of entities on which configuration can be performed: controller
-     * (Required)
-     * 
-     * @return
-     *     The entity
+     * Set of entities on which configuration can be performed: controller (Required).
+     *
+     * @return The entity
      */
     @JsonProperty("entity")
     public String getEntity() {
@@ -134,11 +111,9 @@ public class PdpdConfiguration {
     }
 
     /**
-     * Set of entities on which configuration can be performed: controller
-     * (Required)
-     * 
-     * @param entity
-     *     The entity
+     * Set of entities on which configuration can be performed: controller (Required).
+     *
+     * @param entity The entity
      */
     @JsonProperty("entity")
     public void setEntity(String entity) {
@@ -151,10 +126,9 @@ public class PdpdConfiguration {
     }
 
     /**
-     * Controller Information, only applicable when the entity is set to controller
-     * 
-     * @return
-     *     The controller
+     * Controller Information, only applicable when the entity is set to controller.
+     *
+     * @return The controller
      */
     @JsonProperty("controller")
     public List<ControllerConfiguration> getControllers() {
@@ -162,10 +136,9 @@ public class PdpdConfiguration {
     }
 
     /**
-     * Controller Information, only applicable when the entity is set to controller
-     * 
-     * @param controller
-     *     The controller
+     * Controller Information, only applicable when the entity is set to controller.
+     *
+     * @param controllers controllers
      */
     @JsonProperty("controller")
     public void setControllers(List<ControllerConfiguration> controllers) {
@@ -226,24 +199,37 @@ public class PdpdConfiguration {
         }
     }
 
-    @SuppressWarnings({
-        "unchecked"
-    })
-    public<T >T get(String name) {
+    /**
+     * Get.
+     * 
+     * @param name name
+     * @return object
+     */
+    @SuppressWarnings({"unchecked"})
+    public <T> T get(String name) {
         Object value = declaredPropertyOrNotFound(name, PdpdConfiguration.NOT_FOUND_VALUE);
-        if (PdpdConfiguration.NOT_FOUND_VALUE!= value) {
+        if (PdpdConfiguration.NOT_FOUND_VALUE != value) {
             return (T) value;
         } else {
             return (T) getAdditionalProperties().get(name);
         }
     }
 
+    /**
+     * Set property.
+     * 
+     * @param name name
+     * @param value value
+     */
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
             getAdditionalProperties().put(name, value);
         }
     }
 
+    /**
+     * With - sets and returns the object.
+     */
     public PdpdConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
             getAdditionalProperties().put(name, value);
@@ -253,7 +239,12 @@ public class PdpdConfiguration {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(requestID).append(entity).append(controllers).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder()
+                .append(requestID)
+                .append(entity)
+                .append(controllers)
+                .append(additionalProperties)
+                .toHashCode();
     }
 
     @Override
@@ -265,31 +256,59 @@ public class PdpdConfiguration {
             return false;
         }
         PdpdConfiguration rhs = (PdpdConfiguration) other;
-        return new EqualsBuilder().append(requestID, rhs.requestID).append(entity, rhs.entity).append(controllers, rhs.controllers).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder()
+                .append(requestID, rhs.requestID)
+                .append(entity, rhs.entity)
+                .append(controllers, rhs.controllers)
+                .append(additionalProperties, rhs.additionalProperties)
+                .isEquals();
     }
-    
+
+    /**
+     * Call set request id.
+     * 
+     * @param value value
+     */
     public void callSetRequestId(Object value) {
         if (value instanceof String) {
             setRequestID((String) value);
         } else {
-            throw new IllegalArgumentException("property \"requestID\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
-        }       
+            throw new IllegalArgumentException(
+                    "property \"requestID\" is of type \"java.lang.String\", but got "
+                            + value.getClass().toString());
+        }
     }
-    
+
+    /**
+     * Call set entity.
+     * 
+     * @param value value
+     */
     public void callSetEntity(Object value) {
         if (value instanceof String) {
             setEntity((String) value);
         } else {
-            throw new IllegalArgumentException("property \"entity\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
-        }       
+            throw new IllegalArgumentException(
+                    "property \"entity\" is of type \"java.lang.String\", but got "
+                            + value.getClass().toString());
+        }
     }
 
+    /**
+     * Call set controllers.
+     * 
+     * @param value value
+     */
     @SuppressWarnings("unchecked")
-	public void callSetControllers(Object value) {
+    public void callSetControllers(Object value) {
         if (value instanceof List) {
-            setControllers((List<ControllerConfiguration> ) value);
+            setControllers((List<ControllerConfiguration>) value);
         } else {
-            throw new IllegalArgumentException("property \"controllers\" is of type \"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", but got "+ value.getClass().toString());
-        }        
+            throw new IllegalArgumentException(
+                    "property \"controllers\" is of type "
+                            + "\"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", "
+                            + "but got "
+                            + value.getClass().toString());
+        }
     }
 }

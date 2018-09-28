@@ -119,14 +119,16 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public int getSequenceNumber() {
         return 1;
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public void globalInit(String[] args, String configDir) {
 
@@ -160,7 +162,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public PolicySession.ThreadModel selectThreadModel(PolicySession session) {
 
@@ -172,7 +175,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public void disposeKieSession(PolicySession policySession) {
 
@@ -184,7 +188,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public void destroyKieSession(PolicySession policySession) {
 
@@ -196,14 +201,16 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public boolean afterStart(PolicyEngine engine) {
         return false;
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public boolean beforeStart(PolicyEngine engine) {
         synchronized (cleanupLock) {
@@ -214,7 +221,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public boolean beforeActivate(PolicyEngine engine) {
         synchronized (cleanupLock) {
@@ -225,7 +233,8 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** 
-     * {@inheritDoc} */
+     * {@inheritDoc}.
+     **/
     @Override
     public boolean afterActivate(PolicyEngine engine) {
         return false;
@@ -686,19 +695,21 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
             return "Session " + session.getFullName() + " (persistent)";
         }
 
-        /** ************************ */
+        /*=========================*/
         /* 'ThreadModel' interface */
-        /** ************************ */
+        /*=========================*/
 
         /** 
-         * {@inheritDoc} */
+         * {@inheritDoc}.
+         **/
         @Override
         public void start() {
             thread.start();
         }
 
         /** 
-         * {@inheritDoc} */
+         * {@inheritDoc}.
+         **/
         @Override
         public void stop() {
             // tell the thread to stop
@@ -720,19 +731,21 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
         }
 
         /** 
-         * {@inheritDoc} */
+         * {@inheritDoc}.
+         **/
         @Override
         public void updated() {
             // the container artifact has been updated -- adjust the thread name
             thread.setName(getThreadName());
         }
 
-        /** ********************* */
+        /*======================*/
         /* 'Runnable' interface */
-        /** ********************* */
+        /*======================*/
 
         /** 
-         * {@inheritDoc} */
+         * {@inheritDoc}.
+         **/
         @Override
         public void run() {
             logger.info("PersistentThreadModel running");

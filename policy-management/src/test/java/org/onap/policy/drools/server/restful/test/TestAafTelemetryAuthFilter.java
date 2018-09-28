@@ -25,7 +25,7 @@ import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
 
 /**
- * Test AAF Telemetry Authorization Filter for Junits
+ * Test AAF Telemetry Authorization Filter for Junits.
  */
 public class TestAafTelemetryAuthFilter extends AafTelemetryAuthFilter {
 
