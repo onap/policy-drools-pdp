@@ -109,7 +109,7 @@ public class PolicyContainer implements Startable {
         }
         synchronized (containers) {
             if (newReleaseId != null) {
-                logger.info("Add a new kieContainer in containers: releaseId: {}", newReleaseId.toString());
+                logger.info("Add a new kieContainer in containers: releaseId: {}", newReleaseId);
             } else {
                 logger.warn("input releaseId is null");
             }
@@ -289,8 +289,8 @@ public class PolicyContainer implements Startable {
                 }
                 logger.info("activatePolicySession:new session was added in sessions with name {}", name);
             }
-            logger.info("activatePolicySession:session - " + (session == null ? "null" : session.getFullName())
-                    + " is returned.");
+            logger.info("activatePolicySession:session - {} is returned.", 
+                    session == null ? "null" : session.getFullName());
             return session;
         }
     }
@@ -317,7 +317,7 @@ public class PolicyContainer implements Startable {
             logger.warn("adoptKieSession:input kieSession is null");
             throw new IllegalArgumentException("KieSession '" + name + "' is null " + getName());
         } else {
-            logger.info("adoptKieSession:name: " + name + " kieSession: " + kieSession);
+            logger.info("adoptKieSession:name: {} kieSession: {}", name, kieSession);
         }
         // fetch KieBase, and verify it belongs to this KieContainer
         boolean match = false;
@@ -507,12 +507,12 @@ public class PolicyContainer implements Startable {
         return rval;
     }
 
-    /*************************/
+    /*=======================*/
     /* 'Startable' interface */
-    /*************************/
+    /*=======================*/
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public synchronized boolean start() {
@@ -537,7 +537,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public synchronized boolean stop() {
@@ -576,7 +576,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public synchronized void shutdown() {
@@ -594,14 +594,12 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean isAlive() {
         return isStarted;
     }
-
-    /*************************/
 
     /**
      * This method is similar to 'shutdown', but it also frees any persistence resources as well.

@@ -134,7 +134,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         // Now that we've validated the properties, create Drools Integrity Monitor
         // with these properties.
         im = makeMonitor(resourceName, stateManagementProperties);
-        logger.info("init: New DroolsPDPIntegrityMonitor instantiated, resourceName = ", resourceName);
+        logger.info("init: New DroolsPDPIntegrityMonitor instantiated, resourceName = {}", resourceName);
 
         // create http server
         makeRestServer(testHost, testPort, stateManagementProperties);
@@ -174,7 +174,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
             throws IntegrityMonitorException {
 
         try {
-            logger.info("init: Starting HTTP server, addr= {}", testHost + ":" + testPort);
+            logger.info("init: Starting HTTP server, addr= {}:{}", testHost, testPort);
 
             IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
             server.init(properties);

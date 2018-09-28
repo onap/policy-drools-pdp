@@ -39,7 +39,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpObject;
 @NamedQueries({
     @NamedQuery(name = "DroolsPdpEntity.findAll", query = "SELECT e FROM DroolsPdpEntity e "),
     @NamedQuery(name = "DroolsPdpEntity.deleteAll", query = "DELETE FROM DroolsPdpEntity WHERE 1=1")
-})
+    })
 public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
 
     private static final long serialVersionUID = 1L;

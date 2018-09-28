@@ -60,7 +60,7 @@ public class Forward extends Message {
     private String requestId;
 
     /**
-     * 
+     * Constructor.
      */
     public Forward() {
         super();

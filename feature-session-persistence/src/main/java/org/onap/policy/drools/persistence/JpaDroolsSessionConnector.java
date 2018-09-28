@@ -98,13 +98,13 @@ public class JpaDroolsSessionConnector implements DroolsSessionConnector {
      */
     private boolean update(EntityManager em, DroolsSession sess) {
 
-        DroolsSessionEntity s = em.find(DroolsSessionEntity.class, sess.getSessionName());
-        if (s == null) {
+        DroolsSessionEntity session = em.find(DroolsSessionEntity.class, sess.getSessionName());
+        if (session == null) {
             return false;
         }
 
         logger.info("update: Updating session id to {}", sess.getSessionId());
-        s.setSessionId(sess.getSessionId());
+        session.setSessionId(sess.getSessionId());
 
         return true;
     }

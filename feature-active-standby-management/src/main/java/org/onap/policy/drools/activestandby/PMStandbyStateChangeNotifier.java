@@ -122,7 +122,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
         String pdpId = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.NODE_NAME);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("handleStateChange: previousStandbyStatus = {}" + "; standbyStatus = {}",
+            logger.debug("handleStateChange: previousStandbyStatus = {}; standbyStatus = {}",
                     previousStandbyStatus, standbyStatus);
         }
 
@@ -201,7 +201,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 
         } else if (standbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {
             if (logger.isDebugEnabled()) {
-                logger.debug("handleStateChange: standbyStatus= {} " + "scheduling activation of PDP={}", standbyStatus,
+                logger.debug("handleStateChange: standbyStatus= {} scheduling activation of PDP={}", standbyStatus,
                         pdpId);
             }
             if (previousStandbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {

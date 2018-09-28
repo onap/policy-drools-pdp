@@ -24,286 +24,308 @@ import java.util.List;
 
 public class TopicCoderFilterConfiguration {
 
-	/**
-	 * Custom coder, contains class and static field to access parser that the controller
-	 * desires to use instead of the framework provided parser
-	 */
-	public abstract static class CustomCoder {
-		protected String className;
-		protected String staticCoderField;
-		
-		/**
-		 * create custom coder from raw string in the following format
-		 * (typically embedded in a property file):
-		 * 
-		 * Note this is to support decoding/encoding of partial structures that are
-		 * only known by the model.
-		 * 
-		 * @param rawCustomCoder with format: <class-containing-custom-coder>,<static-coder-field>
-		 */
-		public CustomCoder(String rawCustomCoder) {			
-			if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
-				
-				this.className = rawCustomCoder.substring(0,rawCustomCoder.indexOf(","));
-				if (this.className == null || this.className.isEmpty()) {
-					throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
-				}
-				
-				this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(",")+1);
-				if (this.staticCoderField == null || this.staticCoderField.isEmpty()) {
-					throw new IllegalArgumentException
-						("No staticCoderField to create CustomCoder cannot be created for class " +
-						 className);
-				}
+    /**
+     * Custom coder, contains class and static field to access parser that the controller desires to
+     * use instead of the framework provided parser.
+     */
+    public abstract static class CustomCoder {
+        protected String className;
+        protected String staticCoderField;
 
-			}
-		}
-		/**
-		 * @param classContainer
-		 * @param staticCoderField
-		 */
-		public CustomCoder(String className, String staticCoderField) {
-			if (className == null || className.isEmpty()) {
-				throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
-			}
-			
-			if (staticCoderField == null || staticCoderField.isEmpty()) {
-				throw new IllegalArgumentException
-					("No staticCoderField to create CustomCoder cannot be created for class " +
-					 className);
-			}
-			
-			this.className = className;
-			this.staticCoderField = staticCoderField;
-		}
+        /**
+         * create custom coder from raw string in the following format (typically embedded in a property
+         * file):
+         *
+         * <p>Note this is to support decoding/encoding of partial structures that are only known by the
+         * model.
+         *
+         * @param rawCustomCoder with format: &lt;class-containing-custom-coder&gt;,&lt;static-coder-field&gt.
+         */
+        public CustomCoder(String rawCustomCoder) {
+            if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
 
-		/**
-		 * @return the className
-		 */
-		public String getClassContainer() {
-			return className;
-		}
+                this.className = rawCustomCoder.substring(0, rawCustomCoder.indexOf(","));
+                if (this.className == null || this.className.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "No classname to create CustomCoder cannot be created");
+                }
 
-		/**
-		 * @param className the className to set
-		 */
-		public void setClassContainer(String className) {
-			this.className = className;
-		}
+                this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(",") + 1);
+                if (this.staticCoderField == null || this.staticCoderField.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "No staticCoderField to create CustomCoder cannot be created for class " + className);
+                }
+            }
+        }
+        
+        /**
+         * Constructor.
+         * 
+         * @param className class name
+         * @param staticCoderField static coder field
+         */
+        public CustomCoder(String className, String staticCoderField) {
+            if (className == null || className.isEmpty()) {
+                throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
+            }
 
-		/**
-		 * @return the staticCoderField
-		 */
-		public String getStaticCoderField() {
-			return staticCoderField;
-		}
+            if (staticCoderField == null || staticCoderField.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "No staticCoderField to create CustomCoder cannot be created for class " + className);
+            }
 
-		/**
-		 * @param staticCoderField the staticGson to set
-		 */
-		public void setStaticCoderField(String staticCoderField) {
-			this.staticCoderField = staticCoderField;
-		}
+            this.className = className;
+            this.staticCoderField = staticCoderField;
+        }
 
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("CustomCoder [className=").append(className).append(", staticCoderField=")
-					.append(staticCoderField).append("]");
-			return builder.toString();
-		}
-	}
-	
-	public static class CustomGsonCoder extends CustomCoder {
-	
-		public CustomGsonCoder(String className, String staticCoderField) {
-				super(className, staticCoderField);
-		}
+        /** 
+         * Get class container.
+         * 
+         * @return the className 
+         **/
+        public String getClassContainer() {
+            return className;
+        }
 
-		public CustomGsonCoder(String customGson) {
-			super(customGson);
-		}
+        /** 
+         * Set class container.
+         * 
+         * @param className the className to set 
+         **/
+        public void setClassContainer(String className) {
+            this.className = className;
+        }
 
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("CustomGsonCoder [toString()=").append(super.toString()).append("]");
-			return builder.toString();
-		}
+        /** 
+         * Get static coder field.
+         * 
+         * @return the staticCoderField 
+         **/
+        public String getStaticCoderField() {
+            return staticCoderField;
+        }
 
-	}
-	
-	public static class CustomJacksonCoder extends CustomCoder {
-		
-		public CustomJacksonCoder(String className, String staticCoderField) {
-				super(className, staticCoderField);
-		}
-		
-		public CustomJacksonCoder(String customJackson) {
-			super(customJackson);
-		}
-		
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("CustomJacksonCoder [toString()=").append(super.toString()).append("]");
-			return builder.toString();
-		}
+        /** 
+         * Set static coder field.
+         * 
+         * @param staticCoderField the staticGson to set 
+         **/
+        public void setStaticCoderField(String staticCoderField) {
+            this.staticCoderField = staticCoderField;
+        }
 
-	}
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder
+                .append("CustomCoder [className=")
+                .append(className)
+                .append(", staticCoderField=")
+                .append(staticCoderField)
+                .append("]");
+            return builder.toString();
+        }
+    }
 
-	/**
-	 * Coder/Decoder class and Filter container.   The decoder class is potential,
-	 * in order to be operational needs to be fetched from an available
-	 * class loader.
-	 *
-	 */
-	public static class PotentialCoderFilter {
+    public static class CustomGsonCoder extends CustomCoder {
 
-		/**
-		 * decoder class (pending from being able to be fetched and found 
-		 * in some class loader)
-		 */
-		protected String codedClass;
-		
-		/**
-		 * filters to apply to the selection of the decodedClass;
-		 */
-		protected JsonProtocolFilter filter;
-		
-		/**
-		 * constructor
-		 * 
-		 * @param codedClass decoder class
-		 * @param filter filters to apply
-		 */
-		public PotentialCoderFilter(String codedClass, JsonProtocolFilter filter) {
-			this.codedClass = codedClass;
-			this.filter = filter;
-		}
+        public CustomGsonCoder(String className, String staticCoderField) {
+            super(className, staticCoderField);
+        }
 
-		/**
-		 * @return the decodedClass
-		 */
-		public String getCodedClass() {
-			return codedClass;
-		}
+        public CustomGsonCoder(String customGson) {
+            super(customGson);
+        }
 
-		/**
-		 * @param decodedClass the decodedClass to set
-		 */
-		public void setCodedClass(String decodedClass) {
-			this.codedClass = decodedClass;
-		}
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("CustomGsonCoder [toString()=").append(super.toString()).append("]");
+            return builder.toString();
+        }
+    }
 
-		/**
-		 * @return the filter
-		 */
-		public JsonProtocolFilter getFilter() {
-			return filter;
-		}
+    public static class CustomJacksonCoder extends CustomCoder {
 
-		/**
-		 * @param filter the filter to set
-		 */
-		public void setFilter(JsonProtocolFilter filter) {
-			this.filter = filter;
-		}
+        public CustomJacksonCoder(String className, String staticCoderField) {
+            super(className, staticCoderField);
+        }
 
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("PotentialCoderFilter [codedClass=").append(codedClass).append(", filter=").append(filter)
-					.append("]");
-			return builder.toString();
-		}
-	}
-	
-	/**
-	 * the source topic
-	 */
-	protected final String topic;
-	
-	/**
-	 * List of decoder -> filters
-	 */
-	protected final List<PotentialCoderFilter> coderFilters;
-	
-	/**
-	 * custom gson coder that this controller prefers to use instead of the framework ones
-	 */
-	protected CustomGsonCoder customGsonCoder;
-	
-	/**
-	 * custom jackson coder that this controller prefers to use instead of the framework ones
-	 */
-	protected CustomJacksonCoder customJacksonCoder;
+        public CustomJacksonCoder(String customJackson) {
+            super(customJackson);
+        }
 
-	/**
-	 * Constructor 
-	 * 
-	 * @param decoderFilters list of decoders and associated filters
-	 * @param topic the topic
-	 */
-	public TopicCoderFilterConfiguration(String topic, List<PotentialCoderFilter> decoderFilters,
-                                         CustomGsonCoder customGsonCoder, 
-                                         CustomJacksonCoder customJacksonCoder) {
-		this.coderFilters = decoderFilters;
-		this.topic = topic;
-		this.customGsonCoder = customGsonCoder;
-		this.customJacksonCoder = customJacksonCoder;
-	}
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("CustomJacksonCoder [toString()=").append(super.toString()).append("]");
+            return builder.toString();
+        }
+    }
 
-	/**
-	 * @return the topic
-	 */
-	public String getTopic() {
-		return topic;
-	}
+    /**
+     * Coder/Decoder class and Filter container. The decoder class is potential, in order to be
+     * operational needs to be fetched from an available class loader.
+     */
+    public static class PotentialCoderFilter {
 
-	/**
-	 * @return the decoderFilters
-	 */
-	public List<PotentialCoderFilter> getCoderFilters() {
-		return coderFilters;
-	}
-	
-	/**
-	 * @return the customGsonCoder
-	 */
-	public CustomGsonCoder getCustomGsonCoder() {
-		return customGsonCoder;
-	}
+        /* decoder class (pending from being able to be fetched and found in some class loader) */
+        protected String codedClass;
 
-	/**
-	 * @param customGsonCoder the customGsonCoder to set
-	 */
-	public void setCustomGsonCoder(CustomGsonCoder customGsonCoder) {
-		this.customGsonCoder = customGsonCoder;
-	}
+        /* filters to apply to the selection of the decodedClass; */
+        protected JsonProtocolFilter filter;
 
-	/**
-	 * @return the customJacksonCoder
-	 */
-	public CustomJacksonCoder getCustomJacksonCoder() {
-		return customJacksonCoder;
-	}
+        /**
+         * constructor.
+         *
+         * @param codedClass decoder class
+         * @param filter filters to apply
+         */
+        public PotentialCoderFilter(String codedClass, JsonProtocolFilter filter) {
+            this.codedClass = codedClass;
+            this.filter = filter;
+        }
 
-	/**
-	 * @param customJacksonCoder the customJacksonCoder to set
-	 */
-	public void setCustomJacksonCoder(CustomJacksonCoder customJacksonCoder) {
-		this.customJacksonCoder = customJacksonCoder;
-	}
+        /** 
+         * Get coded class.
+         * 
+         * @return the decodedClass 
+         **/
+        public String getCodedClass() {
+            return codedClass;
+        }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("TopicCoderFilterConfiguration [topic=").append(topic).append(", coderFilters=")
-				.append(coderFilters).append(", customGsonCoder=").append(customGsonCoder)
-				.append(", customJacksonCoder=").append(customJacksonCoder).append("]");
-		return builder.toString();
-	}
+        /** Set coded class.
+         * 
+         * @param decodedClass the decodedClass to set 
+         **/
+        public void setCodedClass(String decodedClass) {
+            this.codedClass = decodedClass;
+        }
 
+        /** 
+         * Get filter.
+         * 
+         * @return the filter 
+         **/
+        public JsonProtocolFilter getFilter() {
+            return filter;
+        }
 
+        /** 
+         * Set filter.
+         * 
+         * @param filter the filter to set 
+         **/
+        public void setFilter(JsonProtocolFilter filter) {
+            this.filter = filter;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder
+                .append("PotentialCoderFilter [codedClass=")
+                .append(codedClass)
+                .append(", filter=")
+                .append(filter)
+                .append("]");
+            return builder.toString();
+        }
+    }
+
+    /* the source topic */
+    protected final String topic;
+
+    /* List of decoder -> filters */
+    protected final List<PotentialCoderFilter> coderFilters;
+
+    /* custom gson coder that this controller prefers to use instead of the framework ones */
+    protected CustomGsonCoder customGsonCoder;
+
+    /* custom jackson coder that this controller prefers to use instead of the framework ones */
+    protected CustomJacksonCoder customJacksonCoder;
+
+    /**
+     * Constructor.
+     *
+     * @param decoderFilters list of decoders and associated filters
+     * @param topic the topic
+     */
+    public TopicCoderFilterConfiguration(
+            String topic,
+            List<PotentialCoderFilter> decoderFilters,
+            CustomGsonCoder customGsonCoder,
+            CustomJacksonCoder customJacksonCoder) {
+        this.coderFilters = decoderFilters;
+        this.topic = topic;
+        this.customGsonCoder = customGsonCoder;
+        this.customJacksonCoder = customJacksonCoder;
+    }
+
+    /** 
+     * Get topic.
+     * @return the topic 
+     **/
+    public String getTopic() {
+        return topic;
+    }
+
+    /** Get coder filters.
+     * 
+     * @return the decoderFilters 
+     **/
+    public List<PotentialCoderFilter> getCoderFilters() {
+        return coderFilters;
+    }
+
+    /** 
+     * Get custom gson coder.
+     * 
+     * @return the customGsonCoder 
+     **/
+    public CustomGsonCoder getCustomGsonCoder() {
+        return customGsonCoder;
+    }
+
+    /** 
+     * Set custom gson coder.
+     * 
+     * @param customGsonCoder the customGsonCoder to set 
+     **/
+    public void setCustomGsonCoder(CustomGsonCoder customGsonCoder) {
+        this.customGsonCoder = customGsonCoder;
+    }
+
+    /** Get custom jackson coder.
+     * 
+     * @return the customJacksonCoder 
+     **/
+    public CustomJacksonCoder getCustomJacksonCoder() {
+        return customJacksonCoder;
+    }
+
+    /** 
+     * Set custom Jackson coder.
+     * @param customJacksonCoder the customJacksonCoder to set 
+     **/
+    public void setCustomJacksonCoder(CustomJacksonCoder customJacksonCoder) {
+        this.customJacksonCoder = customJacksonCoder;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder
+            .append("TopicCoderFilterConfiguration [topic=")
+            .append(topic)
+            .append(", coderFilters=")
+            .append(coderFilters)
+            .append(", customGsonCoder=")
+            .append(customGsonCoder)
+            .append(", customJacksonCoder=")
+            .append(customJacksonCoder)
+            .append("]");
+        return builder.toString();
+    }
 }

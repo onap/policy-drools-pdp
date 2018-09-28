@@ -25,21 +25,21 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
 
-public class PolicyResourceLockFeatureAPITest {
+public class PolicyResourceLockFeatureApiTest {
 
     private static final String RESOURCE_ID = "the resource";
     private static final String OWNER = "the owner";
 
-    private PolicyResourceLockFeatureAPI api;
+    private PolicyResourceLockFeatureApi api;
 
     /**
      * set up.
      */
     @Before
     public void setUp() {
-        api = new PolicyResourceLockFeatureAPI() {
+        api = new PolicyResourceLockFeatureApi() {
             @Override
             public int getSequenceNumber() {
                 return 0;
