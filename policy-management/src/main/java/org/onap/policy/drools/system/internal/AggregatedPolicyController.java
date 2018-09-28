@@ -47,33 +47,33 @@ import org.slf4j.LoggerFactory;
 public class AggregatedPolicyController implements PolicyController, TopicListener {
 
     /**
-     * Logger
+     * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(AggregatedPolicyController.class);
 
     /**
-     * identifier for this policy controller
+     * identifier for this policy controller.
      */
     private final String name;
 
     /**
-     * Abstracted Event Sources List regardless communication technology
+     * Abstracted Event Sources List regardless communication technology.
      */
     private final List<? extends TopicSource> sources;
 
     /**
-     * Abstracted Event Sinks List regardless communication technology
+     * Abstracted Event Sinks List regardless communication technology.
      */
     private final List<? extends TopicSink> sinks;
 
     /**
-     * Mapping topics to sinks
+     * Mapping topics to sinks.
      */
     @JsonIgnore
     private final HashMap<String, TopicSink> topic2Sinks = new HashMap<>();
 
     /**
-     * Is this Policy Controller running (alive) ? reflects invocation of start()/stop() only
+     * Is this Policy Controller running (alive) ? reflects invocation of start()/stop() only.
      */
     private volatile boolean alive;
 
@@ -85,18 +85,18 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     private volatile boolean locked;
 
     /**
-     * Policy Drools Controller
+     * Policy Drools Controller.
      */
     private volatile DroolsController droolsController;
 
     /**
-     * Properties used to initialize controller
+     * Properties used to initialize controller.
      */
     private final Properties properties;
 
     /**
      * Constructor version mainly used for bootstrapping at initialization time a policy engine
-     * controller
+     * controller.
      * 
      * @param name controller name
      * @param properties
@@ -127,7 +127,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * initialize drools layer
+     * initialize drools layer.
      * 
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
@@ -142,7 +142,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * initialize sinks
+     * initialize sinks.
      * 
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
@@ -154,7 +154,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean updateDrools(DroolsConfiguration newDroolsConfiguration) {
@@ -206,7 +206,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getName() {
@@ -214,7 +214,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean start() {
@@ -243,7 +243,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             this.alive = true;
         }
 
-        boolean success = this.droolsController.start();
+        final boolean success = this.droolsController.start();
 
         // register for events
 
@@ -274,7 +274,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean stop() {
@@ -324,7 +324,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void shutdown() {
@@ -358,7 +358,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void halt() {
@@ -392,7 +392,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void onTopicEvent(Topic.CommInfrastructure commType, String topic, String event) {
@@ -435,7 +435,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean deliver(Topic.CommInfrastructure commType, String topic, Object event) {
@@ -494,7 +494,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean isAlive() {
@@ -502,7 +502,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean lock() {
@@ -547,7 +547,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean unlock() {
@@ -590,7 +590,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean isLocked() {
@@ -598,7 +598,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public List<? extends TopicSource> getTopicSources() {
@@ -606,7 +606,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public List<? extends TopicSink> getTopicSinks() {
@@ -614,7 +614,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public DroolsController getDrools() {
@@ -623,7 +623,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     @JsonIgnore
@@ -633,8 +633,8 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
     @Override
     public String toString() {
-        return "AggregatedPolicyController [name=" + name + ", alive=" + alive +
-                ", locked=" + locked + ", droolsController=" + droolsController + "]";
+        return "AggregatedPolicyController [name=" + name + ", alive=" + alive
+                + ", locked=" + locked + ", droolsController=" + droolsController + "]";
     }
 
 }

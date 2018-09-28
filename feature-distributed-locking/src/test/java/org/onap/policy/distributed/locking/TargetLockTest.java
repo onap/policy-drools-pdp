@@ -31,7 +31,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

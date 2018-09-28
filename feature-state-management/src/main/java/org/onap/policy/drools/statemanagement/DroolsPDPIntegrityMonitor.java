@@ -83,7 +83,6 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * Static initialization -- create Drools Integrity Monitor, and an HTTP server to handle REST
      * 'test' requests.
      * 
-     * @throws StateManagementPropertiesException exception
      * @throws IntegrityMonitorException exception
      */
     public static DroolsPDPIntegrityMonitor init(String configDir) throws IntegrityMonitorException {

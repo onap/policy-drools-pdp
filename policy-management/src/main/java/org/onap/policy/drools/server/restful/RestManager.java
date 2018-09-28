@@ -21,7 +21,14 @@
 package org.onap.policy.drools.server.restful;
 
 import ch.qos.logback.classic.LoggerContext;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,18 +77,9 @@ import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
-
 
 /**
- * Telemetry JAX-RS Interface to the PDP-D
+ * Telemetry JAX-RS Interface to the PDP-D.
  */
 
 @Path("/policy/pdp")
@@ -94,10 +92,15 @@ import io.swagger.annotations.Tag;
         tags = {@Tag(name = "pdp-d-telemetry", description = "Drools PDP Telemetry Operations")})
 public class RestManager {
     /**
-     * Logger
+     * Logger.
      */
     private static Logger logger = LoggerFactory.getLogger(RestManager.class);
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine")
     @ApiOperation(value = "Retrieves the Engine Operational Status",
@@ -106,6 +109,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager).build();
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine")
     @ApiOperation(value = "Shuts down the Engine",
@@ -122,6 +130,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/features")
     @ApiOperation(value = "Engine Features",
@@ -139,6 +152,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getFeatureProviders()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/features/{featureName}")
     @ApiOperation(value = "Engine Feature", notes = "Provides Details for a given feature Engine Provider",
@@ -155,6 +173,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/inputs")
     @ApiOperation(value = "Engine Input Ports", notes = "List of input ports", responseContainer = "List")
@@ -162,6 +185,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Inputs.values())).build();
     }
 
+    /**
+     * POST.
+     * 
+     * @return response object
+     */
     @POST
     @Path("engine/inputs/configuration")
     @ApiOperation(value = "Engine Input Configuration Requests",
@@ -186,6 +214,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/properties")
     @ApiOperation(value = "Engine Configuration Properties", notes = "Used for booststrapping the engine",
@@ -194,6 +227,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getProperties()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/environment")
     @ApiOperation(value = "Engine Environment Properties",
@@ -202,6 +240,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getEnvironment()).build();
     }
 
+    /**
+    * GET.
+    * 
+    * @return response object
+    */
     @GET
     @Path("engine/environment/{envProperty}")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -212,6 +255,11 @@ public class RestManager {
                 .build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/environment/{envProperty}")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -224,6 +272,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(previousValue).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/switches")
     @ApiOperation(value = "Engine Control Switches", notes = "List of the Engine Control Switches",
@@ -232,6 +285,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/switches/activation")
     @ApiOperation(value = "Switches on the Engine Activation Switch",
@@ -255,6 +313,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/switches/activation")
     @ApiOperation(value = "Switches off Engine Activation Switch",
@@ -278,6 +341,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/switches/lock")
     @ApiOperation(value = "Switches on the Engine Lock Control",
@@ -294,6 +362,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/switches/lock")
     @ApiOperation(value = "Switches off the Lock control",
@@ -310,6 +383,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers")
     @ApiOperation(value = "Lists the Policy Controllers Names", notes = "Unique Policy Controller Identifiers",
@@ -318,6 +396,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getPolicyControllerIds()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/inventory")
     @ApiOperation(value = "Lists the Policy Controllers", notes = "Detailed list of Policy Controllers",
@@ -326,6 +409,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getPolicyControllers()).build();
     }
 
+    /**
+    * POST.
+    * 
+    * @return response object
+    */
     @POST
     @Path("engine/controllers")
     @ApiOperation(value = "Creates and starts a new Policy Controller",
@@ -389,6 +477,11 @@ public class RestManager {
         return Response.status(Response.Status.CREATED).entity(controller).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/features")
     @ApiOperation(value = "Lists of Feature Providers Identifiers", notes = "Unique Policy Controller Identifiers",
@@ -397,6 +490,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getFeatures()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/features/inventory")
     @ApiOperation(value = "Detailed Controllers Feature Inventory",
@@ -406,6 +504,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(PolicyController.factory.getFeatureProviders()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/features/{featureName}")
     @ApiOperation(value = "Controller Feature",
@@ -423,6 +526,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}")
     @ApiOperation(value = "Retrieves a Policy Controller",
@@ -447,6 +555,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/controllers/{controller}")
     @ApiOperation(value = "Deletes a Policy Controller",
@@ -489,6 +602,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(controller).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/properties")
     @ApiOperation(value = "Retrieves the configuration properties of a Policy Controller",
@@ -512,6 +630,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/inputs")
     @ApiOperation(value = "Policy Controller Input Ports", notes = "List of input ports", responseContainer = "List")
@@ -519,6 +642,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Inputs.values())).build();
     }
 
+    /**
+     * POST.
+     * 
+     * @return response object
+     */
     @POST
     @Path("engine/controllers/{controller}/inputs/configuration")
     @ApiOperation(value = "Policy Controller Input Configuration Requests",
@@ -558,6 +686,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(controller).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/switches")
     @ApiOperation(value = "Policy Controller Switches", notes = "List of the Policy Controller Switches",
@@ -566,6 +699,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/controllers/{controller}/switches/lock")
     @ApiOperation(value = "Switches on the Policy Controller Lock Control",
@@ -584,6 +722,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/controllers/{controller}/switches/lock")
     @ApiOperation(value = "Switches off the Policy Controller Lock Control",
@@ -602,6 +745,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/drools")
     @ApiOperation(value = "Retrieves the Drools Controller subcomponent of the Policy Controller",
@@ -625,6 +773,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/drools/facts")
     @ApiOperation(value = "Retrieves Facts Summary information for a given controller",
@@ -652,6 +805,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/drools/facts/{session}")
     @ApiOperation(value = "Retrieves Fact Types (classnames) for a given controller and its count",
@@ -676,6 +834,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/drools/facts/{session}/{factType}")
     @ApiOperation(
@@ -710,47 +873,16 @@ public class RestManager {
         }
     }
 
-    @DELETE
-    @Path("engine/controllers/{controller}/drools/facts/{session}/{factType}")
-    @ApiOperation(
-            value = "Deletes all the fact objects of a given type from the drools working memory"
-                    + "for a given controller and session.   The objects retracted from the working "
-                    + "memory are provided in the response.",
-            notes = "The fact types are the classnames of the objects inserted in the drools working memory",
-            responseContainer = "List")
-    @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, session, or fact type, cannot be found"),
-            @ApiResponse(code = 406,
-                    message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
-    public Response droolsFactsDelete(
-            @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
-            @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
-            @ApiParam(value = "Drools Fact Type", required = true) @PathParam("factType") String factType) {
-        try {
-            final DroolsController drools = this.getDroolsController(controllerName);
-            final List<Object> facts = drools.facts(sessionName, factType, true);
-            return Response.status(Response.Status.OK).entity(facts).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug("{}: cannot get: drools-controller {}, session {}, factType {}, because of {}", this,
-                    controllerName, sessionName, factType, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + sessionName + ":" + factType + " not found")).build();
-        } catch (final IllegalStateException e) {
-            logger.debug("{}: cannot get: drools-controller {}, session {}, factType {}, because of {}", this,
-                    controllerName, sessionName, factType, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + sessionName + ":" + factType + " not acceptable")).build();
-        } catch (final Exception e) {
-            logger.debug("{}: cannot get: drools-controller {}, session {}, factType {}, because of {}", this,
-                    controllerName, sessionName, factType, e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
-        }
-    }
-
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}")
     @ApiOperation(
-            value = "Gets all the fact objects returned by a DRL query with no parameters from the drools working memory"
+            value = "Gets all the fact objects returned by a DRL query with no parameters "
+                    + "from the drools working memory"
                     + "for a given controller and session",
             notes = "The DRL query must be defined in the DRL file", responseContainer = "List")
     @ApiResponses(value = {
@@ -794,6 +926,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * POST.
+     * 
+     * @return response object
+     */
     @POST
     @Path("engine/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}")
     @ApiOperation(
@@ -846,10 +983,58 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
+    @DELETE
+    @Path("engine/controllers/{controller}/drools/facts/{session}/{factType}")
+    @ApiOperation(
+            value = "Deletes all the fact objects of a given type from the drools working memory"
+                    + "for a given controller and session.   The objects retracted from the working "
+                    + "memory are provided in the response.",
+            notes = "The fact types are the classnames of the objects inserted in the drools working memory",
+            responseContainer = "List")
+    @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, session, or fact type, cannot be found"),
+            @ApiResponse(code = 406,
+                    message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
+            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
+    public Response droolsFactsDelete(
+            @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
+            @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
+            @ApiParam(value = "Drools Fact Type", required = true) @PathParam("factType") String factType) {
+        try {
+            final DroolsController drools = this.getDroolsController(controllerName);
+            final List<Object> facts = drools.facts(sessionName, factType, true);
+            return Response.status(Response.Status.OK).entity(facts).build();
+        } catch (final IllegalArgumentException e) {
+            logger.debug("{}: cannot get: drools-controller {}, session {}, factType {}, because of {}", this,
+                    controllerName, sessionName, factType, e.getMessage(), e);
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new Error(controllerName + ":" + sessionName + ":" + factType + " not found")).build();
+        } catch (final IllegalStateException e) {
+            logger.debug("{}: cannot get: drools-controller {}, session {}, factType {}, because of {}", this,
+                    controllerName, sessionName, factType, e.getMessage(), e);
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .entity(new Error(controllerName + ":" + sessionName + ":" + factType + " not acceptable")).build();
+        } catch (final Exception e) {
+            logger.debug("{}: cannot get: drools-controller {}, session {}, factType {}, because of {}", this,
+                    controllerName, sessionName, factType, e.getMessage(), e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
+        }
+    }
+
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}")
     @ApiOperation(
-            value = "Deletes all the fact objects returned by a DRL query with parameters from the drools working memory"
+            value = "Deletes all the fact objects returned by a DRL query with parameters "
+                    + "from the drools working memory "
                     + "for a given controller and session",
             notes = "The DRL query with parameters must be defined in the DRL file", responseContainer = "List")
     @ApiResponses(value = {
@@ -898,6 +1083,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * POST.
+     * 
+     * @return response object
+     */
     @POST
     @Path("engine/controllers/tools/coders/decoders/filters/rules/{ruleName}")
     @ApiOperation(value = "Produces a Decoder Rule Filter in a format that the Policy Controller can understand",
@@ -915,6 +1105,11 @@ public class RestManager {
         return Response.status(Status.OK).entity(new JsonProtocolFilter.FilterRule(name, literalRegex)).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders")
     @ApiOperation(value = "Gets all the decoders used by a controller",
@@ -945,6 +1140,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders/filters")
     @ApiOperation(value = "Gets all the filters used by a controller",
@@ -976,6 +1176,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders/{topic}")
     @ApiOperation(value = "Gets all the decoders in use by a controller for a networked topic",
@@ -1008,6 +1213,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders/{topic}/filters")
     @ApiOperation(value = "Gets all filters attached to decoders for a given networked topic in use by a controller",
@@ -1046,6 +1256,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}")
     @ApiOperation(
@@ -1086,6 +1301,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}")
     @ApiOperation(value = "Attaches filters to the decoder for a given networked topic " + "and fact type",
@@ -1137,6 +1357,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules")
     @ApiOperation(value = "Gets the filter rules attached to a topic decoder of a controller",
@@ -1183,6 +1408,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules/{ruleName}")
     @ApiOperation(value = "Gets a filter rule by name attached to a topic decoder of a controller",
@@ -1236,6 +1466,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules/{ruleName}")
     @ApiOperation(value = "Deletes a filter rule by name attached to a topic decoder of a controller",
@@ -1303,6 +1538,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules")
     @ApiOperation(value = "Places a new filter rule in a topic decoder",
@@ -1347,19 +1587,26 @@ public class RestManager {
             return Response.status(Response.Status.OK).entity(filter.getRules()).build();
         } catch (final IllegalArgumentException e) {
             logger.debug(
-                    "{}: cannot access decoder filter rules for policy-controller {} topic {} type {} rule {} because of {}",
-                    this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
+                    "{}: cannot access decoder filter rules for policy-controller {} "
+                            + "topic {} type {} rule {} because of {}",
+                            this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new Error(controllerName + ":" + topic + ":" + factClass + " not found")).build();
         } catch (final IllegalStateException e) {
             logger.debug(
-                    "{}: cannot access decoder filter rules for policy-controller {} topic {} type {} rule {} because of {}",
-                    this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
+                    "{}: cannot access decoder filter rules for policy-controller {} "
+                            + "topic {} type {} rule {} because of {}",
+                            this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
             return Response.status(Response.Status.NOT_ACCEPTABLE)
                     .entity(new Error(controllerName + ":" + topic + ":" + factClass + " not acceptable")).build();
         }
     }
 
+    /**
+     * POST.
+     * 
+     * @return response object
+     */
     @POST
     @Path("engine/controllers/{controller}/decoders/{topic}")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -1416,6 +1663,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(result).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/controllers/{controller}/encoders")
     @ApiOperation(value = "Retrieves the encoder filters of a controller",
@@ -1461,6 +1713,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/topics/switches/lock")
     @ApiOperation(value = "Locks all the managed topics", notes = "The operation affects all managed sources and sinks",
@@ -1476,6 +1733,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/topics/switches/lock")
     @ApiOperation(value = "Unlocks all the managed topics",
@@ -1491,6 +1753,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources")
     @ApiOperation(value = "Retrieves the managed topic sources", notes = "Network Topic Sources Agregation",
@@ -1499,6 +1766,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getTopicSources()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks")
     @ApiOperation(value = "Retrieves the managed topic sinks", notes = "Network Topic Sinks Agregation",
@@ -1507,6 +1779,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getTopicSinks()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/ueb")
     @ApiOperation(value = "Retrieves the UEB managed topic sources", notes = "UEB Topic Sources Agregation",
@@ -1515,6 +1792,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSources()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/ueb")
     @ApiOperation(value = "Retrieves the UEB managed topic sinks", notes = "UEB Topic Sinks Agregation",
@@ -1523,6 +1805,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSinks()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/dmaap")
     @ApiOperation(value = "Retrieves the DMaaP managed topic sources", notes = "DMaaP Topic Sources Agregation",
@@ -1531,6 +1818,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSources()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/dmaap")
     @ApiOperation(value = "Retrieves the DMaaP managed topic sinks", notes = "DMaaP Topic Sinks Agregation",
@@ -1539,6 +1831,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSinks()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/ueb/{topic}")
     @ApiOperation(value = "Retrieves an UEB managed topic source",
@@ -1548,6 +1845,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSource(topic)).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/ueb/{topic}")
     @ApiOperation(value = "Retrieves an UEB managed topic sink",
@@ -1557,6 +1859,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSink(topic)).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/dmaap/{topic}")
     @ApiOperation(value = "Retrieves a DMaaP managed topic source",
@@ -1567,6 +1874,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSource(topic)).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/dmaap/{topic}")
     @ApiOperation(value = "Retrieves a DMaaP managed topic sink",
@@ -1576,6 +1888,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSink(topic)).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/ueb/{topic}/events")
     @ApiOperation(value = "Retrieves the latest events received by an UEB topic",
@@ -1586,6 +1903,11 @@ public class RestManager {
                 .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents())).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/ueb/{topic}/events")
     @ApiOperation(value = "Retrieves the latest events sent from a topic",
@@ -1596,6 +1918,11 @@ public class RestManager {
                 .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSink(topic).getRecentEvents())).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/dmaap/{topic}/events")
     @ApiOperation(value = "Retrieves the latest events received by a DMaaP topic",
@@ -1607,6 +1934,11 @@ public class RestManager {
                 .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents())).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/dmaap/{topic}/events")
     @ApiOperation(value = "Retrieves the latest events send through a DMaaP topic",
@@ -1617,6 +1949,11 @@ public class RestManager {
                 .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSink(topic).getRecentEvents())).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/noop")
     @ApiOperation(value = "Retrieves the NOOP managed topic sinks", notes = "NOOP Topic Sinks Agregation",
@@ -1625,6 +1962,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSinks()).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/noop/{topic}")
     @ApiOperation(value = "Retrieves a NOOP managed topic sink",
@@ -1633,6 +1975,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSink(topic)).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sinks/noop/{topic}/events")
     @ApiOperation(value = "Retrieves the latest events send through a NOOP topic",
@@ -1642,6 +1989,11 @@ public class RestManager {
                 .entity(Arrays.asList(TopicEndpoint.manager.getNoopTopicSink(topic).getRecentEvents())).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/ueb/{topic}/switches")
     @ApiOperation(value = "UEB Topic Control Switches", notes = "List of the UEB Topic Control Switches",
@@ -1650,6 +2002,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/topics/sources/ueb/{topic}/switches/lock")
     @ApiOperation(value = "Locks an UEB Source topic", response = UebTopicSource.class)
@@ -1665,6 +2022,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/topics/sources/ueb/{topic}/switches/lock")
     @ApiOperation(value = "Unlocks an UEB Source topic", response = UebTopicSource.class)
@@ -1684,6 +2046,11 @@ public class RestManager {
         return new Error("cannot perform operation on " + topic);
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/topics/sources/dmaap/{topic}/switches")
     @ApiOperation(value = "DMaaP Topic Control Switches", notes = "List of the DMaaP Topic Control Switches",
@@ -1692,6 +2059,11 @@ public class RestManager {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/topics/sources/dmaap/{topic}/switches/lock")
     @ApiOperation(value = "Locks an DMaaP Source topic", response = DmaapTopicSource.class)
@@ -1707,6 +2079,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * DELETE.
+     * 
+     * @return response object
+     */
     @DELETE
     @Path("engine/topics/sources/dmaap/{topic}/switches/lock")
     @ApiOperation(value = "Unlocks an DMaaP Source topic", response = DmaapTopicSource.class)
@@ -1723,6 +2100,11 @@ public class RestManager {
         }
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/topics/sources/ueb/{topic}/events")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -1762,6 +2144,11 @@ public class RestManager {
         logger.debug("{}: cannot offer for encoder ueb topic for {} because of {}", this, topic, ex.getMessage(), ex);
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/topics/sources/dmaap/{topic}/events")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -1801,6 +2188,11 @@ public class RestManager {
         logger.debug("{}: cannot offer for encoder dmaap topic for {} because of {}", this, topic, ex.getMessage(), ex);
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/tools/uuid")
     @ApiOperation(value = "Produces an UUID", notes = "UUID generation utility")
@@ -1809,6 +2201,11 @@ public class RestManager {
         return Response.status(Status.OK).entity(UUID.randomUUID().toString()).build();
     }
 
+    /**
+    * GET.
+    * 
+    * @return response object
+    */
     @GET
     @Path("engine/tools/loggers")
     @ApiOperation(value = "all active loggers", responseContainer = "List")
@@ -1828,6 +2225,11 @@ public class RestManager {
         return Response.status(Status.OK).entity(names).build();
     }
 
+    /**
+     * GET.
+     * 
+     * @return response object
+     */
     @GET
     @Path("engine/tools/loggers/{logger}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -1851,6 +2253,11 @@ public class RestManager {
         return Response.status(Status.OK).entity(loggerLevel).build();
     }
 
+    /**
+     * PUT.
+     * 
+     * @return response object
+     */
     @PUT
     @Path("engine/tools/loggers/{logger}/{level}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -1878,7 +2285,7 @@ public class RestManager {
     }
 
     /**
-     * gets the underlying drools controller from the named policy controller
+     * gets the underlying drools controller from the named policy controller.
      *
      * @param controllerName the policy controller name
      * @return the underlying drools controller
@@ -1910,22 +2317,22 @@ public class RestManager {
     }
 
     /**
-     * Coding/Encoding Results Aggregation Helper class
+     * Coding/Encoding Results Aggregation Helper class.
      */
     public static class CodingResult {
         /**
-         * serialized output
+         * serialized output.
          */
 
         private String jsonEncoding;
         /**
-         * encoding result
+         * encoding result.
          */
 
         private Boolean encoding;
 
         /**
-         * decoding result
+         * decoding result.
          */
         private Boolean decoding;
 
@@ -1955,7 +2362,7 @@ public class RestManager {
     }
 
     /**
-     * Generic Error Reporting class
+     * Generic Error Reporting class.
      */
     public static class Error {
         private String msg;
@@ -1974,14 +2381,14 @@ public class RestManager {
     }
 
     /**
-     * Feed Ports into Resources
+     * Feed Ports into Resources.
      */
     public enum Inputs {
         configuration,
     }
 
     /**
-     * Resource Toggles
+     * Resource Toggles.
      */
     public enum Switches {
         activation, lock,

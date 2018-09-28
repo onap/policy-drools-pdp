@@ -305,7 +305,7 @@ public class FileSystemPersistence implements SystemPersistence {
      */
     protected File[] sortedListFiles() {
         final File[] dirFiles = this.configurationDirectory.toFile().listFiles();
-        Arrays.sort(dirFiles, (a, b) -> a.getName().compareTo(b.getName()));
+        Arrays.sort(dirFiles, (e1, e2) -> e1.getName().compareTo(e2.getName()));
         return dirFiles;
     }
 
