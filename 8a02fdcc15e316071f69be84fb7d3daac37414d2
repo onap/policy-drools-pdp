@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_1041640b",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/RestHealthCheck.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-09-28T22:24:57Z",
+      "side": 1,
+      "message": "Is this indent wrong?",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 4
+      },
+      "revId": "8a02fdcc15e316071f69be84fb7d3daac37414d2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
