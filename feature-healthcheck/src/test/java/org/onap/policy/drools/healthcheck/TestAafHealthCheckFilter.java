@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.onap.policy.common.utils.network.NetworkUtil;
 
 /**
- * Healthcheck AAF Authorization Filter
+ * Healthcheck AAF Authorization Filter.
  */
 public class TestAafHealthCheckFilter extends AafHealthCheckFilter {
 
