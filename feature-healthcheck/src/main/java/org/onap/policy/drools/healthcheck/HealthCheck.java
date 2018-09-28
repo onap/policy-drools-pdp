@@ -201,7 +201,7 @@ class HealthCheckMonitor implements HealthCheck {
     protected volatile Properties healthCheckProperties = null;
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public Reports healthCheck() {
@@ -242,7 +242,7 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean start() {
@@ -265,7 +265,7 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean stop() {
@@ -290,7 +290,7 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void shutdown() {
@@ -298,7 +298,7 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public synchronized boolean isAlive() {

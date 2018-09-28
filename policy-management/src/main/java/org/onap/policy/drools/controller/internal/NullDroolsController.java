@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
 /**
@@ -88,7 +88,7 @@ public class NullDroolsController implements DroolsController {
     @Override
     public String getVersion() {
         return NO_VERSION;
-    }	
+    }
 
     @Override
     public List<String> getSessionNames() {

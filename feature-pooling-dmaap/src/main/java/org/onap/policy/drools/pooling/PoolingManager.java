@@ -34,7 +34,7 @@ public interface PoolingManager {
     /**
      * Gets the properties used to configure the manager.
      * 
-     * @return
+     * @return pooling properties
      */
     public PoolingProperties getProperties();
 

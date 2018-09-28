@@ -23,7 +23,7 @@ package org.onap.policy.drools.core.lock;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,7 +184,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * @param defaultFunc default function
      * @return {@code true} if success, {@code false} otherwise
      */
-    private boolean doBoolIntercept(Function<PolicyResourceLockFeatureAPI, OperResult> interceptFunc,
+    private boolean doBoolIntercept(Function<PolicyResourceLockFeatureApi, OperResult> interceptFunc,
                     Supplier<Boolean> defaultFunc) {
 
         OperResult result = doIntercept(OperResult.OPER_UNHANDLED, interceptFunc);
@@ -205,9 +205,9 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * @return first non-null value returned by an implementer, <i>continueValue</i> if
      *       they all returned <i>continueValue</i>
      */
-    private static <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureAPI, T> func) {
+    private static <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureApi, T> func) {
 
-        for (PolicyResourceLockFeatureAPI impl : factory.getImplementers()) {
+        for (PolicyResourceLockFeatureApi impl : factory.getImplementers()) {
             try {
                 T result = func.apply(impl);
                 if (result != continueValue) {
@@ -248,8 +248,8 @@ public class PolicyResourceLockManager extends SimpleLockManager {
          * 
          * @return the list of feature implementers
          */
-        public List<PolicyResourceLockFeatureAPI> getImplementers() {
-            return PolicyResourceLockFeatureAPI.impl.getList();
+        public List<PolicyResourceLockFeatureApi> getImplementers() {
+            return PolicyResourceLockFeatureApi.impl.getList();
         }
     }
 }
