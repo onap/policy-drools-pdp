@@ -24,7 +24,7 @@ import org.onap.policy.common.endpoints.http.server.aaf.AafGranularAuthFilter;
 import org.onap.policy.drools.server.restful.aaf.AafBase;
 
 /**
- * Healthcheck AAF Authorization Filter
+ * Healthcheck AAF Authorization Filter.
  */
 public class AafHealthCheckFilter extends AafGranularAuthFilter {
 

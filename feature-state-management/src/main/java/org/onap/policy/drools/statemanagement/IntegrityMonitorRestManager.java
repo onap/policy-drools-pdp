@@ -59,7 +59,7 @@ public class IntegrityMonitorRestManager {
                     code = 500,
                     message = "Integrity monitor sanity check encountered an exception. "
                         + "This can indicate operational state disabled or administrative state locked")
-    })
+        })
     @GET
     @Path("test")
     public Response test() {

@@ -220,7 +220,7 @@ public interface PolicyEngineFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of 
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeShutdown(PolicyEngine engine){
+    public default boolean beforeShutdown(PolicyEngine engine) {
         return false;
     }
 

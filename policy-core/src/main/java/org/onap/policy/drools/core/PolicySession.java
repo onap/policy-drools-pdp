@@ -232,12 +232,12 @@ public class PolicySession
         }
     }
 
-    /***********************************/
+    /*=================================*/
     /* 'AgendaEventListener' interface */
-    /***********************************/
+    /*=================================*/
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void afterMatchFired(AfterMatchFiredEvent event) {
@@ -249,7 +249,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
@@ -261,7 +261,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
@@ -273,7 +273,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
@@ -285,7 +285,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void agendaGroupPushed(AgendaGroupPushedEvent event) {
@@ -297,7 +297,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
@@ -309,7 +309,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
@@ -321,7 +321,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
@@ -333,7 +333,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void matchCancelled(MatchCancelledEvent event) {
@@ -344,7 +344,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void matchCreated(MatchCreatedEvent event) {
@@ -354,12 +354,12 @@ public class PolicySession
         }
     }
 
-    /****************************************/
+    /*======================================*/
     /* 'RuleRuntimeEventListener' interface */
-    /****************************************/
+    /*======================================*/
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void objectDeleted(ObjectDeletedEvent event) {
@@ -370,7 +370,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void objectInserted(ObjectInsertedEvent event) {
@@ -381,7 +381,7 @@ public class PolicySession
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void objectUpdated(ObjectUpdatedEvent event) {
@@ -390,7 +390,7 @@ public class PolicySession
                     + ": AgendaEventListener.objectUpdated(" + event + ")");
         }
     }
-
+    
     /* ============================================================ */
 
     /**
@@ -451,12 +451,12 @@ public class PolicySession
             return "Session " + session.getFullName();
         }
 
-        /***************************/
+        /*=========================*/
         /* 'ThreadModel' interface */
-        /***************************/
+        /*=========================*/
 
         /**
-         * {@inheritDoc}
+         * {@inheritDoc}.
          */
         @Override
         public void start() {
@@ -465,7 +465,7 @@ public class PolicySession
         }
 
         /**
-         * {@inheritDoc}
+         * {@inheritDoc}.
          */
         @Override
         public void stop() {
@@ -486,7 +486,7 @@ public class PolicySession
         }
 
         /**
-         * {@inheritDoc}
+         * {@inheritDoc}.
          */
         @Override
         public void updated() {
@@ -494,12 +494,12 @@ public class PolicySession
             thread.setName(getThreadName());
         }
 
-        /************************/
+        /*======================*/
         /* 'Runnable' interface */
-        /************************/
+        /*======================*/
 
         /**
-         * {@inheritDoc}
+         * {@inheritDoc}.
          */
         @Override
         public void run() {

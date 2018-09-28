@@ -117,14 +117,17 @@ public class RestManagerTest {
                 + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
                 "" + DEFAULT_TELEMETRY_PORT);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
-            TestAafTelemetryAuthFilter.class.getName());
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME 
+                + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
+                TestAafTelemetryAuthFilter.class.getName());
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
-            TELEMETRY_USER);
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME 
+                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
+                TELEMETRY_USER);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
-            TELEMETRY_PASSWORD);
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME 
+                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
+                TELEMETRY_PASSWORD);
 
         /* other properties */
         engineProps.put(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS, UEB_TOPIC);
@@ -288,6 +291,7 @@ public class RestManagerTest {
         httpPut.setEntity(new StringEntity("FOOOO"));
         response = client.execute(httpPut);
         logger.info(httpPut.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+        
         assertEquals(404, response.getStatusLine().getStatusCode());
         httpPut.releaseConnection();
 

@@ -18,10 +18,6 @@
  * ============LICENSE_END=========================================================
  */
 
-/**
- * 
- */
-
 package org.onap.policy.drools.utils;
 
 import org.slf4j.Logger;
@@ -35,7 +31,7 @@ public class ReflectionUtil {
 
     protected static final Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
 
-    private ReflectionUtil(){
+    private ReflectionUtil() {
     }
 
     /**
@@ -83,7 +79,7 @@ public class ReflectionUtil {
      * 
      * @param parent superclass
      * @param presumedSubclass subclass
-     * @return
+     * @return true if it is a sub class
      */
     public static boolean isSubclass(Class<?> parent, Class<?> presumedSubclass) {
         return parent.isAssignableFrom(presumedSubclass);

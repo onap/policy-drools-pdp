@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * api-active-standby-management
  * ================================================================================
- * Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,40 +24,38 @@ import org.onap.policy.drools.utils.OrderedService;
 import org.onap.policy.drools.utils.OrderedServiceImpl;
 
 /**
- * This interface provides a way to invoke optional features at various
- * points in the code. At appropriate points in the
- * application, the code iterates through this list, invoking these optional
- * methods.
+ * This interface provides a way to invoke optional features at various points in the code. At
+ * appropriate points in the application, the code iterates through this list, invoking these
+ * optional methods.
  */
-public interface ActiveStandbyFeatureAPI extends OrderedService
-{
-	/**
-	 * 'FeatureAPI.impl.getList()' returns an ordered list of objects
-	 * implementing the 'FeatureAPI' interface.
-	 */
-	public static OrderedServiceImpl<ActiveStandbyFeatureAPI> impl =
-					new OrderedServiceImpl<>(ActiveStandbyFeatureAPI.class);
+public interface ActiveStandbyFeatureAPI extends OrderedService {
+    /**
+     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the 'FeatureAPI'
+     * interface.
+     */
+    public static OrderedServiceImpl<ActiveStandbyFeatureAPI> impl =
+            new OrderedServiceImpl<>(ActiveStandbyFeatureAPI.class);
 
-	/**
-	 * This method returns the resourceName (PDP ID) for the Drools-PDP that is
-	 * currently designated as active.
-	 * 
-	 * @return String (resourceName)
-	 */
-	public String getPdpdNowActive();
+    /**
+     * Returns the resourceName (PDP ID) for the Drools-PDP that is
+     * currently designated as active.
+     * 
+     * @return String (resourceName)
+     */
+    public String getPdpdNowActive();
 
-	/**
-	 * This method returns the resourceName (PDP ID) for the Drools-PDP that was
-	 * previously designated as active.
-	 * 
-	 * @return String (resourceName)
-	 */
-	public String getPdpdLastActive();
+    /**
+     * Returns the resourceName (PDP ID) for the Drools-PDP that is
+     * previously designated as active.
+     * 
+     * @return String (resourceName)
+     */
+    public String getPdpdLastActive();
 
-	/**
-	 * This method returns the resourceName associated with this instance of the feature 
-	 * @return String (resourceName)
-	 */
-	public String getResourceName();
-
+    /**
+     * Returns the resourceName associated with this instance of the feature.
+     *  
+     * @return String (resourceName)
+     */
+    public String getResourceName();
 }

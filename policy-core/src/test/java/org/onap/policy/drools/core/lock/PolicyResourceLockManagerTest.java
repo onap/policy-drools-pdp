@@ -41,7 +41,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
+import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager.Factory;
 
 public class PolicyResourceLockManagerTest {
@@ -64,9 +64,9 @@ public class PolicyResourceLockManagerTest {
      */
     private static Factory saveFactory;
 
-    private PolicyResourceLockFeatureAPI impl1;
-    private PolicyResourceLockFeatureAPI impl2;
-    private List<PolicyResourceLockFeatureAPI> implList;
+    private PolicyResourceLockFeatureApi impl1;
+    private PolicyResourceLockFeatureApi impl2;
+    private List<PolicyResourceLockFeatureApi> implList;
 
     private PolicyResourceLockManager mgr;
 
@@ -85,8 +85,8 @@ public class PolicyResourceLockManagerTest {
      */
     @Before
     public void setUp() {
-        impl1 = mock(PolicyResourceLockFeatureAPI.class);
-        impl2 = mock(PolicyResourceLockFeatureAPI.class);
+        impl1 = mock(PolicyResourceLockFeatureApi.class);
+        impl2 = mock(PolicyResourceLockFeatureApi.class);
 
         initImplementer(impl1);
         initImplementer(impl2);
@@ -97,7 +97,7 @@ public class PolicyResourceLockManagerTest {
         PolicyResourceLockManager.setFactory(new Factory() {
 
             @Override
-            public List<PolicyResourceLockFeatureAPI> getImplementers() {
+            public List<PolicyResourceLockFeatureApi> getImplementers() {
                 return implList;
             }
         });
@@ -110,7 +110,7 @@ public class PolicyResourceLockManagerTest {
      * 
      * @param impl implementer
      */
-    private void initImplementer(PolicyResourceLockFeatureAPI impl) {
+    private void initImplementer(PolicyResourceLockFeatureApi impl) {
         when(impl.beforeLock(anyString(), anyString(), anyInt())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeRefresh(anyString(), anyString(), anyInt())).thenReturn(OperResult.OPER_UNHANDLED);
         when(impl.beforeUnlock(anyString(), anyString())).thenReturn(OperResult.OPER_UNHANDLED);
