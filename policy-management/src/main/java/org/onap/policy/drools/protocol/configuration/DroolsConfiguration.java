@@ -20,6 +20,12 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,15 +33,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-
 /**
- * Maven Related Information
+ * Maven Related Information.
  * 
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -43,21 +42,23 @@ public class DroolsConfiguration {
 
     /**
      * Maven Artifact ID
-     * (Required)
+     * (Required).
      * 
      */
     @JsonProperty("artifactId")
     private String artifactId;
+    
     /**
      * Maven Group ID
-     * (Required)
+     * (Required).
      * 
      */
     @JsonProperty("groupId")
     private String groupId;
+    
     /**
      * Maven Version
-     * (Required)
+     * (Required).
      * 
      */
     @JsonProperty("version")
@@ -67,18 +68,19 @@ public class DroolsConfiguration {
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
-     * No args constructor for use in serialization
+     * No args constructor for use in serialization.
      * 
      */
     public DroolsConfiguration() {
-    	// Empty
+        // Empty
     }
 
     /**
+     * Constructor.
      * 
-     * @param groupId
-     * @param artifactId
-     * @param version
+     * @param groupId group id
+     * @param artifactId artifact id
+     * @param version version
      */
     public DroolsConfiguration(String artifactId, String groupId, String version) {
         this.artifactId = artifactId;
@@ -88,7 +90,7 @@ public class DroolsConfiguration {
 
     /**
      * Maven Artifact ID
-     * (Required)
+     * (Required).
      * 
      * @return
      *     The artifactId
@@ -100,7 +102,7 @@ public class DroolsConfiguration {
 
     /**
      * Maven Artifact ID
-     * (Required)
+     * (Required).
      * 
      * @param artifactId
      *     The artifactId
@@ -117,7 +119,7 @@ public class DroolsConfiguration {
 
     /**
      * Maven Group ID
-     * (Required)
+     * (Required).
      * 
      * @return
      *     The groupId
@@ -129,7 +131,7 @@ public class DroolsConfiguration {
 
     /**
      * Maven Group ID
-     * (Required)
+     * (Required).
      * 
      * @param groupId
      *     The groupId
@@ -146,7 +148,7 @@ public class DroolsConfiguration {
 
     /**
      * Maven Version
-     * (Required)
+     * (Required).
      * 
      * @return
      *     The version
@@ -158,7 +160,7 @@ public class DroolsConfiguration {
 
     /**
      * Maven Version
-     * (Required)
+     * (Required).
      * 
      * @param version
      *     The version
@@ -222,24 +224,43 @@ public class DroolsConfiguration {
         }
     }
 
+    /**
+     * Get declared property.
+     * 
+     * @param name property name
+     * @return the property object
+     */
     @SuppressWarnings({
         "unchecked"
-    })
-    public<T >T get(String name) {
+        })
+    public <T> T get(String name) {
         Object value = declaredPropertyOrNotFound(name, DroolsConfiguration.NOT_FOUND_VALUE);
-        if (DroolsConfiguration.NOT_FOUND_VALUE!= value) {
+        if (DroolsConfiguration.NOT_FOUND_VALUE != value) {
             return (T) value;
         } else {
             return (T) getAdditionalProperties().get(name);
         }
     }
 
+    /**
+     * Set property value.
+     * 
+     * @param name property name
+     * @param value property value
+     */
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
             getAdditionalProperties().put(name, value);
         }
     }
 
+    /**
+     * Set property value and return object.
+     * 
+     * @param name property name
+     * @param value property value
+     * @return this
+     */
     public DroolsConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
             getAdditionalProperties().put(name, value);
@@ -249,7 +270,8 @@ public class DroolsConfiguration {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(artifactId).append(groupId).append(version).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(artifactId).append(groupId).append(version).append(additionalProperties)
+                .toHashCode();
     }
 
     @Override
@@ -261,30 +283,50 @@ public class DroolsConfiguration {
             return false;
         }
         DroolsConfiguration rhs = ((DroolsConfiguration) other);
-        return new EqualsBuilder().append(artifactId, rhs.artifactId).append(groupId, rhs.groupId).append(version, rhs.version).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(artifactId, rhs.artifactId)
+                .append(groupId, rhs.groupId).append(version, rhs.version)
+                .append(additionalProperties, rhs.additionalProperties).isEquals();
     }
     
+    /**
+     * Call set artifact id.
+     * 
+     * @param value id
+     */
     public void callSetArtifactId(Object value) {
         if (value instanceof String) {
             setArtifactId((String) value);
         } else {
-            throw new IllegalArgumentException("property \"artifactId\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+            throw new IllegalArgumentException("property \"artifactId\" is of type \"java.lang.String\", but got "
+        + value.getClass().toString());
         }
     }
 
+    /**
+     * Call set group id.
+     * 
+     * @param value id
+     */
     public void callSetGroupId(Object value) {
         if (value instanceof String) {
             setGroupId((String) value);
         } else {
-            throw new IllegalArgumentException("property \"groupId\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+            throw new IllegalArgumentException("property \"groupId\" is of type \"java.lang.String\", but got "
+                    + value.getClass().toString());
         }
     }
 
+    /**
+     * Call set version.
+     * 
+     * @param value version
+     */
     public void callSetVersion(Object value) {
         if (value instanceof String) {
             setVersion((String) value);
         } else {
-            throw new IllegalArgumentException("property \"version\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+            throw new IllegalArgumentException("property \"version\" is of type \"java.lang.String\", but got "
+                    + value.getClass().toString());
         }
     }
 }

@@ -62,12 +62,12 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
     public static final int SEQ_NUM = 1;
 
 
-    /**************************/
+    /*========================*/
     /* 'FeatureAPI' interface */
-    /**************************/
+    /*========================*/
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public int getSequenceNumber() {
@@ -75,7 +75,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void globalInit(String[] args, String configDir) {
@@ -121,7 +121,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
 
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public boolean afterStart(PolicyEngine engine) {
@@ -210,7 +210,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getPdpdNowActive() {
@@ -218,7 +218,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getPdpdLastActive() {
@@ -226,7 +226,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getResourceName() {

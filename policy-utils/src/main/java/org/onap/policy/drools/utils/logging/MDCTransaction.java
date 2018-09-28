@@ -336,7 +336,7 @@ public interface MDCTransaction {
     MDCTransaction setElapsedTime(Long elapsedTime);
 
     /**
-     * sets service instance id
+     * sets service instance id.
      */
     MDCTransaction setServiceInstanceId(String serviceInstanceId);
 

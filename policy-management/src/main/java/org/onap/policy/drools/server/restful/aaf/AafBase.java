@@ -24,12 +24,12 @@ import org.onap.policy.common.endpoints.http.server.aaf.AafAuthFilter;
 import org.onap.policy.drools.system.PolicyEngine;
 
 /**
- * AAF Base Class
+ * AAF Base Class.
  */
 public abstract class AafBase extends AafAuthFilter {
     public static final String AAF_NODETYPE = "pdpd";
     public static final String AAF_ROOT_PERMISSION_PROPERTY = "aaf.root.permission";
     public static final String AAF_ROOT_PERMISSION =
-        PolicyEngine.manager.getProperties().getProperty
-            (AAF_ROOT_PERMISSION_PROPERTY, DEFAULT_NAMESPACE + "." + AAF_NODETYPE);
+        PolicyEngine.manager.getProperties().getProperty(
+                AAF_ROOT_PERMISSION_PROPERTY, DEFAULT_NAMESPACE + "." + AAF_NODETYPE);
 }
