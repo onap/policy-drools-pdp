@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureAPI.OperResult;
 
-public class PolicyResourceLockFeatureAPITest {
+public class PolicyResourceLockFeatureApiTest {
 
     private static final String RESOURCE_ID = "the resource";
     private static final String OWNER = "the owner";

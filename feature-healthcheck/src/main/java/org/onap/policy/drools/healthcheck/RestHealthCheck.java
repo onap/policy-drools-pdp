@@ -49,7 +49,7 @@ import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
     tags = {
         @Tag(name = "pdp-d-healthcheck", description = "Drools PDP Healthcheck Operations")
     }
-)
+    )
 public class RestHealthCheck {
 
     @GET

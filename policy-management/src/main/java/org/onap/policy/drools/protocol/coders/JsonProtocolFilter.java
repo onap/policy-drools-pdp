@@ -287,7 +287,7 @@ public class JsonProtocolFilter {
      * Get rules.
      * 
      * @param name name
-     * @return
+     * @return list of filter rules
      */
     public List<FilterRule> getRules(String name) {
         if (name == null || name.isEmpty()) {

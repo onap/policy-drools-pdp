@@ -35,14 +35,14 @@ import org.onap.policy.drools.utils.OrderedServiceImpl;
  * For instance, they may choose to implement an engine-wide locking scheme, or they may
  * choose to implement a global locking scheme (e.g., through a shared DB).
  */
-public interface PolicyResourceLockFeatureAPI extends OrderedService {
+public interface PolicyResourceLockFeatureApi extends OrderedService {
 
     /**
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
      * 'FeatureAPI' interface.
      */
-    public static OrderedServiceImpl<PolicyResourceLockFeatureAPI> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureAPI.class);
+    public static OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
+                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
 
     /**
      * Result of a requested operation.

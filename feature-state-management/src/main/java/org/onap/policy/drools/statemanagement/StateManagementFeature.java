@@ -91,7 +91,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void addObserver(Observer stateChangeObserver) {
@@ -105,7 +105,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getAdminState() {
@@ -113,7 +113,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getOpState() {
@@ -121,7 +121,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getAvailStatus() {
@@ -129,7 +129,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getStandbyStatus() {
@@ -137,7 +137,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getStandbyStatus(String resourceName) {
@@ -145,7 +145,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void disableFailed(String resourceName) throws Exception {
@@ -154,7 +154,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void disableFailed() throws Exception {
@@ -162,7 +162,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void promote() throws Exception {
@@ -170,7 +170,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public void demote() throws Exception {
@@ -178,7 +178,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
     public String getResourceName() {
@@ -186,8 +186,9 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
-     * @return 
+     * {@inheritDoc}.
+     * 
+     * @return true if locked or false if failed
      */
     @Override
     public boolean lock() {
@@ -201,7 +202,8 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
+     * 
      * @throws Exception exception
      */
     @Override
@@ -216,7 +218,8 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
+     * 
      * @throws Exception exception 
      */
     @Override

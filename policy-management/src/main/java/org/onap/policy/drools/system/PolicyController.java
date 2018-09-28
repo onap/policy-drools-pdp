@@ -23,9 +23,9 @@ package org.onap.policy.drools.system;
 import java.util.List;
 import java.util.Properties;
 
-import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
+import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
@@ -41,32 +41,32 @@ import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 public interface PolicyController extends Startable, Lockable {
 
     /**
-     * Factory that tracks and manages Policy Controllers
+     * Factory that tracks and manages Policy Controllers.
      */
     static PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
 
     /**
-     * name of this Policy Controller
+     * name of this Policy Controller.
      */
     String getName();
 
     /**
-     * Get the topic readers of interest for this controller
+     * Get the topic readers of interest for this controller.
      */
     List<? extends TopicSource> getTopicSources();
 
     /**
-     * Get the topic readers of interest for this controller
+     * Get the topic readers of interest for this controller.
      */
     List<? extends TopicSink> getTopicSinks();
 
     /**
-     * Get the Drools Controller
+     * Get the Drools Controller.
      */
     DroolsController getDrools();
 
     /**
-     * update maven configuration
+     * update maven configuration.
      * 
      * @param newDroolsConfiguration new drools configuration
      * @return true if the update was successful, false otherwise
@@ -74,17 +74,16 @@ public interface PolicyController extends Startable, Lockable {
     boolean updateDrools(DroolsConfiguration newDroolsConfiguration);
 
     /**
-     * Get the Properties
+     * Get the Properties.
      */
     Properties getProperties();
 
     /**
-     * Attempts delivering of an String over communication infrastructure "busType"
+     * Attempts delivering of an String over communication infrastructure "busType".
      * 
-     * @param event Communication infrastructure identifier
-     * @param busType
+     * @param busType bus type
      * @param topic topic
-     * @param event the event object to send
+     * @param event Communication infrastructure identifier
      * 
      * @return true if successful, false if a failure has occurred.
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
@@ -96,9 +95,9 @@ public interface PolicyController extends Startable, Lockable {
     boolean deliver(CommInfrastructure busType, String topic, Object event);
 
     /**
-     * halts and permanently releases all resources
+     * halts and permanently releases all resources.
      * 
-     * @throws IllegalStateException
+     * @throws IllegalStateException throws illegal state exception
      */
     void halt();
 
