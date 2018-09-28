@@ -141,7 +141,7 @@ class TTControllerTask implements Runnable {
 
             if (!(this.controller.getDrools().isBrained())) {
                 this.alive = false;
-                logger.error(this + ": unknown drools controller");
+                logger.error("{}: unknown drools controller", this);
                 return;
             }
 

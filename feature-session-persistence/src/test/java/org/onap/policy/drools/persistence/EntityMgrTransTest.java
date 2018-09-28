@@ -98,7 +98,7 @@ public class EntityMgrTransTest {
      */
     @Test
     public void testEntityMgrTrans_Inactive() throws Exception {
-        EntityMgrTrans emt = new EntityMgrTrans(mgr);
+        final EntityMgrTrans emt = new EntityMgrTrans(mgr);
 
         // verify that transaction was started
         verify(trans).begin();
@@ -123,7 +123,7 @@ public class EntityMgrTransTest {
 
         when(trans.getStatus()).thenReturn(Status.STATUS_ACTIVE);
 
-        EntityMgrTrans emt = new EntityMgrTrans(mgr);
+        final EntityMgrTrans emt = new EntityMgrTrans(mgr);
 
         // verify that transaction was not re-started started
         verify(trans, never()).begin();

@@ -20,6 +20,12 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,41 +33,34 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 /**
- * Drools Related Information
+ * Drools Related Information.
  * 
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ControllerConfiguration {
 
-	public static final String CONFIG_CONTROLLER_OPERATION_CREATE = "create";
-	public static final String CONFIG_CONTROLLER_OPERATION_UPDATE = "update";
-	public static final String CONFIG_CONTROLLER_OPERATION_LOCK = "lock";
-	public static final String CONFIG_CONTROLLER_OPERATION_UNLOCK = "unlock";
-	
+    public static final String CONFIG_CONTROLLER_OPERATION_CREATE = "create";
+    public static final String CONFIG_CONTROLLER_OPERATION_UPDATE = "update";
+    public static final String CONFIG_CONTROLLER_OPERATION_LOCK = "lock";
+    public static final String CONFIG_CONTROLLER_OPERATION_UNLOCK = "unlock";
+
     /**
-     * 
-     * (Required)
+     * (Required).
      * 
      */
     @JsonProperty("name")
     private String name;
     /**
      * Set of operations that can be applied to a controller: create, lock
-     * (Required)
+     * (Required).
      * 
      */
     @JsonProperty("operation")
     private String operation;
     /**
-     * Maven Related Information
+     * Maven Related Information.
      * 
      */
     @JsonProperty("drools")
@@ -71,18 +70,19 @@ public class ControllerConfiguration {
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
-     * No args constructor for use in serialization
+     * No args constructor for use in serialization.
      * 
      */
     public ControllerConfiguration() {
-    	// Empty
+        // Empty
     }
 
     /**
+     * Constructor.
      * 
-     * @param name
-     * @param drools
-     * @param operation
+     * @param name name
+     * @param operation operation
+     * @param drools drools
      */
     public ControllerConfiguration(String name, String operation, DroolsConfiguration drools) {
         this.name = name;
@@ -91,8 +91,7 @@ public class ControllerConfiguration {
     }
 
     /**
-     * 
-     * (Required)
+     * (Required).
      * 
      * @return
      *     The name
@@ -103,8 +102,7 @@ public class ControllerConfiguration {
     }
 
     /**
-     * 
-     * (Required)
+     * (Required).
      * 
      * @param name
      *     The name
@@ -121,7 +119,7 @@ public class ControllerConfiguration {
 
     /**
      * Set of operations that can be applied to a controller: create, lock
-     * (Required)
+     * (Required).
      * 
      * @return
      *     The operation
@@ -133,7 +131,7 @@ public class ControllerConfiguration {
 
     /**
      * Set of operations that can be applied to a controller: create, lock
-     * (Required)
+     * (Required).
      * 
      * @param operation
      *     The operation
@@ -149,7 +147,7 @@ public class ControllerConfiguration {
     }
 
     /**
-     * Maven Related Information
+     * Maven Related Information.
      * 
      * @return
      *     The drools
@@ -160,7 +158,7 @@ public class ControllerConfiguration {
     }
 
     /**
-     * Maven Related Information
+     * Maven Related Information.
      * 
      * @param drools
      *     The drools
@@ -224,24 +222,43 @@ public class ControllerConfiguration {
         }
     }
 
+    /**
+     * Get.
+     * 
+     * @param name name
+     * @return the object
+     */
     @SuppressWarnings({
         "unchecked"
-    })
-    public<T >T get(String name) {
+        })
+    public <T> T get(String name) {
         Object value = declaredPropertyOrNotFound(name, ControllerConfiguration.NOT_FOUND_VALUE);
-        if (ControllerConfiguration.NOT_FOUND_VALUE!= value) {
+        if (ControllerConfiguration.NOT_FOUND_VALUE != value) {
             return ((T) value);
         } else {
             return ((T) getAdditionalProperties().get(name));
         }
     }
 
+    /**
+     * Set the property.
+     * 
+     * @param name property name
+     * @param value property value
+     */
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
             getAdditionalProperties().put(name, (Object) value);
         }
     }
 
+    /**
+     * With - sets the property and additionally returns the object.
+     * 
+     * @param name property name
+     * @param value property value
+     * @return this
+     */
     public ControllerConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
             getAdditionalProperties().put(name, (Object) value);
@@ -251,7 +268,8 @@ public class ControllerConfiguration {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name).append(operation).append(drools).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(name).append(operation).append(drools).append(additionalProperties)
+                .toHashCode();
     }
 
     @Override
@@ -263,30 +281,50 @@ public class ControllerConfiguration {
             return false;
         }
         ControllerConfiguration rhs = ((ControllerConfiguration) other);
-        return new EqualsBuilder().append(name, rhs.name).append(operation, rhs.operation).append(drools, rhs.drools).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).append(operation, rhs.operation).append(drools, rhs.drools)
+                .append(additionalProperties, rhs.additionalProperties).isEquals();
     }
     
+    /**
+     * Call set name.
+     * 
+     * @param value value
+     */
     public void callSetName(Object value) {
         if (value instanceof String) {
             setName((String) value);
         } else {
-            throw new IllegalArgumentException("property \"name\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+            throw new IllegalArgumentException("property \"name\" is of type \"java.lang.String\", but got "
+                    + value.getClass().toString());
         }
     }
     
+    /**
+     * Call set operation.
+     * 
+     * @param value value
+     */
     public void callSetOperation(Object value) {
         if (value instanceof String) {
             setOperation((String) value);
         } else {
-            throw new IllegalArgumentException("property \"operation\" is of type \"java.lang.String\", but got "+ value.getClass().toString());
+            throw new IllegalArgumentException("property \"operation\" is of type \"java.lang.String\", but got "
+                    + value.getClass().toString());
         }
     }
     
+    /**
+     * Call set drools.
+     * 
+     * @param value value
+     */
     public void callSetDrools(Object value) {
         if (value instanceof DroolsConfiguration) {
             setDrools((DroolsConfiguration) value);
         } else {
-            throw new IllegalArgumentException("property \"drools\" is of type \"org.onap.policy.drools.protocol.configuration.Drools\", but got "+ value.getClass().toString());
+            throw new IllegalArgumentException("property \"drools\" is of type"
+                    + "\"org.onap.policy.drools.protocol.configuration.Drools\", but got "
+                    + value.getClass().toString());
         }
     }
 
