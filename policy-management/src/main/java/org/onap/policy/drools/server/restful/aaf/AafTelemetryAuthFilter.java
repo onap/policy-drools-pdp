@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.onap.policy.common.utils.network.NetworkUtil;
 
 /**
- * AAF Telemetry Authorization
+ * AAF Telemetry Authorization.
  */
 public class AafTelemetryAuthFilter extends AafBase {
     private static final String RESOURCE_TYPE = AAF_ROOT_PERMISSION + "." + "telemetry";
