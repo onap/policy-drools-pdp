@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_9061d4d5",
+        "filename": "api-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeatureAPI.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-29T00:14:50Z",
+      "side": 0,
+      "message": "why didn\u0027t it like the comments??",
+      "revId": "367f9d25434202a4fd6f5e54cb19196c7ec3d058",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_b05e5811",
+        "filename": "api-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeatureAPI.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-29T00:14:50Z",
+      "side": 0,
+      "message": "this doesn\u0027t make sense - why do we have to remove the comments?",
+      "revId": "367f9d25434202a4fd6f5e54cb19196c7ec3d058",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_504dac71",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPDPIntegrityMonitor.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-09-29T00:14:50Z",
+      "side": 0,
+      "message": "did checkstyle require this to be removed?  It\u0027s nice to know what exceptions a method throws, even if they\u0027re subclasses of RuntimeException",
+      "revId": "367f9d25434202a4fd6f5e54cb19196c7ec3d058",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
