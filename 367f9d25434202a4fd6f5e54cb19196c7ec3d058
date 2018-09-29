@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "bada0100_30a4a856",
+        "filename": "api-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeatureAPI.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-09-29T06:15:19Z",
+      "side": 0,
+      "message": "It said they were illegal. I played with them thinking there was a syntax error, even tried to rewrite with nothing. But the checkstyle didn\u0027t go away until I removed them.\n\"Forbidden summary fragment\" was the message",
+      "parentUuid": "bada0100_9061d4d5",
+      "revId": "367f9d25434202a4fd6f5e54cb19196c7ec3d058",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bada0100_b05e5811",
         "filename": "api-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeatureAPI.java",
         "patchSetId": 8
