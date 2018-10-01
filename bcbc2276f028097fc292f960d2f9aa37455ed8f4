@@ -94,6 +94,30 @@
       "revId": "bcbc2276f028097fc292f960d2f9aa37455ed8f4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_d9c30789",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-10-01T13:58:29Z",
+      "side": 1,
+      "message": "Your right, we shouldn\u0027t have done that. I don\u0027t think folks realized that downstream issues would arise. Jim changed it back, but the test still fails. Perhaps we missed a spot?",
+      "parentUuid": "bada0100_b98c0381",
+      "range": {
+        "startLine": 288,
+        "startChar": 8,
+        "endLine": 295,
+        "endChar": 36
+      },
+      "revId": "bcbc2276f028097fc292f960d2f9aa37455ed8f4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
