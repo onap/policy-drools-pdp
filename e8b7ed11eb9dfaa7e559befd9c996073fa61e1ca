@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_7963fbb1",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-10-01T14:10:48Z",
+      "side": 1,
+      "message": "Whoops my bad!!!!",
+      "range": {
+        "startLine": 294,
+        "startChar": 8,
+        "endLine": 298,
+        "endChar": 70
+      },
+      "revId": "e8b7ed11eb9dfaa7e559befd9c996073fa61e1ca",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
