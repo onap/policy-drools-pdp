@@ -48,7 +48,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
     @Override
     public boolean afterStart(PolicyEngine engine) {
         try {
-            HealthCheck.monitor.start();
+            getMonitor().start();
         } catch (IllegalStateException e) {
             logger.error("Healthcheck Monitor cannot be started", e);
         }
@@ -59,7 +59,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureAPI {
     @Override
     public boolean afterShutdown(PolicyEngine engine) {
         try {
-            HealthCheck.monitor.stop();
+            getMonitor().stop();
         } catch (IllegalStateException e) {
             logger.error("Healthcheck Monitor cannot be stopped", e);
         }

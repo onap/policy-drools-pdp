@@ -40,7 +40,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
         logger.info("TEST_TRANSACTION FEATURE LOADED");
 
         if (controller.isAlive() && !controller.isLocked() && controller.getDrools().isBrained()) {
-            TestTransaction.manager.register(controller);
+            getTestTransMgr().register(controller);
         }
         return false;
     }
@@ -49,7 +49,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
     public boolean afterLock(PolicyController controller) {
         logger.info("controller {} locked", controller.getName());
 
-        TestTransaction.manager.unregister(controller);
+        getTestTransMgr().unregister(controller);
         return false;
     }
 
@@ -58,7 +58,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
         logger.info("controller {} unlocked", controller.getName());
 
         if (controller.isAlive() && !controller.isLocked() && controller.getDrools().isBrained()) {
-            TestTransaction.manager.register(controller);
+            getTestTransMgr().register(controller);
         }
 
         return false;
@@ -68,7 +68,7 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
     public boolean beforeStop(PolicyController controller) {
         logger.info("controller {} stopping", controller.getName());
 
-        TestTransaction.manager.unregister(controller);
+        getTestTransMgr().unregister(controller);
 
         return false;
     }
@@ -76,5 +76,13 @@ public class TestTransactionFeature implements PolicyControllerFeatureAPI {
     @Override
     public int getSequenceNumber() {
         return 1000;
+    }
+
+    /**
+     * Gets the test transaction manager.
+     * @return the test transaction manager
+     */
+    protected TestTransaction getTestTransMgr() {
+        return TestTransaction.manager;
     }
 }

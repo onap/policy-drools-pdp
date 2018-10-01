@@ -21,8 +21,12 @@
 package org.onap.policy.drools.healthcheck;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,6 +59,8 @@ public class HealthCheckFeatureTest {
 
     private static final Path healthCheckPropsBackupPath = Paths
             .get(SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE + ".bak");
+
+    private static final String EXPECTED = "expected exception";
 
 
     /**
@@ -148,6 +154,41 @@ public class HealthCheckFeatureTest {
 
     }
 
+    @Test
+    public void testGetSequenceNumber() {
+        assertEquals(1000, new HealthCheckFeature().getSequenceNumber());
+    }
+
+    @Test
+    public void testAfterStart() {
+        HealthCheck checker = mock(HealthCheck.class);
+        HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
+        
+        // without exception
+        assertFalse(feature.afterStart(null));
+        verify(checker).start();
+        verify(checker, never()).stop();
+        
+        // with exception
+        doThrow(new IllegalStateException(EXPECTED)).when(checker).start();
+        assertFalse(feature.afterStart(null));
+    }
+
+    @Test
+    public void testAfterShutdown() {
+        HealthCheck checker = mock(HealthCheck.class);
+        HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
+        
+        // without exception
+        assertFalse(feature.afterShutdown(null));
+        verify(checker).stop();
+        verify(checker, never()).start();
+        
+        // with exception
+        doThrow(new IllegalStateException(EXPECTED)).when(checker).stop();
+        assertFalse(feature.afterShutdown(null));
+    }
+
 
     /**
      * setup up config directory.
@@ -191,4 +232,20 @@ public class HealthCheckFeatureTest {
         }
     }
 
+    /**
+     * Features that returns a particular monitor.
+     */
+    private static class HealthCheckFeatureImpl extends HealthCheckFeature {
+        private final HealthCheck checker;
+        
+        public HealthCheckFeatureImpl(HealthCheck checker) {
+            this.checker = checker;
+        }
+
+        @Override
+        public HealthCheck getMonitor() {
+            return checker;
+        }
+        
+    }
 }
