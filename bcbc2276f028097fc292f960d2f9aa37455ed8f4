@@ -118,6 +118,30 @@
       "revId": "bcbc2276f028097fc292f960d2f9aa37455ed8f4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_b9688388",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-10-01T14:34:57Z",
+      "side": 1,
+      "message": "Yep, my bad.  Ueb \u0026 Noop Factories both throw IllegalStateException in that case, so I tried to make Dmaap Factory consistent with that and obviously broke something.  The change has been reverted back.  Why someone chose to make these factories behave differently is another matter.",
+      "parentUuid": "bada0100_d9c30789",
+      "range": {
+        "startLine": 288,
+        "startChar": 8,
+        "endLine": 295,
+        "endChar": 36
+      },
+      "revId": "bcbc2276f028097fc292f960d2f9aa37455ed8f4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
