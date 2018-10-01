@@ -205,10 +205,12 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
         }
     }
 
+    @Override
     public String getHost() {
         return host;
     }
 
+    @Override
     public String getTopic() {
         return topic;
     }
@@ -232,10 +234,8 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Indicates that the controller is about to start. Starts the publisher for the
      * internal topic, and creates a thread pool for the timers.
-     * 
-     * @throws PoolingFeatureException if the internal topic publisher cannot be started
      */
-    public void beforeStart() throws PoolingFeatureException {
+    public void beforeStart() {
         synchronized (curLocker) {
             if (scheduler == null) {
                 dmaapMgr.startPublisher();

@@ -21,12 +21,19 @@
 package org.onap.policy.distributed.locking;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,6 +50,10 @@ public class TargetLockTest {
             "jdbc:h2:mem:pooling;INIT=CREATE SCHEMA IF NOT EXISTS pooling\\;SET SCHEMA pooling";
     private static final String DB_USER = "user";
     private static final String DB_PASSWORD = "password";
+    private static final String EXPECTED = "expected exception";
+    private static final String MY_RESOURCE = "my-resource-id";
+    private static final String MY_OWNER = "my-owner";
+    private static final UUID MY_UUID = UUID.randomUUID();
     private static Connection conn = null;
     private static DistributedLockingFeature distLockFeat;
 
@@ -139,7 +150,64 @@ public class TargetLockTest {
     }
 
     @Test
-    public void testUpdateLock() throws InterruptedException, ExecutionException {
+    public void testSecondGrab_UpdateOk() throws Exception {
+        PreparedStatement grabLockInsert = mock(PreparedStatement.class);
+        when(grabLockInsert.executeUpdate()).thenThrow(new SQLException(EXPECTED));
+
+        PreparedStatement secondGrabUpdate = mock(PreparedStatement.class);
+        when(secondGrabUpdate.executeUpdate()).thenReturn(1);
+
+        Connection connMock = mock(Connection.class);
+        when(connMock.prepareStatement(anyString())).thenReturn(grabLockInsert, secondGrabUpdate);
+
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenReturn(connMock);
+
+        assertTrue(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).lock(MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testSecondGrab_UpdateFail_InsertOk() throws Exception {
+        PreparedStatement grabLockInsert = mock(PreparedStatement.class);
+        when(grabLockInsert.executeUpdate()).thenThrow(new SQLException(EXPECTED));
+
+        PreparedStatement secondGrabUpdate = mock(PreparedStatement.class);
+        when(secondGrabUpdate.executeUpdate()).thenReturn(0);
+
+        PreparedStatement secondGrabInsert = mock(PreparedStatement.class);
+        when(secondGrabInsert.executeUpdate()).thenReturn(1);
+
+        Connection connMock = mock(Connection.class);
+        when(connMock.prepareStatement(anyString())).thenReturn(grabLockInsert, secondGrabUpdate, secondGrabInsert);
+
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenReturn(connMock);
+
+        assertTrue(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).lock(MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testSecondGrab_UpdateFail_InsertFail() throws Exception {
+        PreparedStatement grabLockInsert = mock(PreparedStatement.class);
+        when(grabLockInsert.executeUpdate()).thenThrow(new SQLException(EXPECTED));
+
+        PreparedStatement secondGrabUpdate = mock(PreparedStatement.class);
+        when(secondGrabUpdate.executeUpdate()).thenReturn(0);
+
+        PreparedStatement secondGrabInsert = mock(PreparedStatement.class);
+        when(secondGrabInsert.executeUpdate()).thenReturn(0);
+
+        Connection connMock = mock(Connection.class);
+        when(connMock.prepareStatement(anyString())).thenReturn(grabLockInsert, secondGrabUpdate, secondGrabInsert);
+
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenReturn(connMock);
+
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).lock(MAX_AGE_SEC));
+    }
+
+    @Test
+    public void testUpdateLock() throws Exception {
         // not locked yet - refresh should fail
         assertEquals(
                 OperResult.OPER_DENIED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
@@ -160,10 +228,6 @@ public class TargetLockTest {
                   "UPDATE pooling.locks SET expirationTime = timestampadd(second, -1, now()) WHERE resourceId = ?"); ) {
             updateStatement.setString(1, "resource1");
             updateStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error in TargetLockTest.testGrabLockSuccess()", e);
-            throw new RuntimeException(e);
         }
 
         // refresh should fail now
@@ -171,19 +235,29 @@ public class TargetLockTest {
                 OperResult.OPER_DENIED, distLockFeat.beforeRefresh("resource1", "owner1", MAX_AGE_SEC));
 
         assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+
+        // test exception case
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenThrow(new SQLException(EXPECTED));
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).refresh(MAX_AGE_SEC));
     }
 
     @Test
-    public void testUnlock() throws InterruptedException, ExecutionException {
+    public void testUnlock() throws Exception {
         distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
 
         assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeUnlock("resource1", "owner1"));
         assertEquals(
                 OperResult.OPER_ACCEPTED, distLockFeat.beforeLock("resource1", "owner2", MAX_AGE_SEC));
+
+        // test exception case
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenThrow(new SQLException(EXPECTED));
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).unlock());
     }
 
     @Test
-    public void testIsActive() {
+    public void testIsActive() throws Exception {
         assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
         distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
         assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
@@ -195,10 +269,6 @@ public class TargetLockTest {
                   "UPDATE pooling.locks SET expirationTime = timestampadd(second, -5, now()) WHERE resourceId = ?"); ) {
             updateStatement.setString(1, "resource1");
             updateStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            logger.error("Error in TargetLockTest.testIsActive()", e);
-            throw new RuntimeException(e);
         }
 
         assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
@@ -207,6 +277,20 @@ public class TargetLockTest {
         // Unlock record, next isActive attempt should fail
         distLockFeat.beforeUnlock("resource1", "owner1");
         assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLockedBy("resource1", "owner1"));
+
+        // test exception case for outer "try"
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenThrow(new SQLException(EXPECTED));
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).isActive());
+
+        // test exception case for inner "try"
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        when(stmt.executeQuery()).thenThrow(new SQLException(EXPECTED));
+        Connection connMock = mock(Connection.class);
+        when(connMock.prepareStatement(anyString())).thenReturn(stmt);
+        dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenReturn(connMock);
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).isActive());
     }
 
     @Test
@@ -218,10 +302,24 @@ public class TargetLockTest {
     }
 
     @Test
-    public void testIsLocked() {
+    public void testIsLocked() throws Exception {
         assertEquals(OperResult.OPER_DENIED, distLockFeat.beforeIsLocked("resource1"));
         distLockFeat.beforeLock("resource1", "owner1", MAX_AGE_SEC);
         assertEquals(OperResult.OPER_ACCEPTED, distLockFeat.beforeIsLocked("resource1"));
+
+        // test exception case for outer "try"
+        BasicDataSource dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenThrow(new SQLException(EXPECTED));
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).isLocked());
+
+        // test exception case for inner "try"
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        when(stmt.executeQuery()).thenThrow(new SQLException(EXPECTED));
+        Connection connMock = mock(Connection.class);
+        when(connMock.prepareStatement(anyString())).thenReturn(stmt);
+        dataSrc = mock(BasicDataSource.class);
+        when(dataSrc.getConnection()).thenReturn(connMock);
+        assertFalse(new TargetLock(MY_RESOURCE, MY_UUID, MY_OWNER, dataSrc).isLocked());
     }
 
     private static void getDbConnection() {
