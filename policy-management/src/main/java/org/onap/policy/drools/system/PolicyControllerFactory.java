@@ -218,8 +218,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 
         /* A PolicyController does not exist */
 
-        PolicyController controller =
-                new AggregatedPolicyController(name, properties);
+        PolicyController controller = newPolicyController(name, properties);
 
         String coordinates = toKey(controller.getDrools().getGroupId(),
                                    controller.getDrools().getArtifactId());
@@ -254,9 +253,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 
         this.patch(controller, droolsConfig);
 
-        if (logger.isInfoEnabled()) {
-            logger.info("UPDATED drools configuration: {} on {}", droolsConfig, this);
-        }
+        logger.info("UPDATED drools configuration: {} on {}", droolsConfig, this);
 
         return controller;
     }
@@ -281,9 +278,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
             throw new IllegalArgumentException("Cannot update drools configuration Drools Configuration");
         }
 
-        if (logger.isInfoEnabled()) {
-            logger.info("UPDATED drools configuration: {} on {}", droolsConfig, this);
-        }
+        logger.info("UPDATED drools configuration: {} on {}", droolsConfig, this);
 
         String coordinates = toKey(controller.getDrools().getGroupId(),
                                    controller.getDrools().getArtifactId());
@@ -484,7 +479,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     @Override
     public List<String> getFeatures() {
         List<String> features = new ArrayList<>();
-        for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             features.add(feature.getName());
         }
         return features;
@@ -496,7 +491,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     @JsonIgnore
     @Override
     public List<PolicyControllerFeatureAPI> getFeatureProviders() {
-        return PolicyControllerFeatureAPI.providers.getList();
+        return getProviders();
     }
 
     /**
@@ -508,7 +503,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
             throw new IllegalArgumentException("A feature name must be provided");
         }
         
-        for (PolicyControllerFeatureAPI feature : PolicyControllerFeatureAPI.providers.getList()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             if (feature.getName().equals(featureName)) {
                 return feature;
             }
@@ -519,5 +514,15 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 
     private IllegalArgumentException makeArgEx(String argName) {
         return new IllegalArgumentException("Invalid " + argName);
+    }
+    
+    // these methods can be overridden by junit tests
+        
+    protected PolicyController newPolicyController(String name, Properties properties) {
+        return new AggregatedPolicyController(name, properties);
+    }
+
+    protected List<PolicyControllerFeatureAPI> getProviders() {
+        return PolicyControllerFeatureAPI.providers.getList();
     }
 }

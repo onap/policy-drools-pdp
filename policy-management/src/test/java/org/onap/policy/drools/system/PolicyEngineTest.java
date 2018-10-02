@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.system.test;
+package org.onap.policy.drools.system;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
