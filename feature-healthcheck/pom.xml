@@ -18,147 +18,147 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-         
-  <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
-    <groupId>org.onap.policy.drools-pdp</groupId>
-    <artifactId>drools-pdp</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>feature-healthcheck</artifactId>
-  
-  <name>feature-healthcheck</name>
-  <description>Loadable module that performs remote system healthchecks</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <properties>
-          <maven.compiler.source>1.8</maven.compiler.source>
-          <maven.compiler.target>1.8</maven.compiler.target>
-  </properties>
+    <modelVersion>4.0.0</modelVersion>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>zipfile</id>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <attach>true</attach>
-              <finalName>${project.artifactId}-${project.version}</finalName>
-              <descriptors>
-                <descriptor>src/assembly/assemble_zip.xml</descriptor>
-              </descriptors>
-              <appendAssemblyId>false</appendAssemblyId>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <configuration>
-              <transitive>false</transitive>
-              <outputDirectory>${project.build.directory}/assembly/lib</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <overWriteIfNewer>true</overWriteIfNewer>
-              <useRepositoryLayout>false</useRepositoryLayout>
-              <addParentPoms>false</addParentPoms>
-              <copyPom>false</copyPom>
-			  <includeScope>runtime</includeScope>
-			  <excludeTransitive>true</excludeTransitive>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-          <plugin>
-              <artifactId>maven-checkstyle-plugin</artifactId>
-              <executions>
-                  <execution>
-                      <id>onap-java-style</id>
-                      <goals>
-                          <goal>check</goal>
-                      </goals>
-                      <phase>process-sources</phase>
-                      <configuration>
-                          <!-- Use Google Java Style Guide: https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml 
-                              with minor changes -->
-                          <configLocation>onap-checkstyle/onap-java-style.xml</configLocation>
-                          <!-- <sourceDirectory> is needed so that checkstyle ignores the generated sources directory -->
-                          <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                          <includeResources>true</includeResources>
-                          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                          <includeTestResources>true</includeTestResources>
-                          <excludes>
-                          </excludes>
-                          <suppressionsLocation>${project.baseUri}checkstyle-suppressions.xml</suppressionsLocation>
-                          <consoleOutput>true</consoleOutput>
-                          <failsOnViolation>true</failsOnViolation>
-                          <violationSeverity>warning</violationSeverity>
-                      </configuration>
-                  </execution>
-              </executions>
-              <dependencies>
-                  <dependency>
-                      <groupId>org.onap.oparent</groupId>
-                      <artifactId>checkstyle</artifactId>
-                      <version>${oparent.version}</version>
-                      <scope>compile</scope>
-                  </dependency>
-              </dependencies>
-          </plugin>
-    </plugins>
-  </build>
+    <parent>
+        <groupId>org.onap.policy.drools-pdp</groupId>
+        <artifactId>drools-pdp</artifactId>
+        <version>1.3.0-SNAPSHOT</version>
+    </parent>
 
-  <dependencies>
-	<dependency>
-		<groupId>io.swagger</groupId>
-		<artifactId>swagger-jersey2-jaxrs</artifactId>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
-	       <groupId>org.onap.policy.drools-pdp</groupId>
-	       <artifactId>policy-core</artifactId>
-	       <version>${project.version}</version>
-	       <scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.onap.policy.common</groupId>
-		<artifactId>policy-endpoints</artifactId>
-		<version>${project.version}</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.onap.policy.drools-pdp</groupId>
-		<artifactId>policy-management</artifactId>
-		<version>${project.version}</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<scope>test</scope>
-	</dependency>
-    <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-api-mockito</artifactId>
-        <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <artifactId>feature-healthcheck</artifactId>
+
+    <name>feature-healthcheck</name>
+    <description>Loadable module that performs remote system healthchecks</description>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>zipfile</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <attach>true</attach>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <descriptors>
+                                <descriptor>src/assembly/assemble_zip.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <transitive>false</transitive>
+                            <outputDirectory>${project.build.directory}/assembly/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <useRepositoryLayout>false</useRepositoryLayout>
+                            <addParentPoms>false</addParentPoms>
+                            <copyPom>false</copyPom>
+                            <includeScope>runtime</includeScope>
+                            <excludeTransitive>true</excludeTransitive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>onap-java-style</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <!-- Use Google Java Style Guide: https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml 
+                                with minor changes -->
+                            <configLocation>onap-checkstyle/onap-java-style.xml</configLocation>
+                            <!-- <sourceDirectory> is needed so that checkstyle ignores the generated sources directory -->
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                            <includeResources>true</includeResources>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeTestResources>true</includeTestResources>
+                            <excludes>
+                            </excludes>
+                            <suppressionsLocation>${project.baseUri}checkstyle-suppressions.xml</suppressionsLocation>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnViolation>true</failsOnViolation>
+                            <violationSeverity>warning</violationSeverity>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.onap.oparent</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${oparent.version}</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jersey2-jaxrs</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.policy.drools-pdp</groupId>
+            <artifactId>policy-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.policy.common</groupId>
+            <artifactId>policy-endpoints</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.policy.drools-pdp</groupId>
+            <artifactId>policy-management</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
