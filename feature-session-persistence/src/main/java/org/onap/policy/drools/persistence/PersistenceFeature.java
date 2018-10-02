@@ -543,8 +543,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
                 logger.error("Clean up of sessioninfo table failed", e);
             }
 
-            // TODO: delete DroolsSessionEntity where sessionId not in
-            // (sessinfo.xxx)
+            // delete DroolsSessionEntity where sessionId not in (sessinfo.xxx)?
 
             sessInfoCleaned = true;
         }

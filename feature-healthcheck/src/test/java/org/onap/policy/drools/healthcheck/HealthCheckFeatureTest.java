@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,12 @@
 package org.onap.policy.drools.healthcheck;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,7 +35,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,11 +54,13 @@ public class HealthCheckFeatureTest {
      */
     private static final String HEALTH_CHECK_PROPERTIES_FILE = "feature-healthcheck.properties";
 
-    private static final Path healthCheckPropsPath =
-            Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE);
+    private static final Path healthCheckPropsPath = Paths
+                    .get(SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE);
 
-    private static final Path healthCheckPropsBackupPath = Paths
-            .get(SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE + ".bak");
+    private static final Path healthCheckPropsBackupPath = Paths.get(
+                    SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE + ".bak");
+
+    private static final String EXPECTED = "expected exception";
 
 
     /**
@@ -65,47 +71,47 @@ public class HealthCheckFeatureTest {
     private static Properties httpProperties = new Properties();
 
     /**
-     * Set up. 
+     * Set up.
      */
     @BeforeClass
     public static void setup() {
 
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES, "HEALTHCHECK");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
         httpProperties.setProperty(
-                PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX,
-                org.onap.policy.drools.healthcheck.RestMockHealthCheck.class.getName());
+                        PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
+                                        + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX,
+                        org.onap.policy.drools.healthcheck.RestMockHealthCheck.class.getName());
         httpProperties.setProperty(
-                PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                    + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
-                org.onap.policy.drools.healthcheck.TestAafHealthCheckFilter.class.getName());
+                        PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
+                                        + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
+                        org.onap.policy.drools.healthcheck.TestAafHealthCheckFilter.class.getName());
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
+                        + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
 
 
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES, "HEALTHCHECK");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_URL_SUFFIX, "healthcheck/test");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_URL_SUFFIX, "healthcheck/test");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_HTTPS_SUFFIX, "false");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_HTTPS_SUFFIX, "false");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
+                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
         httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
+                        + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
 
         configDirSetup();
 
@@ -146,6 +152,41 @@ public class HealthCheckFeatureTest {
 
         feature.afterShutdown(PolicyEngine.manager);
 
+    }
+
+    @Test
+    public void testGetSequenceNumber() {
+        assertEquals(1000, new HealthCheckFeature().getSequenceNumber());
+    }
+
+    @Test
+    public void testAfterStart() {
+        HealthCheck checker = mock(HealthCheck.class);
+        HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
+
+        // without exception
+        assertFalse(feature.afterStart(null));
+        verify(checker).start();
+        verify(checker, never()).stop();
+
+        // with exception
+        doThrow(new IllegalStateException(EXPECTED)).when(checker).start();
+        assertFalse(feature.afterStart(null));
+    }
+
+    @Test
+    public void testAfterShutdown() {
+        HealthCheck checker = mock(HealthCheck.class);
+        HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
+
+        // without exception
+        assertFalse(feature.afterShutdown(null));
+        verify(checker).stop();
+        verify(checker, never()).start();
+
+        // with exception
+        doThrow(new IllegalStateException(EXPECTED)).when(checker).stop();
+        assertFalse(feature.afterShutdown(null));
     }
 
 
@@ -191,4 +232,20 @@ public class HealthCheckFeatureTest {
         }
     }
 
+    /**
+     * Feature that returns a particular monitor.
+     */
+    private static class HealthCheckFeatureImpl extends HealthCheckFeature {
+        private final HealthCheck checker;
+
+        public HealthCheckFeatureImpl(HealthCheck checker) {
+            this.checker = checker;
+        }
+
+        @Override
+        public HealthCheck getMonitor() {
+            return checker;
+        }
+
+    }
 }

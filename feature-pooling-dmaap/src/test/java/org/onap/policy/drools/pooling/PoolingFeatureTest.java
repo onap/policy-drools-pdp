@@ -478,11 +478,11 @@ public class PoolingFeatureTest {
         assertFalse(pool.beforeStart(controllerDisabled));
     }
 
-    @Test(expected = PoolingFeatureRtException.class)
+    @Test(expected = RuntimeException.class)
     public void testDoManager_Ex() throws Exception {
 
         // generate exception
-        doThrow(new PoolingFeatureException()).when(mgr1).beforeStart();
+        doThrow(new RuntimeException()).when(mgr1).beforeStart();
 
         pool.beforeStart(controller1);
     }

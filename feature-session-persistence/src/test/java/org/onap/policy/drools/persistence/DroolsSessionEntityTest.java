@@ -103,6 +103,9 @@ public class DroolsSessionEntityTest {
     @Test
     public void testEqualsObject() {
         DroolsSessionEntity entity = makeEnt("mynameA", 1);
+        
+        // diff object type
+        assertFalse(entity.equals("hello"));
 
         // reflexive
         assertTrue(entity.equals(entity));

@@ -134,7 +134,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureAPI, Policy
      * @return a new, pooled data source
      * @throws Exception exception
      */
-    private BasicDataSource makeDataSource() throws Exception {
+    protected BasicDataSource makeDataSource() throws Exception {
         Properties props = new Properties();
         props.put("driverClassName", lockProps.getDbDriver());
         props.put("url", lockProps.getDbUrl());
