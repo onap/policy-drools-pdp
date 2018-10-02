@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bada0100_1779532f",
+        "filename": "feature-healthcheck/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-10-02T19:36:56Z",
+      "side": 1,
+      "message": "Didn\u0027t bother fixing existing lines - will fix it in the next review.",
+      "parentUuid": "bada0100_d79bcb70",
+      "range": {
+        "startLine": 147,
+        "startChar": 0,
+        "endLine": 147,
+        "endChar": 2
+      },
+      "revId": "eac53deaf9aec175e36f32bef30919392227f8e5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bada0100_37825701",
         "filename": "feature-healthcheck/pom.xml",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2018-10-02T19:27:31Z",
       "side": 1,
       "message": "Just wondering where you were using PowerMock. When I used it to mock a constructor the code that was tested didn\u0027t show up on code coverage. However, I don\u0027t see you using PowerMock in any of the test classes.",
+      "range": {
+        "startLine": 157,
+        "startChar": 4,
+        "endLine": 161,
+        "endChar": 17
+      },
+      "revId": "eac53deaf9aec175e36f32bef30919392227f8e5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_b775e733",
+        "filename": "feature-healthcheck/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-10-02T19:36:56Z",
+      "side": 1,
+      "message": "As long as you don\u0027t mockStatic() (or equivalent) the class being tested, it will still show coverage.\n\nThis particular dependency was included as a simple way to include mockito, while ensuring the version of mockito that\u0027s included is the same as the version that powermock uses, in case powermock facilities are used in the future (which will happen with the next review).",
+      "parentUuid": "bada0100_37825701",
       "range": {
         "startLine": 157,
         "startChar": 4,
