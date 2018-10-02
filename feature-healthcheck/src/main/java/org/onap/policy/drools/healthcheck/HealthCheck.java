@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,9 @@ import javax.ws.rs.core.Response;
 
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -168,7 +170,7 @@ public interface HealthCheck extends Startable {
 
     /**
      * Perform a healthcheck.
-     * 
+     *
      * @return a report
      */
     public Reports healthCheck();
@@ -186,17 +188,17 @@ class HealthCheckMonitor implements HealthCheck {
     private static Logger logger = LoggerFactory.getLogger(HealthCheckMonitor.class);
 
     /**
-     * attached http servers.
+     * Attached http servers.
      */
     protected volatile List<HttpServletServer> servers = new ArrayList<>();
 
     /**
-     * attached http clients.
+     * Attached http clients.
      */
     protected volatile List<HttpClient> clients = new ArrayList<>();
 
     /**
-     * healthcheck configuration.
+     * Healthcheck configuration.
      */
     protected volatile Properties healthCheckProperties = null;
 
@@ -206,14 +208,15 @@ class HealthCheckMonitor implements HealthCheck {
     @Override
     public Reports healthCheck() {
         Reports reports = new Reports();
-        reports.setHealthy(PolicyEngine.manager.isAlive());
+        boolean thisEngineIsAlive = getEngineManager().isAlive();
+        reports.setHealthy(thisEngineIsAlive);
 
         HealthCheck.Report engineReport = new Report();
-        engineReport.setHealthy(PolicyEngine.manager.isAlive());
+        engineReport.setHealthy(thisEngineIsAlive);
         engineReport.setName("PDP-D");
         engineReport.setUrl("self");
-        engineReport.setCode(PolicyEngine.manager.isAlive() ? 200 : 500);
-        engineReport.setMessage(PolicyEngine.manager.isAlive() ? "alive" : "not alive");
+        engineReport.setCode(thisEngineIsAlive ? 200 : 500);
+        engineReport.setMessage(thisEngineIsAlive ? "alive" : "not alive");
         reports.getDetails().add(engineReport);
 
         for (HttpClient client : clients) {
@@ -248,10 +251,9 @@ class HealthCheckMonitor implements HealthCheck {
     public boolean start() {
 
         try {
-            this.healthCheckProperties =
-                    SystemPersistence.manager.getProperties(HealthCheckFeature.CONFIGURATION_PROPERTIES_NAME);
-            this.servers = HttpServletServer.factory.build(healthCheckProperties);
-            this.clients = HttpClient.factory.build(healthCheckProperties);
+            this.healthCheckProperties = getPersistentProperties(HealthCheckFeature.CONFIGURATION_PROPERTIES_NAME);
+            this.servers = getServerFactory().build(healthCheckProperties);
+            this.clients = getClientFactory().build(healthCheckProperties);
 
             for (HttpServletServer server : servers) {
                 startServer(server);
@@ -307,7 +309,7 @@ class HealthCheckMonitor implements HealthCheck {
 
     /**
      * Get servers.
-     * 
+     *
      * @return list of attached Http Servers
      */
     public List<HttpServletServer> getServers() {
@@ -316,7 +318,7 @@ class HealthCheckMonitor implements HealthCheck {
 
     /**
      * Get clients.
-     * 
+     *
      * @return list of attached Http Clients
      */
     public List<HttpClient> getClients() {
@@ -354,4 +356,21 @@ class HealthCheckMonitor implements HealthCheck {
         return builder.toString();
     }
 
+    // the following methods may be overridden by junit tests
+
+    protected PolicyEngine getEngineManager() {
+        return PolicyEngine.manager;
+    }
+
+    protected HttpServletServerFactory getServerFactory() {
+        return HttpServletServer.factory;
+    }
+
+    protected HttpClientFactory getClientFactory() {
+        return HttpClient.factory;
+    }
+
+    protected Properties getPersistentProperties(String propertyName) {
+        return SystemPersistence.manager.getProperties(propertyName);
+    }
 }
