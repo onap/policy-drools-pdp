@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_46b64b8c",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/system/internal/AggregatedPolicyControllerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 612,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-10-04T01:55:10Z",
+      "side": 1,
+      "message": "Nice!",
+      "range": {
+        "startLine": 599,
+        "startChar": 0,
+        "endLine": 612,
+        "endChar": 1
+      },
+      "revId": "08dc9c33a66b1bdf7c35696576fcb44e7e072eb6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
