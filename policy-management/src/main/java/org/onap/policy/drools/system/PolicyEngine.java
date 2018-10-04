@@ -38,6 +38,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -392,7 +393,7 @@ class PolicyEngineManager implements PolicyEngine {
     @Override
     public synchronized void boot(String[] cliArgs) {
 
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeBoot(this, cliArgs)) {
                     return;
@@ -404,12 +405,12 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            PolicyContainer.globalInit(cliArgs);
+            globalInitContainer(cliArgs);
         } catch (final Exception e) {
             logger.error("{}: cannot init policy-container because of {}", this, e.getMessage(), e);
         }
 
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterBoot(this)) {
                     return;
@@ -478,7 +479,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* policy-engine dispatch pre configure hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeConfigure(this, properties)) {
                     return;
@@ -492,7 +493,7 @@ class PolicyEngineManager implements PolicyEngine {
         this.properties = properties;
 
         try {
-            this.sources = TopicEndpoint.manager.addTopicSources(properties);
+            this.sources = getTopicEndpointManager().addTopicSources(properties);
             for (final TopicSource source : this.sources) {
                 source.register(this);
             }
@@ -501,19 +502,19 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            this.sinks = TopicEndpoint.manager.addTopicSinks(properties);
+            this.sinks = getTopicEndpointManager().addTopicSinks(properties);
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-sinks failed", this, e);
         }
 
         try {
-            this.httpServers = HttpServletServer.factory.build(properties);
+            this.httpServers = getServletFactory().build(properties);
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-http-servers failed", this, e);
         }
 
         /* policy-engine dispatch post configure hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterConfigure(this)) {
                     return;
@@ -571,7 +572,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         PolicyController controller;
-        for (final PolicyControllerFeatureAPI controllerFeature : PolicyControllerFeatureAPI.providers.getList()) {
+        for (final PolicyControllerFeatureAPI controllerFeature : getControllerProviders()) {
             try {
                 controller = controllerFeature.beforeCreate(tempName, properties);
                 if (controller != null) {
@@ -583,13 +584,13 @@ class PolicyEngineManager implements PolicyEngine {
             }
         }
 
-        controller = PolicyController.factory.build(tempName, properties);
+        controller = getControllerFactory().build(tempName, properties);
         if (this.isLocked()) {
             controller.lock();
         }
 
         // feature hook
-        for (final PolicyControllerFeatureAPI controllerFeature : PolicyControllerFeatureAPI.providers.getList()) {
+        for (final PolicyControllerFeatureAPI controllerFeature : getControllerProviders()) {
             try {
                 if (controllerFeature.afterCreate(controller)) {
                     return controller;
@@ -609,9 +610,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         final List<PolicyController> policyControllers = new ArrayList<>();
         if (configControllers == null || configControllers.isEmpty()) {
-            if (logger.isInfoEnabled()) {
-                logger.info("No controller configuration provided: " + configControllers);
-            }
+            logger.info("No controller configuration provided: {}", configControllers);
             return policyControllers;
         }
 
@@ -656,7 +655,7 @@ class PolicyEngineManager implements PolicyEngine {
             }
 
             try {
-                policyController = PolicyController.factory.get(controllerName);
+                policyController = getControllerFactory().get(controllerName);
             } catch (final IllegalArgumentException e) {
                 // not found
                 logger.warn("Policy Controller " + controllerName + " not found", e);
@@ -674,7 +673,7 @@ class PolicyEngineManager implements PolicyEngine {
                 logger.warn("controller {} does not exist. Attempting recovery from disk", controllerName);
 
                 final Properties controllerProperties =
-                        SystemPersistence.manager.getControllerProperties(controllerName);
+                        getPersistenceManager().getControllerProperties(controllerName);
 
                 /*
                  * returned properties cannot be null (per implementation) assert (properties !=
@@ -696,18 +695,18 @@ class PolicyEngineManager implements PolicyEngine {
                 controllerProperties.setProperty(DroolsProperties.RULES_ARTIFACTID, DroolsController.NO_ARTIFACT_ID);
                 controllerProperties.setProperty(DroolsProperties.RULES_VERSION, DroolsController.NO_VERSION);
 
-                policyController = PolicyEngine.manager.createPolicyController(controllerName, controllerProperties);
+                policyController = getPolicyEngine().createPolicyController(controllerName, controllerProperties);
 
                 /* fall through to do brain update operation */
             }
 
             switch (operation) {
                 case ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_CREATE:
-                    PolicyController.factory.patch(policyController, configController.getDrools());
+                    getControllerFactory().patch(policyController, configController.getDrools());
                     break;
                 case ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_UPDATE:
                     policyController.unlock();
-                    PolicyController.factory.patch(policyController, configController.getDrools());
+                    getControllerFactory().patch(policyController, configController.getDrools());
                     break;
                 case ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_LOCK:
                     policyController.lock();
@@ -736,7 +735,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean start() {
 
         /* policy-engine dispatch pre start hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeStart(this)) {
                     return true;
@@ -792,7 +791,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         /* Start Policy Controllers */
 
-        final List<PolicyController> controllers = PolicyController.factory.inventory();
+        final List<PolicyController> controllers = getControllerFactory().inventory();
         for (final PolicyController controller : controllers) {
             try {
                 if (!controller.start()) {
@@ -808,7 +807,7 @@ class PolicyEngineManager implements PolicyEngine {
         /* Start managed Topic Endpoints */
 
         try {
-            if (!TopicEndpoint.manager.start()) {
+            if (!getTopicEndpointManager().start()) {
                 success = false;
             }
         } catch (final IllegalStateException e) {
@@ -818,10 +817,10 @@ class PolicyEngineManager implements PolicyEngine {
 
         // Start the JMX listener
 
-        PdpJmxListener.start();
+        startPdpJmxListener();
 
         /* policy-engine dispatch after start hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterStart(this)) {
                     return success;
@@ -839,7 +838,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean stop() {
 
         /* policy-engine dispatch pre stop hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeStop(this)) {
                     return true;
@@ -859,7 +858,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         this.alive = false;
 
-        final List<PolicyController> controllers = PolicyController.factory.inventory();
+        final List<PolicyController> controllers = getControllerFactory().inventory();
         for (final PolicyController controller : controllers) {
             try {
                 if (!controller.stop()) {
@@ -894,7 +893,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* stop all managed topics sources and sinks */
-        if (!TopicEndpoint.manager.stop()) {
+        if (!getTopicEndpointManager().stop()) {
             success = false;
         }
 
@@ -908,9 +907,11 @@ class PolicyEngineManager implements PolicyEngine {
                 logger.error("{}: cannot start http-server {} because of {}", this, httpServer, e.getMessage(), e);
             }
         }
+        
+        // stop JMX?
 
         /* policy-engine dispatch pre stop hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterStop(this)) {
                     return success;
@@ -932,42 +933,11 @@ class PolicyEngineManager implements PolicyEngine {
          * ..) are stuck
          */
 
-        Thread exitThread = new Thread(new Runnable() {
-            private static final long SHUTDOWN_MAX_GRACE_TIME = 30000L;
-
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(SHUTDOWN_MAX_GRACE_TIME);
-                    logger.warn("{}: abnormal termination - shutdown graceful time period expiration",
-                            PolicyEngineManager.this);
-                } catch (final InterruptedException e) {
-                    /* courtesy to shutdown() to allow it to return */
-                    synchronized (PolicyEngineManager.this) {
-                    }
-                    logger.info("{}: finishing a graceful shutdown ", PolicyEngineManager.this, e);
-                } finally {
-                    /*
-                     * shut down the Policy Engine owned http servers as the very last thing
-                     */
-                    for (final HttpServletServer httpServer : PolicyEngineManager.this.getHttpServers()) {
-                        try {
-                            httpServer.shutdown();
-                        } catch (final Exception e) {
-                            logger.error("{}: cannot shutdown http-server {} because of {}", PolicyEngineManager.this,
-                                    httpServer, e.getMessage(), e);
-                        }
-                    }
-
-                    logger.info("{}: exit", PolicyEngineManager.this);
-                    System.exit(0);
-                }
-            }
-        });
+        Thread exitThread = makeShutdownThread();
         exitThread.start();
 
         /* policy-engine dispatch pre shutdown hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeShutdown(this)) {
                     return;
@@ -999,16 +969,16 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* Shutdown managed resources */
-        PolicyController.factory.shutdown();
-        TopicEndpoint.manager.shutdown();
-        HttpServletServer.factory.destroy();
+        getControllerFactory().shutdown();
+        getTopicEndpointManager().shutdown();
+        getServletFactory().destroy();
 
         // Stop the JMX listener
 
-        PdpJmxListener.stop();
+        stopPdpJmxListener();
 
         /* policy-engine dispatch post shutdown hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterShutdown(this)) {
                     return;
@@ -1022,6 +992,52 @@ class PolicyEngineManager implements PolicyEngine {
         exitThread.interrupt();
         logger.info("{}: normal termination", this);
     }
+    
+    /**
+     * Thread that shuts down http servers.
+     */
+    protected class ShutdownThread extends Thread {
+        private static final long SHUTDOWN_MAX_GRACE_TIME = 30000L;
+
+        @Override
+        public void run() {
+            try {
+                doSleep(SHUTDOWN_MAX_GRACE_TIME);
+                logger.warn("{}: abnormal termination - shutdown graceful time period expiration",
+                        PolicyEngineManager.this);
+            } catch (final InterruptedException e) {
+                /* courtesy to shutdown() to allow it to return */
+                synchronized (PolicyEngineManager.this) {
+                }
+                logger.info("{}: finishing a graceful shutdown ", PolicyEngineManager.this, e);
+            } finally {
+                /*
+                 * shut down the Policy Engine owned http servers as the very last thing
+                 */
+                for (final HttpServletServer httpServer : PolicyEngineManager.this.getHttpServers()) {
+                    try {
+                        httpServer.shutdown();
+                    } catch (final Exception e) {
+                        logger.error("{}: cannot shutdown http-server {} because of {}", PolicyEngineManager.this,
+                                httpServer, e.getMessage(), e);
+                    }
+                }
+
+                logger.info("{}: exit", PolicyEngineManager.this);
+                doExit(0);
+            }
+        }
+        
+        // these may be overridden by junit tests
+
+        protected void doSleep(long sleepMs) throws InterruptedException {
+            Thread.sleep(sleepMs);
+        }
+        
+        protected void doExit(int code) {
+            System.exit(code);
+        }
+    }
 
     @Override
     public boolean isAlive() {
@@ -1032,7 +1048,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean lock() {
 
         /* policy-engine dispatch pre lock hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeLock(this)) {
                     return true;
@@ -1050,7 +1066,7 @@ class PolicyEngineManager implements PolicyEngine {
         this.locked = true;
 
         boolean success = true;
-        final List<PolicyController> controllers = PolicyController.factory.inventory();
+        final List<PolicyController> controllers = getControllerFactory().inventory();
         for (final PolicyController controller : controllers) {
             try {
                 success = controller.lock() && success;
@@ -1060,10 +1076,10 @@ class PolicyEngineManager implements PolicyEngine {
             }
         }
 
-        success = TopicEndpoint.manager.lock() && success;
+        success = getTopicEndpointManager().lock() && success;
 
         /* policy-engine dispatch post lock hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterLock(this)) {
                     return success;
@@ -1081,7 +1097,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean unlock() {
 
         /* policy-engine dispatch pre unlock hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeUnlock(this)) {
                     return true;
@@ -1099,7 +1115,7 @@ class PolicyEngineManager implements PolicyEngine {
         this.locked = false;
 
         boolean success = true;
-        final List<PolicyController> controllers = PolicyController.factory.inventory();
+        final List<PolicyController> controllers = getControllerFactory().inventory();
         for (final PolicyController controller : controllers) {
             try {
                 success = controller.unlock() && success;
@@ -1110,10 +1126,10 @@ class PolicyEngineManager implements PolicyEngine {
             }
         }
 
-        success = TopicEndpoint.manager.unlock() && success;
+        success = getTopicEndpointManager().unlock() && success;
 
         /* policy-engine dispatch after unlock hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterUnlock(this)) {
                     return success;
@@ -1134,25 +1150,25 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     public void removePolicyController(String name) {
-        PolicyController.factory.destroy(name);
+        getControllerFactory().destroy(name);
     }
 
     @Override
     public void removePolicyController(PolicyController controller) {
-        PolicyController.factory.destroy(controller);
+        getControllerFactory().destroy(controller);
     }
 
     @JsonIgnore
     @Override
     public List<PolicyController> getPolicyControllers() {
-        return PolicyController.factory.inventory();
+        return getControllerFactory().inventory();
     }
 
     @JsonProperty("controllers")
     @Override
     public List<String> getPolicyControllerIds() {
         final List<String> controllerNames = new ArrayList<>();
-        for (final PolicyController controller : PolicyController.factory.inventory()) {
+        for (final PolicyController controller : getControllerFactory().inventory()) {
             controllerNames.add(controller.getName());
         }
         return controllerNames;
@@ -1185,7 +1201,7 @@ class PolicyEngineManager implements PolicyEngine {
     @Override
     public List<String> getFeatures() {
         final List<String> features = new ArrayList<>();
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             features.add(feature.getName());
         }
         return features;
@@ -1194,7 +1210,7 @@ class PolicyEngineManager implements PolicyEngine {
     @JsonIgnore
     @Override
     public List<PolicyEngineFeatureAPI> getFeatureProviders() {
-        return PolicyEngineFeatureAPI.providers.getList();
+        return getEngineProviders();
     }
 
     @Override
@@ -1203,7 +1219,7 @@ class PolicyEngineManager implements PolicyEngine {
             throw new IllegalArgumentException("A feature name must be provided");
         }
 
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             if (feature.getName().equals(featureName)) {
                 return feature;
             }
@@ -1246,8 +1262,8 @@ class PolicyEngineManager implements PolicyEngine {
             throw new IllegalStateException(ENGINE_LOCKED_MSG);
         }
 
-        final List<? extends TopicSink> topicSinks = TopicEndpoint.manager.getTopicSinks(topic);
-        if (topicSinks == null || topicSinks.isEmpty() || topicSinks.size() > 1) {
+        final List<? extends TopicSink> topicSinks = getTopicEndpointManager().getTopicSinks(topic);
+        if (topicSinks == null || topicSinks.size() != 1) {
             throw new IllegalStateException("Cannot ensure correct delivery on topic " + topic + ": " + topicSinks);
         }
 
@@ -1321,8 +1337,8 @@ class PolicyEngineManager implements PolicyEngine {
          * additional processing
          */
         try {
-            final DroolsController droolsController = EventProtocolCoder.manager.getDroolsController(topic, event);
-            final PolicyController controller = PolicyController.factory.get(droolsController);
+            final DroolsController droolsController = getProtocolCoder().getDroolsController(topic, event);
+            final PolicyController controller = getControllerFactory().get(droolsController);
             if (controller != null) {
                 return controller.deliver(busType, topic, event);
             }
@@ -1337,7 +1353,7 @@ class PolicyEngineManager implements PolicyEngine {
          * cannot route through the controller, send directly through the topic sink
          */
         try {
-            final String json = EventProtocolCoder.manager.encode(topic, event);
+            final String json = getProtocolCoder().encode(topic, event);
             return this.deliver(busType, topic, json);
 
         } catch (final Exception e) {
@@ -1367,7 +1383,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            final TopicSink sink = TopicEndpoint.manager.getTopicSink(busType, topic);
+            final TopicSink sink = getTopicEndpointManager().getTopicSink(busType, topic);
 
             if (sink == null) {
                 throw new IllegalStateException("Inconsistent State: " + this);
@@ -1386,7 +1402,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized void activate() {
 
         /* policy-engine dispatch pre activate hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeActivate(this)) {
                     return;
@@ -1414,7 +1430,7 @@ class PolicyEngineManager implements PolicyEngine {
         this.unlock();
 
         /* policy-engine dispatch post activate hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterActivate(this)) {
                     return;
@@ -1430,7 +1446,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized void deactivate() {
 
         /* policy-engine dispatch pre deactivate hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.beforeDeactivate(this)) {
                     return;
@@ -1453,7 +1469,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* policy-engine dispatch post deactivate hook */
-        for (final PolicyEngineFeatureAPI feature : PolicyEngineFeatureAPI.providers.getList()) {
+        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
             try {
                 if (feature.afterDeactivate(this)) {
                     return;
@@ -1487,6 +1503,55 @@ class PolicyEngineManager implements PolicyEngine {
         return "PolicyEngineManager [alive=" + this.alive + ", locked=" + this.locked + "]";
     }
 
+    // these methods may be overridden by junit tests
+
+    protected List<PolicyEngineFeatureAPI> getEngineProviders() {
+        return PolicyEngineFeatureAPI.providers.getList();
+    }
+
+    protected List<PolicyControllerFeatureAPI> getControllerProviders() {
+        return PolicyControllerFeatureAPI.providers.getList();
+    }
+
+    protected void globalInitContainer(String[] cliArgs) {
+        PolicyContainer.globalInit(cliArgs);
+    }
+
+    protected TopicEndpoint getTopicEndpointManager() {
+        return TopicEndpoint.manager;
+    }
+
+    protected HttpServletServerFactory getServletFactory() {
+        return HttpServletServer.factory;
+    }
+
+    protected PolicyControllerFactory getControllerFactory() {
+        return PolicyController.factory;
+    }
+
+    protected void startPdpJmxListener() {
+        PdpJmxListener.start();
+    }
+
+    protected void stopPdpJmxListener() {
+        PdpJmxListener.stop();
+    }
+
+    protected Thread makeShutdownThread() {
+        return new ShutdownThread();
+    }
+
+    protected EventProtocolCoder getProtocolCoder() {
+        return EventProtocolCoder.manager;
+    }
+
+    protected SystemPersistence getPersistenceManager() {
+        return SystemPersistence.manager;
+    }
+
+    protected PolicyEngine getPolicyEngine() {
+        return PolicyEngine.manager;
+    }
 }
 
 
