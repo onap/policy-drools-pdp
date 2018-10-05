@@ -44,6 +44,6 @@ public class FeatureEnabledChecker {
      */
     public static boolean isFeatureEnabled(Properties props, String propName) {
         String val = props.getProperty(propName);
-        return (val != null ? Boolean.valueOf(val) : false);
+        return (val != null && Boolean.valueOf(val));
     }
 }

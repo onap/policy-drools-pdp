@@ -42,7 +42,7 @@ import org.kie.scanner.MavenRepository;
 public class KieUtils {
 
     private KieUtils() {
-        throw new IllegalStateException("Utility class");
+        // Utility class
     }
 
     /**

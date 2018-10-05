@@ -28,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.util.KieUtils;
@@ -39,6 +41,9 @@ import org.onap.policy.drools.util.KieUtils;
  *     PolicySessionFeatureAPI
  */
 public class DroolsContainerTest {
+    
+    private static final long TIMEOUT_SEC = 5;
+
     /**
      * This test is centered around the creation of a 'PolicyContainer'
      * and 'PolicySession', and the updating of that container to a new
@@ -124,11 +129,12 @@ public class DroolsContainerTest {
                     session.getFullName());
 
             // insert a new fact
-            int[] facts = new int[]{0, 3, 8, 2};
-            session.getKieSession().insert(facts);
+            LinkedBlockingQueue<Integer> result = new LinkedBlockingQueue<>();
+            session.getKieSession().insert(Arrays.asList(3, 8, 2));
+            session.getKieSession().insert(result);
 
             // the Drools rules should add 3 + 8 + 2, and store 13 in a[0]
-            assertTrue(waitForChange(facts) == 13);
+            assertEquals(13, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
 
             // update the container to a new version --
             // the rules will then multiply values rather than add them
@@ -153,10 +159,12 @@ public class DroolsContainerTest {
                     session.getFullName());
 
             // the updated rules should now multiply 3 * 8 * 2, and return 48
+            
+            result = new LinkedBlockingQueue<>();
+            container.insert("session1", Arrays.asList(3, 8, 2));
+            container.insert("session1", result);
 
-            facts[0] = 0;
-            container.insert("session1", facts);
-            assertTrue(waitForChange(facts) == 48);
+            assertEquals(48, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
         } finally {
             container.shutdown();
             assertFalse(container.isAlive());
@@ -276,11 +284,12 @@ public class DroolsContainerTest {
             }
 
             // insert a new fact (using 'insertAll')
-            int[] facts = new int[]{0, 7, 3, 4};
-            container.insertAll(facts);
+            LinkedBlockingQueue<Integer> result = new LinkedBlockingQueue<>();
+            container.insertAll(Arrays.asList(7, 3, 4));
+            container.insertAll(result);
 
             // the Drools rules should add 7 + 3 + 4, and store 14 in a[0]
-            assertTrue(waitForChange(facts) == 14);
+            assertEquals(14, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
 
             // exercise some more API methods
             assertEquals(container.getClassLoader(),
@@ -300,28 +309,5 @@ public class DroolsContainerTest {
 
         // final conditions -- there should be no containers
         assertEquals(0, PolicyContainer.getPolicyContainers().size());
-    }
-
-    /**
-     * This method is tied to the expected behavior of the drools sessions.
-     * Initially, the value of 'array[0]' should be 0. The Drools rules
-     * will either add or multiply 'array[1]' through 'array[n-1]', depending
-     * upon the version. It waits up to 30 seconds for a non-zero value
-     * to appear.
-     */
-    private int waitForChange(int[] array) throws InterruptedException {
-        int rval = -1;
-
-        // the value is tested every 1/100 of a second, and it waits up to
-        // 3000 iterations (= 30 seconds) for a non-zero value
-        for (int i = 0 ; i < 3000 ; i += 1) {
-            // wait for 10 milliseconds = 1/100 of a second
-            Thread.sleep(10);
-            if ((rval = array[0]) != 0) {
-                // a non-zero value has been stored
-                break;
-            }
-        }
-        return (rval);
     }
 }

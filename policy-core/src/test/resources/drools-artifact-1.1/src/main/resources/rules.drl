@@ -18,6 +18,9 @@
  * ============LICENSE_END=========================================================
  */
  package org.onap.policy.drools.core.test;
+ 
+ import java.util.concurrent.BlockingQueue;
+ import java.util.List;
 
 rule "Initialization"
 	when
@@ -27,23 +30,20 @@ rule "Initialization"
 	}
 end
 
-rule "Add elements of an int array"
+rule "Add elements of an int list"
 	when
-		$object : Object()
+		$lst : List()
+		$queue : BlockingQueue()
 	then
 	{
-	  if ($object instanceof int[])
-		{
-		  int[] array = (int[])($object);
-
-		  System.out.println("Received array of length " + array.length);
-		  int sum = 0;
-		  for (int i = 1 ; i < array.length ; i += 1)
-			{
-			  sum += array[i];
-			}
-		  array[0] = sum;
-		  retract($object);
-		}
+      System.out.println("Received list of length " + $lst.size());
+      int sum = 0;
+      List<Integer> intlst = $lst;
+      for(int val: intlst) {
+        sum += val;
+      }
+      $queue.add(sum);
+      retract($lst);
+      retract($queue);
 	}
 end

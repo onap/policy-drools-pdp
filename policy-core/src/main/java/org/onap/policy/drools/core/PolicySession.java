@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is a wrapper around 'KieSession', which adds the following:
- * 
+ *
  * <p>1) A thread running 'KieSession.fireUntilHalt()'
  * 2) Access to UEB
  * 3) Logging of events
@@ -92,7 +92,7 @@ public class PolicySession
 
     /**
      * Get policy container.
-     * 
+     *
      * @return the 'PolicyContainer' object containing this session
      */
     public PolicyContainer getPolicyContainer() {
@@ -101,7 +101,7 @@ public class PolicySession
 
     /**
      * Get Kie Session.
-     * 
+     *
      * @return the associated 'KieSession' instance
      */
     public KieSession getKieSession() {
@@ -110,7 +110,7 @@ public class PolicySession
 
     /**
      * Get name.
-     * 
+     *
      * @return the local name of this session, which should either match the
      *     name specified in 'kmodule.xml' file associated with this session, or the
      *     name passed on the 'PolicyContainer.adoptKieSession' method.
@@ -121,7 +121,7 @@ public class PolicySession
 
     /**
      * Get full name.
-     * 
+     *
      * @return the 'PolicyContainer' name, followed by ':', followed by the
      *     local name of the session. It should be useful in log messages.
      */
@@ -193,7 +193,7 @@ public class PolicySession
 
     /**
      * Get current session.
-     * 
+     *
      * @return the 'PolicySession' instance associated with the current thread
      *     (Note that this only works if the current thread is the one running
      *     'kieSession.fireUntilHalt()'.)
@@ -241,10 +241,7 @@ public class PolicySession
      */
     @Override
     public void afterMatchFired(AfterMatchFiredEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("afterMatchFired: " + getFullName()
-                    + ": AgendaEventListener.afterMatchFired(" + event + ")");
-        }
+        logger.debug("afterMatchFired: {}: AgendaEventListener.afterMatchFired({})", getFullName(), event);
         PdpJmx.getInstance().ruleFired();
     }
 
@@ -253,11 +250,8 @@ public class PolicySession
      */
     @Override
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("afterRuleFlowGroupActivated: " + getFullName()
-                    + ": AgendaEventListener.afterRuleFlowGroupActivated("
-                    + event + ")");
-        }
+        logger.debug("afterRuleFlowGroupActivated: {}: AgendaEventListener.afterRuleFlowGroupActivated({})",
+                        getFullName(), event);
     }
 
     /**
@@ -265,11 +259,8 @@ public class PolicySession
      */
     @Override
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("afterRuleFlowGroupDeactivated: " + getFullName()
-                    + ": AgendaEventListener.afterRuleFlowGroupDeactivated("
-                    + event + ")");
-        }
+        logger.debug("afterRuleFlowGroupDeactivated: {}: AgendaEventListener.afterRuleFlowGroupDeactivated({})",
+                        getFullName(), event);
     }
 
     /**
@@ -277,11 +268,7 @@ public class PolicySession
      */
     @Override
     public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("agendaGroupPopped: " + getFullName()
-                    + ": AgendaEventListener.agendaGroupPopped("
-                    + event + ")");
-        }
+        logger.debug("agendaGroupPopped: {}: AgendaEventListener.agendaGroupPopped({})", getFullName(), event);
     }
 
     /**
@@ -289,11 +276,7 @@ public class PolicySession
      */
     @Override
     public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("agendaGroupPushed: " + getFullName()
-                    + ": AgendaEventListener.agendaGroupPushed("
-                    + event + ")");
-        }
+        logger.debug("agendaGroupPushed: {}: AgendaEventListener.agendaGroupPushed({})", getFullName(), event);
     }
 
     /**
@@ -301,11 +284,7 @@ public class PolicySession
      */
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("beforeMatchFired: " + getFullName()
-                    + ": AgendaEventListener.beforeMatchFired("
-                    + event + ")");
-        }
+        logger.debug("beforeMatchFired: {}: AgendaEventListener.beforeMatchFired({})", getFullName(), event);
     }
 
     /**
@@ -313,11 +292,8 @@ public class PolicySession
      */
     @Override
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("beforeRuleFlowGroupActivated: " + getFullName()
-                    + ": AgendaEventListener.beforeRuleFlowGroupActivated("
-                    + event + ")");
-        }
+        logger.debug("beforeRuleFlowGroupActivated: {}: AgendaEventListener.beforeRuleFlowGroupActivated({})",
+                        getFullName(), event);
     }
 
     /**
@@ -325,11 +301,8 @@ public class PolicySession
      */
     @Override
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("beforeRuleFlowGroupDeactivated: " + getFullName()
-                    + ": AgendaEventListener.beforeRuleFlowGroupDeactivated("
-                    + event + ")");
-        }
+        logger.debug("beforeRuleFlowGroupDeactivated: {}: AgendaEventListener.beforeRuleFlowGroupDeactivated({})",
+                        getFullName(), event);
     }
 
     /**
@@ -337,10 +310,7 @@ public class PolicySession
      */
     @Override
     public void matchCancelled(MatchCancelledEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("matchCancelled: " + getFullName()
-                    + ": AgendaEventListener.matchCancelled(" + event + ")");
-        }
+        logger.debug("matchCancelled: {}: AgendaEventListener.matchCancelled({})", getFullName(), event);
     }
 
     /**
@@ -348,25 +318,19 @@ public class PolicySession
      */
     @Override
     public void matchCreated(MatchCreatedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("matchCreated: " + getFullName()
-                    + ": AgendaEventListener.matchCreated(" + event + ")");
-        }
+        logger.debug("matchCreated: {}: AgendaEventListener.matchCreated({})", getFullName(), event);
     }
 
-    /*======================================*/
+    /* ====================================== */
     /* 'RuleRuntimeEventListener' interface */
-    /*======================================*/
+    /* ====================================== */
 
     /**
      * {@inheritDoc}.
      */
     @Override
     public void objectDeleted(ObjectDeletedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("objectDeleted: " + getFullName()
-                    + ": AgendaEventListener.objectDeleted(" + event + ")");
-        }
+        logger.debug("objectDeleted: {}: AgendaEventListener.objectDeleted({})", getFullName(), event);
     }
 
     /**
@@ -374,10 +338,7 @@ public class PolicySession
      */
     @Override
     public void objectInserted(ObjectInsertedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("objectInserted: " + getFullName()
-                    + ": AgendaEventListener.objectInserted(" + event + ")");
-        }
+        logger.debug("objectInserted: {}: AgendaEventListener.objectInserted({})", getFullName(), event);
     }
 
     /**
@@ -385,12 +346,9 @@ public class PolicySession
      */
     @Override
     public void objectUpdated(ObjectUpdatedEvent event) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("objectUpdated: " + getFullName()
-                    + ": AgendaEventListener.objectUpdated(" + event + ")");
-        }
+        logger.debug("objectUpdated: {}: AgendaEventListener.objectUpdated({})", getFullName(), event);
     }
-    
+
     /* ============================================================ */
 
     /**
@@ -444,7 +402,7 @@ public class PolicySession
 
         /**
          * Get thread name.
-         * 
+         *
          * @return the String to use as the thread name
          */
         private String getThreadName() {

@@ -169,7 +169,7 @@ public class ClassExtractors {
      */
     private Extractor buildExtractor(Class<?> clazz, String value) {
         if (!value.startsWith("${")) {
-            logger.warn("property value for {}{} does not start with '${'", prefix, clazz.getName());
+            logger.warn("property value for {}{} does not start with {}", prefix, clazz.getName(), "'${'");
             return new NullExtractor();
         }
 

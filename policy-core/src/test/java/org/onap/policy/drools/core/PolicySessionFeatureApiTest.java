@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-core
+ * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -17,33 +17,32 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.policy.drools.core.test;
- 
- import java.util.concurrent.BlockingQueue;
- import java.util.List;
 
-rule "Initialization"
-	when
-	then
-	{
-	  System.out.println("Initialization rule running");
-	}
-end
+package org.onap.policy.drools.core;
 
-rule "Multiply elements of an int list"
-    when
-        $lst : List()
-        $queue : BlockingQueue()
-    then
-    {
-      System.out.println("Received list of length " + $lst.size());
-      int prod = 1;
-      List<Integer> intlst = $lst;
-      for(int val: intlst) {
-        prod *= val;
-      }
-      $queue.add(prod);
-      retract($lst);
-      retract($queue);
+import static org.junit.Assert.assertNull;
+
+import org.junit.Test;
+
+public class PolicySessionFeatureApiTest {
+
+    @Test
+    public void test() {
+        PolicySessionFeatureAPI api = new PolicySessionFeatureAPI() {
+            @Override
+            public int getSequenceNumber() {
+                return 0;
+            }
+        };
+
+        // test default methods
+        api.globalInit(null, null);
+        api.newPolicySession(null);
+        api.disposeKieSession(null);
+        api.destroyKieSession(null);
+
+        assertNull(api.activatePolicySession(null, null, null));
+        assertNull(api.selectThreadModel(null));
     }
-end
+
+}
