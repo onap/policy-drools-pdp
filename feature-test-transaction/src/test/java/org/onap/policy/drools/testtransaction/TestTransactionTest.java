@@ -29,7 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Set;
-
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -75,30 +76,46 @@ public class TestTransactionTest {
                 PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
         assertNotNull(PolicyController.factory.get(TEST_CONTROLLER_NAME));
         logger.info(controller.toString());
+        
+        CountDownLatch latch = new CountDownLatch(1);
+        
+        // use our own impl so we can decrement the latch when run() completes
+        TTImpl impl = new TTImpl() {
+            @Override
+            protected TTControllerTask makeControllerTask(PolicyController controller) {
+                return new TTControllerTask(controller) {
+                    @Override
+                    public void run() {
+                        super.run();
+                        latch.countDown();
+                    }
+                };
+            }            
+        };
 
-        TestTransaction.manager.register(controller);
+        impl.register(controller);
         assertNotNull(TestTransaction.manager);
 
         /*
          * Unregistering the controller should terminate its TestTransaction thread if it hasn't already
          * been terminated
          */
-        TestTransaction.manager.unregister(controller);
+        impl.unregister(controller);
 
-        Thread ttThread = this.getThread("tt-controller-task-" + TEST_CONTROLLER_NAME);
+        Thread ttThread = getThread(latch, "tt-controller-task-" + TEST_CONTROLLER_NAME);
         assertEquals(null, ttThread);
     }
 
     /**
      * Returns thread object based on String name.
-     * 
+     * @param latch indicates when the thread has finished running 
      * @param threadName thread name
      * @return the thread
      * @throws InterruptedException exception
      */
-    public Thread getThread(String threadName) throws InterruptedException {
+    public Thread getThread(CountDownLatch latch, String threadName) throws InterruptedException {
         // give a chance to the transaction thread to be spawned/destroyed
-        Thread.sleep(5000L);
+        latch.await(5, TimeUnit.SECONDS);
 
         final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         for (final Thread thread : threadSet) {
