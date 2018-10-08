@@ -65,29 +65,29 @@ class TTImpl implements TestTransaction {
 
     @Override
     public synchronized void register(PolicyController controller) {
-        if (this.controllers.containsValue(controller)) {
-            final TTControllerTask controllerTask = this.controllers.get(controller.getName());
-            if (controllerTask.isAlive()) {
-                return;
-            }
-
-            // continue : unregister, register operation
+        TTControllerTask controllerTask = this.controllers.get(controller.getName());
+        if (controllerTask != null && controllerTask.isAlive()) {
+            return;
         }
 
-        final TTControllerTask controllerTask = new TTControllerTask(controller);
+        // continue : unregister, register operation
+
+        controllerTask = makeControllerTask(controller);
         this.controllers.put(controller.getName(), controllerTask);
     }
 
     @Override
     public synchronized void unregister(PolicyController controller) {
-        if (!this.controllers.containsValue(controller)) {
-            return;
+        final TTControllerTask controllerTask = this.controllers.remove(controller.getName());
+        if (controllerTask != null) {
+            controllerTask.stop();
         }
+    }
 
-        final TTControllerTask controllerTask = this.controllers.get(controller.getName());
-        controllerTask.stop();
+    // these may be overridden by junit tests
 
-        this.controllers.remove(controller.getName());
+    protected TTControllerTask makeControllerTask(PolicyController controller) {
+        return new TTControllerTask(controller);
     }
 }
 
@@ -103,7 +103,7 @@ class TTControllerTask implements Runnable {
     protected final PolicyController controller;
 
     protected volatile boolean alive = true;
-    protected final Thread thread = new Thread(this);
+    protected final Thread thread = makeThread(this);
 
     public TTControllerTask(PolicyController controller) {
         this.controller = controller;
@@ -123,7 +123,7 @@ class TTControllerTask implements Runnable {
         this.alive = false;
         this.thread.interrupt();
         try {
-            this.thread.join(1000);
+            joinThread(1000);
         } catch (final InterruptedException e) {
             logger.error("TestTransaction thread threw", e);
             this.thread.interrupt();
@@ -163,13 +163,13 @@ class TTControllerTask implements Runnable {
                     return;
                 }
 
-                if (!Thread.currentThread().isInterrupted()) {
-                    Thread.sleep(TestTransaction.DEFAULT_TT_TASK_SLEEP);
+                if (!getCurrentThread().isInterrupted()) {
+                    doSleep(TestTransaction.DEFAULT_TT_TASK_SLEEP);
                 }
             }
         } catch (final InterruptedException e) {
             logger.info("{}: stopping ...", this, e);
-            Thread.currentThread().interrupt();
+            getCurrentThread().interrupt();
         } catch (final IllegalArgumentException e) {
             logger.error(
                     "{}: controller {} has not been enabled for testing: ",
@@ -244,5 +244,23 @@ class TTControllerTask implements Runnable {
         builder.append(this.thread.getName());
         builder.append("]");
         return builder.toString();
+    }
+
+    // these may be overridden by junit tests
+    
+    protected Thread makeThread(Runnable action) {
+        return new Thread(action);
+    }
+
+    protected void joinThread(long waitTimeMs) throws InterruptedException {
+        this.thread.join(waitTimeMs);
+    }
+
+    protected void doSleep(long sleepMs) throws InterruptedException {
+        Thread.sleep(sleepMs);
+    }
+
+    protected Thread getCurrentThread() {
+        return Thread.currentThread();
     }
 }
