@@ -16,6 +16,24 @@
       "revId": "7f983422c4970efdf778b99318e346e5de0cd60f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bada0100_3059abfe",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheck.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-10-26T15:29:13Z",
+      "side": 1,
+      "message": "Only once, it\u0027s paired with the lifecycle of the engine.",
+      "parentUuid": "bada0100_b0e7db3f",
+      "revId": "7f983422c4970efdf778b99318e346e5de0cd60f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
