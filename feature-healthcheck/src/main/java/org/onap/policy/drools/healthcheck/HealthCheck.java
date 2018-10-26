@@ -256,6 +256,9 @@ class HealthCheckMonitor implements HealthCheck {
             this.clients = getClientFactory().build(healthCheckProperties);
 
             for (HttpServletServer server : servers) {
+                if (server.isAaf()) {
+                    server.addFilterClass(null, AafHealthCheckFilter.class.getCanonicalName());
+                }
                 startServer(server);
             }
         } catch (Exception e) {

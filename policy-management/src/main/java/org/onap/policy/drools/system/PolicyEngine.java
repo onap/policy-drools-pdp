@@ -51,6 +51,7 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
+import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MDCTransaction;
 import org.slf4j.Logger;
@@ -336,12 +337,14 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
  * Policy Engine Manager Implementation.
  */
 class PolicyEngineManager implements PolicyEngine {
-    private static final String INVALID_TOPIC_MSG = "Invalid Topic";
 
+    /**
+     * String literals.
+     */
+    private static final String INVALID_TOPIC_MSG = "Invalid Topic";
     private static final String INVALID_EVENT_MSG = "Invalid Event";
 
     private static final String ENGINE_STOPPED_MSG = "Policy Engine is stopped";
-
     private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
 
     /**
@@ -509,6 +512,11 @@ class PolicyEngineManager implements PolicyEngine {
 
         try {
             this.httpServers = getServletFactory().build(properties);
+            for (HttpServletServer server : this.httpServers) {
+                if (server.isAaf()) {
+                    server.addFilterClass(null, AafTelemetryAuthFilter.class.getCanonicalName());
+                }
+            }
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-http-servers failed", this, e);
         }
