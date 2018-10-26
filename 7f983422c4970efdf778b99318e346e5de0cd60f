@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bada0100_b0e7db3f",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheck.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-10-26T15:21:28Z",
+      "side": 1,
+      "message": "can start() be invoked more than once?  If so, is it ok to invoke server.addFilterClass() more than once?",
+      "revId": "7f983422c4970efdf778b99318e346e5de0cd60f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
