@@ -22,6 +22,30 @@
       "revId": "a040c4102c8a2e61ef7900ebcc945b4fa67c0302",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_0fddc542",
+        "filename": "pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-10-31T22:10:26Z",
+      "side": 1,
+      "message": "Done\n\nAlso checked the rest of the Master POMs,",
+      "parentUuid": "9adffdf1_8f6bf584",
+      "range": {
+        "startLine": 71,
+        "startChar": 31,
+        "endLine": 71,
+        "endChar": 45
+      },
+      "revId": "a040c4102c8a2e61ef7900ebcc945b4fa67c0302",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
