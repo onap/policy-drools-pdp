@@ -22,6 +22,30 @@
       "revId": "e8602e99e7b029b75dbb80ee0a29f1f6d131a2ff",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_4f2c2d4b",
+        "filename": "pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-10-31T21:58:46Z",
+      "side": 1,
+      "message": "Done\n\nI also checked the versions in the properties of the rest of the POMs in Casablanca branches and they are OK. I missed this one.\n\nWe really need to write a script to do this stuff",
+      "parentUuid": "9adffdf1_2f5d29ea",
+      "range": {
+        "startLine": 71,
+        "startChar": 31,
+        "endLine": 71,
+        "endChar": 45
+      },
+      "revId": "e8602e99e7b029b75dbb80ee0a29f1f6d131a2ff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
