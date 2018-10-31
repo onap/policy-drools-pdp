@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_2f5d29ea",
+        "filename": "pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2018-10-31T21:52:34Z",
+      "side": 1,
+      "message": "This should be 1.3.2-SNAPSHOT\nWe\u0027ll release policy/common soon to make this the release version",
+      "range": {
+        "startLine": 71,
+        "startChar": 31,
+        "endLine": 71,
+        "endChar": 45
+      },
+      "revId": "e8602e99e7b029b75dbb80ee0a29f1f6d131a2ff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
