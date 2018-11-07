@@ -353,7 +353,7 @@ public class PolicyEngineManagerTest {
         props1.setProperty(propKey, newValue);
         assertEquals(props1, env);
 
-        assertNotNull(mgr.getEnvironmentProperty("JAVA_HOME"));
+        assertNotNull(mgr.getEnvironmentProperty("PATH"));
         assertNull(mgr.getEnvironmentProperty("unknown-env-property"));
     }
 
