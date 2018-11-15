@@ -42,6 +42,7 @@ import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.jmx.PdpJmx;
 import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
@@ -310,11 +311,12 @@ public class MavenDroolsController implements DroolsController {
                             customJacksonCoder,
                             this.policyContainer.getClassLoader().hashCode());
                 } else {
-                    EventProtocolCoder.manager.addEncoder(this.getGroupId(), this.getArtifactId(), 
-                            topic, potentialCodedClass, protocolFilter,
-                            customGsonCoder,
-                            customJacksonCoder,
-                            this.policyContainer.getClassLoader().hashCode());
+                    EventProtocolCoder.manager.addEncoder(
+                            EventProtocolParams.builder().groupId(this.getGroupId())
+                                    .artifactId(this.getArtifactId()).topic(topic)
+                                    .eventClass(potentialCodedClass).protocolFilter(protocolFilter)
+                                    .customGsonCoder(customGsonCoder).customJacksonCoder(customJacksonCoder)
+                                    .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
                 }
             }
         }

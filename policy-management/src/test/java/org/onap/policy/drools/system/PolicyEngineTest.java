@@ -41,10 +41,9 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
-import org.onap.policy.drools.system.PolicyController;
-import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,9 +204,12 @@ public class PolicyEngineTest {
 
         TopicEndpoint.manager.addTopicSinks(noopSinkProperties).get(0).start();
 
-        EventProtocolCoder.manager.addEncoder(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC,
-                DroolsConfiguration.class.getCanonicalName(), new JsonProtocolFilter(), null, null,
-                DroolsConfiguration.class.getName().hashCode());
+        EventProtocolCoder.manager.addEncoder(
+                EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
+                        .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getCanonicalName())
+                        .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
+                        .customJacksonCoder(null)
+                        .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
 
         assertTrue(PolicyEngine.manager.deliver(NOOP_TOPIC,
                 new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION)));

@@ -281,21 +281,10 @@ public interface EventProtocolCoder {
     /**
      * Adds a Encoder class to encode the protocol over this topic.
      *  
-     * @param groupId of the controller
-     * @param artifactId of the controller
-     * @param topic the topic 
-     * @param eventClass the event class
-     * @param protocolFilter filters to selectively choose a particular decoder
-     *     when there are multiples
-     * 
-     * @throw IllegalArgumentException if an invalid parameter is passed
+     *
+     * @param eventProtocolParams@throw IllegalArgumentException if an invalid parameter is passed
      */
-    public void addEncoder(String groupId, String artifactId, String topic, 
-            String eventClass, 
-            JsonProtocolFilter protocolFilter,
-            CustomGsonCoder customGsonCoder,
-            CustomJacksonCoder customJacksonCoder,
-            int modelClassLoaderHash);
+    public void addEncoder(EventProtocolParams eventProtocolParams);
 
     /**
      * is there an encoder supported for the controller id and topic.
@@ -428,20 +417,21 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
 
     /**
      * {@inheritDoc}.
+     * @param eventProtocolParams parameter object for event encoder
      */
     @Override
-    public void addEncoder(String groupId, String artifactId, String topic, 
-            String eventClass, 
-            JsonProtocolFilter protocolFilter,
-            CustomGsonCoder customGsonCoder,
-            CustomJacksonCoder customJacksonCoder,
-            int modelClassLoaderHash) {
-        logger.info("{}: add-decoder {}:{}:{}:{}:{}:{}:{}:{}", this, 
-                groupId, artifactId, topic, eventClass,
-                protocolFilter, customGsonCoder, customJacksonCoder,
-                modelClassLoaderHash);
-        this.encoders.add(groupId, artifactId, topic, eventClass, protocolFilter, 
-                customGsonCoder, customJacksonCoder, modelClassLoaderHash);
+    public void addEncoder(EventProtocolParams eventProtocolParams) {
+        logger.info("{}: add-decoder {}:{}:{}:{}:{}:{}:{}:{}", this,
+                eventProtocolParams.getGroupId(), eventProtocolParams.getArtifactId(), eventProtocolParams.getTopic(),
+                eventProtocolParams.getEventClass(),
+                eventProtocolParams.getProtocolFilter(), eventProtocolParams.getCustomGsonCoder(),
+                eventProtocolParams.getCustomJacksonCoder(),
+                eventProtocolParams.getModelClassLoaderHash());
+        this.encoders.add(eventProtocolParams.getGroupId(), eventProtocolParams.getArtifactId(),
+                eventProtocolParams.getTopic(), eventProtocolParams.getEventClass(),
+                eventProtocolParams.getProtocolFilter(),
+                eventProtocolParams.getCustomGsonCoder(), eventProtocolParams.getCustomJacksonCoder(),
+                eventProtocolParams.getModelClassLoaderHash());
     }
 
     /**
