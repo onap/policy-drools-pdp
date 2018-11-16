@@ -305,11 +305,15 @@ public class MavenDroolsController implements DroolsController {
                 }
 
                 if (decoder) {
-                    EventProtocolCoder.manager.addDecoder(this.getGroupId(), this.getArtifactId(), 
-                            topic, potentialCodedClass, protocolFilter,
-                            customGsonCoder,
-                            customJacksonCoder,
-                            this.policyContainer.getClassLoader().hashCode());
+                    EventProtocolCoder.manager.addDecoder(EventProtocolParams.builder()
+                            .groupId(this.getGroupId())
+                            .artifactId(this.getArtifactId())
+                            .topic(topic)
+                            .eventClass(potentialCodedClass)
+                            .protocolFilter(protocolFilter)
+                            .customGsonCoder(customGsonCoder)
+                            .customJacksonCoder(customJacksonCoder)
+                            .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
                 } else {
                     EventProtocolCoder.manager.addEncoder(
                             EventProtocolParams.builder().groupId(this.getGroupId())
