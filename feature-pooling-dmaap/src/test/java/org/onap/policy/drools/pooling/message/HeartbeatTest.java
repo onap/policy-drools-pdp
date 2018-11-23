@@ -22,7 +22,7 @@ package org.onap.policy.drools.pooling.message;
 
 import static org.junit.Assert.assertEquals;
 
-public class HeartbeatTest extends BasicMessageTester<Heartbeat> {
+public class HeartbeatTest extends SupportBasicMessageTester<Heartbeat> {
     
     /**
      * Sequence number to validate time stamps within the heart beat.

@@ -38,7 +38,7 @@ import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Query;
 import org.onap.policy.drools.utils.Pair;
 
-public class InactiveStateTest extends BasicStateTester {
+public class InactiveStateTest extends SupportBasicStateTester {
 
     private InactiveState state;
 

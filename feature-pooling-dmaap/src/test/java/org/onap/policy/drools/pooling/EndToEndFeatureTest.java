@@ -73,9 +73,9 @@ import org.slf4j.LoggerFactory;
  * <p>The following fields must be set before executing this: <ul> <li>UEB_SERVERS</li>
  * <li>INTERNAL_TOPIC</li> <li>EXTERNAL_TOPIC</li> </ul>
  */
-public class FeatureTest2 {
+public class EndToEndFeatureTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(FeatureTest2.class);
+    private static final Logger logger = LoggerFactory.getLogger(EndToEndFeatureTest.class);
 
     /**
      * UEB servers for both internal & external topics.
@@ -95,7 +95,7 @@ public class FeatureTest2 {
     /**
      * Consumer group to use when polling the external topic.
      */
-    private static final String EXTERNAL_GROUP = FeatureTest2.class.getName();
+    private static final String EXTERNAL_GROUP = EndToEndFeatureTest.class.getName();
 
     /**
      * Name of the controller.

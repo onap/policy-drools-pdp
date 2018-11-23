@@ -20,7 +20,7 @@
 
 package org.onap.policy.drools.pooling.message;
 
-public class OfflineTest extends BasicMessageTester<Offline> {
+public class OfflineTest extends SupportBasicMessageTester<Offline> {
 
     public OfflineTest() {
         super(Offline.class);

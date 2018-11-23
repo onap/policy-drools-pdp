@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-public class MessageTest extends BasicMessageTester<Message> {
+public class MessageTest extends SupportBasicMessageTester<Message> {
 
     public MessageTest() {
         super(Message.class);

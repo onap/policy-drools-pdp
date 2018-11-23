@@ -33,7 +33,7 @@ import org.onap.policy.drools.pooling.PoolingFeatureException;
  * 
  * @param <T> type of {@link Message} subclass that this tests
  */
-public abstract class BasicMessageTester<T extends Message> {
+public abstract class SupportBasicMessageTester<T extends Message> {
     // values set by makeValidMessage()
     public static final String VALID_HOST_PREDECESSOR = "hostA";
     public static final String VALID_HOST = "hostB";
@@ -54,7 +54,7 @@ public abstract class BasicMessageTester<T extends Message> {
      * 
      * @param subclazz subclass of {@link Message} being tested
      */
-    public BasicMessageTester(Class<T> subclazz) {
+    public SupportBasicMessageTester(Class<T> subclazz) {
         this.subclazz = subclazz;
     }
 

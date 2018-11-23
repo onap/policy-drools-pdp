@@ -39,7 +39,7 @@ import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
 
-public class IdleStateTest extends BasicStateTester {
+public class IdleStateTest extends SupportBasicStateTester {
 
     private IdleState state;
 
