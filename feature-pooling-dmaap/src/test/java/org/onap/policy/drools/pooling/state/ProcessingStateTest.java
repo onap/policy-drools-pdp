@@ -41,7 +41,7 @@ import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Query;
 import org.onap.policy.drools.pooling.state.ProcessingState.HostBucket;
 
-public class ProcessingStateTest extends BasicStateTester {
+public class ProcessingStateTest extends BasicStateTest {
 
     private ProcessingState state;
     private HostBucket hostBucket;

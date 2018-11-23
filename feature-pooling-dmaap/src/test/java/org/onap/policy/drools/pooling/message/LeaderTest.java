@@ -23,7 +23,7 @@ package org.onap.policy.drools.pooling.message;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LeaderTest extends MessageWithAssignmentsTester<Leader> {
+public class LeaderTest extends SupportMessageWithAssignmentsTester<Leader> {
 
     public LeaderTest() {
         super(Leader.class);

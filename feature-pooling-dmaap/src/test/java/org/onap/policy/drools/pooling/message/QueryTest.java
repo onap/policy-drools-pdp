@@ -20,7 +20,7 @@
 
 package org.onap.policy.drools.pooling.message;
 
-public class QueryTest extends BasicMessageTester<Query> {
+public class QueryTest extends SupportBasicMessageTester<Query> {
 
     public QueryTest() {
         super(Query.class);
