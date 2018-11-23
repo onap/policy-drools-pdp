@@ -47,7 +47,7 @@ import org.onap.policy.drools.utils.Triple;
 /**
  * Superclass used to test subclasses of {@link State}.
  */
-public class BasicStateTester {
+public class BasicStateTest {
 
     protected static final long STD_HEARTBEAT_WAIT_MS = 10;
     protected static final long STD_REACTIVATE_WAIT_MS = STD_HEARTBEAT_WAIT_MS + 1;
@@ -110,7 +110,7 @@ public class BasicStateTester {
     protected PoolingProperties props;
     protected State prevState;
 
-    public BasicStateTester() {
+    public BasicStateTest() {
         super();
     }
 

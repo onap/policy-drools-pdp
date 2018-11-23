@@ -46,7 +46,7 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.system.PolicyController;
 
-public class TestTransactionTest2 {
+public class TestTransactionAdditionalTest {
 
     private static final int MAX_SLEEP_COUNT = 3;
     private static final String EXPECTED = "expected exception";

@@ -23,7 +23,7 @@ package org.onap.policy.drools.pooling.message;
 import org.junit.Before;
 import org.junit.Test;
 
-public class IdentificationTest extends MessageWithAssignmentsTester<Identification> {
+public class IdentificationTest extends MessageWithAssignmentsTest<Identification> {
 
     public IdentificationTest() {
         super(Identification.class);

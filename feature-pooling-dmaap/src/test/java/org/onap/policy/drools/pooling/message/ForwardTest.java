@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 
-public class ForwardTest extends BasicMessageTester<Forward> {
+public class ForwardTest extends BasicMessageTest<Forward> {
     // values set by makeValidMessage()
     public static final CommInfrastructure VALID_PROTOCOL = CommInfrastructure.UEB;
     public static final int VALID_HOPS = 0;

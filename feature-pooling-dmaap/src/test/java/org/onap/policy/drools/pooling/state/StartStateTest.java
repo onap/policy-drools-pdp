@@ -43,7 +43,7 @@ import org.onap.policy.drools.pooling.message.Query;
 import org.onap.policy.drools.utils.Pair;
 import org.onap.policy.drools.utils.Triple;
 
-public class StartStateTest extends BasicStateTester {
+public class StartStateTest extends BasicStateTest {
 
     private StartState state;
 

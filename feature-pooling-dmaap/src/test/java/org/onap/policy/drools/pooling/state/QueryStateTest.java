@@ -41,7 +41,7 @@ import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.utils.Pair;
 
-public class QueryStateTest extends BasicStateTester {
+public class QueryStateTest extends BasicStateTest {
 
     private QueryState state;
 

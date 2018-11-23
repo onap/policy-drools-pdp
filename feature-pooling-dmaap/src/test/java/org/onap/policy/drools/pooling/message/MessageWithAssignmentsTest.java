@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * @param <T> type of {@link MessageWithAssignments} subclass that this tests
  */
-public abstract class MessageWithAssignmentsTester<T extends MessageWithAssignments> extends BasicMessageTester<T> {
+public abstract class MessageWithAssignmentsTest<T extends MessageWithAssignments> extends BasicMessageTest<T> {
     // values set by makeValidMessage()
     public static final String[] VALID_ARRAY = {VALID_HOST, VALID_HOST + "_xxx"};
     public static final BucketAssignments VALID_ASGN = new BucketAssignments(VALID_ARRAY);
@@ -46,7 +46,7 @@ public abstract class MessageWithAssignmentsTester<T extends MessageWithAssignme
      * 
      * @param subclazz subclass of {@link MessageWithAssignments} being tested
      */
-    public MessageWithAssignmentsTester(Class<T> subclazz) {
+    public MessageWithAssignmentsTest(Class<T> subclazz) {
         super(subclazz);
     }
 
