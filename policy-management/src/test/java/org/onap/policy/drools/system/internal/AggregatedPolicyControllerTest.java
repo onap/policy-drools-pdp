@@ -37,9 +37,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
@@ -50,15 +48,8 @@ import org.onap.policy.drools.controller.DroolsControllerFactory;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
-import org.onap.policy.drools.system.internal.AggregatedPolicyController.Factory;
-import org.powermock.reflect.Whitebox;
 
 public class AggregatedPolicyControllerTest {
-
-    /**
-     * Name of the "factory" field within the {@link AggregatedPolicyController} class.
-     */
-    private static final String FACTORY_FIELD = "factory";
 
     private static final String AGG_NAME = "agg-name";
     private static final String SINK_TOPIC1 = "sink-a";
@@ -78,10 +69,7 @@ public class AggregatedPolicyControllerTest {
     private static final String GROUP2 = "group-b";
     private static final String VERSION2 = "version-b";
 
-    private static Factory savedFactory;
-
     private Properties properties;
-    private Factory factory;
     private TopicEndpoint endpointMgr;
     private List<TopicSource> sources;
     private TopicSource source1;
@@ -97,16 +85,6 @@ public class AggregatedPolicyControllerTest {
     private PolicyControllerFeatureAPI prov1;
     private PolicyControllerFeatureAPI prov2;
     private AggregatedPolicyController apc;
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        savedFactory = Whitebox.getInternalState(AggregatedPolicyController.class, FACTORY_FIELD);
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() {
-        Whitebox.setInternalState(AggregatedPolicyController.class, FACTORY_FIELD, savedFactory);
-    }
 
     /**
      * Initializes the object to be tested.
@@ -158,26 +136,16 @@ public class AggregatedPolicyControllerTest {
 
         providers = Arrays.asList(prov1, prov2);
 
-        factory = mock(Factory.class);
-        Whitebox.setInternalState(AggregatedPolicyController.class, FACTORY_FIELD, factory);
-
-        when(factory.getEndpointManager()).thenReturn(endpointMgr);
-        when(factory.getPersistenceManager()).thenReturn(persist);
-        when(factory.getDroolsFactory()).thenReturn(droolsFactory);
-        when(factory.getFeatureProviders()).thenReturn(providers);
-
-        apc = new AggregatedPolicyController(AGG_NAME, properties);
+        apc = new AggregatedPolicyControllerImpl(AGG_NAME, properties);
     }
 
     @Test
     public void testFactory() {
-        assertNotNull(savedFactory);
-
-        Factory factory = new Factory();
-        assertNotNull(factory.getDroolsFactory());
-        assertNotNull(factory.getEndpointManager());
-        assertNotNull(factory.getFeatureProviders());
-        assertNotNull(factory.getPersistenceManager());
+        apc = new AggregatedPolicyController(AGG_NAME, properties);
+        assertNotNull(apc.getDroolsFactory());
+        assertNotNull(apc.getEndpointManager());
+        assertNotNull(apc.getProviders());
+        assertNotNull(apc.getPersistenceManager());
     }
 
     @Test
@@ -187,14 +155,22 @@ public class AggregatedPolicyControllerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInitDrools_Ex() {
-        when(factory.getDroolsFactory()).thenThrow(new RuntimeException(EXPECTED));
-        new AggregatedPolicyController(AGG_NAME, properties);
+        new AggregatedPolicyControllerImpl(AGG_NAME, properties) {
+            @Override
+            protected DroolsControllerFactory getDroolsFactory() {
+                throw new RuntimeException(EXPECTED);
+            }            
+        };
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInitDrools_Error() {
-        when(factory.getDroolsFactory()).thenThrow(new LinkageError(EXPECTED));
-        new AggregatedPolicyController(AGG_NAME, properties);
+        new AggregatedPolicyControllerImpl(AGG_NAME, properties) {
+            @Override
+            protected DroolsControllerFactory getDroolsFactory() {
+                throw new LinkageError(EXPECTED);
+            }            
+        };
     }
 
     @Test
@@ -944,5 +920,35 @@ public class AggregatedPolicyControllerTest {
 
         assertThrows(AssertionError.class, () -> verifyAfter.accept(prov1));
         assertThrows(AssertionError.class, () -> verifyAfter.accept(prov2));
+    }
+    
+    /**
+     * Controller with overrides.
+     */
+    private class AggregatedPolicyControllerImpl extends AggregatedPolicyController {
+
+        public AggregatedPolicyControllerImpl(String name, Properties properties) {
+            super(name, properties);
+        }
+
+        @Override
+        protected SystemPersistence getPersistenceManager() {
+            return persist;
+        }
+
+        @Override
+        protected TopicEndpoint getEndpointManager() {
+            return endpointMgr;
+        }
+
+        @Override
+        protected DroolsControllerFactory getDroolsFactory() {
+            return droolsFactory;
+        }
+
+        @Override
+        protected List<PolicyControllerFeatureAPI> getProviders() {
+            return providers;
+        }        
     }
 }

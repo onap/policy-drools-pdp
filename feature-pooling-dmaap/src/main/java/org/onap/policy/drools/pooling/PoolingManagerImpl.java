@@ -69,11 +69,6 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     public static final int MAX_HOPS = 5;
 
     /**
-     * Factory used to create various objects. Can be overridden during junit testing.
-     */
-    private static Factory factory = new Factory();
-
-    /**
      * ID of this host.
      */
     private final String host;
@@ -170,8 +165,8 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             this.listener = (TopicListener) controller;
             this.serializer = new Serializer();
             this.topic = props.getPoolingTopic();
-            this.extractors = factory.makeClassExtractors(makeExtractorProps(controller, props.getSource()));
-            this.dmaapMgr = factory.makeDmaapManager(props.getPoolingTopic());
+            this.extractors = makeClassExtractors(makeExtractorProps(controller, props.getSource()));
+            this.dmaapMgr = makeDmaapManager(props.getPoolingTopic());
             this.current = new IdleState(this);
 
             logger.info("allocating host {} to controller {} for topic {}", host, controller.getName(), topic);
@@ -184,14 +179,6 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             logger.error("failed to attach internal DMaaP topic to controller {}", controller.getName());
             throw new PoolingFeatureRtException(e);
         }
-    }
-
-    protected static Factory getFactory() {
-        return factory;
-    }
-
-    protected static void setFactory(Factory factory) {
-        PoolingManagerImpl.factory = factory;
     }
 
     /**
@@ -241,7 +228,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
                 dmaapMgr.startPublisher();
 
                 logger.debug("make scheduler thread for topic {}", getTopic());
-                scheduler = factory.makeScheduler();
+                scheduler = makeScheduler();
 
                 /*
                  * Only a handful of timers at any moment, thus we can afford to take the
@@ -603,7 +590,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
         // check if this topic has a decoder
 
-        if (!factory.canDecodeEvent(drools, topic2)) {
+        if (!canDecodeEvent(drools, topic2)) {
 
             logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", drools, topic2, drools.getGroupId(),
                             drools.getArtifactId());
@@ -613,7 +600,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
         // decode
 
         try {
-            return factory.decodeEvent(drools, topic2, event);
+            return decodeEventWrapper(drools, topic2, event);
 
         } catch (UnsupportedOperationException | IllegalStateException | IllegalArgumentException e) {
             logger.debug("{}: DECODE FAILED: {} <- {} because of {}", drools, topic2, event, e.getMessage(), e);
@@ -777,67 +764,65 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             }
         }
     }
+    
+    /*
+     * The remaining methods may be overridden by junit tests.
+     */
 
     /**
-     * Factory used to create objects.
+     * Creates object extractors.
+     * 
+     * @param props properties used to configure the extractors
+     * @return a new set of extractors
      */
-    public static class Factory {
+    protected ClassExtractors makeClassExtractors(Properties props) {
+        return new ClassExtractors(props, PoolingProperties.PROP_EXTRACTOR_PREFIX,
+                        PoolingProperties.EXTRACTOR_TYPE);
+    }
 
-        /**
-         * Creates object extractors.
-         * 
-         * @param props properties used to configure the extractors
-         * @return a new set of extractors
-         */
-        public ClassExtractors makeClassExtractors(Properties props) {
-            return new ClassExtractors(props, PoolingProperties.PROP_EXTRACTOR_PREFIX,
-                            PoolingProperties.EXTRACTOR_TYPE);
-        }
+    /**
+     * Creates a DMaaP manager.
+     * 
+     * @param topic name of the internal DMaaP topic
+     * @return a new DMaaP manager
+     * @throws PoolingFeatureException if an error occurs
+     */
+    protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+        return new DmaapManager(topic);
+    }
 
-        /**
-         * Creates a DMaaP manager.
-         * 
-         * @param topic name of the internal DMaaP topic
-         * @return a new DMaaP manager
-         * @throws PoolingFeatureException if an error occurs
-         */
-        public DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
-            return new DmaapManager(topic);
-        }
+    /**
+     * Creates a scheduled thread pool.
+     * 
+     * @return a new scheduled thread pool
+     */
+    protected ScheduledThreadPoolExecutor makeScheduler() {
+        return new ScheduledThreadPoolExecutor(1);
+    }
 
-        /**
-         * Creates a scheduled thread pool.
-         * 
-         * @return a new scheduled thread pool
-         */
-        public ScheduledThreadPoolExecutor makeScheduler() {
-            return new ScheduledThreadPoolExecutor(1);
-        }
+    /**
+     * Determines if the event can be decoded.
+     * 
+     * @param drools drools controller
+     * @param topic topic on which the event was received
+     * @return {@code true} if the event can be decoded, {@code false} otherwise
+     */
+    protected boolean canDecodeEvent(DroolsController drools, String topic) {
+        return EventProtocolCoder.manager.isDecodingSupported(drools.getGroupId(), drools.getArtifactId(), topic);
+    }
 
-        /**
-         * Determines if the event can be decoded.
-         * 
-         * @param drools drools controller
-         * @param topic topic on which the event was received
-         * @return {@code true} if the event can be decoded, {@code false} otherwise
-         */
-        public boolean canDecodeEvent(DroolsController drools, String topic) {
-            return EventProtocolCoder.manager.isDecodingSupported(drools.getGroupId(), drools.getArtifactId(), topic);
-        }
-
-        /**
-         * Decodes the event.
-         * 
-         * @param drools drools controller
-         * @param topic topic on which the event was received
-         * @param event event text to be decoded
-         * @return the decoded event
-         * @throws IllegalArgumentException illegal argument
-         * @throw UnsupportedOperationException unsupported operation
-         * @throws IllegalStateException illegal state
-         */
-        public Object decodeEvent(DroolsController drools, String topic, String event) {
-            return EventProtocolCoder.manager.decode(drools.getGroupId(), drools.getArtifactId(), topic, event);
-        }
+    /**
+     * Decodes the event.
+     * 
+     * @param drools drools controller
+     * @param topic topic on which the event was received
+     * @param event event text to be decoded
+     * @return the decoded event
+     * @throws IllegalArgumentException illegal argument
+     * @throw UnsupportedOperationException unsupported operation
+     * @throws IllegalStateException illegal state
+     */
+    protected Object decodeEventWrapper(DroolsController drools, String topic, String event) {
+        return EventProtocolCoder.manager.decode(drools.getGroupId(), drools.getArtifactId(), topic, event);
     }
 }

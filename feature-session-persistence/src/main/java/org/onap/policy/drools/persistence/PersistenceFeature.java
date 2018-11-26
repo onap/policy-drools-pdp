@@ -65,13 +65,7 @@ import org.slf4j.LoggerFactory;
 public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngineFeatureAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceFeature.class);
-
-    /** Standard factory used to get various items. */
-    private static Factory stdFactory = new Factory();
-
-    /** Factory used to get various items. */
-    private Factory fact = stdFactory;
-
+    
     /** KieService factory. */
     private KieServices kieSvcFact;
 
@@ -87,15 +81,6 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
     /** Object used to serialize cleanup of sessioninfo table. */
     private Object cleanupLock = new Object();
-
-    /**
-     * Sets the factory to be used during junit testing.
-     *
-     * @param fact factory to be used
-     */
-    protected void setFactory(Factory fact) {
-        this.fact = fact;
-    }
 
     /**
      * Lookup the adjunct for this feature that is associated with the specified PolicyContainer. If
@@ -132,10 +117,10 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     @Override
     public void globalInit(String[] args, String configDir) {
 
-        kieSvcFact = fact.getKieServices();
+        kieSvcFact = getKieServices();
 
         try {
-            persistProps = fact.loadProperties(configDir + "/feature-session-persistence.properties");
+            persistProps = loadProperties(configDir + "/feature-session-persistence.properties");
 
         } catch (IOException e1) {
             logger.error("initializePersistence: ", e1);
@@ -305,12 +290,12 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
 
             configureSysProps();
 
-            BasicDataSource ds = fact.makeDataSource(getDataSourceProperties());
+            BasicDataSource ds = makeDataSource(getDataSourceProperties());
             DsEmf dsemf = new DsEmf(ds);
 
             try {
                 EntityManagerFactory emf = dsemf.emf;
-                DroolsSessionConnector conn = fact.makeJpaConnector(emf);
+                DroolsSessionConnector conn = makeJpaConnector(emf);
 
                 long desiredSessionId = getSessionId(conn, name);
 
@@ -450,9 +435,9 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
          */
         private void configureKieEnv(Environment env, EntityManagerFactory emf) {
             env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-            env.set(EnvironmentName.TRANSACTION, fact.getUserTrans());
-            env.set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, fact.getTransSyncReg());
-            env.set(EnvironmentName.TRANSACTION_MANAGER, fact.getTransMgr());
+            env.set(EnvironmentName.TRANSACTION, getUserTrans());
+            env.set(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, getTransSyncReg());
+            env.set(EnvironmentName.TRANSACTION_MANAGER, getTransMgr());
         }
 
         /**
@@ -526,7 +511,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
             }
 
             // now do the record deletion
-            try (BasicDataSource ds = fact.makeDataSource(getDataSourceProperties());
+            try (BasicDataSource ds = makeDataSource(getDataSourceProperties());
                     Connection connection = ds.getConnection();
                     PreparedStatement statement =
                             connection.prepareStatement(
@@ -577,7 +562,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
      */
     private Properties getProperties(PolicyContainer container) {
         try {
-            return fact.getPolicyController(container).getProperties();
+            return getPolicyController(container).getProperties();
         } catch (IllegalArgumentException e) {
             logger.error("getProperties exception: ", e);
             return null;
@@ -808,7 +793,7 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
                 props.put(org.hibernate.cfg.Environment.JPA_JTA_DATASOURCE, bds);
 
                 this.bds = bds;
-                this.emf = fact.makeEntMgrFact(props);
+                this.emf = makeEntMgrFact(props);
 
             } catch (RuntimeException e) {
                 closeDataSource();
@@ -851,99 +836,97 @@ public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngine
     }
 
     /** Factory for various items. Methods can be overridden for junit testing. */
-    protected static class Factory {
 
-        /**
-         * Gets the transaction manager.
-         *
-         * @return the transaction manager
-         */
-        public TransactionManager getTransMgr() {
-            return com.arjuna.ats.jta.TransactionManager.transactionManager();
+    /**
+     * Gets the transaction manager.
+     *
+     * @return the transaction manager
+     */
+    protected TransactionManager getTransMgr() {
+        return com.arjuna.ats.jta.TransactionManager.transactionManager();
+    }
+
+    /**
+     * Gets the user transaction.
+     *
+     * @return the user transaction
+     */
+    protected UserTransaction getUserTrans() {
+        return com.arjuna.ats.jta.UserTransaction.userTransaction();
+    }
+
+    /**
+     * Gets the transaction synchronization registry.
+     *
+     * @return the transaction synchronization registry
+     */
+    protected TransactionSynchronizationRegistry getTransSyncReg() {
+        return SingletonRegistry.transreg;
+    }
+
+    /**
+     * Gets the KIE services.
+     *
+     * @return the KIE services
+     */
+    protected KieServices getKieServices() {
+        return KieServices.Factory.get();
+    }
+
+    /**
+     * Loads properties from a file.
+     *
+     * @param filenm name of the file to load
+     * @return properties, as loaded from the file
+     * @throws IOException if an error occurs reading from the file
+     */
+    protected Properties loadProperties(String filenm) throws IOException {
+        return PropertyUtil.getProperties(filenm);
+    }
+
+    /**
+     * Makes a Data Source.
+     *
+     * @param dsProps data source properties
+     * @return a new data source
+     */
+    protected BasicDataSource makeDataSource(Properties dsProps) {
+        try {
+            return BasicDataSourceFactory.createDataSource(dsProps);
+
+        } catch (Exception e) {
+            throw new PersistenceFeatureException(e);
         }
+    }
 
-        /**
-         * Gets the user transaction.
-         *
-         * @return the user transaction
-         */
-        public UserTransaction getUserTrans() {
-            return com.arjuna.ats.jta.UserTransaction.userTransaction();
-        }
+    /**
+     * Makes a new JPA connector for drools sessions.
+     *
+     * @param emf entity manager factory
+     * @return a new JPA connector for drools sessions
+     */
+    protected DroolsSessionConnector makeJpaConnector(EntityManagerFactory emf) {
+        return new JpaDroolsSessionConnector(emf);
+    }
 
-        /**
-         * Gets the transaction synchronization registry.
-         *
-         * @return the transaction synchronization registry
-         */
-        public TransactionSynchronizationRegistry getTransSyncReg() {
-            return SingletonRegistry.transreg;
-        }
+    /**
+     * Makes a new entity manager factory.
+     *
+     * @param props properties with which the factory should be configured
+     * @return a new entity manager factory
+     */
+    protected EntityManagerFactory makeEntMgrFact(Map<String, Object> props) {
+        return Persistence.createEntityManagerFactory("onapsessionsPU", props);
+    }
 
-        /**
-         * Gets the KIE services.
-         *
-         * @return the KIE services
-         */
-        public KieServices getKieServices() {
-            return KieServices.Factory.get();
-        }
-
-        /**
-         * Loads properties from a file.
-         *
-         * @param filenm name of the file to load
-         * @return properties, as loaded from the file
-         * @throws IOException if an error occurs reading from the file
-         */
-        public Properties loadProperties(String filenm) throws IOException {
-            return PropertyUtil.getProperties(filenm);
-        }
-
-        /**
-         * Makes a Data Source.
-         *
-         * @param dsProps data source properties
-         * @return a new data source
-         */
-        public BasicDataSource makeDataSource(Properties dsProps) {
-            try {
-                return BasicDataSourceFactory.createDataSource(dsProps);
-
-            } catch (Exception e) {
-                throw new PersistenceFeatureException(e);
-            }
-        }
-
-        /**
-         * Makes a new JPA connector for drools sessions.
-         *
-         * @param emf entity manager factory
-         * @return a new JPA connector for drools sessions
-         */
-        public DroolsSessionConnector makeJpaConnector(EntityManagerFactory emf) {
-            return new JpaDroolsSessionConnector(emf);
-        }
-
-        /**
-         * Makes a new entity manager factory.
-         *
-         * @param props properties with which the factory should be configured
-         * @return a new entity manager factory
-         */
-        public EntityManagerFactory makeEntMgrFact(Map<String, Object> props) {
-            return Persistence.createEntityManagerFactory("onapsessionsPU", props);
-        }
-
-        /**
-         * Gets the policy controller associated with a given policy container.
-         *
-         * @param container container whose controller is to be retrieved
-         * @return the container's controller
-         */
-        public PolicyController getPolicyController(PolicyContainer container) {
-            return PolicyController.factory.get(container.getGroupId(), container.getArtifactId());
-        }
+    /**
+     * Gets the policy controller associated with a given policy container.
+     *
+     * @param container container whose controller is to be retrieved
+     * @return the container's controller
+     */
+    protected PolicyController getPolicyController(PolicyContainer container) {
+        return PolicyController.factory.get(container.getGroupId(), container.getArtifactId());
     }
 
     /**

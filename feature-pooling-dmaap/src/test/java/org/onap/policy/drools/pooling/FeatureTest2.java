@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,6 @@ import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Deque;
@@ -43,7 +42,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -69,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * feature object. Uses real feature objects, as well as real DMaaP sources and sinks. However, the
  * following are not: <dl> <dt>PolicyEngine, PolicyController, DroolsController</dt> <dd>mocked</dd>
  * </dl>
- * 
+ *
  * <p>The following fields must be set before executing this: <ul> <li>UEB_SERVERS</li>
  * <li>INTERNAL_TOPIC</li> <li>EXTERNAL_TOPIC</li> </ul>
  */
@@ -115,10 +113,26 @@ public class FeatureTest2 {
     private static final long STD_OFFLINE_PUB_WAIT_MS = 2;
     private static final long EVENT_WAIT_SEC = 15;
 
-    // these are saved and restored on exit from this test class
-    private static PoolingFeature.Factory saveFeatureFactory;
-    private static PoolingManagerImpl.Factory saveManagerFactory;
-    private static DmaapManager.Factory saveDmaapFactory;
+    /**
+     * Used to decode events into a Map.
+     */
+    private static final TypeReference<TreeMap<String, String>> typeRef =
+                    new TypeReference<TreeMap<String, String>>() {};
+
+    /**
+     * Used to decode events from the external topic.
+     */
+    private static final ThreadLocal<ObjectMapper> mapper = new ThreadLocal<ObjectMapper>() {
+        @Override
+        protected ObjectMapper initialValue() {
+            return new ObjectMapper();
+        }
+    };
+
+    /**
+     * Used to identify the current host.
+     */
+    private static final ThreadLocal<Host> currentHost = new ThreadLocal<Host>();
 
     /**
      * Sink for external DMaaP topic.
@@ -137,14 +151,10 @@ public class FeatureTest2 {
 
     /**
      * Setup before class.
-     * 
+     *
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        saveFeatureFactory = PoolingFeature.getFactory();
-        saveManagerFactory = PoolingManagerImpl.getFactory();
-        saveDmaapFactory = DmaapManager.getFactory();
-
         externalSink = TopicEndpoint.manager.addTopicSinks(makeSinkProperties(EXTERNAL_TOPIC)).get(0);
         externalSink.start();
 
@@ -154,14 +164,10 @@ public class FeatureTest2 {
 
     /**
      * Tear down after class.
-     * 
+     *
      */
     @AfterClass
     public static void tearDownAfterClass() {
-        PoolingFeature.setFactory(saveFeatureFactory);
-        PoolingManagerImpl.setFactory(saveManagerFactory);
-        DmaapManager.setFactory(saveDmaapFactory);
-
         externalSink.stop();
         internalSink.stop();
     }
@@ -268,12 +274,25 @@ public class FeatureTest2 {
     }
 
     /**
+     * Decodes an event.
+     *
+     * @param event event
+     * @return the decoded event, or {@code null} if it cannot be decoded
+     */
+    private static Object decodeEvent(String event) {
+        try {
+            return mapper.get().readValue(event, typeRef);
+
+        } catch (IOException e) {
+            logger.warn("cannot decode external event", e);
+            return null;
+        }
+    }
+
+    /**
      * Context used for a single test case.
      */
     private static class Context {
-
-        private final FeatureFactory featureFactory;
-        private final ManagerFactory managerFactory;
 
         /**
          * Hosts that have been added to this context.
@@ -297,16 +316,11 @@ public class FeatureTest2 {
 
         /**
          * Constructor.
-         * 
+         *
          * @param nEvents number of events to be processed
          */
         public Context(int events) {
-            featureFactory = new FeatureFactory(this);
-            managerFactory = new ManagerFactory(this);
             eventCounter = new CountDownLatch(events);
-
-            PoolingFeature.setFactory(featureFactory);
-            PoolingManagerImpl.setFactory(managerFactory);
         }
 
         /**
@@ -319,7 +333,7 @@ public class FeatureTest2 {
 
         /**
          * Creates and adds a new host to the context.
-         * 
+         *
          * @return the new Host
          */
         public Host addHost() {
@@ -356,7 +370,7 @@ public class FeatureTest2 {
 
         /**
          * Offers an event to the external topic.
-         * 
+         *
          * @param event event
          */
         public void offerExternal(String event) {
@@ -364,18 +378,8 @@ public class FeatureTest2 {
         }
 
         /**
-         * Decodes an event.
-         * 
-         * @param event event
-         * @return the decoded event, or {@code null} if it cannot be decoded
-         */
-        public Object decodeEvent(String event) {
-            return managerFactory.decodeEvent(null, null, event);
-        }
-
-        /**
          * Associates a controller with its drools controller.
-         * 
+         *
          * @param controller controller
          * @param droolsController drools controller
          */
@@ -385,7 +389,7 @@ public class FeatureTest2 {
 
         /**
          * Get controller.
-         * 
+         *
          * @param droolsController drools controller
          * @return the controller associated with a drools controller, or {@code null} if it has no
          *         associated controller
@@ -396,7 +400,7 @@ public class FeatureTest2 {
 
         /**
          * Get decode errors.
-         * 
+         *
          * @return the number of decode errors so far
          */
         public int getDecodeErrors() {
@@ -412,7 +416,7 @@ public class FeatureTest2 {
 
         /**
          * Get remaining events.
-         * 
+         *
          * @return the number of events that haven't been processed
          */
         public long getRemainingEvents() {
@@ -428,7 +432,7 @@ public class FeatureTest2 {
 
         /**
          * Waits, for a period of time, for all events to be processed.
-         * 
+         *
          * @param time time
          * @param units units
          * @return {@code true} if all events have been processed, {@code false} otherwise
@@ -440,7 +444,7 @@ public class FeatureTest2 {
 
         /**
          * Waits, for a period of time, for all hosts to enter the Active state.
-         * 
+         *
          * @param timeMs maximum time to wait, in milliseconds
          * @throws InterruptedException throws interrupted exception
          */
@@ -459,7 +463,7 @@ public class FeatureTest2 {
      */
     private static class Host {
 
-        private final PoolingFeature feature = new PoolingFeature();
+        private final PoolingFeature feature;
 
         /**
          * {@code True} if this host has processed a message, {@code false} otherwise.
@@ -476,7 +480,7 @@ public class FeatureTest2 {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context context
          */
         public Host(Context context) {
@@ -496,11 +500,13 @@ public class FeatureTest2 {
             doAnswer(new MyExternalTopicListener(context, this)).when(controller).onTopicEvent(any(), any(), any());
 
             context.addController(controller, drools);
+
+            feature = new PoolingFeatureImpl(context, this);
         }
 
         /**
          * Waits, for a period of time, for the host to enter the Active state.
-         * 
+         *
          * @param timeMs time to wait, in milliseconds
          * @return {@code true} if the host entered the Active state within the given amount of
          *         time, {@code false} otherwise
@@ -515,18 +521,6 @@ public class FeatureTest2 {
          * topic and its own internal "DMaaP" topic.
          */
         public void start() {
-            DmaapManager.setFactory(new DmaapManager.Factory() {
-                @Override
-                public List<TopicSource> getTopicSources() {
-                    return Arrays.asList(internalSource, externalSource);
-                }
-
-                @Override
-                public List<TopicSink> getTopicSinks() {
-                    return Arrays.asList(internalSink, externalSink);
-                }
-            });
-
             feature.beforeStart(engine);
             feature.afterCreate(controller);
 
@@ -549,7 +543,7 @@ public class FeatureTest2 {
 
         /**
          * Offers an event to the feature, before the policy controller handles it.
-         * 
+         *
          * @param protocol protocol
          * @param topic2 topic
          * @param event event
@@ -561,7 +555,7 @@ public class FeatureTest2 {
 
         /**
          * Offers an event to the feature, after the policy controller handles it.
-         * 
+         *
          * @param protocol protocol
          * @param topic topic
          * @param event event
@@ -575,7 +569,7 @@ public class FeatureTest2 {
 
         /**
          * Offers an event to the feature, before the drools controller handles it.
-         * 
+         *
          * @param fact fact
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
@@ -585,7 +579,7 @@ public class FeatureTest2 {
 
         /**
          * Offers an event to the feature, after the drools controller handles it.
-         * 
+         *
          * @param fact fact
          * @param successInsert {@code true} if it was successfully inserted by the drools
          *        controller, {@code false} otherwise
@@ -604,7 +598,7 @@ public class FeatureTest2 {
 
         /**
          * Message seen.
-         * 
+         *
          * @return {@code true} if a message was seen for this host, {@code false} otherwise
          */
         public boolean messageSeen() {
@@ -638,7 +632,7 @@ public class FeatureTest2 {
             }
 
             boolean result;
-            Object fact = context.decodeEvent(event);
+            Object fact = decodeEvent(event);
 
             if (fact == null) {
                 result = false;
@@ -662,19 +656,21 @@ public class FeatureTest2 {
     }
 
     /**
-     * Simulator for the feature-level factory.
+     * Feature with overrides.
      */
-    private static class FeatureFactory extends PoolingFeature.Factory {
+    private static class PoolingFeatureImpl extends PoolingFeature {
 
         private final Context context;
+        private final Host host;
 
         /**
          * Constructor.
-         * 
+         *
          * @param context context
          */
-        public FeatureFactory(Context context) {
+        public PoolingFeatureImpl(Context context, Host host) {
             this.context = context;
+            this.host = host;
 
             /*
              * Note: do NOT extract anything from "context" at this point, because it hasn't been
@@ -716,7 +712,7 @@ public class FeatureTest2 {
 
         /**
          * Embeds a specializer within a property name, after the prefix.
-         * 
+         *
          * @param propnm property name into which it should be embedded
          * @param spec specializer to be embedded
          * @return the property name, with the specializer embedded within it
@@ -725,55 +721,80 @@ public class FeatureTest2 {
             String suffix = propnm.substring(PREFIX.length());
             return PREFIX + spec + "." + suffix;
         }
+
+        @Override
+        protected PoolingManagerImpl makeManager(String hostName, PolicyController controller, PoolingProperties props,
+                        CountDownLatch activeLatch) {
+
+            /*
+             * Set this before creating the test, because the test's superclass
+             * constructor uses it before the test object has a chance to store it.
+             */
+            currentHost.set(host);
+
+            return new PoolingManagerTest(hostName, controller, props, activeLatch);
+        }
     }
 
     /**
-     * Simulator for the pooling manager factory.
+     * Pooling Manager with overrides.
      */
-    private static class ManagerFactory extends PoolingManagerImpl.Factory {
-
-        /**
-         * Used to decode events from the external topic.
-         */
-        private final ThreadLocal<ObjectMapper> mapper = new ThreadLocal<ObjectMapper>() {
-            @Override
-            protected ObjectMapper initialValue() {
-                return new ObjectMapper();
-            }
-        };
-
-        /**
-         * Used to decode events into a Map.
-         */
-        private final TypeReference<TreeMap<String, String>> typeRef = new TypeReference<TreeMap<String, String>>() {};
+    private static class PoolingManagerTest extends PoolingManagerImpl {
 
         /**
          * Constructor.
-         * 
-         * @param context context
+         *
+         * @param hostName the host
+         * @param controller the controller
+         * @param props the properties
+         * @param activeLatch the latch
          */
-        public ManagerFactory(Context context) {
+        public PoolingManagerTest(String hostName, PolicyController controller,
+                        PoolingProperties props, CountDownLatch activeLatch) {
 
-            /*
-             * Note: do NOT extract anything from "context" at this point, because it hasn't been
-             * fully initialized yet
-             */
+            super(hostName, controller, props, activeLatch);
         }
 
         @Override
-        public boolean canDecodeEvent(DroolsController drools, String topic) {
+        protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+            return new DmaapManagerImpl(topic);
+        }
+
+        @Override
+        protected boolean canDecodeEvent(DroolsController drools, String topic) {
             return true;
         }
 
         @Override
-        public Object decodeEvent(DroolsController drools, String topic, String event) {
-            try {
-                return mapper.get().readValue(event, typeRef);
+        protected Object decodeEventWrapper(DroolsController drools, String topic, String event) {
+            return decodeEvent(event);
+        }
+    }
 
-            } catch (IOException e) {
-                logger.warn("cannot decode external event", e);
-                return null;
-            }
+    /**
+     * DMaaP Manager with overrides.
+     */
+    private static class DmaapManagerImpl extends DmaapManager {
+
+        /**
+         * Constructor.
+         *
+         * @param topic the topic
+         * @throws PoolingFeatureException if an error occurs
+         */
+        public DmaapManagerImpl(String topic) throws PoolingFeatureException {
+            super(topic);
+        }
+
+        @Override
+        protected List<TopicSource> getTopicSources() {
+            Host host = currentHost.get();
+            return Arrays.asList(host.internalSource, host.externalSource);
+        }
+
+        @Override
+        protected List<TopicSink> getTopicSinks() {
+            return Arrays.asList(internalSink, externalSink);
         }
     }
 
