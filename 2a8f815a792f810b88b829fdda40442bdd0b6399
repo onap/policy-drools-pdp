@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9adffdf1_e2e7e610",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/BasicMessageTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2493
+      },
+      "writtenOn": "2018-11-26T05:19:03Z",
+      "side": 1,
+      "message": "true, any suggestions how we should rename this type of classes?",
+      "parentUuid": "9adffdf1_9981b191",
+      "revId": "2a8f815a792f810b88b829fdda40442bdd0b6399",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9adffdf1_794e4d98",
         "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/MessageWithAssignmentsTest.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-11-23T16:04:45Z",
       "side": 1,
       "message": "Based on file naming conventions, this name would seem to indicate that this is a junit test for a class called \"MessageWithAssignments\", which it is not.",
+      "revId": "2a8f815a792f810b88b829fdda40442bdd0b6399",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_02e30a06",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/MessageWithAssignmentsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2493
+      },
+      "writtenOn": "2018-11-26T05:19:03Z",
+      "side": 1,
+      "message": "true, any suggestions how we should rename this type of classes?",
+      "parentUuid": "9adffdf1_794e4d98",
       "revId": "2a8f815a792f810b88b829fdda40442bdd0b6399",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
