@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_08b569ed",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-26T14:02:10Z",
+      "side": 1,
+      "message": "suggestion: eliminate the builder altogether and simply use string concatenation",
+      "revId": "c93fa73a90c63ad8ddceb6a8969a09fd36b0b5fe",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_c8ce8183",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-26T14:02:10Z",
+      "side": 1,
+      "message": "need @return with description of the return value",
+      "revId": "c93fa73a90c63ad8ddceb6a8969a09fd36b0b5fe",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_88c87975",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-26T14:02:10Z",
+      "side": 1,
+      "message": "need @param and description for droolsController",
+      "revId": "c93fa73a90c63ad8ddceb6a8969a09fd36b0b5fe",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_08ac899f",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1368,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-26T14:02:10Z",
+      "side": 1,
+      "message": "suggestion: eliminate the builder altogether and simply use string concatenation",
+      "revId": "c93fa73a90c63ad8ddceb6a8969a09fd36b0b5fe",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
