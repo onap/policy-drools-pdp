@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_bbbee0fd",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/BasicStateTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-27T15:03:00Z",
+      "side": 1,
+      "message": "how about renaming this to SupportBasicStateTester, similar to the others?",
+      "revId": "9eeb480a957587600ef9d29aaa9cb01ff91b6658",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
