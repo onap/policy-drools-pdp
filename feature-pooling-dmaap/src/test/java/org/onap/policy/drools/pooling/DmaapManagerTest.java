@@ -32,44 +32,29 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.drools.pooling.DmaapManager.Factory;
 
 public class DmaapManagerTest {
 
-    private static String MY_TOPIC = "my.topic";
-    private static String MSG = "a message";
-    private static String FILTER = "a filter";
-
-    /**
-     * Original factory, to be restored when all tests complete.
-     */
-    private static Factory saveFactory;
-
-    private Factory factory;
+    private static final String EXPECTED = "expected";
+    private static final String MY_TOPIC = "my.topic";
+    private static final String MSG = "a message";
+    private static final String FILTER = "a filter";
+    
     private TopicListener listener;
     private FilterableTopicSource source;
+    private boolean gotSources;
     private TopicSink sink;
+    private boolean gotSinks;
     private DmaapManager mgr;
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        saveFactory = DmaapManager.getFactory();
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        DmaapManager.setFactory(saveFactory);
-    }
 
     /**
      * Setup.
@@ -79,33 +64,24 @@ public class DmaapManagerTest {
     @Before
     public void setUp() throws Exception {
         listener = mock(TopicListener.class);
-        factory = mock(Factory.class);
         source = mock(FilterableTopicSource.class);
+        gotSources = false;
         sink = mock(TopicSink.class);
-
-        DmaapManager.setFactory(factory);
+        gotSinks = false;
 
         when(source.getTopic()).thenReturn(MY_TOPIC);
 
         when(sink.getTopic()).thenReturn(MY_TOPIC);
         when(sink.send(any())).thenReturn(true);
 
-        // three sources, with the desired one in the middle
-        when(factory.getTopicSources())
-                        .thenReturn(Arrays.asList(mock(TopicSource.class), source, mock(TopicSource.class)));
-
-        // three sinks, with the desired one in the middle
-        when(factory.getTopicSinks())
-                        .thenReturn(Arrays.asList(mock(TopicSink.class), sink, mock(TopicSink.class)));
-
-        mgr = new DmaapManager(MY_TOPIC);
+        mgr = new DmaapManagerImpl(MY_TOPIC);
     }
 
     @Test
     public void testDmaapManager() {
         // verify that the init methods were called
-        verify(factory).getTopicSinks();
-        verify(factory).getTopicSinks();
+        assertTrue(gotSources);
+        assertTrue(gotSinks);
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -113,23 +89,26 @@ public class DmaapManagerTest {
         // force error by having no topics match
         when(source.getTopic()).thenReturn("");
 
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC);
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testDmaapManager_IllegalArgEx() throws PoolingFeatureException {
         // force error
-        when(factory.getTopicSources()).thenThrow(new IllegalArgumentException("expected"));
-
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC) {
+            @Override
+            protected List<TopicSource> getTopicSources() {
+                throw new IllegalArgumentException(EXPECTED);
+            }
+        };
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testDmaapManager_CannotFilter() throws PoolingFeatureException {
         // force an error when setFilter() is called
-        doThrow(new UnsupportedOperationException("expected")).when(source).setFilter(any());
+        doThrow(new UnsupportedOperationException(EXPECTED)).when(source).setFilter(any());
 
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC);
     }
 
     @Test
@@ -149,25 +128,34 @@ public class DmaapManagerTest {
         TopicSource source2 = mock(TopicSource.class);
         when(source2.getTopic()).thenReturn(MY_TOPIC);
 
-        when(factory.getTopicSources()).thenReturn(Arrays.asList(source2));
-
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC) {
+            @Override
+            protected List<TopicSource> getTopicSources() {
+                return Arrays.asList(source2);
+            }
+        };
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSource_NotFound() throws PoolingFeatureException {
         // one item in list, and its topic doesn't match
-        when(factory.getTopicSources()).thenReturn(Arrays.asList(mock(TopicSource.class)));
-
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC) {
+            @Override
+            protected List<TopicSource> getTopicSources() {
+                return Arrays.asList(mock(TopicSource.class));
+            }
+        };
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSource_EmptyList() throws PoolingFeatureException {
         // empty list
-        when(factory.getTopicSources()).thenReturn(new LinkedList<>());
-
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC) {
+            @Override
+            protected List<TopicSource> getTopicSources() {
+                return Collections.emptyList();
+            }
+        };
     }
 
     @Test
@@ -178,17 +166,23 @@ public class DmaapManagerTest {
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSink_NotFound() throws PoolingFeatureException {
         // one item in list, and its topic doesn't match
-        when(factory.getTopicSinks()).thenReturn(Arrays.asList(mock(TopicSink.class)));
-
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC) {
+            @Override
+            protected List<TopicSink> getTopicSinks() {
+                return Arrays.asList(mock(TopicSink.class));
+            }
+        };
     }
 
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSink_EmptyList() throws PoolingFeatureException {
         // empty list
-        when(factory.getTopicSinks()).thenReturn(new LinkedList<>());
-
-        new DmaapManager(MY_TOPIC);
+        new DmaapManagerImpl(MY_TOPIC) {
+            @Override
+            protected List<TopicSink> getTopicSinks() {
+                return Collections.emptyList();
+            }
+        };
     }
 
     @Test
@@ -297,7 +291,7 @@ public class DmaapManagerTest {
     @Test(expected = PoolingFeatureException.class)
     public void testSetFilter_Exception() throws PoolingFeatureException {
         // force an error when setFilter() is called
-        doThrow(new UnsupportedOperationException("expected")).when(source).setFilter(any());
+        doThrow(new UnsupportedOperationException(EXPECTED)).when(source).setFilter(any());
 
         mgr.setFilter(FILTER);
     }
@@ -339,7 +333,7 @@ public class DmaapManagerTest {
         mgr.startPublisher();
 
         // arrange for send() to throw an exception
-        doThrow(new IllegalStateException("expected")).when(sink).send(MSG);
+        doThrow(new IllegalStateException(EXPECTED)).when(sink).send(MSG);
 
         mgr.publish(MSG);
     }
@@ -351,6 +345,32 @@ public class DmaapManagerTest {
 
         } catch (PoolingFeatureException expected) {
             // OK
+        }
+    }
+    
+    /**
+     * Manager with overrides.
+     */
+    private class DmaapManagerImpl extends DmaapManager {
+
+        public DmaapManagerImpl(String topic) throws PoolingFeatureException {
+            super(topic);
+        }
+
+        @Override
+        protected List<TopicSource> getTopicSources() {
+            gotSources = true;
+            
+            // three sources, with the desired one in the middle
+            return Arrays.asList(mock(TopicSource.class), source, mock(TopicSource.class));
+        }
+
+        @Override
+        protected List<TopicSink> getTopicSinks() {
+            gotSinks = true;
+            
+            // three sinks, with the desired one in the middle
+            return Arrays.asList(mock(TopicSink.class), sink, mock(TopicSink.class));
         }
     }
 

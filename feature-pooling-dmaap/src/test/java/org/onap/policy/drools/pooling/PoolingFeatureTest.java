@@ -32,16 +32,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import org.junit.AfterClass;
+import java.util.concurrent.CountDownLatch;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
+import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.pooling.PoolingFeature.Factory;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.Pair;
@@ -63,11 +64,6 @@ public class PoolingFeatureTest {
     private static final Object OBJECT1 = new Object();
     private static final Object OBJECT2 = new Object();
 
-    /**
-     * Saved from PoolingFeature and restored on exit from this test class.
-     */
-    private static Factory saveFactory;
-
     private Properties props;
     private PolicyEngine engine;
     private PolicyController controller1;
@@ -81,20 +77,8 @@ public class PoolingFeatureTest {
     private List<Pair<PoolingManagerImpl, PoolingProperties>> managers;
     private PoolingManagerImpl mgr1;
     private PoolingManagerImpl mgr2;
-    private Factory factory;
 
     private PoolingFeature pool;
-
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        saveFactory = PoolingFeature.getFactory();
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() {
-        PoolingFeature.setFactory(saveFactory);
-    }
 
     /**
      * Setup.
@@ -105,7 +89,6 @@ public class PoolingFeatureTest {
     public void setUp() throws Exception {
         props = initProperties();
         engine = mock(PolicyEngine.class);
-        factory = mock(Factory.class);
         controller1 = mock(PolicyController.class);
         controller2 = mock(PolicyController.class);
         controllerDisabled = mock(PolicyController.class);
@@ -116,30 +99,13 @@ public class PoolingFeatureTest {
         droolsDisabled = mock(DroolsController.class);
         managers = new LinkedList<>();
 
-        PoolingFeature.setFactory(factory);
-
         when(controller1.getName()).thenReturn(CONTROLLER1);
         when(controller2.getName()).thenReturn(CONTROLLER2);
         when(controllerDisabled.getName()).thenReturn(CONTROLLER_DISABLED);
         when(controllerException.getName()).thenReturn(CONTROLLER_EX);
         when(controllerUnknown.getName()).thenReturn(CONTROLLER_UNKNOWN);
 
-        when(factory.getProperties(PoolingProperties.FEATURE_NAME)).thenReturn(props);
-        when(factory.getController(drools1)).thenReturn(controller1);
-        when(factory.getController(drools2)).thenReturn(controller2);
-        when(factory.getController(droolsDisabled)).thenReturn(controllerDisabled);
-
-        when(factory.makeManager(any(), any(), any(), any())).thenAnswer(args -> {
-            PoolingProperties props = args.getArgument(2);
-
-            PoolingManagerImpl mgr = mock(PoolingManagerImpl.class);
-
-            managers.add(new Pair<>(mgr, props));
-
-            return mgr;
-        });
-
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
 
         pool.beforeStart(engine);
 
@@ -161,7 +127,7 @@ public class PoolingFeatureTest {
         assertNotNull(host);
 
         // create another and ensure it generates another host name
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
         String host2 = pool.getHost();
         assertNotNull(host2);
 
@@ -175,7 +141,7 @@ public class PoolingFeatureTest {
 
     @Test
     public void testBeforeStartEngine() {
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
 
         assertFalse(pool.beforeStart(engine));
     }
@@ -183,7 +149,7 @@ public class PoolingFeatureTest {
     @Test
     public void testAfterCreate() {
         managers.clear();
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
         pool.beforeStart(engine);
 
         assertFalse(pool.afterCreate(controller1));
@@ -201,7 +167,7 @@ public class PoolingFeatureTest {
     @Test
     public void testAfterCreate_NotEnabled() {
         managers.clear();
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
         pool.beforeStart(engine);
 
         assertFalse(pool.afterCreate(controllerDisabled));
@@ -211,7 +177,7 @@ public class PoolingFeatureTest {
     @Test(expected = PoolingFeatureRtException.class)
     public void testAfterCreate_PropertyEx() {
         managers.clear();
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
         pool.beforeStart(engine);
 
         pool.afterCreate(controllerException);
@@ -219,7 +185,7 @@ public class PoolingFeatureTest {
 
     @Test(expected = PoolingFeatureRtException.class)
     public void testAfterCreate_NoProps() {
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
 
         // did not perform globalInit, which is an error
 
@@ -229,7 +195,7 @@ public class PoolingFeatureTest {
     @Test
     public void testAfterCreate_NoFeatProps() {
         managers.clear();
-        pool = new PoolingFeature();
+        pool = new PoolingFeatureImpl();
         pool.beforeStart(engine);
 
         assertFalse(pool.afterCreate(controllerUnknown));
@@ -398,9 +364,13 @@ public class PoolingFeatureTest {
 
     @Test
     public void testBeforeInsert_ArgEx() {
-
         // generate exception
-        doThrow(new IllegalArgumentException()).when(factory).getController(any());
+        pool = new PoolingFeatureImpl() {
+            @Override
+            protected PolicyController getController(DroolsController droolsController) {
+                throw new IllegalArgumentException();
+            }
+        };
 
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
@@ -409,9 +379,13 @@ public class PoolingFeatureTest {
 
     @Test
     public void testBeforeInsert_StateEx() {
-
         // generate exception
-        doThrow(new IllegalStateException()).when(factory).getController(any());
+        pool = new PoolingFeatureImpl() {
+            @Override
+            protected PolicyController getController(DroolsController droolsController) {
+                throw new IllegalStateException();
+            }
+        };
 
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
@@ -422,7 +396,12 @@ public class PoolingFeatureTest {
     public void testBeforeInsert_NullController() {
 
         // return null controller
-        when(factory.getController(any())).thenReturn(null);
+        pool = new PoolingFeatureImpl() {
+            @Override
+            protected PolicyController getController(DroolsController droolsController) {
+                return null;
+            }
+        };
 
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
@@ -513,5 +492,54 @@ public class PoolingFeatureTest {
         props.setProperty("pooling.controller" + suffix + ".active.heartbeat.milliseconds",
                         String.valueOf(40 + offset));
         props.setProperty("pooling.controller" + suffix + ".inter.heartbeat.milliseconds", String.valueOf(50 + offset));
+    }
+
+    /**
+     * Feature with overrides.
+     */
+    private class PoolingFeatureImpl extends PoolingFeature {
+
+        @Override
+        protected Properties getProperties(String featName) {
+            if (PoolingProperties.FEATURE_NAME.equals(featName)) {
+                return props;
+            } else {
+                throw new IllegalArgumentException("unknown feature name");
+            }
+        }
+
+        @Override
+        protected PoolingManagerImpl makeManager(String host, PolicyController controller, PoolingProperties props,
+                        CountDownLatch activeLatch) {
+
+            PoolingManagerImpl mgr = mock(PoolingManagerImpl.class);
+
+            managers.add(new Pair<>(mgr, props));
+
+            return mgr;
+        }
+
+        @Override
+        protected PolicyController getController(DroolsController droolsController) {
+            if (droolsController == drools1) {
+                return controller1;
+            } else if (droolsController == drools2) {
+                return controller2;
+            } else if (droolsController == droolsDisabled) {
+                return controllerDisabled;
+            } else {
+                throw new IllegalArgumentException("unknown drools controller");
+            }
+        }
+
+        @Override
+        protected List<TopicSource> initTopicSources(Properties props) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        protected List<TopicSink> initTopicSinks(Properties props) {
+            return Collections.emptyList();
+        }
     }
 }
