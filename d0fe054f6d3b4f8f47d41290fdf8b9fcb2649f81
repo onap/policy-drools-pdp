@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_bd400ba6",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-29T14:22:27Z",
+      "side": 1,
+      "message": "leave out the word \"String\"",
+      "revId": "d0fe054f6d3b4f8f47d41290fdf8b9fcb2649f81",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_dd3b8f36",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-29T14:22:27Z",
+      "side": 1,
+      "message": "leave out the word \"String\"",
+      "revId": "d0fe054f6d3b4f8f47d41290fdf8b9fcb2649f81",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_7d4aa3c6",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-29T14:22:27Z",
+      "side": 1,
+      "message": "leave out the word \"String\"",
+      "revId": "d0fe054f6d3b4f8f47d41290fdf8b9fcb2649f81",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
