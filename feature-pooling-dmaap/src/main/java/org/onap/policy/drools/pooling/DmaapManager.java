@@ -39,11 +39,6 @@ public class DmaapManager {
     private static final Logger logger = LoggerFactory.getLogger(DmaapManager.class);
 
     /**
-     * Factory used to construct objects.
-     */
-    private static Factory factory = new Factory();
-
-    /**
      * Name of the DMaaP topic.
      */
     private final String topic;
@@ -93,19 +88,6 @@ public class DmaapManager {
         }
     }
 
-    protected static Factory getFactory() {
-        return factory;
-    }
-
-    /**
-     * Used by junit tests to set the factory used to create various objects used by this class.
-     * 
-     * @param factory the new factory
-     */
-    protected static void setFactory(Factory factory) {
-        DmaapManager.factory = factory;
-    }
-
     public String getTopic() {
         return topic;
     }
@@ -117,7 +99,7 @@ public class DmaapManager {
      * @throws PoolingFeatureException if the source doesn't exist or is not filterable
      */
     private FilterableTopicSource findTopicSource() throws PoolingFeatureException {
-        for (TopicSource src : factory.getTopicSources()) {
+        for (TopicSource src : getTopicSources()) {
             if (topic.equals(src.getTopic())) {
                 if (src instanceof FilterableTopicSource) {
                     return (FilterableTopicSource) src;
@@ -138,7 +120,7 @@ public class DmaapManager {
      * @throws PoolingFeatureException if the sink doesn't exist
      */
     private TopicSink findTopicSink() throws PoolingFeatureException {
-        for (TopicSink sink : factory.getTopicSinks()) {
+        for (TopicSink sink : getTopicSinks()) {
             if (topic.equals(sink.getTopic())) {
                 return sink;
             }
@@ -252,29 +234,26 @@ public class DmaapManager {
             throw new PoolingFeatureException("cannot send to topic sink " + topic, e);
         }
     }
+    
+    /*
+     * The remaining methods may be overridden by junit tests.
+     */
 
     /**
-     * Factory used to construct objects.
+     * Get topic source.
+     * 
+     * @return the topic sources
      */
-    public static class Factory {
+    protected List<TopicSource> getTopicSources() {
+        return TopicEndpoint.manager.getTopicSources();
+    }
 
-        /**
-         * Get topic source.
-         * 
-         * @return the topic sources
-         */
-        public List<TopicSource> getTopicSources() {
-            return TopicEndpoint.manager.getTopicSources();
-        }
-
-        /**
-         * Get topic sinks.
-         * 
-         * @return the topic sinks
-         */
-        public List<TopicSink> getTopicSinks() {
-            return TopicEndpoint.manager.getTopicSinks();
-        }
-
+    /**
+     * Get topic sinks.
+     * 
+     * @return the topic sinks
+     */
+    protected List<TopicSink> getTopicSinks() {
+        return TopicEndpoint.manager.getTopicSinks();
     }
 }

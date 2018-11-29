@@ -37,12 +37,9 @@ import static org.onap.policy.drools.core.lock.TestingUtils.expectException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
-import org.onap.policy.drools.core.lock.PolicyResourceLockManager.Factory;
 
 public class PolicyResourceLockManagerTest {
 
@@ -59,26 +56,11 @@ public class PolicyResourceLockManagerTest {
     private static final String OWNER2 = "owner.two";
     private static final String OWNER3 = "owner.three";
 
-    /**
-     * Saved at the start of the tests and restored once all tests complete.
-     */
-    private static Factory saveFactory;
-
     private PolicyResourceLockFeatureApi impl1;
     private PolicyResourceLockFeatureApi impl2;
     private List<PolicyResourceLockFeatureApi> implList;
 
     private PolicyResourceLockManager mgr;
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        saveFactory = PolicyResourceLockManager.getFactory();
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() {
-        PolicyResourceLockManager.setFactory(saveFactory);
-    }
 
     /**
      * Set up.
@@ -94,15 +76,12 @@ public class PolicyResourceLockManagerTest {
         // list of feature API implementers
         implList = new LinkedList<>(Arrays.asList(impl1, impl2));
 
-        PolicyResourceLockManager.setFactory(new Factory() {
-
+        mgr = new PolicyResourceLockManager() {
             @Override
-            public List<PolicyResourceLockFeatureApi> getImplementers() {
+            protected List<PolicyResourceLockFeatureApi> getImplementers() {
                 return implList;
             }
-        });
-
-        mgr = new PolicyResourceLockManager();
+        };
     }
 
     /**

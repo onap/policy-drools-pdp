@@ -48,9 +48,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -79,6 +77,8 @@ import org.slf4j.LoggerFactory;
  * <dt>PolicyEngine, PolicyController, DroolsController</dt>
  * <dd>mocked</dd>
  * </dl>
+ * 
+ * <p>Invoke {@link #runSlow()}, before the test, to slow things down.
  */
 public class FeatureTest {
 
@@ -109,38 +109,31 @@ public class FeatureTest {
     private static long stdInterPollMs = 2;
     private static long stdEventWaitSec = 10;
 
-    // these are saved and restored on exit from this test class
-    private static PoolingFeature.Factory saveFeatureFactory;
-    private static PoolingManagerImpl.Factory saveManagerFactory;
-    private static DmaapManager.Factory saveDmaapFactory;
+    /**
+     * Used to decode events into a Map.
+     */
+    private static final TypeReference<TreeMap<String, String>> typeRef =
+                    new TypeReference<TreeMap<String, String>>() {};
+
+    /**
+     * Used to decode events from the external topic.
+     */
+    private static final ThreadLocal<ObjectMapper> mapper = new ThreadLocal<ObjectMapper>() {
+        @Override
+        protected ObjectMapper initialValue() {
+            return new ObjectMapper();
+        }
+    };
+
+    /**
+     * Used to identify the current context.
+     */
+    private static final ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
 
     /**
      * Context for the current test case.
      */
     private Context ctx;
-
-    /**
-     * Setup before class.
-     * 
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        saveFeatureFactory = PoolingFeature.getFactory();
-        saveManagerFactory = PoolingManagerImpl.getFactory();
-        saveDmaapFactory = DmaapManager.getFactory();
-        
-        // note: invoke runSlow() to slow things down
-    }
-
-    /**
-     * Tear down after class.
-     */
-    @AfterClass
-    public static void tearDownAfterClass() {
-        PoolingFeature.setFactory(saveFeatureFactory);
-        PoolingManagerImpl.setFactory(saveManagerFactory);
-        DmaapManager.setFactory(saveDmaapFactory);
-    }
 
     /**
      * Setup.
@@ -215,13 +208,25 @@ public class FeatureTest {
     }
 
     /**
+     * Decodes an event.
+     * 
+     * @param event event
+     * @return the decoded event, or {@code null} if it cannot be decoded
+     */
+    private static Object decodeEvent(String event) {
+        try {
+            return mapper.get().readValue(event, typeRef);
+
+        } catch (IOException e) {
+            logger.warn("cannot decode external event", e);
+            return null;
+        }
+    }
+
+    /**
      * Context used for a single test case.
      */
     private static class Context {
-
-        private final FeatureFactory featureFactory;
-        private final ManagerFactory managerFactory;
-        private final DmaapFactory dmaapFactory;
 
         /**
          * Hosts that have been added to this context.
@@ -265,14 +270,7 @@ public class FeatureTest {
          * @param nEvents number of events to be processed
          */
         public Context(int events) {
-            featureFactory = new FeatureFactory(this);
-            managerFactory = new ManagerFactory(this);
-            dmaapFactory = new DmaapFactory(this);
             eventCounter = new CountDownLatch(events);
-
-            PoolingFeature.setFactory(featureFactory);
-            PoolingManagerImpl.setFactory(managerFactory);
-            DmaapManager.setFactory(dmaapFactory);
         }
 
         /**
@@ -375,16 +373,6 @@ public class FeatureTest {
         }
 
         /**
-         * Decodes an event.
-         * 
-         * @param event event
-         * @return the decoded event, or {@code null} if it cannot be decoded
-         */
-        public Object decodeEvent(String event) {
-            return managerFactory.decodeEvent(null, null, event);
-        }
-
-        /**
          * Associates a controller with its drools controller.
          * 
          * @param controller controller
@@ -476,7 +464,7 @@ public class FeatureTest {
 
         private final Context context;
 
-        private final PoolingFeature feature = new PoolingFeature();
+        private final PoolingFeature feature;
 
         /**
          * {@code True} if this host has processed a message, {@code false} otherwise.
@@ -521,6 +509,8 @@ public class FeatureTest {
 
             // arrange to read from the external topic
             externalSource = new TopicSourceImpl(context, false);
+            
+            feature = new PoolingFeatureImpl(context);
         }
 
         /**
@@ -665,7 +655,7 @@ public class FeatureTest {
             }
 
             boolean result;
-            Object fact = context.decodeEvent(event);
+            Object fact = decodeEvent(event);
 
             if (fact == null) {
                 result = false;
@@ -977,9 +967,9 @@ public class FeatureTest {
     }
 
     /**
-     * Simulator for the feature-level factory.
+     * Feature with overrides.
      */
-    private static class FeatureFactory extends PoolingFeature.Factory {
+    private static class PoolingFeatureImpl extends PoolingFeature {
 
         private final Context context;
 
@@ -988,7 +978,7 @@ public class FeatureTest {
          * 
          * @param context context
          */
-        public FeatureFactory(Context context) {
+        public PoolingFeatureImpl(Context context) {
             this.context = context;
 
             /*
@@ -1037,87 +1027,76 @@ public class FeatureTest {
             String suffix = propnm.substring(PREFIX.length());
             return PREFIX + spec + "." + suffix;
         }
+
+        @Override
+        protected PoolingManagerImpl makeManager(String host, PolicyController controller, PoolingProperties props,
+                        CountDownLatch activeLatch) {
+
+            currentContext.set(context);
+            
+            return new PoolingManagerTest(host, controller, props, activeLatch);
+        }
     }
 
     /**
-     * Simulator for the pooling manager factory.
+     * Pooling Manager with overrides.
      */
-    private static class ManagerFactory extends PoolingManagerImpl.Factory {
-
-        /**
-         * Used to decode events from the external topic.
-         */
-        private final ThreadLocal<ObjectMapper> mapper = new ThreadLocal<ObjectMapper>() {
-            @Override
-            protected ObjectMapper initialValue() {
-                return new ObjectMapper();
-            }
-        };
-
-        /**
-         * Used to decode events into a Map.
-         */
-        private final TypeReference<TreeMap<String, String>> typeRef = new TypeReference<TreeMap<String, String>>() {};
+    private static class PoolingManagerTest extends PoolingManagerImpl {
 
         /**
          * Constructor.
          * 
-         * @param context context
+         * @param host the host
+         * @param controller the controller
+         * @param props the properties
+         * @param activeLatch the latch
          */
-        public ManagerFactory(Context context) {
+        public PoolingManagerTest(String host, PolicyController controller, PoolingProperties props,
+                        CountDownLatch activeLatch) {
 
-            /*
-             * Note: do NOT extract anything from "context" at this point, because it
-             * hasn't been fully initialized yet
-             */
+            super(host, controller, props, activeLatch);
         }
 
         @Override
-        public boolean canDecodeEvent(DroolsController drools, String topic) {
+        protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+            return new DmaapManagerImpl(topic);
+        }
+
+        @Override
+        protected boolean canDecodeEvent(DroolsController drools, String topic) {
             return true;
         }
 
         @Override
-        public Object decodeEvent(DroolsController drools, String topic, String event) {
-            try {
-                return mapper.get().readValue(event, typeRef);
-
-            } catch (IOException e) {
-                logger.warn("cannot decode external event", e);
-                return null;
-            }
+        protected Object decodeEventWrapper(DroolsController drools, String topic, String event) {
+            return decodeEvent(event);
         }
     }
 
     /**
-     * Simulator for the dmaap manager factory.
+     * DMaaP Manager with overrides.
      */
-    private static class DmaapFactory extends DmaapManager.Factory {
-
-        private final Context context;
+    private static class DmaapManagerImpl extends DmaapManager {
 
         /**
          * Constructor.
          * 
-         * @param context context
+         * @param context this manager's context
+         * @param topic the topic
+         * @throws PoolingFeatureException if an error occurs
          */
-        public DmaapFactory(Context context) {
-            this.context = context;
-
-            /*
-             * Note: do NOT extract anything from "context" at this point, because it
-             * hasn't been fully initialized yet
-             */
+        public DmaapManagerImpl(String topic) throws PoolingFeatureException {
+            super(topic);
         }
 
         @Override
-        public List<TopicSource> getTopicSources() {
-            return Arrays.asList(new TopicSourceImpl(context, true));
+        protected List<TopicSource> getTopicSources() {
+            return Arrays.asList(new TopicSourceImpl(currentContext.get(), true));
         }
 
         @Override
-        public List<TopicSink> getTopicSinks() {
-            return Arrays.asList(new TopicSinkImpl(context));
+        protected List<TopicSink> getTopicSinks() {
+            return Arrays.asList(new TopicSinkImpl(currentContext.get()));
         }
     }
 

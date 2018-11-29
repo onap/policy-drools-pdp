@@ -53,11 +53,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     private static final Logger logger = LoggerFactory.getLogger(AggregatedPolicyController.class);
 
     /**
-     * Used to access various objects.  Can be overridden by junit tests.
-     */
-    private static Factory factory = new Factory();
-
-    /**
      * identifier for this policy controller.
      */
     private final String name;
@@ -121,14 +116,14 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         // Create/Reuse Readers/Writers for all event sources endpoints
 
-        this.sources = factory.getEndpointManager().addTopicSources(properties);
-        this.sinks = factory.getEndpointManager().addTopicSinks(properties);
+        this.sources = getEndpointManager().addTopicSources(properties);
+        this.sinks = getEndpointManager().addTopicSinks(properties);
 
         initDrools(properties);
         initSinks();
 
         /* persist new properties */
-        factory.getPersistenceManager().storeController(name, properties);
+        getPersistenceManager().storeController(name, properties);
         this.properties = properties;
     }
 
@@ -140,7 +135,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     private void initDrools(Properties properties) {
         try {
             // Register with drools infrastructure
-            this.droolsController = factory.getDroolsFactory().build(properties, sources, sinks);
+            this.droolsController = getDroolsFactory().build(properties, sources, sinks);
         } catch (Exception | LinkageError e) {
             logger.error("{}: cannot init-drools because of {}", this, e.getMessage(), e);
             throw new IllegalArgumentException(e);
@@ -183,7 +178,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             this.properties.setProperty(DroolsProperties.RULES_ARTIFACTID, newDroolsConfiguration.getArtifactId());
             this.properties.setProperty(DroolsProperties.RULES_VERSION, newDroolsConfiguration.getVersion());
 
-            factory.getPersistenceManager().storeController(name, this.properties);
+            getPersistenceManager().storeController(name, this.properties);
 
             this.initDrools(this.properties);
 
@@ -226,7 +221,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean start() {
         logger.info("{}: start", this);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeStart(this)) {
                     return true;
@@ -265,7 +260,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             }
         }
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterStart(this)) {
                     return true;
@@ -286,7 +281,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean stop() {
         logger.info("{}: stop", this);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeStop(this)) {
                     return true;
@@ -315,7 +310,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.stop();
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterStop(this)) {
                     return true;
@@ -336,7 +331,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public void shutdown() {
         logger.info("{}: shutdown", this);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeShutdown(this)) {
                     return;
@@ -349,9 +344,9 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         this.stop();
 
-        factory.getDroolsFactory().shutdown(this.droolsController);
+        getDroolsFactory().shutdown(this.droolsController);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterShutdown(this)) {
                     return;
@@ -370,7 +365,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public void halt() {
         logger.info("{}: halt", this);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeHalt(this)) {
                     return;
@@ -382,10 +377,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         }
 
         this.stop();
-        factory.getDroolsFactory().destroy(this.droolsController);
-        factory.getPersistenceManager().deleteController(this.name);
+        getDroolsFactory().destroy(this.droolsController);
+        getPersistenceManager().deleteController(this.name);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterHalt(this)) {
                     return;
@@ -405,7 +400,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.debug("{}: event offered from {}:{}: {}", this, commType, topic, event);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeOffer(this, commType, topic, event)) {
                     return;
@@ -426,7 +421,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.offer(topic, event);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterOffer(this, commType, topic, event, success)) {
                     return;
@@ -446,7 +441,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.debug("{}: deliver event to {}:{}: {}", this, commType, topic, event);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeDeliver(this, commType, topic, event)) {
                     return true;
@@ -481,7 +476,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.deliver(this.topic2Sinks.get(topic), event);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterDeliver(this, commType, topic, event, success)) {
                     return success;
@@ -510,7 +505,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean lock() {
         logger.info("{}: lock", this);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeLock(this)) {
                     return true;
@@ -534,7 +529,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.lock();
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterLock(this)) {
                     return true;
@@ -556,7 +551,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.info("{}: unlock", this);
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.beforeUnlock(this)) {
                     return true;
@@ -577,7 +572,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.unlock();
 
-        for (PolicyControllerFeatureAPI feature : factory.getFeatureProviders()) {
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
                 if (feature.afterUnlock(this)) {
                     return true;
@@ -639,26 +634,22 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
                 + ", locked=" + locked + ", droolsController=" + droolsController + "]";
     }
 
-    /**
-     * Factory to access various objects.  Can be overridden by junit tests.
-     */
-    public static class Factory {
-        
-        public SystemPersistence getPersistenceManager() {
-            return SystemPersistence.manager;
-        }
+    // the following methods may be overridden by junit tests
+    
+    protected SystemPersistence getPersistenceManager() {
+        return SystemPersistence.manager;
+    }
 
-        public TopicEndpoint getEndpointManager() {
-            return TopicEndpoint.manager;
-        }
+    protected TopicEndpoint getEndpointManager() {
+        return TopicEndpoint.manager;
+    }
 
-        public DroolsControllerFactory getDroolsFactory() {
-            return DroolsController.factory;
-        }
+    protected DroolsControllerFactory getDroolsFactory() {
+        return DroolsController.factory;
+    }
 
-        public List<PolicyControllerFeatureAPI> getFeatureProviders() {
-            return PolicyControllerFeatureAPI.providers.getList();
-        }
+    protected List<PolicyControllerFeatureAPI> getProviders() {
+        return PolicyControllerFeatureAPI.providers.getList();
     }
 }
 

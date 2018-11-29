@@ -42,15 +42,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.pooling.PoolingManagerImpl.Factory;
 import org.onap.policy.drools.pooling.extractor.ClassExtractors;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Forward;
@@ -94,11 +91,6 @@ public class PoolingManagerImplTest {
     private static final int START_PUB = 1;
 
     /**
-     * Saved from PoolingManagerImpl and restored on exit from this test class.
-     */
-    private static Factory saveFactory;
-
-    /**
      * Futures that have been allocated due to calls to scheduleXxx().
      */
     private Queue<ScheduledFuture<?>> futures;
@@ -108,23 +100,14 @@ public class PoolingManagerImplTest {
     private ListeningController controller;
     private ClassExtractors extractors;
     private DmaapManager dmaap;
+    private boolean gotDmaap;
     private ScheduledThreadPoolExecutor sched;
+    private int schedCount;
     private DroolsController drools;
     private Serializer ser;
-    private Factory factory;
     private CountDownLatch active;
 
     private PoolingManagerImpl mgr;
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        saveFactory = PoolingManagerImpl.getFactory();
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() {
-        PoolingManagerImpl.setFactory(saveFactory);
-    }
 
     /**
      * Setup.
@@ -149,18 +132,13 @@ public class PoolingManagerImplTest {
         ser = new Serializer();
         active = new CountDownLatch(1);
 
-        factory = mock(Factory.class);
         extractors = mock(ClassExtractors.class);
         dmaap = mock(DmaapManager.class);
+        gotDmaap = false;
         controller = mock(ListeningController.class);
         sched = mock(ScheduledThreadPoolExecutor.class);
+        schedCount = 0;
         drools = mock(DroolsController.class);
-
-        when(factory.makeClassExtractors(any())).thenReturn(extractors);
-        when(factory.makeDmaapManager(any())).thenReturn(dmaap);
-        when(factory.makeScheduler()).thenReturn(sched);
-        when(factory.canDecodeEvent(drools, TOPIC2)).thenReturn(true);
-        when(factory.decodeEvent(drools, TOPIC2, THE_EVENT)).thenReturn(DECODED_EVENT);
 
         when(extractors.extract(DECODED_EVENT)).thenReturn(REQUEST_ID);
 
@@ -183,14 +161,12 @@ public class PoolingManagerImplTest {
                             return fut;
                         });
 
-        PoolingManagerImpl.setFactory(factory);
-
-        mgr = new PoolingManagerImpl(MY_HOST, controller, poolProps, active);
+        mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active);
     }
 
     @Test
     public void testPoolingManagerImpl() throws Exception {
-        verify(factory).makeDmaapManager(any());
+        assertTrue(gotDmaap);
 
         State st = mgr.getCurrent();
         assertTrue(st instanceof IdleState);
@@ -208,7 +184,7 @@ public class PoolingManagerImplTest {
         PolicyController ctlr = mock(PolicyController.class);
 
         PoolingFeatureRtException ex = expectException(PoolingFeatureRtException.class,
-            () -> new PoolingManagerImpl(MY_HOST, ctlr, poolProps, active));
+            () -> new PoolingManagerTest(MY_HOST, ctlr, poolProps, active));
         assertNotNull(ex.getCause());
         assertTrue(ex.getCause() instanceof ClassCastException);
     }
@@ -217,10 +193,15 @@ public class PoolingManagerImplTest {
     public void testPoolingManagerImpl_PoolEx() throws PoolingFeatureException {
         // throw an exception when we try to create the dmaap manager
         PoolingFeatureException ex = new PoolingFeatureException();
-        when(factory.makeDmaapManager(any())).thenThrow(ex);
-
+        
         PoolingFeatureRtException ex2 = expectException(PoolingFeatureRtException.class,
-            () -> new PoolingManagerImpl(MY_HOST, controller, poolProps, active));
+            () -> new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
+                @Override
+                protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+                    throw ex;
+                }
+            });
+        
         assertEquals(ex, ex2.getCause());
     }
 
@@ -237,7 +218,7 @@ public class PoolingManagerImplTest {
     public void testGetHost() {
         assertEquals(MY_HOST, mgr.getHost());
 
-        mgr = new PoolingManagerImpl(HOST2, controller, poolProps, active);
+        mgr = new PoolingManagerTest(HOST2, controller, poolProps, active);
         assertEquals(HOST2, mgr.getHost());
     }
 
@@ -258,7 +239,7 @@ public class PoolingManagerImplTest {
 
         verify(dmaap).startPublisher();
 
-        verify(factory).makeScheduler();
+        assertEquals(1, schedCount);
         verify(sched).setMaximumPoolSize(1);
         verify(sched).setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
 
@@ -268,7 +249,7 @@ public class PoolingManagerImplTest {
 
         verify(dmaap).startPublisher();
 
-        verify(factory).makeScheduler();
+        assertEquals(1, schedCount);
         verify(sched).setMaximumPoolSize(1);
         verify(sched).setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
     }
@@ -798,59 +779,81 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testDecodeEvent_CannotDecode() throws Exception {
+
+        mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
+            @Override
+            protected boolean canDecodeEvent(DroolsController drools2, String topic2) {
+                return false;
+            }
+        };
+        
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
 
         // create assignments, though they are irrelevant
         mgr.startDistributing(makeAssignments(false));
-
-        when(factory.canDecodeEvent(drools, TOPIC2)).thenReturn(false);
 
         assertFalse(mgr.beforeOffer(CommInfrastructure.UEB, TOPIC2, THE_EVENT));
     }
 
     @Test
     public void testDecodeEvent_UnsuppEx() throws Exception {
+
+        // generate exception
+        mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
+            @Override
+            protected Object decodeEventWrapper(DroolsController drools2, String topic2, String event) {
+                throw new UnsupportedOperationException();
+            }
+        };
+        
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
 
         // create assignments, though they are irrelevant
         mgr.startDistributing(makeAssignments(false));
-
-        // generate exception
-        doThrow(new UnsupportedOperationException()).when(factory).decodeEvent(drools, TOPIC2, THE_EVENT);
 
         assertFalse(mgr.beforeOffer(CommInfrastructure.UEB, TOPIC2, THE_EVENT));
     }
 
     @Test
     public void testDecodeEvent_ArgEx() throws Exception {
+        // generate exception
+        mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
+            @Override
+            protected Object decodeEventWrapper(DroolsController drools2, String topic2, String event) {
+                throw new IllegalArgumentException();
+            }
+        };
+        
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
 
         // create assignments, though they are irrelevant
         mgr.startDistributing(makeAssignments(false));
-
-        // generate exception
-        doThrow(new IllegalArgumentException()).when(factory).decodeEvent(drools, TOPIC2, THE_EVENT);
 
         assertFalse(mgr.beforeOffer(CommInfrastructure.UEB, TOPIC2, THE_EVENT));
     }
 
     @Test
     public void testDecodeEvent_StateEx() throws Exception {
+        // generate exception
+        mgr = new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
+            @Override
+            protected Object decodeEventWrapper(DroolsController drools2, String topic2, String event) {
+                throw new IllegalStateException();
+            }
+        };
+        
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
 
         // create assignments, though they are irrelevant
         mgr.startDistributing(makeAssignments(false));
-
-        // generate exception
-        doThrow(new IllegalStateException()).when(factory).decodeEvent(drools, TOPIC2, THE_EVENT);
 
         assertFalse(mgr.beforeOffer(CommInfrastructure.UEB, TOPIC2, THE_EVENT));
     }
@@ -1263,5 +1266,48 @@ public class PoolingManagerImplTest {
          */
         public void apply() throws T;
 
+    }
+
+    /**
+     * Manager with overrides.
+     */
+    private class PoolingManagerTest extends PoolingManagerImpl {
+
+        public PoolingManagerTest(String host, PolicyController controller, PoolingProperties props,
+                        CountDownLatch activeLatch) {
+
+            super(host, controller, props, activeLatch);
+        }
+
+        @Override
+        protected ClassExtractors makeClassExtractors(Properties props) {
+            return extractors;
+        }
+
+        @Override
+        protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+            gotDmaap = true;
+            return dmaap;
+        }
+
+        @Override
+        protected ScheduledThreadPoolExecutor makeScheduler() {
+            ++schedCount;
+            return sched;
+        }
+
+        @Override
+        protected boolean canDecodeEvent(DroolsController drools2, String topic2) {
+            return (drools2 == drools && TOPIC2.equals(topic2));
+        }
+
+        @Override
+        protected Object decodeEventWrapper(DroolsController drools2, String topic2, String event) {
+            if (drools2 == drools && TOPIC2.equals(topic2) && event == THE_EVENT) {
+                return DECODED_EVENT;
+            } else {
+                return null;
+            }
+        }
     }
 }

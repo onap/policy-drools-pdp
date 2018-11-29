@@ -57,11 +57,6 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     private static final Logger logger = LoggerFactory.getLogger(PoolingFeature.class);
 
     /**
-     * Factory used to create objects.
-     */
-    private static Factory factory = new Factory();
-
-    /**
      * ID of this host.
      */
     private final String host;
@@ -97,19 +92,6 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
         this.host = UUID.randomUUID().toString();
     }
 
-    protected static Factory getFactory() {
-        return factory;
-    }
-
-    /**
-     * Sets the factory to be used to create objects. Used by junit tests.
-     * 
-     * @param factory the new factory to be used to create objects
-     */
-    protected static void setFactory(Factory factory) {
-        PoolingFeature.factory = factory;
-    }
-
     public String getHost() {
         return host;
     }
@@ -131,13 +113,13 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     @Override
     public boolean beforeStart(PolicyEngine engine) {
         logger.info("initializing {}", PoolingProperties.FEATURE_NAME);
-        featProps = factory.getProperties(PoolingProperties.FEATURE_NAME);
+        featProps = getProperties(PoolingProperties.FEATURE_NAME);
 
         // remove any generic pooling topic - always use controller-specific property
         featProps.remove(PoolingProperties.POOLING_TOPIC);
 
-        factory.initTopicSources(featProps);
-        factory.initTopicSinks(featProps);
+        initTopicSources(featProps);
+        initTopicSinks(featProps);
 
         return false;
     }
@@ -173,7 +155,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
                 PoolingProperties props = new PoolingProperties(name, featProps);
 
                 logger.info("pooling enabled for {}", name);
-                ctlr2pool.computeIfAbsent(name, xxx -> factory.makeManager(host, controller, props, activeLatch));
+                ctlr2pool.computeIfAbsent(name, xxx -> makeManager(host, controller, props, activeLatch));
 
             } catch (PropertyException e) {
                 logger.error("pooling disabled due to exception for {}", name, e);
@@ -270,7 +252,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
         PolicyController controller;
         try {
-            controller = factory.getController(droolsController);
+            controller = getController(droolsController);
 
         } catch (IllegalArgumentException | IllegalStateException e) {
             logger.warn("cannot get controller for {} {}", droolsController.getGroupId(),
@@ -393,64 +375,62 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
             this.event = event;
         }
     }
+    
+    /*
+     * The remaining methods may be overridden by junit tests.
+     */
 
     /**
-     * Used to create objects.
+     * Get properties.
+     * 
+     * @param featName feature name
+     * @return the properties for the specified feature
      */
-    public static class Factory {
+    protected Properties getProperties(String featName) {
+        return SystemPersistence.manager.getProperties(featName);
+    }
 
-        /**
-         * Get properties.
-         * 
-         * @param featName feature name
-         * @return the properties for the specified feature
-         */
-        public Properties getProperties(String featName) {
-            return SystemPersistence.manager.getProperties(featName);
-        }
+    /**
+     * Makes a pooling manager for a controller.
+     * 
+     * @param host name/uuid of this host
+     * @param controller controller
+     * @param props properties to use to configure the manager
+     * @param activeLatch decremented when the manager goes Active
+     * @return a new pooling manager
+     */
+    protected PoolingManagerImpl makeManager(String host, PolicyController controller, PoolingProperties props,
+            CountDownLatch activeLatch) {
+        return new PoolingManagerImpl(host, controller, props, activeLatch);
+    }
 
-        /**
-         * Makes a pooling manager for a controller.
-         * 
-         * @param host name/uuid of this host
-         * @param controller controller
-         * @param props properties to use to configure the manager
-         * @param activeLatch decremented when the manager goes Active
-         * @return a new pooling manager
-         */
-        public PoolingManagerImpl makeManager(String host, PolicyController controller, PoolingProperties props,
-                CountDownLatch activeLatch) {
-            return new PoolingManagerImpl(host, controller, props, activeLatch);
-        }
+    /**
+     * Gets the policy controller associated with a drools controller.
+     * 
+     * @param droolsController drools controller
+     * @return the policy controller associated with a drools controller
+     */
+    protected PolicyController getController(DroolsController droolsController) {
+        return PolicyController.factory.get(droolsController);
+    }
 
-        /**
-         * Gets the policy controller associated with a drools controller.
-         * 
-         * @param droolsController drools controller
-         * @return the policy controller associated with a drools controller
-         */
-        public PolicyController getController(DroolsController droolsController) {
-            return PolicyController.factory.get(droolsController);
-        }
+    /**
+     * Initializes the topic sources.
+     * 
+     * @param props properties used to configure the topics
+     * @return the topic sources
+     */
+    protected List<TopicSource> initTopicSources(Properties props) {
+        return TopicEndpoint.manager.addTopicSources(props);
+    }
 
-        /**
-         * Initializes the topic sources.
-         * 
-         * @param props properties used to configure the topics
-         * @return the topic sources
-         */
-        public List<TopicSource> initTopicSources(Properties props) {
-            return TopicEndpoint.manager.addTopicSources(props);
-        }
-
-        /**
-         * Initializes the topic sinks.
-         * 
-         * @param props properties used to configure the topics
-         * @return the topic sinks
-         */
-        public List<TopicSink> initTopicSinks(Properties props) {
-            return TopicEndpoint.manager.addTopicSinks(props);
-        }
+    /**
+     * Initializes the topic sinks.
+     * 
+     * @param props properties used to configure the topics
+     * @return the topic sinks
+     */
+    protected List<TopicSink> initTopicSinks(Properties props) {
+        return TopicEndpoint.manager.addTopicSinks(props);
     }
 }

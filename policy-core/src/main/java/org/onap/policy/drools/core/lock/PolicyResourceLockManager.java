@@ -35,11 +35,6 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     private static Logger logger = LoggerFactory.getLogger(PolicyResourceLockManager.class);
 
     /**
-     * Used to access various objects.
-     */
-    private static Factory factory = new Factory();
-
-    /**
      * Used by junit tests.
      */
     protected PolicyResourceLockManager() {
@@ -53,19 +48,6 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      */
     public static PolicyResourceLockManager getInstance() {
         return Singleton.instance;
-    }
-
-    protected static Factory getFactory() {
-        return factory;
-    }
-
-    /**
-     * Sets the factory to be used by junit tests.
-     * 
-     * @param factory the factory
-     */
-    protected static void setFactory(Factory factory) {
-        PolicyResourceLockManager.factory = factory;
     }
 
     @Override
@@ -205,9 +187,9 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * @return first non-null value returned by an implementer, <i>continueValue</i> if
      *       they all returned <i>continueValue</i>
      */
-    private static <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureApi, T> func) {
+    private <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureApi, T> func) {
 
-        for (PolicyResourceLockFeatureApi impl : factory.getImplementers()) {
+        for (PolicyResourceLockFeatureApi impl : getImplementers()) {
             try {
                 T result = func.apply(impl);
                 if (result != continueValue) {
@@ -222,6 +204,17 @@ public class PolicyResourceLockManager extends SimpleLockManager {
         return continueValue;
     }
 
+    // these may be overridden by junit tests
+
+    /**
+     * Get implementers.
+     * 
+     * @return the list of feature implementers
+     */
+    protected List<PolicyResourceLockFeatureApi> getImplementers() {
+        return PolicyResourceLockFeatureApi.impl.getList();
+    }
+
     /**
      * Initialization-on-demand holder idiom.
      */
@@ -234,22 +227,6 @@ public class PolicyResourceLockManager extends SimpleLockManager {
          */
         private Singleton() {
             super();
-        }
-
-    }
-
-    /**
-     * Used to access various objects.
-     */
-    public static class Factory {
-
-        /**
-         * Get implementers.
-         * 
-         * @return the list of feature implementers
-         */
-        public List<PolicyResourceLockFeatureApi> getImplementers() {
-            return PolicyResourceLockFeatureApi.impl.getList();
         }
     }
 }
