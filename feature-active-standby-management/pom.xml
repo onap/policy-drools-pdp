@@ -140,7 +140,6 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
