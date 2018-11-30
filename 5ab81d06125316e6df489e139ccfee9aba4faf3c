@@ -16,6 +16,24 @@
       "revId": "5ab81d06125316e6df489e139ccfee9aba4faf3c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_3b309e55",
+        "filename": "feature-active-standby-management/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-11-30T17:29:24Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "9adffdf1_1b06fa86",
+      "revId": "5ab81d06125316e6df489e139ccfee9aba4faf3c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
