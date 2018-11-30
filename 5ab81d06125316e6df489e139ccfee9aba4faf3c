@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_1b06fa86",
+        "filename": "feature-active-standby-management/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2018-11-30T17:17:00Z",
+      "side": 0,
+      "message": "I think we want to leave in the features with as much provided as possible to reuse the official ones from policy-management.   Instead make sure the policy-management module points to this eclipselink dependency and make this one provided.",
+      "revId": "5ab81d06125316e6df489e139ccfee9aba4faf3c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
