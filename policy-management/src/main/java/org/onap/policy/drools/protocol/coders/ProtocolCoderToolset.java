@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +49,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,28 +100,25 @@ public abstract class ProtocolCoderToolset {
     /**
      * Constructor.
      *
-     * @param topic the topic
+     * @param eventProtocolParams parameter object for event encoder
      * @param controllerId the controller id
-     * @param codedClass the decoded class
-     * @param filters list of filters that apply to the selection of this decodedClass in case of
-     *        multiplicity
      * @throws IllegalArgumentException if invalid data has been passed in
      */
-    public ProtocolCoderToolset(String topic, String controllerId, String groupId, String artifactId,
-            String codedClass, JsonProtocolFilter filters, CustomCoder customCoder,
-            int modelClassLoaderHash) {
+    public ProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
 
-        if (topic == null || controllerId == null || groupId == null || artifactId == null
-                || codedClass == null || filters == null || topic.isEmpty() || controllerId.isEmpty()) {
+        if (eventProtocolParams == null || controllerId == null) {
             throw new IllegalArgumentException("Invalid input");
         }
 
-        this.topic = topic;
+        this.topic = eventProtocolParams.getTopic();
         this.controllerId = controllerId;
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.coders.add(new CoderFilters(codedClass, filters, modelClassLoaderHash));
-        this.customCoder = customCoder;
+        this.groupId = eventProtocolParams.getGroupId();
+        this.artifactId = eventProtocolParams.getArtifactId();
+        this.coders.add(new CoderFilters(
+                eventProtocolParams.getEventClass(),
+                eventProtocolParams.getProtocolFilter(),
+                eventProtocolParams.getModelClassLoaderHash()));
+        this.customCoder = eventProtocolParams.getCustomCoder();
     }
 
     /**
@@ -359,15 +355,11 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
     /**
      * Toolset to encode/decode tools associated with a topic.
      *
-     * @param topic topic
-     * @param decodedClass decoded class of an event
-     * @param filter filter
+     * @param eventProtocolParams parameter object for event encoder
+     * @param controllerId controller id
      */
-    public JacksonProtocolCoderToolset(String topic, String controllerId, String groupId,
-            String artifactId, String decodedClass, JsonProtocolFilter filter,
-            CustomJacksonCoder customJacksonCoder, int modelClassLoaderHash) {
-        super(topic, controllerId, groupId, artifactId, decodedClass, filter, customJacksonCoder,
-                modelClassLoaderHash);
+    public JacksonProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
+        super(eventProtocolParams, controllerId);
         this.decoder.registerModule(new JavaTimeModule());
         this.decoder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
@@ -475,11 +467,11 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
 }
 
 
+
 /**
  * Tools used for encoding/decoding using Jackson.
  */
 class GsonProtocolCoderToolset extends ProtocolCoderToolset {
-
     /**
      * Logger.
      */
@@ -550,15 +542,11 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     /**
      * Toolset to encode/decode tools associated with a topic.
      *
-     * @param topic topic
-     * @param decodedClass decoded class of an event
-     * @param filter filter
+     * @param eventProtocolParams parameter object for event encoder
+     * @param controllerId controller id
      */
-    public GsonProtocolCoderToolset(String topic, String controllerId, String groupId,
-            String artifactId, String decodedClass, JsonProtocolFilter filter,
-            CustomGsonCoder customGsonCoder, int modelClassLoaderHash) {
-        super(topic, controllerId, groupId, artifactId, decodedClass, filter, customGsonCoder,
-                modelClassLoaderHash);
+    public GsonProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
+        super(eventProtocolParams, controllerId);
     }
 
     /**

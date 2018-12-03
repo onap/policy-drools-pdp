@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright(C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -711,26 +712,10 @@ abstract class GenericEventProtocolCoder {
             }
 
             GsonProtocolCoderToolset gsonCoderTools =
-                    new GsonProtocolCoderToolset(
-                            eventProtocolParams.getTopic(),
-                            key,
-                            eventProtocolParams.getGroupId(),
-                            eventProtocolParams.getArtifactId(),
-                            eventProtocolParams.getEventClass(),
-                            eventProtocolParams.getProtocolFilter(),
-                            eventProtocolParams.getCustomGsonCoder(),
-                            eventProtocolParams.getModelClassLoaderHash());
+                    new GsonProtocolCoderToolset(eventProtocolParams, key);
 
             JacksonProtocolCoderToolset jacksonCoderTools =
-                    new JacksonProtocolCoderToolset(
-                            eventProtocolParams.getTopic(),
-                            key,
-                            eventProtocolParams.getGroupId(),
-                            eventProtocolParams.getArtifactId(),
-                            eventProtocolParams.getEventClass(),
-                            eventProtocolParams.getProtocolFilter(),
-                            eventProtocolParams.getCustomJacksonCoder(),
-                            eventProtocolParams.getModelClassLoaderHash());
+                    new JacksonProtocolCoderToolset(eventProtocolParams, key);
 
             // Use Gson as the first priority encoding/decoding toolset, and Jackson
             // as second.  This is because it has been observed that they can diverge
