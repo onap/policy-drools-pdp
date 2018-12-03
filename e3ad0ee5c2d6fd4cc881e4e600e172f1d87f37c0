@@ -25,6 +25,23 @@
     },
     {
       "key": {
+        "uuid": "9adffdf1_d5103eaa",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2018-12-03T13:25:32Z",
+      "side": 1,
+      "message": "Modified \u003d\u003e Modifications",
+      "revId": "e3ad0ee5c2d6fd4cc881e4e600e172f1d87f37c0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9adffdf1_15048613",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
         "patchSetId": 1
