@@ -105,9 +105,14 @@ public class ProtocolCoderToolsetTest {
      * @param protocolFilter protocol filter
      */
     public void testGsonToolset(JsonProtocolFilter protocolFilter) {
-        GsonProtocolCoderToolset gsonToolset = new GsonProtocolCoderToolset(JUNIT_PROTOCOL_CODER_TOPIC, CONTROLLER_ID,
-                this.releaseId.getGroupId(), this.releaseId.getArtifactId(), Triple.class.getCanonicalName(),
-                protocolFilter, null, 12345678);
+        GsonProtocolCoderToolset gsonToolset = new GsonProtocolCoderToolset(
+                EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
+                        .groupId(this.releaseId.getGroupId())
+                        .artifactId(this.releaseId.getArtifactId())
+                        .eventClass(Triple.class.getCanonicalName())
+                        .protocolFilter(protocolFilter)
+                        .customGsonCoder(null)
+                        .modelClassLoaderHash(12345678), CONTROLLER_ID);
 
         Assert.assertNotNull(gsonToolset.getEncoder());
         Assert.assertNotNull(gsonToolset.getDecoder());
@@ -130,9 +135,15 @@ public class ProtocolCoderToolsetTest {
      * @param protocolFilter protocol filter
      */
     public void testJacksonToolset(JsonProtocolFilter protocolFilter) {
-        JacksonProtocolCoderToolset jacksonToolset = new JacksonProtocolCoderToolset(JUNIT_PROTOCOL_CODER_TOPIC,
-                CONTROLLER_ID, this.releaseId.getGroupId(), this.releaseId.getArtifactId(),
-                Triple.class.getCanonicalName(), protocolFilter, null, 12345678);
+        JacksonProtocolCoderToolset jacksonToolset = new JacksonProtocolCoderToolset(
+                EventProtocolParams.builder()
+                        .topic(JUNIT_PROTOCOL_CODER_TOPIC)
+                        .groupId(this.releaseId.getGroupId())
+                        .artifactId(this.releaseId.getArtifactId())
+                        .eventClass(Triple.class.getCanonicalName())
+                        .protocolFilter(protocolFilter)
+                        .customJacksonCoder(null)
+                        .modelClassLoaderHash(12345678), CONTROLLER_ID);
 
         jacksonToolset.getEncoder().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
         jacksonToolset.getDecoder().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
