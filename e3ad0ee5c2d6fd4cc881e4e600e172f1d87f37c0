@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_15048613",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-12-03T09:03:18Z",
+      "side": 1,
+      "message": "Should these not still be final. It looks like they are only set in the constructor.",
+      "range": {
+        "startLine": 70,
+        "startChar": 4,
+        "endLine": 85,
+        "endChar": 32
+      },
+      "revId": "e3ad0ee5c2d6fd4cc881e4e600e172f1d87f37c0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_351e6a64",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/EventProtocolCoderTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2018-12-03T09:03:18Z",
+      "side": 1,
+      "message": "It doesn\u0027t look like this file was modified.",
+      "range": {
+        "startLine": 6,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 60
+      },
+      "revId": "e3ad0ee5c2d6fd4cc881e4e600e172f1d87f37c0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
