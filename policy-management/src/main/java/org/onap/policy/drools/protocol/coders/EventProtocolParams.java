@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.protocol.coders;
 
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
+
 public class EventProtocolParams {
     private String groupId;
     private String artifactId;
@@ -154,5 +156,9 @@ public class EventProtocolParams {
     public EventProtocolParams modelClassLoaderHash(int modelClassLoaderHash) {
         this.modelClassLoaderHash = modelClassLoaderHash;
         return this;
+    }
+
+    public CustomCoder getCustomCoder() {
+        return this.customGsonCoder != null ? this.customGsonCoder : this.customJacksonCoder;
     }
 }
