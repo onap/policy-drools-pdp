@@ -199,39 +199,39 @@ function configure_settings() {
 	mkdir -p "${fileRepoUrl#file:}"
 		
 	# The following parameters are also used outside of this function.
-	# if snapshotRepositoryUrl and/or releaseRepositoryUrl is defined,
+	# if SNAPSHOT_REPOSITORY_URL and/or RELEASE_REPOSITORY_URL is defined,
 	# the corresponding ID and url will be updated below
 	releaseRepoID=${fileRepoID}
 	releaseRepoUrl=${fileRepoUrl}
 	snapshotRepoID=${fileRepoID}
 	snapshotRepoUrl=${fileRepoUrl}
 
-	# if both snapshotRepositoryUrl and releaseRepositoryUrl are null,
+	# if both SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL are null,
 	# use standalone-settings.xml that just defines the file-based repo.
 	# if only one of them is specified, use file-based repo for the other.
-	if [[ -z "$snapshotRepositoryUrl" && -z $releaseRepositoryUrl ]]; then
-		echo "snapshotRepositoryUrl and releaseRepositoryUrl properties not set, configuring settings.xml for standalone operation"
-		mv $HOME_M2/standalone-settings.xml $HOME_M2/settings.xml
+	if [[ -z "${SNAPSHOT_REPOSITORY_URL}" && -z "${RELEASE_REPOSITORY_URL}" ]]; then
+		echo "SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL properties not set, configuring settings.xml for standalone operation"
+		mv ${HOME_M2}/standalone-settings.xml ${HOME_M2}/settings.xml
 	else
 		rm $HOME_M2/standalone-settings.xml
 
-		if [[ -n "${snapshotRepositoryUrl}" ]] ; then
-			snapshotRepoID=${snapshotRepositoryID}
-			snapshotRepoUrl=${snapshotRepositoryUrl}
+		if [[ -n "${SNAPSHOT_REPOSITORY_URL}" ]] ; then
+			snapshotRepoID=${SNAPSHOT_REPOSITORY_ID}
+			snapshotRepoUrl=${SNAPSHOT_REPOSITORY_URL}
 		fi
-		if [[ -n "${releaseRepositoryUrl}" ]] ; then
-			releaseRepoID=${releaseRepositoryID}
-			releaseRepoUrl=${releaseRepositoryUrl}
+		if [[ -n "${RELEASE_REPOSITORY_URL}" ]] ; then
+			releaseRepoID=${RELEASE_REPOSITORY_ID}
+			releaseRepoUrl=${RELEASE_REPOSITORY_URL}
 		fi
 	fi
 
 	SED_LINE="sed -i"
-	SED_LINE+=" -e 's!\${{snapshotRepositoryID}}!${snapshotRepoID}!g' "
-	SED_LINE+=" -e 's!\${{snapshotRepositoryUrl}}!${snapshotRepoUrl}!g' "
-	SED_LINE+=" -e 's!\${{releaseRepositoryID}}!${releaseRepoID}!g' "
-	SED_LINE+=" -e 's!\${{releaseRepositoryUrl}}!${releaseRepoUrl}!g' "
-	SED_LINE+=" -e 's!\${{repositoryUsername}}!${repositoryUsername}!g' "
-	SED_LINE+=" -e 's!\${{repositoryPassword}}!${repositoryPassword}!g' "
+	SED_LINE+=" -e 's!\${{SNAPSHOT_REPOSITORY_ID}}!${snapshotRepoID}!g' "
+	SED_LINE+=" -e 's!\${{SNAPSHOT_REPOSITORY_URL}}!${snapshotRepoUrl}!g' "
+	SED_LINE+=" -e 's!\${{RELEASE_REPOSITORY_ID}}!${releaseRepoID}!g' "
+	SED_LINE+=" -e 's!\${{RELEASE_REPOSITORY_URL}}!${releaseRepoUrl}!g' "
+	SED_LINE+=" -e 's!\${{REPOSITORY_USERNAME}}!${REPOSITORY_USERNAME}!g' "
+	SED_LINE+=" -e 's!\${{REPOSITORY_PASSWORD}}!${REPOSITORY_PASSWORD}!g' "
 	SED_LINE+=" -e 's!\${{fileRepoID}}!${fileRepoID}!g' "
 	SED_LINE+=" -e 's!\${{fileRepoUrl}}!${fileRepoUrl}!g' "
 	
@@ -364,7 +364,7 @@ function configure_base() {
 		echo "${PROFILE_LINE}" >> "${HOME}/.profile"
 	fi
 
-	. "${POLICY_HOME}/etc/profile.d/env.sh"
+	source "${POLICY_HOME}/etc/profile.d/env.sh"
 	
 	cat "${POLICY_HOME}"/etc/cron.d/* | crontab
 }
@@ -445,17 +445,12 @@ function install_base() {
 	# Undo any changes in the $HOME directory if any
 	
 	BASH_PROFILE_LINE=". ${POLICY_HOME}/etc/profile.d/env.sh"
-#	PROFILE_LINE="ps -p \$\$ | grep -q bash || . ${POLICY_HOME}/etc/profile.d/env.sh"
-		
+
 	# Note: using .bashrc instead of .bash_profile
 	if [[ -f ${HOME}/.bashrc ]]; then
-		/bin/sed -i.bak "\:${BASH_PROFILE_LINE}:d" "${HOME}/.bashrc"
+		/bin/sed -i "\:${BASH_PROFILE_LINE}:d" "${HOME}/.bashrc"
 	fi
-	
-#	if [[ -f ${HOME}/.profile ]]; then
-#		/bin/sed -i.bak "\:${PROFILE_LINE}:d" "${HOME}/.profile"
-#	fi
-	
+
 	tar -C ${POLICY_HOME} -xf ${BASE_TGZ} --no-same-owner
 	if [[ $? != 0 ]]; then
 		# this should not happened
@@ -471,14 +466,6 @@ function install_base() {
 		fi
 	fi
 
-#	/bin/mkdir -p ${POLICY_HOME}/etc/ssl > /dev/null 2>&1
-#	/bin/mkdir -p ${POLICY_HOME}/etc/init.d > /dev/null 2>&1
-#	/bin/mkdir -p ${POLICY_HOME}/nagios/tmp > /dev/null 2>&1
-#	/bin/mkdir -p ${POLICY_HOME}/tmp > /dev/null 2>&1
-#	/bin/mkdir -p ${POLICY_HOME}/var > /dev/null 2>&1
-			
-#	chmod -R 755 ${POLICY_HOME}/nagios > /dev/null 2>&1
-	
 	if [[ -d $HOME_M2 ]]; then
 		echo "Renaming existing $HOME_M2 to $HOME/m2.$TIMESTAMP"
 		mv $HOME_M2 $HOME/m2.$TIMESTAMP
@@ -494,19 +481,16 @@ function install_base() {
 			exit 1
 		fi
 	fi
-	
-	configure_base
-	
+
+    # base.conf properties may have characters with special meaning to bash,
+    # so wrap all the values in quotes in the profile.d version so it can
+    # be sourced into scripts that need the values. Also remove any blanks
+    # that may be present around the = sign.
 	# save ${BASE_CONF} in PDP-D installation
 	cp "${BASE_CONF}" "${POLICY_HOME}"/etc/profile.d
-	
-#	if ! create_keystore; then
-#		echo "error: aborting base installation: creating keystore"
-#		exit 1
-#	fi
-	
-#	list_unexpanded_files ${POLICY_HOME}
+    sed -i -e "s/ *= */=/" -e "s/=\(.*$\)/='\1'/" ${POLICY_HOME}/etc/profile.d/base.conf
 
+	configure_base
 }
 
 function install_controller()
@@ -868,6 +852,7 @@ function installFeatures
 			if [[ -r "${featureConf}" ]]; then
 				configure_component "${featureConf}" "${FEATURES_HOME}"
 				cp "${featureConf}" "${POLICY_HOME}"/etc/profile.d
+				sed -i -e "s/ *= */=/" -e "s/=\(.*$\)/='\1'/" "${POLICY_HOME}/etc/profile.d/${featureConf}"
 				echo "feature ${name} has been installed (configuration present)"
 			else
 				echo "feature ${name} has been installed (no configuration present)"
@@ -903,15 +888,12 @@ function do_install()
 	installFeatures
 	installArtifacts
 
+    appInstallers=$(ls apps*installer 2> /dev/null)
+    for appInstaller in ${appInstallers}; do
+        echo "Executing application installer ${appInstaller} .."
+        source ${appInstaller}
+    done
 
-	if [[ -f apps-controlloop-installer ]]; then
-		# if exists, any customizations to the 
-		# base drools installation from the drools apps
-		# is executed here
-
-		./apps-controlloop-installer
-	fi
-	
 	echo
 	echo "Installation complete"
 	echo "Please logoff and login again to update shell environment"

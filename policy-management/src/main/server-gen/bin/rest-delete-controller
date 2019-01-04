@@ -23,12 +23,12 @@
 source $POLICY_HOME/etc/profile.d/env.sh
 
 if [[ -n $1 ]]; then
-	if [[ -n ${ENGINE_MANAGEMENT_PASSWORD} ]]; then
-		curl -k --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X DELETE --header "Content-Type: application/json" \
-			https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine/controllers/${1}
+	if [[ -n ${TELEMETRY_PASSWORD} ]]; then
+		curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X DELETE --header "Content-Type: application/json" \
+			https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers/${1}
 	else
 		curl -k --silent -X DELETE --header "Content-Type: application/json" \
-			https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine/controllers/${1}
+			https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers/${1}
 	fi
 	echo
 	exit	

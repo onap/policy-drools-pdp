@@ -1,0 +1,318 @@
+#!/usr/bin/env bash
+
+#
+# ============LICENSE_START=======================================================
+# ONAP
+# ================================================================================
+# Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+# ================================================================================
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ============LICENSE_END=========================================================
+###
+
+##############################################################################
+# Usage: usage
+##############################################################################
+
+function usage() {
+    echo
+    echo -e "syntax: $(basename "$0") "
+    echo -e "\t [-f]"
+    echo -e "\t -a <artifact> "
+    echo
+    echo -e "Options:"
+    echo -e "\t -f|--file-repo: deployment in the file repository"
+    echo -e "\t -a|--artifact: file artifact (jar or pom) to deploy"
+    echo
+    echo
+}
+
+##############################################################################
+# Usage: getPomAttributes <pom-file> <attribute> ...
+#
+# This function performs simplistic parsing of a 'pom.xml' file, extracting
+# the specified attributes (e.g. 'groupId', 'artifactId', 'version'). The
+# attributes are returned as environment variables with the associated name
+##############################################################################
+
+function getPomAttributes
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="$1"
+    if [[ ! -f "${file}" ]]; then
+        echo "{1}: file does not exist"
+        return 1
+    fi
+
+    local tab=$'\t' rval=0 attr value
+    shift
+
+    for attr in "$@" ; do
+        # Try to fetch the parameter associated with the 'pom.xml' file.
+        # Initially, the 'parent' element is excluded. If the desired
+        # parameter is not found, the 'parent' element is included in the
+        # second attempt.
+        value=$(sed -n \
+            -e '/<parent>/,/<\/parent>/d' \
+            -e '/<dependencies>/,/<\/dependencies>/d' \
+            -e '/<build>/,/<\/build>/d' \
+            -e '/<profiles>/,/<\/profiles>/d' \
+            -e '/<description>/,/<\/description>/d' \
+            -e '/<packaging>/,/<\/packaging>/d' \
+            -e '/<modelVersion>/,/<\/modelVersion>/d' \
+            -e '/<properties>/,/<\/properties>/d' \
+            -e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
+            <"${file}")
+
+        if [[ "${value}" == "" ]]; then
+            # need to check parent for parameter
+            value=$(sed -n \
+                -e '/<dependencies>/,/<\/dependencies>/d' \
+                -e '/<build>/,/<\/build>/d' \
+                -e '/<profiles>/,/<\/profiles>/d' \
+                -e '/<description>/,/<\/description>/d' \
+                -e '/<packaging>/,/<\/packaging>/d' \
+                -e '/<modelVersion>/,/<\/modelVersion>/d' \
+                -e '/<properties>/,/<\/properties>/d' \
+                -e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
+                <"${file}")
+
+            if [[ "${value}" == "" ]] ; then
+                echo "${file}: Can't determine ${attr}" >&2
+                rval=1
+            fi
+        fi
+
+        # the following sets an environment variable with the name referred
+        # to by ${attr}
+        read "${attr}" <<<"${value}"
+    done
+    return ${rval}
+}
+
+
+
+##############################################################################
+# Usage: deployJar <jar-file>
+#
+# This function deploys a JAR file in a repository, as well as
+# the 'pom.xml' member it contains.
+#################################################################
+
+function deployJar
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local artifact="${1}"
+    if [[ ! -f "${artifact}" ]]; then
+        echo "{artifact}: does not exist"
+        return 1
+    fi
+
+    local dir=$(mktemp -d)
+    local jar="${artifact##*/}"
+
+    cp -p "${artifact}" "${dir}/${jar}"
+
+    (
+        local rval=0
+        cd "${dir}"
+
+        # determine name of 'pom' file within JAR
+        local pom=$(jar tf "${jar}" META-INF | grep '/pom\.xml$' | head -1)
+        if [[ -z ${pom} ]] ; then
+            echo "${jar}: Can't find 'pom.xml'" >&2
+            return 1
+        fi
+        jar xf "${jar}" "${pom}"
+
+        local pomProperties=$(jar tf "${jar}" META-INF | grep '/pom\.properties$' | head -1)
+        if [[ -n ${pomProperties} ]] ; then
+            # extract pom file
+            jar xf "${jar}" "${pomProperties}"
+            source "${pomProperties}"
+        fi
+
+        if [[ -z ${version} ]]; then
+            if ! getPomAttributes "${pom}" version ; then
+                echo "${pom}: Can't extract 'version' from pom" >&2
+                return 2
+            fi
+        fi
+
+        local repoId repoUrl
+        if [[ "${version}" =~ SNAPSHOT ]] ; then
+            repoId=${SNAPSHOT_REPOSITORY_ID}
+            repoUrl=${SNAPSHOT_REPOSITORY_URL}
+        else
+            repoId=${RELEASE_REPOSITORY_ID}
+            repoUrl=${RELEASE_REPOSITORY_URL}
+        fi
+
+        echo "${artifact}: Deploying JAR artifact to repository ${repoUrl} (${repoId})"
+        mvn deploy:deploy-file \
+            -Dfile="${jar}" \
+            -Dversion="${version}" \
+            -Dpackaging=jar -DgeneratePom=false -DpomFile="${pom}" \
+            -DrepositoryId="${repoId}" -Durl="${repoUrl}" \
+            -DupdateReleaseInfo=true
+
+        retval=${?}
+        rm -rf "${dir}"
+
+        return ${retval}
+    )
+}
+
+##############################################################################
+# Usage: deployPom <pom-file>
+#
+# This function deploys a 'pom.xml' file in the local repository
+##############################################################################
+
+function deployPom
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="${1}"
+
+    if [[ -f ${file} ]]; then
+        return 1
+    fi
+
+    # need to extract attributes from POM file
+    if getPomAttributes "${1}" artifactId groupId version ; then
+        local repoId repoUrl
+        if [[ "${version}" =~ SNAPSHOT ]] ; then
+            repoId=${SNAPSHOT_REPOSITORY_ID}
+            repoUrl=${SNAPSHOT_REPOSITORY_URL}
+        else
+            repoId=${RELEASE_REPOSITORY_ID}
+            repoUrl=${RELEASE_REPOSITORY_URL}
+        fi
+
+        echo "${file}: Deploying POM artifact to remote repository"
+        mvn deploy:deploy-file -Dfile="${file}" \
+            -Dpackaging=pom -DgeneratePom=false \
+            -DgroupId="${groupId}" \
+            -DartifactId="${artifactId}" \
+            -Dversion="${version}" \
+            -DrepositoryId="${repoId}" -Durl="${repoUrl}" \
+            -DupdateReleaseInfo=true
+    else
+        echo "${file}: Can't install pom due to missing attributes" >&2
+        return 1
+    fi
+}
+
+##############################################################################
+# Usage: deployArtifact
+#
+# This function deploys a maven artifacts in a repository
+##############################################################################
+
+function deployArtifact
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="${1}"
+    if [[ -z "${file}" ]]; then
+        echo "${file}: artifact file not provided"
+        return 1
+    fi
+
+    if [[ ! -f "${file}" ]]; then
+        echo "${file}: artifact file does not exist"
+        return 1
+    fi
+
+    case "${file}" in
+        *pom.xml|*.pom)
+            deployPom "${file}"
+            ;;
+        *.jar)
+            deployJar "${file}"
+            ;;
+        *)  echo "${file}: Don't know how to install artifact" >&2
+            return 2
+            ;;
+    esac
+
+    return ${?}
+}
+
+##############################################################################
+# MAIN
+##############################################################################
+
+if [[ ${DEBUG} == y ]]; then
+    echo "-- $0 $* --"
+    set -x
+fi
+
+retval=0
+
+until [[ -z "$1" ]]; do
+    case $1 in
+        -a|--artifact)  shift
+                        ARTIFACT=$1
+                        ;;
+        -f|--file-repo) FILE_REPO_ID="file-repository"
+                        FILE_REPO_URL="file:${HOME}/.m2/file-repository"
+                        ;;
+        *)              usage
+                        exit 1
+                        ;;
+    esac
+    shift
+done
+
+if [[ -z ${ARTIFACT} ]]; then
+    echo "No artifact file provided: $*"
+    usage
+    exit 1
+fi
+
+if [[ -n ${SNAPSHOT_REPOSITORY_URL} ]] && [[ -n ${RELEASE_REPOSITORY_URL} ]]; then
+    deployArtifact "${ARTIFACT}"
+    retval=${?}
+else
+    FILE_REPO_ID="file-repository"
+    FILE_REPO_URL="file:${HOME}/.m2/file-repository"
+fi
+
+if [[ -n ${FILE_REPO_ID} ]]; then
+    SNAPSHOT_REPOSITORY_ID="${FILE_REPO_ID}"
+    SNAPSHOT_REPOSITORY_URL="${FILE_REPO_URL}"
+    RELEASE_REPOSITORY_ID="${FILE_REPO_ID}"
+    RELEASE_REPOSITORY_URL="${FILE_REPO_URL}"
+
+    mkdir -p "${FILE_REPO_URL#file:}" 2> /dev/null
+    deployArtifact "${ARTIFACT}"
+    retval=${?}
+fi
+
+exit ${retval}

@@ -66,7 +66,7 @@ function um_start() {
 	    # to subprocesses
 	    exec {cfg}>&-
 	fi
-	nohup $JAVA_HOME/bin/java -Dkie.maven.settings.custom=$_DIR/config/kie_settings.xml -Dlog4j.configuration=file:$_DIR/config/log4j.properties -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
+	nohup $JAVA_HOME/bin/java -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
 
 	_PID=$!
 	echo $_PID > $_PIDFILE
@@ -95,10 +95,10 @@ function um_stop() {
        echo $_STATUS
        remove_pid_file
     else
-	if [[ -n ${ENGINE_MANAGEMENT_PASSWORD} ]]; then
-	    http_proxy= curl -k --silent --user ${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD} -X DELETE https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
+	if [[ -n ${TELEMETRY_PASSWORD} ]]; then
+	    http_proxy= timeout 30 curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
 	else
-	    http_proxy= curl -k --silent -X DELETE https://localhost:${ENGINE_MANAGEMENT_PORT}/policy/pdp/engine -o /dev/null
+	    http_proxy= timeout 30 curl -k --silent -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
 	fi
 	sleep 5
 	echo "Stopping $SNAME..."

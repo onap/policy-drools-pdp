@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ###
 # ============LICENSE_START=======================================================
 # Base Package
@@ -18,15 +19,16 @@
 # ============LICENSE_END=========================================================
 ###
 
-export POLICY_HOME=${{POLICY_HOME}}
-export POLICY_LOGS=${{POLICY_LOGS}}
-export JAVA_HOME=${{JAVA_HOME}}
-export ENGINE_MANAGEMENT_USER=${{ENGINE_MANAGEMENT_USER}}
-export ENGINE_MANAGEMENT_PASSWORD=${{ENGINE_MANAGEMENT_PASSWORD}}
-export ENGINE_MANAGEMENT_PORT=${{ENGINE_MANAGEMENT_PORT}}
-export ENGINE_MANAGEMENT_HOST=${{ENGINE_MANAGEMENT_HOST}}
+set -a
 
-for x in $POLICY_HOME/bin $JAVA_HOME/bin $HOME/bin ; do
+POLICY_HOME=${{POLICY_HOME}}
+
+source ${POLICY_HOME}/etc/build.info
+for c in ${POLICY_HOME}/etc/profile.d/*.conf ; do
+    source ${c}
+done
+
+for x in ${POLICY_HOME}/bin ${JAVA_HOME}/bin ${HOME}/bin ; do
   if [ -d $x ] ; then
     case ":$PATH:" in
       *":$x:"*) :;; # already there
@@ -34,3 +36,5 @@ for x in $POLICY_HOME/bin $JAVA_HOME/bin $HOME/bin ; do
     esac
   fi
 done
+
+set +a

@@ -4,7 +4,7 @@
 # ============LICENSE_START=======================================================
 # ONAP POLICY
 # ================================================================================
-# Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ fi
 
 if [[ ! -r ${TELEMETRY_SPEC} ]]; then
 	echo "generating new spec .."
-	if ! http --verify=no -a "${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD}" https://localhost:9696/swagger.json > ${TELEMETRY_SPEC} 2> /dev/null; then
+	if ! http --verify=no -a "${TELEMETRY_USER}:${TELEMETRY_PASSWORD}" https://localhost:9696/swagger.json > ${TELEMETRY_SPEC} 2> /dev/null; then
 		echo "error: cannot generate telemetry spec"
 		exit 3
 	fi
 fi
 
-exec http-prompt https://localhost:9696/policy/pdp/engine --verify=no --auth "${ENGINE_MANAGEMENT_USER}:${ENGINE_MANAGEMENT_PASSWORD}" --spec ${TELEMETRY_SPEC}
+exec http-prompt https://localhost:9696/policy/pdp/engine --verify=no --auth "${TELEMETRY_USER}:${TELEMETRY_PASSWORD}" --spec ${TELEMETRY_SPEC}

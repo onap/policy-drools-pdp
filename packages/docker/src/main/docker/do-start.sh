@@ -3,7 +3,7 @@
 # ============LICENSE_START=======================================================
 # 
 # ================================================================================
-# Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,11 +50,18 @@ else
 	    unzip -o ${app}
 	done
 
+    feats=$(ls config/feature*.zip 2> /dev/null)
+    for feat in $feats
+    do
+        echo "Feature found: ${feat}"
+        cp ${feat} .
+    done
+
 	echo "docker install at ${PWD}"
 
 	./docker-install.sh
 
-	. /opt/app/policy/etc/profile.d/env.sh
+	. ${POLICY_HOME}/etc/profile.d/env.sh
 
 	# allow user to override the key or/and the trust stores
 

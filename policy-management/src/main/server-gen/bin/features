@@ -1,10 +1,10 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 ###
 # ============LICENSE_START=======================================================
 # ONAP POLICY
 # ================================================================================
-# Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@
 #        L─ <feature-name>*/
 #            L─ [config]/
 #            |   L─ <config-file>+
+#            L─ [bin]/
+#            |   L─ <bin-file>+
 #            L─ lib/
 #            |   L─ [dependencies]/
 #            |   |   L─ <dependent-jar>+
@@ -37,6 +39,8 @@
 #            │   L─ <db-name>/+
 #            │       L─ sql/
 #            │           L─ <sql-scripts>*
+#            L─ [artifacts]/
+#                L─ <artifact>+
 #            L─ [install]
 #                L─ [enable]
 #                L─ [disable]
@@ -49,6 +53,8 @@
 #   [config]/<config-file>  preferable named with "feature-<feature-name>" prefix to
 #                  precisely match it against the exact features, source code, and 
 #                  associated wiki page for configuration details.
+#   [bin]       feature bin directory that contains helper scripts for this feature
+#   [bin]/<executable-file>  preferable named with "feature-<feature-name>" prefix.
 #   lib            jar libraries needed by this features
 #   lib/[dependencies]  3rd party jar dependencies not provided by base installation
 #                  of pdp-d that are necessary for <feature-name> to operate
@@ -64,6 +70,9 @@
 #   [db]/<db-name>/sql/<sql-scripts>  for this feature sql scripts
 #                  upgrade scripts should be suffixed with ".upgrade.sql"
 #                  downgrade scripts should be suffixed with ".downgrade.sql"
+#   [artifacts]    maven artifacts to be deployed in a maven repository.
+#   [artifacts]/<artifact>  maven artifact with identifiable maven coordinates embedded
+#                  in the artifact.
 #   [install]      custom installation directory where custom enable or disable scripts
 #                  and other free form data is included to be used for the enable and 
 #                  and disable scripts.
@@ -78,8 +87,10 @@
 # Operations:
 #   install: installs a feature
 #   uninstall: uninstalls a feature
-#   enable : enables 1) dependencies, 2) configuration, 3) database, 4) feature, 5) customization
-#   disable: disables 1) dependencies, 2) configuration, 3) database, 4) feature, 6) customization
+#   enable : enables 1) dependencies, 2) configuration, 3) binaries 4) database, 5) artifacts,
+#                    6) feature, 7) customization.
+#   disable: disables 1) dependencies, 2) configuration, 3) binaries, 4) database, 5) feature,
+#                     6) customization
 #   status : status of a feature
 #
 # 'enable' operation details:
@@ -87,9 +98,11 @@
 #  1. sets the symbolic link to the actual feature jar in pdp-d classpath ($POLICY_HOME/lib)
 #  2. sets symbolic links to feature dependencies in pdp-d classpath ($POLICY_HOME/lib)
 #  3. sets symbolic links to feature configuration in pdp-d configuration directory ($POLICY_HOME/config)
-#  4. sets symbolic links to feature upgrade scripts and removes links to downgrade scripts (if any) 
+#  4. sets symbolic links to feature executables in pdp-d bin directory ($POLICY_HOME/bin)
+#  5. sets symbolic links to feature upgrade scripts and removes links to downgrade scripts (if any)
 #     in the pdp-d migration directory ($POLICY_HOME/etc/db/migration).
-#  5. cd to the feature 'install' directory an executes (if exists) the 'enable' script to allow for specific
+#  6. deploys any maven artifacts in the maven repositories in use (if any)
+#  7. cd to the feature 'install' directory an executes (if exists) the 'enable' script to allow for specific
 #     customizations for this feature.
 #
 # 'disable' operation details:
@@ -97,15 +110,16 @@
 #  1. removes the symbolic link to the actual feature jar in pdp-d classpath ($POLICY_HOME/lib)
 #  2. removes symbolic links to feature dependencies in pdp-d classpath ($POLICY_HOME/lib)
 #  3. removes symbolic links to feature configuration in pdp-d configuration directory ($POLICY_HOME/config)
-#  4. removes symbolic links to feature upgrade scripts and sets links to downgrade scripts (if any) 
+#  4. removes symbolic links to feature executables in pdp-d bin directory ($POLICY_HOME/bin)
+#  5. removes symbolic links to feature upgrade scripts and sets links to downgrade scripts (if any)
 #     in the pdp-d migration directory ($POLICY_HOME/etc/db/migration).
-#  5. cd to the feature 'install' directory an executes (if exists) the 'disable' script to allow for specific
+#  6. cd to the feature 'install' directory an executes (if exists) the 'disable' script to allow for specific
 #     customizations for this feature.
 # 
 # Notes for DB enabled features:
 # 	A. Upgrade/Downgrade SQL File Name Format:  
 # 			<VERSION>-<pdp|feature-name>[-description](.upgrade|.downgrade).sql
-#   B. See related tooling: db-migrator and policy
+#   B. See related tooling: db-migrator, deploy-artifact, and policy
 #
 # Example:
 #
@@ -140,6 +154,7 @@ fi
 
 LIB=${POLICY_HOME}/lib
 CONFIG=${POLICY_HOME}/config
+BIN=${POLICY_HOME}/bin
 DB=${POLICY_HOME}/etc/db/migration
 FEATURES=${POLICY_HOME}/features
 PROFILED=${POLICY_HOME}/etc/profile.d
@@ -166,7 +181,9 @@ fi
 FEATURE_DEPS="lib/dependencies"
 FEATURE_LIB="lib/feature"
 FEATURE_CONFIG="config"
+FEATURE_BIN="bin"
 FEATURE_INSTALL="install"
+FEATURE_ARTIFACTS="artifacts"
 FEATURE_DB="db"
 FEATURE_SQL="sql"
 
@@ -340,6 +357,36 @@ function enableConfigAnalysis ()
 }
 
 # ##########################################################
+# enableBinAnalysis (featureName):
+#                   reports on potential dependency conflicts
+#   featureName: name of the feature
+# ##########################################################
+function enableBinAnalysis ()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+
+	local featureName="$1"
+	local featureBins binPath binFileName
+
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+
+	featureBins=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_BIN}"/ 2> /dev/null)
+	for binPath in ${featureBins}; do
+		binFileName=$(basename "${binPath}")
+		if [[ -e "${CONFIG}"/"${binFileName}" ]]; then
+			echo "error: a bin file of the same name is already in the base installation: ${binFileName}"
+			return 2
+		fi
+	done
+}
+
+# ##########################################################
 # enableDbAnalysis (featureName):  
 #                   reports on potential db access problems
 #   featureName: name of the feature
@@ -443,6 +490,33 @@ function enableFeatureConfig()
 }
 
 # ##########################################################
+# enableFeatureBin(featureName):
+#                               enables feature binaries
+#   featureName: name of the feature
+# ##########################################################
+function enableFeatureBin()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+
+	local featureName="$1"
+	local featureBins featureBinPath
+
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+
+	featureBins=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_BIN}"/ -type f -maxdepth 1 2> /dev/null)
+	for featureBinPath in ${featureBins}; do
+		chmod u+x "${featureBinPath}"
+		ln -s -f "${featureBinPath}" "${BIN}/"
+	done
+}
+
+# ##########################################################
 # enableFeatureDbSchema(featureName):  
 #        enables feature DB Schema configuration
 #   featureName: name of the feature
@@ -533,6 +607,32 @@ function enableFeatureDb()
 }
 
 # ##########################################################
+# enableFeatureArtifacts(featureName):
+#   deploys maven artifacts
+#       featureName: name of the feature
+# ##########################################################
+function enableFeatureArtifacts()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+
+	local featureName="$1"
+	local artifacts
+
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+
+	artifacts=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_ARTIFACTS}"/* 2> /dev/null)
+	for artifactPath in ${artifacts}; do
+	    deploy-artifact -f -a ${artifactPath}
+	done
+}
+
+# ##########################################################
 # customize(featureName): 
 #	executes customized script for an operation.
 #
@@ -603,6 +703,10 @@ function enableFeature()
 		return "$?"
 	fi
 	
+	if ! enableBinAnalysis  "${featureName}"; then
+		return "$?"
+	fi
+
 	if ! enableDbAnalysis "${featureName}"; then
 		return "$?"
 	fi
@@ -619,9 +723,17 @@ function enableFeature()
 
 	enableFeatureConfig "${featureName}" 
 	
+	# enable binaries
+
+	enableFeatureBin "${featureName}"
+
 	# enable db
 
 	enableFeatureDb "${featureName}"
+
+	# enable feature artifacts
+
+	enableFeatureArtifacts "${featureName}"
 
 	# run custom enable if any
 
@@ -719,6 +831,33 @@ function disableFeatureConfig()
 	done
 
 	rm -f "${CONFIG}"/"${featureInstallConf}""${ENVIRONMENT_SUFFIX}" 2> /dev/null
+}
+
+# ##########################################################
+# disableFeatureBin(featureName):
+#                               disables feature binaries
+#   featureName: name of the feature
+# ##########################################################
+function disableFeatureBin()
+{
+	if [[ ${DEBUG} == y ]]; then
+		echo "-- ${FUNCNAME[0]} $* --"
+		set -x
+	fi
+
+	local featureName="$1"
+	local featureBins featureBinPath
+
+	if [[ -z ${featureName} ]]; then
+		echo "warning: no feature name"
+		return 1
+	fi
+
+	featureBins=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_BIN}"/ -type f -maxdepth 1 2> /dev/null)
+	for featureBinPath in ${featureBins}; do
+		binFileName=$(basename "${featureBinPath}")
+		rm -f "${BIN}"/"${binFileName}" 2> /dev/null
+	done
 }
 
 # ##########################################################
@@ -846,6 +985,10 @@ function disableFeature()
 
 	disableFeatureConfig "${featureName}"
 	
+	# disable binaries if any
+
+	disableFeatureBin "${featureName}"
+
 	# disable DB SQL scripts if any
 
 	disableFeatureDb "${featureName}"

@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   Base Package
   ================================================================================
-  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@
 
 			<repositories>
 				<repository>
-					<id>${{fileRepoID}}</id>
-					<url>${{fileRepoUrl}}</url>
+					<id>file-repository</id>
+					<url>file:${user.home}/.m2/file-repository</url>
 					<releases>
 						<enabled>true</enabled>
 						<updatePolicy>always</updatePolicy>
@@ -86,7 +86,6 @@
 		</profile>
 
 		<profile>
-
 			<id>onap-snapshots</id>
 
 			<repositories>
