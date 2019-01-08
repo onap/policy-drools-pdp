@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@
 
 package org.onap.policy.drools.pooling;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -299,7 +299,7 @@ public class DmaapManagerTest {
     @Test
     public void testPublish() throws PoolingFeatureException {
         // cannot publish before starting
-        expectException("publish,pre", () -> mgr.publish(MSG));
+        assertThatThrownBy(() -> mgr.publish(MSG)).as("publish,pre");
 
         mgr.startPublisher();
 
@@ -315,7 +315,7 @@ public class DmaapManagerTest {
 
         // stop and verify we can no longer publish
         mgr.stopPublisher(0);
-        expectException("publish,stopped", () -> mgr.publish(MSG));
+        assertThatThrownBy(() -> mgr.publish(MSG)).as("publish,stopped");
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -336,16 +336,6 @@ public class DmaapManagerTest {
         doThrow(new IllegalStateException(EXPECTED)).when(sink).send(MSG);
 
         mgr.publish(MSG);
-    }
-
-    private void expectException(String testnm, VFunction func) {
-        try {
-            func.apply();
-            fail(testnm + " missing exception");
-
-        } catch (PoolingFeatureException expected) {
-            // OK
-        }
     }
     
     /**
@@ -372,10 +362,5 @@ public class DmaapManagerTest {
             // three sinks, with the desired one in the middle
             return Arrays.asList(mock(TopicSink.class), sink, mock(TopicSink.class));
         }
-    }
-
-    @FunctionalInterface
-    public static interface VFunction {
-        public void apply() throws PoolingFeatureException;
     }
 }

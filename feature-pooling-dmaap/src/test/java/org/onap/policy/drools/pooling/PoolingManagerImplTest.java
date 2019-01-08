@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@
 
 package org.onap.policy.drools.pooling;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -183,26 +183,21 @@ public class PoolingManagerImplTest {
          */
         PolicyController ctlr = mock(PolicyController.class);
 
-        PoolingFeatureRtException ex = expectException(PoolingFeatureRtException.class,
-            () -> new PoolingManagerTest(MY_HOST, ctlr, poolProps, active));
-        assertNotNull(ex.getCause());
-        assertTrue(ex.getCause() instanceof ClassCastException);
+        assertThatThrownBy(() -> new PoolingManagerTest(MY_HOST, ctlr, poolProps, active))
+                        .isInstanceOf(PoolingFeatureRtException.class).hasCauseInstanceOf(ClassCastException.class);
     }
 
     @Test
     public void testPoolingManagerImpl_PoolEx() throws PoolingFeatureException {
         // throw an exception when we try to create the dmaap manager
         PoolingFeatureException ex = new PoolingFeatureException();
-        
-        PoolingFeatureRtException ex2 = expectException(PoolingFeatureRtException.class,
-            () -> new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
-                @Override
-                protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
-                    throw ex;
-                }
-            });
-        
-        assertEquals(ex, ex2.getCause());
+
+        assertThatThrownBy(() -> new PoolingManagerTest(MY_HOST, controller, poolProps, active) {
+            @Override
+            protected DmaapManager makeDmaapManager(String topic) throws PoolingFeatureException {
+                throw ex;
+            }
+        }).isInstanceOf(PoolingFeatureRtException.class).hasCause(ex);
     }
 
     @Test
@@ -1230,41 +1225,6 @@ public class PoolingManagerImplTest {
      * Used to create a mock object that implements both super interfaces.
      */
     private static interface ListeningController extends TopicListener, PolicyController {
-
-    }
-
-    /**
-     * Invokes a method that is expected to throw an exception.
-     * 
-     * @param exClass class of exception that is expected
-     * @param func function to invoke
-     * @return the exception that was thrown
-     * @throws AssertionError if no exception was thrown
-     */
-    private <T extends Exception> T expectException(Class<T> exClass, ExFunction<T> func) {
-        try {
-            func.apply();
-            throw new AssertionError("missing exception");
-
-        } catch (Exception e) {
-            return exClass.cast(e);
-        }
-    }
-
-    /**
-     * Function that is expected to throw an exception.
-     * 
-     * @param <T> type of exception the function is expected to throw
-     */
-    @FunctionalInterface
-    private static interface ExFunction<T extends Exception> {
-
-        /**
-         * Invokes the function.
-         * 
-         * @throws T if an error occurs
-         */
-        public void apply() throws T;
 
     }
 

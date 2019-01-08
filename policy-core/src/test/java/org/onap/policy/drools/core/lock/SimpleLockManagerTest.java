@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
 
 package org.onap.policy.drools.core.lock;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.onap.policy.drools.core.lock.TestingUtils.expectException;
 
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
@@ -144,12 +144,11 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testLock_ArgEx() {
-        IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, () -> mgr.lock(null, OWNER1, MAX_AGE_SEC));
-        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.lock(null, OWNER1, MAX_AGE_SEC))
+                        .withMessage(NULL_RESOURCE_ID);
 
-        ex = expectException(IllegalArgumentException.class, () -> mgr.lock(RESOURCE_A, null, MAX_AGE_SEC));
-        assertEquals(NULL_OWNER, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.lock(RESOURCE_A, null, MAX_AGE_SEC))
+                        .withMessage(NULL_OWNER);
 
         // this should not throw an exception
         mgr.lock(RESOURCE_A, OWNER1, MAX_AGE_SEC);
@@ -218,12 +217,11 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testRefresh_ArgEx() {
-        IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, () -> mgr.refresh(null, OWNER1, MAX_AGE_SEC));
-        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.refresh(null, OWNER1, MAX_AGE_SEC))
+                        .withMessage(NULL_RESOURCE_ID);
 
-        ex = expectException(IllegalArgumentException.class, () -> mgr.refresh(RESOURCE_A, null, MAX_AGE_SEC));
-        assertEquals(NULL_OWNER, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.refresh(RESOURCE_A, null, MAX_AGE_SEC))
+                        .withMessage(NULL_OWNER);
 
         // this should not throw an exception
         mgr.refresh(RESOURCE_A, OWNER1, MAX_AGE_SEC);
@@ -239,11 +237,9 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testUnlock_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(null, OWNER1));
-        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.unlock(null, OWNER1)).withMessage(NULL_RESOURCE_ID);
 
-        ex = expectException(IllegalArgumentException.class, () -> mgr.unlock(RESOURCE_A, null));
-        assertEquals(NULL_OWNER, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.unlock(RESOURCE_A, null)).withMessage(NULL_OWNER);
     }
 
     @Test
@@ -283,8 +279,7 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testIsLocked_ArgEx() {
-        IllegalArgumentException ex = expectException(IllegalArgumentException.class, () -> mgr.isLocked(null));
-        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.isLocked(null)).withMessage(NULL_RESOURCE_ID);
     }
 
     @Test
@@ -307,12 +302,10 @@ public class SimpleLockManagerTest {
 
     @Test
     public void testIsLockedBy_ArgEx() {
-        IllegalArgumentException ex =
-                        expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(null, OWNER1));
-        assertEquals(NULL_RESOURCE_ID, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.isLockedBy(null, OWNER1))
+                        .withMessage(NULL_RESOURCE_ID);
 
-        ex = expectException(IllegalArgumentException.class, () -> mgr.isLockedBy(RESOURCE_A, null));
-        assertEquals(NULL_OWNER, ex.getMessage());
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.isLockedBy(RESOURCE_A, null)).withMessage(NULL_OWNER);
     }
 
     @Test
