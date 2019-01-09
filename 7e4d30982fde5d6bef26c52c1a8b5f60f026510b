@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_7d0c9eed",
+        "filename": "feature-pooling-dmaap/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-01-09T00:11:38Z",
+      "side": 1,
+      "message": "let\u0027s keep an eye on this for security CLM issues - probably ok.",
+      "range": {
+        "startLine": 177,
+        "startChar": 7,
+        "endLine": 183,
+        "endChar": 19
+      },
+      "revId": "7e4d30982fde5d6bef26c52c1a8b5f60f026510b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
