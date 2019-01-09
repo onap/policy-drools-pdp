@@ -35,10 +35,10 @@ public abstract class DroolsPdpObject implements DroolsPdp {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        /*int result = 1;
         result = prime * result + (this.getPdpId() == null ? 0 : this.getPdpId().hashCode());
         result = prime * result + (this.getSiteName() == null ? 0 : this.getSiteName().hashCode());
-        result = prime * result + this.getPriority();
+        result = prime * result + this.getPriority();*/
         return super.hashCode();
     }
     
