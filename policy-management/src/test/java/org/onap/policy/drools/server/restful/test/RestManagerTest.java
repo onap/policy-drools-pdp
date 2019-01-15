@@ -292,7 +292,7 @@ public class RestManagerTest {
         response = client.execute(httpPut);
         logger.info(httpPut.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         
-        assertEquals(404, response.getStatusLine().getStatusCode());
+        assertEquals(406, response.getStatusLine().getStatusCode());
         httpPut.releaseConnection();
 
         httpPut = new HttpPut(HOST_URL + "/engine/topics/switches/lock");
