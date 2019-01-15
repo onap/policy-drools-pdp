@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_0ca51846",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-01-15T14:55:56Z",
+      "side": 1,
+      "message": "ah, yes, I remember running into that when I prototyped some of the changes done with the associated commit.",
+      "revId": "437e446e8dffb7a484bf658d66533ebb10d05825",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
