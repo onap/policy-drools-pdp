@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@
 
 package org.onap.policy.drools.pooling;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import java.io.IOException;
+import com.google.gson.JsonParseException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -348,7 +347,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
         try {
             dmaapMgr.setFilter(serializer.encodeFilter(filter));
 
-        } catch (JsonProcessingException e) {
+        } catch (JsonParseException e) {
             logger.error("failed to encode server-side filter for topic {}, {}", topic, filter, e);
 
         } catch (PoolingFeatureException e) {
@@ -393,7 +392,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             String txt = serializer.encodeMsg(msg);
             dmaapMgr.publish(txt);
 
-        } catch (JsonProcessingException e) {
+        } catch (JsonParseException e) {
             logger.error("failed to serialize message for topic {} channel {}", topic, channel, e);
 
         } catch (PoolingFeatureException e) {
@@ -682,7 +681,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             Method meth = current.getClass().getMethod("process", msg.getClass());
             changeState((State) meth.invoke(current, msg));
 
-        } catch (IOException e) {
+        } catch (JsonParseException e) {
             logger.warn("failed to decode message for topic {}", topic, e);
 
         } catch (NoSuchMethodException | SecurityException e) {

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.pooling.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +32,6 @@ import org.slf4j.LoggerFactory;
  */
 public class BucketAssignments {
 
-    @JsonIgnore
     private static final Logger logger = LoggerFactory.getLogger(BucketAssignments.class);
 
     /**
@@ -86,7 +84,6 @@ public class BucketAssignments {
      * 
      * @return the assignment leader
      */
-    @JsonIgnore
     public String getLeader() {
         if (hostArray == null) {
             return null;
@@ -110,7 +107,6 @@ public class BucketAssignments {
      * @param host host to be checked
      * @return {@code true} if the host has an assignment, {@code false} otherwise
      */
-    @JsonIgnore
     public boolean hasAssignment(String host) {
         if (hostArray == null) {
             return false;
@@ -130,7 +126,6 @@ public class BucketAssignments {
      * 
      * @return all of the hosts that have an assignment
      */
-    @JsonIgnore
     public Set<String> getAllHosts() {
         Set<String> set = new HashSet<>();
         if (hostArray == null) {
@@ -152,7 +147,6 @@ public class BucketAssignments {
      * @param hashCode hash code of the item whose assignment is desired
      * @return the assigned host, or {@code null} if the item has no assigned host
      */
-    @JsonIgnore
     public String getAssignedHost(int hashCode) {
         if (hostArray == null || hostArray.length == 0) {
             logger.error("no buckets have been assigned");
@@ -167,7 +161,6 @@ public class BucketAssignments {
      * 
      * @return the number of buckets
      */
-    @JsonIgnore
     public int size() {
         return (hostArray != null ? hostArray.length : 0);
     }
@@ -178,7 +171,6 @@ public class BucketAssignments {
      * 
      * @throws PoolingFeatureException if the assignments are invalid
      */
-    @JsonIgnore
     public void checkValidity() throws PoolingFeatureException {
         if (hostArray == null || hostArray.length == 0) {
             throw new PoolingFeatureException("missing hosts in message bucket assignments");

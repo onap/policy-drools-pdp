@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,18 @@
 
 package org.onap.policy.drools.pooling;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import java.util.HashMap;
 import java.util.Map;
+import org.onap.policy.drools.pooling.message.Forward;
+import org.onap.policy.drools.pooling.message.Heartbeat;
+import org.onap.policy.drools.pooling.message.Identification;
+import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
+import org.onap.policy.drools.pooling.message.Offline;
+import org.onap.policy.drools.pooling.message.Query;
 
 /**
  * Serialization helper functions.
@@ -32,10 +39,36 @@ import org.onap.policy.drools.pooling.message.Message;
 public class Serializer {
 
     /**
-     * Used to encode & decode JSON messages sent & received, respectively, on
-     * the internal DMaaP topic.
+     * The message type is stored in fields of this name within the JSON.
      */
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final String TYPE_FIELD = "type";
+
+    /**
+     * Used to encode & decode JSON messages sent & received, respectively, on the
+     * internal DMaaP topic.
+     */
+    private final Gson gson = new Gson();
+
+    /**
+     * Maps a message subclass to its type.
+     */
+    private static final Map<Class<? extends Message>, String> class2type = new HashMap<>();
+
+    /**
+     * Maps a message type to the appropriate subclass.
+     */
+    private static final Map<String, Class<? extends Message>> type2class = new HashMap<>();
+
+    static {
+        class2type.put(Forward.class, "forward");
+        class2type.put(Heartbeat.class, "heartbeat");
+        class2type.put(Identification.class, "identification");
+        class2type.put(Leader.class, "leader");
+        class2type.put(Offline.class, "offline");
+        class2type.put(Query.class, "query");
+
+        class2type.forEach((clazz, type) -> type2class.put(type, clazz));
+    }
 
     /**
      * Constructor.
@@ -49,10 +82,10 @@ public class Serializer {
      * 
      * @param filter filter to be encoded
      * @return the filter, serialized as a JSON string
-     * @throws JsonProcessingException if it cannot be serialized
+     * @throws JsonParseException if it cannot be de-serialized
      */
-    public String encodeFilter(Map<String, Object> filter) throws JsonProcessingException {
-        return mapper.writeValueAsString(filter);
+    public String encodeFilter(Map<String, Object> filter) throws JsonParseException {
+        return gson.toJson(filter);
     }
 
     /**
@@ -60,10 +93,19 @@ public class Serializer {
      * 
      * @param msg message to be encoded
      * @return the message, serialized as a JSON string
-     * @throws JsonProcessingException if it cannot be serialized
+     * @throws JsonParseException if it cannot be de-serialized
      */
-    public String encodeMsg(Message msg) throws JsonProcessingException {
-        return mapper.writeValueAsString(msg);
+    public String encodeMsg(Message msg) throws JsonParseException {
+        JsonElement jsonEl = gson.toJsonTree(msg);
+
+        String type = class2type.get(msg.getClass());
+        if (type == null) {
+            throw new JsonParseException("cannot serialize " + msg.getClass());
+        }
+
+        jsonEl.getAsJsonObject().addProperty(TYPE_FIELD, type);
+
+        return gson.toJson(jsonEl);
     }
 
     /**
@@ -71,9 +113,23 @@ public class Serializer {
      * 
      * @param msg JSON string representing the message
      * @return the message
-     * @throws IOException if it cannot be serialized
+     * @throws JsonParseException if it cannot be serialized
      */
-    public Message decodeMsg(String msg) throws IOException {
-        return mapper.readValue(msg, Message.class);
+    public Message decodeMsg(String msg) throws JsonParseException {
+        JsonElement jsonEl = gson.fromJson(msg, JsonElement.class);
+
+        JsonElement typeEl = jsonEl.getAsJsonObject().get(TYPE_FIELD);
+        if (typeEl == null) {
+            throw new JsonParseException("cannot deserialize " + Message.class
+                            + " because it does not contain a field named " + TYPE_FIELD);
+
+        }
+
+        Class<? extends Message> clazz = type2class.get(typeEl.getAsString());
+        if (clazz == null) {
+            throw new JsonParseException("cannot deserialize " + typeEl);
+        }
+
+        return gson.fromJson(jsonEl, clazz);
     }
 }

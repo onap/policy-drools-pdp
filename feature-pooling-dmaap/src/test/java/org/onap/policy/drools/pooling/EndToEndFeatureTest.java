@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.onap.policy.drools.pooling.PoolingProperties.PREFIX;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.IdentityHashMap;
@@ -114,20 +113,9 @@ public class EndToEndFeatureTest {
     private static final long EVENT_WAIT_SEC = 15;
 
     /**
-     * Used to decode events into a Map.
-     */
-    private static final TypeReference<TreeMap<String, String>> typeRef =
-                    new TypeReference<TreeMap<String, String>>() {};
-
-    /**
      * Used to decode events from the external topic.
      */
-    private static final ThreadLocal<ObjectMapper> mapper = new ThreadLocal<ObjectMapper>() {
-        @Override
-        protected ObjectMapper initialValue() {
-            return new ObjectMapper();
-        }
-    };
+    private static final Gson mapper = new Gson();
 
     /**
      * Used to identify the current host.
@@ -281,9 +269,9 @@ public class EndToEndFeatureTest {
      */
     private static Object decodeEvent(String event) {
         try {
-            return mapper.get().readValue(event, typeRef);
+            return mapper.fromJson(event, TreeMap.class);
 
-        } catch (IOException e) {
+        } catch (JsonParseException e) {
             logger.warn("cannot decode external event", e);
             return null;
         }

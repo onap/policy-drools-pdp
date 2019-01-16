@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,11 @@
 
 package org.onap.policy.drools.pooling.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
 
 /**
  * Messages sent on the internal topic.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({@Type(value = Forward.class, name = "forward"), @Type(value = Heartbeat.class, name = "heartbeat"),
-                @Type(value = Identification.class, name = "identification"),
-                @Type(value = Leader.class, name = "leader"), @Type(value = Offline.class, name = "offline"),
-                @Type(value = Query.class, name = "query")})
 public class Message {
 
     /**
@@ -90,7 +81,6 @@ public class Message {
      * 
      * @throws PoolingFeatureException if the message is invalid
      */
-    @JsonIgnore
     public void checkValidity() throws PoolingFeatureException {
         if (source == null || source.isEmpty()) {
             throw new PoolingFeatureException("missing message source");

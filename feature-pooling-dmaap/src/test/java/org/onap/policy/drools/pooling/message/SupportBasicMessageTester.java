@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
+import org.onap.policy.drools.pooling.Serializer;
 
 /**
  * Superclass used to test subclasses of {@link Message}.
@@ -42,7 +42,7 @@ public abstract class SupportBasicMessageTester<T extends Message> {
     /**
      * Used to perform JSON serialization and de-serialization.
      */
-    public final ObjectMapper mapper = new ObjectMapper();
+    public final Serializer mapper = new Serializer();
 
     /**
      * The subclass of the type of Message being tested.
@@ -89,7 +89,13 @@ public abstract class SupportBasicMessageTester<T extends Message> {
     public final void testJsonEncodeDecode() throws Exception {
         T originalMsg = makeValidMessage();
 
-        Message msg = mapper.readValue(mapper.writeValueAsString(originalMsg), Message.class);
+        Message msg;
+        if (originalMsg.getClass() == Message.class) {
+            msg = originalMsg;
+        } else {
+            msg = mapper.decodeMsg(mapper.encodeMsg(originalMsg));
+        }
+        
         assertEquals(subclazz, msg.getClass());
 
         msg.checkValidity();
