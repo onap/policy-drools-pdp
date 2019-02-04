@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.onap.policy.drools.util.KieUtils;
 public class MavenDroolsControllerTest {
 
     public static final String JUNIT_ECHO_KSESSION = "echo";
+    public static final String JUNIT_ECHO_KBASE = "onap.policies.test";
     public static final String JUNIT_ECHO_KMODULE_DRL_PATH = "src/test/resources/echo.drl";
     public static final String JUNIT_ECHO_KMODULE_POM_PATH = "src/test/resources/echo.pom";
     public static final String JUNIT_ECHO_KMODULE_PATH = "src/test/resources/echo.kmodule";
@@ -55,17 +56,17 @@ public class MavenDroolsControllerTest {
     }
 
     @Test
-    public void stop() throws IOException, InterruptedException {
+    public void stop() throws InterruptedException {
         createDroolsController(10000L).stop();
     }
 
     @Test
-    public void shutdown() throws IOException, InterruptedException {
+    public void shutdown() throws InterruptedException {
         createDroolsController(10000L).shutdown();
     }
 
     @Test
-    public void lock() throws IOException, InterruptedException {
+    public void lock() throws InterruptedException {
         DroolsController controller = createDroolsController(30000L);
 
         controller.lock();
@@ -105,10 +106,12 @@ public class MavenDroolsControllerTest {
         /* courtesy timer to allow full initialization from local maven repository */
         Thread.sleep(courtesyStartTimeMs);
 
-        Assert.assertTrue(controller.getSessionNames().size() == 1);
+        Assert.assertEquals(1, controller.getSessionNames().size());
         Assert.assertEquals(JUNIT_ECHO_KSESSION, controller.getSessionNames().get(0));
-        Assert.assertTrue(controller.getCanonicalSessionNames().size() == 1);
+        Assert.assertEquals(1, controller.getCanonicalSessionNames().size());
         Assert.assertTrue(controller.getCanonicalSessionNames().get(0).contains(JUNIT_ECHO_KSESSION));
+
+        Assert.assertEquals(JUNIT_ECHO_KBASE, String.join(",", controller.getBaseDomainNames()));
 
         return controller;
     }

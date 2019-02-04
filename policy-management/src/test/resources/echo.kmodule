@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ============LICENSE_START=======================================================
-  archetype-closed-loop-demo-rules
+  ONAP
   ================================================================================
-  Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
   -->
 
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="kbEcho">
+    <kbase name="onap.policies.test">
         <ksession name="echo"/>
     </kbase>
 </kmodule>
