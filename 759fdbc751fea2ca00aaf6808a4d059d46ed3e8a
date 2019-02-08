@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "494602be_32875d19",
+        "filename": "policy-management/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-02-08T20:21:04Z",
+      "side": 1,
+      "message": "Is this being used by multiple repositories now? If so, perhaps it should go into policy/parent to use a consistent version.",
+      "range": {
+        "startLine": 327,
+        "startChar": 0,
+        "endLine": 334,
+        "endChar": 1
+      },
+      "revId": "759fdbc751fea2ca00aaf6808a4d059d46ed3e8a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
