@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.system.internal;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +32,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.onap.policy.common.utils.test.PolicyAssert.assertThrows;
 
 import java.util.Arrays;
 import java.util.List;
@@ -159,7 +160,7 @@ public class AggregatedPolicyControllerTest {
             @Override
             protected DroolsControllerFactory getDroolsFactory() {
                 throw new RuntimeException(EXPECTED);
-            }            
+            }
         };
     }
 
@@ -169,7 +170,7 @@ public class AggregatedPolicyControllerTest {
             @Override
             protected DroolsControllerFactory getDroolsFactory() {
                 throw new LinkageError(EXPECTED);
-            }            
+            }
         };
     }
 
@@ -322,7 +323,7 @@ public class AggregatedPolicyControllerTest {
         apc.lock();
 
         // start it
-        assertThrows(IllegalStateException.class, () -> apc.start());
+        assertThatIllegalStateException().isThrownBy(() -> apc.start());
 
         assertFalse(apc.isAlive());
 
@@ -877,7 +878,7 @@ public class AggregatedPolicyControllerTest {
         verifyMiddle.run();
 
         verifyAfter.accept(prov1);
-        assertThrows(AssertionError.class, () -> verifyAfter.accept(prov2));
+        assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);
     }
 
     /**
@@ -914,14 +915,14 @@ public class AggregatedPolicyControllerTest {
         verifyBefore.accept(prov1);
 
         // remaining methods should not have been invoked
-        assertThrows(AssertionError.class, () -> verifyBefore.accept(prov2));
+        assertThatThrownBy(() -> verifyBefore.accept(prov2)).isInstanceOf(AssertionError.class);
 
-        assertThrows(AssertionError.class, () -> verifyMiddle.run());
+        assertThatThrownBy(() -> verifyMiddle.run()).isInstanceOf(AssertionError.class);
 
-        assertThrows(AssertionError.class, () -> verifyAfter.accept(prov1));
-        assertThrows(AssertionError.class, () -> verifyAfter.accept(prov2));
+        assertThatThrownBy(() -> verifyAfter.accept(prov1)).isInstanceOf(AssertionError.class);
+        assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);
     }
-    
+
     /**
      * Controller with overrides.
      */
@@ -949,6 +950,6 @@ public class AggregatedPolicyControllerTest {
         @Override
         protected List<PolicyControllerFeatureAPI> getProviders() {
             return providers;
-        }        
+        }
     }
 }
