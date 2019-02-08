@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@
 
 package org.onap.policy.drools.system;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +36,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.onap.policy.common.utils.test.PolicyAssert.assertThrows;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,7 +53,6 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
-import org.onap.policy.common.utils.test.PolicyAssert.RunnableWithEx;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
@@ -398,7 +399,7 @@ public class PolicyEngineManagerTest {
         // null properties - nothing should be invoked
         setUp();
         Properties nullProps = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.configure(nullProps));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.configure(nullProps));
         verify(prov1, never()).beforeConfigure(mgr, properties);
         verify(prov1, never()).afterConfigure(mgr);
 
@@ -422,10 +423,10 @@ public class PolicyEngineManagerTest {
 
         // invalid params
         PdpdConfiguration nullConfig = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.configure(nullConfig));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.configure(nullConfig));
 
         pdpConfig.setEntity("unknown-entity");
-        assertThrows(IllegalArgumentException.class, () -> mgr.configure(pdpConfig));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.configure(pdpConfig));
 
         // source list of size 1
         setUp();
@@ -482,7 +483,7 @@ public class PolicyEngineManagerTest {
         // mismatching name in properties - nothing should happen besides exception
         setUp();
         properties.setProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME, "mistmatched-name");
-        assertThrows(IllegalStateException.class, () -> mgr.createPolicyController(MY_NAME, properties));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.createPolicyController(MY_NAME, properties));
         verify(contProv1, never()).beforeCreate(MY_NAME, properties);
 
         // first provider generates controller - stops after first provider
@@ -543,29 +544,29 @@ public class PolicyEngineManagerTest {
         verify(engine).createPolicyController(CONTROLLER3, properties);
 
         // invalid parameters
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(null));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(null));
 
         // invalid name
         setUp();
         config3.setName(null);
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         config3.setName("");
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         // invalid operation
         setUp();
         config3.setOperation(null);
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         config3.setOperation("");
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         config3.setOperation(ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_LOCK);
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         config3.setOperation(ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_UNLOCK);
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         // exception from get() - should create controller
         setUp();
@@ -576,12 +577,12 @@ public class PolicyEngineManagerTest {
         // null properties
         setUp();
         when(persist.getControllerProperties(CONTROLLER3)).thenReturn(null);
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         // throw linkage error
         setUp();
         when(persist.getControllerProperties(CONTROLLER3)).thenThrow(new LinkageError(EXPECTED));
-        assertThrows(IllegalStateException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.updatePolicyController(config3));
 
         /*
          * For remaining tests, the factory will return the controller instead of creating
@@ -629,7 +630,7 @@ public class PolicyEngineManagerTest {
 
         // invalid operation
         config3.setOperation("invalid-operation");
-        assertThrows(IllegalArgumentException.class, () -> mgr.updatePolicyController(config3));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.updatePolicyController(config3));
     }
 
     @Test
@@ -669,7 +670,7 @@ public class PolicyEngineManagerTest {
         setUp();
         mgr.configure(properties);
         mgr.lock();
-        assertThrows(IllegalStateException.class, () -> mgr.start());
+        assertThatIllegalStateException().isThrownBy(() -> mgr.start());
         verify(prov2).beforeStart(mgr);
         verify(server2, never()).waitedStart(anyLong());
         verify(source2, never()).start();
@@ -1152,13 +1153,13 @@ public class PolicyEngineManagerTest {
         assertEquals(prov2, mgr.getFeatureProvider(FEATURE2));
 
         // null feature
-        assertThrows(IllegalArgumentException.class, () -> mgr.getFeatureProvider(null));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.getFeatureProvider(null));
 
         // empty feature
-        assertThrows(IllegalArgumentException.class, () -> mgr.getFeatureProvider(""));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.getFeatureProvider(""));
 
         // unknown feature
-        assertThrows(IllegalArgumentException.class, () -> mgr.getFeatureProvider("unknown-feature"));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.getFeatureProvider("unknown-feature"));
     }
 
     @Test
@@ -1186,20 +1187,20 @@ public class PolicyEngineManagerTest {
 
         // invalid parameters
         String nullStr = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(nullStr, MY_EVENT));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver("", MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(nullStr, MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver("", MY_EVENT));
 
         Object nullObj = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(MY_TOPIC, nullObj));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(MY_TOPIC, nullObj));
 
         // locked
         mgr.lock();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(MY_TOPIC, MY_EVENT));
         mgr.unlock();
 
         // not running
         mgr.stop();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(MY_TOPIC, MY_EVENT));
 
         // issues with topic
         setUp();
@@ -1208,15 +1209,15 @@ public class PolicyEngineManagerTest {
 
         // null sinks
         when(endpoint.getTopicSinks(MY_TOPIC)).thenReturn(null);
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(MY_TOPIC, MY_EVENT));
 
         // empty sinks
         when(endpoint.getTopicSinks(MY_TOPIC)).thenReturn(Collections.emptyList());
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(MY_TOPIC, MY_EVENT));
 
         // too many sinks
         when(endpoint.getTopicSinks(MY_TOPIC)).thenReturn(sinks);
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(MY_TOPIC, MY_EVENT));
     }
 
     @Test
@@ -1230,24 +1231,24 @@ public class PolicyEngineManagerTest {
 
         // invalid parameters
         String nullStr = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(nullStr, MY_TOPIC, MY_EVENT));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver("", MY_TOPIC, MY_EVENT));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver("unknown-bus-type", MY_TOPIC, MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(nullStr, MY_TOPIC, MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver("", MY_TOPIC, MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver("unknown-bus-type", MY_TOPIC, MY_EVENT));
 
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(NOOP_STR, nullStr, MY_EVENT));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(NOOP_STR, "", MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(NOOP_STR, nullStr, MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(NOOP_STR, "", MY_EVENT));
 
         Object nullObj = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(NOOP_STR, MY_TOPIC, nullObj));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(NOOP_STR, MY_TOPIC, nullObj));
 
         // locked
         mgr.lock();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(NOOP_STR, MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(NOOP_STR, MY_TOPIC, MY_EVENT));
         mgr.unlock();
 
         // not running
         mgr.stop();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(NOOP_STR, MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(NOOP_STR, MY_TOPIC, MY_EVENT));
     }
 
     @Test
@@ -1263,27 +1264,28 @@ public class PolicyEngineManagerTest {
         verify(sink1).send(MESSAGE);
 
         // invalid parameters
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, null, MY_EVENT));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, "", MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, null, MY_EVENT));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, "", MY_EVENT));
 
         Object nullObj = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, nullObj));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, nullObj));
 
         // locked
         mgr.lock();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT));
         mgr.unlock();
 
         // not started
         mgr.stop();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT));
 
         // send() throws an exception
         setUp();
         mgr.configure(properties);
         mgr.start();
         when(sink1.send(any())).thenThrow(new ArithmeticException(EXPECTED));
-        assertThrows(ArithmeticException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT));
+        assertThatThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT))
+                        .isInstanceOf(ArithmeticException.class);
 
         /*
          * For remaining tests, have the controller handle delivery.
@@ -1321,7 +1323,7 @@ public class PolicyEngineManagerTest {
         mgr.configure(properties);
 
         // not started yet
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MESSAGE));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MESSAGE));
 
         // start it
         mgr.start();
@@ -1331,19 +1333,20 @@ public class PolicyEngineManagerTest {
         verify(sink2, never()).send(any());
 
         // invalid parameters
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, null, MESSAGE));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, "", MESSAGE));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, null, MESSAGE));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, "", MESSAGE));
 
         String nullStr = null;
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, nullStr));
-        assertThrows(IllegalArgumentException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, ""));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, nullStr));
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, ""));
 
         // unknown topic
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(CommInfrastructure.NOOP, "unknown-topic", MESSAGE));
+        assertThatIllegalStateException()
+                        .isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, "unknown-topic", MESSAGE));
 
         // locked
         mgr.lock();
-        assertThrows(IllegalStateException.class, () -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MESSAGE));
+        assertThatIllegalStateException().isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MESSAGE));
         mgr.unlock();
     }
 
@@ -1597,7 +1600,7 @@ public class PolicyEngineManagerTest {
         verifyMiddle.run();
 
         verifyAfter.accept(prov1);
-        assertThrows(AssertionError.class, () -> verifyAfter.accept(prov2));
+        assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);
     }
 
     /**
@@ -1635,12 +1638,12 @@ public class PolicyEngineManagerTest {
         verifyBefore.accept(prov1);
 
         // remaining methods should not have been invoked
-        assertThrows(AssertionError.class, () -> verifyBefore.accept(prov2));
+        assertThatThrownBy(() -> verifyBefore.accept(prov2)).isInstanceOf(AssertionError.class);
 
-        assertThrows(AssertionError.class, () -> verifyMiddle.run());
+        assertThatThrownBy(() -> verifyMiddle.run()).isInstanceOf(AssertionError.class);
 
-        assertThrows(AssertionError.class, () -> verifyAfter.accept(prov1));
-        assertThrows(AssertionError.class, () -> verifyAfter.accept(prov2));
+        assertThatThrownBy(() -> verifyAfter.accept(prov1)).isInstanceOf(AssertionError.class);
+        assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);
     }
 
     /**
@@ -1738,5 +1741,10 @@ public class PolicyEngineManagerTest {
                 threadInterrupted = true;
             }
         }
+    }
+
+    @FunctionalInterface
+    private static interface RunnableWithEx {
+        void run() throws Exception;
     }
 }

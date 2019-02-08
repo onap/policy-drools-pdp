@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.system;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -28,7 +30,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.onap.policy.common.utils.test.PolicyAssert.assertThrows;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -127,7 +128,7 @@ public class PolicyControllerFactoryTest {
     @Test
     public void testPatchStringDroolsConfiguration() {
         // unknown controller
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch(MY_NAME, config));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(MY_NAME, config));
 
         /*
          * Build controller to be used by remaining tests.
@@ -136,10 +137,10 @@ public class PolicyControllerFactoryTest {
 
         // null name
         String nullName = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch(nullName, config));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(nullName, config));
 
         // empty name
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch("", config));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch("", config));
 
         // success
         ipc.patch(MY_NAME, config);
@@ -153,7 +154,7 @@ public class PolicyControllerFactoryTest {
             }
         };
         ipc.build(MY_NAME, properties);
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch(MY_NAME, config));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(MY_NAME, config));
     }
 
     @Test
@@ -163,10 +164,10 @@ public class PolicyControllerFactoryTest {
 
         // null controller
         PolicyController nullCtlr = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch(nullCtlr, config));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(nullCtlr, config));
 
         // null config
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch(controller, null));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(controller, null));
 
         // brained
         when(drools.isBrained()).thenReturn(true);
@@ -174,17 +175,17 @@ public class PolicyControllerFactoryTest {
 
         // update failed
         when(controller.updateDrools(config)).thenReturn(false);
-        assertThrows(IllegalArgumentException.class, () -> ipc.patch(controller, config));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(controller, config));
     }
 
     @Test
     public void testShutdownString() {
         // null name
         String nullName = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.shutdown(nullName));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.shutdown(nullName));
 
         // empty name
-        assertThrows(IllegalArgumentException.class, () -> ipc.shutdown(""));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.shutdown(""));
 
         // unknown controller
         ipc.shutdown(MY_NAME);
@@ -205,7 +206,7 @@ public class PolicyControllerFactoryTest {
         verify(controller).shutdown();
 
         // should no longer be managed
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
     }
 
     @Test
@@ -219,8 +220,8 @@ public class PolicyControllerFactoryTest {
         verify(controller2).shutdown();
 
         // should no longer be managed
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME));
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME2));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME2));
     }
 
     @Test
@@ -234,14 +235,14 @@ public class PolicyControllerFactoryTest {
         verify(controller2, never()).shutdown();
 
         // should no longer be managed
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
 
         // should still be managed
         assertEquals(controller2, ipc.get(MY_NAME2));
 
         // null controller
         PolicyController nullCtlr = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.shutdown(nullCtlr));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.shutdown(nullCtlr));
 
         // unknown controller
         ipc.shutdown(controller);
@@ -252,10 +253,10 @@ public class PolicyControllerFactoryTest {
     public void testDestroyString() {
         // null name
         String nullName = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.destroy(nullName));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.destroy(nullName));
 
         // empty name
-        assertThrows(IllegalArgumentException.class, () -> ipc.destroy(""));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.destroy(""));
 
         // unknown controller
         ipc.destroy(MY_NAME);
@@ -276,7 +277,7 @@ public class PolicyControllerFactoryTest {
         verify(controller).halt();
 
         // should no longer be managed
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
     }
 
     @Test
@@ -290,14 +291,14 @@ public class PolicyControllerFactoryTest {
         verify(controller2).halt();
 
         // should no longer be managed
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME));
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME2));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME2));
     }
 
     @Test
     public void testGetString() {
         // unknown name
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(MY_NAME));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
 
         ipc.build(MY_NAME, properties);
         ipc.build(MY_NAME2, properties);
@@ -307,16 +308,16 @@ public class PolicyControllerFactoryTest {
 
         // null name
         String nullName = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(nullName));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(nullName));
 
         // empty name
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(""));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(""));
     }
 
     @Test
     public void testGetStringString_testToKey() {
         // unknown controller
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(GROUP1, ARTIFACT1));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(GROUP1, ARTIFACT1));
 
         when(drools.isBrained()).thenReturn(true);
         when(drools2.isBrained()).thenReturn(true);
@@ -328,22 +329,22 @@ public class PolicyControllerFactoryTest {
         assertEquals(controller2, ipc.get(GROUP2, ARTIFACT2));
 
         // null group
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(null, ARTIFACT1));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(null, ARTIFACT1));
 
         // empty group
-        assertThrows(IllegalArgumentException.class, () -> ipc.get("", ARTIFACT1));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get("", ARTIFACT1));
 
         // null artifact
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(GROUP1, null));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(GROUP1, null));
 
         // empty artifact
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(GROUP1, ""));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(GROUP1, ""));
     }
 
     @Test
     public void testGetDroolsController() {
         // unknown controller
-        assertThrows(IllegalStateException.class, () -> ipc.get(drools));
+        assertThatIllegalStateException().isThrownBy(() -> ipc.get(drools));
 
         when(drools.isBrained()).thenReturn(true);
         when(drools2.isBrained()).thenReturn(true);
@@ -356,7 +357,7 @@ public class PolicyControllerFactoryTest {
 
         // null controller
         DroolsController nullDrools = null;
-        assertThrows(IllegalArgumentException.class, () -> ipc.get(nullDrools));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(nullDrools));
     }
 
     @Test
@@ -382,13 +383,13 @@ public class PolicyControllerFactoryTest {
     @Test
     public void testGetFeatureProvider() {
         // null name
-        assertThrows(IllegalArgumentException.class, () -> ipc.getFeatureProvider(null));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.getFeatureProvider(null));
 
         // empty name
-        assertThrows(IllegalArgumentException.class, () -> ipc.getFeatureProvider(""));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.getFeatureProvider(""));
 
         // unknown name
-        assertThrows(IllegalArgumentException.class, () -> ipc.getFeatureProvider("unknown-feature"));
+        assertThatIllegalArgumentException().isThrownBy(() -> ipc.getFeatureProvider("unknown-feature"));
 
         assertEquals(feature1, ipc.getFeatureProvider(FEATURE1));
         assertEquals(feature2, ipc.getFeatureProvider(FEATURE2));
