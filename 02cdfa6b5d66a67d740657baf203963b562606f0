@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7516a0c8_df9de26e",
+        "filename": "policy-utils/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-02-12T15:32:59Z",
+      "side": 1,
+      "message": "Let\u0027s run CLM after this to determine if there are no CVE/Sonatype issues.",
+      "range": {
+        "startLine": 48,
+        "startChar": 8,
+        "endLine": 52,
+        "endChar": 34
+      },
+      "revId": "02cdfa6b5d66a67d740657baf203963b562606f0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c390a06_9b9744eb",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/PropertyUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-02-12T15:32:59Z",
+      "side": 1,
+      "message": "Where is this being used? It is an unused import?",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 42
+      },
+      "revId": "02cdfa6b5d66a67d740657baf203963b562606f0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
