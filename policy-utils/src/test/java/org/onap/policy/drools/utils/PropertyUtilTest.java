@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,18 @@ import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PropertyUtilTest {
+
     private static final Logger logger = LoggerFactory.getLogger(PropertyUtilTest.class);
+    private static final String INTERPOLATION_PROPERTIES = "src/test/resources/interpolation.properties";
+    private static final String INTERPOLATION_NO = "interpolation.no";
+    private static final String INTERPOLATION_ENV = "interpolation.env";
+    private static final String INTERPOLATION_CONST = "interpolation.const";
+    private static final String INTERPOLATION_SYS = "interpolation.sys";
 
     private static File directory = null;
 
@@ -128,6 +135,12 @@ public class PropertyUtilTest {
 
         // they should match
         assertEquals(prop1, prop2);
+
+        Properties prop3 = PropertyUtil.getProperties(INTERPOLATION_PROPERTIES);
+        assertEquals("no", prop3.getProperty(INTERPOLATION_NO));
+        assertEquals(System.getenv("HOME"), prop3.getProperty(INTERPOLATION_ENV));
+        assertEquals(LoggerUtil.ROOT_LOGGER, prop3.getProperty(INTERPOLATION_CONST));
+        assertEquals(System.getProperty("user.home"), prop3.getProperty(INTERPOLATION_SYS));
     }
 
     /**

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.configuration2.ConfigurationConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +51,10 @@ public class PropertyUtil {
     private static final Logger logger = LoggerFactory.getLogger(PropertyUtil.class.getName());
 
     /**
-     * Read in a properties file.
-     * 
+     * Read in a properties file.  Variable interpolation is performed by using
+     * apache commons configuration2 library.   This allows for embedding system properties,
+     * constants, and environment variables in property files.
+     *
      * @param file the properties file
      * @return a Properties object, containing the associated properties
      * @throws IOException - subclass 'FileNotFoundException' if the file
@@ -60,14 +63,21 @@ public class PropertyUtil {
      */
     public static Properties getProperties(File file) throws IOException {
         // create an InputStream (may throw a FileNotFoundException)
+        Properties rval = new Properties();
         try (FileInputStream fis = new FileInputStream(file)) {
             // create the properties instance
-            Properties rval = new Properties();
 
             // load properties (may throw an IOException)
             rval.load(fis);
-            return rval;
         }
+
+        /*
+         * Return properties file with environment variables interpolated.
+         * It is necessary to construct the object in this fashion and avoid
+         * builders since they use the commons-beanutils (optional) library that has been
+         * flagged as insecured.
+         */
+        return ConfigurationConverter.getProperties(ConfigurationConverter.getConfiguration(rval));
     }
 
     /**
