@@ -32,6 +32,10 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
+import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
+import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 
 
 /**
@@ -51,6 +55,7 @@ public class ControllerConfiguration {
      * 
      */
     @JsonProperty("name")
+    @GsonJsonProperty("name")
     private String name;
     /**
      * Set of operations that can be applied to a controller: create, lock
@@ -58,15 +63,20 @@ public class ControllerConfiguration {
      * 
      */
     @JsonProperty("operation")
+    @GsonJsonProperty("operation")
     private String operation;
     /**
      * Maven Related Information.
      * 
      */
     @JsonProperty("drools")
+    @GsonJsonProperty("drools")
     private DroolsConfiguration drools;
+    
     @JsonIgnore
+    @GsonJsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
+    
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
@@ -97,6 +107,7 @@ public class ControllerConfiguration {
      *     The name
      */
     @JsonProperty("name")
+    @GsonJsonProperty("name")
     public String getName() {
         return name;
     }
@@ -108,6 +119,7 @@ public class ControllerConfiguration {
      *     The name
      */
     @JsonProperty("name")
+    @GsonJsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
@@ -125,6 +137,7 @@ public class ControllerConfiguration {
      *     The operation
      */
     @JsonProperty("operation")
+    @GsonJsonProperty("operation")
     public String getOperation() {
         return operation;
     }
@@ -137,6 +150,7 @@ public class ControllerConfiguration {
      *     The operation
      */
     @JsonProperty("operation")
+    @GsonJsonProperty("operation")
     public void setOperation(String operation) {
         this.operation = operation;
     }
@@ -153,6 +167,7 @@ public class ControllerConfiguration {
      *     The drools
      */
     @JsonProperty("drools")
+    @GsonJsonProperty("drools")
     public DroolsConfiguration getDrools() {
         return drools;
     }
@@ -164,6 +179,7 @@ public class ControllerConfiguration {
      *     The drools
      */
     @JsonProperty("drools")
+    @GsonJsonProperty("drools")
     public void setDrools(DroolsConfiguration drools) {
         this.drools = drools;
     }
@@ -179,11 +195,13 @@ public class ControllerConfiguration {
     }
 
     @JsonAnyGetter
+    @GsonJsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
     @JsonAnySetter
+    @GsonJsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }

@@ -1,0 +1,18 @@
+{
+    "alive": false,
+    "drools": {
+        "artifact": "artifact-a",
+        "group": "group-a",
+        "version": "version-a"
+    },
+    "locked": false,
+    "name": "agg-name",
+    "topicSinks": [
+        { "name": "sink-a" },
+        { "name": "sink-b" }
+    ],
+    "topicSources": [
+        { "name": "source-a" },
+        { "name": "source-b" }
+    ]
+}

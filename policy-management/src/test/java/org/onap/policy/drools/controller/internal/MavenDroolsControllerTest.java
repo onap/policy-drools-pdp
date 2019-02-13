@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.util.KieUtils;
 
@@ -43,7 +44,7 @@ public class MavenDroolsControllerTest {
 
     /**
      * Set up.
-     * 
+     *
      * @throws IOException throws an IO exception
      */
     @BeforeClass
@@ -77,6 +78,8 @@ public class MavenDroolsControllerTest {
 
         controller.halt();
         Assert.assertFalse(controller.isAlive());
+
+        new GsonTestUtils().compareGson(controller, MavenDroolsControllerTest.class);
     }
 
     private DroolsController createDroolsController(long courtesyStartTimeMs) throws InterruptedException {
