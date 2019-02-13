@@ -1,0 +1,24 @@
+{
+    "alive": false,
+    "controllers": [
+        "controller-a",
+        "controller-b"
+    ],
+    "features": [
+        "feature-a",
+        "feature-b"
+    ],
+    "httpServers": [
+        { "port": 1001 },
+        { "port": 1002 }
+    ],
+    "locked": false,
+    "sinks": [
+        { "name": "sink1-topic" },
+        { "name": "sink2-topic" }
+    ],
+    "sources": [
+        { "name": "source1-topic" },
+        { "name": "source2-topic" }
+    ]
+}

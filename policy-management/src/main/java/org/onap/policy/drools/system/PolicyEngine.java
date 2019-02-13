@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
+import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.jmx.PdpJmxListener;
@@ -431,6 +433,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @JsonIgnore
+    @GsonJsonIgnore
     @Override
     public synchronized Properties getEnvironment() {
         return this.environment;
@@ -1167,12 +1170,14 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @JsonIgnore
+    @GsonJsonIgnore
     @Override
     public List<PolicyController> getPolicyControllers() {
         return getControllerFactory().inventory();
     }
 
     @JsonProperty("controllers")
+    @GsonJsonProperty("controllers")
     @Override
     public List<String> getPolicyControllerIds() {
         final List<String> controllerNames = new ArrayList<>();
@@ -1184,6 +1189,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     @JsonIgnore
+    @GsonJsonIgnore
     public Properties getProperties() {
         return this.properties;
     }
@@ -1216,6 +1222,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @JsonIgnore
+    @GsonJsonIgnore
     @Override
     public List<PolicyEngineFeatureAPI> getFeatureProviders() {
         return getEngineProviders();

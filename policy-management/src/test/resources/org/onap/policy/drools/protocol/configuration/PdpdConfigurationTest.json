@@ -1,0 +1,14 @@
+{
+    "requestID": "${obj.requestID}",
+    "entity": "entity1",
+    "controllers": [
+        {
+            "name": "name",
+            "operation": "operation"
+        },
+        {
+            "name": "name2",
+            "operation": "operation2"
+        }
+    ]
+}
