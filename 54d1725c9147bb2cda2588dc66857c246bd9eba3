@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "be98841c_6ee2fe3f",
+        "filename": "packages/base/src/files/bin/configure-maven",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-13T22:48:12Z",
+      "side": 1,
+      "message": "tabs \u003d\u003e spaces",
+      "revId": "54d1725c9147bb2cda2588dc66857c246bd9eba3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "efa2e69a_49acec96",
+        "filename": "packages/base/src/files/bin/configure-maven",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-13T22:48:12Z",
+      "side": 1,
+      "message": "the closing quotes should appear after \".xml\", respectively\n\nsame comment applies to the \"else\" branch",
+      "revId": "54d1725c9147bb2cda2588dc66857c246bd9eba3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed19ca32_5efe7af4",
+        "filename": "packages/docker/src/main/docker/docker-install.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-13T22:48:12Z",
+      "side": 1,
+      "message": "tabs \u003d\u003e spaces",
+      "revId": "54d1725c9147bb2cda2588dc66857c246bd9eba3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
