@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   Base Package
   ================================================================================
-  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -26,53 +26,16 @@
 
 	<profiles>
 
-        <profile>
-            <id>policy-local</id>
-
-            <repositories>
-                <repository>
-                    <id>file-repository</id>
-                    <url>file:${user.home}/.m2/file-repository</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </repository>
-            </repositories>
-
-        </profile>
-
 		<profile>
-			<id>policy-releases</id>
+			<id>policy-local</id>
 
 			<repositories>
 				<repository>
-					<id>${env.RELEASE_REPOSITORY_ID}</id>
-					<url>${env.RELEASE_REPOSITORY_URL}</url>
+					<id>file-repository</id>
+					<url>file:${user.home}/.m2/file-repository</url>
 					<releases>
 						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-		</profile>
-
-		<profile>
-			<id>policy-snapshots</id>
-
-			<repositories>
-				<repository>
-					<id>${env.SNAPSHOT_REPOSITORY_ID}</id>
-					<url>${env.SNAPSHOT_REPOSITORY_URL}</url>
-					<releases>
-						<enabled>false</enabled>
+						<updatePolicy>always</updatePolicy>
 					</releases>
 					<snapshots>
 						<enabled>true</enabled>
@@ -123,7 +86,6 @@
 		</profile>
 
 		<profile>
-
 			<id>onap-snapshots</id>
 
 			<repositories>
@@ -147,25 +109,10 @@
 
 	<activeProfiles>
 		<activeProfile>policy-local</activeProfile>
-		<activeProfile>policy-releases</activeProfile>
-		<activeProfile>policy-snapshots</activeProfile>
 		<activeProfile>onap-releases</activeProfile>
 		<activeProfile>onap-staging</activeProfile>
 		<activeProfile>onap-snapshots</activeProfile>
 	</activeProfiles>
-
-	<servers>
-		<server>
-			<id>${env.SNAPSHOT_REPOSITORY_ID}</id>
-			<username>${env.REPOSITORY_USERNAME}</username>
-			<password>${env.REPOSITORY_PASSWORD}</password>
-		</server>
-		<server>
-			<id>${env.RELEASE_REPOSITORY_ID}</id>
-			<username>${env.REPOSITORY_USERNAME}</username>
-			<password>${env.REPOSITORY_PASSWORD}</password>
-		</server>
-	</servers>
 
 </settings>
 
