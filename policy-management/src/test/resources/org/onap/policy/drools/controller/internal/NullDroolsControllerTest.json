@@ -1,0 +1,14 @@
+{
+    "alive": false,
+    "locked": false,
+    "groupId": "NO-GROUP-ID",
+    "artifactId": "NO-ARTIFACT-ID",
+    "version": "NO-VERSION",
+    "sessionNames": [],
+    "container": null,
+    "baseDomainNames": [],
+    "brained": false,
+    "canonicalSessionNames": [],
+    "recentSourceEvents": [],
+    "recentSinkEvents": []
+}

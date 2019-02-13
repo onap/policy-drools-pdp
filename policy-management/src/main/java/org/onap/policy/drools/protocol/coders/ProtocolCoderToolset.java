@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,7 +45,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
@@ -344,12 +344,14 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
      * decoder.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected final ObjectMapper decoder = new ObjectMapper();
 
     /**
      * encoder.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected final ObjectMapper encoder = new ObjectMapper();
 
     /**
@@ -370,6 +372,7 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
      * @return the Jackson decoder
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected ObjectMapper getDecoder() {
         return this.decoder;
     }
@@ -380,6 +383,7 @@ class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
      * @return the Jackson encoder
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected ObjectMapper getEncoder() {
         return this.encoder;
     }
@@ -481,9 +485,11 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      * Formatter for JSON encoding/decoding.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx");
 
     @JsonIgnore
+    @GsonJsonIgnore
     public static final DateTimeFormatter zuluFormat = DateTimeFormatter.ISO_INSTANT;
 
     /**
@@ -527,6 +533,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      * decoder.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected final Gson decoder = new GsonBuilder().disableHtmlEscaping()
         .registerTypeAdapter(ZonedDateTime.class, new GsonUTCAdapter())
         .registerTypeAdapter(Instant.class, new GsonInstantAdapter()).create();
@@ -535,6 +542,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      * encoder.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected final Gson encoder = new GsonBuilder().disableHtmlEscaping()
         .registerTypeAdapter(ZonedDateTime.class, new GsonUTCAdapter())
         .registerTypeAdapter(Instant.class, new GsonInstantAdapter()).create();
@@ -555,6 +563,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      * @return the Gson decoder
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected Gson getDecoder() {
         return this.decoder;
     }
@@ -565,6 +574,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      * @return the Gson encoder
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected Gson getEncoder() {
         return this.encoder;
     }

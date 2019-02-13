@@ -1,0 +1,14 @@
+{
+    "alive": false,
+    "locked": false,
+    "recentSourceEvents": [],
+    "recentSinkEvents": [],
+    "modelClassLoaderHash": ${obj.modelClassLoaderHash},
+    "groupId": "org.onap.policy.drools.test",
+    "artifactId": "echo",
+    "version": "${obj.version}",
+    "baseDomainNames": ["onap.policies.test"],
+    "brained": true,
+    "sessions": ["echo"],
+    "sessionCoordinates": ["org.onap.policy.drools.test:echo:${obj.version}:echo"]
+}
