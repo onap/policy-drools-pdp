@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright(C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,10 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
-import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -513,14 +511,14 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public ProtocolCoderToolset getDecoders(String groupId, String artifactId, String topic) {
-        Pair<ProtocolCoderToolset, ProtocolCoderToolset> decoderToolsets =
+        ProtocolCoderToolset decoderToolsets =
                 this.decoders.getCoders(groupId, artifactId, topic);
         if (decoderToolsets == null) {
             throw new IllegalArgumentException(
                     "Decoders not found for " + groupId + ":" + artifactId + ":" + topic);
         }
 
-        return decoderToolsets.first();
+        return decoderToolsets;
     }
 
     /**
@@ -534,15 +532,15 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
     @Override
     public List<ProtocolCoderToolset> getDecoders(String groupId, String artifactId) {
 
-        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> decoderToolsets =
+        List<ProtocolCoderToolset> decoderToolsets =
                 this.decoders.getCoders(groupId, artifactId);
         if (decoderToolsets == null) {
             throw new IllegalArgumentException("Decoders not found for " + groupId + ":" + artifactId);
         }
 
         List<ProtocolCoderToolset> parser1CoderToolset = new ArrayList<>();
-        for (Pair<ProtocolCoderToolset, ProtocolCoderToolset> coderToolsetPair : decoderToolsets) {
-            parser1CoderToolset.add(coderToolsetPair.first());
+        for (ProtocolCoderToolset coderToolset : decoderToolsets) {
+            parser1CoderToolset.add(coderToolset);
         }
 
         return parser1CoderToolset;
@@ -629,18 +627,16 @@ abstract class GenericEventProtocolCoder {
     private static Logger logger = LoggerFactory.getLogger(GenericEventProtocolCoder.class);
 
     /**
-     * Mapping topic:controller-id -> /<protocol-decoder-toolset-pair/> where protocol-coder-toolset-pair contains both
-     * a jackson-protocol-coder-toolset and a gson-protocol-coder-toolset. The first value of the pair will the protocol
-     * coder toolset most likely to be successful with the encoding or decoding, and consequently the second value will
-     * be the less likely.
+     * Mapping topic:controller-id -> /<protocol-decoder-toolset/> where protocol-coder-toolset contains
+     * a gson-protocol-coder-toolset.
      */
-    protected final HashMap<String, Pair<ProtocolCoderToolset, ProtocolCoderToolset>> coders =
+    protected final HashMap<String, ProtocolCoderToolset> coders =
             new HashMap<>();
 
     /**
      * Mapping topic + classname -> Protocol Set.
      */
-    protected final HashMap<String, List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>>>
+    protected final HashMap<String, List<ProtocolCoderToolset>>
             reverseCoders = new HashMap<>();
 
     protected boolean multipleToolsetRetries = false;
@@ -678,18 +674,11 @@ abstract class GenericEventProtocolCoder {
 
         synchronized (this) {
             if (coders.containsKey(key)) {
-                Pair<ProtocolCoderToolset, ProtocolCoderToolset> toolsets = coders.get(key);
+                ProtocolCoderToolset toolset = coders.get(key);
 
-                logger.info("{}: adding coders for existing {}: {}", this, key, toolsets.first());
+                logger.info("{}: adding coders for existing {}: {}", this, key, toolset);
 
-                toolsets
-                        .first()
-                        .addCoder(
-                                eventProtocolParams.getEventClass(),
-                                eventProtocolParams.getProtocolFilter(),
-                                eventProtocolParams.getModelClassLoaderHash());
-                toolsets
-                        .second()
+                toolset
                         .addCoder(
                                 eventProtocolParams.getEventClass(),
                                 eventProtocolParams.getProtocolFilter(),
@@ -701,34 +690,20 @@ abstract class GenericEventProtocolCoder {
                             this,
                             reverseKey,
                             key,
-                            toolsets.first());
+                            toolset);
 
-                    List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> reverseMappings =
+                    List<ProtocolCoderToolset> reverseMappings =
                             new ArrayList<>();
-                    reverseMappings.add(toolsets);
+                    reverseMappings.add(toolset);
                     reverseCoders.put(reverseKey, reverseMappings);
                 }
                 return;
             }
 
-            GsonProtocolCoderToolset gsonCoderTools =
+            GsonProtocolCoderToolset coderTools =
                     new GsonProtocolCoderToolset(eventProtocolParams, key);
 
-            JacksonProtocolCoderToolset jacksonCoderTools =
-                    new JacksonProtocolCoderToolset(eventProtocolParams, key);
-
-            // Use Gson as the first priority encoding/decoding toolset, and Jackson
-            // as second.  This is because it has been observed that they can diverge
-            // somewhat in the encoding/decoding data types, which can produce json
-            // that may result incompatible with what some network elements are
-            // expecting.   As decoding takes place, this element will reconfigure
-            // itself to set the jackson one as the favoured one first, if errors
-            // are detected in the gson encoding
-
-            Pair<ProtocolCoderToolset, ProtocolCoderToolset> coderTools =
-                    new Pair<>(gsonCoderTools, jacksonCoderTools);
-
-            logger.info("{}: adding coders for new {}: {}", this, key, coderTools.first());
+            logger.info("{}: adding coders for new {}: {}", this, key, coderTools);
 
             coders.put(key, coderTools);
 
@@ -736,12 +711,12 @@ abstract class GenericEventProtocolCoder {
                 // There is another controller (different group id/artifact id/topic)
                 // that shares the class and the topic.
 
-                List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets =
+                List<ProtocolCoderToolset> toolsets =
                         reverseCoders.get(reverseKey);
                 boolean present = false;
-                for (Pair<ProtocolCoderToolset, ProtocolCoderToolset> parserSet : toolsets) {
+                for (ProtocolCoderToolset parserSet : toolsets) {
                     // just doublecheck
-                    present = parserSet.first().getControllerId().equals(key);
+                    present = parserSet.getControllerId().equals(key);
                     if (present) {
                         /* anomaly */
                         logger.error(
@@ -749,18 +724,18 @@ abstract class GenericEventProtocolCoder {
                                 this,
                                 reverseKey,
                                 key,
-                                parserSet.first());
+                                parserSet);
                     }
                 }
 
                 if (present) {
                     return;
                 } else {
-                    logger.info("{}: adding coder set for {}: {} ", this, reverseKey, coderTools.getFirst());
+                    logger.info("{}: adding coder set for {}: {} ", this, reverseKey, coderTools);
                     toolsets.add(coderTools);
                 }
             } else {
-                List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets = new ArrayList<>();
+                List<ProtocolCoderToolset> toolsets = new ArrayList<>();
                 toolsets.add(coderTools);
 
                 logger.info("{}: adding toolset for reverse key {}: {}", this, reverseKey, toolsets);
@@ -818,21 +793,21 @@ abstract class GenericEventProtocolCoder {
 
         synchronized (this) {
             if (coders.containsKey(key)) {
-                Pair<ProtocolCoderToolset, ProtocolCoderToolset> pair = coders.remove(key);
+                ProtocolCoderToolset coderToolset = coders.remove(key);
 
-                logger.info("{}: removed toolset for {}: {}", this, key, pair.getFirst());
+                logger.info("{}: removed toolset for {}: {}", this, key, coderToolset);
 
-                for (CoderFilters codeFilter : pair.first().getCoders()) {
+                for (CoderFilters codeFilter : coderToolset.getCoders()) {
                     String className = codeFilter.getCodedClass();
                     String reverseKey = this.reverseCodersKey(topic, className);
                     if (this.reverseCoders.containsKey(reverseKey)) {
-                        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets =
+                        List<ProtocolCoderToolset> toolsets =
                                 this.reverseCoders.get(reverseKey);
-                        Iterator<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsetsIter =
+                        Iterator<ProtocolCoderToolset> toolsetsIter =
                                 toolsets.iterator();
                         while (toolsetsIter.hasNext()) {
-                            Pair<ProtocolCoderToolset, ProtocolCoderToolset> toolset = toolsetsIter.next();
-                            if (toolset.first().getControllerId().equals(key)) {
+                            ProtocolCoderToolset toolset = toolsetsIter.next();
+                            if (toolset.getControllerId().equals(key)) {
                                 logger.info(
                                         "{}: removed coder from toolset for {} from reverse mapping", this, reverseKey);
                                 toolsetsIter.remove();
@@ -896,34 +871,14 @@ abstract class GenericEventProtocolCoder {
         }
 
         String key = this.codersKey(groupId, artifactId, topic);
-        Pair<ProtocolCoderToolset, ProtocolCoderToolset> coderTools = coders.get(key);
+        ProtocolCoderToolset coderTools = coders.get(key);
         try {
-            Object event = coderTools.first().decode(json);
+            Object event = coderTools.decode(json);
             if (event != null) {
                 return event;
             }
         } catch (Exception e) {
             logger.debug("{}, cannot decode {}", this, json, e);
-        }
-
-        if (multipleToolsetRetries) {
-            // try the less favored toolset
-            try {
-                Object event = coderTools.second().decode(json);
-                if (event != null) {
-                    // change the priority of the toolset
-                    synchronized (this) {
-                        ProtocolCoderToolset first = coderTools.first();
-                        ProtocolCoderToolset second = coderTools.second();
-                        coderTools.first(second);
-                        coderTools.second(first);
-                    }
-
-                    return event;
-                }
-            } catch (Exception e) {
-                throw new UnsupportedOperationException(e);
-            }
         }
 
         throw new UnsupportedOperationException("Cannot decode neither with gson or jackson");
@@ -979,12 +934,12 @@ abstract class GenericEventProtocolCoder {
             throw new IllegalArgumentException("no reverse coder has been found");
         }
 
-        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets =
+        List<ProtocolCoderToolset> toolsets =
                 this.reverseCoders.get(reverseKey);
 
         String key =
                 codersKey(
-                        toolsets.get(0).first().getGroupId(), toolsets.get(0).first().getArtifactId(), topic);
+                        toolsets.get(0).getGroupId(), toolsets.get(0).getArtifactId(), topic);
         return this.encodeInternal(key, event);
     }
 
@@ -1024,35 +979,14 @@ abstract class GenericEventProtocolCoder {
 
         logger.debug("{}: encode for {}: {}", this, key, event);
 
-        Pair<ProtocolCoderToolset, ProtocolCoderToolset> coderTools = coders.get(key);
+        ProtocolCoderToolset coderTools = coders.get(key);
         try {
-            String json = coderTools.first().encode(event);
+            String json = coderTools.encode(event);
             if (json != null && !json.isEmpty()) {
                 return json;
             }
         } catch (Exception e) {
             logger.warn("{}: cannot encode (first) for {}: {}", this, key, event, e);
-        }
-
-        if (multipleToolsetRetries) {
-            // try the less favored toolset
-            try {
-                String json = coderTools.second().encode(event);
-                if (json != null) {
-                    // change the priority of the toolset
-                    synchronized (this) {
-                        ProtocolCoderToolset first = coderTools.first();
-                        ProtocolCoderToolset second = coderTools.second();
-                        coderTools.first(second);
-                        coderTools.second(first);
-                    }
-
-                    return json;
-                }
-            } catch (Exception e) {
-                logger.error("{}: cannot encode (second) for {}: {}", this, key, event, e);
-                throw new UnsupportedOperationException(e);
-            }
         }
 
         throw new UnsupportedOperationException("Cannot decode neither with gson or jackson");
@@ -1077,10 +1011,10 @@ abstract class GenericEventProtocolCoder {
             return droolsControllers;
         }
 
-        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets =
+        List<ProtocolCoderToolset> toolsets =
                 this.reverseCoders.get(reverseKey);
 
-        // There must be multiple toolset pairs associated with <topic,classname> reverseKey
+        // There must be multiple toolsets associated with <topic,classname> reverseKey
         // case 2 different controllers use the same models and register the same encoder for
         // the same topic.  This is assumed not to occur often but for the purpose of encoding
         // but there should be no side-effects.  Ownership is crosscheck against classname and
@@ -1094,11 +1028,11 @@ abstract class GenericEventProtocolCoder {
                             + encodedClass.getClass().getCanonicalName());
         }
 
-        for (Pair<ProtocolCoderToolset, ProtocolCoderToolset> encoderSet : toolsets) {
+        for (ProtocolCoderToolset encoderSet : toolsets) {
             // figure out the right toolset
-            String groupId = encoderSet.first().getGroupId();
-            String artifactId = encoderSet.first().getArtifactId();
-            List<CoderFilters> coderFilters = encoderSet.first().getCoders();
+            String groupId = encoderSet.getGroupId();
+            String artifactId = encoderSet.getArtifactId();
+            List<CoderFilters> coderFilters = encoderSet.getCoders();
             for (CoderFilters coder : coderFilters) {
                 if (coder.getCodedClass().equals(encodedClass.getClass().getCanonicalName())) {
                     DroolsController droolsController = DroolsController.factory.get(groupId, artifactId, "");
@@ -1137,8 +1071,8 @@ abstract class GenericEventProtocolCoder {
         }
 
         String key = this.codersKey(groupId, artifactId, topic);
-        Pair<ProtocolCoderToolset, ProtocolCoderToolset> coderTools = coders.get(key);
-        return coderTools.first().getCoders();
+        ProtocolCoderToolset coderTools = coders.get(key);
+        return coderTools.getCoders();
     }
 
     /**
@@ -1162,10 +1096,10 @@ abstract class GenericEventProtocolCoder {
         String key = this.codersKey(groupId, artifactId, "");
 
         List<CoderFilters> codersFilters = new ArrayList<>();
-        for (Map.Entry<String, Pair<ProtocolCoderToolset, ProtocolCoderToolset>> entry :
+        for (Map.Entry<String, ProtocolCoderToolset> entry :
                 coders.entrySet()) {
             if (entry.getKey().startsWith(key)) {
-                codersFilters.addAll(entry.getValue().first().getCoders());
+                codersFilters.addAll(entry.getValue().getCoders());
             }
         }
 
@@ -1194,8 +1128,8 @@ abstract class GenericEventProtocolCoder {
         }
 
         String key = this.codersKey(groupId, artifactId, topic);
-        Pair<ProtocolCoderToolset, ProtocolCoderToolset> coderTools = coders.get(key);
-        return coderTools.first().getCoder(classname);
+        ProtocolCoderToolset coderTools = coders.get(key);
+        return coderTools.getCoder(classname);
     }
 
     /**
@@ -1207,7 +1141,7 @@ abstract class GenericEventProtocolCoder {
      * @return list of coders
      * @throws IllegalArgumentException if invalid input
      */
-    public Pair<ProtocolCoderToolset, ProtocolCoderToolset> getCoders(
+    public ProtocolCoderToolset getCoders(
             String groupId, String artifactId, String topic) {
 
         if (!isCodingSupported(groupId, artifactId, topic)) {
@@ -1226,7 +1160,7 @@ abstract class GenericEventProtocolCoder {
      * @return list of coders
      * @throws IllegalArgumentException if invalid input
      */
-    public List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> getCoders(
+    public List<ProtocolCoderToolset> getCoders(
             String groupId, String artifactId) {
 
         if (groupId == null || groupId.isEmpty()) {
@@ -1239,8 +1173,8 @@ abstract class GenericEventProtocolCoder {
 
         String key = this.codersKey(groupId, artifactId, "");
 
-        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> coderToolset = new ArrayList<>();
-        for (Map.Entry<String, Pair<ProtocolCoderToolset, ProtocolCoderToolset>> entry :
+        List<ProtocolCoderToolset> coderToolset = new ArrayList<>();
+        for (Map.Entry<String, ProtocolCoderToolset> entry :
                 coders.entrySet()) {
             if (entry.getKey().startsWith(key)) {
                 coderToolset.add(entry.getValue());
@@ -1268,14 +1202,14 @@ abstract class GenericEventProtocolCoder {
         }
 
         String key = this.reverseCodersKey(topic, codedClass);
-        List<Pair<ProtocolCoderToolset, ProtocolCoderToolset>> toolsets = this.reverseCoders.get(key);
+        List<ProtocolCoderToolset> toolsets = this.reverseCoders.get(key);
         if (toolsets == null) {
             throw new IllegalArgumentException("No Coder found for " + key);
         }
 
         List<CoderFilters> coderFilters = new ArrayList<>();
-        for (Pair<ProtocolCoderToolset, ProtocolCoderToolset> toolset : toolsets) {
-            coderFilters.addAll(toolset.first().getCoders());
+        for (ProtocolCoderToolset toolset : toolsets) {
+            coderFilters.addAll(toolset.getCoders());
         }
 
         return coderFilters;
