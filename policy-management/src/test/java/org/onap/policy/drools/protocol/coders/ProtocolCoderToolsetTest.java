@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,14 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,7 +92,6 @@ public class ProtocolCoderToolsetTest {
     public void testToolsets() {
         createController();
         testGsonToolset(createFilterSet());
-        testJacksonToolset(createFilterSet());
     }
 
     /**
@@ -127,28 +122,6 @@ public class ProtocolCoderToolsetTest {
 
     private Triple<String, String, String> createTriple() {
         return new Triple<>("v1", "v2", "v3");
-    }
-
-    /**
-     * Test Jackson toolset.
-     * 
-     * @param protocolFilter protocol filter
-     */
-    public void testJacksonToolset(JsonProtocolFilter protocolFilter) {
-        JacksonProtocolCoderToolset jacksonToolset = new JacksonProtocolCoderToolset(
-                EventProtocolParams.builder()
-                        .topic(JUNIT_PROTOCOL_CODER_TOPIC)
-                        .groupId(this.releaseId.getGroupId())
-                        .artifactId(this.releaseId.getArtifactId())
-                        .eventClass(Triple.class.getCanonicalName())
-                        .protocolFilter(protocolFilter)
-                        .customJacksonCoder(null)
-                        .modelClassLoaderHash(12345678), CONTROLLER_ID);
-
-        jacksonToolset.getEncoder().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-        jacksonToolset.getDecoder().setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-
-        testToolset(protocolFilter, jacksonToolset);
     }
 
     private void testToolset(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {

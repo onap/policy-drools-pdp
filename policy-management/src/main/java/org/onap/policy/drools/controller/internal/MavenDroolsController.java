@@ -46,7 +46,6 @@ import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 import org.onap.policy.drools.utils.ReflectionUtil;
 import org.slf4j.Logger;
@@ -270,22 +269,6 @@ public class MavenDroolsController implements DroolsController {
                 }
             }
 
-            CustomJacksonCoder customJacksonCoder = coderConfig.getCustomJacksonCoder();
-            if (coderConfig.getCustomJacksonCoder() != null 
-                    && coderConfig.getCustomJacksonCoder().getClassContainer() != null
-                    && !coderConfig.getCustomJacksonCoder().getClassContainer().isEmpty()) {
-
-                String customJacksonCoderClass = coderConfig.getCustomJacksonCoder().getClassContainer();
-                if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(),
-                        customJacksonCoderClass)) {
-                    throw makeRetrieveEx(customJacksonCoderClass);
-                } else {
-                    if (logger.isInfoEnabled()) {
-                        logClassFetched(customJacksonCoderClass);
-                    }
-                }
-            }
-
             List<PotentialCoderFilter> coderFilters = coderConfig.getCoderFilters();
             if (coderFilters == null || coderFilters.isEmpty()) {
                 continue;
@@ -312,14 +295,13 @@ public class MavenDroolsController implements DroolsController {
                             .eventClass(potentialCodedClass)
                             .protocolFilter(protocolFilter)
                             .customGsonCoder(customGsonCoder)
-                            .customJacksonCoder(customJacksonCoder)
                             .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
                 } else {
                     EventProtocolCoder.manager.addEncoder(
                             EventProtocolParams.builder().groupId(this.getGroupId())
                                     .artifactId(this.getArtifactId()).topic(topic)
                                     .eventClass(potentialCodedClass).protocolFilter(protocolFilter)
-                                    .customGsonCoder(customGsonCoder).customJacksonCoder(customJacksonCoder)
+                                    .customGsonCoder(customGsonCoder)
                                     .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
                 }
             }
