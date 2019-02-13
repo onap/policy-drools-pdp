@@ -29,7 +29,6 @@ public class EventProtocolParams {
     private String eventClass;
     private JsonProtocolFilter protocolFilter;
     private TopicCoderFilterConfiguration.CustomGsonCoder customGsonCoder;
-    private TopicCoderFilterConfiguration.CustomJacksonCoder customJacksonCoder;
     private int modelClassLoaderHash;
 
     public String getGroupId() {
@@ -54,10 +53,6 @@ public class EventProtocolParams {
 
     public TopicCoderFilterConfiguration.CustomGsonCoder getCustomGsonCoder() {
         return customGsonCoder;
-    }
-
-    public TopicCoderFilterConfiguration.CustomJacksonCoder getCustomJacksonCoder() {
-        return customJacksonCoder;
     }
 
     public int getModelClassLoaderHash() {
@@ -138,18 +133,6 @@ public class EventProtocolParams {
 
     /**
      * Setter method.
-     *
-     * @param customJacksonCoder custom Jackson coder
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams customJacksonCoder(
-            TopicCoderFilterConfiguration.CustomJacksonCoder customJacksonCoder) {
-        this.customJacksonCoder = customJacksonCoder;
-        return this;
-    }
-
-    /**
-     * Setter method.
      * @param modelClassLoaderHash integer representing model hash
      * @return EventProtocolParams
      */
@@ -159,6 +142,6 @@ public class EventProtocolParams {
     }
 
     public CustomCoder getCustomCoder() {
-        return this.customGsonCoder != null ? this.customGsonCoder : this.customJacksonCoder;
+        return this.customGsonCoder;
     }
 }

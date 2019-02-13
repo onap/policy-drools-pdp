@@ -88,7 +88,6 @@ public class EventProtocolCoderTest {
                 EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
                         .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getCanonicalName())
                         .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
-                        .customJacksonCoder(null)
                         .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
 
         final String json = EventProtocolCoder.manager.encode(NOOP_TOPIC,

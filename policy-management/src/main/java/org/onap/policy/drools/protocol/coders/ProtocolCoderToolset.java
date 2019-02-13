@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,6 @@
 package org.onap.policy.drools.protocol.coders;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -330,146 +326,9 @@ public abstract class ProtocolCoderToolset {
 }
 
 
-/**
- * Tools used for encoding/decoding using Jackson.
- */
-class JacksonProtocolCoderToolset extends ProtocolCoderToolset {
-    private static final String WARN_FETCH_FAILED = "{}: cannot fetch application class {}";
-    private static final String WARN_FETCH_FAILED_BECAUSE = "{}: cannot fetch application class {} because of {}";
-    private static final String FETCH_FAILED = "cannot fetch application class ";
-    private static final String ENCODE_FAILED = "event cannot be encoded";
-    private static Logger logger = LoggerFactory.getLogger(JacksonProtocolCoderToolset.class);
-    
-    /**
-     * decoder.
-     */
-    @JsonIgnore
-    protected final ObjectMapper decoder = new ObjectMapper();
-
-    /**
-     * encoder.
-     */
-    @JsonIgnore
-    protected final ObjectMapper encoder = new ObjectMapper();
-
-    /**
-     * Toolset to encode/decode tools associated with a topic.
-     *
-     * @param eventProtocolParams parameter object for event encoder
-     * @param controllerId controller id
-     */
-    public JacksonProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
-        super(eventProtocolParams, controllerId);
-        this.decoder.registerModule(new JavaTimeModule());
-        this.decoder.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
-    /**
-     * gets the Jackson decoder.
-     *
-     * @return the Jackson decoder
-     */
-    @JsonIgnore
-    protected ObjectMapper getDecoder() {
-        return this.decoder;
-    }
-
-    /**
-     * gets the Jackson encoder.
-     *
-     * @return the Jackson encoder
-     */
-    @JsonIgnore
-    protected ObjectMapper getEncoder() {
-        return this.encoder;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public Object decode(String json) {
-
-        // 0. Use custom coder if available
-
-        if (this.customCoder != null) {
-            throw new UnsupportedOperationException(
-                    "Jackon Custom Decoder is not supported at this time");
-        }
-
-        final DroolsController droolsController =
-                DroolsController.factory.get(this.groupId, this.artifactId, "");
-        if (droolsController == null) {
-            logger.warn("{}: no drools-controller to process {}", this, json);
-            throw new IllegalStateException("no drools-controller to process event");
-        }
-
-        final CoderFilters decoderFilter = this.filter(json);
-        if (decoderFilter == null) {
-            logger.debug("{}: no decoder to process {}", this, json);
-            throw new UnsupportedOperationException("no decoder to process event");
-        }
-
-        Class<?> decoderClass;
-        try {
-            decoderClass = droolsController.fetchModelClass(decoderFilter.getCodedClass());
-            if (decoderClass == null) {
-                logger.warn(WARN_FETCH_FAILED, this, decoderFilter.getCodedClass());
-                throw new IllegalStateException(
-                        FETCH_FAILED + decoderFilter.getCodedClass());
-            }
-        } catch (final Exception e) {
-            logger.warn(WARN_FETCH_FAILED_BECAUSE, this,
-                    decoderFilter.getCodedClass(), e.getMessage());
-            throw new UnsupportedOperationException(
-                    FETCH_FAILED + decoderFilter.getCodedClass(), e);
-        }
-
-
-        try {
-            return this.decoder.readValue(json, decoderClass);
-        } catch (final Exception e) {
-            logger.warn("{} cannot decode {} into {} because of {}", this, json, decoderClass.getName(),
-                    e.getMessage(), e);
-            throw new UnsupportedOperationException(
-                    "cannont decode into " + decoderFilter.getCodedClass(), e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public String encode(Object event) {
-
-        // 0. Use custom coder if available
-
-        if (this.customCoder != null) {
-            throw new UnsupportedOperationException(
-                    "Jackon Custom Encoder is not supported at this time");
-        }
-
-        try {
-            return this.encoder.writeValueAsString(event);
-        } catch (final JsonProcessingException e) {
-            logger.error("{} cannot encode {} because of {}", this, event, e.getMessage(), e);
-            throw new UnsupportedOperationException(ENCODE_FAILED);
-        }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("JacksonProtocolCoderToolset [toString()=").append(super.toString()).append("]");
-        return builder.toString();
-    }
-
-}
-
-
 
 /**
- * Tools used for encoding/decoding using Jackson.
+ * Tools used for encoding/decoding using GSON.
  */
 class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     /**
