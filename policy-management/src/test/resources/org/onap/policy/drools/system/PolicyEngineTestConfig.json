@@ -1,0 +1,16 @@
+{
+  "alive" : false,
+  "locked" : false,
+  "sources" : [ ],
+  "sinks" : [ ],
+  "httpServers" : [ {
+    "name" : "TELEMETRY",
+    "host" : "localhost",
+    "port" : 9698,
+    "user" : null,
+    "alive" : false,
+    "aaf" : false
+  } ],
+  "features" : [ ],
+  "controllers" : [ ]
+}

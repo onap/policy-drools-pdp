@@ -22,6 +22,7 @@ package org.onap.policy.drools.controller.internal;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 
 public class NullDroolsControllerTest {
@@ -37,6 +38,11 @@ public class NullDroolsControllerTest {
         Assert.assertFalse(controller.isAlive());
         controller.halt();
         Assert.assertFalse(controller.isAlive());
+    }
+
+    @Test
+    public void testSerialize() {
+        new GsonTestUtils().compareGson(new NullDroolsController(), NullDroolsControllerTest.class);
     }
 
     @Test

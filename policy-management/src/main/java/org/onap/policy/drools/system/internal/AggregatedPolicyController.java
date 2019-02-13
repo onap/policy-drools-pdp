@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
@@ -71,6 +72,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * Mapping topics to sinks.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     private final HashMap<String, TopicSink> topic2Sinks = new HashMap<>();
 
     /**
@@ -624,6 +626,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      */
     @Override
     @JsonIgnore
+    @GsonJsonIgnore
     public Properties getProperties() {
         return this.properties;
     }

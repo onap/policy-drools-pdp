@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,12 @@ package org.onap.policy.drools.system;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -38,6 +38,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicSink;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
@@ -97,6 +98,8 @@ public class PolicyEngineTest {
      * logger.
      */
     private static Logger logger = LoggerFactory.getLogger(PolicyEngineTest.class);
+    
+    private static GsonTestUtils gson;
 
     /**
      * clean up working directory.
@@ -121,12 +124,14 @@ public class PolicyEngineTest {
 
     /**
      * Start up.
-     * 
+     *
      * @throws IOException throws IO exception
      */
     @BeforeClass
     public static void startUp() throws IOException {
         logger.info("enter");
+        
+        gson = new GsonTestUtils();
 
         cleanUpWorkingDir();
 
@@ -151,14 +156,16 @@ public class PolicyEngineTest {
 
         /* override default port */
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
-                "" + DEFAULT_TELEMETRY_PORT);
+                        + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
+                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
 
         assertFalse(PolicyEngine.manager.isAlive());
         PolicyEngine.manager.configure(engineProps);
         assertFalse(PolicyEngine.manager.isAlive());
 
         logger.info("policy-engine {} has configuration {}", PolicyEngine.manager, engineProps);
+
+        gson.compareGson(PolicyEngine.manager, new File(PolicyEngineTest.class.getSimpleName() + "Config.json"));
     }
 
     @Test
@@ -230,6 +237,8 @@ public class PolicyEngineTest {
         PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
 
         assertTrue(PolicyController.factory.inventory().size() == 1);
+
+        gson.compareGson(PolicyEngine.manager, new File(PolicyEngineTest.class.getSimpleName() + "Add.json"));
     }
 
     @Test
@@ -293,5 +302,4 @@ public class PolicyEngineTest {
         Thread.sleep(10000L);
         assertFalse(PolicyEngine.manager.isAlive());
     }
-
 }

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * Configuration Test
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 
 public class DroolsConfigurationTest {
     private static final String ARTIFACT_ID_STRING = "artifactId";
@@ -46,6 +46,9 @@ public class DroolsConfigurationTest {
 
     private static final String ADDITIONAL_PROPERTY_KEY = "foo";
     private static final String ADDITIONAL_PROPERTY_VALUE = "bar";
+
+    private static final String ADDITIONAL_PROPERTY_KEY2 = "hello";
+    private static final String ADDITIONAL_PROPERTY_VALUE2 = "world";
 
     @Test
     public void test() {
@@ -93,5 +96,22 @@ public class DroolsConfigurationTest {
         final int hashCode = new HashCodeBuilder().append(ARTIFACT2).append(GROUPID2).append(VERSION2)
                 .append(additionalProperties).toHashCode();
         assertEquals(droolsConfig2.hashCode(), hashCode);
+    }
+
+    @Test
+    public void testSerialize() {
+        final DroolsConfiguration droolsConfig = new DroolsConfiguration(ARTIFACT, GROUPID, VERSION);
+        droolsConfig.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
+        droolsConfig.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY2, ADDITIONAL_PROPERTY_VALUE2);
+
+        GsonTestUtils gson = new GsonTestUtils();
+
+        // ensure jackson and gson give same result
+        gson.compareGson(droolsConfig, DroolsConfigurationTest.class);
+
+        // ensure we get the same value when decoding
+        DroolsConfiguration config2 = gson.gsonRoundTrip(droolsConfig, DroolsConfiguration.class);
+        assertEquals(droolsConfig, config2);
+        assertEquals(gson.gsonEncode(droolsConfig), gson.gsonEncode(config2));
     }
 }

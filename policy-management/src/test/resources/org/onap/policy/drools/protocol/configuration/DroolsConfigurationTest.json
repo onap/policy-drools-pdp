@@ -1,0 +1,7 @@
+{
+  "artifactId" : "org.onap.artifact",
+  "groupId" : "group",
+  "version" : "1.0.0",
+  "foo" : "bar",
+  "hello" : "world"
+}

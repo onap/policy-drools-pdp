@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
@@ -123,6 +124,13 @@ public class PolicyControllerFactoryTest {
         setUp();
         when(drools.isBrained()).thenReturn(true);
         ipc.build(MY_NAME, properties);
+    }
+    
+    @Test
+    public void testSerialize() {
+        assertEquals(controller, ipc.build(MY_NAME, properties));
+        
+        new GsonTestUtils().compareGson(ipc, PolicyControllerFactoryTest.class);
     }
 
     @Test
