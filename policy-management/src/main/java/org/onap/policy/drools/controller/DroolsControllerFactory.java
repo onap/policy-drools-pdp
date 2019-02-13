@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
@@ -311,19 +310,6 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                 }
             }
 
-            String customJackson = properties.getProperty(propertyTopicEntityPrefix + firstTopic
-                    + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_JACKSON_SUFFIX);
-
-            CustomJacksonCoder customJacksonCoder = null;
-            if (customJackson != null && !customJackson.isEmpty()) {
-                try {
-                    customJacksonCoder = new CustomJacksonCoder(customJackson);
-                } catch (IllegalArgumentException e) {
-                    logger.warn("{}: cannot create custom-jackson-coder {} because of {}", this, customJackson,
-                            e.getMessage(), e);
-                }
-            }
-
             // 3. second the list of classes associated with each topic
 
             String eventClasses = properties
@@ -395,7 +381,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             }
 
             TopicCoderFilterConfiguration topic2Classes2Filters =
-                    new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder, customJacksonCoder);
+                    new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder);
             topics2DecodedClasses2Filters.add(topic2Classes2Filters);
         }
 

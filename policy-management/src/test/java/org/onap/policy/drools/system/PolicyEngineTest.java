@@ -208,7 +208,6 @@ public class PolicyEngineTest {
                 EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
                         .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getCanonicalName())
                         .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
-                        .customJacksonCoder(null)
                         .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
 
         assertTrue(PolicyEngine.manager.deliver(NOOP_TOPIC,

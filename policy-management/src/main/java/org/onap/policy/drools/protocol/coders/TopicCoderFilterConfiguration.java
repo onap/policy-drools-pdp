@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,24 +145,6 @@ public class TopicCoderFilterConfiguration {
         }
     }
 
-    public static class CustomJacksonCoder extends CustomCoder {
-
-        public CustomJacksonCoder(String className, String staticCoderField) {
-            super(className, staticCoderField);
-        }
-
-        public CustomJacksonCoder(String customJackson) {
-            super(customJackson);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("CustomJacksonCoder [toString()=").append(super.toString()).append("]");
-            return builder.toString();
-        }
-    }
-
     /**
      * Coder/Decoder class and Filter container. The decoder class is potential, in order to be
      * operational needs to be fetched from an available class loader.
@@ -243,24 +225,20 @@ public class TopicCoderFilterConfiguration {
     /* custom gson coder that this controller prefers to use instead of the framework ones */
     protected CustomGsonCoder customGsonCoder;
 
-    /* custom jackson coder that this controller prefers to use instead of the framework ones */
-    protected CustomJacksonCoder customJacksonCoder;
-
     /**
      * Constructor.
      *
-     * @param decoderFilters list of decoders and associated filters
      * @param topic the topic
+     * @param decoderFilters list of decoders and associated filters
+     * @param customGsonCoder GSON coder
      */
     public TopicCoderFilterConfiguration(
             String topic,
             List<PotentialCoderFilter> decoderFilters,
-            CustomGsonCoder customGsonCoder,
-            CustomJacksonCoder customJacksonCoder) {
+            CustomGsonCoder customGsonCoder) {
         this.coderFilters = decoderFilters;
         this.topic = topic;
         this.customGsonCoder = customGsonCoder;
-        this.customJacksonCoder = customJacksonCoder;
     }
 
     /** 
@@ -297,22 +275,6 @@ public class TopicCoderFilterConfiguration {
         this.customGsonCoder = customGsonCoder;
     }
 
-    /** Get custom jackson coder.
-     * 
-     * @return the customJacksonCoder 
-     **/
-    public CustomJacksonCoder getCustomJacksonCoder() {
-        return customJacksonCoder;
-    }
-
-    /** 
-     * Set custom Jackson coder.
-     * @param customJacksonCoder the customJacksonCoder to set 
-     **/
-    public void setCustomJacksonCoder(CustomJacksonCoder customJacksonCoder) {
-        this.customJacksonCoder = customJacksonCoder;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -323,8 +285,6 @@ public class TopicCoderFilterConfiguration {
             .append(coderFilters)
             .append(", customGsonCoder=")
             .append(customGsonCoder)
-            .append(", customJacksonCoder=")
-            .append(customJacksonCoder)
             .append("]");
         return builder.toString();
     }
