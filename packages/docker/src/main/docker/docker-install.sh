@@ -4,7 +4,7 @@
 # ============LICENSE_START=======================================================
 # Installation Package
 # ================================================================================
-# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -209,35 +209,18 @@ function configure_settings() {
 	# if both SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL are null,
 	# use standalone-settings.xml that just defines the file-based repo.
 	# if only one of them is specified, use file-based repo for the other.
-	if [[ -z "${SNAPSHOT_REPOSITORY_URL}" && -z "${RELEASE_REPOSITORY_URL}" ]]; then
-		echo "SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL properties not set, configuring settings.xml for standalone operation"
-		mv ${HOME_M2}/standalone-settings.xml ${HOME_M2}/settings.xml
-	else
-		rm $HOME_M2/standalone-settings.xml
 
-		if [[ -n "${SNAPSHOT_REPOSITORY_URL}" ]] ; then
-			snapshotRepoID=${SNAPSHOT_REPOSITORY_ID}
-			snapshotRepoUrl=${SNAPSHOT_REPOSITORY_URL}
-		fi
-		if [[ -n "${RELEASE_REPOSITORY_URL}" ]] ; then
-			releaseRepoID=${RELEASE_REPOSITORY_ID}
-			releaseRepoUrl=${RELEASE_REPOSITORY_URL}
-		fi
+	${POLICY_HOME}/bin/configure-maven
+
+	if [[ -n "${SNAPSHOT_REPOSITORY_URL}" ]] ; then
+		snapshotRepoID=${SNAPSHOT_REPOSITORY_ID}
+		snapshotRepoUrl=${SNAPSHOT_REPOSITORY_URL}
 	fi
 
-	SED_LINE="sed -i"
-	SED_LINE+=" -e 's!\${{SNAPSHOT_REPOSITORY_ID}}!${snapshotRepoID}!g' "
-	SED_LINE+=" -e 's!\${{SNAPSHOT_REPOSITORY_URL}}!${snapshotRepoUrl}!g' "
-	SED_LINE+=" -e 's!\${{RELEASE_REPOSITORY_ID}}!${releaseRepoID}!g' "
-	SED_LINE+=" -e 's!\${{RELEASE_REPOSITORY_URL}}!${releaseRepoUrl}!g' "
-	SED_LINE+=" -e 's!\${{REPOSITORY_USERNAME}}!${REPOSITORY_USERNAME}!g' "
-	SED_LINE+=" -e 's!\${{REPOSITORY_PASSWORD}}!${REPOSITORY_PASSWORD}!g' "
-	SED_LINE+=" -e 's!\${{fileRepoID}}!${fileRepoID}!g' "
-	SED_LINE+=" -e 's!\${{fileRepoUrl}}!${fileRepoUrl}!g' "
-	
-	SED_LINE+="$HOME_M2/settings.xml"
-	eval "${SED_LINE}"
-	
+	if [[ -n "${RELEASE_REPOSITORY_URL}" ]] ; then
+		releaseRepoID=${RELEASE_REPOSITORY_ID}
+		releaseRepoUrl=${RELEASE_REPOSITORY_URL}
+	fi
 }
 
 function configure_keystore() {
@@ -251,12 +234,10 @@ function configure_keystore() {
 
 	if [[ -n ${TRUSTSTORE_PASSWD} ]]; then
 	    keytool -storepasswd -storepass "${DEFAULT_TRUSTSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-truststore" -new "${TRUSTSTORE_PASSWD}"
-	    keytool -list -keystore "${POLICY_HOME}/etc/ssl/policy-truststore" -storepass "${TRUSTSTORE_PASSWD}"
 	fi
 
 	if [[ -n ${KEYSTORE_PASSWD} ]]; then
 	    keytool -storepasswd -storepass "${DEFAULT_KEYSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-keystore" -new "${KEYSTORE_PASSWD}"
-	    keytool -list -keystore "${POLICY_HOME}/etc/ssl/policy-keystore" -storepass "${KEYSTORE_PASSWD}"
 	fi
 }
 
@@ -473,13 +454,11 @@ function install_base() {
 			echo "WARNING: Failed to rename $HOME_M2 directory; will use old directory"
 		fi
 	fi
-	if [[ ! -d $HOME_M2 ]]; then
-		echo "Moving m2 directory to $HOME_M2"
-		mv $POLICY_HOME/m2 $HOME_M2
-		if [[ $? != 0 ]]; then
-			echo "ERROR: Error in moving m2 directory"
-			exit 1
-		fi
+
+	mkdir -p ${HOME_M2}
+	if [[ $? != 0 ]]; then
+		echo "ERROR: Cannot create ${HOME_M2} directory"
+		exit 1
 	fi
 
     # base.conf properties may have characters with special meaning to bash,
