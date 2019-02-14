@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e3a7f070_39afe58d",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "update date",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f2e3d6c_c9916016",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "could collapse this method into a single \"return\"",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "94765737_ff5f13de",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "fyi: no need to update date, as it is being updated via another review",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b64e20d2_00736392",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "update date",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd89fcad_63834cd8",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "update date",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d96193d9_f7adeaae",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "private, static",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "472e6e04_27ed4c45",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "2018-2019",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b01cada_c8109374",
+        "filename": "pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T19:33:48Z",
+      "side": 1,
+      "message": "fyi: no need to update date, as it is being updated via another review",
+      "revId": "915b04b93a3a0916c5e1bf082532893c9e7ddb6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
