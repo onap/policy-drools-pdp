@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,120 +20,25 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * JSON Protocol Filter.
- */
+/** JSON Protocol Filter. */
 public class JsonProtocolFilter {
 
-    private static final String MISSING_RULE_NAME = "no rule name provided";
-    /**
-     * Logger.
-     */
     private static final Logger logger = LoggerFactory.getLogger(JsonProtocolFilter.class);
 
-    /**
-     * Helper class to collect Filter information.
-     */
-    public static class FilterRule {
-        /**
-         * Field name.
-         */
-        private String name;
-
-        /**
-         * Field Value regex.
-         */
-        private String regex;
-
-        /**
-         * Filter Constructor.
-         * 
-         * @param name field name
-         * @param regex field regex value
-         */
-        public FilterRule(String name, String regex) {
-            this.setName(name);
-            this.setRegex(regex);
-        }
-
-        /**
-         * Default constructor (for serialization only).
-         */
-        public FilterRule() {
-            super();
-        }
-
-        /**
-         * gets name.
-         * 
-         * @return name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * gets regex.
-         * 
-         * @return regular expression string
-         */
-        public String getRegex() {
-            return regex;
-        }
-
-        /**
-         * Sets field name.
-         * 
-         * @param name field name
-         */
-        public void setName(String name) {
-            if (name == null || name.isEmpty()) {
-                throw new IllegalArgumentException("filter field name must be provided");
-            }
-
-            this.name = name;
-        }
-
-        /**
-         * sets regex name.
-         * 
-         * @param regex expression
-         */
-        public void setRegex(String regex) {
-            if (regex == null || regex.isEmpty()) {
-                this.regex = ".*";
-            }
-
-            this.regex = regex;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Filter [name=").append(name).append(", regex=").append(regex).append("]");
-            return builder.toString();
-        }
-    }
+    /** A rule based on a JsonPath expression that is used for filtering. */
+    private String rule;
 
     /**
-     * all the filters to be applied.
-     */
-    protected List<FilterRule> rules = new CopyOnWriteArrayList<>();
-
-    /**
-     * Create a Protocol Filter.
-     * 
-     * @throws IllegalArgumentException an invalid input has been provided
+     * Default constructor (for serialization only).
      */
     public JsonProtocolFilter() {
         super();
@@ -141,257 +46,94 @@ public class JsonProtocolFilter {
 
     /**
      * Constructor.
-     * 
-     * @param filters filter list
-     * 
+     *
+     * @param rule the JsonPath expression used for the filter rule
      * @throws IllegalArgumentException an invalid input has been provided
      */
-    public JsonProtocolFilter(List<FilterRule> filters) {
-        List<FilterRule> temp = new ArrayList<>();
-        for (FilterRule rule : filters) {
-            if (rule.getName() == null || rule.getName().isEmpty()) {
-                continue;
-            }
-
-            if (rule.getRegex() == null || rule.getRegex().isEmpty()) {
-                rule.setRegex(".*");
-            }
-
-            temp.add(rule);
-        }
-
-        this.rules.addAll(temp);
+    public JsonProtocolFilter(String rule) {
+        this.setRule(rule);
     }
 
     /**
-     * From raw filters.
-     * 
-     * @param rawFilters raw filter initialization
-     * 
-     * @throws IllegalArgumentException an invalid input has been provided
+     * Checks if there is a filter expression.
+     *
+     * @return true if there is a filter expression.
      */
-    public static JsonProtocolFilter fromRawFilters(List<Pair<String, String>> rawFilters) {
-
-        if (rawFilters == null) {
-            throw new IllegalArgumentException("No raw filters provided");
-        }
-
-        List<FilterRule> filters = new ArrayList<>();
-        for (Pair<String, String> filterPair: rawFilters) {
-            if  (filterPair.first() == null || filterPair.first().isEmpty()) {
-                continue;
-            }
-
-            filters.add(new FilterRule(filterPair.first(), filterPair.second()));
-        }
-        return new JsonProtocolFilter(filters);
+    public boolean hasRule() {
+        return this.rule != null && !this.rule.isEmpty();
     }
 
     /**
-     * are there any filters.
-     * 
-     * @return true if there are filters, false otherwise
+     * Gets the filter expression rule.
+     *
+     * @return the filter expression associated with this JsonProtocolFilter
      */
-    public boolean isRules() {
-        return !this.rules.isEmpty();
+    public String getRule() {
+        return this.rule;
     }
 
     /**
-     * accept a JSON string as conformant it if passes all filters.
-     * 
-     * @param json json is a JSON object
-     * @return true if json string is conformant
-     * 
-     * @throws IllegalArgumentException an invalid input has been provided
+     * Sets the filter expression rule.
+     *
+     * @param rule the JsonPath expression rule
      */
-    public boolean accept(JsonElement json) {
-        if (json == null) {
-            throw new IllegalArgumentException("no JSON provided");
+    public void setRule(String rule) {
+        if (rule == null || rule.isEmpty()) {
+            rule = "[?($ =~ /.*/)]";
         }
-
-        if (!json.isJsonObject()) {
-            return false;
-        }
-
-        if (rules.isEmpty()) {
-            return true;
-        }
-
-        try {
-            JsonObject event = json.getAsJsonObject();
-            for (FilterRule filter: rules) {
-                if (filter.getRegex() == null
-                        || filter.getRegex().isEmpty()
-                        || ".*".equals(filter.getRegex())) {
-
-                    // Only check for presence
-                    if (!event.has(filter.getName())) {
-                        return false;
-                    }
-                } else {
-                    JsonElement field = event.get(filter.getName());
-                    if (field == null) {
-                        return false;
-                    }
-
-                    String fieldValue = field.getAsString();
-                    if (!fieldValue.matches(filter.getRegex())) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+        this.rule = rule;
     }
 
     /**
-     * Accept a JSON string as conformant it if passes all filters.
-     * 
-     * @param json json string
-     * @return true if json string is conformant
-     * 
-     * @throws IllegalArgumentException an invalid input has been provided
+     * Accepts a JSON message if there is a match on the filter expression.
+     *
+     * @return true if a match is found, false otherwise
      */
     public boolean accept(String json) {
+        return !filter(json).isEmpty();
+    }
+
+    /**
+     * Finds a field based on a path or a subset of the JSON if using an expression.
+     *
+     * @param json the JSON string to be parsed
+     * @return a list of strings that match the expression
+     */
+    public List<String> filter(String json) {
+        return filter(json, this.rule);
+    }
+
+    /**
+     * Finds all occurrences of a field in a JSON document based on the JsonPath
+     * expression.
+     *
+     * @param json the JSON string to be parsed
+     * @param expression the JsonPath expression
+     * @return a list of matches from the JSON document
+     */
+    public static List<String> filter(String json, String expression) {
         if (json == null || json.isEmpty()) {
-            throw new IllegalArgumentException("no JSON provided");
+            throw new IllegalArgumentException("a json string must be provided");
         }
 
-        if (rules.isEmpty()) {
-            return true;
+        if (expression == null || expression.isEmpty()) {
+            throw new IllegalArgumentException("an expression must be provided");
         }
 
+        Configuration conf = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST);
+        DocumentContext document = JsonPath.using(conf).parse(json);
+
+        List<String> matches = new ArrayList<>();
         try {
-            JsonElement element = new JsonParser().parse(json);
-            if (element == null || !element.isJsonObject()) {
-                return false;
-            }
-
-            return this.accept(element.getAsJsonObject());
-        } catch (IllegalArgumentException ile) {
-            throw ile;
+            matches = document.read(expression);
         } catch (Exception e) {
-            logger.info("{}: cannot accept {} because of {}", 
-                    this, json, e.getMessage(), e);
-            throw new IllegalArgumentException(e);
+            logger.error("JsonPath couldn't read {} because of {}", expression, e.getMessage(), e);
         }
+
+        if (matches.isEmpty()) {
+            logger.warn("Could not find any matches for rule {} in json {}", expression, json);
+        }
+
+        return matches;
     }
-
-    public List<FilterRule> getRules() {
-        return new ArrayList<>(this.rules);
-    }
-
-    /**
-     * Get rules.
-     * 
-     * @param name name
-     * @return list of filter rules
-     */
-    public List<FilterRule> getRules(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(MISSING_RULE_NAME);
-        }
-
-        ArrayList<FilterRule> temp = new ArrayList<>();
-        for (FilterRule rule : this.rules) {
-            if (rule.getName().equals(name)) {
-                temp.add(rule);
-            }
-        }
-        return temp;
-    }
-
-    /**
-     * Set Rules.
-     * 
-     * @param rulesFilters filters
-     */
-    public void setRules(List<FilterRule> rulesFilters) {
-        if (rulesFilters == null) {
-            throw new IllegalArgumentException("no rules provided");
-        }
-
-        this.rules.clear();
-        this.rules.addAll(rulesFilters);
-    }
-
-    /**
-     * Delete rules.
-     * 
-     * @param name name
-     */
-    public void deleteRules(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(MISSING_RULE_NAME);
-        }
-
-        List<FilterRule> temp = new ArrayList<>();
-        for (FilterRule rule : this.rules) {
-            if (rule.name.equals(name)) {
-                temp.add(rule);
-            }
-        }
-        this.rules.removeAll(temp);
-    }
-
-    /**
-     * Delete rule.
-     * 
-     * @param name name
-     * @param regex regex
-     */
-    public void deleteRule(String name, String regex) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(MISSING_RULE_NAME);
-        }
-
-        String nonNullRegex = regex;
-        if (regex == null || regex.isEmpty()) {
-            nonNullRegex = ".*";
-        }
-
-        List<FilterRule> temp = new ArrayList<>();
-        for (FilterRule rule : this.rules) {
-            if (rule.name.equals(name) && rule.getRegex().equals(nonNullRegex)) {
-                temp.add(rule);
-            }
-        }
-
-        this.rules.removeAll(temp);
-    }
-
-    /**
-     * Add rule.
-     * 
-     * @param name name
-     * @param regex regex
-     */
-    public void addRule(String name, String regex) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException(MISSING_RULE_NAME);
-        }
-
-        String nonNullRegex = regex;
-        if (regex == null || regex.isEmpty()) {
-            nonNullRegex = ".*";
-        }
-
-        for (FilterRule rule : this.rules) {
-            if (rule.getName().equals(name) && rule.getRegex().equals(regex)) {
-                return;
-            }
-        }
-
-        this.rules.add(new FilterRule(name, nonNullRegex));
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("JsonProtocolFilter [rules=").append(rules).append("]");
-        return builder.toString();
-    }
-
 }
