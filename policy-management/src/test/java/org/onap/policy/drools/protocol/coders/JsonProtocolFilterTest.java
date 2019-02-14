@@ -24,205 +24,136 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
-import org.onap.policy.drools.protocol.coders.JsonProtocolFilter.FilterRule;
-import org.onap.policy.drools.utils.Pair;
 
 
 public class JsonProtocolFilterTest {
 
-    private static final String NAME1 = "name1";
-    private static final String REGEX1 = "regex1";
+    private static final String json =
+                    "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\","
+                                    + "\"controllers\":[{\"name\":\"test-controller\","
+                                    + "\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","
+                                    + "\"artifactId\":\"test\",\"version\":\"0.0.1\"},\"operation\":\"update\"}]}";
 
-    private static final String NAME2 = "name2";
-    private static final String REGEX2 = "regex2";
-
-    private static final String NAME3 = "name3";
-    private static final String REGEX3 = "regex3";
-
-    private static final String NAME4 = "name4";
-    private static final String REGEX4a = "^regex4a.*";
-    private static final String REGEX4b = ".*regex4b$";
-    
-
+    /**
+     * Tests that the a valid rule can be added.
+     */
     @Test
-    public void test() {
-        
-        //      ********************   D E F I N E   f i l t e r R u l e   O b j e c t s   ***************************
-        //      DEFINE one (1) filterRule object (using constructor without parms passed; instead use set methods
-        FilterRule filterRule1 = new FilterRule();
-        filterRule1.setName(NAME1);
-        filterRule1.setRegex(REGEX1);
-        assertEquals(filterRule1.getName(), NAME1);
-        assertEquals(filterRule1.getRegex(), REGEX1);
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      DEFINE four (4) filterRule objects (using constructor passing the field values
-        FilterRule filterRule2 = new FilterRule(NAME2, REGEX2);
-        assertEquals(filterRule2.getName(), NAME2);
-        assertEquals(filterRule2.getRegex(), REGEX2);
-
-        FilterRule filterRule3 = new FilterRule(NAME3, REGEX3);
-        assertEquals(filterRule3.getName(), NAME3);
-        assertEquals(filterRule3.getRegex(), REGEX3);
-
-        FilterRule filterRule4a = new FilterRule(NAME4, REGEX4a);
-        assertEquals(filterRule4a.getName(), NAME4);
-        assertEquals(filterRule4a.getRegex(), REGEX4a);
-
-        FilterRule filterRule4b = new FilterRule(NAME4, REGEX4b);
-        assertEquals(filterRule4b.getName(), NAME4);
-        assertEquals(filterRule4b.getRegex(), REGEX4b);
-
-
-
-        //      ************************   D E F I N E   f i l t e r   L i s t s  ************************************
-        //      DEFINE rawFiltersA
-        List<Pair<String,String>> rawFiltersA = new ArrayList<>();
-        rawFiltersA.add(new Pair<String,String>(filterRule1.getName(), filterRule1.getRegex()));
-        rawFiltersA.add(new Pair<String,String>(filterRule2.getName(), filterRule2.getRegex()));
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      DEFINE filtersA 
-        List<FilterRule> filtersA = new ArrayList<>();
-        for (Pair<String, String> filterPair: rawFiltersA) {
-            if  (filterPair.first() == null || filterPair.first().isEmpty()) {
-                continue;
-            }
-            filtersA.add(new FilterRule(filterPair.first(), filterPair.second()));
-        }
-
-
-
-        //      ***********   I N S T A N T I A T E   J s o n P r o t o c o l F i l t e r   O b j e c t s   **********
-        //      INSTANTIATE protocolFilterA  (passing raw filters to the 'fromRawFilters' constructor)
-        JsonProtocolFilter protocolFilterA = JsonProtocolFilter.fromRawFilters(rawFiltersA);
-        assertTrue(protocolFilterA.isRules());
-        assertEquals(protocolFilterA.getRules().toString(), filtersA.toString());
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      INSTANTIATE protocolFilterB  (passing filters list to constructor which accepts such)
-        JsonProtocolFilter protocolFilterB = new JsonProtocolFilter(filtersA);
-        assertTrue(protocolFilterB.isRules());
-        assertEquals(protocolFilterB.getRules(), filtersA);
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      INSTANTIATE protocolFilterC  (using constructor without parms; add instead using setRules() method
-        JsonProtocolFilter protocolFilterC = new JsonProtocolFilter();
-        protocolFilterC.setRules(filtersA);
-        assertTrue(protocolFilterC.isRules());
-        assertEquals(protocolFilterC.getRules(), filtersA);
-
-
-
-        //      ***   D E F I N E   o t h e r   f i l t e r   L i s t s   f o r   v a l i d a t i o n s   ************
-        //      DEFINE rawFiltersB
-        List<Pair<String,String>> rawFiltersB = new ArrayList<>();
-        rawFiltersB.add(new Pair<String,String>(filterRule1.getName(), filterRule1.getRegex()));
-        rawFiltersB.add(new Pair<String,String>(filterRule2.getName(), filterRule2.getRegex()));
-        rawFiltersB.add(new Pair<String,String>(filterRule3.getName(), filterRule3.getRegex()));
-        rawFiltersB.add(new Pair<String,String>(filterRule4a.getName(), filterRule4a.getRegex()));
-        rawFiltersB.add(new Pair<String,String>(filterRule4b.getName(), filterRule4b.getRegex()));
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      DEFINE filtersB
-        List<FilterRule> filtersB = new ArrayList<>();
-        for (Pair<String, String> filterPair: rawFiltersB) {
-            filtersB.add(new FilterRule(filterPair.first(), filterPair.second()));
-        }
-
-
-
-        //      ***********   A D D   T O   p r o t o c o l F i l t e r B   3   m o r e   f i l t e r s   ************
-        protocolFilterB.addRule(filterRule3.getName(), filterRule3.getRegex());
-        protocolFilterB.addRule(filterRule4a.getName(), filterRule4a.getRegex());
-        protocolFilterB.addRule(filterRule4b.getName(), filterRule4b.getRegex());
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      VALIDATE that protocolFilterB now contains filters passed using filtersA and the new ones just added
-        assertEquals(protocolFilterB.getRules().toString(), filtersB.toString());
-
-
-
-        //      ************   D E L E T E   f i l t e r s   f r o m   p r o t o c o l F i l t e r B       ***********
-        //      DELETE specific filter from protocolFilterB by passing both the name & regex values
-
-        assertTrue(protocolFilterB.getRules(NAME3).size() == 1);
-        assertTrue(protocolFilterB.getRules(NAME3).get(0).getName().equals(NAME3));
-        assertTrue(protocolFilterB.getRules(NAME3).get(0).getRegex().equals(REGEX3));
-
-        assertTrue(protocolFilterB.getRules(NAME4).size() == 2);
-        assertTrue(protocolFilterB.getRules(NAME4).get(0).getName().equals(NAME4));
-        assertTrue(protocolFilterB.getRules(NAME4).get(0).getRegex().equals(REGEX4a));
-        assertTrue(protocolFilterB.getRules(NAME4).get(1).getName().equals(NAME4));
-        assertTrue(protocolFilterB.getRules(NAME4).get(1).getRegex().equals(REGEX4b));
-
-        final String jsonA = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
-                        + "\"name3\":\"regex3\",\"name4\":\"regex4a\",\"name4\":\"regex4b\"}";
-        final String jsonB = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
-                        + "\"name3\":\"regex3\",\"name4\":\"regex4a-regex4b\"}";
-        final String jsonC = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
-                        + "\"name3\":\"regex3\",\"name4\":\"regex4a\"}";
-        final String jsonD = "{ \"name1\":\"regex1\",\"name2\":\"regex2\","
-                        + "\"name3\":\"regex3\",\"name4\":\"regex4b\"}";
-
-        assertFalse(protocolFilterB.accept(jsonA));
-        assertTrue(protocolFilterB.accept(jsonB));
-        assertFalse(protocolFilterB.accept(jsonC));
-        assertFalse(protocolFilterB.accept(jsonD));
-
-        protocolFilterB.deleteRule(NAME4, REGEX4a);
-
-        assertTrue(protocolFilterB.accept(jsonA));
-        assertTrue(protocolFilterB.accept(jsonB));
-        assertFalse(protocolFilterB.accept(jsonC));
-        assertTrue(protocolFilterB.accept(jsonD));
-
-        protocolFilterB.addRule(NAME4, REGEX4a);
-
-        assertTrue(protocolFilterB.getRules(NAME4).size() == 2);
-        assertTrue(protocolFilterB.getRules(NAME4).get(0).getName().equals(NAME4));
-        assertTrue(protocolFilterB.getRules(NAME4).get(0).getRegex().equals(REGEX4b));
-        assertTrue(protocolFilterB.getRules(NAME4).get(1).getName().equals(NAME4));
-        assertTrue(protocolFilterB.getRules(NAME4).get(1).getRegex().equals(REGEX4a));
-
-        assertFalse(protocolFilterB.accept(jsonA));
-        assertTrue(protocolFilterB.accept(jsonB));
-        assertFalse(protocolFilterB.accept(jsonC));
-        assertFalse(protocolFilterB.accept(jsonD));
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      DELETE all filters from protocolFilterB that have a match to the same name value
-        protocolFilterB.deleteRules(NAME4);
-
-        assertTrue(protocolFilterB.getRules(NAME4).isEmpty());
-        assertTrue(protocolFilterB.accept(jsonA));
-        assertTrue(protocolFilterB.accept(jsonB));
-        assertTrue(protocolFilterB.accept(jsonC));
-        assertTrue(protocolFilterB.accept(jsonD));
-
-        assertTrue(protocolFilterB.getRules(NAME3).size() == 1);
-        protocolFilterB.addRule(NAME3, REGEX3);
-        assertTrue(protocolFilterB.getRules(NAME3).size() == 1);
-        protocolFilterB.deleteRule(NAME3, REGEX3);
-        assertTrue(protocolFilterB.getRules(NAME3).isEmpty());
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      VALIDATE that protocolFilterB now only contains the filters that were originally passed using filtersA
-        assertEquals(protocolFilterB.getRules(), filtersA);
-
-        //      ************   A C C E P T   J S O N   I F   I T   P A S S E S   A L L   F I L T E R S     ***********
-        //      ACCEPT TRUE a JSON that passes all filters
-        String jsonE = "{ \"name1\":\"regex1\",\"name2\":\"regex2\"}";
-        assertTrue(protocolFilterA.accept(jsonE));
-
-        //      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //      ACCEPT FALSE a JSON that does NOT pass all filters
-        String jsonF = "{ \"name1\":\"regex1\"}";
-        assertFalse(protocolFilterA.accept(jsonF));
+    public void hasRulesTrueTest() {
+        assertTrue(new JsonProtocolFilter("$.test").hasRule());
     }
 
+    /**
+     * Tests that an empty rule will not be added.
+     */
+    @Test
+    public void hasRulesEmptyTest() {
+        assertFalse(new JsonProtocolFilter("").hasRule());
+    }
+
+    /**
+     * Tests that an null rule will not be added.
+     */
+    @Test
+    public void hasRulesNullTest() {
+        assertFalse(new JsonProtocolFilter(null).hasRule());
+    }
+
+    /**
+     * Tests getting the rule expression of the filter.
+     */
+    @Test
+    public void getRuleTest() {
+        assertEquals("$.test", new JsonProtocolFilter("$.test").getRule());
+    }
+
+    /**
+     * Tests setting the rule expression of the filter.
+     */
+    @Test
+    public void setRuleTest() {
+        JsonProtocolFilter filter = new JsonProtocolFilter();
+        assertFalse(filter.hasRule());
+        filter.setRule("$.test");
+        assertTrue(filter.hasRule());
+    }
+
+    /**
+     * Tests that the rule expression cannot be set to an empty string.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void setRuleEmptyTest() {
+        new JsonProtocolFilter("$.test").setRule("");
+    }
+
+    /**
+     * Tests that the rule expression cannot be set to null.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void setRuleNullTest() {
+        new JsonProtocolFilter("$.test").setRule(null);
+    }
+
+    /**
+     * Tests deleting the rule expression of the filter.
+     */
+    @Test
+    public void deleteRuleTest() {
+        JsonProtocolFilter filter = new JsonProtocolFilter("$.test");
+        assertTrue(filter.hasRule());
+        filter.deleteRule();
+        assertFalse(filter.hasRule());
+    }
+
+    /**
+     * Tests accepting a message if all filter rules pass.
+     */
+    @Test
+    public void acceptPassTest() {
+        assertTrue(new JsonProtocolFilter(
+                        "$.controllers[?(@.drools.version =~ /\\d\\.\\d\\.\\d/ && @.operation == 'update')]")
+                                        .accept(json));
+    }
+
+    /**
+     * Tests rejecting a message if one or more of the filter rules fail.
+     */
+    @Test
+    public void acceptFailTest() {
+        assertFalse(
+            new JsonProtocolFilter("$.controllers[?(@.drools.version =~ /\\\\d\\\\.\\\\d\\\\.2/)]")
+                .accept(json));
+    }
+
+    /**
+     * Tests finding field matches for a filter rule corresponding to a topic.
+     */
+    @Test
+    public void filterPassTest() {
+        assertEquals("38adde30-cc22-11e8-a8d5-f2801f1b9fd1", new JsonProtocolFilter("$.requestID").filter(json).get(0));
+    }
+
+    /**
+     * Tests that an empty list is returned when no matches are found.
+     */
+    @Test
+    public void filterFailTest() {
+        assertTrue(new JsonProtocolFilter("$.test").filter(json).isEmpty());
+    }
+
+    /**
+     * Tests static method for filtering a JSON string with an arbitrary expression.
+     */
+    @Test
+    public void staticFilterPassTest() {
+        assertEquals("controller", JsonProtocolFilter.filter(json, "$.entity").get(0));
+    }
+
+    /**
+     * Tests that an empty list is returned when the static filter() method does not find any matches.
+     */
+    @Test
+    public void staticFilterFailTest() {
+        assertTrue(JsonProtocolFilter.filter(json, "$.test").isEmpty());
+    }
 }
