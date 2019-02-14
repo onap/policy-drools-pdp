@@ -16,6 +16,24 @@
       "revId": "9577da6c20ed178336e824bdbb3535839fc0e4df",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ea57375_d360b0c3",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-14T18:58:41Z",
+      "side": 1,
+      "message": "Hmm.  Looks like a bunch of my changes may have gotten lost.  I\u0027ll have to re-do them.  :-(",
+      "parentUuid": "1f3df7b1_2ddbcf92",
+      "revId": "9577da6c20ed178336e824bdbb3535839fc0e4df",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
