@@ -31,7 +31,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -41,7 +40,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
@@ -168,7 +166,7 @@ public abstract class ProtocolCoderToolset {
 
     /**
      * remove coder.
-     * 
+     *
      * @param eventClass event class
      */
     public void removeCoders(String eventClass) {
@@ -206,7 +204,7 @@ public abstract class ProtocolCoderToolset {
 
     /**
      * Get group id.
-     * 
+     *
      * @return the groupId
      */
     public String getGroupId() {
@@ -215,7 +213,7 @@ public abstract class ProtocolCoderToolset {
 
     /**
      * Get artifact id.
-     * 
+     *
      * @return the artifactId
      */
     public String getArtifactId() {
@@ -224,7 +222,7 @@ public abstract class ProtocolCoderToolset {
 
     /**
      * Get custom coder.
-     * 
+     *
      * @return the customCoder
      */
     public CustomCoder getCustomCoder() {
@@ -233,7 +231,7 @@ public abstract class ProtocolCoderToolset {
 
     /**
      * Set custom coder.
-     * 
+     *
      * @param customCoder the customCoder to set.
      */
     public void setCustomCoder(CustomCoder customCoder) {
@@ -264,26 +262,19 @@ public abstract class ProtocolCoderToolset {
 
         if (this.coders.size() == 1) {
             final JsonProtocolFilter filter = this.coders.get(0).getFilter();
-            if (!filter.isRules()) {
+            if (!filter.hasRule()) {
                 return this.coders.get(0);
             }
         }
 
-        JsonElement event;
-        try {
-            event = this.filteringParser.parse(json);
-        } catch (final Exception e) {
-            throw new UnsupportedOperationException(e);
-        }
-
         for (final CoderFilters decoder : this.coders) {
             try {
-                final boolean accepted = decoder.getFilter().accept(event);
+                boolean accepted = decoder.getFilter().accept(json);
                 if (accepted) {
                     return decoder;
                 }
             } catch (final Exception e) {
-                logger.info("{}: unexpected failure accepting {} because of {}", this, event,
+                logger.info("{}: unexpected failure accepting {} because of {}", this, json,
                         e.getMessage(), e);
                 // continue
             }
@@ -324,8 +315,6 @@ public abstract class ProtocolCoderToolset {
         return builder.toString();
     }
 }
-
-
 
 /**
  * Tools used for encoding/decoding using GSON.
