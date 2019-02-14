@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2030db90_f3eb5084",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/system/GsonMgmtTestBuilder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-02-14T18:09:22Z",
+      "side": 1,
+      "message": "remove 2017",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 26
+      },
+      "revId": "856cb73066dac409253fdbdbc4939accf0080c50",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
