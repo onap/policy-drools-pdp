@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.regex.Pattern;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -51,7 +49,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
@@ -67,7 +64,6 @@ import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
-import org.onap.policy.drools.protocol.coders.JsonProtocolFilter.FilterRule;
 import org.onap.policy.drools.protocol.coders.ProtocolCoderToolset;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
@@ -76,7 +72,6 @@ import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Telemetry JAX-RS Interface to the PDP-D.
@@ -98,7 +93,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -111,7 +106,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -132,7 +127,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -154,7 +149,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -175,7 +170,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -187,7 +182,7 @@ public class RestManager {
 
     /**
      * POST.
-     * 
+     *
      * @return response object
      */
     @POST
@@ -216,7 +211,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -229,7 +224,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -242,7 +237,7 @@ public class RestManager {
 
     /**
     * GET.
-    * 
+    *
     * @return response object
     */
     @GET
@@ -257,7 +252,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -274,7 +269,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -287,7 +282,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -315,7 +310,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -343,7 +338,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -364,7 +359,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -385,7 +380,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -398,7 +393,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -411,7 +406,7 @@ public class RestManager {
 
     /**
     * POST.
-    * 
+    *
     * @return response object
     */
     @POST
@@ -479,7 +474,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -492,7 +487,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -506,7 +501,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -528,7 +523,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -557,7 +552,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -604,7 +599,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -632,7 +627,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -644,7 +639,7 @@ public class RestManager {
 
     /**
      * POST.
-     * 
+     *
      * @return response object
      */
     @POST
@@ -688,7 +683,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -701,7 +696,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -724,7 +719,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -747,7 +742,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -775,7 +770,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -807,7 +802,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -836,7 +831,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -875,7 +870,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -928,7 +923,7 @@ public class RestManager {
 
     /**
      * POST.
-     * 
+     *
      * @return response object
      */
     @POST
@@ -985,7 +980,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -1027,7 +1022,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -1085,29 +1080,21 @@ public class RestManager {
 
     /**
      * POST.
-     * 
+     *
      * @return response object
      */
     @POST
-    @Path("engine/controllers/tools/coders/decoders/filters/rules/{ruleName}")
+    @Path("engine/controllers/tools/coders/decoders/filters/rule")
     @ApiOperation(value = "Produces a Decoder Rule Filter in a format that the Policy Controller can understand",
             notes = "The result can be used with other APIs to attach a filter to a decoder")
     public Response rules(
-            @ApiParam(value = "Negate regex?",
-                    required = true) @DefaultValue("false") @QueryParam("negate") boolean negate,
-            @ApiParam(value = "Rule Name", required = true) @PathParam("ruleName") String name,
-            @ApiParam(value = "Regex expression", required = true) String regex) {
-        String literalRegex = Pattern.quote(regex);
-        if (negate) {
-            literalRegex = "^(?!" + literalRegex + "$).*";
-        }
-
-        return Response.status(Status.OK).entity(new JsonProtocolFilter.FilterRule(name, literalRegex)).build();
+            @ApiParam(value = "JsonPath expression", required = true) String expression) {
+        return Response.status(Status.OK).entity(new JsonProtocolFilter(expression)).build();
     }
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1142,7 +1129,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1178,7 +1165,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1215,7 +1202,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1258,7 +1245,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1303,7 +1290,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -1359,17 +1346,16 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
-    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules")
-    @ApiOperation(value = "Gets the filter rules attached to a topic decoder of a controller",
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rule")
+    @ApiOperation(value = "Gets the filter rule attached to a topic decoder of a controller",
             notes = "Decoders are associated with networked topics. A Policy Controller manages "
                     + "multiple topics and therefore its attached decoders. "
                     + "A Policy Controller uses filters to further specify the fact mapping.  "
-                    + "Filters are applied on a per fact type and are composed of field matching rules. ",
-            responseContainer = "List", response = FilterRule.class)
+                    + "Filters are applied on a per fact type using a jsonpath expression rule. ")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
             @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
@@ -1394,7 +1380,7 @@ public class RestManager {
                         .entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).build();
             }
 
-            return Response.status(Response.Status.OK).entity(filter.getRules()).build();
+            return Response.status(Response.Status.OK).entity(filter.getRule()).build();
         } catch (final IllegalArgumentException e) {
             logger.debug("{}: cannot get decoder filters for policy-controller {} topic {} type {} because of {}", this,
                     controllerName, topic, factClass, e.getMessage(), e);
@@ -1409,86 +1395,25 @@ public class RestManager {
     }
 
     /**
-     * GET.
-     * 
-     * @return response object
-     */
-    @GET
-    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules/{ruleName}")
-    @ApiOperation(value = "Gets a filter rule by name attached to a topic decoder of a controller",
-            notes = "Decoders are associated with networked topics. A Policy Controller manages "
-                    + "multiple topics and therefore its attached decoders. "
-                    + "A Policy Controller uses filters to further specify the fact mapping.  "
-                    + "Filters are applied on a per fact type and are composed of field matching rules. ",
-            responseContainer = "List", response = FilterRule.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "The controller, topic, fact type, or rule name cannot be found"),
-            @ApiResponse(code = 406,
-                    message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
-    public Response decoderFilterRules(
-            @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
-            @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
-            @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass,
-            @ApiParam(value = "Rule Name", required = true) @PathParam("ruleName") String ruleName) {
-        try {
-            final DroolsController drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder =
-                    EventProtocolCoder.manager.getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
-
-            final CoderFilters filters = decoder.getCoder(factClass);
-            if (filters == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new Error(controllerName + ":" + topic + ":" + factClass + "  does not exist")).build();
-            }
-
-            final JsonProtocolFilter filter = filters.getFilter();
-            if (filter == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).build();
-            }
-
-            return Response.status(Response.Status.OK).entity(filter.getRules(ruleName)).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(
-                    "{}: cannot get decoder filters for policy-controller {} topic {} type {} rule {} because of {}",
-                    this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + ": " + ruleName + " not found"))
-                    .build();
-        } catch (final IllegalStateException e) {
-            logger.debug(
-                    "{}: cannot get decoder filters for policy-controller {} topic {} type {} rule {} because of {}",
-                    this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(
-                            controllerName + ":" + topic + ":" + factClass + ":" + ruleName + " not acceptable"))
-                    .build();
-        }
-    }
-
-    /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
-    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules/{ruleName}")
-    @ApiOperation(value = "Deletes a filter rule by name attached to a topic decoder of a controller",
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rule")
+    @ApiOperation(value = "Deletes the filter rule attached to a topic decoder of a controller",
             notes = "Decoders are associated with networked topics. A Policy Controller manages "
                     + "multiple topics and therefore its attached decoders. "
                     + "A Policy Controller uses filters to further specify the fact mapping.  "
-                    + "Filters are applied on a per fact type and are composed of field matching rules. ",
-            responseContainer = "List", response = FilterRule.class)
+                    + "Filters are applied on a per fact type using a jsonpath expression rule. ")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "The controller, topic, fact type, or rule name cannot be found"),
+            @ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
             @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilterRuleDelete(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
-            @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass,
-            @ApiParam(value = "Rule Name", required = true) @PathParam("ruleName") String ruleName,
-            @ApiParam(value = "Filter Rule", required = true) FilterRule rule) {
+            @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
 
         try {
             final DroolsController drools = this.getDroolsController(controllerName);
@@ -1507,50 +1432,38 @@ public class RestManager {
                         .entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).build();
             }
 
-            if (rule == null) {
-                filter.deleteRules(ruleName);
-                return Response.status(Response.Status.OK).entity(filter.getRules()).build();
-            }
-
-            if (rule.getName() == null || !rule.getName().equals(ruleName)) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new Error(controllerName + ":" + topic + ":"
-                        + factClass + ":" + ruleName + " rule name request inconsistencies (" + rule.getName() + ")"))
-                        .build();
-            }
-
-            filter.deleteRule(ruleName, rule.getRegex());
-            return Response.status(Response.Status.OK).entity(filter.getRules()).build();
+            filter.setRule("");
+            return Response.status(Response.Status.OK).entity(filter.getRule()).build();
         } catch (final IllegalArgumentException e) {
             logger.debug(
-                    "{}: cannot get decoder filters for policy-controller {} topic {} type {} rule {} because of {}",
-                    this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
+                    "{}: cannot get decoder filters for policy-controller {} topic {} type {} because of {}",
+                    this, controllerName, topic, factClass, e.getMessage(), e);
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + ": " + ruleName + " not found"))
+                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + " not found"))
                     .build();
         } catch (final IllegalStateException e) {
             logger.debug(
-                    "{}: cannot get decoder filters for policy-controller {} topic {} type {} rule {} because of {}",
-                    this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
+                    "{}: cannot get decoder filters for policy-controller {} topic {} type {} because of {}",
+                    this, controllerName, topic, factClass, e.getMessage(), e);
             return Response.status(Response.Status.NOT_ACCEPTABLE)
                     .entity(new Error(
-                            controllerName + ":" + topic + ":" + factClass + ":" + ruleName + " not acceptable"))
+                            controllerName + ":" + topic + ":" + factClass + " not acceptable"))
                     .build();
         }
     }
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
-    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rules")
+    @Path("engine/controllers/{controller}/decoders/{topic}/filters/{factType}/rule")
     @ApiOperation(value = "Places a new filter rule in a topic decoder",
             notes = "Decoders are associated with networked topics. A Policy Controller manages "
                     + "multiple topics and therefore its attached decoders. "
                     + "A Policy Controller uses filters to further specify the fact mapping.  "
-                    + "Filters are applied on a per fact type and are composed of field matching rules. ",
-            responseContainer = "List", response = FilterRule.class)
+                    + "Filters are applied on a per fact type using a jsonpath expression rule. ")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
             @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
@@ -1558,8 +1471,7 @@ public class RestManager {
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass,
-            @ApiParam(value = "Rule Name", required = true) @PathParam("ruleName") String ruleName,
-            @ApiParam(value = "Filter Rule", required = true) FilterRule rule) {
+            @ApiParam(value = "JsonPath filter expression", required = true) String rule) {
 
         try {
             final DroolsController drools = this.getDroolsController(controllerName);
@@ -1578,25 +1490,25 @@ public class RestManager {
                         .entity(new Error(controllerName + ":" + topic + ":" + factClass + "  no filters")).build();
             }
 
-            if (rule.getName() == null) {
+            if (rule == null || rule.isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new Error(controllerName + ":" + topic + ":"
-                        + factClass + " rule name request inconsistencies (" + rule.getName() + ")")).build();
+                        + factClass + " no filter rule provided")).build();
             }
 
-            filter.addRule(rule.getName(), rule.getRegex());
-            return Response.status(Response.Status.OK).entity(filter.getRules()).build();
+            filter.setRule(rule);
+            return Response.status(Response.Status.OK).entity(filter.getRule()).build();
         } catch (final IllegalArgumentException e) {
             logger.debug(
                     "{}: cannot access decoder filter rules for policy-controller {} "
-                            + "topic {} type {} rule {} because of {}",
-                            this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
+                            + "topic {} type {} because of {}",
+                            this, controllerName, topic, factClass, e.getMessage(), e);
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + " not found")).build();
+                    .entity(new Error(controllerName + ":" + topic + " not found")).build();
         } catch (final IllegalStateException e) {
             logger.debug(
                     "{}: cannot access decoder filter rules for policy-controller {} "
-                            + "topic {} type {} rule {} because of {}",
-                            this, controllerName, topic, factClass, ruleName, e.getMessage(), e);
+                            + "topic {} type {} because of {}",
+                            this, controllerName, topic, factClass, e.getMessage(), e);
             return Response.status(Response.Status.NOT_ACCEPTABLE)
                     .entity(new Error(controllerName + ":" + topic + ":" + factClass + " not acceptable")).build();
         }
@@ -1604,7 +1516,7 @@ public class RestManager {
 
     /**
      * POST.
-     * 
+     *
      * @return response object
      */
     @POST
@@ -1665,7 +1577,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1715,7 +1627,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -1735,7 +1647,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -1755,7 +1667,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1768,7 +1680,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1781,7 +1693,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1794,7 +1706,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1807,7 +1719,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1820,7 +1732,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1833,7 +1745,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1847,7 +1759,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1861,7 +1773,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1876,7 +1788,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1890,7 +1802,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1905,7 +1817,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1920,7 +1832,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1936,7 +1848,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1951,7 +1863,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1964,7 +1876,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1977,7 +1889,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -1991,7 +1903,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -2004,7 +1916,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -2024,7 +1936,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -2048,7 +1960,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -2061,7 +1973,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -2081,7 +1993,7 @@ public class RestManager {
 
     /**
      * DELETE.
-     * 
+     *
      * @return response object
      */
     @DELETE
@@ -2102,7 +2014,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -2146,7 +2058,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
@@ -2190,7 +2102,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -2203,7 +2115,7 @@ public class RestManager {
 
     /**
     * GET.
-    * 
+    *
     * @return response object
     */
     @GET
@@ -2227,7 +2139,7 @@ public class RestManager {
 
     /**
      * GET.
-     * 
+     *
      * @return response object
      */
     @GET
@@ -2255,7 +2167,7 @@ public class RestManager {
 
     /**
      * PUT.
-     * 
+     *
      * @return response object
      */
     @PUT
