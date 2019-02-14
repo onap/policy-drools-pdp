@@ -24,14 +24,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +40,6 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.internal.MavenDroolsControllerTest;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
-import org.onap.policy.drools.protocol.coders.JsonProtocolFilter.FilterRule;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.util.KieUtils;
 import org.onap.policy.drools.utils.Triple;
@@ -68,7 +64,7 @@ public class ProtocolCoderToolsetTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws IOException throws IO Exception
      */
     @Before
@@ -101,7 +97,7 @@ public class ProtocolCoderToolsetTest {
 
     /**
      * Test the Gson toolset.
-     * 
+     *
      * @param protocolFilter protocol filter
      */
     public void testGsonToolset(JsonProtocolFilter protocolFilter) {
@@ -131,7 +127,7 @@ public class ProtocolCoderToolsetTest {
 
     /**
      * Test Jackson toolset.
-     * 
+     *
      * @param protocolFilter protocol filter
      */
     public void testJacksonToolset(JsonProtocolFilter protocolFilter) {
@@ -184,11 +180,9 @@ public class ProtocolCoderToolsetTest {
         CoderFilters coderFilters = coderToolset.getCoder(Triple.class.getCanonicalName());
         Assert.assertTrue(coderFilters.getCodedClass() == Triple.class.getCanonicalName());
         Assert.assertTrue(coderFilters.getFilter() == protocolFilter);
-        Assert.assertTrue(coderFilters.getFilter().getRules("second").size() == 1);
-        Assert.assertTrue(coderFilters.getFilter().getRules("third").size() == 1);
+        Assert.assertTrue(coderFilters.getFilter().getRule() != null);
 
-        coderFilters.getFilter().getRules("second").get(0).setRegex("^v2$");
-        coderFilters.getFilter().getRules("third").get(0).setRegex(".*v3.*");
+        coderFilters.getFilter().setRule("[?($.second =~ /^v2$/ && $.third =~ /.*v3.*/)]");
 
         tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
 
@@ -196,8 +190,8 @@ public class ProtocolCoderToolsetTest {
         Assert.assertTrue(tripleDecoded.second().equals(triple.second()));
         Assert.assertTrue(tripleDecoded.third().equals(triple.third()));
 
-        coderFilters.getFilter().deleteRules("third");
-        Assert.assertTrue(coderFilters.getFilter().getRules("third").isEmpty());
+        coderFilters.getFilter().deleteRule();
+        Assert.assertTrue(coderFilters.getFilter().getRule() == null);
 
         tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
 
@@ -205,7 +199,7 @@ public class ProtocolCoderToolsetTest {
         Assert.assertTrue(tripleDecoded.second().equals(triple.second()));
         Assert.assertTrue(tripleDecoded.third().equals(triple.third()));
 
-        coderFilters.getFilter().addRule("third", ".*v3.*");
+        coderFilters.getFilter().setRule("[?($.third =~ /.*v3.*/)]");
     }
 
     private String encode(ProtocolCoderToolset coderToolset, Triple<String, String, String> triple) {
@@ -215,10 +209,8 @@ public class ProtocolCoderToolsetTest {
     }
 
     private void addRemoveCoder(ProtocolCoderToolset coderToolset) {
-        List<FilterRule> filters = new ArrayList<>();
-        filters.add(new FilterRule("second", ".*"));
-
-        coderToolset.addCoder(this.getClass().getCanonicalName(), new JsonProtocolFilter(filters), 654321);
+        coderToolset.addCoder(this.getClass().getCanonicalName(),
+                new JsonProtocolFilter("[?($.second =~ /.*/)]"), 654321);
         Assert.assertTrue(coderToolset.getCoders().size() == 2);
 
         coderToolset.removeCoders(this.getClass().getCanonicalName());
@@ -226,22 +218,18 @@ public class ProtocolCoderToolsetTest {
     }
 
     private void updateCoderFilterRule(ProtocolCoderToolset coderToolset) {
-        List<FilterRule> filters = new ArrayList<>();
-        filters.add(new FilterRule("third", ".*"));
-        coderToolset.addCoder(Triple.class.getCanonicalName(), new JsonProtocolFilter(filters), 654321);
+        coderToolset.addCoder(Triple.class.getCanonicalName(), new JsonProtocolFilter("[?($.third =~ /.*/)]"), 654321);
 
         Assert.assertTrue(coderToolset.getCoders().size() == 1);
 
         Assert.assertTrue(coderToolset.getCoder(Triple.class.getCanonicalName()).getModelClassLoaderHash() == 654321);
 
         Assert.assertTrue(
-                coderToolset.getCoder(Triple.class.getCanonicalName()).getFilter().getRules("third").size() == 1);
+                coderToolset.getCoder(
+                        Triple.class.getCanonicalName()).getFilter().getRule() != null);
 
-        Assert.assertTrue(
-                coderToolset.getCoder(Triple.class.getCanonicalName()).getFilter().getRules("third").size() == 1);
-
-        Assert.assertTrue(".*".equals(coderToolset.getCoder(Triple.class.getCanonicalName()).getFilter()
-                .getRules("third").get(0).getRegex()));
+        Assert.assertTrue("[?($.third =~ /.*/)]".equals(coderToolset.getCoder(Triple.class.getCanonicalName())
+                .getFilter().getRule()));
     }
 
     private void validateInitialization(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
@@ -281,11 +269,6 @@ public class ProtocolCoderToolsetTest {
     }
 
     private JsonProtocolFilter createFilterSet() {
-        List<FilterRule> filters = new ArrayList<>();
-        filters.add(new FilterRule("first", ".*"));
-        filters.add(new FilterRule("second", "^blah.*"));
-        filters.add(new FilterRule("third", "^hello$"));
-
-        return new JsonProtocolFilter(filters);
+        return new JsonProtocolFilter("[?($.first =~ /.*/ && $.second =~ /^blah.*/ && $.third =~ /^hello$/)]");
     }
 }

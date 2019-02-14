@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -39,7 +38,6 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomJacksonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
-import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +49,11 @@ public interface DroolsControllerFactory {
 
     /**
      * Constructs a Drools Controller based on properties.
-     * 
+     *
      * @param properties properties containing initialization parameters
      * @param eventSources list of event sources
      * @param eventSinks list of event sinks
-     * 
+     *
      * @return the instantiated Drools Controller
      * @throws IllegalArgumentException with invalid parameters
      * @throws LinkageError Failure to link rules and models in Drools Libraries
@@ -65,13 +63,13 @@ public interface DroolsControllerFactory {
 
     /**
      * Explicit construction of a Drools Controller.
-     * 
+     *
      * @param groupId maven group id of drools artifact
      * @param artifactId maven artifact id of drools artifact
      * @param version maven version id of drools artifact
      * @param decoderConfigurations list of decoder configurations
      * @param encoderConfigurations list of encoder configurations
-     * 
+     *
      * @return the instantiated Drools Controller
      * @throws IllegalArgumentException with invalid parameters
      * @throws LinkageError Failure to link rules and models in Drools Libraries
@@ -82,7 +80,7 @@ public interface DroolsControllerFactory {
 
     /**
      * Releases the Drools Controller from operation.
-     * 
+     *
      * @param controller the Drools Controller to shut down
      */
     public void shutdown(DroolsController controller);
@@ -94,7 +92,7 @@ public interface DroolsControllerFactory {
 
     /**
      * Destroys and releases resources for a Drools Controller.
-     * 
+     *
      * @param controller the Drools Controller to destroy
      */
     public void destroy(DroolsController controller);
@@ -106,11 +104,11 @@ public interface DroolsControllerFactory {
 
     /**
      * Gets the Drools Controller associated with the maven group and artifact id.
-     * 
+     *
      * @param groupId maven group id of drools artifact
      * @param artifactId maven artifact id of drools artifact
      * @param version maven version id of drools artifact
-     * 
+     *
      * @return the Drools Controller
      * @throws IllegalArgumentException with invalid parameters
      */
@@ -118,7 +116,7 @@ public interface DroolsControllerFactory {
 
     /**
      * returns the current inventory of Drools Controllers.
-     * 
+     *
      * @return a list of Drools Controllers
      */
     public List<DroolsController> inventory();
@@ -209,7 +207,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             /*
              * The Null Drools Controller for no maven coordinates is always here so when no
              * coordinates present, this is the return point
-             * 
+             *
              * assert (controllerCopy instanceof NullDroolsController)
              */
             if (droolsControllers.containsKey(controllerId)) {
@@ -246,7 +244,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     /**
      * find out decoder classes and filters.
-     * 
+     *
      * @param properties properties with information about decoders
      * @param topicEntities topic sources
      * @return list of topics, each with associated decoder classes, each with a list of associated
@@ -327,7 +325,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             // 3. second the list of classes associated with each topic
 
             String eventClasses = properties
-                    .getProperty(propertyTopicEntityPrefix + firstTopic 
+                    .getProperty(propertyTopicEntityPrefix + firstTopic
                             + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
 
             if (eventClasses == null || eventClasses.isEmpty()) {
@@ -342,54 +340,14 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             for (String theClass : topicClasses) {
 
 
-                // 4. third, for each coder class, get the list of field filters
+                // 4. third, for each coder class, get the filter expression
 
                 String filter = properties
-                        .getProperty(propertyTopicEntityPrefix + firstTopic 
+                        .getProperty(propertyTopicEntityPrefix + firstTopic
                                 + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
                                 + "." + theClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
 
-                List<Pair<String, String>> filters = new ArrayList<>();
-
-                if (filter == null || filter.isEmpty()) {
-                    // 4. topic -> class -> with no filters
-
-                    JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
-                    PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
-                    classes2Filters.add(class2Filters);
-                    continue;
-                }
-
-                // There are filters associated with the applicability of
-                // this class for decoding.
-                List<String> listOfFilters = new ArrayList<>(Arrays.asList(filter.split("\\s*,\\s*")));
-
-                for (String nameValue : listOfFilters) {
-                    String fieldName;
-                    String regexValue;
-
-                    String[] nameValueSplit = nameValue.split("\\s*=\\s*");
-                    if (nameValueSplit.length <= 0 || nameValueSplit.length > 2) {
-                        // TODO warn
-                        // skip
-                        continue;
-                    }
-
-                    if (nameValueSplit.length == 2) {
-                        fieldName = nameValueSplit[0];
-                        regexValue = nameValueSplit[1];
-                    } else if (nameValueSplit.length == 1) {
-                        fieldName = nameValueSplit[0];
-                        regexValue = null;
-                    } else {
-                        // unreachable
-                        continue;
-                    }
-
-                    filters.add(new Pair<String, String>(fieldName, regexValue));
-                }
-
-                JsonProtocolFilter protocolFilter = JsonProtocolFilter.fromRawFilters(filters);
+                JsonProtocolFilter protocolFilter = new JsonProtocolFilter(filter);
                 PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
                 classes2Filters.add(class2Filters);
             }
@@ -422,7 +380,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     /**
      * unmanage the drools controller.
-     * 
+     *
      * @param controller the controller
      */
     protected void unmanage(DroolsController controller) {
