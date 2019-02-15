@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ca404df_457727ba",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-15T17:40:24Z",
+      "side": 1,
+      "message": "update date",
+      "revId": "0bc310b984f6df01e60e38b83a0f5d02d87b2c77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
