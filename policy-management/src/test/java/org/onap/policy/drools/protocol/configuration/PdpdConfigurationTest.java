@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * Configuration Test
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,11 +24,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.Test;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +84,8 @@ public class PdpdConfigurationTest {
         // Constructor with values test get calls
         //
         DroolsConfiguration drools2 = new DroolsConfiguration(
-                drools.get("artifactId"), 
-                drools.get("groupId"), 
+                drools.get("artifactId"),
+                drools.get("groupId"),
                 drools.get("version"));
 
         //
@@ -139,8 +141,8 @@ public class PdpdConfigurationTest {
         // Controller Constructor gets
         //
         ControllerConfiguration controller2 = new ControllerConfiguration(
-                controller.get("name"), 
-                controller.get("operation"), 
+                controller.get("name"),
+                controller.get("operation"),
                 controller.get("drools"));
 
         //
@@ -251,4 +253,33 @@ public class PdpdConfigurationTest {
         assertEquals(config.getEntity(), ENTITY);
     }
 
+    @Test
+    public void testSerialize() throws IOException {
+        List<ControllerConfiguration> controllers = Arrays.asList(new ControllerConfiguration(NAME, OPERATION, null),
+                        new ControllerConfiguration(NAME2, OPERATION2, null));
+        PdpdConfiguration pdpConfig = new PdpdConfiguration(REQUEST_ID, ENTITY, controllers);
+
+        GsonTestUtils gson = new GsonTestUtils();
+
+        // ensure jackson and gson give same result
+        gson.compareGson(pdpConfig, PdpdConfigurationTest.class);
+
+        // ensure we get the same value when decoding
+        PdpdConfiguration config2 = gson.gsonRoundTrip(pdpConfig, PdpdConfiguration.class);
+        assertEquals(stripIdent(pdpConfig.toString()), stripIdent(config2.toString()));
+        assertEquals(pdpConfig, config2);
+        assertEquals(gson.gsonEncode(pdpConfig), gson.gsonEncode(config2));
+    }
+
+    /**
+     * Object identifiers may change with each execution, so this method is used to strip
+     * the identifier from the text string so that the strings will still match across
+     * different runs.
+     *
+     * @param text text from which to strip the identifier
+     * @return the text, without the identifier
+     */
+    private String stripIdent(String text) {
+        return text.replaceAll("@\\w+", "@");
+    }
 }

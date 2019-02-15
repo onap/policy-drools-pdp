@@ -222,6 +222,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.onap.policy.common</groupId>
+            <artifactId>gson</artifactId>
+            <version>${policy.common.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>

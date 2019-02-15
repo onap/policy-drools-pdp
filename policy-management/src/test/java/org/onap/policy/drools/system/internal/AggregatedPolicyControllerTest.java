@@ -49,6 +49,7 @@ import org.onap.policy.drools.controller.DroolsControllerFactory;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
+import org.onap.policy.drools.system.GsonMgmtTestBuilder;
 
 public class AggregatedPolicyControllerTest {
 
@@ -257,6 +258,12 @@ public class AggregatedPolicyControllerTest {
         apc.updateDrools(config);
         verify(drools, times(2)).start();
         verify(drools, never()).stop();
+    }
+
+    @Test
+    public void testSerialize() {
+        new GsonMgmtTestBuilder().addDroolsControllerMock().addTopicSinkMock().addTopicSourceMock().build()
+                        .compareGson(apc, AggregatedPolicyControllerTest.class);
     }
 
     @Test

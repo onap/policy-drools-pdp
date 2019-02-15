@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
+import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
+import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 
 
 /**
@@ -45,15 +49,18 @@ public class PdpdConfiguration {
 
     /** Unique Transaction ID. This is an UUID. (Required) */
     @JsonProperty("requestID")
+    @GsonJsonProperty("requestID")
     private String requestID;
     /* Set of entities on which configuration can be performed: controller (Required) */
     @JsonProperty("entity")
+    @GsonJsonProperty("entity")
     private String entity;
     /* Controller Information, only applicable when the entity is set to controller */
     @JsonProperty("controllers")
+    @GsonJsonProperty("controllers")
     private List<ControllerConfiguration> controllers = new ArrayList<>();
 
-    @JsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
+    @JsonIgnore @GsonJsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /** No args constructor for use in serialization. */
@@ -81,6 +88,7 @@ public class PdpdConfiguration {
      * @return The requestID
      */
     @JsonProperty("requestID")
+    @GsonJsonProperty("requestID")
     public String getRequestID() {
         return requestID;
     }
@@ -91,6 +99,7 @@ public class PdpdConfiguration {
      * @param requestID The requestID
      */
     @JsonProperty("requestID")
+    @GsonJsonProperty("requestID")
     public void setRequestID(String requestID) {
         this.requestID = requestID;
     }
@@ -106,6 +115,7 @@ public class PdpdConfiguration {
      * @return The entity
      */
     @JsonProperty("entity")
+    @GsonJsonProperty("entity")
     public String getEntity() {
         return entity;
     }
@@ -116,6 +126,7 @@ public class PdpdConfiguration {
      * @param entity The entity
      */
     @JsonProperty("entity")
+    @GsonJsonProperty("entity")
     public void setEntity(String entity) {
         this.entity = entity;
     }
@@ -130,7 +141,8 @@ public class PdpdConfiguration {
      *
      * @return The controller
      */
-    @JsonProperty("controller")
+    @JsonProperty("controllers")
+    @GsonJsonProperty("controllers")
     public List<ControllerConfiguration> getControllers() {
         return controllers;
     }
@@ -140,7 +152,8 @@ public class PdpdConfiguration {
      *
      * @param controllers controllers
      */
-    @JsonProperty("controller")
+    @JsonProperty("controllers")
+    @GsonJsonProperty("controllers")
     public void setControllers(List<ControllerConfiguration> controllers) {
         this.controllers = controllers;
     }
@@ -156,11 +169,13 @@ public class PdpdConfiguration {
     }
 
     @JsonAnyGetter
+    @GsonJsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
     @JsonAnySetter
+    @GsonJsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
