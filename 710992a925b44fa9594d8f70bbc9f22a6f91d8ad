@@ -46,6 +46,23 @@
       "revId": "710992a925b44fa9594d8f70bbc9f22a6f91d8ad",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c98e553_a93edf28",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-15T15:41:38Z",
+      "side": 1,
+      "message": "Q: should the ProtocolCoderToolSet and GsonProtocolCoderToolset be compacted into one, now that the Jackson one goes away.   It would make more sense to compact them, unless we think in the future there may be use for additional extensions of it.",
+      "revId": "710992a925b44fa9594d8f70bbc9f22a6f91d8ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
