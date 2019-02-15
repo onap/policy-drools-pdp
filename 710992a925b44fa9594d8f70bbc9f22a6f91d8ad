@@ -22,6 +22,30 @@
       "revId": "710992a925b44fa9594d8f70bbc9f22a6f91d8ad",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "64bbe0c5_fc97d5bc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-15T13:21:06Z",
+      "side": 1,
+      "message": "Indeed, but since it\u0027s in the commit message, I don\u0027t think it\u0027s something I\u0027d bother changing.",
+      "parentUuid": "19ffb7dd_65755dd7",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 1
+      },
+      "revId": "710992a925b44fa9594d8f70bbc9f22a6f91d8ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
