@@ -63,6 +63,24 @@
       "revId": "710992a925b44fa9594d8f70bbc9f22a6f91d8ad",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7170867_2460f2b2",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolset.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-15T16:12:57Z",
+      "side": 1,
+      "message": "I\u0027m unsure about this one.  I could imagine that we end up having to deal with xml instead of json for some API, but not sure.  I could also imagine that someone might want a gson coder that uses jackson behaviors, so at this point it kind of makes sense to me to keep this abstraction layer.",
+      "parentUuid": "4c98e553_a93edf28",
+      "revId": "710992a925b44fa9594d8f70bbc9f22a6f91d8ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
