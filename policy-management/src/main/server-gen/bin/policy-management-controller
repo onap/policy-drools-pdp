@@ -4,7 +4,7 @@
 # ============LICENSE_START=======================================================
 # ONAP POLICY
 # ================================================================================
-# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,6 +48,11 @@ function um_start() {
     if [ -e $_LOGS/$PNAME.out ]; then mv $_LOGS/$PNAME.out $_LOGS/$PNAME.out.1; fi
     if [ -e $_LOGS/$PNAME.err ]; then mv $_LOGS/$PNAME.err $_LOGS/$PNAME.err.1; fi
     CP=$(ls $_DIR/lib/*.jar | xargs -I X printf ":%s" X)
+
+    # pick up any new changes in the environment every time we start
+    source ${POLICY_HOME}/etc/profile.d/env.sh
+
+    ${POLICY_HOME}/bin/configure-maven
 
     # If 'system.properties' exists, convert it into JVM arguments.
     # Note that the following also handles property values with spaces.
