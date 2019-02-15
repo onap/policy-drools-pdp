@@ -37,8 +37,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +51,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
@@ -80,7 +79,8 @@ public class PolicyEngineManagerTest {
 
     private static final Object MY_EVENT = new Object();
 
-    private static final Gson encoder = new GsonBuilder().disableHtmlEscaping().create();
+    private static final GsonTestUtils gson = new GsonMgmtTestBuilder().addTopicSourceMock().addTopicSinkMock()
+                    .addHttpServletServerMock().build();
 
     private Properties properties;
     private PolicyEngineFeatureAPI prov1;
@@ -186,25 +186,31 @@ public class PolicyEngineManagerTest {
         when(controllerFactory.get(CONTROLLER2)).thenReturn(controller2);
         // do NOT return controller3 or controller4
 
+        when(server1.getPort()).thenReturn(1001);
         when(server1.waitedStart(anyLong())).thenReturn(true);
         when(server1.stop()).thenReturn(true);
 
+        when(server2.getPort()).thenReturn(1002);
         when(server2.waitedStart(anyLong())).thenReturn(true);
         when(server2.stop()).thenReturn(true);
 
         when(serverFactory.build(any())).thenReturn(servers);
 
+        when(source1.getTopic()).thenReturn("source1-topic");
         when(source1.start()).thenReturn(true);
         when(source1.stop()).thenReturn(true);
 
+        when(source2.getTopic()).thenReturn("source2-topic");
         when(source2.start()).thenReturn(true);
         when(source2.stop()).thenReturn(true);
 
+        when(sink1.getTopic()).thenReturn("sink1-topic");
         when(sink1.start()).thenReturn(true);
         when(sink1.stop()).thenReturn(true);
         when(sink1.send(any())).thenReturn(true);
         when(sink1.getTopicCommInfrastructure()).thenReturn(CommInfrastructure.NOOP);
 
+        when(sink2.getTopic()).thenReturn("sink2-topic");
         when(sink2.start()).thenReturn(true);
         when(sink2.stop()).thenReturn(true);
 
@@ -261,9 +267,15 @@ public class PolicyEngineManagerTest {
         pdpConfig.getControllers().add(config4);
         pdpConfig.setEntity(PdpdConfiguration.CONFIG_ENTITY_CONTROLLER);
 
-        pdpConfigJson = encoder.toJson(pdpConfig);
+        pdpConfigJson = gson.gsonEncode(pdpConfig);
 
         mgr = new PolicyEngineManagerImpl();
+    }
+
+    @Test
+    public void testSerialize() {
+        mgr.configure(properties);
+        gson.compareGson(mgr, PolicyEngineManagerTest.class);
     }
 
     @Test

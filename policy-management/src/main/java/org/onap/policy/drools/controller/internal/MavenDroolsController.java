@@ -36,6 +36,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
+import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
@@ -67,6 +69,7 @@ public class MavenDroolsController implements DroolsController {
      * Policy Container, the access object to the policy-core layer.
      */
     @JsonIgnore
+    @GsonJsonIgnore
     protected final PolicyContainer policyContainer;
 
     /**
@@ -646,12 +649,14 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @JsonIgnore
+    @GsonJsonIgnore
     @Override
     public PolicyContainer getContainer() {
         return this.policyContainer;
     }
 
     @JsonProperty("sessions")
+    @GsonJsonProperty("sessions")
     @Override
     public List<String> getSessionNames() {
         return getSessionNames(true);
@@ -681,6 +686,7 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @JsonProperty("sessionCoordinates")
+    @GsonJsonProperty("sessionCoordinates")
     @Override
     public List<String> getCanonicalSessionNames() {
         return getSessionNames(false);
