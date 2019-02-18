@@ -82,9 +82,8 @@ public class Serializer {
      * 
      * @param filter filter to be encoded
      * @return the filter, serialized as a JSON string
-     * @throws JsonParseException if it cannot be de-serialized
      */
-    public String encodeFilter(Map<String, Object> filter) throws JsonParseException {
+    public String encodeFilter(Map<String, Object> filter) {
         return gson.toJson(filter);
     }
 
@@ -93,9 +92,8 @@ public class Serializer {
      * 
      * @param msg message to be encoded
      * @return the message, serialized as a JSON string
-     * @throws JsonParseException if it cannot be de-serialized
      */
-    public String encodeMsg(Message msg) throws JsonParseException {
+    public String encodeMsg(Message msg) {
         JsonElement jsonEl = gson.toJsonTree(msg);
 
         String type = class2type.get(msg.getClass());
@@ -113,9 +111,8 @@ public class Serializer {
      * 
      * @param msg JSON string representing the message
      * @return the message
-     * @throws JsonParseException if it cannot be serialized
      */
-    public Message decodeMsg(String msg) throws JsonParseException {
+    public Message decodeMsg(String msg) {
         JsonElement jsonEl = gson.fromJson(msg, JsonElement.class);
 
         JsonElement typeEl = jsonEl.getAsJsonObject().get(TYPE_FIELD);
