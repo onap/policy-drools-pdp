@@ -22,6 +22,30 @@
       "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3f483c39_80a678ba",
+        "filename": "pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T16:31:55Z",
+      "side": 1,
+      "message": "I think we are good with this library, I looked at it in the past (and I\u0027ve been in closed contact with Daniel for this work).  The library is used by several ONAP components, including DCAE, and AAI. and there\u0027s no violations in Nexus IQ for those components.",
+      "parentUuid": "0ccb7ef8_d5411faa",
+      "range": {
+        "startLine": 125,
+        "startChar": 13,
+        "endLine": 129,
+        "endChar": 24
+      },
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
