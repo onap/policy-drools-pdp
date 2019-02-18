@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ccb7ef8_d5411faa",
+        "filename": "pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-02-18T16:13:06Z",
+      "side": 1,
+      "message": "Has this been checked for CVE or Sonatype issues?",
+      "range": {
+        "startLine": 125,
+        "startChar": 13,
+        "endLine": 129,
+        "endChar": 24
+      },
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
