@@ -2,6 +2,108 @@
   "comments": [
     {
       "key": {
+        "uuid": "b9e73fd1_3248717d",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T19:26:05Z",
+      "side": 1,
+      "message": "I think the class \u003c-\u003e filter mapping is 1 to 1, is this correct and is there a reason to keep the list?",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ab6b2ea_44a8f9c6",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T19:26:05Z",
+      "side": 1,
+      "message": "I think here if an expression is not path means that everything passes through, not sure if you can default it to a this.rule\" that takes everything.",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b45c3641_7141c496",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T19:26:05Z",
+      "side": 1,
+      "message": "not sure if this is needed and could get by just with setRule only.",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8393eb31_44abc5eb",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T19:26:05Z",
+      "side": 1,
+      "message": "I think this method can call the one below with \n\nfilter(json, this.rule) and can remove the body of this method to reuse the code.",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b02d317b_62e62f4b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T19:26:05Z",
+      "side": 1,
+      "message": "could this.rule be empty here per allowing in the constructor and deleteRule?",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55f953ba_2ca69527",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-18T19:26:05Z",
+      "side": 1,
+      "message": "can expression be null?",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ccb7ef8_d5411faa",
         "filename": "pom.xml",
         "patchSetId": 5
