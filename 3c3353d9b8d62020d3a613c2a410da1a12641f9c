@@ -140,6 +140,24 @@
     },
     {
       "key": {
+        "uuid": "46a0ad93_cae8c28e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-19T19:12:51Z",
+      "side": 1,
+      "message": "or just return true if expression \u003d\u003d null\n\ncould do that at the top of the method and avoid using jsonpath altogether in that case",
+      "parentUuid": "8ee587c7_00e2c724",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ccb7ef8_d5411faa",
         "filename": "pom.xml",
         "patchSetId": 5
