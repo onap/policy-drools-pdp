@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "a06522bd_382a5578",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T22:49:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6ab6b2ea_44a8f9c6",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b45c3641_7141c496",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
         "patchSetId": 5
@@ -83,6 +101,24 @@
       "writtenOn": "2019-02-18T19:26:05Z",
       "side": 1,
       "message": "not sure if this is needed and could get by just with setRule only.",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9bfe1b19_0a3455e9",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T22:49:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b45c3641_7141c496",
       "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -106,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "ae734b0b_693bcd06",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T22:49:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8393eb31_44abc5eb",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b02d317b_62e62f4b",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
         "patchSetId": 5
@@ -117,6 +171,24 @@
       "writtenOn": "2019-02-18T19:26:05Z",
       "side": 1,
       "message": "could this.rule be empty here per allowing in the constructor and deleteRule?",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15692e68_2c220744",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T22:49:46Z",
+      "side": 1,
+      "message": "Updated the constructor and setRule() to set the rule to match anything if nothing is passed in so this is no longer an issue.",
+      "parentUuid": "b02d317b_62e62f4b",
       "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -206,6 +278,24 @@
       "side": 1,
       "message": "that\u0027s fine with me, too, though obviously not as efficient.  In that case, I assume we\u0027d just let java throw NPE if expression\u003dnull (which is pretty standard)",
       "parentUuid": "f43467bf_8ada7f33",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e57affd_d6636764",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T22:49:46Z",
+      "side": 1,
+      "message": "The constructor (except for the default constructor for serialization) and setRule() now ensure that the rule is never null and checks for json and expression were added to the static method to ensure other areas of the code base that invoke this method do not misuse it.",
+      "parentUuid": "3793bf2c_16d5dc2d",
       "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
