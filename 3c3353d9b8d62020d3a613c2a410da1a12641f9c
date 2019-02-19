@@ -176,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "f43467bf_8ada7f33",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-19T20:01:41Z",
+      "side": 1,
+      "message": "I agree that checking the expression \u003d\u003d null is good here since this is static method can be called from anywhere with an any arbitrary \"expression\" including null.\n\nStill for your consideration, could have \".*\" in the constructor too, and do another check for it before invoking jsonpath library as well.    The nice thing of always having a value attached to the jsonprotocolfilter regardless (in this case the \".*\" matches-all-wildcard) is that you don\u0027t have to do any checks for null and may simplify a little the code.  Not sure if in this case how much is the saving so it is for your consideration.",
+      "parentUuid": "46a0ad93_cae8c28e",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ccb7ef8_d5411faa",
         "filename": "pom.xml",
         "patchSetId": 5
