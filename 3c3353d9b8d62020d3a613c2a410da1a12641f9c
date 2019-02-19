@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8058f532_12c75ba5",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T18:56:25Z",
+      "side": 1,
+      "message": "I was thinking along the lines of every event class can have its own filter. So if you had a property like \"topic.events\u003dorg.foo,org.bar\" you could have \"topic.org.foo.filter\u003d...\" and/or \"topic.org.bar.filter\u003d...\". I don\u0027t have any issues with making a class agnostic filter per topic and getting rid of the list if that is preferred.",
+      "parentUuid": "b9e73fd1_3248717d",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6ab6b2ea_44a8f9c6",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
         "patchSetId": 5
@@ -98,6 +116,24 @@
       "writtenOn": "2019-02-18T19:26:05Z",
       "side": 1,
       "message": "can expression be null?",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8ee587c7_00e2c724",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-19T18:56:25Z",
+      "side": 1,
+      "message": "Yes it can. The original intent was that if there are no rules then there\u0027s no need to call any filtering. I originally thought there was a check within the ProtocolCoderToolSet filter() method that checks if there are rules and if there\u0027s none then it skips the filter. However, after rechecking per your comments the hasRules() check is for deciding to return the first decoder. I\u0027ll update the constructors to add a \".*\" match.",
+      "parentUuid": "55f953ba_2ca69527",
       "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
