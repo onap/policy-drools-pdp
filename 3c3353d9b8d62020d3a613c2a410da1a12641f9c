@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "6f6482fb_3b07a9b0",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-19T19:42:29Z",
+      "side": 1,
+      "message": "What you have is good Daniel, I misread, the 1\u003c-\u003e0,1 mapping from class to filter is preserved.  No comment.",
+      "parentUuid": "8058f532_12c75ba5",
+      "revId": "3c3353d9b8d62020d3a613c2a410da1a12641f9c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6ab6b2ea_44a8f9c6",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
         "patchSetId": 5
