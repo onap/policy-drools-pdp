@@ -4,7 +4,7 @@
 # ============LICENSE_START=======================================================
 # ONAP POLICY
 # ================================================================================
-# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -157,7 +157,6 @@ CONFIG=${POLICY_HOME}/config
 BIN=${POLICY_HOME}/bin
 DB=${POLICY_HOME}/etc/db/migration
 FEATURES=${POLICY_HOME}/features
-PROFILED=${POLICY_HOME}/etc/profile.d
 
 if [[ ! ( -d "${LIB}" && -x "${LIB}" ) ]]; then
 	echo "error: no ${LIB} directory"
@@ -189,7 +188,6 @@ FEATURE_SQL="sql"
 
 UPGRADE_SQL_SUFFIX=".upgrade.sql"
 DOWNGRADE_SQL_SUFFIX=".downgrade.sql"
-ENVIRONMENT_SUFFIX=".environment"
 
 featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
 
@@ -416,16 +414,7 @@ function enableDbAnalysis()
 		echo "error: not existing configuration to contact the database"
 		return 2
 	fi
-	
-	# check DB set up
-	
-	source "${POLICY_HOME}"/etc/profile.d/base.conf
-	
-	if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
-		echo "error: database credentials do not exist" 
-		return 3
-	fi
-	
+
 	return 0
 }
 
@@ -471,7 +460,6 @@ function enableFeatureConfig()
 	fi
 	
 	local featureName="$1"
-	local featureInstallConf=feature-"${featureName}".conf
 	local featureConfigs featureConfigPath
 	
 	if [[ -z ${featureName} ]]; then
@@ -483,10 +471,6 @@ function enableFeatureConfig()
 	for featureConfigPath in ${featureConfigs}; do
 		ln -s -f "${featureConfigPath}" "${CONFIG}/"
 	done
-	
-	if [[ -f "${PROFILED}"/"${featureInstallConf}" ]]; then
-		ln -s -f "${PROFILED}"/"${featureInstallConf}" "${CONFIG}"/"${featureInstallConf}""${ENVIRONMENT_SUFFIX}"
-	fi
 }
 
 # ##########################################################
@@ -628,7 +612,7 @@ function enableFeatureArtifacts()
 
 	artifacts=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_ARTIFACTS}"/* 2> /dev/null)
 	for artifactPath in ${artifacts}; do
-	    deploy-artifact -f -a ${artifactPath}
+	    deploy-artifact -f -a "${artifactPath}"
 	done
 }
 
@@ -816,7 +800,6 @@ function disableFeatureConfig()
 	fi
 	
 	local featureName="$1"
-	local featureInstallConf=feature-"${featureName}".conf
 	local featureConfigs featureConfigPath
 	
 	if [[ -z ${featureName} ]]; then
@@ -829,8 +812,6 @@ function disableFeatureConfig()
 		configFileName=$(basename "${featureConfigPath}")
 		rm -f "${CONFIG}"/"${configFileName}" 2> /dev/null
 	done
-
-	rm -f "${CONFIG}"/"${featureInstallConf}""${ENVIRONMENT_SUFFIX}" 2> /dev/null
 }
 
 # ##########################################################

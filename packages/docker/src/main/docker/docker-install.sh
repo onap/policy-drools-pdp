@@ -622,9 +622,6 @@ EOF
 	fi
 
 	update_monitor $CONTROLLER_NAME
-
-	# save install configuration as an environment file
-	ln -s -f "${POLICY_HOME}/etc/profile.d/${BASE_CONF}" "${POLICY_HOME}/config/${BASE_CONF}.environment"
 }
 
 
