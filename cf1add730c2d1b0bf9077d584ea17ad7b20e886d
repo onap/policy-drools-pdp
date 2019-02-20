@@ -22,6 +22,23 @@
       "revId": "cf1add730c2d1b0bf9077d584ea17ad7b20e886d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d35cf0c4_74aff1d3",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-20T17:02:05Z",
+      "side": 1,
+      "message": "I think \n\nfilter.setRule(null); \n\nwill make it more clear",
+      "revId": "cf1add730c2d1b0bf9077d584ea17ad7b20e886d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
