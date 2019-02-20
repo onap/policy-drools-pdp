@@ -39,6 +39,24 @@
       "revId": "cf1add730c2d1b0bf9077d584ea17ad7b20e886d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a445ff0_9e4e94ae",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-20T18:14:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d35cf0c4_74aff1d3",
+      "revId": "cf1add730c2d1b0bf9077d584ea17ad7b20e886d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
