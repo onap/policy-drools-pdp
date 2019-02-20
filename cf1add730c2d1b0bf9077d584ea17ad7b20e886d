@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe7fed69_2895cdb8",
+        "filename": "policy-management/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2019-02-20T11:19:37Z",
+      "side": 1,
+      "message": "Need to check the license of this once the code is merged.",
+      "range": {
+        "startLine": 245,
+        "startChar": 1,
+        "endLine": 248,
+        "endChar": 21
+      },
+      "revId": "cf1add730c2d1b0bf9077d584ea17ad7b20e886d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
