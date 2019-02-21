@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ecf0a421_401cfe33",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-21T15:13:03Z",
+      "side": 1,
+      "message": "so if someone uses this constructor and subsequently invokes filter(), it will throw an IllegalArgumentException.  If that\u0027s ok, then this is fine - though could use a comment to that effect.  Otherwise, should probably invoke this(null) or setRule(null).",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48c43bce_9da133c4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-21T15:13:03Z",
+      "side": 1,
+      "message": "sonar won\u0027t like overwriting the value of \"rule\"; perhaps just use \"?:\" construct in line 84 instead?",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "84bb8811_e621e25f",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-21T15:13:03Z",
+      "side": 1,
+      "message": "looks identical to the previous test",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4e56b743_0327c7a0",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-21T15:13:03Z",
+      "side": 1,
+      "message": "sonar: extract constant string that appears in multiple places",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
