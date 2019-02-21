@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b7df6aea_90160961",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-21T16:56:24Z",
+      "side": 1,
+      "message": "Originally I was using this to test hasRule() being false. Adding the setFilter() call in the no args constructor basically makes it to where hasRule() is never null or empty so it can\u0027t ever return false. I can add it in no problem, but now the question is should we bother to have a hasRule() method if it is always going to be true? Or do we consider if \"[?($ \u003d~ /.*/)]\".equals(this.rule) returns true, hasRule() returns false since really there\u0027s no filtering that needs to be done since it will just match anything anyways. It is still technically a rule to match anything though so it might be non intuitive to do that. What do you all think?",
+      "parentUuid": "ecf0a421_401cfe33",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "48c43bce_9da133c4",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
         "patchSetId": 7
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "8559c79c_e64679bf",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-21T16:56:24Z",
+      "side": 1,
+      "message": "It\u0027s strange that my sonar linter is not flagging the issues you pointed out in your comments for the junits and this. I\u0027m guessing the policy projects must have custom sonar flagging exceptions that don\u0027t match the Eclipse SonarLint tool. I think there\u0027s a way to match the project settings that I tried setting up in the past unsuccessfully. I\u0027ll add a local variable to circumvent this. I try to avoid ternary operators for the sake of code readability.",
+      "parentUuid": "48c43bce_9da133c4",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "84bb8811_e621e25f",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
         "patchSetId": 7
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-21T15:13:03Z",
       "side": 1,
       "message": "looks identical to the previous test",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f6ef7f6_cb520530",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilterTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-21T16:56:24Z",
+      "side": 1,
+      "message": "Good catch, the one above should be new JsonProtocolFilter(\"\"). Per my comments about having a hasRule(), these tests may not be needed depending on the direction we decide to go.",
+      "parentUuid": "84bb8811_e621e25f",
       "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
