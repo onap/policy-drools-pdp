@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "89fbe148_42da245b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-21T18:44:20Z",
+      "side": 1,
+      "message": "I think it is easier to think, that provided that you have a \"JsonProtocolFilter\" object, it means that you have a filter of some sort, honoring its class name (so the no arg. constructor assigns has the this.rules\u003d\"[?($ \u003d~ /.*/)]\" at construction time.  The invariant is that this.rules has a value at all times.   A JsonProtocolFilter object that has no filter is less intuitive I think, and triggering handling having more \"if\"s I think.\n\nThe default filter with no arg constructor is this filter \"ACCEPT-ALL\" as described above.\n\nThe hasFilter as Daniel mentioned is not needed if going this way.\n\nThe \"[?($ \u003d~ /.*/)]\" can be put into a constant and check if this.rules is equal to that in JsonProtocolFilter.accept() see below, before calling filter() to avoid invoking the library if unnecessary.",
+      "parentUuid": "b7df6aea_90160961",
+      "revId": "a32cbb1fb56df9af019b77d703a5de886336811d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "48c43bce_9da133c4",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/JsonProtocolFilter.java",
         "patchSetId": 7
