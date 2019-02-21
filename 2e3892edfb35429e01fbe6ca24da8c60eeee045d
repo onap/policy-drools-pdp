@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "329ad2e1_08d30283",
+        "filename": "feature-pooling-dmaap/src/main/feature/config/feature-pooling-dmaap.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-21T15:20:20Z",
+      "side": 1,
+      "message": "2018-2019",
+      "revId": "2e3892edfb35429e01fbe6ca24da8c60eeee045d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
