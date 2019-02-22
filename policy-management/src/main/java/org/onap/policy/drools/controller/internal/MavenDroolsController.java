@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,7 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Maven-based Drools Controller that interacts with the 
+ * Maven-based Drools Controller that interacts with the
  * policy-core PolicyContainer and PolicySession to manage
  * Drools containers instantiated using Maven.
  */
@@ -73,7 +73,7 @@ public class MavenDroolsController implements DroolsController {
     protected final PolicyContainer policyContainer;
 
     /**
-     * alive status of this drools controller, 
+     * alive status of this drools controller,
      * reflects invocation of start()/stop() only.
      */
     protected volatile boolean alive = false;
@@ -82,7 +82,7 @@ public class MavenDroolsController implements DroolsController {
      * locked status of this drools controller,
      * reflects if i/o drools related operations are permitted,
      * more specifically: offer() and deliver().
-     * It does not affect the ability to start and stop 
+     * It does not affect the ability to start and stop
      * underlying drools infrastructure
      */
     protected volatile boolean locked = false;
@@ -116,17 +116,17 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * Expanded version of the constructor.
-     * 
+     *
      * @param groupId maven group id
      * @param artifactId maven artifact id
      * @param version maven version
      * @param decoderConfigurations list of topic -> decoders -> filters mapping
      * @param encoderConfigurations list of topic -> encoders -> filters mapping
-     * 
+     *
      * @throws IllegalArgumentException invalid arguments passed in
      */
-    public MavenDroolsController(String groupId, 
-            String artifactId, 
+    public MavenDroolsController(String groupId,
+            String artifactId,
             String version,
             List<TopicCoderFilterConfiguration> decoderConfigurations,
             List<TopicCoderFilterConfiguration> encoderConfigurations) {
@@ -153,7 +153,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * init encoding/decoding configuration.
-     * 
+     *
      * @param decoderConfigurations list of topic -> decoders -> filters mapping
      * @param encoderConfigurations list of topic -> encoders -> filters mapping
      */
@@ -172,7 +172,7 @@ public class MavenDroolsController implements DroolsController {
     @Override
     public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
             List<TopicCoderFilterConfiguration> decoderConfigurations,
-            List<TopicCoderFilterConfiguration> encoderConfigurations) 
+            List<TopicCoderFilterConfiguration> encoderConfigurations)
                     throws LinkageError {
 
         logger.info("updating version -> [{}:{}:{}]", newGroupId, newArtifactId, newVersion);
@@ -189,27 +189,27 @@ public class MavenDroolsController implements DroolsController {
             throw new IllegalArgumentException("Missing maven version coordinate");
         }
 
-        if (newGroupId.equalsIgnoreCase(DroolsController.NO_GROUP_ID) 
-                || newArtifactId.equalsIgnoreCase(DroolsController.NO_ARTIFACT_ID) 
+        if (newGroupId.equalsIgnoreCase(DroolsController.NO_GROUP_ID)
+                || newArtifactId.equalsIgnoreCase(DroolsController.NO_ARTIFACT_ID)
                 || newVersion.equalsIgnoreCase(DroolsController.NO_VERSION)) {
-            throw new IllegalArgumentException("BRAINLESS maven coordinates provided: " 
-                    + newGroupId + ":" + newArtifactId + ":" 
+            throw new IllegalArgumentException("BRAINLESS maven coordinates provided: "
+                    + newGroupId + ":" + newArtifactId + ":"
                     + newVersion);
         }
 
         if (newGroupId.equalsIgnoreCase(this.getGroupId())
                 && newArtifactId.equalsIgnoreCase(this.getArtifactId())
                 && newVersion.equalsIgnoreCase(this.getVersion())) {
-            logger.warn("Al in the right version: " + newGroupId + ":" 
+            logger.warn("Al in the right version: " + newGroupId + ":"
                     + newArtifactId + ":" +  newVersion + " vs. " + this);
             return;
         }
 
-        if (!newGroupId.equalsIgnoreCase(this.getGroupId()) 
+        if (!newGroupId.equalsIgnoreCase(this.getGroupId())
                 || !newArtifactId.equalsIgnoreCase(this.getArtifactId())) {
             throw new IllegalArgumentException(
-                    "Group ID and Artifact ID maven coordinates must be identical for the upgrade: " 
-                    + newGroupId + ":" + newArtifactId + ":" 
+                    "Group ID and Artifact ID maven coordinates must be identical for the upgrade: "
+                    + newGroupId + ":" + newArtifactId + ":"
                     + newVersion + " vs. " + this);
         }
 
@@ -238,10 +238,10 @@ public class MavenDroolsController implements DroolsController {
      * initialize decoders for all the topics supported by this controller
      * Note this is critical to be done after the Policy Container is
      * instantiated to be able to fetch the corresponding classes.
-     * 
+     *
      * @param coderConfigurations list of topic -> decoders -> filters mapping
      */
-    protected void initCoders(List<TopicCoderFilterConfiguration> coderConfigurations, 
+    protected void initCoders(List<TopicCoderFilterConfiguration> coderConfigurations,
             boolean decoder) {
 
         if (logger.isInfoEnabled()) {
@@ -257,7 +257,7 @@ public class MavenDroolsController implements DroolsController {
             String topic = coderConfig.getTopic();
 
             CustomGsonCoder customGsonCoder = coderConfig.getCustomGsonCoder();
-            if (coderConfig.getCustomGsonCoder() != null 
+            if (coderConfig.getCustomGsonCoder() != null
                     && coderConfig.getCustomGsonCoder().getClassContainer() != null
                     && !coderConfig.getCustomGsonCoder().getClassContainer().isEmpty()) {
 
@@ -281,7 +281,7 @@ public class MavenDroolsController implements DroolsController {
                 String potentialCodedClass = coderFilter.getCodedClass();
                 JsonProtocolFilter protocolFilter = coderFilter.getFilter();
 
-                if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(), 
+                if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(),
                         potentialCodedClass)) {
                     throw makeRetrieveEx(potentialCodedClass);
                 } else {
@@ -378,7 +378,7 @@ public class MavenDroolsController implements DroolsController {
 
         if (modelHash == this.modelClassLoaderHash) {
             if (logger.isInfoEnabled()) {
-                logger.info(coderClass.getCanonicalName() 
+                logger.info(coderClass.getCanonicalName()
                         + this + " class loader matches original drools controller rules classloader "
                         + coderClass.getClassLoader());
             }
@@ -386,7 +386,7 @@ public class MavenDroolsController implements DroolsController {
         } else {
             if (logger.isWarnEnabled()) {
                 logger.warn(this + coderClass.getCanonicalName() + " class loaders don't match  "
-                        + coderClass.getClassLoader() + " vs " 
+                        + coderClass.getClassLoader() + " vs "
                         + this.policyContainer.getClassLoader());
             }
             return false;
@@ -498,11 +498,11 @@ public class MavenDroolsController implements DroolsController {
 
         // 1. Now, check if this topic has a decoder:
 
-        if (!EventProtocolCoder.manager.isDecodingSupported(this.getGroupId(), 
-                this.getArtifactId(), 
+        if (!EventProtocolCoder.manager.isDecodingSupported(this.getGroupId(),
+                this.getArtifactId(),
                 topic)) {
 
-            logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", this, 
+            logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", this,
                     topic, this.getGroupId(), this.getArtifactId());
             return true;
         }
@@ -511,16 +511,16 @@ public class MavenDroolsController implements DroolsController {
 
         Object anEvent;
         try {
-            anEvent = EventProtocolCoder.manager.decode(this.getGroupId(), 
-                    this.getArtifactId(), 
-                    topic, 
+            anEvent = EventProtocolCoder.manager.decode(this.getGroupId(),
+                    this.getArtifactId(),
+                    topic,
                     event);
         } catch (UnsupportedOperationException uoe) {
-            logger.debug("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 
+            logger.debug("{}: DECODE FAILED: {} <- {} because of {}", this, topic,
                     event, uoe.getMessage(), uoe);
             return true;
         } catch (Exception e) {
-            logger.warn("{}: DECODE FAILED: {} <- {} because of {}", this, topic, 
+            logger.warn("{}: DECODE FAILED: {} <- {} because of {}", this, topic,
                     event, e.getMessage(), e);
             return true;
         }
@@ -530,12 +530,12 @@ public class MavenDroolsController implements DroolsController {
         }
 
         // increment event count for Nagios monitoring
-        PdpJmx.getInstance().updateOccured();  
+        PdpJmx.getInstance().updateOccured();
 
         // Broadcast
 
         if (logger.isInfoEnabled()) {
-            logger.info("{} BROADCAST-INJECT of {} FROM {} INTO {}", 
+            logger.info("{} BROADCAST-INJECT of {} FROM {} INTO {}",
                     this, event, topic, this.policyContainer.getName());
         }
 
@@ -575,7 +575,19 @@ public class MavenDroolsController implements DroolsController {
         if (logger.isInfoEnabled()) {
             logger.info("{}DELIVER: {} FROM {} TO {}", this, event, this, sink);
         }
-        
+
+        for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+            try {
+                if (feature.beforeDeliver(this, sink, event)) {
+                    return true;
+                }
+            }
+            catch (Exception e) {
+                logger.error("{}: feature {} before-deliver failure because of {}", this, feature.getClass().getName(),
+                        e.getMessage(), e);
+            }
+        }
+
         if (sink == null) {
             throw new IllegalArgumentException(this +  " invalid sink");
         }
@@ -583,7 +595,7 @@ public class MavenDroolsController implements DroolsController {
         if (event == null) {
             throw new IllegalArgumentException(this +  " invalid event");
         }
-        
+
         if (this.locked) {
             throw new IllegalStateException(this +  " is locked");
         }
@@ -599,7 +611,21 @@ public class MavenDroolsController implements DroolsController {
             this.recentSinkEvents.add(json);
         }
 
-        return sink.send(json);
+        boolean success = sink.send(json);
+
+        for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+            try {
+                if (feature.afterDeliver(this, sink, event, json, success)) {
+                    return true;
+                }
+            }
+            catch (Exception e) {
+                logger.error("{}: feature {} after-deliver failure because of {}", this, feature.getClass().getName(),
+                        e.getMessage(), e);
+            }
+        }
+
+        return success;
 
     }
 
@@ -620,7 +646,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * Get model class loader hash.
-     * 
+     *
      * @return the modelClassLoaderHash
      */
     public int getModelClassLoaderHash() {
@@ -664,7 +690,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * get session names.
-     * 
+     *
      * @param abbreviated true for the short form, otherwise the long form
      * @return session names
      */
@@ -699,7 +725,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * provides the underlying core layer container sessions.
-     * 
+     *
      * @return the attached Policy Container
      */
     protected List<PolicySession> getSessions() {
@@ -710,7 +736,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * provides the underlying core layer container session with name sessionName.
-     * 
+     *
      * @param sessionName session name
      * @return the attached Policy Container
      * @throws IllegalArgumentException when an invalid session name is provided
@@ -783,7 +809,7 @@ public class MavenDroolsController implements DroolsController {
             throw new IllegalArgumentException("Invalid Class Name: " + className);
         }
 
-        Class<?> factClass = 
+        Class<?> factClass =
                 ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), className);
         if (factClass == null) {
             throw new IllegalArgumentException("Class cannot be fetched in model's classloader: " + className);
@@ -810,7 +836,7 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @Override
-    public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, 
+    public List<Object> factQuery(String sessionName, String queryName, String queriedEntity,
             boolean delete, Object... queryParams) {
         if (sessionName == null || sessionName.isEmpty()) {
             throw invalidSessNameEx(sessionName);
@@ -864,7 +890,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * Get recent source events.
-     * 
+     *
      * @return the recentSourceEvents
      */
     @Override
@@ -877,7 +903,7 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * Get recent sink events.
-     * 
+     *
      * @return the recentSinkEvents
      */
     @Override
