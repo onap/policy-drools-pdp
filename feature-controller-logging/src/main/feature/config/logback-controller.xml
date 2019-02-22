@@ -1,0 +1,81 @@
+<!--
+  ============LICENSE_START=======================================================
+  feature-controller-logging
+  ================================================================================
+  Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+  ================================================================================
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  ============LICENSE_END=========================================================
+  -->
+
+<!--
+  The logger configurations in this file are for each individual control loop
+  to have their own network logger for topic traffic. This is an extension of
+  logback.xml or logback-eelf.xml.
+
+  NOTE: Each logger MUST contain the same name as the control loop's controller.  
+-->
+<included>
+
+    <property name="controllerLogDir" value="${POLICY_LOGS}" />
+
+    <property name="amsterdamLog" value="amsterdam-network" />
+    <property name="casablancaLog" value="casablanca-network" />
+
+    <property name="controllerPattern" value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%t]%m%n" />
+
+    <!-- Amsterdam Network Logging Properties -->
+    <appender name="AmsterdamOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${controllerLogDir}/${amsterdamLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${controllerLogDir}/${amsterdamLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${controllerPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AsyncAmsterdamOut" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="AmsterdamOut" />
+    </appender>
+
+    <logger name="amsterdam" level="INFO" additivity="false">
+        <appender-ref ref="AsyncVuspOut" />
+    </logger>
+
+    <!-- Casablanca Network Logging Properties -->
+    <appender name="CasablancaOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${controllerLogDir}/${casablancaLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${controllerLogDir}/${casablancaLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${controllerPattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="AsyncCasablancaOut" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CasablancaOut" />
+    </appender>
+
+    <logger name="casablanca" level="INFO" additivity="false">
+        <appender-ref ref="AsyncCasablancaOut" />
+    </logger>
+
+</included>
