@@ -893,6 +893,11 @@ public class FeatureTest {
         }
 
         @Override
+        public String getEffectiveTopic() {
+            return INTERNAL_TOPIC;
+        }
+
+        @Override
         public CommInfrastructure getTopicCommInfrastructure() {
             throw new UnsupportedOperationException("topic protocol");
         }
