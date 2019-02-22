@@ -695,7 +695,7 @@ class PolicyEngineManager implements PolicyEngine {
                     throw new IllegalArgumentException(controllerName + " is invalid");
                 }
 
-                logger.warn("controller being recovered. {} Reset controller's bad maven coordinates to brainless", 
+                logger.warn("controller being recovered. {} Reset controller's bad maven coordinates to brainless",
                         controllerName);
 
                 /*
@@ -918,7 +918,7 @@ class PolicyEngineManager implements PolicyEngine {
                 logger.error("{}: cannot start http-server {} because of {}", this, httpServer, e.getMessage(), e);
             }
         }
-        
+
         // stop JMX?
 
         /* policy-engine dispatch pre stop hook */
@@ -1003,7 +1003,7 @@ class PolicyEngineManager implements PolicyEngine {
         exitThread.interrupt();
         logger.info("{}: normal termination", this);
     }
-    
+
     /**
      * Thread that shuts down http servers.
      */
@@ -1038,13 +1038,13 @@ class PolicyEngineManager implements PolicyEngine {
                 doExit(0);
             }
         }
-        
+
         // these may be overridden by junit tests
 
         protected void doSleep(long sleepMs) throws InterruptedException {
             Thread.sleep(sleepMs);
         }
-        
+
         protected void doExit(int code) {
             System.exit(code);
         }
@@ -1245,12 +1245,37 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     public void onTopicEvent(CommInfrastructure commType, String topic, String event) {
+        /* policy-engine pre topic event hook */
+        for (final PolicyEngineFeatureAPI feature : getFeatureProviders()) {
+            try {
+                if (feature.beforeOnTopicEvent(this, commType, topic, event)) {
+                    return;
+                }
+            } catch (final Exception e) {
+                logger.error("{}: feature {} beforeOnTopicEvent failure on event {} because of {}", this,
+                        feature.getClass().getName(), event, e.getMessage(), e);
+            }
+        }
+
         /* configuration request */
+        PdpdConfiguration configuration = null;
         try {
-            final PdpdConfiguration configuration = this.decoder.fromJson(event, PdpdConfiguration.class);
+            configuration = this.decoder.fromJson(event, PdpdConfiguration.class);
             this.configure(configuration);
         } catch (final Exception e) {
             logger.error("{}: configuration-error due to {} because of {}", this, event, e.getMessage(), e);
+        }
+
+        /* policy-engine after topic event hook */
+        for (final PolicyEngineFeatureAPI feature : getFeatureProviders()) {
+            try {
+                if (feature.afterOnTopicEvent(this, configuration, commType, topic, event)) {
+                    return;
+                }
+            } catch (final Exception e) {
+                logger.error("{}: feature {} afterOnTopicEvent failure on event {} because of {}", this,
+                        feature.getClass().getName(), event, e.getMessage(), e);
+            }
         }
     }
 
