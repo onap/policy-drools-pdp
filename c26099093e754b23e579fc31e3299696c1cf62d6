@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac8efdc0_9d3cc167",
+        "filename": "feature-controller-logging/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-25T14:14:03Z",
+      "side": 1,
+      "message": "tabs \u003d\u003e spaces\n\nsame comment applies elsewhere in this and the other xml files",
+      "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebb17011_0c9614f9",
+        "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-25T14:14:03Z",
+      "side": 1,
+      "message": "is it possible that get() returns null?  if so, is this even something we need to worry about?",
+      "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b6e973c_5c5e9b47",
+        "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-25T14:14:03Z",
+      "side": 1,
+      "message": "true \u003d\u003e false?",
+      "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d958901e_e2c75e44",
+        "filename": "feature-controller-logging/src/test/resources/test.drl",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-25T14:14:03Z",
+      "side": 1,
+      "message": "tabs \u003d\u003espaces\n\nsame comment applies elsewhere",
+      "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "498139d2_6f0dbe66",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-25T14:14:03Z",
+      "side": 1,
+      "message": "suggestion: we continue to clone this group of lines for each new method in an API.  Wonder if we could make a common method, maybe in policy-core (or policy-common/util) that can be used instead?",
+      "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
