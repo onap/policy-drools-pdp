@@ -84,6 +84,24 @@
       "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "857a97e9_4c3d22d8",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-25T23:34:33Z",
+      "side": 1,
+      "message": "never mind.  While it can be done, it requires some closures to be created, which incurs a performance penalty - given how often this may be invoked, it\u0027s probably best to leave it as is.",
+      "parentUuid": "498139d2_6f0dbe66",
+      "revId": "c26099093e754b23e579fc31e3299696c1cf62d6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
