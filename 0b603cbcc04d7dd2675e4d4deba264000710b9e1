@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c9ef1cf_379aafe6",
+        "filename": "feature-controller-logging/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "I think transitive is invalid configuration parameter, does nothing can you verify (I think it may come from copy/paste from others, but I think it is a made up parameter.   I think excludeTransitive is the one that counts, but please verify first.",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f738a2cc_6d8b1c46",
+        "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "I guess amsterdam and casablanca belongs to drools applications, and not here.  All that is deliverately separated as drools-pdp is generic and drools-applications is domain specific.   amsterdam and casablanca are control loop domain specific apps. \n\nI guess I need to ask to move casablanca and amsterdam knowledge to the features-casablanca and feature-amsterdam in the drools-applications.",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b50aa3a_01d1b7d7",
+        "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "AsyncVuspOut does not exist",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b72e87a7_5d16a5ec",
+        "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "I don\u0027t think logger.debug should be done here, if any it should go into the other non-feature classes to trace the flow.   Here after you provide your specific customization for the feature, I think you\u0027re done.",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a86f5695_4ed40b7e",
+        "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "Same here - logger.error should be tracked by the main (non-feature) code.",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "afff08e8_009af4d7",
+        "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "same comment as before for logger.debug",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8788d362_1b557a2f",
+        "filename": "feature-controller-logging/src/test/java/org/onap/policy/drools/controller/logging/ControllerLoggingTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "can you use noop sink to avoid the exceptions or verbosity?",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be6958e2_a081a585",
+        "filename": "feature-controller-logging/src/test/java/org/onap/policy/drools/controller/logging/ControllerLoggingTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "same question?",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e230a17_a3295487",
+        "filename": "feature-controller-logging/src/test/resources/test.pom",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "Try to match it against the current version pdp-d version 1.4.0-SNAPSHOT for easier identification.",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "af0bfc01_64f41934",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T17:35:14Z",
+      "side": 1,
+      "message": "I take it that because optional is true, in the case that logback-controller.xml is not present, it will be ignored.   Can you confirm?",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
