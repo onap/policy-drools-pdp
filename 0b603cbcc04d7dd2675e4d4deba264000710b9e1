@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "181dc12f_7f08365d",
+        "filename": "feature-controller-logging/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-26T18:31:29Z",
+      "side": 1,
+      "message": "You are correct, I will remove.",
+      "parentUuid": "3c9ef1cf_379aafe6",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f738a2cc_6d8b1c46",
         "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "2827c08d_e4d90534",
+        "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-26T18:31:29Z",
+      "side": 1,
+      "message": "So is the ask to have multiple included logback configurations per controller rather than one logback-controller file? Example: logback-casablance.xml and logback-amsterdam.xml rather than a logback-controller.xml that contains the configurations for those loggers? The controller specific logback files would be apart of the feature-amsterdam and feature-casablanca modules in drools-applications if I am understanding correctly.",
+      "parentUuid": "f738a2cc_6d8b1c46",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b50aa3a_01d1b7d7",
         "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-26T17:35:14Z",
       "side": 1,
       "message": "AsyncVuspOut does not exist",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ea57796_1a07698f",
+        "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-26T18:31:29Z",
+      "side": 1,
+      "message": "Good catch!",
+      "parentUuid": "7b50aa3a_01d1b7d7",
       "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -166,6 +220,24 @@
       "writtenOn": "2019-02-26T17:35:14Z",
       "side": 1,
       "message": "I take it that because optional is true, in the case that logback-controller.xml is not present, it will be ignored.   Can you confirm?",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3162b18f_8079814d",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-26T18:31:29Z",
+      "side": 1,
+      "message": "Correct. Logback won\u0027t throw errors for included configuration files that are marked optional. This has been tested.",
+      "parentUuid": "af0bfc01_64f41934",
       "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
