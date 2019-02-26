@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "1140b5e6_416cee10",
+        "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-02-26T19:12:12Z",
+      "side": 1,
+      "message": "I think ideally it should go there.   But I realize the request may be not straightforward to satisfy.   The issue here is that applications stuff should not go into drools-pdp core.   Do you have any ideas in mind?",
+      "parentUuid": "2827c08d_e4d90534",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b50aa3a_01d1b7d7",
         "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
         "patchSetId": 5
