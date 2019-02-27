@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Liam Fallon <liam.fallon@est.tech>
+Code-Review+2: Jorge Hernandez <jorge.hernandez-herrero@att.com>
+Submitted-by: Jorge Hernandez <jorge.hernandez-herrero@att.com>
+Submitted-at: Wed, 27 Feb 2019 13:54:38 +0000
+Reviewed-on: https://gerrit.onap.org/r/79218
+Project: policy/drools-pdp
+Branch: refs/heads/casablanca
