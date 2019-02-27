@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8499dc48_09908a84",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-02-27T17:15:32Z",
+      "side": 1,
+      "message": "update license",
+      "revId": "5fc7ac33f614828e7d683b498061a5fa5bd7c103",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
