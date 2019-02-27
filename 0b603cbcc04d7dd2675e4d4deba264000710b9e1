@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "f858bc6c_0b9836cb",
+        "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-02-27T14:42:34Z",
+      "side": 1,
+      "message": "That makes sense. I can think of two solutions off the top of my head. \n\nOption 1 would be like I was stating above. The controller features from the drools applications repo would install it\u0027s own logback.xml extension file. So if one of the features does not have it, it will not be included in controller logging and the messages would just print to the network log. The draw back is having multiple logback configuration files per controller that really will only configure one logger. \n\nOption 2 would be to change the feature to create loggers for each controller generically via programmatic logger configuration. I think this solution is a bit more scalable in a sense that it auto configures loggers no matter how many controllers you may have in the future. The draw back is that you lose the flexibility of configuration that you get with logback.xml. I guess the controller loggers can copy the configurations from the network log but a restart would be required to pick up any changes in configuration for the controller loggers if the network logger configurations were to change.\n\nWhat do you all think?",
+      "parentUuid": "1140b5e6_416cee10",
+      "revId": "0b603cbcc04d7dd2675e4d4deba264000710b9e1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b50aa3a_01d1b7d7",
         "filename": "feature-controller-logging/src/main/feature/config/logback-controller.xml",
         "patchSetId": 5
