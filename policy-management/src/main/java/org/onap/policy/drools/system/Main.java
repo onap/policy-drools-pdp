@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,10 @@
 
 package org.onap.policy.drools.system;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Properties;
-
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
+import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MDCTransaction;
 import org.slf4j.Logger;
@@ -35,13 +33,6 @@ import org.slf4j.LoggerFactory;
  * Programmatic entry point to the management layer.
  */
 public class Main {
-
-    /** logback configuration file system property. */
-    public static final String LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY =
-            "logback.configurationFile";
-
-    /** logback configuration file system property. */
-    public static final String LOGBACK_CONFIGURATION_FILE_DEFAULT = "config/logback.xml";
 
     /** constructor (hides public default one). */
     private Main() {}
@@ -53,44 +44,27 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        /* logging defaults */
+        /* start logger */
 
-        if (System.getProperty(LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY) == null) {
-            if (Files.exists(Paths.get(LOGBACK_CONFIGURATION_FILE_DEFAULT))) {
-                System.setProperty(
-                        LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, LOGBACK_CONFIGURATION_FILE_DEFAULT);
-            } else {
-                LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, ch.qos.logback.classic.Level.INFO.toString());
-            }
-        }
+        Logger logger = LoggerFactory.getLogger(Main.class);
 
-        /* make sure the default configuration directory is properly set up */
+        /* system properties */
 
-        SystemPersistence.manager.setConfigurationDir(null);
-
-        /* logging defaults */
-
-        if (System.getProperty(LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY) == null) {
-            if (Files.exists(Paths.get(LOGBACK_CONFIGURATION_FILE_DEFAULT))) {
-                System.setProperty(
-                        LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, LOGBACK_CONFIGURATION_FILE_DEFAULT);
-            } else {
-                LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, ch.qos.logback.classic.Level.INFO.toString());
-            }
+        for (Properties systemProperties : SystemPersistence.manager.getSystemProperties()) {
+            PropertyUtil.setSystemProperties(systemProperties);
         }
 
         /* 0. boot */
 
         PolicyEngine.manager.boot(args);
 
-        /* start logger */
+        /* 1.a. Configure Engine */
 
-        final Logger logger = LoggerFactory.getLogger(Main.class);
-
-        /* 1.a. Configure the Engine */
-
-        Properties engineProperties = SystemPersistence.manager.getEngineProperties();
-        if (engineProperties == null) {
+        Properties engineProperties;
+        try {
+            engineProperties = SystemPersistence.manager.getEngineProperties();
+        } catch (IllegalArgumentException iae) {
+            logger.warn("Main: engine properties not found.  Using default configuration.", iae);
             engineProperties = PolicyEngine.manager.defaultTelemetryConfig();
         }
 
@@ -98,7 +72,7 @@ public class Main {
 
         /* 1.b. Load Installation Environment(s) */
 
-        for (final Properties env : SystemPersistence.manager.getEnvironmentProperties()) {
+        for (Properties env : SystemPersistence.manager.getEnvironmentProperties()) {
             PolicyEngine.manager.setEnvironment(env);
         }
 

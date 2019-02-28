@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,27 +31,32 @@ public interface SystemPersistence {
     /**
      * configuration directory.
      */
-    public static final String DEFAULT_CONFIGURATION_DIR = "config";
+    String DEFAULT_CONFIGURATION_DIR = "config";
 
     /**
      * Persistence Manager. For now it is a file-based properties management, In the future, it will
      * probably be DB based, so manager implementation will change.
      */
-    public static final SystemPersistence manager = new FileSystemPersistence();
+    SystemPersistence manager = new FileSystemPersistence();
 
     /**
      * sets a configuration directory and ensures it exists.
      *
      * @param configDir configuration directory or null to use the default one
      */
-    public void setConfigurationDir(String configDir);
+    void setConfigurationDir(String configDir);
+
+    /**
+     * sets the default configuration directory and ensures it exists.
+     */
+    void setConfigurationDir();
 
     /**
      * get configuration directory path.
      *
      * @return configuration directory path
      */
-    public Path getConfigurationPath();
+    Path getConfigurationPath();
 
     /**
      * backs up a controller configuration.
@@ -59,7 +64,7 @@ public interface SystemPersistence {
      * @param controllerName the controller name
      * @return true if the configuration is backed up
      */
-    public boolean backupController(String controllerName);
+    boolean backupController(String controllerName);
 
     /**
      * persists controller configuration.
@@ -71,7 +76,7 @@ public interface SystemPersistence {
      * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
      *         manager
      */
-    public boolean storeController(String controllerName, Object configuration);
+    boolean storeController(String controllerName, Object configuration);
 
     /**
      * delete controller configuration.
@@ -79,7 +84,7 @@ public interface SystemPersistence {
      * @param controllerName the controller name
      * @return true if storage is succesful, false otherwise
      */
-    public boolean deleteController(String controllerName);
+    boolean deleteController(String controllerName);
 
     /**
      * get controller properties.
@@ -90,34 +95,34 @@ public interface SystemPersistence {
      * @throws IllegalArgumentException if the controller name does not lead to a properties
      *         configuration
      */
-    public Properties getControllerProperties(String controllerName);
+    Properties getControllerProperties(String controllerName);
 
     /**
      * get controllers configuration.
      *
      * @return list of controllers properties
      */
-    public List<Properties> getControllerProperties();
+    List<Properties> getControllerProperties();
 
     /**
      * get environments.
      *
      */
-    public List<Properties> getEnvironmentProperties();
+    List<Properties> getEnvironmentProperties();
 
     /**
      * get environment properties.
      *
      * @param environmentName name
      */
-    public Properties getEnvironmentProperties(String environmentName);
+    Properties getEnvironmentProperties(String environmentName);
 
     /**
      * get the engine properties.
      *
      * @return the engine properties
      */
-    public Properties getEngineProperties();
+    Properties getEngineProperties();
 
     /**
      * get properties by name.
@@ -127,5 +132,20 @@ public interface SystemPersistence {
      *
      * @throws IllegalArgumentException if the name does not lead to a properties configuration
      */
-    public Properties getProperties(String name);
+    Properties getProperties(String name);
+
+    /**
+     * get system properties configuration.
+     *
+     * @param name name
+     * @return properties
+     */
+    Properties getSystemProperties(String name);
+
+    /**
+     * get system properties configuration list.
+     *
+     * @return list of system properties
+     */
+    List<Properties> getSystemProperties();
 }

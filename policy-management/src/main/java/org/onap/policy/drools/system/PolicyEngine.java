@@ -54,6 +54,7 @@ import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
 import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
+import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MDCTransaction;
 import org.slf4j.Logger;
@@ -429,7 +430,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     public synchronized void setEnvironment(Properties properties) {
-        this.environment.putAll(properties);
+        this.environment.putAll(PropertyUtil.getInterpolatedProperties(properties));
     }
 
     @JsonIgnore
@@ -443,7 +444,10 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized String getEnvironmentProperty(String envKey) {
         String value = this.environment.getProperty(envKey);
         if (value == null) {
-            value = System.getenv(envKey);
+            value = System.getProperty(envKey);
+            if (value == null) {
+                value = System.getenv(envKey);
+            }
         }
         return value;
     }

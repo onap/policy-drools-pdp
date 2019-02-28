@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,16 @@ import org.slf4j.MarkerFactory;
 public class LoggerUtil {
 
     /**
+     * Logback configuration file system property.
+     */
+    public static final String LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY = "logback.configurationFile";
+
+    /**
+     * Logback default configuration file location.
+     */
+    public static final String LOGBACK_CONFIGURATION_FILE_DEFAULT = "config/logback.xml";
+
+    /**
      * Root logger.
      */
     public static final String ROOT_LOGGER = "ROOT";
@@ -54,7 +64,6 @@ public class LoggerUtil {
      * Marks a logging record as an end-to-end transaction.
      */
     public static final Marker TRANSACTION_LOG_MARKER = MarkerFactory.getMarker(TRANSACTION_LOG_MARKER_NAME);
-
 
     private LoggerUtil() {
         // Empty constructor

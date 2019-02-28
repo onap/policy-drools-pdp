@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2018 AT&T Intellectual Property. All rights reserved
+# Copyright 2018-2019 AT&T Intellectual Property. All rights reserved
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,13 +24,6 @@ MVN_MAJMIN_VERSION=$(cut -f 1,2 -d . packages/docker/target/version)
 TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
 BUILD_ARGS="--build-arg BUILD_VERSION=${MVN_VERSION}"
 IMAGE=policy-drools
-
-if [ $HTTP_PROXY ]; then
-    BUILD_ARGS+=" --build-arg HTTP_PROXY=${HTTP_PROXY}"
-fi
-if [ $HTTPS_PROXY ]; then
-    BUILD_ARGS+=" --build-arg HTTPS_PROXY=${HTTPS_PROXY}"
-fi
 
 echo $DOCKER_REPOSITORY
 echo $MVN_VERSION
