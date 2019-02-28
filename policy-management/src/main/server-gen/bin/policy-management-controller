@@ -53,8 +53,9 @@ function um_start() {
     source ${POLICY_HOME}/etc/profile.d/env.sh
 
     ${POLICY_HOME}/bin/configure-maven
+    JVM_OPTS=(${JVM_OPTIONS})
 
-    # If 'system.properties' exists, convert it into JVM arguments.
+    # If 'system.properties' exists, convert it into "-D" JVM arguments.
     # Note that the following also handles property values with spaces.
     IFS=$'\n'
     systemProperties=($(
@@ -71,7 +72,7 @@ function um_start() {
 	    # to subprocesses
 	    exec {cfg}>&-
 	fi
-	nohup $JAVA_HOME/bin/java -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
+	nohup $JAVA_HOME/bin/java "${JVM_OPTS[@]}" -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
 
 	_PID=$!
 	echo $_PID > $_PIDFILE

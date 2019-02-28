@@ -32,6 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.configuration2.ConfigurationConverter;
+import org.apache.commons.configuration2.SystemConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,12 +78,12 @@ public class PropertyUtil {
          * builders since they use the commons-beanutils (optional) library that has been
          * flagged as insecured.
          */
-        return ConfigurationConverter.getProperties(ConfigurationConverter.getConfiguration(rval));
+        return getInterpolatedProperties(rval);
     }
 
     /**
      * Read in a properties file.
-     * 
+     *
      * @param fileName the properties file
      * @return a Properties object, containing the associated properties
      * @throws IOException - subclass 'FileNotFoundException' if the file
@@ -91,6 +92,88 @@ public class PropertyUtil {
      */
     public static Properties getProperties(String fileName) throws IOException {
         return getProperties(new File(fileName));
+    }
+
+    /**
+     * Read in a properties file, and register for update notifications.
+     * NOTE: it is possible that the first callback will occur while this
+     * method is still in progress. To avoid this problem, use 'synchronized'
+     * blocks around this invocation and in the callback -- that will ensure
+     * that the processing of the initial properties complete before any
+     * updates are processed.
+     *
+     * @param file the properties file
+     * @param listener notify if not null, this is a callback interface that is used for
+     *     notifications of changes
+     * @return a Properties object, containing the associated properties
+     * @throws IOException - subclass 'FileNotFoundException' if the file
+     *     does not exist or can't be opened, and 'IOException' if there is
+     *     a problem loading the properties file.
+     */
+    public static Properties getProperties(File file, Listener listener)
+        throws IOException {
+        File propFile = file;
+        if (listener == null) {
+            // no listener specified -- just fetch the properties
+            return getProperties(propFile);
+        }
+
+        // Convert the file to a canonical form in order to avoid the situation
+        // where different names refer to the same file.
+        propFile = propFile.getCanonicalFile();
+
+        // See if there is an existing registration. The 'synchronized' block
+        // is needed to handle the case where a new listener is added at about
+        // the same time that another one is being removed.
+        synchronized (registrations) {
+            ListenerRegistration reg = registrations.get(propFile);
+            if (reg == null) {
+                // a new registration is needed
+                reg = new ListenerRegistration(propFile);
+            }
+            return reg.addListener(listener);
+        }
+    }
+
+    /**
+     * Read in a properties file, and register for update notifications.
+     * NOTE: it is possible that the first callback will occur while this
+     * method is still in progress. To avoid this problem, use 'synchronized'
+     * blocks around this invocation and in the callback -- that will ensure
+     * that the processing of the initial properties complete before any
+     * updates are processed.
+     *
+     * @param fileName the properties file
+     * @param listener notify if not null, this is a callback interface that is used for
+     *     notifications of changes
+     * @return a Properties object, containing the associated properties
+     * @throws IOException - subclass 'FileNotFoundException' if the file
+     *     does not exist or can't be opened, and 'IOException' if there is
+     *     a problem loading the properties file.
+     */
+    public static Properties getProperties(String fileName, Listener listener)
+        throws IOException {
+        return getProperties(new File(fileName), listener);
+    }
+
+    /**
+     * gets interpolated properties from a properties object.
+     *
+     * @param properties object
+     * @return properties
+     */
+    public static Properties getInterpolatedProperties(Properties properties) {
+        return ConfigurationConverter.getProperties(ConfigurationConverter.getConfiguration(properties));
+    }
+
+    /**
+     * sets system properties from a properties file.
+     *
+     * @param properties properties file
+     */
+    public static void setSystemProperties(Properties properties) {
+        Properties interpolatedProps = getInterpolatedProperties(properties);
+        SystemConfiguration.setSystemProperties(ConfigurationConverter.getConfiguration(interpolatedProps));
     }
 
     /* ============================================================ */
@@ -274,68 +357,6 @@ public class PropertyUtil {
                 }
             }
         }
-    }
-
-    /**
-     * Read in a properties file, and register for update notifications.
-     * NOTE: it is possible that the first callback will occur while this
-     * method is still in progress. To avoid this problem, use 'synchronized'
-     * blocks around this invocation and in the callback -- that will ensure
-     * that the processing of the initial properties complete before any
-     * updates are processed.
-     *
-     * @param file the properties file
-     * @param listener notify if not null, this is a callback interface that is used for
-     *     notifications of changes
-     * @return a Properties object, containing the associated properties
-     * @throws IOException - subclass 'FileNotFoundException' if the file
-     *     does not exist or can't be opened, and 'IOException' if there is
-     *     a problem loading the properties file.
-     */
-    public static Properties getProperties(File file, Listener listener)
-            throws IOException {
-        File propFile = file;
-        if (listener == null) {
-            // no listener specified -- just fetch the properties
-            return getProperties(propFile);
-        }
-
-        // Convert the file to a canonical form in order to avoid the situation
-        // where different names refer to the same file.
-        propFile = propFile.getCanonicalFile();
-
-        // See if there is an existing registration. The 'synchronized' block
-        // is needed to handle the case where a new listener is added at about
-        // the same time that another one is being removed.
-        synchronized (registrations) {
-            ListenerRegistration reg = registrations.get(propFile);
-            if (reg == null) {
-                // a new registration is needed
-                reg = new ListenerRegistration(propFile);
-            }
-            return reg.addListener(listener);
-        }
-    }
-
-    /**
-     * Read in a properties file, and register for update notifications.
-     * NOTE: it is possible that the first callback will occur while this
-     * method is still in progress. To avoid this problem, use 'synchronized'
-     * blocks around this invocation and in the callback -- that will ensure
-     * that the processing of the initial properties complete before any
-     * updates are processed.
-     *
-     * @param fileName the properties file
-     * @param listener notify if not null, this is a callback interface that is used for
-     *     notifications of changes
-     * @return a Properties object, containing the associated properties
-     * @throws IOException - subclass 'FileNotFoundException' if the file
-     *     does not exist or can't be opened, and 'IOException' if there is
-     *     a problem loading the properties file.
-     */
-    public static Properties getProperties(String fileName, Listener listener)
-            throws IOException {
-        return getProperties(new File(fileName), listener);
     }
 
     /**

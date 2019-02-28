@@ -163,7 +163,7 @@ public class PolicyEngineTest {
         PolicyEngine.manager.configure(engineProps);
         assertFalse(PolicyEngine.manager.isAlive());
 
-        logger.info("policy-engine {} has configuration {}", PolicyEngine.manager, engineProps);
+        logger.info("engine {} has configuration {}", PolicyEngine.manager, engineProps);
 
         gson.compareGson(PolicyEngine.manager, new File(PolicyEngineTest.class.getSimpleName() + "Config.json"));
     }
