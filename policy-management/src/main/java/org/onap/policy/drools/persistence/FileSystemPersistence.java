@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,44 +41,59 @@ import org.slf4j.LoggerFactory;
  * Properties based Persistence.
  */
 public class FileSystemPersistence implements SystemPersistence {
-    
+
     /**
-     * policy controllers suffix.
+     * Properties file extension.
+     */
+    public static final String PROPERTIES_FILE_EXTENSION = ".properties";
+
+    /**
+     * Policy controllers suffix.
      */
     public static final String CONTROLLER_SUFFIX_IDENTIFIER = "-controller";
 
     /**
-     * policy controller properties file suffix.
+     * Policy controller properties file suffix.
      */
     public static final String PROPERTIES_FILE_CONTROLLER_SUFFIX =
-            CONTROLLER_SUFFIX_IDENTIFIER + ".properties";
+            CONTROLLER_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION;
 
     /**
-     * policy controller properties file suffix.
+     * Policy controller properties file suffix.
      */
     public static final String PROPERTIES_FILE_CONTROLLER_BACKUP_SUFFIX =
-            CONTROLLER_SUFFIX_IDENTIFIER + ".properties.bak";
+            CONTROLLER_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION + ".bak";
 
     /**
-     * policy engine properties file name.
+     * Policy engine properties file name.
      */
-    public static final String PROPERTIES_FILE_ENGINE = "policy-engine.properties";
+    public static final String PROPERTIES_FILE_ENGINE = "engine" + PROPERTIES_FILE_EXTENSION;
 
     /**
      * Installation environment suffix for files.
      */
-    public static final String ENV_SUFFIX = ".environment";
+    public static final String ENV_FILE_SUFFIX = ".environment";
 
     /**
-     * configuration directory.
+     * Environment properties extension.
+     */
+    public static final String ENV_FILE_EXTENSION = ENV_FILE_SUFFIX;
+
+    /**
+     * Installation environment suffix for files.
+     */
+    public static final String SYSTEM_PROPERTIES_SUFFIX = "-system";
+    public static final String SYSTEM_PROPERTIES_FILE_SUFFIX = SYSTEM_PROPERTIES_SUFFIX + PROPERTIES_FILE_EXTENSION;
+
+    /**
+     * Configuration directory.
      */
     protected Path configurationDirectory = Paths.get(DEFAULT_CONFIGURATION_DIR);
 
     /**
-     * logger.
+     * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(FileSystemPersistence.class);
-
 
     @Override
     public void setConfigurationDir(String configDir) {
@@ -93,6 +108,11 @@ public class FileSystemPersistence implements SystemPersistence {
             this.configurationDirectory = Paths.get(tempConfigDir);
         }
 
+        setConfigurationDirectory();
+    }
+
+    @Override
+    public void setConfigurationDirectory() {
         if (Files.notExists(this.configurationDirectory)) {
             try {
                 Files.createDirectories(this.configurationDirectory);
@@ -103,7 +123,7 @@ public class FileSystemPersistence implements SystemPersistence {
 
         if (!Files.isDirectory(this.configurationDirectory)) {
             throw new IllegalStateException(
-                    "config directory: " + this.configurationDirectory + " is not a directory");
+                "config directory: " + this.configurationDirectory + " is not a directory");
         }
     }
 
@@ -112,19 +132,56 @@ public class FileSystemPersistence implements SystemPersistence {
         return this.configurationDirectory;
     }
 
-    @Override
-    public Properties getEngineProperties() {
-        final Path policyEnginePath =
-                Paths.get(this.configurationDirectory.toString(), PROPERTIES_FILE_ENGINE);
-        try {
-            if (Files.exists(policyEnginePath)) {
-                return PropertyUtil.getProperties(policyEnginePath.toFile());
-            }
-        } catch (final Exception e) {
-            logger.warn("{}: could not find {}", this, policyEnginePath, e);
+    protected Properties getProperties(Path propertiesPath) {
+        if (!Files.exists(propertiesPath)) {
+            throw new IllegalArgumentException("properties for " + propertiesPath.toString() + " are not persisted.");
         }
 
-        return null;
+        try {
+            return PropertyUtil.getProperties(propertiesPath.toFile());
+        } catch (final Exception e) {
+            throw new IllegalArgumentException("can't read properties for " + propertiesPath.toString(), e);
+        }
+    }
+
+    @Override
+    public Properties getProperties(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("properties name must be provided");
+        }
+
+        Path propertiesPath = Paths.get(this.configurationDirectory.toString());
+        if (name.endsWith(PROPERTIES_FILE_EXTENSION) || name.endsWith(ENV_FILE_EXTENSION)) {
+            propertiesPath = propertiesPath.resolve(name);
+        } else {
+            propertiesPath = propertiesPath.resolve(name + PROPERTIES_FILE_EXTENSION);
+        }
+
+        return getProperties(propertiesPath);
+    }
+
+    @Override
+    public Properties getEnvironmentProperties(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("environment name must be provided");
+        }
+
+        return this.getProperties(Paths.get(this.configurationDirectory.toString(), name + ENV_FILE_SUFFIX));
+    }
+
+    @Override
+    public Properties getSystemProperties(String name) {
+        return this.getProperties(name + SYSTEM_PROPERTIES_SUFFIX);
+    }
+
+    @Override
+    public Properties getEngineProperties() {
+        return this.getProperties(PROPERTIES_FILE_ENGINE);
+    }
+
+    @Override
+    public Properties getControllerProperties(String controllerName) {
+        return this.getProperties(controllerName + CONTROLLER_SUFFIX_IDENTIFIER);
     }
 
     @Override
@@ -210,11 +267,6 @@ public class FileSystemPersistence implements SystemPersistence {
     }
 
     @Override
-    public Properties getControllerProperties(String controllerName) {
-        return this.getProperties(controllerName + CONTROLLER_SUFFIX_IDENTIFIER);
-    }
-
-    @Override
     public List<Properties> getControllerProperties() {
         final List<Properties> controllers = new ArrayList<>();
         final File[] controllerFiles = this.sortedListFiles();
@@ -251,53 +303,30 @@ public class FileSystemPersistence implements SystemPersistence {
         return controllers;
     }
 
-    @Override
-    public Properties getProperties(String name) {
-        final Path propertiesPath =
-                Paths.get(this.configurationDirectory.toString(), name + ".properties");
-
-        if (!Files.exists(propertiesPath)) {
-            throw new IllegalArgumentException("properties for " + name + " are not persisted.");
+    protected List<Properties> getPropertiesList(String suffix) {
+        List<Properties> properties = new ArrayList<>();
+        File[] files = this.sortedListFiles();
+        for (File file : files) {
+            if (file.getName().endsWith(suffix)) {
+                try {
+                    properties.add(getProperties(file.getName()));
+                } catch (final Exception e) {
+                    logger.error("{}: cannot get properties {} because of {}", this, file.getName(),
+                            e.getMessage(), e);
+                }
+            }
         }
-
-        try {
-            return PropertyUtil.getProperties(propertiesPath.toFile());
-        } catch (final Exception e) {
-            logger.warn("{}: can't read properties @ {}", name, propertiesPath);
-            throw new IllegalArgumentException(
-                    "can't read properties for " + name + " @ " + propertiesPath, e);
-        }
+        return properties;
     }
 
     @Override
     public List<Properties> getEnvironmentProperties() {
-        final List<Properties> envs = new ArrayList<>();
-        final File[] envFiles = this.sortedListFiles();
-        for (final File envFile : envFiles) {
-            if (envFile.getName().endsWith(ENV_SUFFIX)) {
-                final String name = envFile.getName().substring(0, envFile.getName().indexOf(ENV_SUFFIX));
-                try {
-                    envs.add(this.getEnvironmentProperties(name));
-                } catch (final Exception e) {
-                    logger.error("{}: cannot get environment {} because of {}", name, e.getMessage(), e);
-                }
-            }
-        }
-        return envs;
+        return getPropertiesList(ENV_FILE_SUFFIX);
     }
 
     @Override
-    public Properties getEnvironmentProperties(String name) {
-        final Path envPath = Paths.get(this.configurationDirectory.toString(), name + ENV_SUFFIX);
-        if (!Files.exists(envPath)) {
-            throw new IllegalArgumentException("{} environment" + name + " cannot be retrieved");
-        }
-
-        try {
-            return PropertyUtil.getProperties(envPath.toFile());
-        } catch (final Exception e) {
-            throw new IllegalArgumentException("cannot read environment " + name, e);
-        }
+    public List<Properties> getSystemProperties() {
+        return getPropertiesList(SYSTEM_PROPERTIES_FILE_SUFFIX);
     }
 
     /**

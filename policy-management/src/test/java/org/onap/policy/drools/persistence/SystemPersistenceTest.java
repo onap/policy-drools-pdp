@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.persistence.test;
+package org.onap.policy.drools.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileOutputStream;
@@ -57,29 +59,34 @@ public class SystemPersistenceTest {
     /**
      * sample configuration dir.
      */
-    public static final String OTHER_CONFIG_DIR = "tmp";
+    private static final String OTHER_CONFIG_DIR = "tmp";
 
     /**
      * Test JUnit Controller Name.
      */
-    public static final String TEST_CONTROLLER_NAME = "foo";
+    private static final String TEST_CONTROLLER_NAME = "foo";
 
     /**
      * Test JUnit Controller Name.
      */
-    public static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
+    private static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
 
     /**
      * Test JUnit Controller Name Backup.
      */
-    public static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
+    private static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
 
     /**
      * Test JUnit Environment/Engine properties.
      */
-    private static final String ENV_PROPS = "envProps";
+    private static final String ENV_PROPS = TEST_CONTROLLER_NAME;
     private static final String ENV_PROPS_FILE = ENV_PROPS + ".environment";
-    private static final String POLICY_ENGINE_PROPERTIES_FILE = "policy-engine.properties";
+
+    /**
+     * Test JUnit system properties.
+     */
+    private static final String SYSTEM_PROPS = TEST_CONTROLLER_NAME;
+    private static final String SYSTEM_PROPS_FILE =  SYSTEM_PROPS + "-system.properties";
 
     @BeforeClass
     public static void setUp() throws IOException {
@@ -92,16 +99,15 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test1NonDefaultConfigDir() throws IOException {
+    public void test1NonDefaultConfigDir() {
         logger.info("enter");
 
         SystemPersistence.manager.setConfigurationDir(OTHER_CONFIG_DIR);
-        assertTrue(
-                SystemPersistence.manager.getConfigurationPath().toString().equals(OTHER_CONFIG_DIR));
+        assertEquals(OTHER_CONFIG_DIR, SystemPersistence.manager.getConfigurationPath().toString());
 
         SystemPersistence.manager.setConfigurationDir(null);
-        assertTrue(SystemPersistence.manager.getConfigurationPath().toString()
-                .equals(SystemPersistence.DEFAULT_CONFIGURATION_DIR));
+        assertEquals(SystemPersistence.DEFAULT_CONFIGURATION_DIR,
+                SystemPersistence.manager.getConfigurationPath().toString());
     }
 
     @Test
@@ -123,7 +129,7 @@ public class SystemPersistenceTest {
             }
         }
 
-        assertEquals(SystemPersistence.manager.getEngineProperties(), engineProps);
+        assertEquals(engineProps, SystemPersistence.manager.getEngineProperties());
 
         final Path environmentPropertiesPath =
                 Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), ENV_PROPS_FILE);
@@ -131,7 +137,15 @@ public class SystemPersistenceTest {
             Files.createFile(environmentPropertiesPath);
         }
         assertTrue(SystemPersistence.manager.getEnvironmentProperties(ENV_PROPS).isEmpty());
-        assertTrue(SystemPersistence.manager.getEnvironmentProperties().size() == 1);
+        assertSame(1, SystemPersistence.manager.getEnvironmentProperties().size());
+
+        Path systemPropertiesPath =
+            Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), SYSTEM_PROPS_FILE);
+        if (Files.notExists(systemPropertiesPath)) {
+            Files.createFile(systemPropertiesPath);
+        }
+        assertTrue(SystemPersistence.manager.getSystemProperties(SYSTEM_PROPS).isEmpty());
+        assertSame(1, SystemPersistence.manager.getSystemProperties().size());
     }
 
     @Test
@@ -156,7 +170,7 @@ public class SystemPersistenceTest {
         assertTrue(Files.exists(controllerPath));
 
         properties = SystemPersistence.manager.getControllerProperties(TEST_CONTROLLER_NAME);
-        assertTrue(properties != null);
+        assertNotNull(properties);
 
         SystemPersistence.manager.backupController(TEST_CONTROLLER_NAME);
         assertTrue(Files.exists(controllerBakPath));
@@ -172,7 +186,7 @@ public class SystemPersistenceTest {
      * 
      * @throws IOException throws IO exception
      */
-    public static void cleanUpWorkingDirs() throws IOException {
+    private static void cleanUpWorkingDirs() throws IOException {
 
         SystemPersistence.manager.setConfigurationDir(null);
 
@@ -181,13 +195,15 @@ public class SystemPersistenceTest {
         final Path testControllerBakPath = Paths
                 .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
 
-        final Path policyEnginePath = Paths.get(OTHER_CONFIG_DIR, POLICY_ENGINE_PROPERTIES_FILE);
+        final Path policyEnginePath = Paths.get(OTHER_CONFIG_DIR, FileSystemPersistence.PROPERTIES_FILE_ENGINE);
         final Path environmentPath = Paths.get(OTHER_CONFIG_DIR, ENV_PROPS_FILE);
+        final Path systemPath = Paths.get(OTHER_CONFIG_DIR, SYSTEM_PROPS_FILE);
 
         Files.deleteIfExists(testControllerPath);
         Files.deleteIfExists(testControllerBakPath);
         Files.deleteIfExists(policyEnginePath);
         Files.deleteIfExists(environmentPath);
+        Files.deleteIfExists(systemPath);
     }
 
 }

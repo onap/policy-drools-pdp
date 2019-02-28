@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-eelf
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ import java.util.List;
 import org.junit.Test;
 import org.onap.policy.common.logging.flexlogger.FlexLogger;
 import org.onap.policy.drools.eelf.EelfFeature;
-import org.onap.policy.drools.system.Main;
 import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +102,7 @@ public class EElfTest {
 
         /* set logback configuration */
 
-        System.setProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, 
+        System.setProperty(LoggerUtil.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY,
                 LOGBACK_CONFIGURATION_FILE_DEFAULT);
 
         /* set up eelf throuth common loggings library */

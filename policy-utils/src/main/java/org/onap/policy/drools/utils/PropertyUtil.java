@@ -32,6 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.configuration2.ConfigurationConverter;
+import org.apache.commons.configuration2.SystemConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,27 @@ public class PropertyUtil {
          * builders since they use the commons-beanutils (optional) library that has been
          * flagged as insecured.
          */
-        return ConfigurationConverter.getProperties(ConfigurationConverter.getConfiguration(rval));
+        return getInterpolatedProperties(rval);
+    }
+
+    /**
+     * gets interpolated properties from a properties object.
+     *
+     * @param properties object
+     * @return properties
+     */
+    public static Properties getInterpolatedProperties(Properties properties) {
+        return ConfigurationConverter.getProperties(ConfigurationConverter.getConfiguration(properties));
+    }
+
+    /**
+     * sets system properties from a properties file.
+     *
+     * @param properties properties file
+     */
+    public static void setSystemProperties(Properties properties) {
+        Properties interpolatedProps = getInterpolatedProperties(properties);
+        SystemConfiguration.setSystemProperties(ConfigurationConverter.getConfiguration(interpolatedProps));
     }
 
     /**

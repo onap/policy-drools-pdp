@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-eelf
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import org.onap.policy.common.logging.eelf.Configuration;
 import org.onap.policy.common.logging.flexlogger.FlexLogger;
 import org.onap.policy.common.logging.flexlogger.Logger;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
-import org.onap.policy.drools.system.Main;
 import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.utils.logging.LoggerUtil;
 
 /**
  * Feature EELF : Enables EELF Logging Libraries .
@@ -38,8 +38,8 @@ public class EelfFeature implements PolicyEngineFeatureAPI {
     @Override
     public final boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
 
-        String logback = System.getProperty(Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY, 
-                Main.LOGBACK_CONFIGURATION_FILE_DEFAULT);
+        String logback = System.getProperty(LoggerUtil.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY,
+                LoggerUtil.LOGBACK_CONFIGURATION_FILE_DEFAULT);
         Path logbackPath = Paths.get(logback);
 
         if (System.getProperty(Configuration.PROPERTY_LOGGING_FILE_PATH) == null) {
@@ -55,7 +55,7 @@ public class EelfFeature implements PolicyEngineFeatureAPI {
         Logger logger = FlexLogger.getLogger(this.getClass(), true);
 
         if (logger.isInfoEnabled()) {
-            logProperty(logger, Main.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY);
+            logProperty(logger, LoggerUtil.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY);
             logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_PATH);
             logProperty(logger, Configuration.PROPERTY_LOGGING_FILE_NAME);
         }
