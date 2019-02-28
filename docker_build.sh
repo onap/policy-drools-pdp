@@ -22,14 +22,6 @@ TIMESTAMP=$(date -u +%Y%m%dT%H%M%S)
 BUILD_ARGS="--build-arg BUILD_VERSION=${MVN_VERSION}"
 IMAGE=policy-drools
 
-if [ $HTTP_PROXY ]; then
-    BUILD_ARGS+=" --build-arg HTTP_PROXY=${HTTP_PROXY}"
-fi
-
-if [ $HTTPS_PROXY ]; then
-    BUILD_ARGS+=" --build-arg HTTPS_PROXY=${HTTPS_PROXY}"
-fi
-
 echo $DOCKER_REPOSITORY
 echo $MVN_VERSION
 echo $MVN_MAJMIN_VERSION

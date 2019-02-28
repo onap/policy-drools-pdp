@@ -79,7 +79,7 @@ public class PropertyUtilTest {
      * Utility method to write a properties file.
      *
      * @param name the file name, relative to the temporary directory
-     * @param the properties to store in the file
+     * @param properties to store in the file
      * @return a File instance associated with the newly-created file
      * @throws IOException if the file can't be created for some reason
      */
@@ -137,10 +137,24 @@ public class PropertyUtilTest {
         assertEquals(prop1, prop2);
 
         Properties prop3 = PropertyUtil.getProperties(INTERPOLATION_PROPERTIES);
+
         assertEquals("no", prop3.getProperty(INTERPOLATION_NO));
         assertEquals(System.getenv("HOME"), prop3.getProperty(INTERPOLATION_ENV));
         assertEquals(LoggerUtil.ROOT_LOGGER, prop3.getProperty(INTERPOLATION_CONST));
         assertEquals(System.getProperty("user.home"), prop3.getProperty(INTERPOLATION_SYS));
+
+        Properties prop4 = new Properties();
+        prop4.put(INTERPOLATION_NO, "no");
+        prop4.put(INTERPOLATION_ENV, "${env:HOME}");
+        prop4.put(INTERPOLATION_CONST, "${const:org.onap.policy.drools.utils.logging.LoggerUtil.ROOT_LOGGER}");
+        prop4.put(INTERPOLATION_SYS, "${sys:user.home}");
+
+        PropertyUtil.setSystemProperties(prop4);
+
+        assertEquals("no", System.getProperty(INTERPOLATION_NO));
+        assertEquals(System.getenv("HOME"), System.getProperty(INTERPOLATION_ENV));
+        assertEquals(LoggerUtil.ROOT_LOGGER, System.getProperty(INTERPOLATION_CONST));
+        assertEquals(System.getProperty("user.home"), System.getProperty(INTERPOLATION_SYS));
     }
 
     /**

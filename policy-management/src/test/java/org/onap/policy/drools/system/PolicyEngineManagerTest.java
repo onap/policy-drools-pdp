@@ -368,6 +368,16 @@ public class PolicyEngineManagerTest {
 
         assertNotNull(mgr.getEnvironmentProperty("PATH"));
         assertNull(mgr.getEnvironmentProperty("unknown-env-property"));
+
+        System.setProperty("propS-a", "valueS-a");
+        assertEquals("valueS-a", mgr.getEnvironmentProperty("propS-a"));
+
+        Properties props3 = new Properties();
+        props3.put("prop3-a", "${env:HOME}");
+        mgr.setEnvironment(props3);
+        assertEquals(System.getenv("HOME"), mgr.getEnvironmentProperty("prop3-a"));
+        assertEquals("valueS-a", mgr.getEnvironmentProperty("propS-a"));
+        assertEquals(newValue, mgr.getEnvironmentProperty(propKey));
     }
 
     @Test
