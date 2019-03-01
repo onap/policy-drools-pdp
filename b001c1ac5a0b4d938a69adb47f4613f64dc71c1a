@@ -22,6 +22,30 @@
       "revId": "b001c1ac5a0b4d938a69adb47f4613f64dc71c1a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e1b3915_088823cc",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-03-01T16:07:57Z",
+      "side": 1,
+      "message": "Yes, we\u0027ll do, but for a little bit this Dockerfile and the PDP-D APPS are going to be in flux for a few days, and I want to control the variables of what\u0027s new introduced one step at the time.   So it will but not just yet.  I think though that the China based Ericsson team is going to do it the Alpine work for all images.   Is that correct Liam?",
+      "parentUuid": "4afd8cf0_a0c62824",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 17
+      },
+      "revId": "b001c1ac5a0b4d938a69adb47f4613f64dc71c1a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
