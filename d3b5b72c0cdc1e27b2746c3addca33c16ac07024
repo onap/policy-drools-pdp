@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "99fa9da1_58b604cc",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-03-01T15:35:30Z",
+      "side": 1,
+      "message": "It looks like it  to me but not totally sure.  Note that this is existing code that was just moved from below to keep checkstyle happy with overloaded methods of the same signature.   I could open a ticket and add it to the backlog for evaluation since not directly related to this code review I am trying to push through.",
+      "parentUuid": "d9ddd583_0450c0ca",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "98245190_a1caded6",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
         "patchSetId": 3
@@ -81,6 +99,24 @@
       "writtenOn": "2019-03-01T14:25:01Z",
       "side": 1,
       "message": "fyi: in the future, this code could be changed to use java\u0027s WatchService instead of using timers/polling/threads.",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b1af0f8_cccb77aa",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-03-01T15:35:30Z",
+      "side": 1,
+      "message": "yeah but out of scope for this work, I can add to the ticket I create I mentioned above and put in backlog.",
+      "parentUuid": "98245190_a1caded6",
       "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
