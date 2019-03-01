@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f95354ef_9c9cd347",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/persistence/FileSystemPersistence.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-03-01T14:25:01Z",
+      "side": 1,
+      "message": "suggestion: this first \"if\" block could probably be deleted",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1bb251a0_d539d303",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/persistence/FileSystemPersistence.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-03-01T14:25:01Z",
+      "side": 1,
+      "message": "FYI: could use Strings.isNullOrEmpty(name)",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2a2dc6ed_25eb2ab2",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/persistence/FileSystemPersistence.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-03-01T14:25:01Z",
+      "side": 1,
+      "message": "I think sonar will complain about the nesting level",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9ddd583_0450c0ca",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-03-01T14:25:01Z",
+      "side": 1,
+      "message": "need to add \"reg\" to registrations?",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "98245190_a1caded6",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-03-01T14:25:01Z",
+      "side": 1,
+      "message": "fyi: in the future, this code could be changed to use java\u0027s WatchService instead of using timers/polling/threads.",
+      "revId": "d3b5b72c0cdc1e27b2746c3addca33c16ac07024",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
