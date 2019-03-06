@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,15 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.Properties;
-import org.onap.policy.common.utils.properties.PropertyConfiguration;
+import org.onap.policy.common.utils.properties.BeanConfigurator;
+import org.onap.policy.common.utils.properties.Property;
 import org.onap.policy.common.utils.properties.SpecProperties;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 /**
  * Properties used by the pooling feature, specific to a controller.
  */
-public class PoolingProperties extends PropertyConfiguration {
+public class PoolingProperties {
 
     /**
      * The feature name, used to retrieve properties.
@@ -39,7 +40,7 @@ public class PoolingProperties extends PropertyConfiguration {
      * Feature properties all begin with this prefix.
      */
     public static final String PREFIX = "pooling.";
-    
+
     public static final String FEATURE_ENABLED = PREFIX + "enabled";
     public static final String POOLING_TOPIC = PREFIX + "topic";
     public static final String OFFLINE_LIMIT = PREFIX + "offline.queue.limit";
@@ -130,16 +131,16 @@ public class PoolingProperties extends PropertyConfiguration {
 
     /**
      * Constructor.
-     * 
+     *
      * @param controllerName the name of the controller
      * @param props set of properties used to configure this
      * @throws PropertyException if an error occurs
-     * 
+     *
      */
     public PoolingProperties(String controllerName, Properties props) throws PropertyException {
-        super(new SpecProperties(PREFIX, controllerName, props));
-
         source = props;
+
+        new BeanConfigurator().configureFromProperties(this, new SpecProperties(PREFIX, controllerName, props));
     }
 
     public Properties getSource() {

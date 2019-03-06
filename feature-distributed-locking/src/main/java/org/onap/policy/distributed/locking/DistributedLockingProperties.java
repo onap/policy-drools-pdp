@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,12 @@
 package org.onap.policy.distributed.locking;
 
 import java.util.Properties;
-import org.onap.policy.common.utils.properties.PropertyConfiguration;
+import org.onap.policy.common.utils.properties.BeanConfigurator;
+import org.onap.policy.common.utils.properties.Property;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 
-public class DistributedLockingProperties extends PropertyConfiguration {
+public class DistributedLockingProperties {
 
     /**
      * Feature properties all begin with this prefix.
@@ -40,7 +41,7 @@ public class DistributedLockingProperties extends PropertyConfiguration {
     /**
      * Properties from which this was constructed.
      */
-    private Properties source;
+    private final Properties source;
 
     /**
      * Database driver.
@@ -66,9 +67,16 @@ public class DistributedLockingProperties extends PropertyConfiguration {
     @Property(name = DB_PWD)
     private String dbPwd;
 
+    /**
+     * Constructs the object, populating fields from the properties.
+     *
+     * @param props properties from which to configure this
+     * @throws PropertyException if an error occurs
+     */
     public DistributedLockingProperties(Properties props) throws PropertyException {
-        super(props);
         source = props;
+
+        new BeanConfigurator().configureFromProperties(this, props);
     }
 
 
