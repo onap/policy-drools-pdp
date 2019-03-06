@@ -44,7 +44,7 @@ WORKDIR ${POLICY_INSTALL}
 
 COPY install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
 
-VOLUME [ "${POLICY_INSTALL}/config", "${POLICY_HOME}/config" ]
+VOLUME [ "${POLICY_INSTALL}/config" ]
 
 RUN unzip -o install-drools.zip && \
     rm install-drools.zip && \
