@@ -620,44 +620,6 @@ EOF
 				-Dfile=$RULES_JAR -DgeneratePom=true -DupdateReleaseInfo=true
 		fi
 	fi
-
-	update_monitor $CONTROLLER_NAME
-}
-
-
-function update_monitor() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
-
-	local NAME lastline
-	
-	NAME=$1
-	
-	if [[ -f ${POLICY_HOME}/etc/monitor/monitor.cfg ]]; then
-		if grep -q "^${NAME}=" ${POLICY_HOME}/etc/monitor/monitor.cfg; then
-			echo "OK: updating monitoring entry for ${NAME}"
-			/bin/sed -i.bak \
-				-e "s/^${NAME}=.*/${NAME}=off/g" \
-				${POLICY_HOME}/etc/monitor/monitor.cfg
-		else
-			# make sure file ends with newline
-			lastline=$(tail -n 1 ${POLICY_HOME}/etc/monitor/monitor.cfg; echo x)
-			lastline=${lastline%x}
-			if [ "${lastline: -1}" = $'\n' ]; then
-				echo "OK: adding an entry for ${NAME} in ${POLICY_HOME}/etc/monitor/monitor.cfg"
-			else
-				echo "OK: adding an entry for ${NAME} in ${POLICY_HOME}/etc/monitor/monitor.cfg (with newline)"
-				echo "" >> ${POLICY_HOME}/etc/monitor/monitor.cfg
-			fi
-
-
-			echo "${NAME}=off" >> ${POLICY_HOME}/etc/monitor/monitor.cfg
-		fi
-	else
-		echo "WARNING: ${POLICY_HOME}/etc/monitor/monitor.cfg does not exist. No monitoring enabled."	
-	fi
 }
 
 # Usage: getPomAttributes <pom-file> <attribute> ...
