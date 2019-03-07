@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM alpine:3.9
 
 ARG BUILD_VERSION=${BUILD_VERSION}
 ARG POLICY_HOME=/opt/app/policy
@@ -6,7 +6,7 @@ ARG POLICY_LOGS=/var/log/onap/policy/pdpd
 ARG POLICY_INSTALL=/tmp/policy-install
 
 ENV BUILD_VERSION ${BUILD_VERSION}
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 
 ENV POLICY_INSTALL ${POLICY_INSTALL}
 ENV POLICY_HOME ${POLICY_HOME}
@@ -15,28 +15,15 @@ ENV POLICY_CONFIG ${POLICY_HOME}/config
 ENV POLICY_LOGBACK ${POLICY_CONFIG}/logback.xml
 ENV POLICY_DOCKER true
 
-RUN \
-        apt-get clean && \
-        apt-get update && \
-        apt-get install -y zip unzip curl wget ssh telnet maven && \
-        apt-get install -y software-properties-common && \
-        apt-get install -y jq httpie && \
-        apt-get install -y python-pip && \
-        add-apt-repository ppa:openjdk-r/ppa && \
-        apt-get clean && \
-        apt-get update && \
-        apt-get install -y openjdk-8-jdk
+RUN apk --update add --no-cache busybox-extras \
+                                bash zip unzip curl \
+                                wget openssh  maven jq \
+                                httpie py-pip openjdk8
 
-RUN useradd --create-home --shell /bin/bash policy
+RUN addgroup -S policy && adduser -S policy -s /bin/bash
 
 # install MariaDB client
-RUN \
-    apt-get install -y apt-transport-https && \
-        apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db && \
-        add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://ftp.osuosl.org/pub/mariadb/repo/10.0/ubuntu trusty main' && \
-        apt-get clean && \
-        apt-get update && \
-        apt-get install -y mariadb-client
+RUN apk --update add --no-cache mariadb-client
 
 RUN pip install http-prompt
 RUN mkdir -p ${POLICY_HOME}/config ${POLICY_LOGS} ${POLICY_INSTALL}/config && \
