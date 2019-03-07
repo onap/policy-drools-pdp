@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b0132ec_32558d39",
+        "filename": "packages/base/src/files/etc/profile.d/env.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-03-07T09:38:33Z",
+      "side": 1,
+      "message": "accomodates -\u003e accommodates",
+      "range": {
+        "startLine": 26,
+        "startChar": 40,
+        "endLine": 26,
+        "endChar": 51
+      },
+      "revId": "c42e1e4e4c73f01a4f5419bb2fa0e9ea6cbe656f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
