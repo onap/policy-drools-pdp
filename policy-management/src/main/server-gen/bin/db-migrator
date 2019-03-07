@@ -520,7 +520,7 @@ if [[ -z ${SCHEMA} ]]; then
 	exit 2
 fi
 
-source "${POLICY_HOME}"/etc/profile.d/base.conf
+source "${POLICY_HOME}"/etc/profile.d/env.sh
 
 if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
 	echo "error: no database has been set up" 
