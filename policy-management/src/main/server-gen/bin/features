@@ -409,10 +409,9 @@ function enableDbAnalysis()
 		return 0
 	fi
 	
-	source "${POLICY_HOME}"/etc/profile.d/base.conf
+	source "${POLICY_HOME}"/etc/profile.d/env.sh
 	if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
-		echo "error: not existing configuration to contact the database"
-		return 2
+		echo "warning: DB server is not configured"
 	fi
 
 	return 0
@@ -1086,7 +1085,7 @@ function installFeatures
 				echo "feature ${name} has been installed (no configuration present)"
 			fi
 					
-			customOpScript "${featureName}" "install"
+			customOpScript "${name}" "install"
 		done
 		
 		# check the current directory and the 'config' directory for a

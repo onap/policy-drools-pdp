@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 ###
 # ============LICENSE_START=======================================================
-# Base Package
+# ONAP
 # ================================================================================
-# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,16 +19,32 @@
 # ============LICENSE_END=========================================================
 ###
 
+
+# some non-docker environments may set up POLICY_HOME
+# as a templated installation var (ie. ${{x}}) instead of
+# and environment variable (case of docker passed to the
+# container). The following conditional accomodates that
+# scenario.
+
+templateRegex='^\$\{\{POLICY_HOME}}$'
+
+if [[ -z "${POLICY_HOME}" ]]; then
+    templatedPolicyHome='${{POLICY_HOME}}'
+    if [[ ! ${templatedPolicyHome} =~ ${templateRegex} ]]; then
+        POLICY_HOME=${templatedPolicyHome}
+    fi
+fi
+
 set -a
 
-POLICY_HOME=${{POLICY_HOME}}
+POLICY_HOME=${POLICY_HOME:=/opt/app/policy}
 
-source ${POLICY_HOME}/etc/build.info
-for c in ${POLICY_HOME}/etc/profile.d/*.conf ; do
+confs=$(ls "${POLICY_HOME}"/etc/profile.d/*.conf 2> /dev/null)
+for c in ${confs} ; do
     source ${c}
 done
 
-for x in ${POLICY_HOME}/bin ${JAVA_HOME}/bin ${HOME}/bin ; do
+for x in "${POLICY_HOME}"/bin "${JAVA_HOME}"/bin "${HOME}"/bin ; do
   if [ -d $x ] ; then
     case ":$PATH:" in
       *":$x:"*) :;; # already there

@@ -3,7 +3,7 @@
 # ============LICENSE_START=======================================================
 # ONAP
 # ================================================================================
-# Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017, 2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -520,7 +520,7 @@ if [[ -z ${SCHEMA} ]]; then
 	exit 2
 fi
 
-source "${POLICY_HOME}"/etc/profile.d/base.conf
+source "${POLICY_HOME}"/etc/profile.d/env.sh
 
 if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
 	echo "error: no database has been set up" 
