@@ -1,8 +1,8 @@
 ###
 # ============LICENSE_START=======================================================
-# Base Package
+# ONAP
 # ================================================================================
-# Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,4 +18,4 @@
 # ============LICENSE_END=========================================================
 ###
 
-* * * * * export POLICY_HOME=${{POLICY_HOME}}; ${{POLICY_HOME}}/bin/monitor >/dev/null 2>&1
+* * * * * bash -l -c '${POLICY_HOME}/bin/monitor >/dev/null 2>&1'
