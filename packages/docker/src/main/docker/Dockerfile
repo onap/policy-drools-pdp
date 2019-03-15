@@ -16,16 +16,19 @@ ENV POLICY_CONFIG ${POLICY_HOME}/config
 ENV POLICY_LOGBACK ${POLICY_CONFIG}/logback.xml
 ENV POLICY_DOCKER true
 
-RUN apk --update add --no-cache busybox-extras \
-                                bash coreutils grep findutils \
-                                zip unzip curl \
-                                wget openssh  maven jq \
-                                httpie py-pip openjdk8
+RUN apk update && \
+    apk add --update --no-cache busybox-extras \
+                                bash bash-completion procps \
+                                coreutils less grep findutils \
+                                zip unzip file \
+                                openssl openssh \
+                                python py-pip openjdk8 maven \
+                                curl wget httpie jq
 
 RUN addgroup -S policy && adduser -S policy -s /bin/bash
 
 # install MariaDB client
-RUN apk --update add --no-cache mariadb-client
+RUN apk add --update --no-cache mariadb-client && rm -rf /var/cache/apk/*
 
 RUN pip install http-prompt
 RUN mkdir -p ${POLICY_HOME}/config ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \
