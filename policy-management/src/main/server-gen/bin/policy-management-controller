@@ -102,9 +102,9 @@ function um_stop() {
        remove_pid_file
     else
 	if [[ -n ${TELEMETRY_PASSWORD} ]]; then
-	    http_proxy= timeout 30 curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
+	    http_proxy= timeout 10 curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
 	else
-	    http_proxy= timeout 30 curl -k --silent -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
+	    http_proxy= timeout 10 curl -k --silent -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
 	fi
 	sleep 5
 	echo "Stopping $SNAME..."
