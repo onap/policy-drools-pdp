@@ -21,7 +21,7 @@ RUN apk update && \
                                 bash bash-completion procps \
                                 coreutils less grep findutils \
                                 zip unzip file \
-                                openssl openssh \
+                                nss openssl openssh \
                                 python py-pip openjdk8 maven \
                                 curl wget httpie jq
 

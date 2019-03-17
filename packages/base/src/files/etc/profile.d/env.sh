@@ -35,11 +35,13 @@ if [[ -z "${POLICY_HOME}" ]]; then
     fi
 fi
 
+confs=$(ls "${POLICY_HOME}"/etc/profile.d/*.conf 2> /dev/null)
+c=
+
 set -a
 
 POLICY_HOME=${POLICY_HOME:=/opt/app/policy}
 
-confs=$(ls "${POLICY_HOME}"/etc/profile.d/*.conf 2> /dev/null)
 for c in ${confs} ; do
     source ${c}
 done
