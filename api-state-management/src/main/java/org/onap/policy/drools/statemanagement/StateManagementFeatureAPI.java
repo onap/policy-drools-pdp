@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,8 +27,8 @@ import javax.validation.constraints.NotNull;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.im.AllSeemsWellException;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.utils.OrderedService;
-import org.onap.policy.drools.utils.OrderedServiceImpl;
+import org.onap.policy.common.utils.services.OrderedService;
+import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
 /**
  * This interface provides a way to invoke optional features at various points in the code. At
@@ -81,10 +81,10 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
      * implemented in the common modules IntegrityMonitor where it will cause the testTransaction to
      * fail if any module has set the value ALLNOTWELL, stopping the forward progress counter and
      * eventually causing the operational state to become disabled.
-     * 
+     *
      * <p>ALLSEEMSWELL is passed to the method when the client is healthy ALLNOTWELL is passed to the
      * method when the client is disabled
-     * 
+     *
      * @param key - This should be a unique identifier for the entity making the call (e.g., class
      *        name)
      * @param asw - This is the indicator of health. See constants: ALLSEEMSWELL or ALLNOTWELL
@@ -98,42 +98,42 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
 
     /**
      * This method is called to add an Observer to receive notifications of state changes.
-     * 
+     *
      * @param stateChangeObserver observer
      */
     public void addObserver(Observer stateChangeObserver);
 
     /**
      * Returns the X.731 Administrative State for this resource.
-     * 
+     *
      * @return String (locked, unlocked)
      */
     public String getAdminState();
 
     /**
      * Returns the X.731 Operational State for this resource.
-     * 
+     *
      * @return String (enabled, disabled)
-     */    
+     */
     public String getOpState();
 
     /**
      * Returns the X.731 Availability Status for this resource.
-     * 
+     *
      * @return String (failed; dependency; dependency,failed)
-     */    
+     */
     public String getAvailStatus();
 
     /**
      * Returns the X.731 Standby Status for this resource.
-     * 
+     *
      * @return String (providingservice, hotstandby or coldstandby)
-     */    
+     */
     public String getStandbyStatus();
 
     /**
      * Returns the X.731 Standby Status for the named resource
-     * 
+     *
      * @param String (resourceName)
      * @return String (providingservice, hotstandby or coldstandby)
      */
@@ -143,7 +143,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
      * This method moves the X.731 Operational State for the named resource into a value of disabled
      * and the Availability Status to a value of failed. As a consequence the Standby Status value
      * will take a value of coldstandby.
-     * 
+     *
      * @param resourceName resource name
      * @throws Exception exception
      */
@@ -153,7 +153,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
      * This method moves the X.731 Operational State for this resource into a value of disabled and
      * the Availability Status to a value of failed. As a consequence the Standby Status value will
      * take a value of coldstandby.
-     * 
+     *
      * @throws Exception exception
      */
     public void disableFailed() throws Exception;
@@ -163,7 +163,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
      * providingservice. If the current value is coldstandby, no change is made. If the current
      * value is null, it will move to providingservice assuming the Operational State is enabled and
      * Administrative State is unlocked.
-     * 
+     *
      * @throws Exception exception
      */
     public void promote() throws Exception;
@@ -172,7 +172,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
      * This method moves the X.731 Standby Status for this resource from providingservice to
      * hotstandby. If the current value is null, it will move to hotstandby assuming the Operational
      * State is enabled and Administrative State is unlocked. Else, it will move to coldstandby
-     * 
+     *
      * @throws Exception exception
      */
     public void demote() throws Exception;
@@ -180,14 +180,14 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
     /**
      * Returns the resourceName associated with this instance of the
      * StateManagementFeature.
-     * 
+     *
      * @return String (resourceName)
      */
     public String getResourceName();
 
     /**
      * This Lockable method will lock the StateManagement object Admin state.
-     * 
+     *
      * @return true if successful, false otherwise
      */
     @Override
@@ -195,7 +195,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
 
     /**
      * This Lockable method will unlock the StateManagement object Admin state.
-     * 
+     *
      * @return true if successfull, false otherwise
      */
     @Override
@@ -203,7 +203,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
 
     /**
      * This Lockable method indicates the Admin state StateManagement object.
-     * 
+     *
      * @return true if locked, false otherwise
      */
     @Override

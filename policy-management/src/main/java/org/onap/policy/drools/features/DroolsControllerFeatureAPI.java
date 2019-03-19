@@ -21,9 +21,9 @@
 package org.onap.policy.drools.features;
 
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
+import org.onap.policy.common.utils.services.OrderedService;
+import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.utils.OrderedService;
-import org.onap.policy.drools.utils.OrderedServiceImpl;
 
 /**
  * Drools Controller Feature API.   Hooks into the Drools Controller operations.

@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * api-resource-locks
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,17 +20,17 @@
 
 package org.onap.policy.drools.core.lock;
 
-import org.onap.policy.drools.utils.OrderedService;
-import org.onap.policy.drools.utils.OrderedServiceImpl;
+import org.onap.policy.common.utils.services.OrderedService;
+import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
 /**
  * Resource locks. Each lock has an "owner", which is intended to be unique across a
  * single instance of a running PolicyEngine.
- * 
+ *
  * <p>This interface provides a way to invoke optional features at various points in the
  * code. At appropriate points in the application, the code iterates through this list,
  * invoking these optional methods.
- * 
+ *
  * <p>Implementers may choose to implement a level of locking appropriate to the application.
  * For instance, they may choose to implement an engine-wide locking scheme, or they may
  * choose to implement a global locking scheme (e.g., through a shared DB).
@@ -71,7 +71,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
 
     /**
      * This method is called before a lock is acquired on a resource.
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @param holdSec the amount of time, in seconds, that the lock should be held
@@ -84,7 +84,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
 
     /**
      * This method is called after a lock for a resource has been acquired or denied.
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @param locked {@code true} if the lock was acquired, {@code false} if it was denied
@@ -98,7 +98,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
     /**
      * This method is called before a lock is refreshed on a resource. It may be invoked
      * repeatedly to extend the time that a lock is held.
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @param holdSec the amount of time, in seconds, that the lock should be held
@@ -112,7 +112,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
     /**
      * This method is called after a lock for a resource has been refreshed (or after the
      * refresh has been denied).
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @param locked {@code true} if the lock was acquired, {@code false} if it was denied
@@ -125,7 +125,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
 
     /**
      * This method is called before a lock on a resource is released.
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @return the result, where <b>OPER_DENIED</b> indicates that the lock is not
@@ -137,7 +137,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
 
     /**
      * This method is called after a lock on a resource is released.
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @param unlocked {@code true} if the lock was released, {@code false} if the owner
@@ -151,7 +151,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
 
     /**
      * This method is called before a check is made to determine if a resource is locked.
-     * 
+     *
      * @param resourceId resource id
      * @return the result, where <b>OPER_ACCEPTED</b> indicates that the resource is
      *         locked, while <b>OPER_DENIED</b> indicates that it is not
@@ -163,7 +163,7 @@ public interface PolicyResourceLockFeatureApi extends OrderedService {
     /**
      * This method is called before a check is made to determine if a particular owner
      * holds the lock on a resource.
-     * 
+     *
      * @param resourceId resource id
      * @param owner owner
      * @return the result, where <b>OPER_ACCEPTED</b> indicates that the resource is
