@@ -67,6 +67,14 @@ public interface SystemPersistence {
     boolean backupController(String controllerName);
 
     /**
+     * backs up a topic configuration.
+     *
+     * @param topicName the controller name
+     * @return true if the configuration is backed up
+     */
+    boolean backupTopic(String topicName);
+
+    /**
      * persists controller configuration.
      *
      * @param controllerName the controller name
@@ -79,12 +87,32 @@ public interface SystemPersistence {
     boolean storeController(String controllerName, Object configuration);
 
     /**
+     * persists topic configuration.
+     *
+     * @param topicName the controller name
+     * @param configuration object containing the configuration
+     *
+     * @return true if storage is succesful, false otherwise
+     * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
+     *         manager
+     */
+    boolean storeTopic(String topicName, Object configuration);
+
+    /**
      * delete controller configuration.
      *
      * @param controllerName the controller name
      * @return true if storage is succesful, false otherwise
      */
     boolean deleteController(String controllerName);
+
+    /**
+     * delete topic configuration.
+     *
+     * @param topicName the topic name
+     * @return true if storage is succesful, false otherwise
+     */
+    boolean deleteTopic(String topicName);
 
     /**
      * get controller properties.
@@ -98,11 +126,30 @@ public interface SystemPersistence {
     Properties getControllerProperties(String controllerName);
 
     /**
+     * get topic properties.
+     *
+     * @param topicName topic name
+     * @return properties for this topic
+     *
+     * @throws IllegalArgumentException if topicName is invalid
+     */
+    Properties getTopicProperties(String topicName);
+
+    /**
      * get controllers configuration.
      *
      * @return list of controllers properties
      */
     List<Properties> getControllerProperties();
+
+
+    /**
+     * get topic configuration.
+     *
+     * @return list of topic properties
+     */
+    List<Properties> getTopicProperties();
+
 
     /**
      * get environments.

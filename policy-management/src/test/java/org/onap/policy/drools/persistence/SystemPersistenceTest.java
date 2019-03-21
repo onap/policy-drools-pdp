@@ -55,14 +55,29 @@ public class SystemPersistenceTest {
     private static final String TEST_CONTROLLER_NAME = "foo";
 
     /**
-     * Test JUnit Controller Name.
+     * Test JUnit Topic Name.
+     */
+    private static final String TEST_TOPIC_NAME = TEST_CONTROLLER_NAME;
+
+    /**
+     * Test JUnit Controller File.
      */
     private static final String TEST_CONTROLLER_FILE = TEST_CONTROLLER_NAME + "-controller.properties";
 
     /**
-     * Test JUnit Controller Name Backup.
+     * Test JUnit Controller Backup File
      */
     private static final String TEST_CONTROLLER_FILE_BAK = TEST_CONTROLLER_FILE + ".bak";
+
+    /**
+     * Test JUnit Topic File
+     */
+    private static final String TEST_TOPIC_FILE = TEST_CONTROLLER_NAME + "-topic.properties";
+
+    /**
+     * Test JUnit Controller Name Backup.
+     */
+    private static final String TEST_TOPIC_FILE_BAK = TEST_TOPIC_FILE + ".bak";
 
     /**
      * Test JUnit Environment/Engine properties.
@@ -143,24 +158,53 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test3Controller() {
+    public void test3Topic() {
         SystemPersistence.manager.setConfigurationDir(null);
 
-        final Path controllerPath = Paths
+        Path topicPath = Paths
+            .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_TOPIC_FILE);
+
+        Path topicBakPath = Paths
+            .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_TOPIC_FILE_BAK);
+
+        assertTrue(Files.notExists(topicPath));
+        assertTrue(Files.notExists(topicBakPath));
+
+        SystemPersistence.manager.storeTopic(TEST_TOPIC_NAME, new Properties());
+
+        assertTrue(Files.exists(topicPath));
+
+        Properties properties = SystemPersistence.manager.getTopicProperties(TEST_TOPIC_NAME);
+        assertNotNull(properties);
+
+        List<Properties> topicPropsList = SystemPersistence.manager.getTopicProperties();
+        assertEquals(1,  topicPropsList.size());
+
+        SystemPersistence.manager.backupTopic(TEST_TOPIC_NAME);
+        assertTrue(Files.exists(topicBakPath));
+
+        SystemPersistence.manager.deleteTopic(TEST_TOPIC_NAME);
+        assertTrue(Files.notExists(topicPath));
+    }
+
+    @Test
+    public void test4Controller() {
+        SystemPersistence.manager.setConfigurationDir(null);
+
+        Path controllerPath = Paths
                 .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
 
-        final Path controllerBakPath = Paths
+        Path controllerBakPath = Paths
                 .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
 
         assertTrue(Files.notExists(controllerPath));
         assertTrue(Files.notExists(controllerBakPath));
 
-        Properties properties = new Properties();
-        SystemPersistence.manager.storeController(TEST_CONTROLLER_NAME, properties);
+        SystemPersistence.manager.storeController(TEST_CONTROLLER_NAME, new Properties());
 
         assertTrue(Files.exists(controllerPath));
 
-        properties = SystemPersistence.manager.getControllerProperties(TEST_CONTROLLER_NAME);
+        Properties properties = SystemPersistence.manager.getControllerProperties(TEST_CONTROLLER_NAME);
         assertNotNull(properties);
 
         List<Properties> controllerPropsList = SystemPersistence.manager.getControllerProperties();
@@ -188,14 +232,20 @@ public class SystemPersistenceTest {
                         .getProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME));
         }
 
+        SystemPersistence.manager.deleteTopic(TEST_TOPIC_NAME);
+
         final Path testControllerBakPath = Paths
                 .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
+
+        final Path testTopicBakPath = Paths
+            .get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_TOPIC_FILE_BAK);
 
         final Path policyEnginePath = Paths.get(OTHER_CONFIG_DIR, FileSystemPersistence.PROPERTIES_FILE_ENGINE);
         final Path environmentPath = Paths.get(OTHER_CONFIG_DIR, ENV_PROPS_FILE);
         final Path systemPath = Paths.get(OTHER_CONFIG_DIR, SYSTEM_PROPS_FILE);
 
         Files.deleteIfExists(testControllerBakPath);
+        Files.deleteIfExists(testTopicBakPath);
         Files.deleteIfExists(policyEnginePath);
         Files.deleteIfExists(environmentPath);
         Files.deleteIfExists(systemPath);

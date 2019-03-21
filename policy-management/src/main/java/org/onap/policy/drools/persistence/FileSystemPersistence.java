@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -54,10 +55,31 @@ public class FileSystemPersistence implements SystemPersistence {
     public static final String CONTROLLER_SUFFIX_IDENTIFIER = "-controller";
 
     /**
+     * File Backup Suffix
+     */
+    public static final String FILE_BACKUP_SUFFIX = ".bak";
+
+    /**
      * Policy controller properties file suffix.
      */
     public static final String PROPERTIES_FILE_CONTROLLER_SUFFIX =
             CONTROLLER_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION;
+
+    /**
+     * Topic configuration suffix.
+     */
+    public static final String TOPIC_SUFFIX_IDENTIFIER = "-topic";
+
+    /**
+     * Policy controller properties file suffix.
+     */
+    public static final String PROPERTIES_FILE_TOPIC_SUFFIX = TOPIC_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION;
+
+    /**
+     * Policy topic properties file suffix.
+     */
+    public static final String PROPERTIES_FILE_TOPIC_BACKUP_SUFFIX =
+        TOPIC_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION + ".bak";
 
     /**
      * Policy controller properties file suffix.
@@ -228,6 +250,16 @@ public class FileSystemPersistence implements SystemPersistence {
         return getPropertiesList(PROPERTIES_FILE_CONTROLLER_SUFFIX, this::testControllerName);
     }
 
+    @Override
+    public Properties getTopicProperties(String topicName) {
+        return this.getProperties(topicName + TOPIC_SUFFIX_IDENTIFIER);
+    }
+
+    @Override
+    public List<Properties> getTopicProperties() {
+        return getPropertiesList(PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
+
     private boolean testControllerName(String controllerFilename, Properties controllerProperties) {
         String controllerName = controllerFilename
                 .substring(0, controllerFilename.length() - PROPERTIES_FILE_CONTROLLER_SUFFIX.length());
@@ -245,79 +277,97 @@ public class FileSystemPersistence implements SystemPersistence {
 
     @Override
     public boolean backupController(String controllerName) {
-        final Path controllerPropertiesPath = Paths.get(this.configurationDirectory.toString(),
-                controllerName + PROPERTIES_FILE_CONTROLLER_SUFFIX);
+        return backup(controllerName, PROPERTIES_FILE_CONTROLLER_SUFFIX);
+    }
 
-        if (Files.exists(controllerPropertiesPath)) {
+    @Override
+    public boolean backupTopic(String topicName) {
+        return backup(topicName, PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
+
+    private boolean backup(String name, String fileSuffix) {
+        Path path = Paths.get(this.configurationDirectory.toString(), name + fileSuffix);
+        if (Files.exists(path)) {
             try {
-                logger.info("{}: there is an existing configuration file @ {} ", this,
-                        controllerPropertiesPath);
-                final Path controllerPropertiesBakPath = Paths.get(this.configurationDirectory.toString(),
-                        controllerName + PROPERTIES_FILE_CONTROLLER_BACKUP_SUFFIX);
-                Files.copy(controllerPropertiesPath, controllerPropertiesBakPath,
-                        StandardCopyOption.REPLACE_EXISTING);
-            } catch (final Exception e) {
-                logger.warn("{}: {} cannot be backed up", this, controllerName, e);
+                logger.info("{}: there is an existing configuration file @ {} ", this, path);
+                Path bakPath = Paths.get(this.configurationDirectory.toString(), name + fileSuffix + FILE_BACKUP_SUFFIX);
+                Files.copy(path, bakPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                logger.warn("{}: {} cannot be backed up", this, name, e);
                 return false;
             }
         }
-
         return true;
     }
 
     @Override
     public boolean storeController(String controllerName, Object configuration) {
-        if (!(configuration instanceof Properties)) {
-            throw new IllegalArgumentException(
-                    "configuration must be of type properties to be handled by this manager");
-        }
+        checkPropertiesParam(configuration);
+        return store(controllerName, (Properties) configuration, PROPERTIES_FILE_CONTROLLER_SUFFIX);
+    }
 
-        final Properties properties = (Properties) configuration;
+    @Override
+    public boolean storeTopic(String topicName, Object configuration) {
+        checkPropertiesParam(configuration);
+        return store(topicName, (Properties) configuration, PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
 
-        final Path controllerPropertiesPath = Paths.get(this.configurationDirectory.toString(),
-                controllerName + PROPERTIES_FILE_CONTROLLER_SUFFIX);
-        if (Files.exists(controllerPropertiesPath)) {
+    private boolean store(String name, Properties properties, String fileSuffix) {
+        Path path = Paths.get(this.configurationDirectory.toString(), name + fileSuffix);
+        if (Files.exists(path)) {
             try {
-                final Properties oldProperties =
-                        PropertyUtil.getProperties(controllerPropertiesPath.toFile());
+                Properties oldProperties = PropertyUtil.getProperties(path.toFile());
                 if (oldProperties.equals(properties)) {
-                    logger.info(
-                            "{}: noop: a properties file with the same contents exists for controller {}.", this,
-                            controllerName);
+                    logger.info("{}: noop: a properties file with the same contents exists for controller {}.", this,
+                                name);
                     return true;
                 } else {
-                    this.backupController(controllerName);
+                    this.backupController(name);
                 }
-            } catch (final Exception e) {
-                logger.info("{}: no existing {} properties {}", this, controllerName, e);
+            } catch (Exception e) {
+                logger.info("{}: no existing {} properties {}", this, name, e);
                 // continue
             }
         }
 
-        final File controllerPropertiesFile = controllerPropertiesPath.toFile();
-        try (FileWriter writer = new FileWriter(controllerPropertiesFile)) {
+        File file = path.toFile();
+        try (FileWriter writer = new FileWriter(file)) {
             properties.store(writer, "Machine created Policy Controller Configuration");
-        } catch (final Exception e) {
-            logger.warn("{}: {} cannot be saved", this, controllerName, e);
+        } catch (Exception e) {
+            logger.warn("{}: {} cannot be saved", this, name, e);
             return false;
         }
 
         return true;
     }
 
+    private void checkPropertiesParam(Object configuration) {
+        if (!(configuration instanceof Properties)) {
+            throw new IllegalArgumentException(
+                "configuration must be of type properties to be handled by this manager");
+        }
+    }
+
+
     @Override
     public boolean deleteController(String controllerName) {
-        final Path controllerPropertiesPath = Paths.get(this.configurationDirectory.toString(),
-                controllerName + PROPERTIES_FILE_CONTROLLER_SUFFIX);
+        return delete(controllerName, PROPERTIES_FILE_CONTROLLER_SUFFIX);
+    }
 
-        if (Files.exists(controllerPropertiesPath)) {
+    @Override
+    public boolean deleteTopic(String topicName) {
+        return delete(topicName, PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
+
+    public boolean delete(String name, String fileSuffix) {
+        Path path = Paths.get(this.configurationDirectory.toString(), name + fileSuffix);
+
+        if (Files.exists(path)) {
             try {
-                final Path controllerPropertiesBakPath = Paths.get(this.configurationDirectory.toString(),
-                        controllerName + PROPERTIES_FILE_CONTROLLER_BACKUP_SUFFIX);
-                Files.move(controllerPropertiesPath, controllerPropertiesBakPath,
-                        StandardCopyOption.REPLACE_EXISTING);
+                Path bakPath = Paths.get(this.configurationDirectory.toString(), name + fileSuffix + FILE_BACKUP_SUFFIX);
+                Files.move(path, bakPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (final Exception e) {
-                logger.warn("{}: {} cannot be deleted", this, controllerName, e);
+                logger.warn("{}: {} cannot be deleted", this, name, e);
                 return false;
             }
         }
@@ -328,17 +378,18 @@ public class FileSystemPersistence implements SystemPersistence {
     /**
      * provides a list of files sorted by name in ascending order in the configuration directory.
      */
-    protected File[] sortedListFiles() {
-        final File[] dirFiles = this.configurationDirectory.toFile().listFiles();
-        Arrays.sort(dirFiles, (e1, e2) -> e1.getName().compareTo(e2.getName()));
+    private File[] sortedListFiles() {
+        File[] dirFiles = this.configurationDirectory.toFile().listFiles();
+        if (dirFiles != null) {
+            Arrays.sort(dirFiles, Comparator.comparing(File::getName));
+        } else {
+            dirFiles = new File[]{};
+        }
         return dirFiles;
     }
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("FileSystemPersistence [configurationDirectory=")
-        .append(this.configurationDirectory).append("]");
-        return builder.toString();
+        return "FileSystemPersistence [configurationDirectory=" + this.configurationDirectory + "]";
     }
 }

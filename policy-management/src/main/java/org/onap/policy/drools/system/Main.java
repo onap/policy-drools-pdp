@@ -21,6 +21,7 @@
 package org.onap.policy.drools.system;
 
 import java.util.Properties;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -76,7 +77,13 @@ public class Main {
             PolicyEngine.manager.setEnvironment(env);
         }
 
-        /* 2. Start the Engine with the basic services only (no Policy Controllers) */
+        /* 2. Add topics */
+
+        for (Properties topicProperties : SystemPersistence.manager.getTopicProperties()) {
+            TopicEndpoint.manager.addTopics(topicProperties);
+        }
+
+        /* 3. Start the Engine with the basic services only (no Policy Controllers) */
 
         MDCTransaction trans =
                 MDCTransaction.newTransaction(null, null)
@@ -121,7 +128,7 @@ public class Main {
             System.exit(1);
         }
 
-        /* 3. Create and start the controllers */
+        /* 4. Create and start the controllers */
 
         for (final Properties controllerProperties :
             SystemPersistence.manager.getControllerProperties()) {
