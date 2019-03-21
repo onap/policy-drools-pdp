@@ -16,6 +16,24 @@
       "revId": "3748b447876019681edce86942089a3652232ecc",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "356166c5_50939f9b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/persistence/FileSystemPersistence.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-03-21T14:25:14Z",
+      "side": 1,
+      "message": "could be a good recovery solution with a \"false\" return, if you don\u0027t mind if done, in future review (as is existing code).",
+      "parentUuid": "3bf620a2_c8896811",
+      "revId": "3748b447876019681edce86942089a3652232ecc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
