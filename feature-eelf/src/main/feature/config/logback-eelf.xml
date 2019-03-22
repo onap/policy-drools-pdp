@@ -36,6 +36,7 @@
 		value="%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%X{RequestID}|%thread|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{ErrorCategory}|%X{ErrorCode}|%X{ErrorDesciption}|%msg%replace(%xException){'\n',' - '}%nopex%n" />
 		
 	<property name="networkPattern" value="[%d|%t]%m%n" />
+    <property name="abstractNetworkPattern" value="[%d] [%X{networkEventType:-NULL}|%X{networkProtocol:-NULL}|%X{networkTopic:-NULL}|%X{requestID:-NULL}]%n" />
 	<property name="debugPattern" value="[%date|%level|%logger{0}|%thread] %replace(%msg){'\n', ' '}%n" />
 
 	<property name="logDirectory" value="logs/Policy" />
