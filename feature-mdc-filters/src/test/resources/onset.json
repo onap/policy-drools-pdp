@@ -1,0 +1,18 @@
+{
+    "closedLoopEventClient": "DCAE_INSTANCE_ID.dcae-tca",
+    "policyVersion": "1.0.0.5",
+    "policyName": "policyTest",
+    "policyScope": "type=SampleType,closedLoopControlName=SampleClosedLoop",
+    "target_type": "VM",
+    "AAI": {
+        "vserver.is-closed-loop-disabled": false,
+        "vserver.vserver-name": "example-vserver-name"
+    },
+    "closedLoopAlarmStart": 1484855291527925,
+    "closedLoopEventStatus": "ONSET",
+    "closedLoopControlName": "CL-TEST",
+    "version": "1.0.2",
+    "target": "vserver.vserver-name",
+    "requestID": "8c1b8bd8-06f7-493f-8ed7-daaa4cc481bc",
+    "from": "DCAE"
+}
