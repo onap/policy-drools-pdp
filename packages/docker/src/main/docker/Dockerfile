@@ -1,41 +1,29 @@
-FROM alpine:3.9
+FROM onap/policy-common-alpine
 
-ARG BUILD_VERSION=${BUILD_VERSION}
-ARG POLICY_HOME=/opt/app/policy
+LABEL maintainer="Policy Team"
+
 ARG POLICY_LOGS=/var/log/onap/policy/pdpd
 ARG POLICY_INSTALL=/tmp/policy-install
 
-ENV BUILD_VERSION ${BUILD_VERSION}
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-
 ENV POLICY_INSTALL ${POLICY_INSTALL}
 ENV POLICY_INSTALL_INIT ${POLICY_INSTALL}/config
-ENV POLICY_HOME ${POLICY_HOME}
 ENV POLICY_LOGS ${POLICY_LOGS}
 ENV POLICY_CONFIG ${POLICY_HOME}/config
 ENV POLICY_LOGBACK ${POLICY_CONFIG}/logback.xml
 ENV POLICY_DOCKER true
 
-RUN apk update && \
-    apk add --update --no-cache busybox-extras \
-                                bash bash-completion procps \
-                                coreutils less grep findutils \
-                                zip unzip file \
-                                nss openssl openssh \
-                                python py-pip openjdk8 maven \
-                                curl wget httpie jq
+RUN apk add --no-cache \
+    mariadb-client \
+    file \
+    bash-completion \
+    openssl \
+    less \
+    && pip install http-prompt
 
-RUN addgroup -S policy && adduser -S policy -s /bin/bash
-
-# install MariaDB client
-RUN apk add --update --no-cache mariadb-client && rm -rf /var/cache/apk/*
-
-RUN pip install http-prompt
-RUN mkdir -p ${POLICY_HOME}/config ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \
-    chown -R policy:policy ${POLICY_HOME} ${POLICY_LOGS} ${POLICY_INSTALL}
+RUN mkdir -p ${POLICY_CONFIG} ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \
+    chown -R policy:policy ${POLICY_LOGS} ${POLICY_INSTALL}
 
 WORKDIR ${POLICY_INSTALL}
-
 COPY install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
 
 VOLUME [ "${POLICY_INSTALL_INIT}" ]
