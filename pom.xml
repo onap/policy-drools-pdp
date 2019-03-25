@@ -81,6 +81,7 @@
         <module>feature-simulators</module>
         <module>feature-distributed-locking</module>
         <module>feature-controller-logging</module>
+        <module>feature-mdc-filters</module>
         <module>packages</module>
     </modules>
 
