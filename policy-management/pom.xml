@@ -70,7 +70,6 @@
                         </goals>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <transitive>false</transitive>
                             <outputDirectory>${project.build.directory}/assembly/lib</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
@@ -150,7 +149,6 @@
                             </excludes>
                             <suppressionsLocation>${project.baseUri}checkstyle-suppressions.xml</suppressionsLocation>
                             <consoleOutput>true</consoleOutput>
-                            <failsOnViolation>true</failsOnViolation>
                             <violationSeverity>warning</violationSeverity>
                         </configuration>
                     </execution>
@@ -179,6 +177,12 @@
             <groupId>org.onap.policy.common</groupId>
             <artifactId>policy-endpoints</artifactId>
             <version>${policy.common.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onap.policy.models</groupId>
+            <artifactId>policy-models-pdp</artifactId>
+            <version>${policy.models.version}</version>
         </dependency>
 
         <dependency>
