@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class LifecycleStateActiveTest {
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");
         change.setState(PdpState.ACTIVE);
-        change.setName("test");
+        change.setName(fsm.getName());
 
         fsm.source.offer(new StandardCoder().encode(change));
     }
@@ -101,8 +102,8 @@ public class LifecycleStateActiveTest {
 
     private void assertActive() {
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("A", fsm.getPdpGroup());
-        assertEquals("a", fsm.getPdpSubgroup());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
         assertTrue(fsm.isAlive());
         await().atMost(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS).until(isStatus(PdpState.ACTIVE));
     }
@@ -161,17 +162,22 @@ public class LifecycleStateActiveTest {
     public void stateChange() throws CoderException {
         assertActive();
 
-        /* dup */
+        /* no name and mismatching group info */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("B");
         change.setPdpSubgroup("b");
         change.setState(PdpState.ACTIVE);
-        change.setName("test");
 
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("B", fsm.getPdpGroup());
-        assertEquals("b", fsm.getPdpSubgroup());
+        assertNotEquals("B", fsm.getGroup());
+        assertNotEquals("b", fsm.getSubgroup());
+
+        change.setName(fsm.getName());
+        fsm.source.offer(new StandardCoder().encode(change));
+        assertEquals(PdpState.ACTIVE, fsm.state());
+        assertEquals("B", fsm.getGroup());
+        assertEquals("b", fsm.getSubgroup());
 
         change.setState(PdpState.SAFE);
         fsm.source.offer(new StandardCoder().encode(change));

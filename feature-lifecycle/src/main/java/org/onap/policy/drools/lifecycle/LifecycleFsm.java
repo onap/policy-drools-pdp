@@ -22,8 +22,8 @@ package org.onap.policy.drools.lifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -70,6 +70,9 @@ public class LifecycleFsm implements Startable {
     protected TopicSource source;
     protected TopicSinkClient client;
 
+    @Getter
+    protected final String name = NetworkUtil.getHostname();
+
     protected volatile LifecycleState state = new LifecycleStateTerminated(this);
 
     @GsonJsonIgnore
@@ -89,10 +92,10 @@ public class LifecycleFsm implements Startable {
     protected long statusTimerSeconds = DEFAULT_STATUS_TIMER_SECONDS;
 
     @Getter
-    protected String pdpGroup;
+    protected String group;
 
     @Getter
-    protected String pdpSubgroup;
+    protected String subgroup;
 
     /**
      * Constructor.
@@ -185,8 +188,8 @@ public class LifecycleFsm implements Startable {
     }
 
     protected void setGroupAction(String group, String subgroup) {
-        this.pdpGroup = group;
-        this.pdpSubgroup = subgroup;
+        this.group = group;
+        this.subgroup = subgroup;
     }
 
     protected void transitionToAction(@NonNull LifecycleState newState) {
@@ -232,9 +235,9 @@ public class LifecycleFsm implements Startable {
 
     private PdpStatus statusPayload(PdpState state) {
         PdpStatus status = new PdpStatus();
-        status.setRequestId(UUID.randomUUID().toString());
-        status.setTimestampMs(System.currentTimeMillis());
-        status.setInstance(NetworkUtil.getHostname());
+        status.setName(name);
+        status.setPdpGroup(group);
+        status.setPdpSubgroup(subgroup);
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType("drools");    // TODO: enum ?
@@ -291,6 +294,20 @@ public class LifecycleFsm implements Startable {
         return capabilities;
     }
 
+    protected  boolean isMine(PdpStateChange change) {
+        if (change == null) {
+            return false;
+        }
+
+        if (Objects.equals(name, change.getName())) {
+            return true;
+        }
+
+        return change.getName() == null
+            && change.getPdpGroup() != null
+            && Objects.equals(group, change.getPdpGroup())
+            && Objects.equals(subgroup, change.getPdpSubgroup());
+    }
 
     /* **** IO listeners ***** */
 
@@ -310,15 +327,15 @@ public class LifecycleFsm implements Startable {
         }
 
         @Override
-        public void onTopicEvent(CommInfrastructure commInfrastructure, String topic,
-            StandardCoderObject standardCoderObject, PdpStateChange pdpStateChange) {
+        public void onTopicEvent(CommInfrastructure comm, String topic,
+                                 StandardCoderObject coder, PdpStateChange stateChange) {
 
-            if (pdpStateChange == null) {
-                logger.warn("pdp-state-chage null from {}:{}", commInfrastructure, topic);
+            if (!fsm.isMine(stateChange)) {
+                logger.warn("pdp-state-chage from {}:{} is invalid: {}", comm, topic, stateChange);
                 return;
             }
 
-            fsm.stateChange(pdpStateChange);
+            fsm.stateChange(stateChange);
         }
     }
 

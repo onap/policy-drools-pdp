@@ -26,6 +26,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -167,16 +168,27 @@ public class LifecycleStatePassiveTest {
 
     @Test
     public void stateChange() throws CoderException {
+        /* no name */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");
         change.setState(PdpState.ACTIVE);
-        change.setName("test");
 
+        /* invalid name */
+        change.setName("test");
         fsm.source.offer(new StandardCoder().encode(change));
-        assertEquals(PdpState.ACTIVE, fsm.state.state());
-        assertEquals("A", fsm.pdpGroup);
-        assertEquals("a", fsm.pdpSubgroup);
+
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertNull(fsm.getGroup());
+        assertNull(fsm.getSubgroup());
+
+        /* correct name */
+        change.setName(fsm.getName());
+        fsm.source.offer(new StandardCoder().encode(change));
+
+        assertEquals(PdpState.ACTIVE, fsm.state());
+        assertEquals("A", fsm.group);
+        assertEquals("a", fsm.subgroup);
 
         fsm.shutdown();
     }
@@ -192,17 +204,19 @@ public class LifecycleStatePassiveTest {
         assertTrue(fsm.statusTask.isCancelled());
         assertTrue(fsm.statusTask.isDone());
 
-        assertEquals(1, fsm.client.getSink().getRecentEvents().length);
-        PdpStatus status = new StandardCoder().decode(fsm.client.getSink().getRecentEvents()[0], PdpStatus.class);
+        String[] events = fsm.client.getSink().getRecentEvents();
+        PdpStatus status =
+            new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
         assertEquals("drools", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
-        assertEquals(NetworkUtil.getHostname(), status.getInstance());
+        assertEquals(NetworkUtil.getHostname(), status.getName());
+        assertEquals(fsm.getName(), status.getName());
         assertEquals(PdpMessageType.PDP_STATUS, status.getMessageName());
 
         assertThatThrownBy( () -> await()
-            .atMost(fsm.statusTimerSeconds + 5, TimeUnit.SECONDS)
-            .until(isStatus(PdpState.TERMINATED, 2))).isInstanceOf(ConditionTimeoutException.class);
+            .atMost(2 * fsm.statusTimerSeconds, TimeUnit.SECONDS)
+            .until(isStatus(PdpState.TERMINATED, events.length))).isInstanceOf(ConditionTimeoutException.class);
     }
 
     private void assertBasicPassive() {
