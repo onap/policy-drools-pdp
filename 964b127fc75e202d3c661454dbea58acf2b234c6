@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4efe98fb_03d6ef4e",
+        "filename": "feature-lifecycle/src/main/feature/config/feature-lifecycle.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-03T13:43:23Z",
+      "side": 1,
+      "message": "thank-you - we can copy this to policy/pap",
+      "revId": "964b127fc75e202d3c661454dbea58acf2b234c6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a39c035d_4992db7c",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-03T13:43:23Z",
+      "side": 1,
+      "message": "fyi: default constructor will set the request id and timestamp",
+      "revId": "964b127fc75e202d3c661454dbea58acf2b234c6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b7794f5_4d7c5398",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-03T13:43:23Z",
+      "side": 1,
+      "message": "somewhere, need to discard the message if pdpName!\u003dyour name, or if pdpName\u003dnull \u0026\u0026 the pdpGroup/pdpSubgroup does not match your assigned group/subgroup",
+      "revId": "964b127fc75e202d3c661454dbea58acf2b234c6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
