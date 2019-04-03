@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "140a45af_bdce9e69",
+        "filename": "feature-lifecycle/src/main/feature/config/feature-lifecycle.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 805
+      },
+      "writtenOn": "2019-04-03T15:24:25Z",
+      "side": 1,
+      "message": "Will I need to add these properties for pdpx?",
+      "parentUuid": "4efe98fb_03d6ef4e",
+      "revId": "964b127fc75e202d3c661454dbea58acf2b234c6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a39c035d_4992db7c",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 2
