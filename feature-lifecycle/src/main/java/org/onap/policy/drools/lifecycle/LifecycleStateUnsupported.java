@@ -67,12 +67,12 @@ public abstract class LifecycleStateUnsupported extends LifecycleState {
     }
 
     @Override
-    public void update(PdpUpdate update) {
-        throw new UnsupportedOperationException("start: " + this);
+    public boolean update(PdpUpdate update) {
+        throw new UnsupportedOperationException("update: " + this);
     }
 
     @Override
-    public void stateChange(PdpStateChange change) {
-        throw new UnsupportedOperationException("start: " + this);
+    public boolean stateChange(PdpStateChange change) {
+        throw new UnsupportedOperationException("stateChange: " + this);
     }
 }

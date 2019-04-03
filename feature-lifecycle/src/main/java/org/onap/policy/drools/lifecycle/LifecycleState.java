@@ -37,11 +37,10 @@ public abstract class LifecycleState implements Startable {
     private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
 
     @GsonJsonIgnore
-    protected LifecycleFsm fsm;
+    protected final LifecycleFsm fsm;
 
     /**
      * Constructor.
-     * @param manager Lifecycle Manager.
      */
     public LifecycleState(@NonNull LifecycleFsm manager) {
         this.fsm = manager;
@@ -49,13 +48,11 @@ public abstract class LifecycleState implements Startable {
 
     /**
      * change state.
-     * @param newState new state
      */
     public abstract boolean transitionToState(@NonNull LifecycleState newState);
 
     /**
      * current state.
-     * @return state
      */
     public abstract PdpState state();
 
@@ -66,13 +63,11 @@ public abstract class LifecycleState implements Startable {
 
     /**
      *  update event.
-     * @param update message
      */
-    public abstract void update(@NonNull PdpUpdate update);
+    public abstract boolean update(@NonNull PdpUpdate update);
 
     /**
      * state change event .
-     * @param change message
      */
-    public abstract void stateChange(@NonNull PdpStateChange change);
+    public abstract boolean stateChange(@NonNull PdpStateChange change);
 }

@@ -26,8 +26,10 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.core.ConditionTimeoutException;
@@ -42,6 +44,7 @@ import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
+import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -161,22 +164,49 @@ public class LifecycleStatePassiveTest {
 
     @Test
     public void update() {
-        // TODO
+        PdpUpdate update = new PdpUpdate();
+        update.setName(NetworkUtil.getHostname());
+        update.setPdpGroup("Z");
+        update.setPdpSubgroup("z");
+        update.setPolicies(Collections.emptyList());
+
+        long interval = 2 * fsm.getStatusTimerSeconds();
+        update.setPdpHeartbeatIntervalMs(interval * 1000L);
+
+        assertTrue(fsm.update(update));
+
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
+        assertEquals("Z", fsm.getGroup());
+        assertEquals("z", fsm.getSubgroup());
+        assertBasicPassive();
+
         fsm.shutdown();
     }
 
     @Test
     public void stateChange() throws CoderException {
+        /* no name */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");
         change.setState(PdpState.ACTIVE);
-        change.setName("test");
 
+        /* invalid name */
+        change.setName("test");
         fsm.source.offer(new StandardCoder().encode(change));
-        assertEquals(PdpState.ACTIVE, fsm.state.state());
-        assertEquals("A", fsm.pdpGroup);
-        assertEquals("a", fsm.pdpSubgroup);
+
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertNull(fsm.getGroup());
+        assertNull(fsm.getSubgroup());
+
+        /* correct name */
+        change.setName(fsm.getName());
+        fsm.source.offer(new StandardCoder().encode(change));
+
+        assertEquals(PdpState.ACTIVE, fsm.state());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
 
         fsm.shutdown();
     }
@@ -192,17 +222,19 @@ public class LifecycleStatePassiveTest {
         assertTrue(fsm.statusTask.isCancelled());
         assertTrue(fsm.statusTask.isDone());
 
-        assertEquals(1, fsm.client.getSink().getRecentEvents().length);
-        PdpStatus status = new StandardCoder().decode(fsm.client.getSink().getRecentEvents()[0], PdpStatus.class);
+        String[] events = fsm.client.getSink().getRecentEvents();
+        PdpStatus status =
+            new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
         assertEquals("drools", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
-        assertEquals(NetworkUtil.getHostname(), status.getInstance());
+        assertEquals(NetworkUtil.getHostname(), status.getName());
+        assertEquals(fsm.getName(), status.getName());
         assertEquals(PdpMessageType.PDP_STATUS, status.getMessageName());
 
         assertThatThrownBy( () -> await()
-            .atMost(fsm.statusTimerSeconds + 5, TimeUnit.SECONDS)
-            .until(isStatus(PdpState.TERMINATED, 2))).isInstanceOf(ConditionTimeoutException.class);
+            .atMost(2 * fsm.statusTimerSeconds, TimeUnit.SECONDS)
+            .until(isStatus(PdpState.TERMINATED, events.length))).isInstanceOf(ConditionTimeoutException.class);
     }
 
     private void assertBasicPassive() {

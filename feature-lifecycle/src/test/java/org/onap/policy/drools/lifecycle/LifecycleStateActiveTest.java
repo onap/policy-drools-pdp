@@ -24,9 +24,11 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -36,10 +38,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
+import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
 
@@ -79,7 +83,7 @@ public class LifecycleStateActiveTest {
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");
         change.setState(PdpState.ACTIVE);
-        change.setName("test");
+        change.setName(fsm.getName());
 
         fsm.source.offer(new StandardCoder().encode(change));
     }
@@ -101,8 +105,8 @@ public class LifecycleStateActiveTest {
 
     private void assertActive() {
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("A", fsm.getPdpGroup());
-        assertEquals("a", fsm.getPdpSubgroup());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
         assertTrue(fsm.isAlive());
         await().atMost(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS).until(isStatus(PdpState.ACTIVE));
     }
@@ -161,17 +165,22 @@ public class LifecycleStateActiveTest {
     public void stateChange() throws CoderException {
         assertActive();
 
-        /* dup */
+        /* no name and mismatching group info */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("B");
         change.setPdpSubgroup("b");
         change.setState(PdpState.ACTIVE);
-        change.setName("test");
 
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("B", fsm.getPdpGroup());
-        assertEquals("b", fsm.getPdpSubgroup());
+        assertNotEquals("B", fsm.getGroup());
+        assertNotEquals("b", fsm.getSubgroup());
+
+        change.setName(fsm.getName());
+        fsm.source.offer(new StandardCoder().encode(change));
+        assertEquals(PdpState.ACTIVE, fsm.state());
+        assertEquals("B", fsm.getGroup());
+        assertEquals("b", fsm.getSubgroup());
 
         change.setState(PdpState.SAFE);
         fsm.source.offer(new StandardCoder().encode(change));
@@ -185,6 +194,28 @@ public class LifecycleStateActiveTest {
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.PASSIVE, fsm.state());
         await().atMost(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS).until(isStatus(PdpState.PASSIVE));
+
+        fsm.shutdown();
+    }
+
+    @Test
+    public void update() {
+        PdpUpdate update = new PdpUpdate();
+        update.setName(NetworkUtil.getHostname());
+        update.setPdpGroup("Z");
+        update.setPdpSubgroup("z");
+        update.setPolicies(Collections.emptyList());
+
+        long originalInterval = fsm.getStatusTimerSeconds();
+        long interval = 2 * originalInterval;
+        update.setPdpHeartbeatIntervalMs(interval * 1000L);
+
+        assertTrue(fsm.update(update));
+
+        assertEquals(PdpState.ACTIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
+        assertEquals("Z", fsm.getGroup());
+        assertEquals("z", fsm.getSubgroup());
 
         fsm.shutdown();
     }

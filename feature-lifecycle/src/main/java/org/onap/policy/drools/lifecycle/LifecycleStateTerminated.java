@@ -21,10 +21,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import lombok.ToString;
-import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.enums.PdpState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle Terminated State.
@@ -32,8 +29,6 @@ import org.slf4j.LoggerFactory;
 
 @ToString
 public class LifecycleStateTerminated extends LifecycleStateDefault {
-
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleStateTerminated.class);
 
     protected LifecycleStateTerminated(LifecycleFsm manager) {
         super(manager);
@@ -54,33 +49,5 @@ public class LifecycleStateTerminated extends LifecycleStateDefault {
 
             return false;
         }
-    }
-
-    @Override
-    public boolean stop() {
-        logger.warn("{}: stop", this);
-        return true;
-    }
-
-    @Override
-    public void shutdown() {
-        logger.warn("{}: shutdown", this);
-    }
-
-    @Override
-    public boolean isAlive() {
-        return false;
-    }
-
-    @Override
-    public boolean status() {
-        logger.warn("{}: status", this);
-        return false;
-    }
-
-    @Override
-    public void stateChange(PdpStateChange change) {
-        logger.warn("{}: state-change: {}", this, change);
-        return;
     }
 }

@@ -23,16 +23,20 @@ package org.onap.policy.drools.lifecycle;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
+import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
 
 /**
@@ -133,7 +137,17 @@ public class LifecycleStateTerminatedTest {
 
     @Test
     public void update() {
-        // TODO
+        PdpUpdate update = new PdpUpdate();
+        update.setName(NetworkUtil.getHostname());
+        update.setPdpGroup("A");
+        update.setPdpSubgroup("a");
+        update.setPolicies(Collections.emptyList());
+        update.setPdpHeartbeatIntervalMs(2 * 600000L);
+
+        assertFalse(fsm.update(update));
+
+        assertEquals(PdpState.TERMINATED, fsm.state.state());
+        assertNotEquals((2 * 60000L) / 1000L, fsm.getStatusTimerSeconds());
     }
 
     @Test

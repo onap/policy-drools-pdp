@@ -22,24 +22,16 @@ package org.onap.policy.drools.lifecycle;
 
 import lombok.ToString;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
+import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle Passive State.
  */
-
 @ToString
-public class LifecycleStatePassive extends LifecycleStateDefault {
+public class LifecycleStatePassive extends LifecycleStateRunning {
 
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleStatePassive.class);
-
-    /**
-     * Constructor.
-     * @param manager fsm
-     */
-    public LifecycleStatePassive(LifecycleFsm manager) {
+    protected LifecycleStatePassive(LifecycleFsm manager) {
         super(manager);
     }
 
@@ -49,15 +41,13 @@ public class LifecycleStatePassive extends LifecycleStateDefault {
     }
 
     @Override
-    public void stateChange(PdpStateChange change) {
-        synchronized (fsm) {
-            if (change.getState() != PdpState.ACTIVE) {
-                logger.warn("{}: state-change: {}", this, change);
-                return;
-            }
+    protected boolean stateChangeToActive(PdpStateChange change) {
+        fsm.transitionToAction(new LifecycleStateActive(fsm));
+        return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS,null));
+    }
 
-            fsm.setGroupAction(change.getPdpGroup(), change.getPdpSubgroup());
-            fsm.transitionToAction(new LifecycleStateActive(fsm));
-        }
+    @Override
+    protected boolean stateChangeToPassive(PdpStateChange change) {
+        return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS,null));
     }
 }

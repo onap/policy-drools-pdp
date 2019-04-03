@@ -22,8 +22,8 @@ package org.onap.policy.drools.lifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -44,9 +44,11 @@ import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
-import org.onap.policy.models.pdp.concepts.PolicyTypeIdent;
+import org.onap.policy.models.pdp.concepts.PdpUpdate;
+import org.onap.policy.models.pdp.concepts.ToscaPolicyTypeIdentifier;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -61,6 +63,7 @@ public class LifecycleFsm implements Startable {
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String POLICY_TYPE_VERSION = "1.0.0";
     protected static final long DEFAULT_STATUS_TIMER_SECONDS = 60L;
+    protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleFsm.class);
@@ -69,6 +72,9 @@ public class LifecycleFsm implements Startable {
 
     protected TopicSource source;
     protected TopicSinkClient client;
+
+    @Getter
+    protected final String name = NetworkUtil.getHostname();
 
     protected volatile LifecycleState state = new LifecycleStateTerminated(this);
 
@@ -82,17 +88,20 @@ public class LifecycleFsm implements Startable {
     protected MessageTypeDispatcher sourceDispatcher = new MessageTypeDispatcher(new String[]{PDP_MESSAGE_NAME});
 
     @GsonJsonIgnore
-    protected MessageNameDispatcher nameDispatcher = new MessageNameDispatcher(PdpStateChange.class, this);
+    protected PdpStateChangeFeed stateChangeFeed = new PdpStateChangeFeed(PdpStateChange.class, this);
+
+    @GsonJsonIgnore
+    protected PdpUpdateFeed updateFeed = new PdpUpdateFeed(PdpUpdate.class, this);
 
     @Getter
     @Setter
     protected long statusTimerSeconds = DEFAULT_STATUS_TIMER_SECONDS;
 
     @Getter
-    protected String pdpGroup;
+    protected String group;
 
     @Getter
-    protected String pdpSubgroup;
+    protected String subgroup;
 
     /**
      * Constructor.
@@ -146,11 +155,15 @@ public class LifecycleFsm implements Startable {
         return state.status();
     }
 
-    public synchronized void stateChange(PdpStateChange stateChange) {
+    public synchronized boolean stateChange(PdpStateChange stateChange) {
         logger.info("lifecycle event: state-change");
-        state.stateChange(stateChange);
+        return state.stateChange(stateChange);
     }
 
+    public synchronized boolean update(PdpUpdate update) {
+        logger.info("lifecycle event: update");
+        return state.update(update);
+    }
     /* ** FSM State Actions ** */
 
     protected boolean startAction() {
@@ -176,21 +189,49 @@ public class LifecycleFsm implements Startable {
         shutdownTimers();
     }
 
-    protected boolean statusAction(PdpState state) {
+    protected boolean statusAction() {
+        return statusAction(state(), null);
+    }
+
+    protected boolean statusAction(PdpResponseDetails response) {
+        return statusAction(state(), response);
+    }
+
+    protected boolean statusAction(PdpState state, PdpResponseDetails response) {
         if (!isAlive()) {
             return false;
+        }
+
+        PdpStatus status = statusPayload(state);
+        if (response != null) {
+            status.setRequestId(response.getResponseTo());     // for standard logging of transactions
+            status.setResponse(response);
         }
 
         return client.send(statusPayload(state));
     }
 
     protected void setGroupAction(String group, String subgroup) {
-        this.pdpGroup = group;
-        this.pdpSubgroup = subgroup;
+        this.group = group;
+        this.subgroup = subgroup;
     }
 
     protected void transitionToAction(@NonNull LifecycleState newState) {
         state = newState;
+    }
+
+    protected boolean setStatusIntervalAction(long intervalSeconds) {
+        if (intervalSeconds == statusTimerSeconds || intervalSeconds == 0) {
+            return true;
+        }
+
+        if (intervalSeconds <= MIN_STATUS_INTERVAL_SECONDS) {
+            logger.warn("interval is too low (< {}): {}", MIN_STATUS_INTERVAL_SECONDS, intervalSeconds);
+            return false;
+        }
+
+        setStatusTimerSeconds(intervalSeconds);
+        return stopTimers() && startTimers();
     }
 
     /* ** Action Helpers ** */
@@ -230,14 +271,19 @@ public class LifecycleFsm implements Startable {
         scheduler.shutdownNow();
     }
 
-    private PdpStatus statusPayload(PdpState state) {
+    private PdpStatus statusPayload() {
+        return statusPayload(state());
+    }
+
+    private PdpStatus statusPayload(@NonNull PdpState state) {
         PdpStatus status = new PdpStatus();
-        status.setRequestId(UUID.randomUUID().toString());
-        status.setTimestampMs(System.currentTimeMillis());
-        status.setInstance(NetworkUtil.getHostname());
+        status.setName(name);
+        status.setPdpGroup(group);
+        status.setPdpSubgroup(subgroup);
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType("drools");    // TODO: enum ?
+        status.setSupportedPolicyTypes(getCapabilities());
         return status;
     }
 
@@ -253,7 +299,8 @@ public class LifecycleFsm implements Startable {
 
         this.source = sources.get(0);
         this.source.register(this.sourceDispatcher);
-        this.sourceDispatcher.register(PdpMessageType.PDP_STATE_CHANGE.name(), nameDispatcher);
+        this.sourceDispatcher.register(PdpMessageType.PDP_STATE_CHANGE.name(), stateChangeFeed);
+        this.sourceDispatcher.register(PdpMessageType.PDP_UPDATE.name(), updateFeed);
         return source.start();
     }
 
@@ -272,8 +319,8 @@ public class LifecycleFsm implements Startable {
         return this.client.getSink().start();
     }
 
-    private List<PolicyTypeIdent> getCapabilities() {
-        List<PolicyTypeIdent> capabilities = new ArrayList<>();
+    private List<ToscaPolicyTypeIdentifier> getCapabilities() {
+        List<ToscaPolicyTypeIdentifier> capabilities = new ArrayList<>();
         for (DroolsController dc : DroolsController.factory.inventory()) {
             if (!dc.isBrained()) {
                 continue;
@@ -282,7 +329,7 @@ public class LifecycleFsm implements Startable {
             for (String domain : dc.getBaseDomainNames()) {
                 // HACK: until legacy controllers are removed
                 if (StringUtils.countMatches(domain, ".") > 1) {
-                    capabilities.add(new PolicyTypeIdent(domain, POLICY_TYPE_VERSION));
+                    capabilities.add(new ToscaPolicyTypeIdentifier(domain, POLICY_TYPE_VERSION));
                 } else {
                     logger.info("legacy controller {} with domain {}", dc.getCanonicalSessionNames(), domain);
                 }
@@ -291,35 +338,81 @@ public class LifecycleFsm implements Startable {
         return capabilities;
     }
 
+    protected boolean isItMe(String name, String group, String subgroup) {
+        if (Objects.equals(name, getName())) {
+            return true;
+        }
+
+        return name == null && group != null
+            && Objects.equals(group, getGroup())
+            && Objects.equals(subgroup, getSubgroup());
+    }
 
     /* **** IO listeners ***** */
 
     /**
      * PDP State Change Message Listener.
      */
-    public static class MessageNameDispatcher extends ScoListener<PdpStateChange> {
+    public static class PdpStateChangeFeed extends ScoListener<PdpStateChange> {
 
         protected final LifecycleFsm fsm;
 
-        /**
-         * Constructor.
-         */
-        public MessageNameDispatcher(Class<PdpStateChange> clazz, LifecycleFsm fsm) {
+        protected PdpStateChangeFeed(Class<PdpStateChange> clazz, LifecycleFsm fsm) {
             super(clazz);
             this.fsm = fsm;
         }
 
         @Override
-        public void onTopicEvent(CommInfrastructure commInfrastructure, String topic,
-            StandardCoderObject standardCoderObject, PdpStateChange pdpStateChange) {
+        public void onTopicEvent(CommInfrastructure comm, String topic,
+                                 StandardCoderObject coder, PdpStateChange stateChange) {
 
-            if (pdpStateChange == null) {
-                logger.warn("pdp-state-chage null from {}:{}", commInfrastructure, topic);
+            if (!isMine(stateChange)) {
+                logger.warn("pdp-state-chage from {}:{} is invalid: {}", comm, topic, stateChange);
                 return;
             }
 
-            fsm.stateChange(pdpStateChange);
+            fsm.stateChange(stateChange);
+        }
+
+        protected boolean isMine(PdpStateChange change) {
+            if (change == null) {
+                return false;
+            }
+
+            return fsm.isItMe(change.getName(), change.getPdpGroup(), change.getPdpSubgroup());
         }
     }
 
+    /**
+     * PDP Update Message Listener.
+     */
+    public static class PdpUpdateFeed extends ScoListener<PdpUpdate> {
+
+        protected final LifecycleFsm fsm;
+
+        public PdpUpdateFeed(Class<PdpUpdate> clazz, LifecycleFsm fsm) {
+            super(clazz);
+            this.fsm = fsm;
+        }
+
+        @Override
+        public void onTopicEvent(CommInfrastructure comm, String topic,
+                                 StandardCoderObject coder, PdpUpdate update) {
+
+            if (!isMine(update)) {
+                logger.warn("pdp-update from {}:{} is invalid: {}", comm, topic, update);
+                return;
+            }
+
+            fsm.update(update);
+        }
+
+        protected boolean isMine(PdpUpdate update) {
+            if (update == null) {
+                return false;
+            }
+
+            return fsm.isItMe(update.getName(), update.getPdpGroup(), update.getPdpSubgroup());
+        }
+    }
 }

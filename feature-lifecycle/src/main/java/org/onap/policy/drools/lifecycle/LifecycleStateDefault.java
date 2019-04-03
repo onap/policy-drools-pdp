@@ -21,7 +21,8 @@
 package org.onap.policy.drools.lifecycle;
 
 import lombok.NonNull;
-import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.pdp.concepts.PdpStateChange;
+import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +33,9 @@ public abstract class LifecycleStateDefault extends LifecycleStateUnsupported {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
 
-    public LifecycleStateDefault(LifecycleFsm manager) {
+    protected LifecycleStateDefault(LifecycleFsm manager) {
         super(manager);
     }
-
 
     @Override
     public boolean transitionToState(@NonNull LifecycleState newState) {
@@ -59,30 +59,35 @@ public abstract class LifecycleStateDefault extends LifecycleStateUnsupported {
 
     @Override
     public boolean stop() {
-        synchronized (fsm) {
-            boolean success = fsm.statusAction(PdpState.TERMINATED);
-            success = fsm.stopAction() && success;
-            return transitionToState(new LifecycleStateTerminated(fsm)) && success;
-        }
-    }
-
-    @Override
-    public void shutdown() {
-        synchronized (fsm) {
-            stop();
-            fsm.shutdownAction();
-        }
-    }
-
-    @Override
-    public boolean isAlive() {
+        logger.warn("{}: stop", this);
         return true;
     }
 
     @Override
+    public void shutdown() {
+        logger.warn("{}: shutdown", this);
+    }
+
+    @Override
     public boolean status() {
-        synchronized (fsm) {
-            return fsm.statusAction(state());
-        }
+        logger.warn("{}: status", this);
+        return false;
+    }
+
+    @Override
+    public boolean stateChange(@NonNull PdpStateChange change) {
+        logger.warn("{}: state-change: {}", this, change);
+        return false;
+    }
+
+    @Override
+    public boolean update(@NonNull PdpUpdate update) {
+        logger.warn("{}: update: {}", this, update);
+        return false;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return false;
     }
 }
