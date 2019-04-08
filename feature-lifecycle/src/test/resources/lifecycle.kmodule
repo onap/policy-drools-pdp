@@ -20,7 +20,7 @@
   -->
 
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="controller-logs">
-        <ksession name="test" />
+    <kbase name="onap.policies.type1.type2">
+        <ksession name="junits" />
     </kbase>
 </kmodule>

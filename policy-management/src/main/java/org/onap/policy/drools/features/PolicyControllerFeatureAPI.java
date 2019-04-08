@@ -21,7 +21,6 @@
 package org.onap.policy.drools.features;
 
 import java.util.Properties;
-
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
@@ -32,7 +31,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
     /**
      * Feature providers implementing this interface.
      */
-    public static final OrderedServiceImpl<PolicyControllerFeatureAPI> providers =
+    OrderedServiceImpl<PolicyControllerFeatureAPI> providers =
             new OrderedServiceImpl<>(PolicyControllerFeatureAPI.class);
 
     /**
@@ -47,7 +46,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     'null' indicates that no take over has taken place, and processing should
      *     continue to the next feature provider.
      */
-    public default PolicyController beforeCreate(String name, Properties properties) {
+    default PolicyController beforeCreate(String name, Properties properties) {
         return null;
     }
 
@@ -60,7 +59,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *      of the operation preventing the invocation of
      *      lower priority features.   False, otherwise.
      */
-    public default boolean afterCreate(PolicyController controller) {
+    default boolean afterCreate(PolicyController controller) {
         return false;
     }
 
@@ -71,7 +70,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeStart(PolicyController controller) {
+    default boolean beforeStart(PolicyController controller) {
         return false;
     }
 
@@ -82,7 +81,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterStart(PolicyController controller) {
+    default boolean afterStart(PolicyController controller) {
         return false;
     }
 
@@ -93,7 +92,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeStop(PolicyController controller) {
+    default boolean beforeStop(PolicyController controller) {
         return false;
     }
 
@@ -104,7 +103,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.d.
      */
-    public default boolean afterStop(PolicyController controller) {
+    default boolean afterStop(PolicyController controller) {
         return false;
     }
 
@@ -115,7 +114,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeLock(PolicyController controller) {
+    default boolean beforeLock(PolicyController controller) {
         return false;
     }
 
@@ -126,7 +125,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean afterLock(PolicyController controller) {
+    default boolean afterLock(PolicyController controller) {
         return false;
     }
 
@@ -137,7 +136,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeUnlock(PolicyController controller) {
+    default boolean beforeUnlock(PolicyController controller) {
         return false;
     }
 
@@ -148,7 +147,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterUnlock(PolicyController controller) {
+    default boolean afterUnlock(PolicyController controller) {
         return false;
     }
 
@@ -159,7 +158,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeShutdown(PolicyController controller) {
+    default boolean beforeShutdown(PolicyController controller) {
         return false;
     }
 
@@ -170,7 +169,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterShutdown(PolicyController controller) {
+    default boolean afterShutdown(PolicyController controller) {
         return false;
     }
 
@@ -181,7 +180,7 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeHalt(PolicyController controller) {
+    default boolean beforeHalt(PolicyController controller) {
         return false;
     }
 
@@ -192,37 +191,22 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterHalt(PolicyController controller) {
+    default boolean afterHalt(PolicyController controller) {
         return false;
     }
 
 
-    /**
+    /*
      * intercept before the Policy Controller is offered an event.
      *
      * @return true if this feature intercepts and takes ownership.
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeOffer(PolicyController controller,
-            CommInfrastructure protocol,
-            String topic,
-            String event) {
-        return false;
-    }
-
-    /**
-     * called after the Policy Controller processes an event offer.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean afterOffer(PolicyController controller,
-            CommInfrastructure protocol,
-            String topic,
-            String event,
-            boolean success) {
+    default boolean beforeOffer(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        String event) {
         return false;
     }
 
@@ -233,10 +217,22 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeDeliver(PolicyController controller,
-            CommInfrastructure protocol,
-            String topic,
-            Object event) {
+    default <T> boolean beforeOffer(PolicyController controller, T event) {
+        return false;
+    }
+
+    /**
+     * called after the Policy Controller processes an event offer.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterOffer(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        String event,
+        boolean success) {
         return false;
     }
 
@@ -247,11 +243,36 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterDeliver(PolicyController controller,
-            CommInfrastructure protocol,
-            String topic,
-            Object event,
-            boolean success) {
+    default <T> boolean afterOffer(PolicyController controller, T event, boolean success) {
+        return false;
+    }
+
+    /**
+     * intercept before the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean beforeDeliver(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        Object event) {
+        return false;
+    }
+
+    /**
+     * called after the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterDeliver(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        Object event,
+        boolean success) {
         return false;
     }
 }

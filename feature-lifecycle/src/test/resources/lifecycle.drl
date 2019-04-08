@@ -20,17 +20,20 @@
 
 package org.onap.policy.drools.test;
 
-rule "INIT"
-lock-on-active
-when
-then
-    insert("hello, I am up!");
-end
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
-rule "ECHO"
+rule "INSERT.TOSCA.POLICY"
 when
-    $o : Object();
+    $policy : ToscaPolicy();
 then
-    System.out.println("ECHO: " + $o);
-    retract($o);
+    System.out.println("");
+    System.out.println("");
+    System.out.println("************************************************************************");
+    System.out.println(drools.getRule().getName() + ":");
+    System.out.println("");
+    System.out.println("Tosca Policy Type: " + $policy.getType() + " " + $policy.getTypeVersion());
+    System.out.println("Tosca Policy: " + $policy.getName() + " " + $policy.getVersion());
+    System.out.println("************************************************************************");
+    System.out.println("");
+    System.out.println("");
 end

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ package org.onap.policy.drools.system;
 
 import java.util.List;
 import java.util.Properties;
-
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -30,6 +29,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
 /**
  * A Policy Controller is the higher level unit of control. It corresponds to the ncomp equivalent
@@ -66,7 +66,12 @@ public interface PolicyController extends Startable, Lockable {
     DroolsController getDrools();
 
     /**
-     * update maven configuration.
+     * Get Policy Types supported by this controller.
+     */
+    List<ToscaPolicyTypeIdentifier> getPolicyTypes();
+
+    /**
+     * Update maven configuration.
      * 
      * @param newDroolsConfiguration new drools configuration
      * @return true if the update was successful, false otherwise
@@ -77,6 +82,11 @@ public interface PolicyController extends Startable, Lockable {
      * Get the Properties.
      */
     Properties getProperties();
+
+    /**
+     * Offer an event of type T.
+     */
+    <T> boolean offer(T event);
 
     /**
      * Attempts delivering of an String over communication infrastructure "busType".
