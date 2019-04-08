@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0e1babde_b6a28273",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-04-08T21:47:02Z",
+      "side": 1,
+      "message": "right, you\u0027re correct - next patch",
+      "parentUuid": "e479fd3c_8fd58c8d",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "15e41cad_014902d7",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateActive.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3c202ef4_d8f53ecc",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateActive.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-04-08T21:47:02Z",
+      "side": 1,
+      "message": "Yeah, I think I am going to disallow 2 policies with the same id and different versions to coexist in the same PDPD/controller at the same time.   Note that there\u0027s no constraints on those policies being deployed in different PDPDs.   I just think it adds little value, and will be difficult to reason about the state of the system at runtime.   I think it also may make the system less tidy.  Let me know if you have some other thoughts.",
+      "parentUuid": "15e41cad_014902d7",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "15b3cdc8_6455c949",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2019-04-08T20:33:56Z",
       "side": 1,
       "message": "since the arguments are in the same order, could use this syntax instead: this::deployPolicy",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6836ab04_476b3a86",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-04-08T21:47:02Z",
+      "side": 1,
+      "message": "cool, thanks will pass the method reference instead.",
+      "parentUuid": "15b3cdc8_6455c949",
       "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
