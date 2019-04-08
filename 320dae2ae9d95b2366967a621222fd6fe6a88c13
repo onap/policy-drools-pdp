@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e479fd3c_8fd58c8d",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-08T20:33:56Z",
+      "side": 1,
+      "message": "nothing appears to populate this map - maybe I overlooked it?",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15e41cad_014902d7",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateActive.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-08T20:33:56Z",
+      "side": 1,
+      "message": "is it not possible for two policies with the same id but different versions to be active?  maybe with different sets of properties?",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15b3cdc8_6455c949",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-08T20:33:56Z",
+      "side": 1,
+      "message": "since the arguments are in the same order, could use this syntax instead: this::deployPolicy",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "112cfe3a_9952ffc3",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-08T20:33:56Z",
+      "side": 1,
+      "message": "could use this syntax instead: this::deployPolicy",
+      "revId": "320dae2ae9d95b2366967a621222fd6fe6a88c13",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
