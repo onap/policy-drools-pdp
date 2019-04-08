@@ -21,7 +21,9 @@
 package org.onap.policy.drools.lifecycle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
@@ -44,14 +46,17 @@ import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
-import org.onap.policy.models.pdp.concepts.ToscaPolicyTypeIdentifier;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyIdentifier;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,6 +108,10 @@ public class LifecycleFsm implements Startable {
     @Getter
     protected String subgroup;
 
+    protected final Map<ToscaPolicyTypeIdentifier, PolicyController> policyTypesMap = new HashMap<>();
+
+    protected final Map<ToscaPolicyIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
+
     /**
      * Constructor.
      */
@@ -130,19 +139,39 @@ public class LifecycleFsm implements Startable {
 
     @Override
     public synchronized boolean start() {
-        logger.info("lifecycle event: start");
+        logger.info("lifecycle event: start engine");
         return state.start();
+    }
+
+    /**
+     * Start a controller event.
+     */
+    public synchronized void start(@NonNull PolicyController controller) {
+        logger.info("lifecycle event: start controller: {}" + controller.getName());
+        for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
+            policyTypesMap.put(id, controller);
+        }
     }
 
     @Override
     public synchronized boolean stop() {
-        logger.info("lifecycle event: stop");
+        logger.info("lifecycle event: stop engine");
         return state.stop();
+    }
+
+    /**
+     * Stop a controller event.
+     */
+    public synchronized void stop(@NonNull PolicyController controller) {
+        logger.info("lifecycle event: stop controller: {}" + controller.getName());
+        for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
+            policyTypesMap.remove(id);
+        }
     }
 
     @Override
     public synchronized void shutdown() {
-        logger.info("lifecycle event: shutdown");
+        logger.info("lifecycle event: shutdown engine");
         state.shutdown();
     }
 
@@ -232,6 +261,26 @@ public class LifecycleFsm implements Startable {
 
         setStatusTimerSeconds(intervalSeconds);
         return stopTimers() && startTimers();
+    }
+
+    protected PolicyController getController(ToscaPolicyTypeIdentifier policyType) {
+        return policyTypesMap.get(policyType);
+    }
+
+    protected ToscaPolicy fetchPolicyAction(@NonNull ToscaPolicyIdentifier policyId) {
+        return policiesMap.get(policyId);
+    }
+
+    protected List<ToscaPolicy> getDeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
+        List<ToscaPolicy> deployPolicies = new ArrayList<>(policies);
+        deployPolicies.removeAll(policiesMap.values());
+        return deployPolicies;
+    }
+
+    protected List<ToscaPolicy> getUndeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
+        List<ToscaPolicy> undeployPolicies = new ArrayList<>(policiesMap.values());
+        undeployPolicies.removeAll(policies);
+        return undeployPolicies;
     }
 
     /* ** Action Helpers ** */

@@ -23,6 +23,7 @@ package org.onap.policy.drools.lifecycle;
 import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 
 /**
@@ -40,30 +41,51 @@ public class LifecycleFeature
         return 10;
     }
 
-    /**
-     * The 'afterStart' hook on the Policy Engine tell us when the engine is functional.
-     */
     @Override
     public boolean afterStart(PolicyEngine engine) {
         fsm.start();
         return false;
     }
 
-    /**
-     * The 'afterStop' hook on the Policy Engine tell us when the engine is stopping.
-     */
     @Override
-    public boolean afterStop(PolicyEngine engine) {
+    public boolean afterStart(PolicyController controller) {
+        fsm.start(controller);
+        return false;
+    }
+
+    @Override
+    public boolean beforeStop(PolicyEngine engine) {
         fsm.stop();
         return false;
     }
 
-    /**
-     * The 'beforeShutdown' hook on the Policy Engine tell us when the engine is going away.
-     */
+    @Override
+    public boolean beforeStop(PolicyController controller) {
+        fsm.stop(controller);
+        return false;
+    }
+
     @Override
     public boolean beforeShutdown(PolicyEngine engine) {
         fsm.shutdown();
+        return false;
+    }
+
+    @Override
+    public boolean beforeHalt(PolicyController controller) {
+        fsm.stop(controller);
+        return false;
+    }
+
+    @Override
+    public boolean beforeLock(PolicyController controller) {
+        fsm.stop(controller);
+        return false;
+    }
+
+    @Override
+    public boolean afterUnlock(PolicyController controller) {
+        fsm.start(controller);
         return false;
     }
 }

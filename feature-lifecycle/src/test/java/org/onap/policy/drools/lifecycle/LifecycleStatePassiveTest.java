@@ -29,6 +29,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +44,7 @@ import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
@@ -54,16 +58,33 @@ import org.onap.policy.models.pdp.enums.PdpState;
  */
 public class LifecycleStatePassiveTest {
 
+    public static PolicyController controller;
     private LifecycleFsm fsm;
 
+    /**
+     * Set up.
+     */
     @BeforeClass
-    public static void setUp() {
+    public static void setUp() throws IOException {
         SystemPersistence.manager.setConfigurationDir("src/test/resources");
         LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
+        controller = ControllerTestSupport.createEchoController();
     }
 
+    /**
+     * Tear Down.
+     */
     @AfterClass
     public static void tearDown() {
+        if (controller != null) {
+            ControllerTestSupport.destroyEchoController(controller);
+            try {
+                Files.deleteIfExists(Paths.get(SystemPersistence.manager.getConfigurationPath().toString(),
+                                     controller.getName() + "-controller.properties.bak"));
+            } catch (IOException e) {
+                ;
+            }
+        }
         SystemPersistence.manager.setConfigurationDir(null);
     }
 

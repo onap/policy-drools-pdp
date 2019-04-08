@@ -21,11 +21,12 @@
 package org.onap.policy.drools.system.internal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
+import java.util.stream.Collectors;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
@@ -39,6 +40,7 @@ import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +100,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     private final Properties properties;
 
     /**
+     * Policy Types.
+     */
+    private List<ToscaPolicyTypeIdentifier> policyTypes;
+
+    /**
      * Constructor version mainly used for bootstrapping at initialization time a policy engine
      * controller.
      * 
@@ -127,6 +134,43 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         /* persist new properties */
         getPersistenceManager().storeController(name, properties);
         this.properties = properties;
+
+        this.policyTypes = getPolicyTypesFromProperties();
+    }
+
+    @Override
+    public List<ToscaPolicyTypeIdentifier> getPolicyTypes() {
+        if (!policyTypes.isEmpty()) {
+            return policyTypes;
+        }
+
+        return droolsController
+                .getBaseDomainNames()
+                .stream()
+                .map(d -> new ToscaPolicyTypeIdentifier(d, DroolsProperties.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION))
+                .collect(Collectors.toList());
+    }
+
+    protected List<ToscaPolicyTypeIdentifier> getPolicyTypesFromProperties() {
+        List<ToscaPolicyTypeIdentifier> policyTypeIds = new ArrayList<>();
+
+        String ptiPropValue = properties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_POLICY_TYPES);
+        if (ptiPropValue == null) {
+            return policyTypeIds;
+        }
+
+        List<String> ptiPropList = new ArrayList<>(Arrays.asList(ptiPropValue.split("\\s*,\\s*")));
+        for (String pti : ptiPropList) {
+            String[] ptv = pti.split(":");
+            if (ptv.length == 1) {
+                policyTypeIds.add(new ToscaPolicyTypeIdentifier(ptv[0],
+                    DroolsProperties.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION));
+            } else if (ptv.length == 2) {
+                policyTypeIds.add(new ToscaPolicyTypeIdentifier(ptv[0], ptv[1]));
+            }
+        }
+
+        return policyTypeIds;
     }
 
     /**
@@ -399,8 +443,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      */
     @Override
     public void onTopicEvent(Topic.CommInfrastructure commType, String topic, String event) {
+        logger.debug("{}: raw event offered from {}:{}: {}", this, commType, topic, event);
 
-        logger.debug("{}: event offered from {}:{}: {}", this, commType, topic, event);
+        if (skipOffer()) {
+            return;
+        }
 
         for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
@@ -413,15 +460,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             }
         }
 
-        if (this.locked) {
-            return;
-        }
-
-        if (!this.alive) {
-            return;
-        }
-
-        boolean success = this.droolsController.offer(topic, event);
+        boolean success = this.offer(event);
 
         for (PolicyControllerFeatureAPI feature : getProviders()) {
             try {
@@ -433,6 +472,45 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
                         e.getMessage(), e);
             }
         }
+    }
+
+    @Override
+    public <T> boolean offer(T event) {
+        logger.debug("{}: event offered: {}", this, event);
+
+        if (skipOffer()) {
+            return true;
+        }
+
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
+            try {
+                if (feature.beforeOffer(this, event)) {
+                    return true;
+                }
+            } catch (Exception e) {
+                logger.error("{}: feature {} before-offer failure because of {}", this, feature.getClass().getName(),
+                    e.getMessage(), e);
+            }
+        }
+
+        boolean success = this.droolsController.offer(event);
+
+        for (PolicyControllerFeatureAPI feature : getProviders()) {
+            try {
+                if (feature.afterOffer(this, event, success)) {
+                    return success;
+                }
+            } catch (Exception e) {
+                logger.error("{}: feature {} after-offer failure because of {}", this, feature.getClass().getName(),
+                    e.getMessage(), e);
+            }
+        }
+
+        return success;
+    }
+
+    private boolean skipOffer() {
+        return isLocked() || !isAlive();
     }
 
     /**
