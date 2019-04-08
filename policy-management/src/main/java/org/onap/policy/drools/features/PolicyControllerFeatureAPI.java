@@ -21,7 +21,6 @@
 package org.onap.policy.drools.features;
 
 import java.util.Properties;
-
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
@@ -252,6 +251,28 @@ public interface PolicyControllerFeatureAPI extends OrderedService {
             String topic,
             Object event,
             boolean success) {
+        return false;
+    }
+
+    /**
+     * intercept before the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default <T> boolean beforeOffer(PolicyController controller, T event) {
+        return false;
+    }
+
+    /**
+     * called after the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default <T> boolean afterOffer(PolicyController controller, T event, boolean success) {
         return false;
     }
 }

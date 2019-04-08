@@ -111,6 +111,11 @@ public class NullDroolsController implements DroolsController {
     }
 
     @Override
+    public <T> boolean offer(T event) {
+        return false;
+    }
+
+    @Override
     public boolean deliver(TopicSink sink, Object event) {
         throw new IllegalStateException(makeInvokeMsg());
     }

@@ -480,19 +480,9 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public boolean offer(String topic, String event) {
-        logger.debug("{}: OFFER: {} <- {}", this, topic, event);
+        logger.debug("{}: OFFER raw event from {}", this, topic);
 
-        if (this.locked) {
-            return true;
-        }
-        if (!this.alive) {
-            return true;
-        }
-
-        // 0. Check if the policy container has any sessions
-
-        if (this.policyContainer.getPolicySessions().isEmpty()) {
-            // no sessions
+        if (this.locked || !this.alive || this.policyContainer.getPolicySessions().isEmpty()) {
             return true;
         }
 
@@ -525,48 +515,55 @@ public class MavenDroolsController implements DroolsController {
             return true;
         }
 
-        synchronized (this.recentSourceEvents) {
-            this.recentSourceEvents.add(anEvent);
+        return offer(anEvent);
+
+    }
+
+    @Override
+    public <T> boolean offer(T event) {
+        logger.debug("{}: OFFER event", this);
+
+        if (this.locked || !this.alive || this.policyContainer.getPolicySessions().isEmpty()) {
+            return true;
         }
 
-        // increment event count for Nagios monitoring
+        synchronized (this.recentSourceEvents) {
+            this.recentSourceEvents.add(event);
+        }
+
         PdpJmx.getInstance().updateOccured();
 
         // Broadcast
 
-        if (logger.isInfoEnabled()) {
-            logger.info("{} BROADCAST-INJECT of {} FROM {} INTO {}",
-                    this, event, topic, this.policyContainer.getName());
-        }
-
         for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
             try {
-                if (feature.beforeInsert(this, anEvent)) {
+                if (feature.beforeInsert(this, event)) {
                     return true;
                 }
             } catch (Exception e) {
                 logger.error("{}: feature {} before-insert failure because of {}",
-                        this, feature.getClass().getName(), e.getMessage(), e);
+                    this, feature.getClass().getName(), e.getMessage(), e);
             }
         }
 
-        boolean successInject = this.policyContainer.insertAll(anEvent);
+        boolean successInject = this.policyContainer.insertAll(event);
         if (!successInject) {
             logger.warn(this + "Failed to inject into PolicyContainer {}", this.getSessionNames());
         }
 
         for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
             try {
-                if (feature.afterInsert(this, anEvent, successInject)) {
+                if (feature.afterInsert(this, event, successInject)) {
                     return true;
                 }
             } catch (Exception e) {
                 logger.error("{}: feature {} after-insert failure because of {}",
-                        this, feature.getClass().getName(), e.getMessage(), e);
+                    this, feature.getClass().getName(), e.getMessage(), e);
             }
         }
 
         return true;
+
     }
 
     @Override
