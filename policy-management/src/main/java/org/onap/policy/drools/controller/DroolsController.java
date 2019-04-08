@@ -37,74 +37,83 @@ public interface DroolsController extends Startable, Lockable {
     /**
      * No Group ID identifier.
      */
-    public static final String NO_GROUP_ID = "NO-GROUP-ID";
+    String NO_GROUP_ID = "NO-GROUP-ID";
 
     /**
      * No Artifact ID identifier.
      */
-    public static final String NO_ARTIFACT_ID = "NO-ARTIFACT-ID";
+    String NO_ARTIFACT_ID = "NO-ARTIFACT-ID";
 
     /**
      * No version identifier.
      */
-    public static final String NO_VERSION = "NO-VERSION";
+    String NO_VERSION = "NO-VERSION";
 
     /**
      * Factory to track and manage drools controllers.
      */
-    public static final DroolsControllerFactory factory = new IndexedDroolsControllerFactory();
+    DroolsControllerFactory factory = new IndexedDroolsControllerFactory();
 
     /**
      * get group id.
      * 
      * @return group id
      */
-    public String getGroupId();
+    String getGroupId();
 
     /**
      * get artifact id.
      * 
      * @return artifact id
      */
-    public String getArtifactId();
+    String getArtifactId();
 
     /**
      * get version.
      * 
      * @return version
      */
-    public String getVersion();
+    String getVersion();
 
     /**
      * return the policy session names.
      * 
      * @return policy session
      */
-    public List<String> getSessionNames();
+    List<String> getSessionNames();
 
     /**
      * return the policy full session names.
      * 
      * @return policy session
      */
-    public List<String> getCanonicalSessionNames();
+    List<String> getCanonicalSessionNames();
 
     /**
      * get base domains.
      *
      * @return list of base domains.
      */
-    public List<String> getBaseDomainNames();
+    List<String> getBaseDomainNames();
 
     /**
-     * offers an event to this controller for processing.
+     * offers a raw event to this controller for processing.
      * 
      * @param topic topic associated with the event
      * @param event the event
      * 
      * @return true if the operation was successful
      */
-    public boolean offer(String topic, String event);
+    boolean offer(String topic, String event);
+
+    /**
+     * offers a T event to this controller for processing.
+     *
+     * @param event the event
+     *
+     * @return true if the operation was successful
+     */
+    <T> boolean offer(T event);
 
     /**
      * delivers "event" to "sink".
@@ -118,28 +127,28 @@ public interface DroolsController extends Startable, Lockable {
      * @throws UnsupportedOperationException when the engine cannot deliver due to the functionality
      *         missing (ie. communication infrastructure not supported.
      */
-    public boolean deliver(TopicSink sink, Object event);
+    boolean deliver(TopicSink sink, Object event);
 
     /**
      * Get recent source events.
      * 
      * @return the most recent received events.
      */
-    public Object[] getRecentSourceEvents();
+    Object[] getRecentSourceEvents();
 
     /**
      * Get recent sink events.
      * 
      * @return the most recent delivered events
      */
-    public String[] getRecentSinkEvents();
+    String[] getRecentSinkEvents();
 
     /**
      * Get container.
      * 
      * @return the underlying policy container
      */
-    public PolicyContainer getContainer();
+    PolicyContainer getContainer();
 
     /**
      * Does it owns the coder.
@@ -148,7 +157,7 @@ public interface DroolsController extends Startable, Lockable {
      * @param modelHash the hash for the model
      * @return true it owns it
      */
-    public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash);
+    boolean ownsCoder(Class<? extends Object> coderClass, int modelHash);
 
     /**
      * fetches a class from the model.
@@ -156,12 +165,12 @@ public interface DroolsController extends Startable, Lockable {
      * @param className the class to fetch
      * @return the actual class object, or null if not found
      */
-    public Class<?> fetchModelClass(String className);
+    Class<?> fetchModelClass(String className);
 
     /**
      * is this controller Smart.
      */
-    public boolean isBrained();
+    boolean isBrained();
 
     /**
      * update the new version of the maven jar rules file.
@@ -175,9 +184,9 @@ public interface DroolsController extends Startable, Lockable {
      * @throws Exception from within drools libraries
      * @throws LinkageError from within drools libraries
      */
-    public void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
-            List<TopicCoderFilterConfiguration> decoderConfigurations,
-            List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
+    void updateToVersion(String newGroupId, String newArtifactId, String newVersion,
+        List<TopicCoderFilterConfiguration> decoderConfigurations,
+        List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
 
     /**
      * gets the classnames of facts as well as the current count.
@@ -185,7 +194,7 @@ public interface DroolsController extends Startable, Lockable {
      * @param sessionName the session name
      * @return map of class to count
      */
-    public Map<String, Integer> factClassNames(String sessionName);
+    Map<String, Integer> factClassNames(String sessionName);
 
     /**
      * gets the count of facts for a given session.
@@ -193,7 +202,7 @@ public interface DroolsController extends Startable, Lockable {
      * @param sessionName the session name
      * @return the fact count
      */
-    public long factCount(String sessionName);
+    long factCount(String sessionName);
 
     /**
      * gets all the facts of a given class for a given session.
@@ -203,7 +212,7 @@ public interface DroolsController extends Startable, Lockable {
      * @param delete retract from drools the results of the query?
      * @return the list of facts returned by the query
      */
-    public List<Object> facts(String sessionName, String className, boolean delete);
+    List<Object> facts(String sessionName, String className, boolean delete);
 
     /**
      * gets the facts associated with a query for a give session for a given queried entity.
@@ -215,12 +224,12 @@ public interface DroolsController extends Startable, Lockable {
      * @param queryParams query parameters
      * @return list of facts returned by the query
      */
-    public List<Object> factQuery(String sessionName, String queryName, String queriedEntity, boolean delete,
-            Object... queryParams);
+    List<Object> factQuery(String sessionName, String queryName, String queriedEntity, boolean delete,
+        Object... queryParams);
 
     /**
      * halts and permanently releases all resources.
      * 
      */
-    public void halt();
+    void halt();
 }

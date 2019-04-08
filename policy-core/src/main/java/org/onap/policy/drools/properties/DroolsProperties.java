@@ -26,6 +26,9 @@ public interface DroolsProperties {
 
     String PROPERTY_CONTROLLER_NAME = "controller.name";
 
+    String DEFAULT_CONTROLLER_POLICY_TYPE_VERSION = "1.0.0";
+    String PROPERTY_CONTROLLER_POLICY_TYPES = "controller.policy.types";
+
     /* Drools Properties */
 
     String RULES_GROUPID = "rules.groupId";
