@@ -21,13 +21,16 @@
 package org.onap.policy.drools.lifecycle;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import lombok.NonNull;
+import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +41,13 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
 
-    protected abstract boolean stateChangeToPassive(PdpStateChange change);
+    protected abstract boolean stateChangeToPassive(@NonNull PdpStateChange change);
 
-    protected abstract boolean stateChangeToActive(PdpStateChange change);
+    protected abstract boolean stateChangeToActive(@NonNull PdpStateChange change);
+
+    protected abstract boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy);
+
+    protected abstract boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy);
 
     protected LifecycleStateRunning(LifecycleFsm manager) {
         super(manager);
@@ -104,7 +111,8 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     @Override
     public boolean update(@NonNull PdpUpdate update) {
         synchronized (fsm) {
-            if (!fsm.setStatusIntervalAction(update.getPdpHeartbeatIntervalMs() / 1000)) {
+            if (update.getPdpHeartbeatIntervalMs() != null
+                    && !fsm.setStatusIntervalAction(update.getPdpHeartbeatIntervalMs() / 1000)) {
                 fsm.statusAction(response(update.getRequestId(), PdpResponseStatus.FAIL,
                     "invalid interval: " + update.getPdpHeartbeatIntervalMs() + " seconds"));
                 return false;
@@ -122,8 +130,38 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     }
 
     protected boolean updatePolicies(List<ToscaPolicy> policies) {
-        // TODO
-        return true;
+        if (policies == null) {
+            return true;
+        }
+
+        boolean success = deployPolicies(policies);
+        return undeployPolicies(policies) && success;
+    }
+
+    protected boolean deployPolicies(List<ToscaPolicy> policies) {
+        return syncPolicies(fsm.getDeployablePoliciesAction(policies), this::deployPolicy);
+    }
+
+    protected boolean undeployPolicies(List<ToscaPolicy> policies) {
+        return syncPolicies(fsm.getUndeployablePoliciesAction(policies), this::undeployPolicy);
+    }
+
+    protected boolean syncPolicies(List<ToscaPolicy> policies,
+                                   BiFunction<PolicyController, ToscaPolicy, Boolean> sync) {
+        boolean success = true;
+        for (ToscaPolicy policy : policies) {
+            ToscaPolicyTypeIdentifier policyType = policy.getTypeIdentifier();
+            PolicyController controller = fsm.getController(policyType);
+            if (controller == null) {
+                logger.warn("no controller found for {}", policyType);
+                success = false;
+                continue;
+            }
+
+            success = sync.apply(controller, policy) && success;
+        }
+
+        return success;
     }
 
     private void invalidStateChange(PdpStateChange change) {

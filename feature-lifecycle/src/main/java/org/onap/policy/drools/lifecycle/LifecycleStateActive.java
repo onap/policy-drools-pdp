@@ -20,16 +20,22 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import lombok.NonNull;
 import lombok.ToString;
+import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle Active State.
  */
 @ToString
 public class LifecycleStateActive extends LifecycleStateRunning {
+    private static final Logger logger = LoggerFactory.getLogger(LifecycleStatePassive.class);
 
     protected LifecycleStateActive(LifecycleFsm manager) {
         super(manager);
@@ -51,4 +57,26 @@ public class LifecycleStateActive extends LifecycleStateRunning {
         return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS, null));
     }
 
+    @Override
+    protected boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
+        logger.info("{}: deploy {} into {}", this, policy.getIdentifier(), controller.getName());
+
+        // TODO: This is the latest version - retract policy with same id but different version
+
+        if (!controller.offer(policy)) {
+            return false;
+        }
+
+        fsm.deployedPolicyAction(policy);
+        return true;
+    }
+
+    @Override
+    protected boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
+        logger.info("{}: undeploy {} from {}", this, policy.getIdentifier(), controller.getName());
+
+        // TODO: retract policy.
+
+        return true;
+    }
 }

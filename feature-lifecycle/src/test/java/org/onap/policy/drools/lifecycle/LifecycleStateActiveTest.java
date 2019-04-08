@@ -27,43 +27,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.network.NetworkUtil;
-import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
 /**
  * Lifecycle State Active Test.
  */
-public class LifecycleStateActiveTest {
-
-    private LifecycleFsm fsm;
-
-    @BeforeClass
-    public static void setUp() {
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
-        LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        SystemPersistence.manager.setConfigurationDir(null);
-    }
+public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
     /**
      * Start tests in the Active state.
@@ -199,7 +186,7 @@ public class LifecycleStateActiveTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws IOException, CoderException {
         PdpUpdate update = new PdpUpdate();
         update.setName(NetworkUtil.getHostname());
         update.setPdpGroup("Z");
@@ -210,6 +197,9 @@ public class LifecycleStateActiveTest {
         long interval = 2 * originalInterval;
         update.setPdpHeartbeatIntervalMs(interval * 1000L);
 
+        controllerSupport.getController().start();
+        fsm.start(controllerSupport.getController());
+
         assertTrue(fsm.update(update));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
@@ -217,6 +207,20 @@ public class LifecycleStateActiveTest {
         assertEquals("Z", fsm.getGroup());
         assertEquals("z", fsm.getSubgroup());
 
+        String rawPolicy =
+            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy.json")));
+        ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
+        update.setPolicies(Arrays.asList(toscaPolicy));
+
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+
+        List<ToscaPolicy> factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
+        assertEquals(1, factPolicies.size());
+        assertEquals(toscaPolicy, factPolicies.get(0));
+        assertEquals(1, fsm.policiesMap.size());
+
+        controllerSupport.getController().stop();
         fsm.shutdown();
     }
 }

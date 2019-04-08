@@ -528,8 +528,8 @@ public class AggregatedPolicyControllerTest {
         // now offer it
         apc.onTopicEvent(CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
 
-        verify(prov1).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
-        verify(prov2).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
+        verify(prov1, never()).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
+        verify(prov2, never()).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
 
         // never gets this far
         verify(drools, never()).offer(SOURCE_TOPIC1, MY_EVENT);
@@ -542,8 +542,8 @@ public class AggregatedPolicyControllerTest {
         // offer it
         apc.onTopicEvent(CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
 
-        verify(prov1).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
-        verify(prov2).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
+        verify(prov1, never()).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
+        verify(prov2, never()).beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
 
         // never gets this far
         verify(drools, never()).offer(SOURCE_TOPIC1, MY_EVENT);
