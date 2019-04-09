@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -181,10 +182,25 @@ public class NullDroolsController implements DroolsController {
     }
 
     @Override
+    public <T> List<T> facts(@NonNull String sessionName, @NonNull Class<T> clazz) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public List<Object> factQuery(String sessionName, String queryName, 
             String queriedEntity, 
             boolean delete, Object... queryParams) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public <T> boolean delete(@NonNull String sessionName, @NonNull T fact) {
+        return false;
+    }
+
+    @Override
+    public <T> boolean delete(@NonNull T fact) {
+        return false;
     }
 
     private String makeInvokeMsg() {

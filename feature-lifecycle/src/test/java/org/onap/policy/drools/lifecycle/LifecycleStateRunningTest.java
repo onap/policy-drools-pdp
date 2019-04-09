@@ -41,7 +41,7 @@ public abstract class LifecycleStateRunningTest {
     public static void setUp() throws IOException {
         LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
         LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
-        LoggerUtil.setLevel("org.onap.policy.drools", "WARN");
+        LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
         SystemPersistence.manager.setConfigurationDir("src/test/resources");
         controllerSupport.createController();
     }

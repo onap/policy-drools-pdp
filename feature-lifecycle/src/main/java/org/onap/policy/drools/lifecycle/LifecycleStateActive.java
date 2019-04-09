@@ -61,8 +61,6 @@ public class LifecycleStateActive extends LifecycleStateRunning {
     protected boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
         logger.info("{}: deploy {} into {}", this, policy.getIdentifier(), controller.getName());
 
-        // TODO: This is the latest version - retract policy with same id but different version
-
         if (!controller.offer(policy)) {
             return false;
         }
@@ -75,8 +73,12 @@ public class LifecycleStateActive extends LifecycleStateRunning {
     protected boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
         logger.info("{}: undeploy {} from {}", this, policy.getIdentifier(), controller.getName());
 
-        // TODO: retract policy.
+        if (!controller.getDrools().delete(policy)) {
+            logger.warn("Policy {}:{}:{}:{} was not deployed.",
+                policy.getType(), policy.getTypeVersion(), policy.getName(), policy.getVersion());
+        }
 
+        fsm.undeployedPolicyAction(policy);
         return true;
     }
 }

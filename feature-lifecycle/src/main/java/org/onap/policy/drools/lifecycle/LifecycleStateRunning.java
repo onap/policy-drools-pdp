@@ -134,8 +134,15 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             return true;
         }
 
-        boolean success = deployPolicies(policies);
-        return undeployPolicies(policies) && success;
+        // Note that PAP sends the list of all ACTIVE policies with every
+        // UPDATE message.   First, we will undeploy all policies that are
+        // running but are not present in this list.  This will include
+        // policies that are overridden by a different version.   Second,
+        // we will deploy those policies that are not installed but
+        // resent in this list.
+
+        boolean success = undeployPolicies(policies);
+        return deployPolicies(policies) && success;
     }
 
     protected boolean deployPolicies(List<ToscaPolicy> policies) {

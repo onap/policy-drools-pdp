@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import org.kie.api.builder.ReleaseId;
@@ -103,10 +102,6 @@ public class ControllerSupport {
     public <T> List<T> getFacts(Class<T> clazz) {
         return PolicyController.factory.get(name)
             .getDrools()
-            .facts(SESSION_NAME, clazz.getCanonicalName(), false)
-            .stream()
-            .filter(clazz::isInstance)
-            .map(clazz::cast)
-            .collect(Collectors.toList());
+            .facts(SESSION_NAME, clazz);
     }
 }
