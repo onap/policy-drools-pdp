@@ -283,6 +283,10 @@ public class LifecycleFsm implements Startable {
         policiesMap.put(policy.getIdentifier(), policy);
     }
 
+    protected void undeployedPolicyAction(@NonNull ToscaPolicy policy) {
+        policiesMap.remove(policy.getIdentifier());
+    }
+
     /* ** Action Helpers ** */
 
     private boolean startIo() {

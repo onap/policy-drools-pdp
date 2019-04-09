@@ -27,7 +27,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.drools.core.ClassObjectFilter;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Query;
@@ -833,6 +836,15 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @Override
+    public <T> List<T> facts(@NonNull String sessionName, @NonNull Class<T> clazz) {
+        return facts(sessionName, clazz.getCanonicalName(), false)
+            .stream()
+            .filter(clazz::isInstance)
+            .map(clazz::cast)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Object> factQuery(String sessionName, String queryName, String queriedEntity,
             boolean delete, Object... queryParams) {
         if (sessionName == null || sessionName.isEmpty()) {
@@ -878,6 +890,39 @@ public class MavenDroolsController implements DroolsController {
         }
 
         return factObjects;
+    }
+
+    @Override
+    public <T> boolean delete(@NonNull String sessionName, @NonNull T fact) {
+        String factClassName = fact.getClass().getName();
+
+        /*
+        if (ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), factClassName) != null) {
+            throw new IllegalArgumentException("Class cannot be fetched : " + factClassName);
+        }
+        */
+
+        PolicySession session = getSession(sessionName);
+        KieSession kieSession = session.getKieSession();
+
+        Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(fact.getClass()));
+        for (FactHandle factHandle : factHandles) {
+            try {
+                if (Objects.equals(fact, kieSession.getObject(factHandle))) {
+                    logger.info("Deleting {} from {}", factClassName, sessionName);
+                    kieSession.delete(factHandle);
+                    return true;
+                }
+            } catch (Exception e) {
+                logger.warn("Object cannot be retrieved from fact {}", factHandle, e);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public <T> boolean delete(@NonNull T fact) {
+        return this.getSessionNames().stream().map((ss) -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
     }
 
     @Override

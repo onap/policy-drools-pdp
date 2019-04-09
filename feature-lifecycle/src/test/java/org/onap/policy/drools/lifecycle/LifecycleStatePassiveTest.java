@@ -187,7 +187,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertBasicPassive();
 
         String rawPolicy =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy.json")));
+            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
         ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
         update.setPolicies(Arrays.asList(toscaPolicy));
 

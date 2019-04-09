@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
@@ -73,6 +74,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setName(fsm.getName());
 
         fsm.source.offer(new StandardCoder().encode(change));
+        controllerSupport.getController().start();
     }
 
     @Test
@@ -197,7 +199,6 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         long interval = 2 * originalInterval;
         update.setPdpHeartbeatIntervalMs(interval * 1000L);
 
-        controllerSupport.getController().start();
         fsm.start(controllerSupport.getController());
 
         assertTrue(fsm.update(update));
@@ -207,20 +208,83 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals("Z", fsm.getGroup());
         assertEquals("z", fsm.getSubgroup());
 
-        String rawPolicy =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy.json")));
-        ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
-        update.setPolicies(Arrays.asList(toscaPolicy));
+        String restartV1 =
+            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
+        ToscaPolicy toscaPolicyRestartV1 = new StandardCoder().decode(restartV1, ToscaPolicy.class);
+        update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
+
+        // update with an operational.restart policy
 
         assertTrue(fsm.update(update));
         assertEquals(1, fsm.policyTypesMap.size());
 
         List<ToscaPolicy> factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
         assertEquals(1, factPolicies.size());
-        assertEquals(toscaPolicy, factPolicies.get(0));
+        assertEquals(toscaPolicyRestartV1, factPolicies.get(0));
         assertEquals(1, fsm.policiesMap.size());
 
-        controllerSupport.getController().stop();
+        // dup update with the same operational.restart policy - nothing changes
+
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+
+        factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
+        assertEquals(1, factPolicies.size());
+        assertEquals(toscaPolicyRestartV1, factPolicies.get(0));
+        assertEquals(1, fsm.policiesMap.size());
+
+        // undeploy operational.restart policy
+
+        update.setPolicies(Collections.emptyList());
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+
+        factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
+        assertEquals(0, factPolicies.size());
+        assertEquals(0, fsm.policiesMap.size());
+
+        // redeploy operational.restart policy
+
+        update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+
+        factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
+        assertEquals(1, factPolicies.size());
+        assertEquals(toscaPolicyRestartV1, factPolicies.get(0));
+        assertEquals(1, fsm.policiesMap.size());
+
+        // deploy a new version of the operational.restart policy
+
+        String restartV2 =
+            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.v2.json")));
+        ToscaPolicy toscaPolicyRestartV2 = new StandardCoder().decode(restartV2, ToscaPolicy.class);
+        update.setPolicies(Arrays.asList(toscaPolicyRestartV2));
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+
+        factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
+        assertEquals(1, factPolicies.size());
+        assertNotEquals(toscaPolicyRestartV1, factPolicies.get(0));
+        assertEquals(toscaPolicyRestartV2, factPolicies.get(0));
+        assertEquals(1, fsm.policiesMap.size());
+
+        // deploy another policy : firewall
+
+        String firewall =
+            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-firewall.json")));
+        ToscaPolicy toscaPolicyFirewall = new StandardCoder().decode(firewall, ToscaPolicy.class);
+        update.setPolicies(Arrays.asList(toscaPolicyRestartV2, toscaPolicyFirewall));
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+
+        factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
+        assertEquals(2, factPolicies.size());
+        assertTrue(factPolicies.stream().noneMatch((ff) -> Objects.equals(toscaPolicyRestartV1, ff)));
+        assertTrue(factPolicies.stream().anyMatch((ff) -> Objects.equals(toscaPolicyRestartV2, ff)));
+        assertTrue(factPolicies.stream().anyMatch((ff) -> Objects.equals(toscaPolicyFirewall, ff)));
+        assertEquals(2, fsm.policiesMap.size());
+
         fsm.shutdown();
     }
 }

@@ -22,7 +22,7 @@ package org.onap.policy.drools.controller;
 
 import java.util.List;
 import java.util.Map;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -215,6 +215,11 @@ public interface DroolsController extends Startable, Lockable {
     List<Object> facts(String sessionName, String className, boolean delete);
 
     /**
+     * Gets facts.
+     */
+    <T> List<T> facts(@NonNull String sessionName, @NonNull Class<T> clazz);
+
+    /**
      * gets the facts associated with a query for a give session for a given queried entity.
      * 
      * @param sessionName the session
@@ -226,6 +231,16 @@ public interface DroolsController extends Startable, Lockable {
      */
     List<Object> factQuery(String sessionName, String queryName, String queriedEntity, boolean delete,
         Object... queryParams);
+
+    /**
+     * Deletes a fact from a session.
+     */
+    <T> boolean delete(@NonNull String sessionName, @NonNull T fact);
+
+    /**
+     * Delete a fact object of type T.
+     */
+    <T> boolean delete(@NonNull T fact);
 
     /**
      * halts and permanently releases all resources.
