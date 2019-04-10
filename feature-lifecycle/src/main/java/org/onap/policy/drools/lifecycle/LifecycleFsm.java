@@ -335,8 +335,9 @@ public class LifecycleFsm implements Startable {
         status.setPdpSubgroup(subgroup);
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
-        status.setPdpType("drools");    // TODO: enum ?
+        status.setPdpType("drools");
         status.setSupportedPolicyTypes(getCapabilities());
+        status.setPolicies(new ArrayList<>(policiesMap.keySet()));
         return status;
     }
 
