@@ -69,6 +69,24 @@
       "revId": "a2e7d569974b018235e821d7bc0bb7a43d75aa2c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "587232d0_12b8d1b9",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleStateActiveTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-17T13:42:59Z",
+      "side": 1,
+      "message": "yes, that\u0027s correct.",
+      "parentUuid": "bc3e1444_f248e0c6",
+      "revId": "a2e7d569974b018235e821d7bc0bb7a43d75aa2c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
