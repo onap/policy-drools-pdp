@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.util.Collections;
 import lombok.NonNull;
 import lombok.ToString;
 import org.onap.policy.drools.system.PolicyController;
@@ -53,6 +54,7 @@ public class LifecycleStateActive extends LifecycleStateRunning {
 
     @Override
     protected boolean stateChangeToPassive(PdpStateChange change) {
+        undeployPolicies(Collections.emptyList());
         fsm.transitionToAction(new LifecycleStatePassive(fsm));
         return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS, null));
     }

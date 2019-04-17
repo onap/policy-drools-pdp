@@ -195,22 +195,16 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         PdpUpdate update = new PdpUpdate();
         update.setName(NetworkUtil.getHostname());
-        update.setPdpGroup("Z");
-        update.setPdpSubgroup("z");
+        update.setPdpGroup("W");
+        update.setPdpSubgroup("w");
         update.setPolicies(Collections.emptyList());
 
-        long originalInterval = fsm.getStatusTimerSeconds();
-        long interval = 10 * originalInterval;
-        update.setPdpHeartbeatIntervalMs(interval * 1000L);
-
         fsm.start(controllerSupport.getController());
-
         assertTrue(fsm.update(update));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertEquals("Z", fsm.getGroup());
-        assertEquals("z", fsm.getSubgroup());
+        assertEquals("W", fsm.getGroup());
+        assertEquals("w", fsm.getSubgroup());
 
         String restartV1 =
             new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
@@ -315,6 +309,15 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertTrue(factPolicies.stream().anyMatch((ff) -> Objects.equals(toscaPolicyRestartV2, ff)));
         assertTrue(factPolicies.stream().anyMatch((ff) -> Objects.equals(toscaPolicyFirewall, ff)));
         assertEquals(2, fsm.policiesMap.size());
+
+        long originalInterval = fsm.getStatusTimerSeconds();
+        long interval = 10 * originalInterval;
+        update.setPdpHeartbeatIntervalMs(interval * 1000L);
+
+        assertTrue(fsm.update(update));
+
+        assertEquals(PdpState.ACTIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
 
         fsm.shutdown();
     }

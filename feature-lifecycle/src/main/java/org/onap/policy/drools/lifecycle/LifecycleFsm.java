@@ -147,7 +147,7 @@ public class LifecycleFsm implements Startable {
      * Start a controller event.
      */
     public synchronized void start(@NonNull PolicyController controller) {
-        logger.info("lifecycle event: start controller: {}" + controller.getName());
+        logger.info("lifecycle event: start controller: {}", controller.getName());
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
             policyTypesMap.put(id, controller);
         }
@@ -237,7 +237,7 @@ public class LifecycleFsm implements Startable {
             status.setResponse(response);
         }
 
-        return client.send(statusPayload(state));
+        return client.send(status);
     }
 
     protected void setGroupAction(String group, String subgroup) {

@@ -42,7 +42,7 @@ public abstract class LifecycleStateRunningTest {
         LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
         LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
+        SystemPersistence.manager.setConfigurationDir("target/test-classes");
         controllerSupport.createController();
     }
 
@@ -51,7 +51,6 @@ public abstract class LifecycleStateRunningTest {
      */
     @AfterClass
     public static void tearDown() {
-        controllerSupport.destroyController();
         try {
             Files.deleteIfExists(Paths.get(SystemPersistence.manager.getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));

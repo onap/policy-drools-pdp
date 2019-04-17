@@ -58,6 +58,12 @@ public class ControllerSupport {
      * Create controller.
      */
     public PolicyController createController() throws IOException {
+        try {
+            getController();
+        } catch (IllegalArgumentException e) {
+            ;
+        }
+
         ReleaseId coordinates =
             KieUtils.installArtifact(Paths.get(JUNIT_KMODULE_PATH).toFile(),
                 Paths.get(JUNIT_KMODULE_POM_PATH).toFile(),

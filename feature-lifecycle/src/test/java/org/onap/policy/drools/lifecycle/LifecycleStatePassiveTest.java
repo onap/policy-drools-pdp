@@ -180,6 +180,12 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         assertTrue(fsm.update(update));
 
+        int qlength = fsm.client.getSink().getRecentEvents().length;
+        PdpStatus lastStatus = new StandardCoder()
+                                    .decode(fsm.client.getSink().getRecentEvents()[qlength - 1], PdpStatus.class);
+        assertEquals(update.getRequestId(), lastStatus.getRequestId());
+        assertEquals(update.getRequestId(), lastStatus.getResponse().getResponseTo());
+
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
         assertEquals("Z", fsm.getGroup());
