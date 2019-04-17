@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fd076ec_b6dec361",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/ControllerSupport.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-17T12:43:42Z",
+      "side": 1,
+      "message": "re-throw?",
+      "revId": "a2e7d569974b018235e821d7bc0bb7a43d75aa2c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fc955f6_eab92032",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleStateActiveTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-17T12:43:42Z",
+      "side": 1,
+      "message": "might also want to add a test where the interval is null",
+      "revId": "a2e7d569974b018235e821d7bc0bb7a43d75aa2c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
