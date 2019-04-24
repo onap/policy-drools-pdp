@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da631e86_f7e0be30",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5040
+      },
+      "writtenOn": "2019-04-24T07:59:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7d181e88_c8de216c",
+      "revId": "25615a8e283d34cc95a1f4872c56bc3628a6c621",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9a2ec11_fdcfa539",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2019-04-23T20:57:01Z",
       "side": 1,
       "message": "I think these apk commands should move up a released parent image, and just leave app installation here, but we can do with this for now.",
+      "revId": "25615a8e283d34cc95a1f4872c56bc3628a6c621",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa69ad42_0bfc8941",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5040
+      },
+      "writtenOn": "2019-04-24T07:59:57Z",
+      "side": 1,
+      "message": "My idea was to move all stuff used by _every_ image to common-image and leave particular image specific stuff in that image. If we move it to the parent image we\u0027re risking to burden common-image with a lot of unused packages and common-image will become too fat again in some time. Anyway, I got you point with clear app image.",
+      "parentUuid": "e9a2ec11_fdcfa539",
       "revId": "25615a8e283d34cc95a1f4872c56bc3628a6c621",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
