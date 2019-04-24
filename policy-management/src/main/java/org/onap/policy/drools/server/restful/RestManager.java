@@ -49,6 +49,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
@@ -193,7 +194,7 @@ public class RestManager {
     public Response engineUpdate(
             @ApiParam(value = "Configuration to apply", required = true) PdpdConfiguration configuration) {
         final PolicyController controller = null;
-        boolean success = true;
+        boolean success;
         try {
             success = PolicyEngine.manager.configure(configuration);
         } catch (final Exception e) {
@@ -465,7 +466,7 @@ public class RestManager {
                         .entity(new Error(controllerName + " can't be started")).build();
             }
         } catch (final IllegalStateException e) {
-            logger.info("{}: cannot start {} because of {}", this, controller, e.getMessage(), e);;
+            logger.info("{}: cannot start {} because of {}", this, controller, e.getMessage(), e);
             return Response.status(Response.Status.PARTIAL_CONTENT).entity(controller).build();
         }
 
@@ -1744,127 +1745,79 @@ public class RestManager {
     }
 
     /**
-     * GET.
-     *
-     * @return response object
+     * GET a source.
      */
     @GET
-    @Path("engine/topics/sources/ueb/{topic}")
-    @ApiOperation(value = "Retrieves an UEB managed topic source",
-            notes = "This is an UEB Network Communicaton Endpoint source of messages for the Engine",
-            response = UebTopicSource.class)
-    public Response uebSourceTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSource(topic)).build();
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}")
+    @ApiOperation(value = "Retrieves a managed topic source",
+            notes = "This is an Network Communication Endpoint source of messages for the Engine",
+            response = TopicSource.class)
+    public Response sourceTopic(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
+        return Response
+            .status(Response.Status.OK)
+            .entity(TopicEndpoint.manager
+                .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic))
+            .build();
     }
 
     /**
-     * GET.
-     *
-     * @return response object
+     * GET a sink.
      */
     @GET
-    @Path("engine/topics/sinks/ueb/{topic}")
-    @ApiOperation(value = "Retrieves an UEB managed topic sink",
-            notes = "This is an UEB Network Communicaton Endpoint destination of messages from the Engine",
-            response = UebTopicSink.class)
-    public Response uebSinkTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSink(topic)).build();
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}")
+    @ApiOperation(value = "Retrieves a managed topic sink",
+            notes = "This is a Network Communicaton Endpoint destination of messages from the Engine",
+            response = TopicSink.class)
+    public Response sinkTopic(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
+        return Response
+            .status(Response.Status.OK)
+            .entity(TopicEndpoint.manager
+                .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic))
+            .build();
     }
 
     /**
-     * GET.
-     *
-     * @return response object
+     * GET a source events.
      */
     @GET
-    @Path("engine/topics/sources/dmaap/{topic}")
-    @ApiOperation(value = "Retrieves a DMaaP managed topic source",
-            notes = "This is a DMaaP Network Communicaton Endpoint source of messages for the Engine",
-            response = DmaapTopicSource.class)
-    public Response dmaapSourceTopic(
-            @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSource(topic)).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sinks/dmaap/{topic}")
-    @ApiOperation(value = "Retrieves a DMaaP managed topic sink",
-            notes = "This is a DMaaP Network Communicaton Endpoint destination of messages from the Engine",
-            response = DmaapTopicSink.class)
-    public Response dmaapSinkTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSink(topic)).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sources/ueb/{topic}/events")
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/events")
     @ApiOperation(value = "Retrieves the latest events received by an UEB topic",
-            notes = "This is a UEB Network Communicaton Endpoint source of messages for the Engine",
+            notes = "This is a Network Communicaton Endpoint source of messages for the Engine",
             responseContainer = "List")
-    public Response uebSourceEvents(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
+    public Response sourceEvents(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents())).build();
+            .entity(Arrays
+                .asList(TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
+                        .getRecentEvents()))
+            .build();
     }
 
     /**
-     * GET.
-     *
-     * @return response object
+     * GET a sink events.
      */
     @GET
-    @Path("engine/topics/sinks/ueb/{topic}/events")
-    @ApiOperation(value = "Retrieves the latest events sent from a topic",
-            notes = "This is a UEB Network Communicaton Endpoint sink of messages from the Engine",
-            responseContainer = "List")
-    public Response uebSinkEvents(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/events")
+    @ApiOperation(value = "Retrieves the latest events received by an UEB topic",
+        notes = "This is a Network Communicaton Endpoint source of messages for the Engine",
+        responseContainer = "List")
+    public Response sinkEvents(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-                .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSink(topic).getRecentEvents())).build();
+            .entity(Arrays
+                .asList(TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
+                    .getRecentEvents()))
+            .build();
     }
 
     /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sources/dmaap/{topic}/events")
-    @ApiOperation(value = "Retrieves the latest events received by a DMaaP topic",
-            notes = "This is a DMaaP Network Communicaton Endpoint source of messages for the Engine",
-            responseContainer = "List")
-    public Response dmaapSourceEvents(
-            @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Status.OK)
-                .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents())).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sinks/dmaap/{topic}/events")
-    @ApiOperation(value = "Retrieves the latest events send through a DMaaP topic",
-            notes = "This is a DMaaP Network Communicaton Endpoint destination of messages from the Engine",
-            responseContainer = "List")
-    public Response dmaapSinkEvents(@PathParam("topic") String topic) {
-        return Response.status(Status.OK)
-                .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSink(topic).getRecentEvents())).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
+     * GET noop sinks.
      */
     @GET
     @Path("engine/topics/sinks/noop")
@@ -1872,33 +1825,6 @@ public class RestManager {
             responseContainer = "List", response = NoopTopicSink.class)
     public Response noopSinks() {
         return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSinks()).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sinks/noop/{topic}")
-    @ApiOperation(value = "Retrieves a NOOP managed topic sink",
-            notes = "NOOP is an dev/null Network Communicaton Sink", response = NoopTopicSink.class)
-    public Response noopSinkTopic(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSink(topic)).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sinks/noop/{topic}/events")
-    @ApiOperation(value = "Retrieves the latest events send through a NOOP topic",
-            notes = "NOOP is an dev/null Network Communicaton Sink", responseContainer = "List")
-    public Response noopSinkEvents(@PathParam("topic") String topic) {
-        return Response.status(Status.OK)
-                .entity(Arrays.asList(TopicEndpoint.manager.getNoopTopicSink(topic).getRecentEvents())).build();
     }
 
     /**
@@ -2013,91 +1939,47 @@ public class RestManager {
     }
 
     /**
-     * PUT.
+     * Offers and event to a topic in a communication infrastructure.
      *
      * @return response object
      */
     @PUT
-    @Path("engine/topics/sources/ueb/{topic}/events")
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/events")
     @Consumes(MediaType.TEXT_PLAIN)
-    @ApiOperation(value = "Offers an event to an UEB topic for internal processing by the engine",
+    @ApiOperation(value = "Offers an event to a topic for internal processing by the engine",
             notes = "The offered event is treated as it was incoming from the network", responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The topic information cannot be found"),
             @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
             @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
-    public Response uebOffer(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
+    public Response commEventOffer(
+            @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+            @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Network Message", required = true) String json) {
+
         try {
-            final UebTopicSource uebReader = TopicEndpoint.manager.getUebTopicSource(topic);
-            final boolean success = uebReader.offer(json);
-            if (success) {
+            TopicSource source =
+                TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            if (source.offer(json)) {
                 return Response.status(Status.OK)
-                        .entity(Arrays.asList(TopicEndpoint.manager.getUebTopicSource(topic).getRecentEvents()))
-                        .build();
+                    .entity(Arrays.asList(source.getRecentEvents()))
+                    .build();
             } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("Failure to inject event over " + topic))
-                        .build();
+                return Response.status(Status.NOT_ACCEPTABLE)
+                    .entity(new Error("Failure to inject event over " + topic))
+                    .build();
             }
-        } catch (final IllegalArgumentException e) {
-            logNoUebEncoder(topic, e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(topic + " not found")).build();
-        } catch (final IllegalStateException e) {
-            logNoUebEncoder(topic, e);
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(new Error(topic + " not found")).build();
+        } catch (IllegalStateException e) {
             return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(topic + " not acceptable due to current state")).build();
-        } catch (final Exception e) {
-            logNoUebEncoder(topic, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
+                    .entity(new Error(topic + " not acceptable due to current state"))
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage()))
+                            .build();
         }
-    }
-
-    private void logNoUebEncoder(String topic, Exception ex) {
-        logger.debug("{}: cannot offer for encoder ueb topic for {} because of {}", this, topic, ex.getMessage(), ex);
-    }
-
-    /**
-     * PUT.
-     *
-     * @return response object
-     */
-    @PUT
-    @Path("engine/topics/sources/dmaap/{topic}/events")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @ApiOperation(value = "Offers an event to a DMaaP topic for internal processing by the engine",
-            notes = "The offered event is treated as it was incoming from the network", responseContainer = "List")
-    @ApiResponses(value = {@ApiResponse(code = 404, message = "The topic information cannot be found"),
-            @ApiResponse(code = 406,
-                    message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
-    public Response dmaapOffer(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
-            @ApiParam(value = "Network Message", required = true) String json) {
-        try {
-            final DmaapTopicSource dmaapReader = TopicEndpoint.manager.getDmaapTopicSource(topic);
-            final boolean success = dmaapReader.offer(json);
-            if (success) {
-                return Response.status(Status.OK)
-                        .entity(Arrays.asList(TopicEndpoint.manager.getDmaapTopicSource(topic).getRecentEvents()))
-                        .build();
-            } else {
-                return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("Failure to inject event over " + topic))
-                        .build();
-            }
-        } catch (final IllegalArgumentException e) {
-            logNoDmaapEncoder(topic, e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(topic + " not found")).build();
-        } catch (final IllegalStateException e) {
-            logNoDmaapEncoder(topic, e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(topic + " not acceptable due to current state")).build();
-        } catch (final Exception e) {
-            logNoDmaapEncoder(topic, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
-        }
-    }
-
-    private void logNoDmaapEncoder(String topic, Exception ex) {
-        logger.debug("{}: cannot offer for encoder dmaap topic for {} because of {}", this, topic, ex.getMessage(), ex);
     }
 
     /**
@@ -2184,7 +2066,7 @@ public class RestManager {
         try {
             newLevel = LoggerUtil.setLevel(loggerName, loggerLevel);
         } catch (final IllegalArgumentException e) {
-            logger.warn("{}: no logger {}", this, loggerName, loggerLevel, e);
+            logger.warn("{}: invalid operation for logger {} and level {}", this, loggerName, loggerLevel, e);
             return Response.status(Status.NOT_FOUND).build();
         } catch (final IllegalStateException e) {
             logger.warn("{}: logging framework unavailable for {} / {}", this, loggerName, loggerLevel, e);
@@ -2223,9 +2105,7 @@ public class RestManager {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("rest-telemetry-api []");
-        return builder.toString();
+        return "rest-telemetry-api []";
     }
 
     /**

@@ -66,8 +66,6 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm = new LifecycleFsm();
         fsm.setStatusTimerSeconds(15L);
         simpleStart();
-
-        assertEquals(0, fsm.client.getSink().getRecentEvents().length);
     }
 
     @Test
