@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,7 +92,6 @@ public class RestManagerTest {
     private static final String DMAAP_SINK_PASSWD_KEY = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + "."
             + DMAAP_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_AAF_PASSWORD_SUFFIX;
 
-
     private static final String FOO_CONTROLLER_FILE = FOO_CONTROLLER + "-controller.properties";
     private static final String FOO_CONTROLLER_FILE_BAK = FOO_CONTROLLER_FILE + ".bak";
 
@@ -142,7 +141,6 @@ public class RestManagerTest {
         engineProps.put(DMAAP_SOURCE_PASSWD_KEY, DMAAP_PASSWD);
         engineProps.put(DMAAP_SINK_MECHID_KEY, DMAAP_MECHID);
         engineProps.put(DMAAP_SINK_PASSWD_KEY, DMAAP_PASSWD);
-        engineProps.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
         PolicyEngine.manager.configure(engineProps);
         PolicyEngine.manager.start();
@@ -160,6 +158,11 @@ public class RestManagerTest {
         if (!NetworkUtil.isTcpPortOpen("localhost", DEFAULT_TELEMETRY_PORT, 5, 10000L)) {
             throw new IllegalStateException("cannot connect to port " + DEFAULT_TELEMETRY_PORT);
         }
+
+        Properties noopProperties = new Properties();
+        noopProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, NOOP_TOPIC);
+        noopProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+        TopicEndpoint.manager.addTopics(noopProperties);
     }
 
     /**
@@ -255,13 +258,25 @@ public class RestManagerTest {
         httpDelete.releaseConnection();
 
         /*
-         * PUT: /engine/topics/sources/ueb/topic/events /engine/topics/sources/dmaap/topic/events
-         * /engine/topics/switches/lock DELETE: /engine/topics/switches/lock
+         * PUT: /engine/topics/sources/ueb/topic/events
+         *      /engine/topics/sources/dmaap/topic/events
+         *      /engine/topics/switches/lock
+         *
+         * DELETE: /engine/topics/switches/lock
          */
         httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
         httpPut.addHeader("Content-Type", "text/plain");
         httpPut.addHeader("Accept", "application/json");
-        httpPut.setEntity(new StringEntity("FOOOO"));
+        httpPut.setEntity(new StringEntity("{x:y}"));
+        response = client.execute(httpPut);
+        logger.info(httpPut.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpPut.releaseConnection();
+
+        httpPut = new HttpPut(HOST_URL + "/engine/topics/sources/noop/" + NOOP_TOPIC + "/events");
+        httpPut.addHeader("Content-Type", "text/plain");
+        httpPut.addHeader("Accept", "application/json");
+        httpPut.setEntity(new StringEntity("{x:y}"));
         response = client.execute(httpPut);
         logger.info(httpPut.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
