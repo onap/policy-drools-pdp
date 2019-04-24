@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4d30d650_8a5470b7",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/server/restful/RestLifecycleManagerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-24T16:21:37Z",
+      "side": 1,
+      "message": "suggestion: use NetworkUtil to allocate a port",
+      "revId": "8c05a8d5c676a8db8692f0c494e8edf1fc26aaa2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3400787_ab023de2",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1942,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-04-24T16:21:37Z",
+      "side": 1,
+      "message": "\"and\" \u003d\u003e \"an\"",
+      "revId": "8c05a8d5c676a8db8692f0c494e8edf1fc26aaa2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
