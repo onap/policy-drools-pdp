@@ -34,7 +34,7 @@ public class LifecycleFeature
     /**
      * Lifecycle FSM.
      */
-    protected static final LifecycleFsm fsm = new LifecycleFsm();
+    public static final LifecycleFsm fsm = new LifecycleFsm();
 
     @Override
     public int getSequenceNumber() {
