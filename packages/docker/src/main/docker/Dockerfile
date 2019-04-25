@@ -21,7 +21,9 @@ RUN apk add --no-cache \
     && pip install http-prompt
 
 RUN mkdir -p ${POLICY_CONFIG} ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \
-    chown -R policy:policy ${POLICY_LOGS} ${POLICY_INSTALL}
+    chown -R policy:policy ${POLICY_LOGS} ${POLICY_INSTALL} && \
+    rmdir ${POLICY_HOME}/etc/ssl && \
+    rmdir ${POLICY_HOME}/etc
 
 WORKDIR ${POLICY_INSTALL}
 COPY install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
