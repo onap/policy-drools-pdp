@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "347accc6_a01a2f88",
+        "filename": "docker_build.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-04-26T11:40:46Z",
+      "side": 1,
+      "message": "If the version gets updated we\u0027ll have to ensure to update this script. I am also thinking that we get rid of these shell scripts and run the docker build like the new repos which uses the maven plugin.",
+      "range": {
+        "startLine": 52,
+        "startChar": 60,
+        "endLine": 52,
+        "endChar": 65
+      },
+      "revId": "f8b78e9820fc589d0f9c3ab60ddce297d8685d5c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
