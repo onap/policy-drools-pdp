@@ -23,7 +23,7 @@ RUN apk add --no-cache \
     && pip install http-prompt
 
 RUN mkdir -p ${POLICY_CONFIG} ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \
-    chown -R policy:policy ${POLICY_LOGS} ${POLICY_INSTALL} && \
+    chown -R policy:policy ${POLICY_HOME} ${POLICY_LOGS} ${POLICY_INSTALL} && \
     rmdir ${POLICY_HOME}/etc/ssl && \
     rmdir ${POLICY_HOME}/etc
 
