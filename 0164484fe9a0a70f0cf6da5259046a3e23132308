@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "498dac75_c7c02d9b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1713,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-05-01T13:20:57Z",
+      "side": 1,
+      "message": "should this still return OK?  Or maybe BAD_REQUEST?\n\nsame comment applies below",
+      "revId": "0164484fe9a0a70f0cf6da5259046a3e23132308",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d48cd3e3_b6b51d76",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/server/restful/test/RestManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-05-01T13:20:57Z",
+      "side": 1,
+      "message": "tests with invalid \"comm\" value?",
+      "revId": "0164484fe9a0a70f0cf6da5259046a3e23132308",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
