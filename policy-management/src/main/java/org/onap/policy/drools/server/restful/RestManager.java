@@ -49,15 +49,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
-import org.onap.policy.common.endpoints.event.comm.bus.DmaapTopicSink;
-import org.onap.policy.common.endpoints.event.comm.bus.DmaapTopicSource;
-import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicSink;
-import org.onap.policy.common.endpoints.event.comm.bus.UebTopicSink;
-import org.onap.policy.common.endpoints.event.comm.bus.UebTopicSource;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
@@ -1693,56 +1689,61 @@ public class RestManager {
     }
 
     /**
-     * GET.
-     *
-     * @return response object
+     * GET sources of a communication type.
      */
     @GET
-    @Path("engine/topics/sources/ueb")
-    @ApiOperation(value = "Retrieves the UEB managed topic sources", notes = "UEB Topic Sources Agregation",
-            responseContainer = "List", response = UebTopicSource.class)
-    public Response uebSources() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSources()).build();
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}")
+    @ApiOperation(value = "Retrieves managed topic sources", notes = "Sources for a communication infrastructure",
+            responseContainer = "List", response = TopicSource.class)
+    public Response commSources(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
+    ) {
+        List<TopicSource> sources = new ArrayList<>();
+        switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
+            case UEB:
+                sources.addAll(TopicEndpoint.manager.getUebTopicSources());
+                break;
+            case DMAAP:
+                sources.addAll(TopicEndpoint.manager.getDmaapTopicSources());
+                break;
+            case NOOP:
+                sources.addAll(TopicEndpoint.manager.getNoopTopicSources());
+                break;
+            default:
+                logger.debug("Invalid communication mechanism parameter: {}", comm);
+                break;
+        }
+        return Response.status(Response.Status.OK).entity(sources).build();
     }
 
     /**
-     * GET.
-     *
-     * @return response object
+     * GET sinks of a communication type.
      */
     @GET
-    @Path("engine/topics/sinks/ueb")
-    @ApiOperation(value = "Retrieves the UEB managed topic sinks", notes = "UEB Topic Sinks Agregation",
-            responseContainer = "List", response = UebTopicSink.class)
-    public Response uebSinks() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getUebTopicSinks()).build();
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}")
+    @ApiOperation(value = "Retrieves managed topic sinks", notes = "Communication Infrastructure Sinks",
+            responseContainer = "List", response = TopicSink.class)
+    public Response commSinks(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
+    ) {
+        List<TopicSink> sinks = new ArrayList<>();
+        switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
+            case UEB:
+                sinks.addAll(TopicEndpoint.manager.getUebTopicSinks());
+                break;
+            case DMAAP:
+                sinks.addAll(TopicEndpoint.manager.getDmaapTopicSinks());
+                break;
+            case NOOP:
+                sinks.addAll(TopicEndpoint.manager.getNoopTopicSinks());
+                break;
+            default:
+                logger.debug("Invalid communication mechanism parameter: {}", comm);
+                break;
+        }
+        return Response.status(Response.Status.OK).entity(sinks).build();
     }
 
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sources/dmaap")
-    @ApiOperation(value = "Retrieves the DMaaP managed topic sources", notes = "DMaaP Topic Sources Agregation",
-            responseContainer = "List", response = DmaapTopicSource.class)
-    public Response dmaapSources() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSources()).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sinks/dmaap")
-    @ApiOperation(value = "Retrieves the DMaaP managed topic sinks", notes = "DMaaP Topic Sinks Agregation",
-            responseContainer = "List", response = DmaapTopicSink.class)
-    public Response dmaapSinks() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getDmaapTopicSinks()).build();
-    }
 
     /**
      * GET a source.
@@ -1817,125 +1818,177 @@ public class RestManager {
     }
 
     /**
-     * GET noop sinks.
+     * GET source topic switches.
      */
     @GET
-    @Path("engine/topics/sinks/noop")
-    @ApiOperation(value = "Retrieves the NOOP managed topic sinks", notes = "NOOP Topic Sinks Agregation",
-            responseContainer = "List", response = NoopTopicSink.class)
-    public Response noopSinks() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getNoopTopicSinks()).build();
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sources/ueb/{topic}/switches")
-    @ApiOperation(value = "UEB Topic Control Switches", notes = "List of the UEB Topic Control Switches",
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches")
+    @ApiOperation(value = "Topic Control Switches", notes = "List of the Topic Control Switches",
             responseContainer = "List")
-    public Response uebTopicSwitches() {
+    public Response commSourceTopicSwitches(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
+    ) {
         return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
     /**
-     * PUT.
-     *
-     * @return response object
+     * GET sink topic switches.
      */
-    @PUT
-    @Path("engine/topics/sources/ueb/{topic}/switches/lock")
-    @ApiOperation(value = "Locks an UEB Source topic", response = UebTopicSource.class)
-    @ApiResponses(value = {@ApiResponse(code = 406,
-            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
-    public Response uebTopicLock(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final UebTopicSource source = TopicEndpoint.manager.getUebTopicSource(topic);
-        final boolean success = source.lock();
-        if (success) {
-            return Response.status(Status.OK).entity(source).build();
-        } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(makeTopicOperError(topic)).build();
-        }
+    @GET
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches")
+    @ApiOperation(value = "Topic Control Switches", notes = "List of the Topic Control Switches",
+        responseContainer = "List")
+    public Response commSinkTopicSwitches(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
+    ) {
+        return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
     }
 
     /**
-     * DELETE.
-     *
-     * @return response object
+     * PUTs a lock on a topic.
      */
-    @DELETE
-    @Path("engine/topics/sources/ueb/{topic}/switches/lock")
-    @ApiOperation(value = "Unlocks an UEB Source topic", response = UebTopicSource.class)
+    @PUT
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @ApiOperation(value = "Locks a topic", response = TopicSource.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
-    public Response uebTopicUnlock(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final UebTopicSource source = TopicEndpoint.manager.getUebTopicSource(topic);
-        final boolean success = source.unlock();
+    public Response commSourceTopicLock(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSource source =
+            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, source.lock(), source);
+    }
+
+    /**
+     * DELETEs the lock on a topic.
+     */
+    @DELETE
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @ApiOperation(value = "Unlocks topic", response = TopicSource.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSourceTopicUnlock(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSource source =
+            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, source.unlock(), source);
+    }
+
+    /**
+     * Starts a topic source.
+     */
+    @PUT
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @ApiOperation(value = "Starts a topic", response = TopicSource.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSourceTopicActivation(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSource source =
+            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, source.start(), source);
+    }
+
+    /**
+     * Stops a topic source.
+     */
+    @DELETE
+    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @ApiOperation(value = "Stops a topic", response = TopicSource.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSourceTopicDeactivation(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSource source =
+            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, source.stop(), source);
+    }
+
+    /**
+     * PUTs a lock on a topic.
+     */
+    @PUT
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @ApiOperation(value = "Locks a topic sink", response = TopicSink.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSinkTopicLock(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSink sink =
+            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, sink.lock(), sink);
+    }
+
+    /**
+     * DELETEs the lock on a topic.
+     */
+    @DELETE
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @ApiOperation(value = "Unlocks a topic sink", response = TopicSink.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSinkTopicUnlock(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSink sink =
+            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, sink.unlock(), sink);
+    }
+
+    /**
+     * Starts a topic sink.
+     */
+    @PUT
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @ApiOperation(value = "Starts a topic sink", response = TopicSink.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSinkTopicActivation(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSink sink =
+            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, sink.start(), sink);
+    }
+
+    /**
+     * Stops a topic sink.
+     */
+    @DELETE
+    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @ApiOperation(value = "Stops a topic", response = TopicSource.class)
+    @ApiResponses(value = {@ApiResponse(code = 406,
+        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+    public Response commSinkTopicDeactivation(
+        @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
+        @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
+    ) {
+        TopicSink sink =
+            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return getResponse(topic, sink.stop(), sink);
+    }
+
+    private Response getResponse(String topicName, boolean success, Topic topic) {
         if (success) {
-            return Response.status(Status.OK).entity(source).build();
+            return Response.status(Status.OK).entity(topic).build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(makeTopicOperError(topic)).build();
+            return Response.status(Status.NOT_ACCEPTABLE).entity(makeTopicOperError(topicName)).build();
         }
     }
 
     private Error makeTopicOperError(String topic) {
         return new Error("cannot perform operation on " + topic);
-    }
-
-    /**
-     * GET.
-     *
-     * @return response object
-     */
-    @GET
-    @Path("engine/topics/sources/dmaap/{topic}/switches")
-    @ApiOperation(value = "DMaaP Topic Control Switches", notes = "List of the DMaaP Topic Control Switches",
-            responseContainer = "List")
-    public Response dmaapTopicSwitches() {
-        return Response.status(Response.Status.OK).entity(Arrays.asList(Switches.values())).build();
-    }
-
-    /**
-     * PUT.
-     *
-     * @return response object
-     */
-    @PUT
-    @Path("engine/topics/sources/dmaap/{topic}/switches/lock")
-    @ApiOperation(value = "Locks an DMaaP Source topic", response = DmaapTopicSource.class)
-    @ApiResponses(value = {@ApiResponse(code = 406,
-            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
-    public Response dmmapTopicLock(@ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final DmaapTopicSource source = TopicEndpoint.manager.getDmaapTopicSource(topic);
-        final boolean success = source.lock();
-        if (success) {
-            return Response.status(Status.OK).entity(source).build();
-        } else {
-            return Response.status(Status.NOT_ACCEPTABLE).entity(makeTopicOperError(topic)).build();
-        }
-    }
-
-    /**
-     * DELETE.
-     *
-     * @return response object
-     */
-    @DELETE
-    @Path("engine/topics/sources/dmaap/{topic}/switches/lock")
-    @ApiOperation(value = "Unlocks an DMaaP Source topic", response = DmaapTopicSource.class)
-    @ApiResponses(value = {@ApiResponse(code = 406,
-            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
-    public Response dmaapTopicUnlock(
-            @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
-        final DmaapTopicSource source = TopicEndpoint.manager.getDmaapTopicSource(topic);
-        final boolean success = source.unlock();
-        if (success) {
-            return Response.status(Status.OK).entity(source).build();
-        } else {
-            return Response.status(Status.SERVICE_UNAVAILABLE).entity(makeTopicOperError(topic)).build();
-        }
     }
 
     /**

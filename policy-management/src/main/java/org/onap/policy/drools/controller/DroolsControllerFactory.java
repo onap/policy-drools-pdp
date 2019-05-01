@@ -279,10 +279,10 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                     propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
                 }
             } else if (commInfra == CommInfrastructure.NOOP) {
-                if (!isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
+                if (isSource) {
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS + ".";
                 } else {
-                    continue;
+                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
                 }
             } else {
                 throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
