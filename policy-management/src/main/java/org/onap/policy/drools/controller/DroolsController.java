@@ -243,6 +243,16 @@ public interface DroolsController extends Startable, Lockable {
     <T> boolean delete(@NonNull T fact);
 
     /**
+     * Deletes all facts from a given class from a session.
+     */
+    <T> boolean delete(@NonNull String sessionName, @NonNull Class<T> fact);
+
+    /**
+     * Deletes all facts from a given class from all sessions.
+     */
+    <T> boolean delete(@NonNull Class<T> fact);
+
+    /**
      * halts and permanently releases all resources.
      * 
      */
