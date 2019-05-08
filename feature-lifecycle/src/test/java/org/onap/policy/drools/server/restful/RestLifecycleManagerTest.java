@@ -53,7 +53,7 @@ public class RestLifecycleManagerTest {
             BusTopicParams.builder()
                 .clientName("lifecycle")
                 .hostname("localhost")
-                .port(8765)
+                .port(NetworkUtil.allocPort())
                 .basePath("policy/pdp/engine/lifecycle")
                 .managed(true)
                 .build());

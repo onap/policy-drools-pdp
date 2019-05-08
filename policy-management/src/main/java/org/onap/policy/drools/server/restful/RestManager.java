@@ -1699,6 +1699,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
     ) {
         List<TopicSource> sources = new ArrayList<>();
+        Status status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
                 sources.addAll(TopicEndpoint.manager.getUebTopicSources());
@@ -1710,10 +1711,11 @@ public class RestManager {
                 sources.addAll(TopicEndpoint.manager.getNoopTopicSources());
                 break;
             default:
+                status = Status.BAD_REQUEST;
                 logger.debug("Invalid communication mechanism parameter: {}", comm);
                 break;
         }
-        return Response.status(Response.Status.OK).entity(sources).build();
+        return Response.status(status).entity(sources).build();
     }
 
     /**
@@ -1727,6 +1729,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
     ) {
         List<TopicSink> sinks = new ArrayList<>();
+        Status status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
                 sinks.addAll(TopicEndpoint.manager.getUebTopicSinks());
@@ -1738,10 +1741,11 @@ public class RestManager {
                 sinks.addAll(TopicEndpoint.manager.getNoopTopicSinks());
                 break;
             default:
+                status = Status.BAD_REQUEST;
                 logger.debug("Invalid communication mechanism parameter: {}", comm);
                 break;
         }
-        return Response.status(Response.Status.OK).entity(sinks).build();
+        return Response.status(status).entity(sinks).build();
     }
 
 
@@ -1992,7 +1996,7 @@ public class RestManager {
     }
 
     /**
-     * Offers and event to a topic in a communication infrastructure.
+     * Offers an event to a topic in a communication infrastructure.
      *
      * @return response object
      */
