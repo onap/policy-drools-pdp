@@ -206,13 +206,59 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertTrue(fsm.policyTypesMap.isEmpty());
         assertTrue(fsm.policiesMap.isEmpty());
 
+        update.setPdpGroup(null);
+        update.setPdpSubgroup(null);
+
+        assertFalse(fsm.update(update));
+
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
+        assertNull(fsm.getGroup());
+        assertNull(fsm.getSubgroup());
+        assertBasicPassive();
+        assertTrue(fsm.policyTypesMap.isEmpty());
+        assertTrue(fsm.policiesMap.isEmpty());
+
+        update.setPdpGroup("A");
+        update.setPdpSubgroup("a");
+
+        assertFalse(fsm.update(update));
+
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
+        assertBasicPassive();
+        assertTrue(fsm.policyTypesMap.isEmpty());
+        assertTrue(fsm.policiesMap.isEmpty());
+
         fsm.start(controllerSupport.getController());
         assertEquals(1, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         assertTrue(fsm.update(update));
         assertEquals(1, fsm.policyTypesMap.size());
-        assertTrue(fsm.policiesMap.isEmpty());
+        assertEquals(1, fsm.policiesMap.size());
+        assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
+        assertBasicPassive();
+        assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
+
+        update.setPdpGroup(null);
+        update.setPdpSubgroup(null);
+        update.setPolicies(Collections.emptyList());
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(0, fsm.policiesMap.size());
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertEquals(interval, fsm.getStatusTimerSeconds());
+        assertNull(fsm.getGroup());
+        assertNull(fsm.getSubgroup());
+        assertBasicPassive();
+        assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
         fsm.shutdown();
     }
@@ -238,8 +284,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm.source.offer(new StandardCoder().encode(change));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("A", fsm.getGroup());
-        assertEquals("a", fsm.getSubgroup());
+        assertNull(fsm.getGroup());
+        assertNull(fsm.getSubgroup());
 
         fsm.shutdown();
     }

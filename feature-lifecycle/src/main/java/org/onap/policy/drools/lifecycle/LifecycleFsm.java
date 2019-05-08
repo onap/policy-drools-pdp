@@ -67,7 +67,7 @@ public class LifecycleFsm implements Startable {
 
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String POLICY_TYPE_VERSION = "1.0.0";
-    protected static final long DEFAULT_STATUS_TIMER_SECONDS = 60L;
+    protected static final long DEFAULT_STATUS_TIMER_SECONDS = 120L;
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
 
@@ -285,6 +285,12 @@ public class LifecycleFsm implements Startable {
 
     protected void undeployedPolicyAction(@NonNull ToscaPolicy policy) {
         policiesMap.remove(policy.getIdentifier());
+    }
+
+    protected List<ToscaPolicy> resetPoliciesAction() {
+        ArrayList<ToscaPolicy> policies = new ArrayList<>(policiesMap.values());
+        policiesMap.clear();
+        return policies;
     }
 
     /* ** Action Helpers ** */

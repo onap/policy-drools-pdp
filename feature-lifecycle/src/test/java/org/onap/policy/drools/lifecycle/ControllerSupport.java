@@ -30,6 +30,7 @@ import org.kie.api.builder.ReleaseId;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.util.KieUtils;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
 /**
  * Controller Test Support.
@@ -59,7 +60,9 @@ public class ControllerSupport {
      */
     public PolicyController createController() throws IOException {
         try {
-            getController();
+            PolicyController controller = getController();
+            controller.getDrools().delete(ToscaPolicy.class);
+            return controller;
         } catch (IllegalArgumentException e) {
             ;
         }
