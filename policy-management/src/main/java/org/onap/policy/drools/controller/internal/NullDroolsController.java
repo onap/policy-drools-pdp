@@ -203,6 +203,16 @@ public class NullDroolsController implements DroolsController {
         return false;
     }
 
+    @Override
+    public <T> boolean delete(@NonNull String sessionName, @NonNull Class<T> fact) {
+        return false;
+    }
+
+    @Override
+    public <T> boolean delete(@NonNull Class<T> fact) {
+        return false;
+    }
+
     private String makeInvokeMsg() {
         return this.getClass().getCanonicalName() + " invoked";
     }

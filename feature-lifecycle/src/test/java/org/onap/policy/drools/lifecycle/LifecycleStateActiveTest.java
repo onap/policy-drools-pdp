@@ -74,6 +74,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setState(PdpState.ACTIVE);
         change.setName(fsm.getName());
 
+        fsm.setGroupAction("A", "a");
         fsm.source.offer(new StandardCoder().encode(change));
         controllerSupport.getController().start();
     }
@@ -169,8 +170,8 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setName(fsm.getName());
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("B", fsm.getGroup());
-        assertEquals("b", fsm.getSubgroup());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
 
         change.setState(PdpState.SAFE);
         fsm.source.offer(new StandardCoder().encode(change));
@@ -318,6 +319,8 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
+
+        assertTrue(controllerSupport.getController().getDrools().delete(ToscaPolicy.class));
 
         fsm.shutdown();
     }

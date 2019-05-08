@@ -92,12 +92,10 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     public boolean stateChange(@NonNull PdpStateChange change) {
         synchronized (fsm) {
             if (change.getState() == PdpState.PASSIVE) {
-                group(change.getPdpGroup(), change.getPdpSubgroup());
                 return stateChangeToPassive(change);
             }
 
             if (change.getState() == PdpState.ACTIVE) {
-                group(change.getPdpGroup(), change.getPdpSubgroup());
                 return stateChangeToActive(change);
             }
 
@@ -118,7 +116,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
                 return false;
             }
 
-            group(update.getPdpGroup(), update.getPdpSubgroup());
+            fsm.setGroupAction(update.getPdpGroup(), update.getPdpSubgroup());
 
             if (!updatePolicies(update.getPolicies())) {
                 fsm.statusAction(response(update.getRequestId(), PdpResponseStatus.FAIL, "cannot process policies"));
@@ -186,13 +184,5 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         }
 
         return response;
-    }
-
-    protected void group(String group, String subgroup) {
-        if (group == null || subgroup == null) {
-            return;
-        }
-
-        fsm.setGroupAction(group, subgroup);
     }
 }

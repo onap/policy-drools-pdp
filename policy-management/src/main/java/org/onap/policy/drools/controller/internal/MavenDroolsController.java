@@ -920,6 +920,30 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @Override
+    public <T> boolean delete(@NonNull String sessionName, @NonNull Class<T> fact) {
+        PolicySession session = getSession(sessionName);
+        KieSession kieSession = session.getKieSession();
+
+        boolean success = true;
+        Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(fact));
+        for (FactHandle factHandle : factHandles) {
+            try {
+                kieSession.delete(factHandle);
+            } catch (Exception e) {
+                logger.warn("Object cannot be retrieved from fact {}", factHandle, e);
+                success = false;
+            }
+        }
+        return success;
+    }
+
+    @Override
+    public <T> boolean delete(@NonNull Class<T> fact) {
+        return this.getSessionNames().stream().map((ss) -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
+    }
+
+
+    @Override
     public Class<?> fetchModelClass(String className) {
         return ReflectionUtil.fetchClass(this.policyContainer.getClassLoader(), className);
     }
