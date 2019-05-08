@@ -142,12 +142,12 @@ public class LifecycleStateTerminatedTest {
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
         update.setPolicies(Collections.emptyList());
-        update.setPdpHeartbeatIntervalMs(2 * 600000L);
+        update.setPdpHeartbeatIntervalMs(4 * 600000L);
 
         assertFalse(fsm.update(update));
 
         assertEquals(PdpState.TERMINATED, fsm.state.state());
-        assertNotEquals((2 * 60000L) / 1000L, fsm.getStatusTimerSeconds());
+        assertNotEquals((4 * 60000L) / 1000L, fsm.getStatusTimerSeconds());
     }
 
     @Test
