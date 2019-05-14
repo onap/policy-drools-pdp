@@ -127,7 +127,8 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         }
     }
 
-    protected boolean updatePolicies(List<ToscaPolicy> policies) {
+    @Override
+    public boolean updatePolicies(List<ToscaPolicy> policies) {
         if (policies == null) {
             return true;
         }

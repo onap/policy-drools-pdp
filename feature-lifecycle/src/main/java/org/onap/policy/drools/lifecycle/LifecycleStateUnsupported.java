@@ -20,8 +20,10 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.util.List;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
 /**
  * Support class for those unsupported states not yet implemented.
@@ -74,5 +76,10 @@ public abstract class LifecycleStateUnsupported extends LifecycleState {
     @Override
     public boolean stateChange(PdpStateChange change) {
         throw new UnsupportedOperationException("stateChange: " + this);
+    }
+
+    @Override
+    public boolean updatePolicies(List<ToscaPolicy> toscaPolicies) {
+        throw new UnsupportedOperationException("updatePolicies: " + this);
     }
 }

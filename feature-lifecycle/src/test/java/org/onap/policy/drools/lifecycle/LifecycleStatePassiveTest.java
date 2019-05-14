@@ -267,7 +267,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void stateChange() throws CoderException {
+    public void stateChange() throws CoderException, IOException {
         /* no name */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");
@@ -282,13 +282,45 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertNull(fsm.getGroup());
         assertNull(fsm.getSubgroup());
 
+        PdpUpdate update = new PdpUpdate();
+        update.setName(NetworkUtil.getHostname());
+        update.setPdpGroup("A");
+        update.setPdpSubgroup("a");
+
+        String rawPolicy =
+            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
+        ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
+        update.setPolicies(Arrays.asList(toscaPolicy));
+
+        controllerSupport.getController().start();
+        fsm.start(controllerSupport.getController());
+        assertEquals(1, fsm.policyTypesMap.size());
+        assertTrue(fsm.policiesMap.isEmpty());
+
+        assertTrue(fsm.update(update));
+        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(1, fsm.policiesMap.size());
+        assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
+        assertEquals(PdpState.PASSIVE, fsm.state());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
+        assertBasicPassive();
+        assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
+
         /* correct name */
         change.setName(fsm.getName());
         fsm.source.offer(new StandardCoder().encode(change));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertNull(fsm.getGroup());
-        assertNull(fsm.getSubgroup());
+        assertEquals("A", fsm.getGroup());
+        assertEquals("a", fsm.getSubgroup());
+
+        await()
+            .atMost(5, TimeUnit.SECONDS)
+            .until(() -> controllerSupport.getController().getDrools().factCount("junits") == 1);
+
+        assertTrue(controllerSupport.getController().getDrools().delete(ToscaPolicy.class));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
         fsm.shutdown();
     }

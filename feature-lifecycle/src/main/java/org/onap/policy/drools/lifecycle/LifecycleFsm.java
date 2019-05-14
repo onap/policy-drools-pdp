@@ -288,9 +288,13 @@ public class LifecycleFsm implements Startable {
     }
 
     protected List<ToscaPolicy> resetPoliciesAction() {
-        ArrayList<ToscaPolicy> policies = new ArrayList<>(policiesMap.values());
+        List<ToscaPolicy> policies = new ArrayList<>(policiesMap.values());
         policiesMap.clear();
         return policies;
+    }
+
+    protected boolean updatePoliciesAction(List<ToscaPolicy> toscaPolicies) {
+        return (this.scheduler.submit( () -> state.updatePolicies(toscaPolicies)) != null);
     }
 
     /* ** Action Helpers ** */
