@@ -20,12 +20,14 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.util.List;
 import lombok.NonNull;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +69,12 @@ public abstract class LifecycleState implements Startable {
     public abstract boolean update(@NonNull PdpUpdate update);
 
     /**
-     * state change event .
+     * state change event.
      */
     public abstract boolean stateChange(@NonNull PdpStateChange change);
+
+    /**
+     * update policies with the current list.
+     */
+    public abstract boolean updatePolicies(List<ToscaPolicy> toscaPolicies);
 }

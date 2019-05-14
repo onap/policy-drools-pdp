@@ -20,9 +20,11 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.util.List;
 import lombok.NonNull;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +90,12 @@ public abstract class LifecycleStateDefault extends LifecycleStateUnsupported {
 
     @Override
     public boolean isAlive() {
+        return false;
+    }
+
+    @Override
+    public boolean updatePolicies(List<ToscaPolicy> toscaPolicies) {
+        logger.warn("{}: updatePolicies", this);
         return false;
     }
 }

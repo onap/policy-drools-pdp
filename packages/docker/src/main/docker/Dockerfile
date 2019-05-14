@@ -20,6 +20,7 @@ RUN apk add --no-cache \
     bash-completion \
     openssl \
     less \
+    vim \
     && pip install http-prompt
 
 RUN mkdir -p ${POLICY_CONFIG} ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \

@@ -49,8 +49,8 @@ public class LifecycleStatePassive extends LifecycleStateRunning {
     @Override
     protected boolean stateChangeToActive(@NonNull PdpStateChange change) {
         fsm.transitionToAction(new LifecycleStateActive(fsm));
-        super.updatePolicies(fsm.resetPoliciesAction());
-        return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS,null));
+        fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS,null));
+        return fsm.updatePoliciesAction(fsm.resetPoliciesAction());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class LifecycleStatePassive extends LifecycleStateRunning {
 
     @Override
     protected boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
-        logger.info("{}: deploy {} from {}", this, policy.getIdentifier(), controller.getName());
+        logger.info("{}: deploy {} to {}", this, policy.getIdentifier(), controller.getName());
         fsm.deployedPolicyAction(policy);
         return true;
     }

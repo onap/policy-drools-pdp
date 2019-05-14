@@ -47,6 +47,7 @@ import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.models.pdp.concepts.PdpMessage;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
@@ -249,6 +250,10 @@ public class LifecycleFsm implements Startable {
         state = newState;
     }
 
+    protected void transitionToAction(@NonNull LifecycleState newState, @NonNull PdpMessage message) {
+        state = newState;
+    }
+
     protected boolean setStatusIntervalAction(long intervalSeconds) {
         if (intervalSeconds == statusTimerSeconds || intervalSeconds == 0) {
             return true;
@@ -288,9 +293,13 @@ public class LifecycleFsm implements Startable {
     }
 
     protected List<ToscaPolicy> resetPoliciesAction() {
-        ArrayList<ToscaPolicy> policies = new ArrayList<>(policiesMap.values());
+        List<ToscaPolicy> policies = new ArrayList<>(policiesMap.values());
         policiesMap.clear();
         return policies;
+    }
+
+    protected boolean updatePoliciesAction(List<ToscaPolicy> toscaPolicies) {
+        return (this.scheduler.submit( () -> state.updatePolicies(toscaPolicies)) != null);
     }
 
     /* ** Action Helpers ** */
