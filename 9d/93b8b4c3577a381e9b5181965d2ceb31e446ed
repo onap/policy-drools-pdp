@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Pamela Dragosh <pdragosh@research.att.com>
+Code-Review+2: Liam Fallon <liam.fallon@est.tech>
+Submitted-by: Liam Fallon <liam.fallon@est.tech>
+Submitted-at: Tue, 14 May 2019 12:55:13 +0000
+Reviewed-on: https://gerrit.onap.org/r/87621
+Project: policy/drools-pdp
+Branch: refs/heads/master
