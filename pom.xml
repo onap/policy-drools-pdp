@@ -63,7 +63,7 @@
         <commons.io.version>2.5</commons.io.version>
         <xml.apis.version>1.4.01</xml.apis.version>
         <policy.common.version>1.4.0</policy.common.version>
-        <policy.models.version>2.0.0-SNAPSHOT</policy.models.version>
+        <policy.models.version>2.0.0</policy.models.version>
     </properties>
 
     <modules>
