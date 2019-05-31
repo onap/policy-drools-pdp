@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "70d68e29_79f3b66a",
+        "filename": "version.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-05-31T12:10:03Z",
+      "side": 1,
+      "message": "1.5.0",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 7
+      },
+      "revId": "b5e1e2737b13ca8b780aa001e4121fbe3f81c3ed",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
