@@ -22,6 +22,30 @@
       "revId": "b5e1e2737b13ca8b780aa001e4121fbe3f81c3ed",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e65d5322_8ce82550",
+        "filename": "version.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-05-31T13:56:48Z",
+      "side": 1,
+      "message": "According to this, it\u0027s 1.4.2:\n\nhttps://wiki.onap.org/display/DW/Policy+Framework+Project%3A+Component+Versions",
+      "parentUuid": "70d68e29_79f3b66a",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 7
+      },
+      "revId": "b5e1e2737b13ca8b780aa001e4121fbe3f81c3ed",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
