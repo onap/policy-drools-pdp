@@ -29,7 +29,7 @@ RUN mkdir -p ${POLICY_CONFIG} ${POLICY_LOGS} ${POLICY_INSTALL_INIT} && \
     rmdir ${POLICY_HOME}/etc
 
 WORKDIR ${POLICY_INSTALL}
-COPY install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
+COPY /maven/install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
 
 VOLUME [ "${POLICY_INSTALL_INIT}" ]
 

@@ -18,25 +18,38 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>org.onap.policy.drools-pdp</groupId>
-        <artifactId>drools-pdp</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>packages</artifactId>
-    <packaging>pom</packaging>
-
-    <name>Policy Packages</name>
-    <description>ONAP Policy Drools PDP Installation Packages</description>
-
-    <modules>
-        <module>base</module>
-        <module>install</module>
-        <module>docker</module>
-    </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.onap.policy.drools-pdp</groupId>
+    <artifactId>drools-pdp</artifactId>
+    <version>1.5.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>packages</artifactId>
+  <packaging>pom</packaging>
+  <name>Policy Packages</name>
+  <description>ONAP Policy Drools PDP Installation Packages</description>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <docker.skip.push>true</docker.skip.push>
+      </properties>
+    </profile>
+    <profile>
+      <id>docker</id>
+      <properties>
+        <docker.skip.push>false</docker.skip.push>
+      </properties>
+    </profile>
+  </profiles>
+  <modules>
+    <module>base</module>
+    <module>install</module>
+    <module>docker</module>
+  </modules>
 </project>
