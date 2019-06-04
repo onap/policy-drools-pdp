@@ -19,21 +19,21 @@
   -->
 
 <assembly>
-	<id>zipfile</id>
-	<formats>
-		<format>zip</format>
-	</formats>
-	<includeBaseDirectory>false</includeBaseDirectory>
-	<fileSets>
-		<fileSet>
-			<directory>src/files</directory>
-			<outputDirectory>.</outputDirectory>
-			<fileMode>755</fileMode>
-		</fileSet>
-	</fileSets>
-	<dependencySets>
-		<dependencySet>
-			<useTransitiveDependencies>false</useTransitiveDependencies>
-		</dependencySet>
-	</dependencySets>
+  <id>zipfile</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>src/files</directory>
+      <outputDirectory>.</outputDirectory>
+      <fileMode>755</fileMode>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+    </dependencySet>
+  </dependencySets>
 </assembly>
