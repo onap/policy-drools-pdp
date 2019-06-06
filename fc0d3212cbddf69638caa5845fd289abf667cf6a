@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14a79c84_eec5d129",
+        "filename": "packages/docker/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-06-06T21:30:32Z",
+      "side": 1,
+      "message": "One issue if copied from api. etc .. docker set up is that the major.minor-SNAPSHOT-latest tag is not pushed.   That\u0027s a shortcoming in those components.   Is it possible to support it?\n\nTake it with a grain of salt, but this is a reference on the tags that were applied before.\n\n\tBUILD:\n\t\tverify:\n\t\t\tonap/policy-pdpd-cl:latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4-SNAPSHOT-latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4.0-SNAPSHOT-20190606T212206Z\n\t\tmerge:\n\t\t\tonap/policy-pdpd-cl:latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4-SNAPSHOT-latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4.0-SNAPSHOT-20190606T212206Z\n\t\trelease:\n\t\t\tonap/policy-pdpd-cl:latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4-SNAPSHOT-latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4.0-SNAPSHOT-STAGING-20190606T212206Z\n\tPUSH:\n\t\tverify: \n\t\tmerge:\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4-SNAPSHOT-latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4.0-SNAPSHOT-20190606T212206Z\n\t\trelease:\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4-SNAPSHOT-latest\n\t\t\tnexus3.onap.org:10003/onap/policy-pdpd-cl:1.4.0-SNAPSHOT-STAGING-20190606T212206Z",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9766160_989c0416",
+        "filename": "packages/docker/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-06-06T21:30:32Z",
+      "side": 1,
+      "message": "there\u0027s a newer version I think ..",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "abf18802_537897c3",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-06-06T21:30:32Z",
+      "side": 1,
+      "message": "why is the /maven/ required ?",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f71a0731_311e3d52",
+        "filename": "packages/install/src/assembly/zip.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-06-06T21:30:32Z",
+      "side": 1,
+      "message": "general - do you want to add your company as a modified copyright?",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
