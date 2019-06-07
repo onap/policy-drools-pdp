@@ -16,6 +16,24 @@
       "revId": "77533f0316994239774f21ebec64c16da1d4a3d4",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a85a19a_0bfb0bbe",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-06-07T18:28:53Z",
+      "side": 1,
+      "message": "All this JIRA is about is moving to using docker plugin exactly like the api, pap repos. How is what is happening here different from those repos? Looks the same to me.",
+      "parentUuid": "0a0a04f5_4099361b",
+      "revId": "77533f0316994239774f21ebec64c16da1d4a3d4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
