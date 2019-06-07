@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "dec397d8_1bb05e31",
+        "filename": "packages/docker/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2019-06-07T11:33:06Z",
+      "side": 1,
+      "message": "I just observed it is not tagging SNAPSHOT-latest correctly, although the groovy script does generate the right tag. Sure I will take a look at this",
+      "parentUuid": "14a79c84_eec5d129",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9766160_989c0416",
         "filename": "packages/docker/pom.xml",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2019-06-06T21:30:32Z",
       "side": 1,
       "message": "there\u0027s a newer version I think ..",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8912d63c_2318facb",
+        "filename": "packages/docker/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2019-06-07T11:33:06Z",
+      "side": 1,
+      "message": "Yes 0.30. I will bump it, just took the same version as api and pap. I think this version must be maintained in the parent pom",
+      "parentUuid": "e9766160_989c0416",
       "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "a5025102_c4bb867c",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2019-06-07T11:33:06Z",
+      "side": 1,
+      "message": "by default the docker-maven-plugin outputs the artifacts defined by dependencySet config into target/\u003cimage-name in plugin config\u003e/build/maven root. I could specify an outputDirectory but it would create a subpath in maven dir",
+      "parentUuid": "abf18802_537897c3",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f71a0731_311e3d52",
         "filename": "packages/install/src/assembly/zip.xml",
         "patchSetId": 4
@@ -64,6 +118,24 @@
       "writtenOn": "2019-06-06T21:30:32Z",
       "side": 1,
       "message": "general - do you want to add your company as a modified copyright?",
+      "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2442cbb1_ba42f5c5",
+        "filename": "packages/install/src/assembly/zip.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2019-06-07T11:33:06Z",
+      "side": 1,
+      "message": "Yes! thanks",
+      "parentUuid": "f71a0731_311e3d52",
       "revId": "fc0d3212cbddf69638caa5845fd289abf667cf6a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
