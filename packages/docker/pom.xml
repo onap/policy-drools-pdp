@@ -1,24 +1,18 @@
-<!--
-  ============LICENSE_START=======================================================
-  ONAP Policy Engine - Docker files
-  ================================================================================
-  Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
-  ================================================================================
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+<!-- ============LICENSE_START======================================================= 
+    ONAP Policy Engine - Docker files ================================================================================ 
+    Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved. 
+    ================================================================================ 
+    Modifications Copyright (C) 2019 IBM. ================================================================================ 
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+    use this file except in compliance with the License. You may obtain a copy 
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+    by applicable law or agreed to in writing, software distributed under the 
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+    OF ANY KIND, either express or implied. See the License for the specific 
+    language governing permissions and limitations under the License. ============LICENSE_END========================================================= -->
 
-         http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  ============LICENSE_END=========================================================
-  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,38 +28,61 @@
     <description>ONAP Policy Drools PDP Docker Build</description>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <dist.project.version>${project.version}</dist.project.version>
+        <docker.skip>false</docker.skip>
+        <docker.skip.build>false</docker.skip.build>
+        <docker.skip.push>false</docker.skip.push>
+        <docker.pull.registry>nexus3.onap.org:10001</docker.pull.registry>
+        <docker.push.registry>nexus3.onap.org:10003</docker.push.registry>
+        <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
     </properties>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+          <!--  <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>1.0</version>
                 <executions>
                     <execution>
-                        <id>copy-drools-zip</id>
-                        <phase>prepare-package</phase>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/policy-drools</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.onap.policy.drools-pdp</groupId>
-                                    <artifactId>install-drools</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>zip</type>
-                                    <destFileName>install-drools.zip</destFileName>
-                                </artifactItem>
-                            </artifactItems>
+                            <source>
+                                println 'Project version: ' +
+                                project.properties['dist.project.version'];
+                                def
+                                versionArray;
+                                if ( project.properties['dist.project.version'] != null ) {
+                                versionArray =
+                                project.properties['dist.project.version'].split('-');
+                                }
+
+                                if (
+                                project.properties['dist.project.version'].endsWith("-SNAPSHOT")
+                                ) {
+                                project.properties['project.docker.latesttag.version']=versionArray[0]
+                                +
+                                "-SNAPSHOT-latest";
+                                } else {
+                                project.properties['project.docker.latesttag.version']=versionArray[0]
+                                +
+                                "-STAGING-latest";
+                                }
+
+                                println 'New tag for docker: ' +
+                                project.properties['project.docker.latesttag.version'];
+                            </source>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
+
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -86,7 +103,67 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.28.0</version>
 
+                <configuration>
+                    <verbose>true</verbose>
+                    <apiVersion>1.23</apiVersion>
+                    <pullRegistry>${docker.pull.registry}</pullRegistry>
+                    <pushRegistry>${docker.push.registry}</pushRegistry>
+
+                    <images>
+                        <image>
+                            <name>onap/policy-pap</name>
+                            <build>
+                                <cleanup>try</cleanup>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <tags>
+                                    <tag>${project.version}</tag>
+                                    <tag>${project.version}-${maven.build.timestamp}</tag>
+                                    <tag>${project.docker.latesttag.version}</tag>
+                                </tags>
+
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>clean-images</id>
+                        <phase>pre-clean</phase>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <configuration>
+                            <removeAll>true</removeAll>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>generate-images</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>push-images</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                        <configuration>
+                            <image>onap/policy-drools-pdp</image>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
