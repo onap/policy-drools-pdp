@@ -1,24 +1,18 @@
-<!-- 
-  ============LICENSE_START======================================================= 
-  ONAP Policy Engine - Drools PDP 
-  ================================================================================
-  Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
-  ================================================================================
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+<!-- ============LICENSE_START======================================================= 
+    ONAP Policy Engine - Drools PDP ================================================================================ 
+    Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved. 
+    ================================================================================ 
+    Modifications Copyright (C) 2019 IBM. ================================================================================ 
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+    use this file except in compliance with the License. You may obtain a copy 
+    of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+    by applicable law or agreed to in writing, software distributed under the 
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+    OF ANY KIND, either express or implied. See the License for the specific 
+    language governing permissions and limitations under the License. ============LICENSE_END========================================================= -->
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  ============LICENSE_END========================================================= 
--->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -50,7 +44,7 @@
 
         <!-- sonar/jacoco overrides -->
         <!-- Overriding oparent default sonar/jacoco settings Combine all our reports 
-             into one file shared across sub-modules -->
+            into one file shared across sub-modules -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/code-coverage/jacoco-ut.exec</sonar.jacoco.reportPath>
         <sonar.jacoco.itReportPath>${project.basedir}/../target/code-coverage/jacoco-it.exec</sonar.jacoco.itReportPath>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -140,6 +134,33 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-drools-pdp-zip</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/packages/docker/src/main/docker</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.onap.policy.drools-pdp</groupId>
+                                    <artifactId>install-drools</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>zip</type>
+                                    <destFileName>install-drools.zip</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
@@ -165,42 +186,43 @@
                     </execution>
                 </executions>
             </plugin>
-                <plugin>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>onap-java-style</id>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                            <phase>process-sources</phase>
-                            <configuration>
-                                <!-- Use Google Java Style Guide: https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml 
-                                    with minor changes -->
-                                <configLocation>onap-checkstyle/onap-java-style.xml</configLocation>
-                                <!-- <sourceDirectory> is needed so that checkstyle ignores the generated sources directory -->
-                                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                                <includeResources>true</includeResources>
-                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                                <includeTestResources>true</includeTestResources>
-                                <excludes>
-                                </excludes>
-                                <!-- suppressionsLocation>${project.baseUri}checkstyle-suppressions.xml</suppressionsLocation -->
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnViolation>true</failsOnViolation>
-                                <violationSeverity>warning</violationSeverity>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.onap.oparent</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>${oparent.version}</version>
-                            <scope>compile</scope>
-                        </dependency>
-                    </dependencies>
-                </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>onap-java-style</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <!-- Use Google Java Style Guide: https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml 
+                                with minor changes -->
+                            <configLocation>onap-checkstyle/onap-java-style.xml</configLocation>
+                            <!-- <sourceDirectory> is needed so that checkstyle ignores the generated 
+                                sources directory -->
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                            <includeResources>true</includeResources>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeTestResources>true</includeTestResources>
+                            <excludes>
+                            </excludes>
+                            <!-- suppressionsLocation>${project.baseUri}checkstyle-suppressions.xml</suppressionsLocation -->
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnViolation>true</failsOnViolation>
+                            <violationSeverity>warning</violationSeverity>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.onap.oparent</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${oparent.version}</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -245,7 +267,7 @@
                     <version>${jacoco.version}</version>
                     <configuration>
                         <!-- Note: This exclusion list should match <sonar.exclusions> property 
-                             above -->
+                            above -->
                         <excludes>
                             <exclude>**/gen/**</exclude>
                             <exclude>**/generated-sources/**</exclude>
@@ -255,7 +277,7 @@
                     </configuration>
                     <executions>
                         <!-- Prepares the property pointing to the JaCoCo runtime agent which 
-                             is passed as VM argument when Maven the Surefire plugin is executed. -->
+                            is passed as VM argument when Maven the Surefire plugin is executed. -->
                         <execution>
                             <id>pre-unit-test</id>
                             <goals>
@@ -266,7 +288,7 @@
                             </configuration>
                         </execution>
                         <!-- Ensures that the code coverage report for unit tests is created 
-                             after unit tests have been run. -->
+                            after unit tests have been run. -->
                         <execution>
                             <id>post-unit-test</id>
                             <phase>test</phase>
