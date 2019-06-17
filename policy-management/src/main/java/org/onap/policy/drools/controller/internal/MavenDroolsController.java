@@ -374,21 +374,21 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
-        if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(), coderClass.getCanonicalName())) {
-            logger.error("{}{} cannot be retrieved. ", this, coderClass.getCanonicalName());
+        if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(), coderClass.getName())) {
+            logger.error("{}{} cannot be retrieved. ", this, coderClass.getName());
             return false;
         }
 
         if (modelHash == this.modelClassLoaderHash) {
             if (logger.isInfoEnabled()) {
-                logger.info(coderClass.getCanonicalName()
+                logger.info(coderClass.getName()
                         + this + " class loader matches original drools controller rules classloader "
                         + coderClass.getClassLoader());
             }
             return true;
         } else {
             if (logger.isWarnEnabled()) {
-                logger.warn(this + coderClass.getCanonicalName() + " class loaders don't match  "
+                logger.warn(this + coderClass.getName() + " class loaders don't match  "
                         + coderClass.getClassLoader() + " vs "
                         + this.policyContainer.getClassLoader());
             }
@@ -837,7 +837,7 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public <T> List<T> facts(@NonNull String sessionName, @NonNull Class<T> clazz) {
-        return facts(sessionName, clazz.getCanonicalName(), false)
+        return facts(sessionName, clazz.getName(), false)
             .stream()
             .filter(clazz::isInstance)
             .map(clazz::cast)

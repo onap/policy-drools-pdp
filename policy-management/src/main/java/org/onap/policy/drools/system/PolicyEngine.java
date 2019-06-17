@@ -521,7 +521,7 @@ class PolicyEngineManager implements PolicyEngine {
             this.httpServers = getServletFactory().build(properties);
             for (HttpServletServer server : this.httpServers) {
                 if (server.isAaf()) {
-                    server.addFilterClass(null, AafTelemetryAuthFilter.class.getCanonicalName());
+                    server.addFilterClass(null, AafTelemetryAuthFilter.class.getName());
                 }
             }
         } catch (final IllegalArgumentException e) {

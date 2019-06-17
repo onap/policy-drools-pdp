@@ -214,6 +214,6 @@ public class NullDroolsController implements DroolsController {
     }
 
     private String makeInvokeMsg() {
-        return this.getClass().getCanonicalName() + " invoked";
+        return this.getClass().getName() + " invoked";
     }
 }

@@ -920,7 +920,7 @@ abstract class GenericEventProtocolCoder {
             throw new IllegalArgumentException("Invalid topic");
         }
 
-        String reverseKey = this.reverseCodersKey(topic, event.getClass().getCanonicalName());
+        String reverseKey = this.reverseCodersKey(topic, event.getClass().getName());
         if (!this.reverseCoders.containsKey(reverseKey)) {
             throw new IllegalArgumentException("no reverse coder has been found");
         }
@@ -996,7 +996,7 @@ abstract class GenericEventProtocolCoder {
 
         List<DroolsController> droolsControllers = new ArrayList<>();
 
-        String reverseKey = this.reverseCodersKey(topic, encodedClass.getClass().getCanonicalName());
+        String reverseKey = this.reverseCodersKey(topic, encodedClass.getClass().getName());
         if (!this.reverseCoders.containsKey(reverseKey)) {
             logger.warn("{}: no reverse mapping for {}", this, reverseKey);
             return droolsControllers;
@@ -1016,7 +1016,7 @@ abstract class GenericEventProtocolCoder {
                     "No Encoders toolsets available for topic "
                             + topic
                             + " encoder "
-                            + encodedClass.getClass().getCanonicalName());
+                            + encodedClass.getClass().getName());
         }
 
         for (ProtocolCoderToolset encoderSet : toolsets) {
@@ -1025,7 +1025,7 @@ abstract class GenericEventProtocolCoder {
             String artifactId = encoderSet.getArtifactId();
             List<CoderFilters> coderFilters = encoderSet.getCoders();
             for (CoderFilters coder : coderFilters) {
-                if (coder.getCodedClass().equals(encodedClass.getClass().getCanonicalName())) {
+                if (coder.getCodedClass().equals(encodedClass.getClass().getName())) {
                     DroolsController droolsController = DroolsController.factory.get(groupId, artifactId, "");
                     if (droolsController.ownsCoder(
                             encodedClass.getClass(), coder.getModelClassLoaderHash())) {
@@ -1040,7 +1040,7 @@ abstract class GenericEventProtocolCoder {
                     "No Encoders toolsets available for "
                             + topic
                             + ":"
-                            + encodedClass.getClass().getCanonicalName());
+                            + encodedClass.getClass().getName());
         }
 
         return droolsControllers;
@@ -1235,7 +1235,7 @@ abstract class GenericEventProtocolCoder {
                     this,
                     droolsControllers,
                     topic,
-                    fact.getClass().getCanonicalName());
+                    fact.getClass().getName());
             // continue
         }
         return droolsControllers.get(0);
@@ -1266,7 +1266,7 @@ abstract class GenericEventProtocolCoder {
                     this,
                     droolsControllers,
                     topic,
-                    fact.getClass().getCanonicalName());
+                    fact.getClass().getName());
             // continue
         }
         return droolsControllers;

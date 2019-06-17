@@ -116,7 +116,7 @@ public class NullDroolsControllerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void fetchModelClass() {
-        new NullDroolsController().fetchModelClass(this.getClass().getCanonicalName());
+        new NullDroolsController().fetchModelClass(this.getClass().getName());
     }
 
     @Test
