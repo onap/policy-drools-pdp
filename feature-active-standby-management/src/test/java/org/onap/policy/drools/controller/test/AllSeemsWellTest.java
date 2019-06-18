@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,12 +26,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Date;
 import java.util.Properties;
-
+import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -52,20 +51,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * Testing the allSeemsWell interface to verify that it correctly affects the 
+ * Testing the allSeemsWell interface to verify that it correctly affects the
  * operational state.
- */ 
+ */
 
 public class AllSeemsWellTest {
     private static final Logger  logger = LoggerFactory.getLogger(AllSeemsWellTest.class);
     /*
-     * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting 
+     * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting
      * at the start of the next multiple of pdpUpdateInterval, but with a minimum of 5 sec cushion
-     * to ensure that we wait for the DesignationWaiter to do its job, before 
+     * to ensure that we wait for the DesignationWaiter to do its job, before
      * checking the results. Add a few seconds for safety
-     */ 
+     */
 
-    long sleepTime = 10000;
+    private static int SLEEP_TIME_SEC = 10;
 
     /*
      * DroolsPdpsElectionHandler runs every 1 seconds, so it takes 10 seconds for the
@@ -73,7 +72,7 @@ public class AllSeemsWellTest {
      * the forward progress counter to go stale which should add an additional 5 sec.
      */
 
-    long stalledElectionHandlerSleepTime = 15000;
+    private static int STALLED_ELECTION_HANDLER_SLEEP_TIME_SEC = 15;
 
     /*
      * As soon as the election hander successfully runs, it will resume the forward progress.
@@ -81,7 +80,7 @@ public class AllSeemsWellTest {
      * then fpc is written every 1 sec and then the fpc is checked every 2 sec, that could
      * take a total of 5 sec to recognize the resumption of progress.  So, add 1 for safety.
      */
-    long resumedElectionHandlerSleepTime = 6000;
+    private static int RESUMED_ELECTION_HANDLER_SLEEP_TIME_SEC = 6;
 
     private static EntityManagerFactory emfx;
     private static EntityManagerFactory emfd;
@@ -97,7 +96,7 @@ public class AllSeemsWellTest {
 
     /**
      * Setup the class.
-     * 
+     *
      * @throws Exception exception
      */
     @BeforeClass
@@ -115,7 +114,7 @@ public class AllSeemsWellTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception exception
      */
     @Before
@@ -213,7 +212,7 @@ public class AllSeemsWellTest {
         conn.deleteAllPdps();
 
         /*
-         * Insert this PDP as not designated.  Initial standby state will be 
+         * Insert this PDP as not designated.  Initial standby state will be
          * either null or cold standby.   Demoting should transit state to
          * hot standby.
          */
@@ -235,14 +234,15 @@ public class AllSeemsWellTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI smf = null;
+        StateManagementFeatureAPI stateManagementFeatureApi = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
-            smf = feature;
-            logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}", smf.getResourceName());
+            stateManagementFeatureApi = feature;
+            logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",
+                stateManagementFeatureApi.getResourceName());
             break;
         }
-        if (smf == null) {
+        if (stateManagementFeatureApi == null) {
             logger.error("testAllSeemsWell failed to initialize.  "
                     + "Unable to get instance of StateManagementFeatureAPI "
                     + "with resourceID: {}", thisPdpId);
@@ -250,6 +250,7 @@ public class AllSeemsWellTest {
                     + "Unable to get instance of StateManagementFeatureAPI "
                     + "with resourceID: {}", thisPdpId);
         }
+        final StateManagementFeatureAPI smf = stateManagementFeatureApi;
 
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.
@@ -257,7 +258,7 @@ public class AllSeemsWellTest {
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
-            logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}", 
+            logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
@@ -276,10 +277,9 @@ public class AllSeemsWellTest {
         smf.demote();
 
 
-        logger.debug("testAllSeemsWell: Sleeping {} ms, to allow JpaDroolsPdpsConnector "
-                + "time to check droolspdpentity table", sleepTime);
-        sleep(sleepTime);
-
+        logger.debug("testAllSeemsWell: Sleeping {} s, to allow JpaDroolsPdpsConnector "
+            + "time to check droolspdpentity table", SLEEP_TIME_SEC);
+        waitForCondition(()-> conn.getPdp(thisPdpId).isDesignated(),  SLEEP_TIME_SEC);
 
         // Verify that this formerly un-designated PDP in HOT_STANDBY is now designated and providing service.
 
@@ -297,16 +297,17 @@ public class AllSeemsWellTest {
 
         DroolsPdpsElectionHandler.setIsStalled(true);
 
-        logger.debug("testAllSeemsWell: Sleeping {} ms, to allow checkWaitTimer to recognize "
+        logger.debug("testAllSeemsWell: Sleeping {} s, to allow checkWaitTimer to recognize "
                 + "the election handler has stalled and for the testTransaction to fail to "
                 + "increment forward progress and for the lack of forward progress to be recognized.",
-                stalledElectionHandlerSleepTime);
+            STALLED_ELECTION_HANDLER_SLEEP_TIME_SEC);
 
 
         //It takes 10x the update interval (1 sec) before the watcher will declare the election handler dead
         //and that just stops forward progress counter.  So, the fp monitor must then run to determine
         //if the fpc has stalled.  That will take about another 5 sec.
-        sleep(stalledElectionHandlerSleepTime);
+        waitForCondition(()-> smf.getStandbyStatus().equals(StateManagement.COLD_STANDBY),
+            STALLED_ELECTION_HANDLER_SLEEP_TIME_SEC);
 
         logger.debug("testAllSeemsWell: After isStalled=true, PDP= {} "
                 + "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
@@ -316,7 +317,8 @@ public class AllSeemsWellTest {
         //Now lets resume the election handler
         DroolsPdpsElectionHandler.setIsStalled(false);
 
-        sleep(resumedElectionHandlerSleepTime);
+        waitForCondition(() -> smf.getStandbyStatus().equals(StateManagement.PROVIDING_SERVICE),
+            RESUMED_ELECTION_HANDLER_SLEEP_TIME_SEC);
 
         logger.debug("testAllSeemsWell: After isStalled=false, PDP= {} "
                 + "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
@@ -328,7 +330,12 @@ public class AllSeemsWellTest {
 
     }
 
-    private void sleep(long sleepms) throws InterruptedException {
-        Thread.sleep(sleepms);
+    private void waitForCondition(Supplier<Boolean> testCondition, int timeoutInSeconds) throws InterruptedException {
+        int maxIterations = timeoutInSeconds * 10;
+        int iterations = 0;
+        while (!testCondition.get() && iterations < maxIterations) {
+            iterations++;
+            Thread.sleep(100);
+        }
     }
 }
