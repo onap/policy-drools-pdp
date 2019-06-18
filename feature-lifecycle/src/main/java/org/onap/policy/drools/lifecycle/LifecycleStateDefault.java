@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class LifecycleStateDefault extends LifecycleStateUnsupported {
 
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
+    private static final Logger logger = LoggerFactory.getLogger(LifecycleStateDefault.class);
 
     protected LifecycleStateDefault(LifecycleFsm manager) {
         super(manager);

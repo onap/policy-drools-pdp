@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
+    private static final Logger logger = LoggerFactory.getLogger(LifecycleStateRunning.class);
 
     protected abstract boolean stateChangeToPassive(@NonNull PdpStateChange change);
 

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 @ToString
 public class LifecycleStateActive extends LifecycleStateRunning {
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleStatePassive.class);
+    private static final Logger logger = LoggerFactory.getLogger(LifecycleStateActive.class);
 
     protected LifecycleStateActive(LifecycleFsm manager) {
         super(manager);
