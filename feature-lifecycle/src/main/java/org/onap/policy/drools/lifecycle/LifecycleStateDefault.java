@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2019 Bell Canada.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class LifecycleStateDefault extends LifecycleStateUnsupported {
 
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
+    private static final Logger logger = LoggerFactory.getLogger(LifecycleStateDefault.class);
 
     protected LifecycleStateDefault(LifecycleFsm manager) {
         super(manager);
