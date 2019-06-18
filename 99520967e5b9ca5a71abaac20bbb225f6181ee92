@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f4caa020_116f0707",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/controller/test/AllSeemsWellTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2019-06-18T14:54:20Z",
+      "side": 1,
+      "message": "There is no need to wait fixed time amount if condition is matched ealier.",
+      "revId": "99520967e5b9ca5a71abaac20bbb225f6181ee92",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
