@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "41c10b54_6abdb099",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/controller/test/AllSeemsWellTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2019-06-21T07:56:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d8aaa76c_dc7d5aaf",
+      "revId": "99520967e5b9ca5a71abaac20bbb225f6181ee92",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "57b0ca0a_640917f7",
         "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/controller/test/AllSeemsWellTest.java",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2019-06-18T15:35:09Z",
       "side": 1,
       "message": "how long does the sleep really need to be?  Perhaps use 100 instead of 1000?",
+      "revId": "99520967e5b9ca5a71abaac20bbb225f6181ee92",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "711e457e_c337d9ee",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/controller/test/AllSeemsWellTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2019-06-21T07:56:25Z",
+      "side": 1,
+      "message": "I didn\u0027t want to kill CPU with unnecessary iterations.\nI\u0027ve checked with 100 and it\u0027s still enough with extra 900ms improvement (in best scenario)\nChanged to 100",
+      "parentUuid": "57b0ca0a_640917f7",
       "revId": "99520967e5b9ca5a71abaac20bbb225f6181ee92",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
