@@ -27,7 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -46,7 +45,7 @@ import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -101,7 +100,7 @@ public class RestManagerTest {
 
     /**
      * Set up.
-     * 
+     *
      * @throws IOException throws an IO exception
      */
     @BeforeClass
@@ -116,15 +115,15 @@ public class RestManagerTest {
                 + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
                 "" + DEFAULT_TELEMETRY_PORT);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME 
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
                 TestAafTelemetryAuthFilter.class.getName());
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME 
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
                 TELEMETRY_USER);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME 
+                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
                 TELEMETRY_PASSWORD);
 
@@ -162,12 +161,12 @@ public class RestManagerTest {
         Properties noopProperties = new Properties();
         noopProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, NOOP_TOPIC);
         noopProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
-        TopicEndpoint.manager.addTopics(noopProperties);
+        TopicEndpointManager.getManager().addTopics(noopProperties);
     }
 
     /**
      * Tear down.
-     * 
+     *
      * @throws IOException IO exception
      * @throws InterruptedException Interrupted exception
      */
@@ -175,7 +174,7 @@ public class RestManagerTest {
     public static void tearDown() throws IOException, InterruptedException {
         /* Shutdown managed resources */
         PolicyController.factory.shutdown();
-        TopicEndpoint.manager.shutdown();
+        TopicEndpointManager.getManager().shutdown();
         PolicyEngine.manager.stop();
         Thread.sleep(10000L);
         client.close();
@@ -190,7 +189,7 @@ public class RestManagerTest {
 
         /*
          * DELETE: /engine/controllers/controllerName/drools/facts/session/factType
-         * 
+         *
          */
         httpDelete =
                 new HttpDelete(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session/factType");
@@ -306,7 +305,7 @@ public class RestManagerTest {
         httpPut.setEntity(new StringEntity("FOOOO"));
         response = client.execute(httpPut);
         logger.info(httpPut.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        
+
         assertEquals(406, response.getStatusLine().getStatusCode());
         httpPut.releaseConnection();
 
@@ -471,7 +470,7 @@ public class RestManagerTest {
          * GET: /engine/controllers/inventory /engine/controllers/features
          * /engine/controllers/features/inventory /engine/controllers/features/featureName
          * /engine/controllers/controllerName
-         * 
+         *
          */
         httpGet = new HttpGet(HOST_URL + "/engine/controllers/inventory");
         response = client.execute(httpGet);
@@ -558,7 +557,7 @@ public class RestManagerTest {
          * /engine/controllers/controllerName/drools/facts/session
          * /engine/controllers/controllerName/drools/facts/session/factType
          * /engine/controllers/controllerName/drools/facts/session/query/queriedEntity
-         * 
+         *
          */
         httpGet = new HttpGet(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts");
         response = client.execute(httpGet);
@@ -944,7 +943,7 @@ public class RestManagerTest {
 
     /**
      * Get response body.
-     * 
+     *
      * @param response incoming response
      * @return the body or null
      */

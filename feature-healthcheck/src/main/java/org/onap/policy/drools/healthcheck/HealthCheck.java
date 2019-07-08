@@ -23,14 +23,14 @@ package org.onap.policy.drools.healthcheck;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import javax.ws.rs.core.Response;
-
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -366,11 +366,11 @@ class HealthCheckMonitor implements HealthCheck {
     }
 
     protected HttpServletServerFactory getServerFactory() {
-        return HttpServletServer.factory;
+        return HttpServletServerFactoryInstance.getServerFactory();
     }
 
     protected HttpClientFactory getClientFactory() {
-        return HttpClient.factory;
+        return HttpClientFactoryInstance.getClientFactory();
     }
 
     protected Properties getPersistentProperties(String propertyName) {

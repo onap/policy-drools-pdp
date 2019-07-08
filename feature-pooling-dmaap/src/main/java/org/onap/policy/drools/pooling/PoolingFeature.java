@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,9 +25,8 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.utils.properties.SpecProperties;
@@ -46,8 +45,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller/session pooling. Multiple hosts may be launched, all servicing the same
  * controllers/sessions. When this feature is enabled, the requests are divided across the different
- * hosts, instead of all running on a single, active host. 
- * 
+ * hosts, instead of all running on a single, active host.
+ *
  * <p>With each controller, there is an
  * associated DMaaP topic that is used for internal communication between the different hosts
  * serving the controller.
@@ -98,7 +97,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     /**
      * Get active latch.
-     * 
+     *
      * @return a latch that will be decremented when a manager enters the active state
      */
     protected CountDownLatch getActiveLatch() {
@@ -134,7 +133,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     /**
      * Adds the controller and a new pooling manager to {@link #ctlr2pool}.
-     * 
+     *
      * @throws PoolingFeatureRtException if an error occurs
      */
     @Override
@@ -292,7 +291,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
     /**
      * Executes a function using the manager associated with the controller. Catches any exceptions
      * from the function and re-throws it as a runtime exception.
-     * 
+     *
      * @param controller controller
      * @param func function to be executed
      * @return {@code true} if the function handled the request, {@code false} otherwise
@@ -314,7 +313,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     /**
      * Deletes the manager associated with a controller.
-     * 
+     *
      * @param controller controller
      * @throws PoolingFeatureRtException if an error occurs
      */
@@ -334,7 +333,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
         /**
          * Apply.
-         * 
+         *
          * @param mgr manager
          * @return {@code true} if the request was handled by the manager, {@code false} otherwise
          * @throws PoolingFeatureException feature exception
@@ -364,7 +363,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
         /**
          * Constructor.
-         * 
+         *
          * @param protocol protocol
          * @param topic topic
          * @param event the actual event data received on the topic
@@ -375,14 +374,14 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
             this.event = event;
         }
     }
-    
+
     /*
      * The remaining methods may be overridden by junit tests.
      */
 
     /**
      * Get properties.
-     * 
+     *
      * @param featName feature name
      * @return the properties for the specified feature
      */
@@ -392,7 +391,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     /**
      * Makes a pooling manager for a controller.
-     * 
+     *
      * @param host name/uuid of this host
      * @param controller controller
      * @param props properties to use to configure the manager
@@ -406,7 +405,7 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     /**
      * Gets the policy controller associated with a drools controller.
-     * 
+     *
      * @param droolsController drools controller
      * @return the policy controller associated with a drools controller
      */
@@ -416,21 +415,21 @@ public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerF
 
     /**
      * Initializes the topic sources.
-     * 
+     *
      * @param props properties used to configure the topics
      * @return the topic sources
      */
     protected List<TopicSource> initTopicSources(Properties props) {
-        return TopicEndpoint.manager.addTopicSources(props);
+        return TopicEndpointManager.getManager().addTopicSources(props);
     }
 
     /**
      * Initializes the topic sinks.
-     * 
+     *
      * @param props properties used to configure the topics
      * @return the topic sinks
      */
     protected List<TopicSink> initTopicSinks(Properties props) {
-        return TopicEndpoint.manager.addTopicSinks(props);
+        return TopicEndpointManager.getManager().addTopicSinks(props);
     }
 }

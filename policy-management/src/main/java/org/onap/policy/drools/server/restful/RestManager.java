@@ -52,6 +52,7 @@ import javax.ws.rs.core.Response.Status;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
@@ -1611,7 +1612,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the managed topics", notes = "Network Topics Aggregation",
             response = TopicEndpoint.class)
     public Response topics() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpointManager.getManager()).build();
     }
 
     @GET
@@ -1634,9 +1635,9 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response topicsLock() {
-        final boolean success = TopicEndpoint.manager.lock();
+        final boolean success = TopicEndpointManager.getManager().lock();
         if (success) {
-            return Response.status(Status.OK).entity(TopicEndpoint.manager).build();
+            return Response.status(Status.OK).entity(TopicEndpointManager.getManager()).build();
         } else {
             return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("cannot perform operation")).build();
         }
@@ -1654,9 +1655,9 @@ public class RestManager {
     @ApiResponses(value = {@ApiResponse(code = 406,
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response topicsUnlock() {
-        final boolean success = TopicEndpoint.manager.unlock();
+        final boolean success = TopicEndpointManager.getManager().unlock();
         if (success) {
-            return Response.status(Status.OK).entity(TopicEndpoint.manager).build();
+            return Response.status(Status.OK).entity(TopicEndpointManager.getManager()).build();
         } else {
             return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("cannot perform operation")).build();
         }
@@ -1672,7 +1673,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the managed topic sources", notes = "Network Topic Sources Agregation",
             responseContainer = "List", response = TopicSource.class)
     public Response sources() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getTopicSources()).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpointManager.getManager().getTopicSources()).build();
     }
 
     /**
@@ -1685,7 +1686,7 @@ public class RestManager {
     @ApiOperation(value = "Retrieves the managed topic sinks", notes = "Network Topic Sinks Agregation",
             responseContainer = "List", response = TopicSink.class)
     public Response sinks() {
-        return Response.status(Response.Status.OK).entity(TopicEndpoint.manager.getTopicSinks()).build();
+        return Response.status(Response.Status.OK).entity(TopicEndpointManager.getManager().getTopicSinks()).build();
     }
 
     /**
@@ -1702,13 +1703,13 @@ public class RestManager {
         Status status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
-                sources.addAll(TopicEndpoint.manager.getUebTopicSources());
+                sources.addAll(TopicEndpointManager.getManager().getUebTopicSources());
                 break;
             case DMAAP:
-                sources.addAll(TopicEndpoint.manager.getDmaapTopicSources());
+                sources.addAll(TopicEndpointManager.getManager().getDmaapTopicSources());
                 break;
             case NOOP:
-                sources.addAll(TopicEndpoint.manager.getNoopTopicSources());
+                sources.addAll(TopicEndpointManager.getManager().getNoopTopicSources());
                 break;
             default:
                 status = Status.BAD_REQUEST;
@@ -1732,13 +1733,13 @@ public class RestManager {
         Status status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
-                sinks.addAll(TopicEndpoint.manager.getUebTopicSinks());
+                sinks.addAll(TopicEndpointManager.getManager().getUebTopicSinks());
                 break;
             case DMAAP:
-                sinks.addAll(TopicEndpoint.manager.getDmaapTopicSinks());
+                sinks.addAll(TopicEndpointManager.getManager().getDmaapTopicSinks());
                 break;
             case NOOP:
-                sinks.addAll(TopicEndpoint.manager.getNoopTopicSinks());
+                sinks.addAll(TopicEndpointManager.getManager().getNoopTopicSinks());
                 break;
             default:
                 status = Status.BAD_REQUEST;
@@ -1762,7 +1763,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response
             .status(Response.Status.OK)
-            .entity(TopicEndpoint.manager
+            .entity(TopicEndpointManager.getManager()
                 .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic))
             .build();
     }
@@ -1780,7 +1781,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response
             .status(Response.Status.OK)
-            .entity(TopicEndpoint.manager
+            .entity(TopicEndpointManager.getManager()
                 .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic))
             .build();
     }
@@ -1797,9 +1798,9 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-            .entity(Arrays
-                .asList(TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
-                        .getRecentEvents()))
+            .entity(Arrays.asList(TopicEndpointManager.getManager()
+                            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
+                            .getRecentEvents()))
             .build();
     }
 
@@ -1815,9 +1816,9 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic) {
         return Response.status(Status.OK)
-            .entity(Arrays
-                .asList(TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
-                    .getRecentEvents()))
+            .entity(Arrays.asList(TopicEndpointManager.getManager()
+                            .getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic)
+                            .getRecentEvents()))
             .build();
     }
 
@@ -1860,7 +1861,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSource source =
-            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.lock(), source);
     }
 
@@ -1877,7 +1878,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSource source =
-            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.unlock(), source);
     }
 
@@ -1894,7 +1895,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSource source =
-            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.start(), source);
     }
 
@@ -1911,7 +1912,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSource source =
-            TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.stop(), source);
     }
 
@@ -1928,7 +1929,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSink sink =
-            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.lock(), sink);
     }
 
@@ -1945,7 +1946,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSink sink =
-            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.unlock(), sink);
     }
 
@@ -1962,7 +1963,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSink sink =
-            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.start(), sink);
     }
 
@@ -1979,7 +1980,7 @@ public class RestManager {
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
         TopicSink sink =
-            TopicEndpoint.manager.getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+            TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.stop(), sink);
     }
 
@@ -2016,7 +2017,7 @@ public class RestManager {
 
         try {
             TopicSource source =
-                TopicEndpoint.manager.getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+                TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
             if (source.offer(json)) {
                 return Response.status(Status.OK)
                     .entity(Arrays.asList(source.getRecentEvents()))

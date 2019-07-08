@@ -31,11 +31,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.utils.NetLoggerUtil.EventType;
@@ -92,10 +91,10 @@ public class MdcFilterFeatureTest {
         props.setProperty("dmaap.source.topics." + TEST_TOPIC_A + ".servers", "http://testing123.com/");
         props.setProperty("noop.sink.topics", TEST_TOPIC_B);
 
-        List<TopicSource> topicSources = TopicEndpoint.manager.addTopicSources(props);
+        List<TopicSource> topicSources = TopicEndpointManager.getManager().addTopicSources(props);
         doReturn(topicSources).when(controller).getTopicSources();
 
-        List<TopicSink> topicSinks = TopicEndpoint.manager.addTopicSinks(props);
+        List<TopicSink> topicSinks = TopicEndpointManager.getManager().addTopicSinks(props);
         doReturn(topicSinks).when(controller).getTopicSinks();
 
         mdcFilterFeature = new MdcFilterFeatureImpl();

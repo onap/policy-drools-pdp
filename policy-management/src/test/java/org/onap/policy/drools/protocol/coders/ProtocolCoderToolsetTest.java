@@ -31,7 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.DroolsController;
@@ -231,7 +231,7 @@ public class ProtocolCoderToolsetTest {
 
         Properties sinkConfig = new Properties();
         sinkConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, JUNIT_PROTOCOL_CODER_TOPIC);
-        final List<? extends TopicSink> noopTopics = TopicEndpoint.manager.addTopicSinks(sinkConfig);
+        final List<? extends TopicSink> noopTopics = TopicEndpointManager.getManager().addTopicSinks(sinkConfig);
 
         Properties droolsControllerConfig = new Properties();
         droolsControllerConfig.put(DroolsProperties.RULES_GROUPID, releaseId.getGroupId());

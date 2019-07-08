@@ -21,7 +21,7 @@
 package org.onap.policy.drools.system;
 
 import java.util.Properties;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -80,7 +80,7 @@ public class Main {
         /* 2. Add topics */
 
         for (Properties topicProperties : SystemPersistence.manager.getTopicProperties()) {
-            TopicEndpoint.manager.addTopics(topicProperties);
+            TopicEndpointManager.getManager().addTopics(topicProperties);
         }
 
         /* 3. Start the Engine with the basic services only (no Policy Controllers) */
