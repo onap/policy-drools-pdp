@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
@@ -107,10 +108,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Constructor version mainly used for bootstrapping at initialization time a policy engine
      * controller.
-     * 
+     *
      * @param name controller name
      * @param properties
-     * 
+     *
      * @throws IllegalArgumentException when invalid arguments are provided
      */
     public AggregatedPolicyController(String name, Properties properties) {
@@ -175,7 +176,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
     /**
      * initialize drools layer.
-     * 
+     *
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
     private void initDrools(Properties properties) {
@@ -190,7 +191,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
     /**
      * initialize sinks.
-     * 
+     *
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
     private void initSinks() {
@@ -716,13 +717,13 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     // the following methods may be overridden by junit tests
-    
+
     protected SystemPersistence getPersistenceManager() {
         return SystemPersistence.manager;
     }
 
     protected TopicEndpoint getEndpointManager() {
-        return TopicEndpoint.manager;
+        return TopicEndpointManager.getManager();
     }
 
     protected DroolsControllerFactory getDroolsFactory() {

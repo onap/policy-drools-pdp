@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-simulators
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 
@@ -52,8 +53,8 @@ public class DMaaPSimulatorTest {
         LoggerUtil.setLevel("ROOT", "INFO");
         LoggerUtil.setLevel("org.eclipse.jetty", "WARN");
         try {
-            final HttpServletServer testServer =
-                    HttpServletServer.factory.build("dmaapSim", "localhost", DMAAPSIM_SERVER_PORT, "/", false, true);
+            final HttpServletServer testServer = HttpServletServerFactoryInstance.getServerFactory().build("dmaapSim",
+                            "localhost", DMAAPSIM_SERVER_PORT, "/", false, true);
             testServer.addServletClass("/*", DMaaPSimulatorJaxRs.class.getName());
             testServer.waitedStart(5000);
             if (!NetworkUtil.isTcpPortOpen("localhost", testServer.getPort(), 5, 10000L)) {
@@ -66,7 +67,7 @@ public class DMaaPSimulatorTest {
 
     @AfterClass
     public static void tearDownSimulator() {
-        HttpServletServer.factory.destroy();
+        HttpServletServerFactoryInstance.getServerFactory().destroy();
     }
 
     @Test

@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
@@ -65,7 +66,7 @@ public class DmaapManager {
 
     /**
      * Constructs the manager, but does not start the source or sink.
-     * 
+     *
      * @param topic name of the internal DMaaP topic
      * @throws PoolingFeatureException if an error occurs
      */
@@ -94,7 +95,7 @@ public class DmaapManager {
 
     /**
      * Finds the topic source associated with the internal DMaaP topic.
-     * 
+     *
      * @return the topic source
      * @throws PoolingFeatureException if the source doesn't exist or is not filterable
      */
@@ -115,7 +116,7 @@ public class DmaapManager {
 
     /**
      * Finds the topic sink associated with the internal DMaaP topic.
-     * 
+     *
      * @return the topic sink
      * @throws PoolingFeatureException if the sink doesn't exist
      */
@@ -143,7 +144,7 @@ public class DmaapManager {
 
     /**
      * Stops the publisher.
-     * 
+     *
      * @param waitMs time, in milliseconds, to wait for the sink to transmit any queued messages and
      *        close
      */
@@ -170,7 +171,7 @@ public class DmaapManager {
 
     /**
      * Starts the consumer, if it isn't already running.
-     * 
+     *
      * @param listener listener to register with the source
      */
     public void startConsumer(TopicListener listener) {
@@ -185,7 +186,7 @@ public class DmaapManager {
 
     /**
      * Stops the consumer.
-     * 
+     *
      * @param listener listener to unregister with the source
      */
     public void stopConsumer(TopicListener listener) {
@@ -200,7 +201,7 @@ public class DmaapManager {
 
     /**
      * Sets the server-side filter to be used by the consumer.
-     * 
+     *
      * @param filter the filter string, or {@code null} if no filter is to be used
      * @throws PoolingFeatureException if the topic is not filterable
      */
@@ -216,7 +217,7 @@ public class DmaapManager {
 
     /**
      * Publishes a message to the sink.
-     * 
+     *
      * @param msg message to be published
      * @throws PoolingFeatureException if an error occurs or the publisher isn't running
      */
@@ -234,26 +235,26 @@ public class DmaapManager {
             throw new PoolingFeatureException("cannot send to topic sink " + topic, e);
         }
     }
-    
+
     /*
      * The remaining methods may be overridden by junit tests.
      */
 
     /**
      * Get topic source.
-     * 
+     *
      * @return the topic sources
      */
     protected List<TopicSource> getTopicSources() {
-        return TopicEndpoint.manager.getTopicSources();
+        return TopicEndpointManager.getManager().getTopicSources();
     }
 
     /**
      * Get topic sinks.
-     * 
+     *
      * @return the topic sinks
      */
     protected List<TopicSink> getTopicSinks() {
-        return TopicEndpoint.manager.getTopicSinks();
+        return TopicEndpointManager.getManager().getTopicSinks();
     }
 }

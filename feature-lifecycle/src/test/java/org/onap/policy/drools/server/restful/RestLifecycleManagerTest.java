@@ -29,7 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -44,12 +46,12 @@ public class RestLifecycleManagerTest {
      */
     @Before
      public void setUp() throws Exception {
-        HttpServletServer.factory.destroy();
-        HttpClient.factory.destroy();
+        HttpServletServerFactoryInstance.getServerFactory().destroy();
+        HttpClientFactoryInstance.getClientFactory().destroy();
 
         SystemPersistence.manager.setConfigurationDir("target/test-classes");
 
-        HttpClient.factory.build(
+        HttpClientFactoryInstance.getClientFactory().build(
             BusTopicParams.builder()
                 .clientName("lifecycle")
                 .hostname("localhost")
@@ -59,7 +61,7 @@ public class RestLifecycleManagerTest {
                 .build());
 
         HttpServletServer server =
-            HttpServletServer.factory.build("lifecycle", "localhost", 8765, "/", true, true);
+            HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/", true, true);
         server.addServletClass("/*", RestLifecycleManager.class.getName());
         server.setSerializationProvider("org.onap.policy.common.gson.JacksonHandler");
         server.waitedStart(5000L);
@@ -73,17 +75,17 @@ public class RestLifecycleManagerTest {
      */
     @After
     public void tearDown() {
-        HttpServletServer.factory.destroy();
-        HttpClient.factory.destroy();
+        HttpServletServerFactoryInstance.getServerFactory().destroy();
+        HttpClientFactoryInstance.getClientFactory().destroy();
     }
 
     @Test
     public void fsm() {
-        Response response = HttpClient.factory.get("lifecycle").get("fsm");
+        Response response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm");
         assertNotNull(HttpClient.getBody(response, String.class));
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
-        response = HttpClient.factory.get("lifecycle").get("fsm/state");
+        response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/state");
         assertEquals(PdpState.TERMINATED, HttpClient.getBody(response, PdpState.class));
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
     }

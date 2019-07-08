@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,9 +23,9 @@ package org.onap.policy.drools.statemanagement;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
-
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.im.IntegrityMonitor;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -55,7 +55,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Constructor - pass arguments to superclass, but remember properties.
-     * 
+     *
      * @param resourceName unique name of this Integrity Monitor
      * @param url the JMX URL of the MBean server
      * @param properties properties used locally, as well as by 'IntegrityMonitor'
@@ -82,7 +82,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
     /**
      * Static initialization -- create Drools Integrity Monitor, and an HTTP server to handle REST
      * 'test' requests.
-     * 
+     *
      * @throws IntegrityMonitorException exception
      */
     public static DroolsPDPIntegrityMonitor init(String configDir) throws IntegrityMonitorException {
@@ -144,7 +144,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Makes an Integrity Monitor.
-     * 
+     *
      * @param resourceName unique name of this Integrity Monitor
      * @param properties properties used to configure the Integrity Monitor
      * @return monitor object
@@ -163,7 +163,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Makes a rest server for the Integrity Monitor.
-     * 
+     *
      * @param testHost host name
      * @param testPort port
      * @param properties properties used to configure the rest server
@@ -186,7 +186,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Gets the properties from the property file.
-     * 
+     *
      * @param configDir directory containing the property file
      * @return the properties
      * @throws IntegrityMonitorException exception
@@ -202,7 +202,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Checks that a property is defined.
-     * 
+     *
      * @param props set of properties
      * @param name name of the property to check
      * @throws IntegrityMonitorException exception
@@ -220,7 +220,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * Checks a property's value to verify that it matches the expected value. If the property is
      * not defined, then it is added to the property set, with the expected value. Logs an error if
      * the property is defined, but does not have the expected value.
-     * 
+     *
      * @param props set of properties
      * @param name name of the property to check
      * @param expected expected/default value
@@ -241,7 +241,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * Checks a property's value to verify that it matches the expected value. If the property is
      * not defined, then it is added to the property set, with the expected value. Logs a warning if
      * the property is defined, but does not have the expected value.
-     * 
+     *
      * @param props set of properties
      * @param name name of the property to check
      * @param expected expected/default value
@@ -318,7 +318,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
         /**
          * Constructor - initialize the name, and clear the initial response.
-         * 
+         *
          * @param name name of the audit
          */
         public AuditBase(String name) {
@@ -328,7 +328,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
         /**
          * Get the name.
-         * 
+         *
          * @return the name of this audit
          */
         public String getName() {
@@ -337,7 +337,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
         /**
          * Get the response.
-         * 
+         *
          * @return the response String (non-null indicates the error message)
          */
         public String getResponse() {
@@ -346,7 +346,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
         /**
          * Set the response string to the specified value.
-         * 
+         *
          * @param value the new value of the response string (null = no errors)
          */
         public void setResponse(String value) {
@@ -355,7 +355,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
         /**
          * Abstract method to invoke the audit.
-         * 
+         *
          * @param persistenceProperties Used for DB access
          * @throws Exception passed in by the audit
          */
@@ -374,7 +374,8 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
         @Override
         public boolean start() {
             try {
-                List<HttpServletServer> servers = HttpServletServer.factory.build(integrityMonitorRestServerProperties);
+                List<HttpServletServer> servers = HttpServletServerFactoryInstance.getServerFactory()
+                                .build(integrityMonitorRestServerProperties);
 
                 if (!servers.isEmpty()) {
                     server = servers.get(0);
@@ -421,7 +422,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
 
     /**
      * Returns the instance.
-     * 
+     *
      * @return DroolsPDPIntegrityMonitor object
      * @throws IntegrityMonitorException exception
      */

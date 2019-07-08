@@ -34,11 +34,13 @@ import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
@@ -1562,11 +1564,11 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     protected TopicEndpoint getTopicEndpointManager() {
-        return TopicEndpoint.manager;
+        return TopicEndpointManager.getManager();
     }
 
     protected HttpServletServerFactory getServletFactory() {
-        return HttpServletServer.factory;
+        return HttpServletServerFactoryInstance.getServerFactory();
     }
 
     protected PolicyControllerFactory getControllerFactory() {

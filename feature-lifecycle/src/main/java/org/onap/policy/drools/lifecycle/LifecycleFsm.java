@@ -35,7 +35,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
-import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.event.comm.client.TopicSinkClient;
@@ -352,7 +352,7 @@ public class LifecycleFsm implements Startable {
     }
 
     private boolean source() {
-        List<TopicSource> sources = TopicEndpoint.manager.addTopicSources(properties);
+        List<TopicSource> sources = TopicEndpointManager.getManager().addTopicSources(properties);
         if (sources.isEmpty()) {
             return false;
         }
@@ -369,7 +369,7 @@ public class LifecycleFsm implements Startable {
     }
 
     private boolean sink() {
-        List<TopicSink> sinks = TopicEndpoint.manager.addTopicSinks(properties);
+        List<TopicSink> sinks = TopicEndpointManager.getManager().addTopicSinks(properties);
         if (sinks.isEmpty()) {
             logger.error("Lifecycle Manager sinks have not been configured");
             return false;
