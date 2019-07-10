@@ -45,7 +45,7 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.jmx.PdpJmx;
-import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
+import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
@@ -538,7 +538,7 @@ public class MavenDroolsController implements DroolsController {
 
         // Broadcast
 
-        for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
             try {
                 if (feature.beforeInsert(this, event)) {
                     return true;
@@ -554,7 +554,7 @@ public class MavenDroolsController implements DroolsController {
             logger.warn(this + "Failed to inject into PolicyContainer {}", this.getSessionNames());
         }
 
-        for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
             try {
                 if (feature.afterInsert(this, event, successInject)) {
                     return true;
@@ -576,7 +576,7 @@ public class MavenDroolsController implements DroolsController {
             logger.info("{}DELIVER: {} FROM {} TO {}", this, event, this, sink);
         }
 
-        for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
             try {
                 if (feature.beforeDeliver(this, sink, event)) {
                     return true;
@@ -613,7 +613,7 @@ public class MavenDroolsController implements DroolsController {
 
         boolean success = sink.send(json);
 
-        for (DroolsControllerFeatureAPI feature : DroolsControllerFeatureAPI.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
             try {
                 if (feature.afterDeliver(this, sink, event, json, success)) {
                     return true;

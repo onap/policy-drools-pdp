@@ -32,9 +32,9 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.utils.properties.SpecProperties;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.DroolsControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * associated DMaaP topic that is used for internal communication between the different hosts
  * serving the controller.
  */
-public class PoolingFeature implements PolicyEngineFeatureAPI, PolicyControllerFeatureAPI, DroolsControllerFeatureAPI {
+public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerFeatureApi, DroolsControllerFeatureApi {
 
     private static final Logger logger = LoggerFactory.getLogger(PoolingFeature.class);
 

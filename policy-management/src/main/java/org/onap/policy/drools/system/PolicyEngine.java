@@ -47,8 +47,8 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.jmx.PdpJmxListener;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
@@ -249,14 +249,14 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      *
      * @return list of features
      */
-    List<PolicyEngineFeatureAPI> getFeatureProviders();
+    List<PolicyEngineFeatureApi> getFeatureProviders();
 
     /**
      * get named feature attached to the Policy Engine.
      *
      * @return the feature
      */
-    PolicyEngineFeatureAPI getFeatureProvider(String featureName);
+    PolicyEngineFeatureApi getFeatureProvider(String featureName);
 
     /**
      * get features attached to the Policy Engine.
@@ -401,7 +401,7 @@ class PolicyEngineManager implements PolicyEngine {
     @Override
     public synchronized void boot(String[] cliArgs) {
 
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeBoot(this, cliArgs)) {
                     return;
@@ -418,7 +418,7 @@ class PolicyEngineManager implements PolicyEngine {
             logger.error("{}: cannot init policy-container because of {}", this, e.getMessage(), e);
         }
 
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterBoot(this)) {
                     return;
@@ -491,7 +491,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* policy-engine dispatch pre configure hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeConfigure(this, properties)) {
                     return;
@@ -531,7 +531,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* policy-engine dispatch post configure hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterConfigure(this)) {
                     return;
@@ -552,7 +552,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         final String entity = config.getEntity();
 
-        MDCTransaction mdcTrans = MDCTransaction.newTransaction(config.getRequestID(), "brmsgw");
+        MDCTransaction mdcTrans = MDCTransaction.newTransaction(config.getRequestId(), "brmsgw");
         if (this.getSources().size() == 1) {
             Topic topic = this.getSources().get(0);
             mdcTrans.setServiceName(topic.getTopic()).setRemoteHost(topic.getServers().toString())
@@ -589,7 +589,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         PolicyController controller;
-        for (final PolicyControllerFeatureAPI controllerFeature : getControllerProviders()) {
+        for (final PolicyControllerFeatureApi controllerFeature : getControllerProviders()) {
             try {
                 controller = controllerFeature.beforeCreate(tempName, properties);
                 if (controller != null) {
@@ -607,7 +607,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         // feature hook
-        for (final PolicyControllerFeatureAPI controllerFeature : getControllerProviders()) {
+        for (final PolicyControllerFeatureApi controllerFeature : getControllerProviders()) {
             try {
                 if (controllerFeature.afterCreate(controller)) {
                     return controller;
@@ -752,7 +752,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean start() {
 
         /* policy-engine dispatch pre start hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeStart(this)) {
                     return true;
@@ -837,7 +837,7 @@ class PolicyEngineManager implements PolicyEngine {
         startPdpJmxListener();
 
         /* policy-engine dispatch after start hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterStart(this)) {
                     return success;
@@ -855,7 +855,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean stop() {
 
         /* policy-engine dispatch pre stop hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeStop(this)) {
                     return true;
@@ -928,7 +928,7 @@ class PolicyEngineManager implements PolicyEngine {
         // stop JMX?
 
         /* policy-engine dispatch pre stop hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterStop(this)) {
                     return success;
@@ -954,7 +954,7 @@ class PolicyEngineManager implements PolicyEngine {
         exitThread.start();
 
         /* policy-engine dispatch pre shutdown hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeShutdown(this)) {
                     return;
@@ -995,7 +995,7 @@ class PolicyEngineManager implements PolicyEngine {
         stopPdpJmxListener();
 
         /* policy-engine dispatch post shutdown hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterShutdown(this)) {
                     return;
@@ -1065,7 +1065,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean lock() {
 
         /* policy-engine dispatch pre lock hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeLock(this)) {
                     return true;
@@ -1096,7 +1096,7 @@ class PolicyEngineManager implements PolicyEngine {
         success = getTopicEndpointManager().lock() && success;
 
         /* policy-engine dispatch post lock hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterLock(this)) {
                     return success;
@@ -1114,7 +1114,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized boolean unlock() {
 
         /* policy-engine dispatch pre unlock hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeUnlock(this)) {
                     return true;
@@ -1146,7 +1146,7 @@ class PolicyEngineManager implements PolicyEngine {
         success = getTopicEndpointManager().unlock() && success;
 
         /* policy-engine dispatch after unlock hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterUnlock(this)) {
                     return success;
@@ -1221,7 +1221,7 @@ class PolicyEngineManager implements PolicyEngine {
     @Override
     public List<String> getFeatures() {
         final List<String> features = new ArrayList<>();
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             features.add(feature.getName());
         }
         return features;
@@ -1230,17 +1230,17 @@ class PolicyEngineManager implements PolicyEngine {
     @JsonIgnore
     @GsonJsonIgnore
     @Override
-    public List<PolicyEngineFeatureAPI> getFeatureProviders() {
+    public List<PolicyEngineFeatureApi> getFeatureProviders() {
         return getEngineProviders();
     }
 
     @Override
-    public PolicyEngineFeatureAPI getFeatureProvider(String featureName) {
+    public PolicyEngineFeatureApi getFeatureProvider(String featureName) {
         if (featureName == null || featureName.isEmpty()) {
             throw new IllegalArgumentException("A feature name must be provided");
         }
 
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             if (feature.getName().equals(featureName)) {
                 return feature;
             }
@@ -1252,7 +1252,7 @@ class PolicyEngineManager implements PolicyEngine {
     @Override
     public void onTopicEvent(CommInfrastructure commType, String topic, String event) {
         /* policy-engine pre topic event hook */
-        for (final PolicyEngineFeatureAPI feature : getFeatureProviders()) {
+        for (final PolicyEngineFeatureApi feature : getFeatureProviders()) {
             try {
                 if (feature.beforeOnTopicEvent(this, commType, topic, event)) {
                     return;
@@ -1273,7 +1273,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* policy-engine after topic event hook */
-        for (final PolicyEngineFeatureAPI feature : getFeatureProviders()) {
+        for (final PolicyEngineFeatureApi feature : getFeatureProviders()) {
             try {
                 if (feature.afterOnTopicEvent(this, configuration, commType, topic, event)) {
                     return;
@@ -1448,7 +1448,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized void activate() {
 
         /* policy-engine dispatch pre activate hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeActivate(this)) {
                     return;
@@ -1476,7 +1476,7 @@ class PolicyEngineManager implements PolicyEngine {
         this.unlock();
 
         /* policy-engine dispatch post activate hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterActivate(this)) {
                     return;
@@ -1492,7 +1492,7 @@ class PolicyEngineManager implements PolicyEngine {
     public synchronized void deactivate() {
 
         /* policy-engine dispatch pre deactivate hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.beforeDeactivate(this)) {
                     return;
@@ -1515,7 +1515,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         /* policy-engine dispatch post deactivate hook */
-        for (final PolicyEngineFeatureAPI feature : getEngineProviders()) {
+        for (final PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
                 if (feature.afterDeactivate(this)) {
                     return;
@@ -1551,12 +1551,12 @@ class PolicyEngineManager implements PolicyEngine {
 
     // these methods may be overridden by junit tests
 
-    protected List<PolicyEngineFeatureAPI> getEngineProviders() {
-        return PolicyEngineFeatureAPI.providers.getList();
+    protected List<PolicyEngineFeatureApi> getEngineProviders() {
+        return PolicyEngineFeatureApi.providers.getList();
     }
 
-    protected List<PolicyControllerFeatureAPI> getControllerProviders() {
-        return PolicyControllerFeatureAPI.providers.getList();
+    protected List<PolicyControllerFeatureApi> getControllerProviders() {
+        return PolicyControllerFeatureApi.providers.getList();
     }
 
     protected void globalInitContainer(String[] cliArgs) {

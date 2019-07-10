@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.internal.AggregatedPolicyController;
 import org.slf4j.Logger;
@@ -152,14 +152,14 @@ public interface PolicyControllerFactory {
      * 
      * @return list of features
      */
-    List<PolicyControllerFeatureAPI> getFeatureProviders();
+    List<PolicyControllerFeatureApi> getFeatureProviders();
 
     /**
      * get named feature attached to the Policy Controllers.
      * 
      * @return the feature
      */
-    PolicyControllerFeatureAPI getFeatureProvider(String featureName);
+    PolicyControllerFeatureApi getFeatureProvider(String featureName);
 
     /**
      * get features attached to the Policy Controllers.
@@ -479,7 +479,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     @Override
     public List<String> getFeatures() {
         List<String> features = new ArrayList<>();
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             features.add(feature.getName());
         }
         return features;
@@ -491,7 +491,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     @JsonIgnore
     @GsonJsonIgnore
     @Override
-    public List<PolicyControllerFeatureAPI> getFeatureProviders() {
+    public List<PolicyControllerFeatureApi> getFeatureProviders() {
         return getProviders();
     }
 
@@ -499,12 +499,12 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
      * {@inheritDoc}.
      */
     @Override
-    public PolicyControllerFeatureAPI getFeatureProvider(String featureName) {
+    public PolicyControllerFeatureApi getFeatureProvider(String featureName) {
         if (featureName == null || featureName.isEmpty()) {
             throw new IllegalArgumentException("A feature name must be provided");
         }
         
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             if (feature.getName().equals(featureName)) {
                 return feature;
             }
@@ -523,7 +523,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
         return new AggregatedPolicyController(name, properties);
     }
 
-    protected List<PolicyControllerFeatureAPI> getProviders() {
-        return PolicyControllerFeatureAPI.providers.getList();
+    protected List<PolicyControllerFeatureApi> getProviders() {
+        return PolicyControllerFeatureApi.providers.getList();
     }
 }

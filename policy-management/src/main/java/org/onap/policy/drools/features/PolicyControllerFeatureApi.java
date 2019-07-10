@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-engine
+ * policy-management
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -24,237 +24,255 @@ import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
-import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyController;
 
-/**
- * Policy Engine Feature API.
- * Provides Interception Points during the Policy Engine lifecycle.
- */
-public interface PolicyEngineFeatureAPI extends OrderedService {
+public interface PolicyControllerFeatureApi extends OrderedService {
+
     /**
      * Feature providers implementing this interface.
      */
-    public static final OrderedServiceImpl<PolicyEngineFeatureAPI> providers =
-            new OrderedServiceImpl<>(PolicyEngineFeatureAPI.class);
+    OrderedServiceImpl<PolicyControllerFeatureApi> providers =
+            new OrderedServiceImpl<>(PolicyControllerFeatureApi.class);
 
     /**
-     * intercept before the Policy Engine is commanded to boot.
+     * called before creating a controller with name 'name' and
+     * properties 'properties'.
+     *
+     * @param name name of the the controller
+     * @param properties configuration properties
+     *
+     * @return a policy controller.   A take over of the creation operation
+     *     is performed by returning a non-null policy controller.
+     *     'null' indicates that no take over has taken place, and processing should
+     *     continue to the next feature provider.
+     */
+    default PolicyController beforeCreate(String name, Properties properties) {
+        return null;
+    }
+
+    /**
+     * called after creating a controller with name 'name'.
+     *
+     * @param controller controller
+     *
+     * @return true if this feature intercepts and takes ownership
+     *      of the operation preventing the invocation of
+     *      lower priority features.   False, otherwise.
+     */
+    default boolean afterCreate(PolicyController controller) {
+        return false;
+    }
+
+    /**
+     * intercept before the Policy Controller is started.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
+    default boolean beforeStart(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is booted.
+     * intercept after the Policy Controller is started.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterBoot(PolicyEngine engine) {
+    default boolean afterStart(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is configured.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean beforeConfigure(PolicyEngine engine, Properties properties) {
-        return false;
-    }
-
-    /**
-     * intercept after the Policy Engine is configured.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean afterConfigure(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept before the Policy Engine goes active.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean beforeActivate(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept after the Policy Engine goes active.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean afterActivate(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept before the Policy Engine goes standby.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean beforeDeactivate(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept after the Policy Engine goes standby.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean afterDeactivate(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept before the Policy Engine is started.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean beforeStart(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept after the Policy Engine is started.
-     *
-     * @return true if this feature intercepts and takes ownership
-     *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise.
-     */
-    public default boolean afterStart(PolicyEngine engine) {
-        return false;
-    }
-
-    /**
-     * intercept before the Policy Engine is stopped.
+     * intercept before the Policy Controller is stopped.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeStop(PolicyEngine engine) {
+    default boolean beforeStop(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is stopped.
+     * intercept after the Policy Controller is stopped.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.d.
      */
-    public default boolean afterStop(PolicyEngine engine) {
+    default boolean afterStop(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is locked.
+     * intercept before the Policy Controller is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeLock(PolicyEngine engine) {
+    default boolean beforeLock(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is locked.
+     * intercept after the Policy Controller is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean afterLock(PolicyEngine engine) {
+    default boolean afterLock(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is locked.
+     * intercept before the Policy Controller is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeUnlock(PolicyEngine engine) {
+    default boolean beforeUnlock(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is locked.
+     * intercept after the Policy Controller is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterUnlock(PolicyEngine engine) {
+    default boolean afterUnlock(PolicyController controller) {
         return false;
     }
 
     /**
-     * intercept the Policy Engine is shut down.
+     * intercept before the Policy Controller is shut down.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeShutdown(PolicyEngine engine) {
+    default boolean beforeShutdown(PolicyController controller) {
         return false;
     }
 
     /**
-     * called after the Policy Engine is shut down.
+     * called after the Policy Controller is shut down.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterShutdown(PolicyEngine engine) {
+    default boolean afterShutdown(PolicyController controller) {
         return false;
     }
 
     /**
-     * Intercept an event from UEB/DMaaP before the PolicyEngine processes it.
+     * intercept before the Policy Controller is halted.
      *
-     * @return True if this feature intercepts and takes ownership of the operation
-     *         preventing the invocation of lower priority features. False, otherwise.
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeOnTopicEvent(PolicyEngine engine, CommInfrastructure commType, String topic,
-                    String event) {
+    default boolean beforeHalt(PolicyController controller) {
         return false;
     }
 
     /**
-     * Called after the PolicyEngine processes the events.
+     * called after the Policy Controller is halted.
      *
-     * @return True if this feature intercepts and takes ownership of the operation
-     *         preventing the invocation of lower priority features. False, otherwise
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
      */
-    public default boolean afterOnTopicEvent(PolicyEngine engine, PdpdConfiguration configuration,
-                    CommInfrastructure commType, String topic, String event) {
+    default boolean afterHalt(PolicyController controller) {
+        return false;
+    }
+
+
+    /*
+     * intercept before the Policy Controller is offered an event.
+     *
+     * @return true if this feature intercepts and takes ownership.
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean beforeOffer(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        String event) {
+        return false;
+    }
+
+    /**
+     * intercept before the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default <T> boolean beforeOffer(PolicyController controller, T event) {
+        return false;
+    }
+
+    /**
+     * called after the Policy Controller processes an event offer.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterOffer(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        String event,
+        boolean success) {
+        return false;
+    }
+
+    /**
+     * called after the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default <T> boolean afterOffer(PolicyController controller, T event, boolean success) {
+        return false;
+    }
+
+    /**
+     * intercept before the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean beforeDeliver(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        Object event) {
+        return false;
+    }
+
+    /**
+     * called after the Policy Controller delivers (posts) an event.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterDeliver(PolicyController controller,
+        CommInfrastructure protocol,
+        String topic,
+        Object event,
+        boolean success) {
         return false;
     }
 }

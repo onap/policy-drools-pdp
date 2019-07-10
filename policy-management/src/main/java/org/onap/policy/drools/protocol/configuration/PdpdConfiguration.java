@@ -50,7 +50,7 @@ public class PdpdConfiguration {
     /** Unique Transaction ID. This is an UUID. (Required) */
     @JsonProperty("requestID")
     @GsonJsonProperty("requestID")
-    private String requestID;
+    private String requestId;
     /* Set of entities on which configuration can be performed: controller (Required) */
     @JsonProperty("entity")
     @GsonJsonProperty("entity")
@@ -71,13 +71,13 @@ public class PdpdConfiguration {
     /**
      * Constructor.
      * 
-     * @param requestID request id
+     * @param requestId request id
      * @param entity entity
      * @param controllers controllers
      */
     public PdpdConfiguration(
-            String requestID, String entity, List<ControllerConfiguration> controllers) {
-        this.requestID = requestID;
+            String requestId, String entity, List<ControllerConfiguration> controllers) {
+        this.requestId = requestId;
         this.entity = entity;
         this.controllers = controllers;
     }
@@ -89,23 +89,23 @@ public class PdpdConfiguration {
      */
     @JsonProperty("requestID")
     @GsonJsonProperty("requestID")
-    public String getRequestID() {
-        return requestID;
+    public String getRequestId() {
+        return requestId;
     }
 
     /**
      * Unique Transaction ID. This is an UUID. (Required)
      *
-     * @param requestID The requestID
+     * @param requestId The requestID
      */
     @JsonProperty("requestID")
     @GsonJsonProperty("requestID")
-    public void setRequestID(String requestID) {
-        this.requestID = requestID;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
-    public PdpdConfiguration withRequestID(String requestID) {
-        this.requestID = requestID;
+    public PdpdConfiguration withRequestId(String requestId) {
+        this.requestId = requestId;
         return this;
     }
 
@@ -204,7 +204,7 @@ public class PdpdConfiguration {
     protected Object declaredPropertyOrNotFound(String name, Object notFoundValue) {
         switch (name) {
             case "requestID":
-                return getRequestID();
+                return getRequestId();
             case "entity":
                 return getEntity();
             case "controllers":
@@ -255,7 +255,7 @@ public class PdpdConfiguration {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(requestID)
+                .append(requestId)
                 .append(entity)
                 .append(controllers)
                 .append(additionalProperties)
@@ -272,7 +272,7 @@ public class PdpdConfiguration {
         }
         PdpdConfiguration rhs = (PdpdConfiguration) other;
         return new EqualsBuilder()
-                .append(requestID, rhs.requestID)
+                .append(requestId, rhs.requestId)
                 .append(entity, rhs.entity)
                 .append(controllers, rhs.controllers)
                 .append(additionalProperties, rhs.additionalProperties)
@@ -286,7 +286,7 @@ public class PdpdConfiguration {
      */
     public void callSetRequestId(Object value) {
         if (value instanceof String) {
-            setRequestID((String) value);
+            setRequestId((String) value);
         } else {
             throw new IllegalArgumentException(
                     "property \"requestID\" is of type \"java.lang.String\", but got "
