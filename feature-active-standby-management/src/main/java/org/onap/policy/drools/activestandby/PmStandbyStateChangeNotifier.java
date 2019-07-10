@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,9 +78,9 @@ import org.slf4j.LoggerFactory;
  * during the controller stoppages, the PDP is in hotstandby and the standdown occurs.
  *
  */
-public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
+public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
     // get an instance of logger
-    private static final Logger logger = LoggerFactory.getLogger(PMStandbyStateChangeNotifier.class);
+    private static final Logger logger = LoggerFactory.getLogger(PmStandbyStateChangeNotifier.class);
     private Timer delayActivateTimer;
     private int pdpUpdateInterval;
     private boolean isWaitingForActivation;
@@ -96,7 +96,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
      * Constructor.
      * 
      */
-    public PMStandbyStateChangeNotifier() {
+    public PmStandbyStateChangeNotifier() {
         pdpUpdateInterval =
                 Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
         isWaitingForActivation = false;
@@ -104,7 +104,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
         // delay the activate so the DesignatedWaiter can run twice - give it an extra 2 seconds
         waitInterval = 2 * pdpUpdateInterval + 2000L;
         isNowActivating = false;
-        previousStandbyStatus = PMStandbyStateChangeNotifier.NONE;
+        previousStandbyStatus = PmStandbyStateChangeNotifier.NONE;
     }
 
     @Override
@@ -167,7 +167,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
             if (logger.isDebugEnabled()) {
                 logger.debug("handleStateChange: standbyStatus={}; standing down PDP={}", standbyStatus, pdpId);
             }
-            if (previousStandbyStatus.equals(PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY)) {
+            if (previousStandbyStatus.equals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY)) {
                 // We were just here and did this successfully
                 if (logger.isDebugEnabled()) {
                     logger.debug("handleStateChange: Is returning because standbyStatus is {}"
@@ -193,7 +193,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
                 // Only want to lock the endpoints, not the controllers.
                 PolicyEngine.manager.deactivate();
                 // The operation was fully successful
-                previousStandbyStatus = PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY;
+                previousStandbyStatus = PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY;
             } catch (Exception e) {
                 logger.warn("handleStateChange: standbyStatus = {} caught exception: {}", standbyStatus, e.getMessage(),
                         e);
@@ -297,7 +297,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
 
         } else {
             logger.error("handleStateChange: Unsupported standbyStatus={}; standing down PDP={}", standbyStatus, pdpId);
-            if (previousStandbyStatus.equals(PMStandbyStateChangeNotifier.UNSUPPORTED)) {
+            if (previousStandbyStatus.equals(PmStandbyStateChangeNotifier.UNSUPPORTED)) {
                 // We were just here and did this successfully
                 if (logger.isDebugEnabled()) {
                     logger.debug("handleStateChange: Is returning because standbyStatus is "
@@ -322,7 +322,7 @@ public class PMStandbyStateChangeNotifier extends StateChangeNotifier {
                 }
                 PolicyEngine.manager.deactivate();
                 // We know the standbystatus is unsupported
-                previousStandbyStatus = PMStandbyStateChangeNotifier.UNSUPPORTED;
+                previousStandbyStatus = PmStandbyStateChangeNotifier.UNSUPPORTED;
             } catch (Exception e) {
                 logger.warn("handleStateChange: Unsupported standbyStatus = {} " + "caught exception: {} ",
                         standbyStatus, e.getMessage(), e);
