@@ -58,7 +58,7 @@ import org.onap.policy.drools.server.restful.RestManager;
 import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
-import org.onap.policy.drools.utils.logging.MDCTransaction;
+import org.onap.policy.drools.utils.logging.MdcTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -552,7 +552,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         final String entity = config.getEntity();
 
-        MDCTransaction mdcTrans = MDCTransaction.newTransaction(config.getRequestID(), "brmsgw");
+        MdcTransaction mdcTrans = MdcTransaction.newTransaction(config.getRequestID(), "brmsgw");
         if (this.getSources().size() == 1) {
             Topic topic = this.getSources().get(0);
             mdcTrans.setServiceName(topic.getTopic()).setRemoteHost(topic.getServers().toString())
@@ -632,7 +632,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         for (final ControllerConfiguration configController : configControllers) {
-            MDCTransaction mdcTrans = MDCTransaction.newSubTransaction(null).setTargetEntity(configController.getName())
+            MdcTransaction mdcTrans = MdcTransaction.newSubTransaction(null).setTargetEntity(configController.getName())
                     .setTargetServiceName(configController.getOperation())
                     .setTargetVirtualEntity("" + configController.getDrools());
             try {
