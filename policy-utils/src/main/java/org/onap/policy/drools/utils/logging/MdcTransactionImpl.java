@@ -1,8 +1,8 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
- * policy-utils
+ * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * ============LICENSE_END=========================================================
  */
 
 package org.onap.policy.drools.utils.logging;
@@ -24,512 +25,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
-
-import org.onap.policy.common.utils.network.NetworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-/**
- * MDC Transaction Utility Class.
- *
- * <p>There is an implicit 2-level tree of Transactions in ONAP: transactions and subtransactions.
- *
- * <p>1. The top level transaction relates to the overarching transaction id (ie. RequestId) and should
- * be made available to subtransactions for reuse in the ThreadLocal MDC structure.
- *
- * <p>This is the data to be inherited and common to all subtransactions (not a common case but could
- * be modified by subtransactions):
- *
- * <p>Request ID Virtual Server Name Partner Name Server Server IP Address Server FQDN
- *
- * <p>2. The second level at the leaves is formed by subtransactions and the key identifier is the
- * invocation id.
- *
- * <p>Begin Timestamp End Timestamp Elapsed Time Service Instance ID Service Name Status Code Response
- * Code Response Description Instance UUID Severity Target Entity Target Service Name Server Server
- * IP Address Server FQDN Client IP Address Process Key Remote Host Alert Severity Target Virtual
- * Entity
- *
- *
- * <p>The naming convention for the fields must match the naming given at
- *
- * <p>https://wiki.onap.org/pages/viewpage.action?pageId=20087036
- */
-public interface MDCTransaction {
-    /*
-     * The fields must match the naming given at
-     * https://wiki.onap.org/pages/viewpage.action?pageId=20087036
-     */
+class MdcTransactionImpl implements MdcTransaction {
 
-    /**
-     * End to end transaction ID. Subtransactions will inherit this value from the transaction.
-     */
-    String REQUEST_ID = "RequestID";
-
-    /**
-     * Invocation ID, ie. SubTransaction ID.
-     */
-    String INVOCATION_ID = "InvocationID";
-
-    /**
-     * Service Name. Both transactions and subtransactions will have its own copy.
-     */
-    String SERVICE_NAME = "ServiceName";
-
-    /**
-     * Partner Name Subtransactions will inherit this value from the transaction.
-     */
-    String PARTNER_NAME = "PartnerName";
-
-    /**
-     * Start Timestamp. Both transactions and subtransactions will have its own copy.
-     */
-    String BEGIN_TIMESTAMP = "BeginTimestamp";
-
-    /**
-     * End Timestamp. Both transactions and subtransactions will have its own copy.
-     */
-    String END_TIMESTAMP = "EndTimestamp";
-
-    /**
-     * Elapsed Time. Both transactions and subtransactions will have its own copy.
-     */
-    String ELAPSED_TIME = "ElapsedTime";
-
-    /**
-     * Elapsed Time. Both transactions and subtransactions will have its own copy.
-     */
-    String SERVICE_INSTANCE_ID = "ServiceInstanceID";
-
-    /**
-     * Virtual Server Name. Subtransactions will inherit this value from the transaction.
-     */
-    String VIRTUAL_SERVER_NAME = "VirtualServerName";
-
-    /**
-     * Status Code Both transactions and subtransactions will have its own copy.
-     */
-    String STATUS_CODE = "StatusCode";
-
-    /**
-     * Response Code Both transactions and subtransactions will have its own copy.
-     */
-    String RESPONSE_CODE = "ResponseCode";
-
-    /**
-     * Response Description Both transactions and subtransactions will have its own copy.
-     */
-    String RESPONSE_DESCRIPTION = "ResponseDescription";
-
-    /**
-     * Instance UUID Both transactions and subtransactions will have its own copy.
-     */
-    String INSTANCE_UUID = "InstanceUUID";
-
-    /**
-     * Severity Both transactions and subtransactions will have its own copy.
-     */
-    String SEVERITY = "Severity";
-
-    /**
-     * Target Entity Both transactions and subtransactions will have its own copy.
-     */
-    String TARGET_ENTITY = "TargetEntity";
-
-    /**
-     * Target Service Name Both transactions and subtransactions will have its own copy.
-     */
-    String TARGET_SERVICE_NAME = "TargetServiceName";
-
-    /**
-     * Server Subtransactions inherit this value. if (this.getSources().size() == 1)
-     * this.getSources().get(0).getTopic();
-     */
-    String SERVER = "Server";
-
-    /**
-     * Server IP Address Subtransactions inherit this value.
-     */
-    String SERVER_IP_ADDRESS = "ServerIpAddress";
-
-    /**
-     * Server FQDN Subtransactions inherit this value.
-     */
-    String SERVER_FQDN = "ServerFQDN";
-
-    /**
-     * Client IP Address Both transactions and subtransactions will have its own copy.
-     */
-    String CLIENT_IP_ADDRESS = "ClientIPAddress";
-
-    /**
-     * Process Key Both transactions and subtransactions will have its own copy.
-     */
-    String PROCESS_KEY = "ProcessKey";
-
-    /**
-     * Remote Host Both transactions and subtransactions will have its own copy.
-     */
-    String REMOTE_HOST = "RemoteHost";
-
-    /**
-     * Alert Severity Both transactions and subtransactions will have its own copy.
-     */
-    String ALERT_SEVERITY = "AlertSeverity";
-
-    /**
-     * Target Virtual Entity Both transactions and subtransactions will have its own copy.
-     */
-    String TARGET_VIRTUAL_ENTITY = "TargetVirtualEntity";
-
-    /**
-     * Default Service Name.
-     */
-    String DEFAULT_SERVICE_NAME = "PDP-D";
-
-    /**
-     * Default Host Name.
-     */
-    String DEFAULT_HOSTNAME = NetworkUtil.getHostname();
-
-    /**
-     * Default Host IP.
-     */
-    String DEFAULT_HOSTIP = NetworkUtil.getHostIp();
-
-    /**
-     * Status Code Complete.
-     */
-    String STATUS_CODE_COMPLETE = "COMPLETE";
-
-    /**
-     * Status Code Error.
-     */
-    String STATUS_CODE_FAILURE = "ERROR";
-
-    /**
-     * reset subtransaction data.
-     */
-    MDCTransaction resetSubTransaction();
-
-    /**
-     * resets transaction data.
-     */
-    MDCTransaction resetTransaction();
-
-    /**
-     * flush to MDC structure.
-     */
-    MDCTransaction flush();
-
-    /**
-     * convenience method to log a metric. Alternatively caller could call flush() and the logging
-     * statement directly for further granularity.
-     */
-    MDCTransaction metric();
-
-    /**
-     * convenience method to log a transaction record. Alternatively caller could call flush() and
-     * the logging statement directly for further granularity.
-     */
-    MDCTransaction transaction();
-
-    /**
-     * get invocation id.
-     */
-    MDCTransaction setInvocationId(String invocationId);
-
-    /**
-     * set start time.
-     */
-    MDCTransaction setStartTime(Instant startTime);
-
-    /**
-     * set service name.
-     */
-    MDCTransaction setServiceName(String serviceName);
-
-    /**
-     * set status code.
-     */
-    MDCTransaction setStatusCode(String statusCode);
-
-    /**
-     * set status code.
-     */
-    MDCTransaction setStatusCode(boolean success);
-
-    /**
-     * sets response code.
-     */
-    MDCTransaction setResponseCode(String responseCode);
-
-    /**
-     * sets response description.
-     */
-    MDCTransaction setResponseDescription(String responseDescription);
-
-    /**
-     * sets instance uuid.
-     */
-    MDCTransaction setInstanceUUID(String instanceUUID);
-
-    /**
-     * set severity.
-     */
-    MDCTransaction setSeverity(String severity);
-
-    /**
-     * set target entity.
-     */
-    MDCTransaction setTargetEntity(String targetEntity);
-
-    /**
-     * set target service name.
-     */
-    MDCTransaction setTargetServiceName(String targetServiceName);
-
-    /**
-     * set target virtual entity.
-     */
-    MDCTransaction setTargetVirtualEntity(String targetVirtualEntity);
-
-    /**
-     * set request id.
-     */
-    MDCTransaction setRequestId(String requestId);
-
-    /**
-     * set partner.
-     */
-    MDCTransaction setPartner(String partner);
-
-    /**
-     * set server.
-     */
-    MDCTransaction setServer(String server);
-
-    /**
-     * set server ip address.
-     */
-    MDCTransaction setServerIpAddress(String serverIpAddress);
-
-    /**
-     * set server fqdn.
-     */
-    MDCTransaction setServerFqdn(String serverFqdn);
-
-    /**
-     * set virtual server.
-     */
-    MDCTransaction setVirtualServerName(String virtualServerName);
-
-    /**
-     * sets end time.
-     */
-    MDCTransaction setEndTime(Instant endTime);
-
-    /**
-     * sets elapsed time.
-     */
-    MDCTransaction setElapsedTime(Long elapsedTime);
-
-    /**
-     * sets service instance id.
-     */
-    MDCTransaction setServiceInstanceId(String serviceInstanceId);
-
-    /**
-     * sets process key.
-     */
-    MDCTransaction setProcessKey(String processKey);
-
-    /**
-     * sets alert severity.
-     */
-    MDCTransaction setAlertSeverity(String alertSeverity);
-
-    /**
-     * sets client ip address.
-     */
-    MDCTransaction setClientIpAddress(String clientIpAddress);
-
-    /**
-     * sets remote host.
-     */
-    MDCTransaction setRemoteHost(String remoteHost);
-
-    /**
-     * get start time.
-     */
-    Instant getStartTime();
-
-    /**
-     * get server.
-     */
-    String getServer();
-
-    /**
-     * get end time.
-     */
-    Instant getEndTime();
-
-    /**
-     * get elapsed time.
-     */
-    Long getElapsedTime();
-
-    /**
-     * get remote host.
-     */
-    String getRemoteHost();
-
-    /**
-     * get client ip address.
-     */
-    String getClientIpAddress();
-
-    /**
-     * get alert severity.
-     */
-    String getAlertSeverity();
-
-    /**
-     * get process key.
-     */
-    String getProcessKey();
-
-    /**
-     * get service instance id.
-     */
-    String getServiceInstanceId();
-
-    /**
-     * get invocation id.
-     */
-    String getInvocationId();
-
-    /**
-     * get service name.
-     */
-    String getServiceName();
-
-    /**
-     * get status code.
-     */
-    String getStatusCode();
-
-    /**
-     * get response description.
-     */
-    String getResponseDescription();
-
-    /**
-     * get instance uuid.
-     */
-    String getInstanceUUID();
-
-    /**
-     * get severity.
-     */
-    String getSeverity();
-
-    /**
-     * get target entity.
-     */
-    String getTargetEntity();
-
-    /**
-     * get service name.
-     */
-    String getTargetServiceName();
-
-    /**
-     * get target virtual entity.
-     */
-    String getTargetVirtualEntity();
-
-    /**
-     * get response code.
-     */
-    String getResponseCode();
-
-    /**
-     * get request id.
-     */
-    String getRequestId();
-
-    /**
-     * get partner.
-     */
-    String getPartner();
-
-    /**
-     * get server fqdn.
-     */
-    String getServerFqdn();
-
-    /**
-     * get virtual server name.
-     */
-    String getVirtualServerName();
-
-    /**
-     * get server ip.
-     */
-    String getServerIpAddress();
-
-    /**
-     * generate timestamp used for logging.
-     */
-    String timestamp(Instant time);
-
-    /**
-     * create new MDC Transaction.
-     *
-     * @param requestId transaction Id
-     * @param partner requesting partner
-     *
-     * @return MDC Transaction
-     */
-    static MDCTransaction newTransaction(String requestId, String partner) {
-        return new MDCTransactionImpl(requestId, partner);
-    }
-
-    /**
-     * create new MDC Transaction.
-     */
-    static MDCTransaction newTransaction() {
-        return new MDCTransactionImpl();
-    }
-
-    /**
-     * create new subtransaction.
-     *
-     * @param invocationId sub-transaction od
-     * @return MDC Transaction
-     */
-    static MDCTransaction newSubTransaction(String invocationId) {
-        return new MDCTransactionImpl(invocationId);
-    }
-
-    /**
-     * create transaction from an existing one.
-     *
-     * @param transaction transaction
-     * @return MDC Transaction
-     */
-    static MDCTransaction fromTransaction(MDCTransaction transaction) {
-        return new MDCTransactionImpl(transaction);
-    }
-
-}
-
-
-class MDCTransactionImpl implements MDCTransaction {
-
-    private static final Logger logger = LoggerFactory.getLogger(MDCTransactionImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(MdcTransactionImpl.class.getName());
 
     /**
      * Logging Format for Timestamps.
@@ -555,7 +57,7 @@ class MDCTransactionImpl implements MDCTransaction {
     private Long elapsedTime;
 
     private String serviceInstanceId;
-    private String instanceUUID;
+    private String instanceUuid;
     private String processKey;
 
     private String statusCode;
@@ -573,7 +75,7 @@ class MDCTransactionImpl implements MDCTransaction {
     /**
      * Transaction with no information set.
      */
-    public MDCTransactionImpl() {
+    public MdcTransactionImpl() {
         MDC.clear();
     }
 
@@ -583,7 +85,7 @@ class MDCTransactionImpl implements MDCTransaction {
      * @param requestId transaction id
      * @param partner transaction origin
      */
-    public MDCTransactionImpl(String requestId, String partner) {
+    public MdcTransactionImpl(String requestId, String partner) {
         MDC.clear();
 
         this.setRequestId(requestId);
@@ -603,7 +105,7 @@ class MDCTransactionImpl implements MDCTransaction {
      *
      * @param invocationId subtransaction id
      */
-    public MDCTransactionImpl(String invocationId) {
+    public MdcTransactionImpl(String invocationId) {
         this.resetSubTransaction();
 
         this.setRequestId(MDC.get(REQUEST_ID));
@@ -623,13 +125,13 @@ class MDCTransactionImpl implements MDCTransaction {
      *
      * @param transaction transaction
      */
-    public MDCTransactionImpl(MDCTransaction transaction) {
+    public MdcTransactionImpl(MdcTransaction transaction) {
         MDC.clear();
         this.setAlertSeverity(transaction.getAlertSeverity());
         this.setClientIpAddress(transaction.getClientIpAddress());
         this.setElapsedTime(transaction.getElapsedTime());
         this.setEndTime(transaction.getEndTime());
-        this.setInstanceUUID(transaction.getInstanceUUID());
+        this.setInstanceUuid(transaction.getInstanceUuid());
         this.setInvocationId(transaction.getInvocationId());
         this.setPartner(transaction.getPartner());
         this.setProcessKey(transaction.getProcessKey());
@@ -657,7 +159,7 @@ class MDCTransactionImpl implements MDCTransaction {
      * @return MDCTransaction
      */
     @Override
-    public MDCTransaction resetSubTransaction() {
+    public MdcTransaction resetSubTransaction() {
         MDC.remove(INVOCATION_ID);
         MDC.remove(BEGIN_TIMESTAMP);
         MDC.remove(END_TIMESTAMP);
@@ -679,7 +181,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction resetTransaction() {
+    public MdcTransaction resetTransaction() {
         MDC.clear();
         return this;
     }
@@ -688,7 +190,7 @@ class MDCTransactionImpl implements MDCTransaction {
      * flush transaction to MDC.
      */
     @Override
-    public MDCTransaction flush() {
+    public MdcTransaction flush() {
         if (this.requestId != null && !this.requestId.isEmpty()) {
             MDC.put(REQUEST_ID, this.requestId);
         }
@@ -745,8 +247,8 @@ class MDCTransactionImpl implements MDCTransaction {
             MDC.put(SERVICE_INSTANCE_ID, this.serviceInstanceId);
         }
 
-        if (this.instanceUUID != null) {
-            MDC.put(INSTANCE_UUID, this.instanceUUID);
+        if (this.instanceUuid != null) {
+            MDC.put(INSTANCE_UUID, this.instanceUuid);
         }
 
         if (this.processKey != null) {
@@ -797,21 +299,21 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction metric() {
+    public MdcTransaction metric() {
         this.flush();
         logger.info(LoggerUtil.METRIC_LOG_MARKER, "");
         return this;
     }
 
     @Override
-    public MDCTransaction transaction() {
+    public MdcTransaction transaction() {
         this.flush();
         logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "");
         return this;
     }
 
     @Override
-    public MDCTransaction setEndTime(Instant endTime) {
+    public MdcTransaction setEndTime(Instant endTime) {
         if (endTime == null) {
             this.endTime = Instant.now();
         } else {
@@ -821,37 +323,37 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setElapsedTime(Long elapsedTime) {
+    public MdcTransaction setElapsedTime(Long elapsedTime) {
         this.elapsedTime = elapsedTime;
         return this;
     }
 
     @Override
-    public MDCTransaction setServiceInstanceId(String serviceInstanceId) {
+    public MdcTransaction setServiceInstanceId(String serviceInstanceId) {
         this.serviceInstanceId = serviceInstanceId;
         return this;
     }
 
     @Override
-    public MDCTransaction setProcessKey(String processKey) {
+    public MdcTransaction setProcessKey(String processKey) {
         this.processKey = processKey;
         return this;
     }
 
     @Override
-    public MDCTransaction setAlertSeverity(String alertSeverity) {
+    public MdcTransaction setAlertSeverity(String alertSeverity) {
         this.alertSeverity = alertSeverity;
         return this;
     }
 
     @Override
-    public MDCTransaction setClientIpAddress(String clientIpAddress) {
+    public MdcTransaction setClientIpAddress(String clientIpAddress) {
         this.clientIpAddress = clientIpAddress;
         return this;
     }
 
     @Override
-    public MDCTransaction setRemoteHost(String remoteHost) {
+    public MdcTransaction setRemoteHost(String remoteHost) {
         this.remoteHost = remoteHost;
         return this;
     }
@@ -904,7 +406,7 @@ class MDCTransactionImpl implements MDCTransaction {
     /* transaction and subtransaction fields */
 
     @Override
-    public MDCTransaction setInvocationId(String invocationId) {
+    public MdcTransaction setInvocationId(String invocationId) {
         if (invocationId == null) {
             this.invocationId = UUID.randomUUID().toString();
         } else {
@@ -917,7 +419,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setStartTime(Instant startTime) {
+    public MdcTransaction setStartTime(Instant startTime) {
         if (startTime == null) {
             this.startTime = Instant.now();
         } else {
@@ -930,7 +432,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setServiceName(String serviceName) {
+    public MdcTransaction setServiceName(String serviceName) {
         if (serviceName == null || serviceName.isEmpty()) {
             this.serviceName = DEFAULT_SERVICE_NAME;
         } else {
@@ -943,13 +445,13 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setStatusCode(String statusCode) {
+    public MdcTransaction setStatusCode(String statusCode) {
         this.statusCode = statusCode;
         return this;
     }
 
     @Override
-    public MDCTransaction setStatusCode(boolean success) {
+    public MdcTransaction setStatusCode(boolean success) {
         if (success) {
             this.statusCode = STATUS_CODE_COMPLETE;
         } else {
@@ -959,49 +461,49 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setResponseCode(String responseCode) {
+    public MdcTransaction setResponseCode(String responseCode) {
         this.responseCode = responseCode;
         return this;
     }
 
     @Override
-    public MDCTransaction setResponseDescription(String responseDescription) {
+    public MdcTransaction setResponseDescription(String responseDescription) {
         this.responseDescription = responseDescription;
         return this;
     }
 
     @Override
-    public MDCTransaction setInstanceUUID(String instanceUuid) {
+    public MdcTransaction setInstanceUuid(String instanceUuid) {
         if (instanceUuid == null) {
-            this.instanceUUID = UUID.randomUUID().toString();
+            this.instanceUuid = UUID.randomUUID().toString();
         } else {
-            this.instanceUUID = instanceUuid;
+            this.instanceUuid = instanceUuid;
         }
 
-        MDC.put(INSTANCE_UUID, this.instanceUUID);
+        MDC.put(INSTANCE_UUID, this.instanceUuid);
         return this;
     }
 
     @Override
-    public MDCTransaction setSeverity(String severity) {
+    public MdcTransaction setSeverity(String severity) {
         this.severity = severity;
         return this;
     }
 
     @Override
-    public MDCTransaction setTargetEntity(String targetEntity) {
+    public MdcTransaction setTargetEntity(String targetEntity) {
         this.targetEntity = targetEntity;
         return this;
     }
 
     @Override
-    public MDCTransaction setTargetServiceName(String targetServiceName) {
+    public MdcTransaction setTargetServiceName(String targetServiceName) {
         this.targetServiceName = targetServiceName;
         return this;
     }
 
     @Override
-    public MDCTransaction setTargetVirtualEntity(String targetVirtualEntity) {
+    public MdcTransaction setTargetVirtualEntity(String targetVirtualEntity) {
         this.targetVirtualEntity = targetVirtualEntity;
         return this;
     }
@@ -1027,8 +529,8 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public String getInstanceUUID() {
-        return instanceUUID;
+    public String getInstanceUuid() {
+        return instanceUuid;
     }
 
     @Override
@@ -1059,7 +561,7 @@ class MDCTransactionImpl implements MDCTransaction {
     /* inheritable fields by subtransactions via MDC */
 
     @Override
-    public MDCTransaction setRequestId(String requestId) {
+    public MdcTransaction setRequestId(String requestId) {
         if (requestId == null || requestId.isEmpty()) {
             this.requestId = UUID.randomUUID().toString();
         } else {
@@ -1071,7 +573,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setPartner(String partner) {
+    public MdcTransaction setPartner(String partner) {
         if (partner == null || partner.isEmpty()) {
             this.partner = DEFAULT_SERVICE_NAME;
         } else {
@@ -1083,7 +585,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setServer(String server) {
+    public MdcTransaction setServer(String server) {
         if (server == null || server.isEmpty()) {
             this.server = DEFAULT_HOSTNAME;
         } else {
@@ -1095,7 +597,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setServerIpAddress(String serverIpAddress) {
+    public MdcTransaction setServerIpAddress(String serverIpAddress) {
         if (serverIpAddress == null || serverIpAddress.isEmpty()) {
             this.serverIpAddress = DEFAULT_HOSTIP;
         } else {
@@ -1107,7 +609,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setServerFqdn(String serverFqdn) {
+    public MdcTransaction setServerFqdn(String serverFqdn) {
         if (serverFqdn == null || serverFqdn.isEmpty()) {
             this.serverFqdn = DEFAULT_HOSTNAME;
         } else {
@@ -1119,7 +621,7 @@ class MDCTransactionImpl implements MDCTransaction {
     }
 
     @Override
-    public MDCTransaction setVirtualServerName(String virtualServerName) {
+    public MdcTransaction setVirtualServerName(String virtualServerName) {
         if (virtualServerName == null || virtualServerName.isEmpty()) {
             this.virtualServerName = DEFAULT_HOSTNAME;
         } else {
@@ -1175,7 +677,7 @@ class MDCTransactionImpl implements MDCTransaction {
         sb.append(", endTime=").append(endTime);
         sb.append(", elapsedTime=").append(elapsedTime);
         sb.append(", serviceInstanceId='").append(serviceInstanceId).append('\'');
-        sb.append(", instanceUUID='").append(instanceUUID).append('\'');
+        sb.append(", instanceUUID='").append(instanceUuid).append('\'');
         sb.append(", processKey='").append(processKey).append('\'');
         sb.append(", statusCode='").append(statusCode).append('\'');
         sb.append(", responseCode='").append(responseCode).append('\'');

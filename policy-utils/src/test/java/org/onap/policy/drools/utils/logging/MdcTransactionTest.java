@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ public class MdcTransactionTest {
 
     @Test
     public void resetSubTransaction() {
-        MDCTransaction trans =
-            MDCTransaction.newTransaction(null, null).resetSubTransaction();
+        MdcTransaction trans =
+            MdcTransaction.newTransaction(null, null).resetSubTransaction();
 
         assertNotNull(trans.getRequestId());
         assertNotNull(trans.getPartner());
@@ -47,54 +47,54 @@ public class MdcTransactionTest {
 
         assertNullSubTransactionFields(trans);
 
-        assertNotNull(MDC.get(MDCTransaction.REQUEST_ID));
-        assertNotNull(MDC.get(MDCTransaction.PARTNER_NAME));
-        assertNotNull(MDC.get(MDCTransaction.VIRTUAL_SERVER_NAME));
-        assertNotNull(MDC.get(MDCTransaction.SERVER));
-        assertNotNull(MDC.get(MDCTransaction.SERVER_IP_ADDRESS));
-        assertNotNull(MDC.get(MDCTransaction.SERVER_FQDN));
-        assertNotNull(MDC.get(MDCTransaction.SERVICE_NAME));
+        assertNotNull(MDC.get(MdcTransaction.REQUEST_ID));
+        assertNotNull(MDC.get(MdcTransaction.PARTNER_NAME));
+        assertNotNull(MDC.get(MdcTransaction.VIRTUAL_SERVER_NAME));
+        assertNotNull(MDC.get(MdcTransaction.SERVER));
+        assertNotNull(MDC.get(MdcTransaction.SERVER_IP_ADDRESS));
+        assertNotNull(MDC.get(MdcTransaction.SERVER_FQDN));
+        assertNotNull(MDC.get(MdcTransaction.SERVICE_NAME));
 
-        assertNull(MDC.get(MDCTransaction.INVOCATION_ID));
-        assertNull(MDC.get(MDCTransaction.BEGIN_TIMESTAMP));
-        assertNull(MDC.get(MDCTransaction.END_TIMESTAMP));
-        assertNull(MDC.get(MDCTransaction.ELAPSED_TIME));
-        assertNull(MDC.get(MDCTransaction.SERVICE_INSTANCE_ID));
-        assertNull(MDC.get(MDCTransaction.INSTANCE_UUID));
-        assertNull(MDC.get(MDCTransaction.PROCESS_KEY));
-        assertNull(MDC.get(MDCTransaction.STATUS_CODE));
-        assertNull(MDC.get(MDCTransaction.RESPONSE_CODE));
-        assertNull(MDC.get(MDCTransaction.RESPONSE_DESCRIPTION));
-        assertNull(MDC.get(MDCTransaction.SEVERITY));
-        assertNull(MDC.get(MDCTransaction.ALERT_SEVERITY));
-        assertNull(MDC.get(MDCTransaction.TARGET_ENTITY));
-        assertNull(MDC.get(MDCTransaction.TARGET_SERVICE_NAME));
-        assertNull(MDC.get(MDCTransaction.TARGET_VIRTUAL_ENTITY));
-        assertNull(MDC.get(MDCTransaction.CLIENT_IP_ADDRESS));
-        assertNull(MDC.get(MDCTransaction.REMOTE_HOST));
+        assertNull(MDC.get(MdcTransaction.INVOCATION_ID));
+        assertNull(MDC.get(MdcTransaction.BEGIN_TIMESTAMP));
+        assertNull(MDC.get(MdcTransaction.END_TIMESTAMP));
+        assertNull(MDC.get(MdcTransaction.ELAPSED_TIME));
+        assertNull(MDC.get(MdcTransaction.SERVICE_INSTANCE_ID));
+        assertNull(MDC.get(MdcTransaction.INSTANCE_UUID));
+        assertNull(MDC.get(MdcTransaction.PROCESS_KEY));
+        assertNull(MDC.get(MdcTransaction.STATUS_CODE));
+        assertNull(MDC.get(MdcTransaction.RESPONSE_CODE));
+        assertNull(MDC.get(MdcTransaction.RESPONSE_DESCRIPTION));
+        assertNull(MDC.get(MdcTransaction.SEVERITY));
+        assertNull(MDC.get(MdcTransaction.ALERT_SEVERITY));
+        assertNull(MDC.get(MdcTransaction.TARGET_ENTITY));
+        assertNull(MDC.get(MdcTransaction.TARGET_SERVICE_NAME));
+        assertNull(MDC.get(MdcTransaction.TARGET_VIRTUAL_ENTITY));
+        assertNull(MDC.get(MdcTransaction.CLIENT_IP_ADDRESS));
+        assertNull(MDC.get(MdcTransaction.REMOTE_HOST));
 
-        assertEquals(trans.getRequestId(), MDC.get(MDCTransaction.REQUEST_ID));
-        assertEquals(trans.getPartner(), MDC.get(MDCTransaction.PARTNER_NAME));
-        assertEquals(trans.getVirtualServerName(), MDC.get(MDCTransaction.VIRTUAL_SERVER_NAME));
-        assertEquals(trans.getServer(), MDC.get(MDCTransaction.SERVER));
-        assertEquals(trans.getServerIpAddress(), MDC.get(MDCTransaction.SERVER_IP_ADDRESS));
-        assertEquals(trans.getServerFqdn(), MDC.get(MDCTransaction.SERVER_FQDN));
-        assertEquals(trans.getServiceName(), MDC.get(MDCTransaction.SERVICE_NAME));
+        assertEquals(trans.getRequestId(), MDC.get(MdcTransaction.REQUEST_ID));
+        assertEquals(trans.getPartner(), MDC.get(MdcTransaction.PARTNER_NAME));
+        assertEquals(trans.getVirtualServerName(), MDC.get(MdcTransaction.VIRTUAL_SERVER_NAME));
+        assertEquals(trans.getServer(), MDC.get(MdcTransaction.SERVER));
+        assertEquals(trans.getServerIpAddress(), MDC.get(MdcTransaction.SERVER_IP_ADDRESS));
+        assertEquals(trans.getServerFqdn(), MDC.get(MdcTransaction.SERVER_FQDN));
+        assertEquals(trans.getServiceName(), MDC.get(MdcTransaction.SERVICE_NAME));
     }
 
-    private void assertNullSubTransactionFields(MDCTransaction trans) {
+    private void assertNullSubTransactionFields(MdcTransaction trans) {
         assertNull(trans.getInvocationId());
         assertNullSubTransactionFieldsButInvocationId(trans);
     }
 
-    private void assertNullSubTransactionFieldsButInvocationId(MDCTransaction trans) {
+    private void assertNullSubTransactionFieldsButInvocationId(MdcTransaction trans) {
         assertNull(trans.getEndTime());
         assertNull(trans.getElapsedTime());
         assertNull(trans.getServiceInstanceId());
         assertNull(trans.getStatusCode());
         assertNull(trans.getResponseCode());
         assertNull(trans.getResponseDescription());
-        assertNull(trans.getInstanceUUID());
+        assertNull(trans.getInstanceUuid());
         assertNull(trans.getTargetEntity());
         assertNull(trans.getTargetServiceName());
         assertNull(trans.getProcessKey());
@@ -104,21 +104,21 @@ public class MdcTransactionTest {
         assertNull(trans.getTargetVirtualEntity());
     }
 
-    protected void assertTransactionFields(MDCTransaction trans) {
-        assertEquals(trans.getRequestId(), MDC.get(MDCTransaction.REQUEST_ID));
-        assertEquals(trans.getPartner(), MDC.get(MDCTransaction.PARTNER_NAME));
-        assertEquals(trans.getVirtualServerName(), MDC.get(MDCTransaction.VIRTUAL_SERVER_NAME));
-        assertEquals(trans.getServer(), MDC.get(MDCTransaction.SERVER));
-        assertEquals(trans.getServerIpAddress(), MDC.get(MDCTransaction.SERVER_IP_ADDRESS));
-        assertEquals(trans.getServerFqdn(), MDC.get(MDCTransaction.SERVER_FQDN));
-        assertEquals(trans.getServiceName(), MDC.get(MDCTransaction.SERVICE_NAME));
+    protected void assertTransactionFields(MdcTransaction trans) {
+        assertEquals(trans.getRequestId(), MDC.get(MdcTransaction.REQUEST_ID));
+        assertEquals(trans.getPartner(), MDC.get(MdcTransaction.PARTNER_NAME));
+        assertEquals(trans.getVirtualServerName(), MDC.get(MdcTransaction.VIRTUAL_SERVER_NAME));
+        assertEquals(trans.getServer(), MDC.get(MdcTransaction.SERVER));
+        assertEquals(trans.getServerIpAddress(), MDC.get(MdcTransaction.SERVER_IP_ADDRESS));
+        assertEquals(trans.getServerFqdn(), MDC.get(MdcTransaction.SERVER_FQDN));
+        assertEquals(trans.getServiceName(), MDC.get(MdcTransaction.SERVICE_NAME));
 
     }
 
     @Test
     public void flush() {
-        MDCTransaction trans =
-            MDCTransaction.newTransaction()
+        MdcTransaction trans =
+            MdcTransaction.newTransaction()
                 .setRequestId(null)
                 .setInvocationId(null)
                 .setPartner(null)
@@ -130,7 +130,7 @@ public class MdcTransactionTest {
                 .setStartTime(null)
                 .setEndTime(null)
                 .setServiceInstanceId("service-instance-id")
-                .setInstanceUUID(null)
+                .setInstanceUuid(null)
                 .setProcessKey("process-key")
                 .setStatusCode("status-code")
                 .setResponseCode("response-code")
@@ -146,43 +146,43 @@ public class MdcTransactionTest {
 
         assertTransactionFields(trans);
 
-        assertNotNull(MDC.get(MDCTransaction.INVOCATION_ID));
-        assertNotNull(MDC.get(MDCTransaction.BEGIN_TIMESTAMP));
-        assertNotNull(MDC.get(MDCTransaction.END_TIMESTAMP));
-        assertNotNull(MDC.get(MDCTransaction.ELAPSED_TIME));
-        assertNotNull(MDC.get(MDCTransaction.SERVICE_INSTANCE_ID));
-        assertNotNull(MDC.get(MDCTransaction.INSTANCE_UUID));
-        assertNotNull(MDC.get(MDCTransaction.PROCESS_KEY));
-        assertNotNull(MDC.get(MDCTransaction.STATUS_CODE));
-        assertNotNull(MDC.get(MDCTransaction.RESPONSE_CODE));
-        assertNotNull(MDC.get(MDCTransaction.RESPONSE_DESCRIPTION));
-        assertNotNull(MDC.get(MDCTransaction.SEVERITY));
-        assertNotNull(MDC.get(MDCTransaction.ALERT_SEVERITY));
-        assertNotNull(MDC.get(MDCTransaction.TARGET_ENTITY));
-        assertNotNull(MDC.get(MDCTransaction.TARGET_SERVICE_NAME));
-        assertNotNull(MDC.get(MDCTransaction.TARGET_VIRTUAL_ENTITY));
-        assertNotNull(MDC.get(MDCTransaction.CLIENT_IP_ADDRESS));
-        assertNotNull(MDC.get(MDCTransaction.REMOTE_HOST));
+        assertNotNull(MDC.get(MdcTransaction.INVOCATION_ID));
+        assertNotNull(MDC.get(MdcTransaction.BEGIN_TIMESTAMP));
+        assertNotNull(MDC.get(MdcTransaction.END_TIMESTAMP));
+        assertNotNull(MDC.get(MdcTransaction.ELAPSED_TIME));
+        assertNotNull(MDC.get(MdcTransaction.SERVICE_INSTANCE_ID));
+        assertNotNull(MDC.get(MdcTransaction.INSTANCE_UUID));
+        assertNotNull(MDC.get(MdcTransaction.PROCESS_KEY));
+        assertNotNull(MDC.get(MdcTransaction.STATUS_CODE));
+        assertNotNull(MDC.get(MdcTransaction.RESPONSE_CODE));
+        assertNotNull(MDC.get(MdcTransaction.RESPONSE_DESCRIPTION));
+        assertNotNull(MDC.get(MdcTransaction.SEVERITY));
+        assertNotNull(MDC.get(MdcTransaction.ALERT_SEVERITY));
+        assertNotNull(MDC.get(MdcTransaction.TARGET_ENTITY));
+        assertNotNull(MDC.get(MdcTransaction.TARGET_SERVICE_NAME));
+        assertNotNull(MDC.get(MdcTransaction.TARGET_VIRTUAL_ENTITY));
+        assertNotNull(MDC.get(MdcTransaction.CLIENT_IP_ADDRESS));
+        assertNotNull(MDC.get(MdcTransaction.REMOTE_HOST));
 
-        assertEquals(trans.getInvocationId(), MDC.get(MDCTransaction.INVOCATION_ID));
-        assertEquals(trans.timestamp(trans.getStartTime()), MDC.get(MDCTransaction.BEGIN_TIMESTAMP));
-        assertEquals(trans.timestamp(trans.getEndTime()), MDC.get(MDCTransaction.END_TIMESTAMP));
-        assertNotEquals(trans.getElapsedTime(), MDC.get(MDCTransaction.ELAPSED_TIME));
+        assertEquals(trans.getInvocationId(), MDC.get(MdcTransaction.INVOCATION_ID));
+        assertEquals(trans.timestamp(trans.getStartTime()), MDC.get(MdcTransaction.BEGIN_TIMESTAMP));
+        assertEquals(trans.timestamp(trans.getEndTime()), MDC.get(MdcTransaction.END_TIMESTAMP));
+        assertNotEquals(trans.getElapsedTime(), MDC.get(MdcTransaction.ELAPSED_TIME));
         assertEquals(String.valueOf(Duration.between(trans.getStartTime(), trans.getEndTime()).toMillis()),
-            MDC.get(MDCTransaction.ELAPSED_TIME));
-        assertEquals(trans.getServiceInstanceId(), MDC.get(MDCTransaction.SERVICE_INSTANCE_ID));
-        assertEquals(trans.getInstanceUUID(), MDC.get(MDCTransaction.INSTANCE_UUID));
-        assertEquals(trans.getProcessKey(),MDC.get(MDCTransaction.PROCESS_KEY));
-        assertEquals(trans.getStatusCode(), MDC.get(MDCTransaction.STATUS_CODE));
-        assertEquals(trans.getResponseCode(), MDC.get(MDCTransaction.RESPONSE_CODE));
-        assertEquals(trans.getResponseDescription(), MDC.get(MDCTransaction.RESPONSE_DESCRIPTION));
-        assertEquals(trans.getSeverity(), MDC.get(MDCTransaction.SEVERITY));
-        assertEquals(trans.getAlertSeverity(), MDC.get(MDCTransaction.ALERT_SEVERITY));
-        assertEquals(trans.getTargetEntity(), MDC.get(MDCTransaction.TARGET_ENTITY));
-        assertEquals(trans.getTargetServiceName(), MDC.get(MDCTransaction.TARGET_SERVICE_NAME));
-        assertEquals(trans.getTargetVirtualEntity(), MDC.get(MDCTransaction.TARGET_VIRTUAL_ENTITY));
-        assertEquals(trans.getClientIpAddress(), MDC.get(MDCTransaction.CLIENT_IP_ADDRESS));
-        assertEquals(trans.getRemoteHost(), MDC.get(MDCTransaction.REMOTE_HOST));
+            MDC.get(MdcTransaction.ELAPSED_TIME));
+        assertEquals(trans.getServiceInstanceId(), MDC.get(MdcTransaction.SERVICE_INSTANCE_ID));
+        assertEquals(trans.getInstanceUuid(), MDC.get(MdcTransaction.INSTANCE_UUID));
+        assertEquals(trans.getProcessKey(),MDC.get(MdcTransaction.PROCESS_KEY));
+        assertEquals(trans.getStatusCode(), MDC.get(MdcTransaction.STATUS_CODE));
+        assertEquals(trans.getResponseCode(), MDC.get(MdcTransaction.RESPONSE_CODE));
+        assertEquals(trans.getResponseDescription(), MDC.get(MdcTransaction.RESPONSE_DESCRIPTION));
+        assertEquals(trans.getSeverity(), MDC.get(MdcTransaction.SEVERITY));
+        assertEquals(trans.getAlertSeverity(), MDC.get(MdcTransaction.ALERT_SEVERITY));
+        assertEquals(trans.getTargetEntity(), MDC.get(MdcTransaction.TARGET_ENTITY));
+        assertEquals(trans.getTargetServiceName(), MDC.get(MdcTransaction.TARGET_SERVICE_NAME));
+        assertEquals(trans.getTargetVirtualEntity(), MDC.get(MdcTransaction.TARGET_VIRTUAL_ENTITY));
+        assertEquals(trans.getClientIpAddress(), MDC.get(MdcTransaction.CLIENT_IP_ADDRESS));
+        assertEquals(trans.getRemoteHost(), MDC.get(MdcTransaction.REMOTE_HOST));
 
         assertEquals("service-instance-id", trans.getServiceInstanceId());
         assertEquals("process-key", trans.getProcessKey());
@@ -200,26 +200,26 @@ public class MdcTransactionTest {
 
     @Test
     public void metric() {
-        MDCTransaction trans =
-            MDCTransaction.newTransaction(null, null).metric();
+        MdcTransaction trans =
+            MdcTransaction.newTransaction(null, null).metric();
 
         assertTransactionFields(trans);
     }
 
     @Test
     public void transaction() {
-        MDCTransaction trans =
-            MDCTransaction.newTransaction(null, null).transaction();
+        MdcTransaction trans =
+            MdcTransaction.newTransaction(null, null).transaction();
 
         assertTransactionFields(trans);
     }
 
     @Test
     public void subTransaction() {
-        MDCTransaction trans =
-            MDCTransaction.newTransaction(null, "partner");
+        MdcTransaction trans =
+            MdcTransaction.newTransaction(null, "partner");
 
-        MDCTransaction subTrans = MDCTransaction.newSubTransaction(null);
+        MdcTransaction subTrans = MdcTransaction.newSubTransaction(null);
 
         assertTransactionFields(trans);
         assertTransactionFields(subTrans);
@@ -240,7 +240,7 @@ public class MdcTransactionTest {
         assertNullSubTransactionFieldsButInvocationId(trans);
 
         subTrans.setServiceInstanceId("service-instance-id")
-            .setInstanceUUID(null)
+            .setInstanceUuid(null)
             .setProcessKey("process-key")
             .setStatusCode("status-code")
             .setResponseCode("response-code")
@@ -256,7 +256,7 @@ public class MdcTransactionTest {
 
         subTrans.setStatusCode(false).setResponseCode("400");
 
-        MDCTransaction subTrans2 = MDCTransaction.fromTransaction(subTrans);
+        MdcTransaction subTrans2 = MdcTransaction.fromTransaction(subTrans);
 
         assertEquals(subTrans.toString(), subTrans2.toString());
 
