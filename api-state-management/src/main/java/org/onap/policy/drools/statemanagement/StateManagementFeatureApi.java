@@ -36,7 +36,7 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
  * optional methods. Most of the methods here are notification only -- these tend to return a 'void'
  * value. In other cases, such as 'activatePolicySession', may
  */
-public interface StateManagementFeatureAPI extends OrderedService, Lockable {
+public interface StateManagementFeatureApi extends OrderedService, Lockable {
 
     public static final String LOCKED = StateManagement.LOCKED;
     public static final String UNLOCKED = StateManagement.UNLOCKED;
@@ -71,8 +71,8 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the 'FeatureAPI'
      * interface.
      */
-    public static OrderedServiceImpl<StateManagementFeatureAPI> impl =
-            new OrderedServiceImpl<>(StateManagementFeatureAPI.class);
+    public static OrderedServiceImpl<StateManagementFeatureApi> impl =
+            new OrderedServiceImpl<>(StateManagementFeatureApi.class);
 
     /**
      * ALL SEEMS/NOT WELL This interface is used to support the concept of All Seems/Not Well. It
@@ -134,7 +134,7 @@ public interface StateManagementFeatureAPI extends OrderedService, Lockable {
     /**
      * Returns the X.731 Standby Status for the named resource
      *
-     * @param String (resourceName)
+     * @param resourceName the resource name
      * @return String (providingservice, hotstandby or coldstandby)
      */
     public String getStandbyStatus(String resourceName);

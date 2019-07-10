@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.PMStandbyStateChangeNotifier;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,26 +61,26 @@ import org.slf4j.LoggerFactory;
  * All JUnits are designed to run in the local development environment
  * where they have write privileges and can execute time-sensitive
  * tasks.
- * 
+ *
  * These tests can be run as JUnits, but there is some issue with running them
  * as part of a "mvn install" build.  Also, they take a very long time to run
  * due to many real time breaks.  Consequently, they are marked as @Ignore and
  * only run from the desktop.
- */ 
- 
+ */
+
 public class StandbyStateManagementTest {
     private static final Logger  logger = LoggerFactory.getLogger(StandbyStateManagementTest.class);
     /*
-     * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting 
+     * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting
      * at the start of the next multiple of pdpUpdateInterval, but with a minimum of 5 sec cushion
-     * to ensure that we wait for the DesignationWaiter to do its job, before 
+     * to ensure that we wait for the DesignationWaiter to do its job, before
      * checking the results. Add a few seconds for safety
-     */ 
+     */
 
     long sleepTime = 10000;
 
     /*
-     * DroolsPdpsElectionHandler runs every 1 seconds, so a 6 second sleep should be 
+     * DroolsPdpsElectionHandler runs every 1 seconds, so a 6 second sleep should be
      * plenty to ensure it has time to re-promote this PDP.
      */
 
@@ -106,7 +106,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Setup the class.
-     * 
+     *
      * @throws Exception exception
      */
     @BeforeClass
@@ -125,7 +125,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception exception
      */
     @Before
@@ -158,7 +158,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Clean up the xacml database.
-     * 
+     *
      */
     public void cleanXacmlDb() {
         et = emx.getTransaction();
@@ -186,21 +186,21 @@ public class StandbyStateManagementTest {
     }
 
     /*
-     * These JUnit tests must be run one at a time in an eclipse environment 
-     * by right-clicking StandbyStateManagementTest and selecting 
-     * "Run As" -> "JUnit Test". 
-     * 
-     * They will run successfully when you run all of them under runAllTests(), 
-     * however, you will get all sorts of non-fatal errors in the log and on the 
-     * console that result from overlapping threads that are not terminated at the 
-     * end of each test. The problem is that the JUnit environment does not terminate 
+     * These JUnit tests must be run one at a time in an eclipse environment
+     * by right-clicking StandbyStateManagementTest and selecting
+     * "Run As" -> "JUnit Test".
+     *
+     * They will run successfully when you run all of them under runAllTests(),
+     * however, you will get all sorts of non-fatal errors in the log and on the
+     * console that result from overlapping threads that are not terminated at the
+     * end of each test. The problem is that the JUnit environment does not terminate
      * all the test threads between tests. This is true even if you break each JUnit
-     * into a separate file. Consequently, all the tests would have to be refactored 
-     * so all test object initializations are coordinated.  In other words, you 
-     * retrieve the ActiveStandbyFeature instance and other class instances only once 
-     * at the beginning of the JUnits and then reuse them throughout the tests. 
+     * into a separate file. Consequently, all the tests would have to be refactored
+     * so all test object initializations are coordinated.  In other words, you
+     * retrieve the ActiveStandbyFeature instance and other class instances only once
+     * at the beginning of the JUnits and then reuse them throughout the tests.
      * Initialization of the state of the objects is pretty straight forward as it
-     * just amounts to manipulating the entries in StateManagementEntity and 
+     * just amounts to manipulating the entries in StateManagementEntity and
      * DroolsPdpEntity tables. However, some thought needs to be given to how to
      * "pause" the processing in ActiveStandbyFeature class.  I think we could "pause"
      * it by calling globalInit() which will, I think, restart it. So long as it
@@ -218,7 +218,7 @@ public class StandbyStateManagementTest {
         testHotStandby1();
         testHotStandby2();
         testLocking1();
-        testLocking2(); 
+        testLocking2();
         testPmStandbyStateChangeNotifier();
         testSanitizeDesignatedList();
         testComputeMostRecentPrimary();
@@ -227,7 +227,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Test the standby state change notifier.
-     *  
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -311,7 +311,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Test sanitize designated list.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -351,20 +351,20 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
-            logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}", 
+            logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}",
                     stateManagementFeature.getResourceName());
             break;
         }
         if (stateManagementFeature == null) {
             logger.error("testColdStandby failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testColdStandby failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -384,7 +384,7 @@ public class StandbyStateManagementTest {
 
         listOfDesignated = droolsPdpsElectionHandler.santizeDesignatedList(listOfDesignated);
 
-        logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after 2 designated = {}\n\n", 
+        logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after 2 designated = {}\n\n",
                 listOfDesignated.size());
 
         assertTrue(listOfDesignated.size() == 2);
@@ -401,7 +401,7 @@ public class StandbyStateManagementTest {
 
         listOfDesignated = droolsPdpsElectionHandler.santizeDesignatedList(listOfDesignated);
 
-        logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after all designated = {}\n\n", 
+        logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after all designated = {}\n\n",
                 listOfDesignated.size());
 
         assertTrue(listOfDesignated.size() == 4);
@@ -410,7 +410,7 @@ public class StandbyStateManagementTest {
 
     /**
     *  Test Compute most recent primary.
-    *  
+    *
     * @throws Exception exception
     */
     //@Ignore
@@ -464,26 +464,26 @@ public class StandbyStateManagementTest {
         listOfDesignated.add(pdp3);
         listOfDesignated.add(pdp4);
 
-        // Because the way we sanitize the listOfDesignated, it will always contain all hot standby 
+        // Because the way we sanitize the listOfDesignated, it will always contain all hot standby
         // or all designated members.
 
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
-            logger.debug("testComputeMostRecentPrimary stateManagementFeature.getResourceName(): {}", 
+            logger.debug("testComputeMostRecentPrimary stateManagementFeature.getResourceName(): {}",
                     stateManagementFeature.getResourceName());
             break;
         }
         if (stateManagementFeature == null) {
             logger.error("testComputeMostRecentPrimary failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testComputeMostRecentPrimary failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -492,11 +492,11 @@ public class StandbyStateManagementTest {
         DroolsPdp mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(
                 listOfAllPdps, listOfDesignated);
 
-        logger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = {}\n\n", 
+        logger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
 
-        // If all of the pdps are included in the listOfDesignated and none are designated, it will choose 
+        // If all of the pdps are included in the listOfDesignated and none are designated, it will choose
         // the one which has the most recent designated date.
 
 
@@ -514,11 +514,11 @@ public class StandbyStateManagementTest {
         mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
 
         logger.debug("\n\ntestComputeMostRecentPrimary: All designated all on list, "
-                + "mostRecentPrimary.getPdpId() = {}\n\n", 
+                + "mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
 
-        // If all of the pdps are included in the listOfDesignated and all are designated, it will choose 
+        // If all of the pdps are included in the listOfDesignated and all are designated, it will choose
         // the one which was designated first
 
 
@@ -537,7 +537,7 @@ public class StandbyStateManagementTest {
 
         mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
 
-        logger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = {}\n\n", 
+        logger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
         assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
@@ -553,13 +553,13 @@ public class StandbyStateManagementTest {
 
         mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
 
-        logger.debug("\n\ntestComputeMostRecentPrimary: 2 on list mostRecentPrimary.getPdpId() = {}\n\n", 
+        logger.debug("\n\ntestComputeMostRecentPrimary: 2 on list mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
         assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
 
 
-        // If we have only one pdp on in the listOfDesignated, 
+        // If we have only one pdp on in the listOfDesignated,
         // the most recently designated pdp will be chosen, regardless
         // of its designation status
 
@@ -568,7 +568,7 @@ public class StandbyStateManagementTest {
 
         mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
 
-        logger.debug("\n\ntestComputeMostRecentPrimary: 1 on list mostRecentPrimary.getPdpId() = {}\n\n", 
+        logger.debug("\n\ntestComputeMostRecentPrimary: 1 on list mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
         assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
@@ -581,7 +581,7 @@ public class StandbyStateManagementTest {
 
         mostRecentPrimary = droolsPdpsElectionHandler.computeMostRecentPrimary(listOfAllPdps, listOfDesignated);
 
-        logger.debug("\n\ntestComputeMostRecentPrimary: 0 on list mostRecentPrimary.getPdpId() = {}\n\n", 
+        logger.debug("\n\ntestComputeMostRecentPrimary: 0 on list mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
         assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
@@ -590,7 +590,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Test compute designated PDP.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -652,20 +652,20 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
-            logger.debug("testComputeDesignatedPdp stateManagementFeature.getResourceName(): {}", 
+            logger.debug("testComputeDesignatedPdp stateManagementFeature.getResourceName(): {}",
                     stateManagementFeature.getResourceName());
             break;
         }
         if (stateManagementFeature == null) {
             logger.error("testComputeDesignatedPdp failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testComputeDesignatedPdp failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -726,7 +726,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Test cold standby.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -774,7 +774,7 @@ public class StandbyStateManagementTest {
          * or coldstandby,the Active/Standby selection algorithm must stand down
          * if thePDP-D is currently the lead/active node and allow another PDP-D
          * to take over.
-         * 
+         *
          * It must also call lock on all engines in the engine management.
          */
 
@@ -792,8 +792,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI smf = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi smf = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             smf = feature;
             logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}", smf.getResourceName());
@@ -801,10 +801,10 @@ public class StandbyStateManagementTest {
         }
         if (smf == null) {
             logger.error("testColdStandby failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testColdStandby failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -814,7 +814,7 @@ public class StandbyStateManagementTest {
         for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
-            logger.debug("testColdStandby activeStandbyFeature.getResourceName(): {}", 
+            logger.debug("testColdStandby activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
@@ -864,7 +864,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Test hot standby 1.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -901,7 +901,7 @@ public class StandbyStateManagementTest {
         conn.deleteAllPdps();
 
         /*
-         * Insert this PDP as not designated.  Initial standby state will be 
+         * Insert this PDP as not designated.  Initial standby state will be
          * either null or cold standby.   Demoting should transit state to
          * hot standby.
          */
@@ -923,8 +923,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI smf = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi smf = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             smf = feature;
             logger.debug("testHotStandby1 stateManagementFeature.getResourceName(): {}", smf.getResourceName());
@@ -932,10 +932,10 @@ public class StandbyStateManagementTest {
         }
         if (smf == null) {
             logger.error("testHotStandby1 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testHotStandby1 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -945,7 +945,7 @@ public class StandbyStateManagementTest {
         for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
-            logger.debug("testHotStandby1 activeStandbyFeature.getResourceName(): {}", 
+            logger.debug("testHotStandby1 activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
@@ -993,7 +993,7 @@ public class StandbyStateManagementTest {
 
     /**
      * Test hot standby 2.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -1044,7 +1044,7 @@ public class StandbyStateManagementTest {
 
         /*
          * Promote the designated PDP.
-         * 
+         *
          * We have a chicken and egg problem here: we need a StateManagement
          * object to invoke the deleteAllStateManagementEntities method.
          */
@@ -1062,7 +1062,7 @@ public class StandbyStateManagementTest {
         // is providing service.
 
         /*
-         * Insert this PDP as not designated.  Initial standby state will be 
+         * Insert this PDP as not designated.  Initial standby state will be
          * either null or cold standby.   Demoting should transit state to
          * hot standby.
          */
@@ -1080,8 +1080,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI sm2 = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi sm2 = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             sm2 = feature;
             logger.debug("testHotStandby2 stateManagementFeature.getResourceName(): {}", sm2.getResourceName());
@@ -1089,10 +1089,10 @@ public class StandbyStateManagementTest {
         }
         if (sm2 == null) {
             logger.error("testHotStandby2 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testHotStandby2 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -1102,7 +1102,7 @@ public class StandbyStateManagementTest {
         for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
-            logger.debug("testHotStandby2 activeStandbyFeature.getResourceName(): {}", 
+            logger.debug("testHotStandby2 activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
@@ -1165,24 +1165,24 @@ public class StandbyStateManagementTest {
     /*
      * 1) Inserts and designates this PDP, then verifies that startTransaction
      * is successful.
-     * 
+     *
      * 2) Demotes PDP, and verifies that because there is only one PDP, it will
      * be immediately re-promoted, thus allowing startTransaction to be
      * successful.
-     * 
+     *
      * 3) Locks PDP and verifies that startTransaction results in
      * AdministrativeStateException.
-     * 
+     *
      * 4) Unlocks PDP and verifies that startTransaction results in
      * StandbyStatusException.
-     * 
+     *
      * 5) Promotes PDP and verifies that startTransaction is once again
      * successful.
      */
 
     /**
      * Test locking.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -1218,9 +1218,9 @@ public class StandbyStateManagementTest {
         conn.deleteAllPdps();
 
         /*
-         * Insert this PDP as designated.  Initial standby state will be 
+         * Insert this PDP as designated.  Initial standby state will be
          * either null or cold standby.
-         */   
+         */
 
         logger.debug("testLocking1: Inserting PDP= {} as designated", thisPdpId);
         DroolsPdpImpl pdp = new DroolsPdpImpl(thisPdpId, true, 4, new Date());
@@ -1237,8 +1237,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI sm = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi sm = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             sm = feature;
             logger.debug("testLocking1 stateManagementFeature.getResourceName(): {}", sm.getResourceName());
@@ -1246,10 +1246,10 @@ public class StandbyStateManagementTest {
         }
         if (sm == null) {
             logger.error("testLocking1 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testLocking1 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -1259,7 +1259,7 @@ public class StandbyStateManagementTest {
         for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
-            logger.debug("testLocking1 activeStandbyFeature.getResourceName(): {}", 
+            logger.debug("testLocking1 activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
@@ -1281,7 +1281,7 @@ public class StandbyStateManagementTest {
         sm.promote();
 
         logger.debug("testLocking1: Sleeping {} ms, to allow time for "
-                + "policy-management.Main class to come up, designated= {}", 
+                + "policy-management.Main class to come up, designated= {}",
                 sleepTime, conn.getPdp(thisPdpId).isDesignated());
         sleep(sleepTime);
 
@@ -1419,16 +1419,16 @@ public class StandbyStateManagementTest {
     /*
      * 1) Inserts and designates this PDP, then verifies that startTransaction
      * is successful.
-     * 
+     *
      * 2) Inserts another PDP in hotstandby.
-     * 
+     *
      * 3) Demotes this PDP, and verifies 1) that other PDP is not promoted (because one
      * PDP cannot promote another PDP) and 2) that this PDP is re-promoted.
      */
 
     /**
      * Test locking 2.
-     * 
+     *
      * @throws Exception exception
      */
     //@Ignore
@@ -1465,7 +1465,7 @@ public class StandbyStateManagementTest {
         conn.deleteAllPdps();
 
         /*
-         * Insert this PDP as designated.  Initial standby state will be 
+         * Insert this PDP as designated.  Initial standby state will be
          * either null or cold standby.   Demoting should transit state to
          * hot standby.
          */
@@ -1485,8 +1485,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI sm = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi sm = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             sm = feature;
             logger.debug("testLocking2 stateManagementFeature.getResourceName(): {}", sm.getResourceName());
@@ -1494,10 +1494,10 @@ public class StandbyStateManagementTest {
         }
         if (sm == null) {
             logger.error("testLocking2 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testLocking2 failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
 
@@ -1507,7 +1507,7 @@ public class StandbyStateManagementTest {
         for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
-            logger.debug("testLocking2 activeStandbyFeature.getResourceName(): {}", 
+            logger.debug("testLocking2 activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
@@ -1521,7 +1521,7 @@ public class StandbyStateManagementTest {
         }
 
         /*
-         * Insert another PDP as not designated.  Initial standby state will be 
+         * Insert another PDP as not designated.  Initial standby state will be
          * either null or cold standby.   Demoting should transit state to
          * hot standby.
          */
@@ -1532,7 +1532,7 @@ public class StandbyStateManagementTest {
         pdp = new DroolsPdpImpl(standbyPdpId, false, 4, yesterday);
         conn.insertPdp(pdp);
         droolsPdpEntity = conn.getPdp(standbyPdpId);
-        logger.debug("testLocking2: After insertion, PDP={} has DESIGNATED= {}", 
+        logger.debug("testLocking2: After insertion, PDP={} has DESIGNATED= {}",
                 standbyPdpId, droolsPdpEntity.isDesignated());
         assertTrue(droolsPdpEntity.isDesignated() == false);
 
