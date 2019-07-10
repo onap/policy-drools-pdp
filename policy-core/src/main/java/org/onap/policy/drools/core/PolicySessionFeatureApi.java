@@ -32,13 +32,13 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
  * return a 'void' value. In other cases, such as 'activatePolicySession',
  * may
  */
-public interface PolicySessionFeatureAPI extends OrderedService {
+public interface PolicySessionFeatureApi extends OrderedService {
     /**
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects
      * implementing the 'FeatureAPI' interface.
      */
-    public static OrderedServiceImpl<PolicySessionFeatureAPI> impl =
-            new OrderedServiceImpl<>(PolicySessionFeatureAPI.class);
+    public static OrderedServiceImpl<PolicySessionFeatureApi> impl =
+            new OrderedServiceImpl<>(PolicySessionFeatureApi.class);
 
     /**
      * This method is called during initialization at a point right after

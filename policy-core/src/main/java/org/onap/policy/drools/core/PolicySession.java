@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -142,8 +142,8 @@ public class PolicySession
 
         // loop through all of the features, and give each one
         // a chance to create the 'ThreadModel'
-        for (PolicySessionFeatureAPI feature :
-                PolicySessionFeatureAPI.impl.getList()) {
+        for (PolicySessionFeatureApi feature :
+                PolicySessionFeatureApi.impl.getList()) {
             try {
                 if ((threadModel = feature.selectThreadModel(this)) != null) {
                     break;
