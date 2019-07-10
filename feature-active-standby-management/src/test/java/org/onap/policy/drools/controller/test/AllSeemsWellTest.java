@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.activestandby.ActiveStandbyFeatureAPI;
+import org.onap.policy.drools.activestandby.ActiveStandbyFeatureApi;
 import org.onap.policy.drools.activestandby.ActiveStandbyProperties;
 import org.onap.policy.drools.activestandby.DroolsPdpEntity;
 import org.onap.policy.drools.activestandby.DroolsPdpImpl;
@@ -254,8 +254,8 @@ public class AllSeemsWellTest {
 
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.
-        ActiveStandbyFeatureAPI activeStandbyFeature = null;
-        for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
+        ActiveStandbyFeatureApi activeStandbyFeature = null;
+        for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}",
