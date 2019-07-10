@@ -36,15 +36,15 @@ import org.slf4j.LoggerFactory;
  * This class extends 'IntegrityMonitor' for use in the 'Drools PDP' virtual machine. The included
  * audits are 'Database' and 'Repository'.
  */
-public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
+public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
 
     private static final String INVALID_PROPERTY_VALUE = "init: property {} does not have the expected value of {}";
 
     // get an instance of logger
-    private static final Logger logger = LoggerFactory.getLogger(DroolsPDPIntegrityMonitor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DroolsPdpIntegrityMonitor.class);
 
     // static global instance
-    private static DroolsPDPIntegrityMonitor im = null;
+    private static DroolsPdpIntegrityMonitor im = null;
 
     // list of audits to run
     private static AuditBase[] audits = new AuditBase[] {DbAudit.getInstance(), RepositoryAudit.getInstance()};
@@ -61,7 +61,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * @param properties properties used locally, as well as by 'IntegrityMonitor'
      * @throws IntegrityMonitorException (passed from superclass)
      */
-    private DroolsPDPIntegrityMonitor(String resourceName, Properties consolidatedProperties)
+    private DroolsPdpIntegrityMonitor(String resourceName, Properties consolidatedProperties)
             throws IntegrityMonitorException {
         super(resourceName, consolidatedProperties);
     }
@@ -85,7 +85,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      *
      * @throws IntegrityMonitorException exception
      */
-    public static DroolsPDPIntegrityMonitor init(String configDir) throws IntegrityMonitorException {
+    public static DroolsPdpIntegrityMonitor init(String configDir) throws IntegrityMonitorException {
 
         logger.info("init: Entering and invoking PropertyUtil.getProperties() on '{}'", configDir);
 
@@ -150,11 +150,11 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * @return monitor object
      * @throws IntegrityMonitorException exception
      */
-    private static DroolsPDPIntegrityMonitor makeMonitor(String resourceName, Properties properties)
+    private static DroolsPdpIntegrityMonitor makeMonitor(String resourceName, Properties properties)
             throws IntegrityMonitorException {
 
         try {
-            return new DroolsPDPIntegrityMonitor(resourceName, properties);
+            return new DroolsPdpIntegrityMonitor(resourceName, properties);
 
         } catch (Exception e) {
             throw new IntegrityMonitorException(e);
@@ -426,7 +426,7 @@ public class DroolsPDPIntegrityMonitor extends IntegrityMonitor {
      * @return DroolsPDPIntegrityMonitor object
      * @throws IntegrityMonitorException exception
      */
-    public static DroolsPDPIntegrityMonitor getInstance() throws IntegrityMonitorException {
+    public static DroolsPdpIntegrityMonitor getInstance() throws IntegrityMonitorException {
         if (logger.isDebugEnabled()) {
             logger.debug("getInstance() called");
         }

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 public class IntegrityMonitorRestManager {
     private static Logger logger = LoggerFactory.getLogger(IntegrityMonitorRestManager.class);
-    private DroolsPDPIntegrityMonitor im;
+    private DroolsPdpIntegrityMonitor im;
 
     /**
      * Test interface for Integrity Monitor.
@@ -78,7 +78,7 @@ public class IntegrityMonitorRestManager {
 
             if (im == null) {
                 try {
-                    im = DroolsPDPIntegrityMonitor.getInstance();
+                    im = DroolsPdpIntegrityMonitor.getInstance();
                 } catch (Exception e) {
                     logger.error("IntegrityMonitorRestManager: test() interface caught an exception", e);
                     body.append("\nException: " + e + "\n");
