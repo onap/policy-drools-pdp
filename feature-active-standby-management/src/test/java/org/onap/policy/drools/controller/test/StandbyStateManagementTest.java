@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.PMStandbyStateChangeNotifier;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -351,8 +351,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}", 
@@ -470,8 +470,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testComputeMostRecentPrimary stateManagementFeature.getResourceName(): {}", 
@@ -652,8 +652,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testComputeDesignatedPdp stateManagementFeature.getResourceName(): {}", 
@@ -792,8 +792,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI smf = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi smf = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             smf = feature;
             logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}", smf.getResourceName());
@@ -923,8 +923,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI smf = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi smf = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             smf = feature;
             logger.debug("testHotStandby1 stateManagementFeature.getResourceName(): {}", smf.getResourceName());
@@ -1080,8 +1080,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI sm2 = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi sm2 = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             sm2 = feature;
             logger.debug("testHotStandby2 stateManagementFeature.getResourceName(): {}", sm2.getResourceName());
@@ -1237,8 +1237,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI sm = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi sm = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             sm = feature;
             logger.debug("testLocking1 stateManagementFeature.getResourceName(): {}", sm.getResourceName());
@@ -1485,8 +1485,8 @@ public class StandbyStateManagementTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI sm = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi sm = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             sm = feature;
             logger.debug("testLocking2 stateManagementFeature.getResourceName(): {}", sm.getResourceName());

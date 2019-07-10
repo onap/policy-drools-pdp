@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      */
     private Boolean allSeemsWell = null;
 
-    private StateManagementFeatureAPI stateManagementFeature;
+    private StateManagementFeatureApi stateManagementFeature;
 
     private static boolean isUnitTesting = false;
     private static boolean isStalled = false;
@@ -135,7 +135,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
         //Get the StateManagementFeature instance
 
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             if (feature.getResourceName().equals(myPdp.getPdpId())) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("DroolsPdpsElectionHandler: Found StateManagementFeature"
@@ -961,7 +961,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                             logger.debug("checkWaitTimer: calling allSeemsWell with ALLNOTWELL param");
                         }
                         stateManagementFeature.allSeemsWell(this.getClass().getName(), 
-                                StateManagementFeatureAPI.ALLNOTWELL_STATE,
+                                StateManagementFeatureApi.ALLNOTWELL_STATE,
                                 "DesignationWaiter/ElectionHandler has STALLED");
                     }
                     logger.error("checkWaitTimer: nowMs - waitTimerMs = {}" 
@@ -970,7 +970,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 } else if (allSeemsWell == null || !allSeemsWell) {
                     allSeemsWell = true;
                     stateManagementFeature.allSeemsWell(this.getClass().getName(), 
-                            StateManagementFeatureAPI.ALLSEEMSWELL_STATE,
+                            StateManagementFeatureApi.ALLSEEMSWELL_STATE,
                             "DesignationWaiter/ElectionHandler has RESUMED");
                     logger.info("DesignationWaiter/ElectionHandler has RESUMED");
                 }

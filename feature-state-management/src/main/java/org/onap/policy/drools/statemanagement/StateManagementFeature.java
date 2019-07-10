@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * a separate optional feature.
  */
 
-public class StateManagementFeature implements StateManagementFeatureAPI, 
+public class StateManagementFeature implements StateManagementFeatureApi, 
     PolicySessionFeatureAPI, PolicyEngineFeatureAPI {
     // get an instance of logger
     private static final Logger logger =

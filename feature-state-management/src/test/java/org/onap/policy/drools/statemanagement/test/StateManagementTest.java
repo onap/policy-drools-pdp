@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-persistence
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.statemanagement.DbAudit;
 import org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager;
 import org.onap.policy.drools.statemanagement.RepositoryAudit;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class StateManagementTest {
     // get an instance of logger 
     private static Logger  logger = LoggerFactory.getLogger(StateManagementTest.class);
 
-    StateManagementFeatureAPI stateManagementFeature;
+    StateManagementFeatureApi stateManagementFeature;
 
     /**
      * Setup the class.
@@ -114,8 +114,8 @@ public class StateManagementTest {
         String thisPdpId = fsmProperties
                 .getProperty(StateManagementProperties.NODE_NAME);
 
-        StateManagementFeatureAPI stateManagementFeature = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeature = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testStateManagementOperation stateManagementFeature.getResourceName(): " 

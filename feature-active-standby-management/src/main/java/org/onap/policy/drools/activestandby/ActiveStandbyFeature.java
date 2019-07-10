@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import javax.persistence.Persistence;
 
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
     private static Object myPdpSync = new Object();
     private static DroolsPdpsElectionHandler electionHandler;
 
-    private StateManagementFeatureAPI stateManagementFeature;
+    private StateManagementFeatureApi stateManagementFeature;
 
     public static final int SEQ_NUM = 1;
 
@@ -82,7 +82,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI,
         // This must come first since it initializes myPdp
         initializePersistence(configDir);
 
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             if (feature.getResourceName().equals(myPdp.getPdpId())) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("ActiveStandbyFeature.globalInit: Found StateManagementFeature"
