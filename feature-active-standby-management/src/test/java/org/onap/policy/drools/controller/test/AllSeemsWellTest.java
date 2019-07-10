@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,23 +234,23 @@ public class AllSeemsWellTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeatureApi = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi StateManagementFeatureApi = null;
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
-            stateManagementFeatureApi = feature;
+            StateManagementFeatureApi = feature;
             logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",
-                stateManagementFeatureApi.getResourceName());
+                StateManagementFeatureApi.getResourceName());
             break;
         }
-        if (stateManagementFeatureApi == null) {
+        if (StateManagementFeatureApi == null) {
             logger.error("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
-        final StateManagementFeatureAPI smf = stateManagementFeatureApi;
+        final StateManagementFeatureApi smf = StateManagementFeatureApi;
 
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.
