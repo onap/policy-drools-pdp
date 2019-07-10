@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.activestandby.ActiveStandbyFeatureAPI;
+import org.onap.policy.drools.activestandby.ActiveStandbyFeatureApi;
 import org.onap.policy.drools.activestandby.ActiveStandbyProperties;
 import org.onap.policy.drools.activestandby.DroolsPdpEntity;
 import org.onap.policy.drools.activestandby.DroolsPdpImpl;
@@ -254,8 +254,8 @@ public class AllSeemsWellTest {
 
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.
-        ActiveStandbyFeatureAPI activeStandbyFeature = null;
-        for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
+        ActiveStandbyFeatureApi activeStandbyFeature = null;
+        for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}",

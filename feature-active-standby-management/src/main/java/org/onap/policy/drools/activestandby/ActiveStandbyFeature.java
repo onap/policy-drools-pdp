@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * 'PolicyContainer' and 'Main'. It was moved here as part of making this
  * a separate optional feature.
  */
-public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI, 
+public class ActiveStandbyFeature implements ActiveStandbyFeatureApi, 
     PolicySessionFeatureApi, PolicyEngineFeatureApi {
     // get an instance of logger
     private static final Logger logger =
