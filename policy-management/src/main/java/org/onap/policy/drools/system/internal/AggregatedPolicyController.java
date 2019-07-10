@@ -36,7 +36,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
@@ -268,7 +268,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean start() {
         logger.info("{}: start", this);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeStart(this)) {
                     return true;
@@ -307,7 +307,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             }
         }
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterStart(this)) {
                     return true;
@@ -328,7 +328,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean stop() {
         logger.info("{}: stop", this);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeStop(this)) {
                     return true;
@@ -357,7 +357,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.stop();
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterStop(this)) {
                     return true;
@@ -378,7 +378,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public void shutdown() {
         logger.info("{}: shutdown", this);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeShutdown(this)) {
                     return;
@@ -393,7 +393,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         getDroolsFactory().shutdown(this.droolsController);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterShutdown(this)) {
                     return;
@@ -412,7 +412,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public void halt() {
         logger.info("{}: halt", this);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeHalt(this)) {
                     return;
@@ -427,7 +427,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         getDroolsFactory().destroy(this.droolsController);
         getPersistenceManager().deleteController(this.name);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterHalt(this)) {
                     return;
@@ -450,7 +450,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return;
         }
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeOffer(this, commType, topic, event)) {
                     return;
@@ -463,7 +463,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.offer(topic, event);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterOffer(this, commType, topic, event, success)) {
                     return;
@@ -483,7 +483,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return true;
         }
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeOffer(this, event)) {
                     return true;
@@ -496,7 +496,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.offer(event);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterOffer(this, event, success)) {
                     return success;
@@ -522,7 +522,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.debug("{}: deliver event to {}:{}: {}", this, commType, topic, event);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeDeliver(this, commType, topic, event)) {
                     return true;
@@ -557,7 +557,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.deliver(this.topic2Sinks.get(topic), event);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterDeliver(this, commType, topic, event, success)) {
                     return success;
@@ -586,7 +586,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean lock() {
         logger.info("{}: lock", this);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeLock(this)) {
                     return true;
@@ -610,7 +610,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.lock();
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterLock(this)) {
                     return true;
@@ -632,7 +632,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.info("{}: unlock", this);
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.beforeUnlock(this)) {
                     return true;
@@ -653,7 +653,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.unlock();
 
-        for (PolicyControllerFeatureAPI feature : getProviders()) {
+        for (PolicyControllerFeatureApi feature : getProviders()) {
             try {
                 if (feature.afterUnlock(this)) {
                     return true;
@@ -730,8 +730,8 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         return DroolsController.factory;
     }
 
-    protected List<PolicyControllerFeatureAPI> getProviders() {
-        return PolicyControllerFeatureAPI.providers.getList();
+    protected List<PolicyControllerFeatureApi> getProviders() {
+        return PolicyControllerFeatureApi.providers.getList();
     }
 }
 

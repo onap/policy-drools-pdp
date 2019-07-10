@@ -53,8 +53,8 @@ import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
@@ -83,12 +83,12 @@ public class PolicyEngineManagerTest {
                     .addHttpServletServerMock().build();
 
     private Properties properties;
-    private PolicyEngineFeatureAPI prov1;
-    private PolicyEngineFeatureAPI prov2;
-    private List<PolicyEngineFeatureAPI> providers;
-    private PolicyControllerFeatureAPI contProv1;
-    private PolicyControllerFeatureAPI contProv2;
-    private List<PolicyControllerFeatureAPI> contProviders;
+    private PolicyEngineFeatureApi prov1;
+    private PolicyEngineFeatureApi prov2;
+    private List<PolicyEngineFeatureApi> providers;
+    private PolicyControllerFeatureApi contProv1;
+    private PolicyControllerFeatureApi contProv2;
+    private List<PolicyControllerFeatureApi> contProviders;
     private String[] globalInitArgs;
     private TopicSource source1;
     private TopicSource source2;
@@ -135,11 +135,11 @@ public class PolicyEngineManagerTest {
     public void setUp() throws Exception {
 
         properties = new Properties();
-        prov1 = mock(PolicyEngineFeatureAPI.class);
-        prov2 = mock(PolicyEngineFeatureAPI.class);
+        prov1 = mock(PolicyEngineFeatureApi.class);
+        prov2 = mock(PolicyEngineFeatureApi.class);
         providers = Arrays.asList(prov1, prov2);
-        contProv1 = mock(PolicyControllerFeatureAPI.class);
-        contProv2 = mock(PolicyControllerFeatureAPI.class);
+        contProv1 = mock(PolicyControllerFeatureApi.class);
+        contProv2 = mock(PolicyControllerFeatureApi.class);
         contProviders = Arrays.asList(contProv1, contProv2);
         globalInitArgs = null;
         source1 = mock(TopicSource.class);
@@ -1532,10 +1532,10 @@ public class PolicyEngineManagerTest {
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
-    private void checkBeforeAfter(BiConsumer<PolicyEngineFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureAPI> verifyAfter) throws Exception {
+    private void checkBeforeAfter(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         checkBeforeAfter_FalseFalse(setBefore, setAfter, action, verifyBefore, verifyMiddle, verifyAfter);
         checkBeforeAfter_FalseTrue(setBefore, setAfter, action, verifyBefore, verifyMiddle, verifyAfter);
@@ -1557,10 +1557,10 @@ public class PolicyEngineManagerTest {
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
-    private void checkBeforeAfter_FalseFalse(BiConsumer<PolicyEngineFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureAPI> verifyAfter) throws Exception {
+    private void checkBeforeAfter_FalseFalse(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         setUp();
 
@@ -1598,10 +1598,10 @@ public class PolicyEngineManagerTest {
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
-    private void checkBeforeAfter_FalseTrue(BiConsumer<PolicyEngineFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureAPI> verifyAfter) throws Exception {
+    private void checkBeforeAfter_FalseTrue(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         setUp();
 
@@ -1639,10 +1639,10 @@ public class PolicyEngineManagerTest {
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
-    private void checkBeforeAfter_TrueFalse(BiConsumer<PolicyEngineFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureAPI> verifyAfter) throws Exception {
+    private void checkBeforeAfter_TrueFalse(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         setUp();
 
@@ -1674,12 +1674,12 @@ public class PolicyEngineManagerTest {
     private class PolicyEngineManagerImpl extends PolicyEngineManager {
 
         @Override
-        protected List<PolicyEngineFeatureAPI> getEngineProviders() {
+        protected List<PolicyEngineFeatureApi> getEngineProviders() {
             return providers;
         }
 
         @Override
-        protected List<PolicyControllerFeatureAPI> getControllerProviders() {
+        protected List<PolicyControllerFeatureApi> getControllerProviders() {
             return contProviders;
         }
 

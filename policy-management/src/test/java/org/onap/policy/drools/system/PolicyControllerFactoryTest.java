@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 
 public class PolicyControllerFactoryTest {
@@ -64,9 +64,9 @@ public class PolicyControllerFactoryTest {
     private DroolsController drools;
     private DroolsController drools2;
     private DroolsConfiguration config;
-    private PolicyControllerFeatureAPI feature1;
-    private PolicyControllerFeatureAPI feature2;
-    private List<PolicyControllerFeatureAPI> providers;
+    private PolicyControllerFeatureApi feature1;
+    private PolicyControllerFeatureApi feature2;
+    private List<PolicyControllerFeatureApi> providers;
     private IndexedPolicyControllerFactory ipc;
 
     /**
@@ -80,8 +80,8 @@ public class PolicyControllerFactoryTest {
         drools = mock(DroolsController.class);
         drools2 = mock(DroolsController.class);
         config = mock(DroolsConfiguration.class);
-        feature1 = mock(PolicyControllerFeatureAPI.class);
-        feature2 = mock(PolicyControllerFeatureAPI.class);
+        feature1 = mock(PolicyControllerFeatureApi.class);
+        feature2 = mock(PolicyControllerFeatureApi.class);
         providers = Arrays.asList(feature1, feature2);
 
         when(feature1.getName()).thenReturn(FEATURE1);
@@ -423,7 +423,7 @@ public class PolicyControllerFactoryTest {
         }
 
         @Override
-        protected List<PolicyControllerFeatureAPI> getProviders() {
+        protected List<PolicyControllerFeatureApi> getProviders() {
             return providers;
         }
     }

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * <p>The bulk of the code here was once in other classes, such as 'PolicyContainer' and 'Main'. It
  * was moved here as part of making this a separate optional feature.
  */
-public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngineFeatureAPI {
+public class PersistenceFeature implements PolicySessionFeatureAPI, PolicyEngineFeatureApi {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceFeature.class);
     
