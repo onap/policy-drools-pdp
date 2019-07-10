@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-test-transaction
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,10 +80,10 @@ public class TestTransactionTest {
         CountDownLatch latch = new CountDownLatch(1);
         
         // use our own impl so we can decrement the latch when run() completes
-        TTImpl impl = new TTImpl() {
+        TtImpl impl = new TtImpl() {
             @Override
-            protected TTControllerTask makeControllerTask(PolicyController controller) {
-                return new TTControllerTask(controller) {
+            protected TtControllerTask makeControllerTask(PolicyController controller) {
+                return new TtControllerTask(controller) {
                     @Override
                     public void run() {
                         super.run();

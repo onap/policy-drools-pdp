@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-test-transaction
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,10 +67,10 @@ public class TestTransactionAdditionalTest {
     private long doSleepMs;
     private DroolsController drools;
     private PolicyContainer container;
-    private Map<String, TTControllerTask> name2task;
-    private TTControllerTask task;
-    private TTControllerTask task2;
-    private TTControllerTask task3;
+    private Map<String, TtControllerTask> name2task;
+    private TtControllerTask task;
+    private TtControllerTask task2;
+    private TtControllerTask task3;
     private TestTransTImplTester impl;
 
     /**
@@ -87,8 +87,8 @@ public class TestTransactionAdditionalTest {
         doSleepMs = -1;
         drools = mock(DroolsController.class);
         container = mock(PolicyContainer.class);
-        task2 = mock(TTControllerTask.class);
-        task3 = mock(TTControllerTask.class);
+        task2 = mock(TtControllerTask.class);
+        task3 = mock(TtControllerTask.class);
         name2task = new TreeMap<>();
 
         when(drools.getSessionNames()).thenReturn(sessions);
@@ -119,12 +119,12 @@ public class TestTransactionAdditionalTest {
 
     @Test
     public void testTestTransactionImpl() {
-        assertNotNull(TTImpl.manager);
+        assertNotNull(TtImpl.manager);
     }
 
     @Test
     public void testTestTransactionImplRegister_testTestTransactionImplUnregister() {
-        task = mock(TTControllerTask.class);
+        task = mock(TtControllerTask.class);
         when(task.isAlive()).thenReturn(true);
         name2task.put(CONTROLLER1, task);
 
@@ -163,7 +163,7 @@ public class TestTransactionAdditionalTest {
 
     @Test
     public void testTestTransactionControllerTaskFactory() throws Exception {
-        task = new TTControllerTask(controller) {
+        task = new TtControllerTask(controller) {
             @Override
             protected Thread makeThread(Runnable action) {
                 return theThread;
@@ -363,10 +363,10 @@ public class TestTransactionAdditionalTest {
     /**
      * TestTransaction with overridden methods.
      */
-    private class TestTransTImplTester extends TTImpl {
+    private class TestTransTImplTester extends TtImpl {
 
         @Override
-        protected TTControllerTask makeControllerTask(PolicyController controller) {
+        protected TtControllerTask makeControllerTask(PolicyController controller) {
             return name2task.get(controller.getName());
         }
     }
@@ -374,7 +374,7 @@ public class TestTransactionAdditionalTest {
     /**
      * Controller task with overridden methods.
      */
-    private class TestTransControllerTaskTester extends TTControllerTask {
+    private class TestTransControllerTaskTester extends TtControllerTask {
         private int sleepCount = MAX_SLEEP_COUNT;
 
         public TestTransControllerTaskTester(PolicyController controller) {
