@@ -26,7 +26,7 @@ import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
-import org.onap.policy.drools.utils.logging.MDCTransaction;
+import org.onap.policy.drools.utils.logging.MdcTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +85,8 @@ public class Main {
 
         /* 3. Start the Engine with the basic services only (no Policy Controllers) */
 
-        MDCTransaction trans =
-                MDCTransaction.newTransaction(null, null)
+        MdcTransaction trans =
+                MdcTransaction.newTransaction(null, null)
                 .setServiceName(Main.class.getSimpleName())
                 .setTargetEntity("engine")
                 .setTargetServiceName("start");
@@ -136,7 +136,7 @@ public class Main {
                     controllerProperties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME);
             try {
                 trans =
-                        MDCTransaction.newTransaction(null, null)
+                        MdcTransaction.newTransaction(null, null)
                         .setServiceName(Main.class.getSimpleName())
                         .setTargetEntity("controller:" + controllerName)
                         .setTargetServiceName("start");
