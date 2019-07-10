@@ -28,13 +28,13 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
  * appropriate points in the application, the code iterates through this list, invoking these
  * optional methods.
  */
-public interface ActiveStandbyFeatureAPI extends OrderedService {
+public interface ActiveStandbyFeatureApi extends OrderedService {
     /**
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the 'FeatureAPI'
      * interface.
      */
-    public static OrderedServiceImpl<ActiveStandbyFeatureAPI> impl =
-            new OrderedServiceImpl<>(ActiveStandbyFeatureAPI.class);
+    public static OrderedServiceImpl<ActiveStandbyFeatureApi> impl =
+            new OrderedServiceImpl<>(ActiveStandbyFeatureApi.class);
 
     /**
      * Returns the resourceName (PDP ID) for the Drools-PDP that is
