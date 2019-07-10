@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpImpl;
 import org.onap.policy.drools.activestandby.DroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
-import org.onap.policy.drools.activestandby.PMStandbyStateChangeNotifier;
+import org.onap.policy.drools.activestandby.PmStandbyStateChangeNotifier;
 import org.onap.policy.drools.core.PolicySessionFeatureAPI;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.slf4j.Logger;
@@ -251,7 +251,7 @@ public class StandbyStateManagementTest {
         StateManagement sm = new StateManagement(emfx, resourceName);
 
         //Create an instance of the Observer
-        PMStandbyStateChangeNotifier pmNotifier = new PMStandbyStateChangeNotifier();
+        PmStandbyStateChangeNotifier pmNotifier = new PmStandbyStateChangeNotifier();
 
         //Register the PMStandbyStateChangeNotifier Observer
         sm.addObserver(pmNotifier);
@@ -267,23 +267,23 @@ public class StandbyStateManagementTest {
         sm.demote();
         System.out.println(pmNotifier.getPreviousStandbyStatus());
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
         //Now making standbystatus=coldstandby
         sm.lock();
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
         //standbystatus = hotstandby
         sm.unlock();
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
         //standbystatus = providingservice
         sm.promote();
         //The previousStandbyStatus is not updated until after the delay activation expires
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
         //Sleep long enough for the delayActivationTimer to run
         sleep(5000);
@@ -296,17 +296,17 @@ public class StandbyStateManagementTest {
         //standbystatus = coldstandby
         sm.lock();
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
         //standbystatus = hotstandby
         sm.unlock();
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
 
         //standbystatus = hotstandby
         sm.demote();
         assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PMStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
     }
 
     /**
