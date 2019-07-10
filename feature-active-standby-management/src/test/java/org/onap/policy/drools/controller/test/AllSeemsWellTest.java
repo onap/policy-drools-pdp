@@ -46,7 +46,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,8 +234,8 @@ public class AllSeemsWellTest {
         // Now we want to create a StateManagementFeature and initialize it.  It will be
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
-        StateManagementFeatureAPI stateManagementFeatureApi = null;
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        StateManagementFeatureApi stateManagementFeatureApi = null;
+        for (StateManagementFeatureApi feature : stateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeatureApi = feature;
             logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",
@@ -244,13 +244,13 @@ public class AllSeemsWellTest {
         }
         if (stateManagementFeatureApi == null) {
             logger.error("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
             logger.debug("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", thisPdpId);
         }
-        final StateManagementFeatureAPI smf = stateManagementFeatureApi;
+        final StateManagementFeatureApi smf = stateManagementFeatureApi;
 
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.

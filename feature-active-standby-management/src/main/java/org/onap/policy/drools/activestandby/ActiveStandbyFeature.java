@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ import javax.persistence.Persistence;
 
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
-import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
     private static Object myPdpSync = new Object();
     private static DroolsPdpsElectionHandler electionHandler;
 
-    private StateManagementFeatureAPI stateManagementFeature;
+    private StateManagementFeatureApi stateManagementFeature;
 
     public static final int SEQ_NUM = 1;
 
@@ -82,7 +82,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
         // This must come first since it initializes myPdp
         initializePersistence(configDir);
 
-        for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             if (feature.getResourceName().equals(myPdp.getPdpId())) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("ActiveStandbyFeature.globalInit: Found StateManagementFeature"
@@ -95,11 +95,11 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
         if (stateManagementFeature == null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("ActiveStandbyFeature failed to initialize.  "
-                        + "Unable to get instance of StateManagementFeatureAPI "
+                        + "Unable to get instance of StateManagementFeatureApi "
                         + "with resourceID: {}", myPdp.getPdpId());
             }
             logger.error("ActiveStandbyFeature failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureAPI "
+                    + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", myPdp.getPdpId());
             //
             // Cannot add observer since stateManagementFeature is null
@@ -137,7 +137,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
     private static void initializePersistence(String configDir) {
         //Get the Active Standby properties
         try {
-            Properties activeStandbyProperties = 
+            Properties activeStandbyProperties =
                     PropertyUtil.getProperties(configDir + "/feature-active-standby-management.properties");
             ActiveStandbyProperties.initProperties(activeStandbyProperties);
             logger.info("initializePersistence: ActiveStandbyProperties success");
@@ -188,7 +188,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
      * Moved code to instantiate a JpaDroolsPdpsConnector object from main() to
      * this method, so it can also be accessed from StandbyStateChangeNotifier
      * class.
-     * 
+     *
      * @param pu string
      * @return connector object
      */

@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * a separate optional feature.
  */
 
-public class StateManagementFeature implements StateManagementFeatureAPI, 
+public class StateManagementFeature implements StateManagementFeatureApi, 
     PolicySessionFeatureApi, PolicyEngineFeatureApi {
     // get an instance of logger
     private static final Logger logger =
