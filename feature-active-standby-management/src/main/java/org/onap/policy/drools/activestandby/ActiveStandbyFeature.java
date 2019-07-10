@@ -29,7 +29,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
+import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.onap.policy.drools.system.PolicyEngine;
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * a separate optional feature.
  */
 public class ActiveStandbyFeature implements ActiveStandbyFeatureAPI, 
-    PolicySessionFeatureAPI, PolicyEngineFeatureApi {
+    PolicySessionFeatureApi, PolicyEngineFeatureApi {
     // get an instance of logger
     private static final Logger logger =
             LoggerFactory.getLogger(ActiveStandbyFeature.class);
