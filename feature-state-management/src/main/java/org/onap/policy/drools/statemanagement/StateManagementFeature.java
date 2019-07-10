@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
     private static final Logger logger =
             LoggerFactory.getLogger(StateManagementFeature.class);
 
-    private DroolsPDPIntegrityMonitor droolsPdpIntegrityMonitor = null;
+    private DroolsPdpIntegrityMonitor droolsPdpIntegrityMonitor = null;
     private StateManagement stateManagement = null;
 
     public StateManagementFeature() {
@@ -62,7 +62,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
         logger.debug("StateManagementFeature.globalInit({}) entry", configDir);
 
         try {
-            droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.init(configDir);
+            droolsPdpIntegrityMonitor = DroolsPdpIntegrityMonitor.init(configDir);
         } catch (Exception e) {
             logger.debug("DroolsPDPIntegrityMonitor initialization exception: ", e);
             logger.error("DroolsPDPIntegrityMonitor.init()", e);
@@ -72,7 +72,7 @@ public class StateManagementFeature implements StateManagementFeatureAPI,
 
         //At this point the DroolsPDPIntegrityMonitor instance must exist. Let's check it.
         try {
-            droolsPdpIntegrityMonitor = DroolsPDPIntegrityMonitor.getInstance();
+            droolsPdpIntegrityMonitor = DroolsPdpIntegrityMonitor.getInstance();
             stateManagement = droolsPdpIntegrityMonitor.getStateManager();
 
             if (stateManagement == null) {
