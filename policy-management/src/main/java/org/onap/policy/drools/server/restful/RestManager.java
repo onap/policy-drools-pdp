@@ -56,8 +56,8 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
@@ -140,7 +140,7 @@ public class RestManager {
     @Path("engine/features/inventory")
     @ApiOperation(value = "Engine Detailed Feature Inventory",
             notes = "Provides detailed list of loaded features using the PolicyEngineFeatureAPI",
-            responseContainer = "List", response = PolicyEngineFeatureAPI.class)
+            responseContainer = "List", response = PolicyEngineFeatureApi.class)
     public Response engineFeaturesInventory() {
         return Response.status(Response.Status.OK).entity(PolicyEngine.manager.getFeatureProviders()).build();
     }
@@ -153,7 +153,7 @@ public class RestManager {
     @GET
     @Path("engine/features/{featureName}")
     @ApiOperation(value = "Engine Feature", notes = "Provides Details for a given feature Engine Provider",
-            response = PolicyEngineFeatureAPI.class)
+            response = PolicyEngineFeatureApi.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The feature cannot be found")})
     public Response engineFeature(
             @ApiParam(value = "Feature Name", required = true) @PathParam("featureName") String featureName) {
@@ -492,7 +492,7 @@ public class RestManager {
     @Path("engine/controllers/features/inventory")
     @ApiOperation(value = "Detailed Controllers Feature Inventory",
             notes = "Provides detailed list of loaded features using the PolicyControllerFeatureAPI",
-            responseContainer = "List", response = PolicyControllerFeatureAPI.class)
+            responseContainer = "List", response = PolicyControllerFeatureApi.class)
     public Response controllerFeaturesInventory() {
         return Response.status(Response.Status.OK).entity(PolicyController.factory.getFeatureProviders()).build();
     }
@@ -506,7 +506,7 @@ public class RestManager {
     @Path("engine/controllers/features/{featureName}")
     @ApiOperation(value = "Controller Feature",
             notes = "Provides Details for a given Policy Controller feature provider",
-            response = PolicyControllerFeatureAPI.class)
+            response = PolicyControllerFeatureApi.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The feature cannot be found")})
     public Response controllerFeature(
             @ApiParam(value = "Feature Name", required = true) @PathParam("featureName") String featureName) {

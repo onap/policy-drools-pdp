@@ -25,14 +25,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.onap.policy.common.logging.flexlogger.FlexLogger;
 import org.onap.policy.common.logging.flexlogger.Logger;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 
 /**
  * Feature EELF : Enables EELF Logging Libraries .
  */
-public class EelfFeature implements PolicyEngineFeatureAPI {
+public class EelfFeature implements PolicyEngineFeatureApi {
 
     @Override
     public final boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {

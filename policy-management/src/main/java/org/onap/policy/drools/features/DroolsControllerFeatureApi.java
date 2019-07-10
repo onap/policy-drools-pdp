@@ -28,7 +28,7 @@ import org.onap.policy.drools.controller.DroolsController;
 /**
  * Drools Controller Feature API.   Hooks into the Drools Controller operations.
  */
-public interface DroolsControllerFeatureAPI extends OrderedService {
+public interface DroolsControllerFeatureApi extends OrderedService {
 
     /**
      * intercepts before the Drools Controller gives the Policy Container a fact to
@@ -78,6 +78,6 @@ public interface DroolsControllerFeatureAPI extends OrderedService {
     /**
      * Feature providers implementing this interface.
      */
-    public static final OrderedServiceImpl<DroolsControllerFeatureAPI> providers =
-            new OrderedServiceImpl<>(DroolsControllerFeatureAPI.class);
+    public static final OrderedServiceImpl<DroolsControllerFeatureApi> providers =
+            new OrderedServiceImpl<>(DroolsControllerFeatureApi.class);
 }

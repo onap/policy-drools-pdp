@@ -222,7 +222,7 @@ public class PdpdConfigurationTest {
         //
         List<ControllerConfiguration> controllers2 = new ArrayList<>();
         controllers2.add(controller2);
-        config2.withRequestID(REQUEST_ID2).withEntity(ENTITY2).withController(controllers2);
+        config2.withRequestId(REQUEST_ID2).withEntity(ENTITY2).withController(controllers2);
 
         assertFalse(config.equals(config2));
 
@@ -249,7 +249,7 @@ public class PdpdConfigurationTest {
     @Test
     public void testConstructor() {
         PdpdConfiguration config = new PdpdConfiguration(REQUEST_ID, ENTITY, null);
-        assertEquals(config.getRequestID(), REQUEST_ID);
+        assertEquals(config.getRequestId(), REQUEST_ID);
         assertEquals(config.getEntity(), ENTITY);
     }
 

@@ -23,9 +23,9 @@ package org.onap.policy.drools.controller.logging;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.DroolsControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyController;
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ControllerLoggingFeature
-                implements PolicyEngineFeatureAPI, DroolsControllerFeatureAPI, PolicyControllerFeatureAPI {
+                implements PolicyEngineFeatureApi, DroolsControllerFeatureApi, PolicyControllerFeatureApi {
 
     @Override
     public int getSequenceNumber() {

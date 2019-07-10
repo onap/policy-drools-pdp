@@ -20,9 +20,9 @@
 
 package org.onap.policy.drools.lifecycle;
 
-import org.onap.policy.drools.features.DroolsControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
-import org.onap.policy.drools.features.PolicyEngineFeatureAPI;
+import org.onap.policy.drools.features.DroolsControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 
@@ -30,7 +30,7 @@ import org.onap.policy.drools.system.PolicyEngine;
  * This class hooks the Lifecycle State Machine to the PDP-D.
  */
 public class LifecycleFeature
-    implements PolicyEngineFeatureAPI, DroolsControllerFeatureAPI, PolicyControllerFeatureAPI {
+    implements PolicyEngineFeatureApi, DroolsControllerFeatureApi, PolicyControllerFeatureApi {
     /**
      * Lifecycle FSM.
      */
