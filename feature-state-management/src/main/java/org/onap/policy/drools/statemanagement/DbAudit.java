@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /** This class audits the database.
  */
-public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase {
+public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     // get an instance of logger
     private static Logger logger = LoggerFactory.getLogger(DbAudit.class);
     // single global instance of this audit object
@@ -66,7 +66,7 @@ public class DbAudit extends DroolsPDPIntegrityMonitor.AuditBase {
      * Get the instance.
      *  
      * @return the single 'DbAudit' instance. */
-    public static DroolsPDPIntegrityMonitor.AuditBase getInstance() {
+    public static DroolsPdpIntegrityMonitor.AuditBase getInstance() {
         return instance;
     }
 
