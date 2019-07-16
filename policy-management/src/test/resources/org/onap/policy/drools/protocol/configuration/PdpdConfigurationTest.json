@@ -1,5 +1,5 @@
 {
-    "requestID": "${obj.requestID}",
+    "requestID": "${obj.requestId}",
     "entity": "entity1",
     "controllers": [
         {

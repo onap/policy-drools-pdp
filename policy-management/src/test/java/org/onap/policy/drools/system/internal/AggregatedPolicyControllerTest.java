@@ -46,7 +46,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.GsonMgmtTestBuilder;
@@ -83,9 +83,9 @@ public class AggregatedPolicyControllerTest {
     private DroolsControllerFactory droolsFactory;
     private DroolsController drools;
     private DroolsConfiguration config;
-    private List<PolicyControllerFeatureAPI> providers;
-    private PolicyControllerFeatureAPI prov1;
-    private PolicyControllerFeatureAPI prov2;
+    private List<PolicyControllerFeatureApi> providers;
+    private PolicyControllerFeatureApi prov1;
+    private PolicyControllerFeatureApi prov2;
     private AggregatedPolicyController apc;
 
     /**
@@ -133,8 +133,8 @@ public class AggregatedPolicyControllerTest {
         droolsFactory = mock(DroolsControllerFactory.class);
         when(droolsFactory.build(any(), any(), any())).thenReturn(drools);
 
-        prov1 = mock(PolicyControllerFeatureAPI.class);
-        prov2 = mock(PolicyControllerFeatureAPI.class);
+        prov1 = mock(PolicyControllerFeatureApi.class);
+        prov2 = mock(PolicyControllerFeatureApi.class);
 
         providers = Arrays.asList(prov1, prov2);
 
@@ -797,10 +797,10 @@ public class AggregatedPolicyControllerTest {
      *        and the afterXxx loop was invoked
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      */
-    private void checkBeforeAfter(BiConsumer<PolicyControllerFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyControllerFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyControllerFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyControllerFeatureAPI> verifyAfter) {
+    private void checkBeforeAfter(BiConsumer<PolicyControllerFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyControllerFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyControllerFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyControllerFeatureApi> verifyAfter) {
 
         checkBeforeAfter_FalseFalse(setBefore, setAfter, action, verifyBefore, verifyMiddle, verifyAfter);
         checkBeforeAfter_FalseTrue(setBefore, setAfter, action, verifyBefore, verifyMiddle, verifyAfter);
@@ -821,10 +821,10 @@ public class AggregatedPolicyControllerTest {
      *        and the afterXxx loop was invoked
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      */
-    private void checkBeforeAfter_FalseFalse(BiConsumer<PolicyControllerFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyControllerFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyControllerFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyControllerFeatureAPI> verifyAfter) {
+    private void checkBeforeAfter_FalseFalse(BiConsumer<PolicyControllerFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyControllerFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyControllerFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyControllerFeatureApi> verifyAfter) {
 
         setUp();
 
@@ -861,10 +861,10 @@ public class AggregatedPolicyControllerTest {
      *        and the afterXxx loop was invoked
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      */
-    private void checkBeforeAfter_FalseTrue(BiConsumer<PolicyControllerFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyControllerFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyControllerFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyControllerFeatureAPI> verifyAfter) {
+    private void checkBeforeAfter_FalseTrue(BiConsumer<PolicyControllerFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyControllerFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyControllerFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyControllerFeatureApi> verifyAfter) {
 
         setUp();
 
@@ -901,10 +901,10 @@ public class AggregatedPolicyControllerTest {
      *        and the afterXxx loop was invoked
      * @param verifyAfter verifies that a provider's afterXxx method was invoked
      */
-    private void checkBeforeAfter_TrueFalse(BiConsumer<PolicyControllerFeatureAPI, Boolean> setBefore,
-                    BiConsumer<PolicyControllerFeatureAPI, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyControllerFeatureAPI> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyControllerFeatureAPI> verifyAfter) {
+    private void checkBeforeAfter_TrueFalse(BiConsumer<PolicyControllerFeatureApi, Boolean> setBefore,
+                    BiConsumer<PolicyControllerFeatureApi, Boolean> setAfter, Runnable action,
+                    Consumer<PolicyControllerFeatureApi> verifyBefore, Runnable verifyMiddle,
+                    Consumer<PolicyControllerFeatureApi> verifyAfter) {
 
         setUp();
 
@@ -955,7 +955,7 @@ public class AggregatedPolicyControllerTest {
         }
 
         @Override
-        protected List<PolicyControllerFeatureAPI> getProviders() {
+        protected List<PolicyControllerFeatureApi> getProviders() {
             return providers;
         }
     }

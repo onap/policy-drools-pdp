@@ -147,7 +147,6 @@
                             <includeTestResources>true</includeTestResources>
                             <excludes>
                             </excludes>
-                            <suppressionsLocation>${project.baseUri}checkstyle-suppressions.xml</suppressionsLocation>
                             <consoleOutput>true</consoleOutput>
                             <violationSeverity>warning</violationSeverity>
                         </configuration>

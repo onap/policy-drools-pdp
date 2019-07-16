@@ -28,14 +28,14 @@ import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.features.NetLoggerFeatureApi;
 import org.onap.policy.common.endpoints.utils.NetLoggerUtil.EventType;
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-public class MdcFilterFeature implements NetLoggerFeatureApi, PolicyControllerFeatureAPI {
+public class MdcFilterFeature implements NetLoggerFeatureApi, PolicyControllerFeatureApi {
 
     /**
      * Logger.

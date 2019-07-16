@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-test-transaction
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 package org.onap.policy.drools.testtransaction;
 
-import org.onap.policy.drools.features.PolicyControllerFeatureAPI;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * TestTransactionFeature implements the PolicyControllerFeatureAPI. TestTransactionFeature is the
  * interface to the TestTransaction feature logic.
  */
-public class TestTransactionFeature implements PolicyControllerFeatureAPI {
+public class TestTransactionFeature implements PolicyControllerFeatureApi {
 
     // get an instance of logger
     private static final Logger logger = LoggerFactory.getLogger(TestTransactionFeature.class);
