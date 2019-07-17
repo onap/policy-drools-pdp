@@ -1,0 +1,11 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Jim Hahn <jrh3@att.com>
+Code-Review+2: Pamela Dragosh <pdragosh@research.att.com>
+Code-Review+2: Jorge Hernandez <jorge.hernandez-herrero@att.com>
+Code-Review+1: Daniel Cruz <dc443y@att.com>
+Code-Review+2: Ram Krishna Verma <ram.krishna.verma@est.tech>
+Submitted-by: Ram Krishna Verma <ram.krishna.verma@est.tech>
+Submitted-at: Wed, 17 Jul 2019 11:18:37 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/policy/drools-pdp/+/91190
+Project: policy/drools-pdp
+Branch: refs/heads/master
