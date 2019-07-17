@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-persistence
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
+import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.DbAudit;
 import org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager;
 import org.onap.policy.drools.statemanagement.RepositoryAudit;
@@ -116,7 +116,7 @@ public class StateManagementTest {
 
         StateManagementFeatureAPI stateManagementFeature = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testStateManagementOperation stateManagementFeature.getResourceName(): " 
                 + stateManagementFeature.getResourceName());

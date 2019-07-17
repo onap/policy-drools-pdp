@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -258,7 +258,7 @@ public class PolicyContainer implements Startable {
 
             // loop through all of the features, and give each one
             // a chance to create the 'KieSession'
-            for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
                 try {
                     if ((kieSession = feature.activatePolicySession(this, name, kieBaseName)) != null) {
                         break;
@@ -280,7 +280,7 @@ public class PolicyContainer implements Startable {
                 sessions.put(name, session);
 
                 // notify features
-                for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+                for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
                     try {
                         feature.newPolicySession(session);
                     } catch (Exception e) {
@@ -350,7 +350,7 @@ public class PolicyContainer implements Startable {
             sessions.put(name, policySession);
 
             // notify features
-            for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
                 try {
                     feature.newPolicySession(policySession);
                 } catch (Exception e) {
@@ -430,7 +430,7 @@ public class PolicyContainer implements Startable {
         // KLUDGE WARNING: this is a temporary workaround -- if there are
         // no features, we don't have persistence, and 'activate' is never
         // called. In this case, make sure the container is started.
-        if (PolicySessionFeatureAPI.impl.getList().isEmpty()) {
+        if (PolicySessionFeatureApi.impl.getList().isEmpty()) {
             start();
         }
 
@@ -562,7 +562,7 @@ public class PolicyContainer implements Startable {
             session.getKieSession().dispose();
 
             // notify features
-            for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
                 try {
                     feature.disposeKieSession(session);
                 } catch (Exception e) {
@@ -625,7 +625,7 @@ public class PolicyContainer implements Startable {
             session.getKieSession().destroy();
 
             // notify features
-            for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
                 try {
                     feature.destroyKieSession(session);
                 } catch (Exception e) {
@@ -685,7 +685,7 @@ public class PolicyContainer implements Startable {
         logger.info("PolicyContainer.main: configDir={}", configDir);
 
         // invoke 'globalInit' on all of the features
-        for (PolicySessionFeatureAPI feature : PolicySessionFeatureAPI.impl.getList()) {
+        for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
             try {
                 feature.globalInit(args, configDir);
             } catch (Exception e) {

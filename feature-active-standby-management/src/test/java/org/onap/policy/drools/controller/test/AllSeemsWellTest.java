@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpImpl;
 import org.onap.policy.drools.activestandby.DroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
+import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -236,7 +236,7 @@ public class AllSeemsWellTest {
 
         StateManagementFeatureAPI stateManagementFeatureApi = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeatureApi = feature;
             logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",
                 stateManagementFeatureApi.getResourceName());
@@ -256,7 +256,7 @@ public class AllSeemsWellTest {
         // that has been created.
         ActiveStandbyFeatureAPI activeStandbyFeature = null;
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());

@@ -26,7 +26,7 @@ import java.util.Properties;
 
 import org.onap.policy.common.im.AllSeemsWellException;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
+import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class StateManagementFeature implements StateManagementFeatureAPI, 
-    PolicySessionFeatureAPI, PolicyEngineFeatureApi {
+    PolicySessionFeatureApi, PolicyEngineFeatureApi {
     // get an instance of logger
     private static final Logger logger =
             LoggerFactory.getLogger(StateManagementFeature.class);

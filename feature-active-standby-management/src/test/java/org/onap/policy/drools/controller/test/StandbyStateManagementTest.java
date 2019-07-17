@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.activestandby.PMStandbyStateChangeNotifier;
-import org.onap.policy.drools.core.PolicySessionFeatureAPI;
+import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -353,7 +353,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI stateManagementFeature = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}", 
                     stateManagementFeature.getResourceName());
@@ -472,7 +472,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI stateManagementFeature = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testComputeMostRecentPrimary stateManagementFeature.getResourceName(): {}", 
                     stateManagementFeature.getResourceName());
@@ -654,7 +654,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI stateManagementFeature = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testComputeDesignatedPdp stateManagementFeature.getResourceName(): {}", 
                     stateManagementFeature.getResourceName());
@@ -794,7 +794,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI smf = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             smf = feature;
             logger.debug("testColdStandby stateManagementFeature.getResourceName(): {}", smf.getResourceName());
             break;
@@ -812,7 +812,7 @@ public class StandbyStateManagementTest {
         // that has been created.
         ActiveStandbyFeatureAPI activeStandbyFeature = null;
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testColdStandby activeStandbyFeature.getResourceName(): {}", 
                     activeStandbyFeature.getResourceName());
@@ -925,7 +925,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI smf = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             smf = feature;
             logger.debug("testHotStandby1 stateManagementFeature.getResourceName(): {}", smf.getResourceName());
             break;
@@ -943,7 +943,7 @@ public class StandbyStateManagementTest {
         // that has been created.
         ActiveStandbyFeatureAPI activeStandbyFeature = null;
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testHotStandby1 activeStandbyFeature.getResourceName(): {}", 
                     activeStandbyFeature.getResourceName());
@@ -1082,7 +1082,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI sm2 = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             sm2 = feature;
             logger.debug("testHotStandby2 stateManagementFeature.getResourceName(): {}", sm2.getResourceName());
             break;
@@ -1100,7 +1100,7 @@ public class StandbyStateManagementTest {
         // that has been created.
         ActiveStandbyFeatureAPI activeStandbyFeature = null;
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testHotStandby2 activeStandbyFeature.getResourceName(): {}", 
                     activeStandbyFeature.getResourceName());
@@ -1239,7 +1239,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI sm = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             sm = feature;
             logger.debug("testLocking1 stateManagementFeature.getResourceName(): {}", sm.getResourceName());
             break;
@@ -1257,7 +1257,7 @@ public class StandbyStateManagementTest {
         // that has been created.
         ActiveStandbyFeatureAPI activeStandbyFeature = null;
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testLocking1 activeStandbyFeature.getResourceName(): {}", 
                     activeStandbyFeature.getResourceName());
@@ -1487,7 +1487,7 @@ public class StandbyStateManagementTest {
 
         StateManagementFeatureAPI sm = null;
         for (StateManagementFeatureAPI feature : StateManagementFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             sm = feature;
             logger.debug("testLocking2 stateManagementFeature.getResourceName(): {}", sm.getResourceName());
             break;
@@ -1505,7 +1505,7 @@ public class StandbyStateManagementTest {
         // that has been created.
         ActiveStandbyFeatureAPI activeStandbyFeature = null;
         for (ActiveStandbyFeatureAPI feature : ActiveStandbyFeatureAPI.impl.getList()) {
-            ((PolicySessionFeatureAPI) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testLocking2 activeStandbyFeature.getResourceName(): {}", 
                     activeStandbyFeature.getResourceName());
