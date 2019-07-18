@@ -110,7 +110,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
 
 
         //Create an instance of the Observer
-        PMStandbyStateChangeNotifier pmNotifier = new PMStandbyStateChangeNotifier();
+        PmStandbyStateChangeNotifier pmNotifier = new PmStandbyStateChangeNotifier();
 
         //Register the PMStandbyStateChangeNotifier Observer
         stateManagementFeature.addObserver(pmNotifier);

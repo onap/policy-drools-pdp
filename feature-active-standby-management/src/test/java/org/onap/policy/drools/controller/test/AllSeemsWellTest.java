@@ -278,8 +278,8 @@ public class AllSeemsWellTest {
 
 
         logger.debug("testAllSeemsWell: Sleeping {} s, to allow JpaDroolsPdpsConnector "
-            + "time to check droolspdpentity table", SLEEP_TIME_SEC);
-        waitForCondition(()-> conn.getPdp(thisPdpId).isDesignated(),  SLEEP_TIME_SEC);
+                        + "time to check droolspdpentity table", SLEEP_TIME_SEC);
+        waitForCondition(() -> conn.getPdp(thisPdpId).isDesignated(), SLEEP_TIME_SEC);
 
         // Verify that this formerly un-designated PDP in HOT_STANDBY is now designated and providing service.
 
@@ -305,8 +305,8 @@ public class AllSeemsWellTest {
 
         //It takes 10x the update interval (1 sec) before the watcher will declare the election handler dead
         //and that just stops forward progress counter.  So, the fp monitor must then run to determine
-        //if the fpc has stalled.  That will take about another 5 sec.
-        waitForCondition(()-> smf.getStandbyStatus().equals(StateManagement.COLD_STANDBY),
+        // if the fpc has stalled. That will take about another 5 sec.
+        waitForCondition(() -> smf.getStandbyStatus().equals(StateManagement.COLD_STANDBY),
             STALLED_ELECTION_HANDLER_SLEEP_TIME_SEC);
 
         logger.debug("testAllSeemsWell: After isStalled=true, PDP= {} "
