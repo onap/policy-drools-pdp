@@ -43,15 +43,17 @@ import org.onap.policy.drools.utils.logging.LoggerUtil;
 
 public class DMaaPSimulatorTest {
 
-    private static final int DMAAPSIM_SERVER_PORT = 6670;
+    private static int DMAAPSIM_SERVER_PORT;
 
     /**
      * Setup the simulator.
+     * @throws IOException if a server port cannot be allocated
      */
     @BeforeClass
-    public static void setUpSimulator() {
+    public static void setUpSimulator() throws IOException {
         LoggerUtil.setLevel("ROOT", "INFO");
         LoggerUtil.setLevel("org.eclipse.jetty", "WARN");
+        DMAAPSIM_SERVER_PORT = NetworkUtil.allocPort();
         try {
             final HttpServletServer testServer = HttpServletServerFactoryInstance.getServerFactory().build("dmaapSim",
                             "localhost", DMAAPSIM_SERVER_PORT, "/", false, true);
@@ -76,7 +78,7 @@ public class DMaaPSimulatorTest {
         Pair<Integer, String> response = dmaapGet("myTopicNoData", timeout);
         assertNotNull(response);
         assertNotNull(response.first);
-        assertEquals("No topic", response.second);
+        assertEquals(DMaaPSimulatorJaxRs.NO_TOPIC_MSG, response.second);
     }
 
     @Test
@@ -148,7 +150,7 @@ public class DMaaPSimulatorTest {
         response = dmaapGet(topics[1], 1000);
         assertNotNull(response);
         assertNotNull(response.first);
-        assertEquals("No topic", response.second);
+        assertEquals(DMaaPSimulatorJaxRs.NO_TOPIC_MSG, response.second);
 
         response = dmaapPost(topics[1], data[1][0]);
         assertNotNull(response);
@@ -183,7 +185,7 @@ public class DMaaPSimulatorTest {
         response = dmaapGet(topics[0], 1000);
         assertNotNull(response);
         assertNotNull(response.first);
-        assertEquals("No Data", response.second);
+        assertEquals(DMaaPSimulatorJaxRs.NO_DATA_MSG, response.second);
     }
 
     @Test
