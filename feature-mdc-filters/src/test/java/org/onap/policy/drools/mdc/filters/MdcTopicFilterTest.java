@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,16 @@
 
 package org.onap.policy.drools.mdc.filters;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Test;
 import org.onap.policy.drools.mdc.filters.MdcTopicFilter.FilterRule;
 
@@ -83,7 +86,7 @@ public class MdcTopicFilterTest {
      */
     @Test
     public void multiFilterMultiPathTest() {
-        String topicFilterProp = "requestID=$.requestID|$.body.request-id," 
+        String topicFilterProp = "requestID=$.requestID|$.body.request-id,"
                 + "closedLoopControlName=$.closedLoopControlName"
                 + "|$.body.closedLoopControlName";
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
@@ -195,7 +198,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.addFilterRule(null, "$.subRequestID");
     }
-    
+
     /**
      * Tests throwing an exception for passing a null key and a list
      * of paths.
@@ -217,7 +220,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.addFilterRule("", "$.subRequestID");
     }
-    
+
     /**
      * Tests throwing an exception for passing an empty key and
      * a list of paths.
@@ -259,7 +262,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.addFilterRule("requestID", "$.test");
     }
-    
+
     /**
      * Tests throwing an exception for trying to add a filter with a key that
      * already exists with a list of filters.
@@ -269,6 +272,12 @@ public class MdcTopicFilterTest {
         String topicFilterProp = "requestID=$.requestID";
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.addFilterRule("requestID", Arrays.asList("$.test"));
+    }
+
+    @Test
+    public void createFilterRuleExceptionTest() {
+        assertThatIllegalArgumentException().isThrownBy(() -> new MdcTopicFilter("invalid filter"))
+                        .withMessage("could not parse filter rule");
     }
 
     /**
@@ -300,6 +309,14 @@ public class MdcTopicFilterTest {
                 rule.getPaths());
     }
 
+    @Test
+    public void modifyFilterRuleMultiPathExceptionTest() {
+        MdcTopicFilter filter = new MdcTopicFilter("abc=$a.value");
+        assertThatIllegalArgumentException()
+                        .isThrownBy(() -> filter.modifyFilterRule("def", "abc", Arrays.asList("$.b", "$.c")))
+                        .withMessage("a filter rule already exists for key: abc");
+    }
+
     /**
      * Tests modifying a filter rule key.
      */
@@ -324,7 +341,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule(null, "$.request-id");
     }
-    
+
     /**
      * Tests throwing an exception when passing a null key and
      * a list of multiple paths.
@@ -335,7 +352,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule(null, Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty key and
      * a single path.
@@ -346,7 +363,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("", "$.request-id");
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty key and
      * a list of multiple paths.
@@ -357,7 +374,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("", Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty string path.
      */
@@ -367,7 +384,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("requestID", "");
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty list of paths.
      */
@@ -377,9 +394,9 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("requestID", Arrays.asList());
     }
-    
+
     /**
-     * Tests throwing an exception when passing a key that is 
+     * Tests throwing an exception when passing a key that is
      * not in the filter rules map and a string path.
      */
     @Test(expected = IllegalArgumentException.class)
@@ -388,9 +405,9 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("request-id", "$.request-id");
     }
-    
+
     /**
-     * Tests throwing an exception when passing a key that is 
+     * Tests throwing an exception when passing a key that is
      * not in the filter rules map and a list of paths.
      */
     @Test(expected = IllegalArgumentException.class)
@@ -399,8 +416,8 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("request-id", Arrays.asList("$.request-id"));
     }
-    
-    
+
+
     /**
      * Tests throwing an exception when passing a null oldKey.
      */
@@ -410,7 +427,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule(null, "request-id", Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty oldKey.
      */
@@ -420,7 +437,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("", "request-id", Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when passing a null newKey.
      */
@@ -430,7 +447,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("requestID", null, Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty newKey.
      */
@@ -440,7 +457,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("requestID", "", Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when the old and new key are the same.
      */
@@ -451,7 +468,7 @@ public class MdcTopicFilterTest {
         topicFilter.modifyFilterRule("requestID", "requestID",
                 Arrays.asList("$.request-id"));
     }
-    
+
     /**
      * Tests throwing an exception when passing an empty paths list.
      */
@@ -461,7 +478,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.modifyFilterRule("requestID", "request-id", Arrays.asList());
     }
-    
+
     /**
      * Tests throwing an exception when the old key doesn't exist
      * in the rules map.
@@ -511,7 +528,7 @@ public class MdcTopicFilterTest {
         MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
         topicFilter.deleteFilterRule(null);
     }
-    
+
     /**
      * Tests throwing an exception if the key is empty.
      */
@@ -544,6 +561,19 @@ public class MdcTopicFilterTest {
         assertEquals("update", results.get("operation").get(0));
     }
 
+    @Test
+    public void findAllNotFoundTest() {
+        String message = "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\","
+                        + "\"controllers\":[{\"name\":\"test-controller\","
+                        + "\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","
+                        + "\"artifactId\":\"test\",\"version\":\"0.0.1\"},\"operation\":\"update\"}]}";
+
+        String topicFilterProp = "requestID=$.requestID[3]";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+
+        assertTrue(topicFilter.find(message).get("requestID").isEmpty());
+    }
+
     /**
      * Tests finding field matches for a filter rule corresponding to a topic.
      */
@@ -560,5 +590,72 @@ public class MdcTopicFilterTest {
 
         List<String> results = topicFilter.find(message, "requestID");
         assertEquals("38adde30-cc22-11e8-a8d5-f2801f1b9fd1", results.get(0));
+    }
+
+    @Test
+    public void findNotFoundTest() {
+        String message = "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\","
+                + "\"controllers\":[{\"name\":\"test-controller\","
+                + "\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","
+                + "\"artifactId\":\"test\",\"version\":\"0.0.1\"},\"operation\":\"update\"}]}";
+
+        String topicFilterProp = "requestID=$.requestID[3]";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+
+        assertTrue(topicFilter.find(message, "requestID").isEmpty());
+    }
+
+    @Test
+    public void testFilterRuleStringString() {
+        FilterRule rule = new FilterRule("hello", "world");
+
+        assertEquals("hello", rule.getMdcKey());
+        assertEquals("[world]", rule.getPaths().toString());
+    }
+
+    @Test
+    public void testFilterRuleMdcKey() {
+        FilterRule rule = new FilterRule("abc", "def");
+
+        // check error cases first
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.setMdcKey(null))
+                        .withMessage(MdcTopicFilter.MDC_KEY_ERROR);
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.setMdcKey(""))
+                        .withMessage(MdcTopicFilter.MDC_KEY_ERROR);
+
+        // success cases
+        rule.setMdcKey("my-mdc-key");
+        assertEquals("my-mdc-key", rule.getMdcKey());
+    }
+
+    @Test
+    public void testFilterRulePaths() {
+        FilterRule rule = new FilterRule("abc", "def");
+
+        // check error cases first
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.setPaths(null))
+                        .withMessage(MdcTopicFilter.JSON_PATH_ERROR);
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.setPaths(Collections.emptyList()))
+                        .withMessage(MdcTopicFilter.JSON_PATH_ERROR);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.addPaths(null))
+                        .withMessage(MdcTopicFilter.JSON_PATH_ERROR);
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.addPaths(Collections.emptyList()))
+                        .withMessage(MdcTopicFilter.JSON_PATH_ERROR);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.addPath(null))
+                        .withMessage(MdcTopicFilter.JSON_PATH_ERROR);
+        assertThatIllegalArgumentException().isThrownBy(() -> rule.addPath(""))
+                        .withMessage(MdcTopicFilter.JSON_PATH_ERROR);
+
+        // success cases
+        rule.setPaths(new ArrayList<>(Arrays.asList("pathA", "pathB")));
+        assertEquals("[pathA, pathB]", rule.getPaths().toString());
+
+        rule.addPath("pathC");
+        assertEquals("[pathA, pathB, pathC]", rule.getPaths().toString());
+
+        rule.addPaths(Arrays.asList("pathD", "pathE"));
+        assertEquals("[pathA, pathB, pathC, pathD, pathE]", rule.getPaths().toString());
     }
 }
