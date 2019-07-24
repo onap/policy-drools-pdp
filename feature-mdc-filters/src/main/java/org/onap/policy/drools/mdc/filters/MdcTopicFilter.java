@@ -20,11 +20,13 @@
 
 package org.onap.policy.drools.mdc.filters;
 
+import com.att.aft.dme2.internal.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,7 @@ public class MdcTopicFilter {
 
     private Map<String, FilterRule> rules = new HashMap<>();
 
+    @Getter
     public static class FilterRule {
         private String mdcKey;
         private List<String> paths;
@@ -58,37 +61,29 @@ public class MdcTopicFilter {
             this.paths = paths;
         }
 
-        public String getMdcKey() {
-            return mdcKey;
-        }
-
-        public List<String> getPaths() {
-            return paths;
-        }
-
         protected void setMdcKey(String mdcKey) {
-            if (mdcKey == null || mdcKey.isEmpty()) {
+            if (StringUtils.isBlank(mdcKey)) {
                 throw new IllegalArgumentException(MDC_KEY_ERROR);
             }
             this.mdcKey = mdcKey;
         }
 
         protected void setPaths(List<String> paths) {
-            if (paths == null || paths.isEmpty()) {
+            if (nullOrEmpty(paths)) {
                 throw new IllegalArgumentException(JSON_PATH_ERROR);
             }
             this.paths = paths;
         }
 
         protected void addPaths(List<String> paths) {
-            if (paths == null || paths.isEmpty()) {
+            if (nullOrEmpty(paths)) {
                 throw new IllegalArgumentException(JSON_PATH_ERROR);
             }
             this.paths.addAll(paths);
         }
 
         protected void addPath(String path) {
-            if (path == null || path.isEmpty()) {
+            if (StringUtils.isBlank(path)) {
                 throw new IllegalArgumentException(JSON_PATH_ERROR);
             }
             this.paths.add(path);
@@ -130,7 +125,7 @@ public class MdcTopicFilter {
      * @return the filter rule associated with the key
      */
     protected FilterRule getFilterRule(String mdcKey) {
-        if (mdcKey == null || mdcKey.isEmpty()) {
+        if (StringUtils.isBlank(mdcKey)) {
             throw new IllegalArgumentException(MDC_KEY_ERROR);
         }
         return rules.get(mdcKey);
@@ -144,7 +139,7 @@ public class MdcTopicFilter {
      * @return the filter rule that was added for the topic
      */
     protected FilterRule addFilterRule(String mdcKey, String path) {
-        if (path == null || path.isEmpty()) {
+        if (StringUtils.isBlank(path)) {
             throw new IllegalArgumentException(JSON_PATH_ERROR);
         }
         return addFilterRule(mdcKey, Arrays.asList(path));
@@ -158,11 +153,11 @@ public class MdcTopicFilter {
      * @return the filter rule that was added for the topic
      */
     protected FilterRule addFilterRule(String mdcKey, List<String> paths) {
-        if (mdcKey == null || mdcKey.isEmpty()) {
+        if (StringUtils.isBlank(mdcKey)) {
             throw new IllegalArgumentException(MDC_KEY_ERROR);
         }
 
-        if (paths == null || paths.isEmpty()) {
+        if (nullOrEmpty(paths)) {
             throw new IllegalArgumentException(JSON_PATH_ERROR);
         }
 
@@ -175,6 +170,10 @@ public class MdcTopicFilter {
         return rule;
     }
 
+    private static boolean nullOrEmpty(List<String> paths) {
+        return paths == null || paths.isEmpty();
+    }
+
     /**
      * Modifies an existing filter rule by adding the specified path.
      *
@@ -183,7 +182,7 @@ public class MdcTopicFilter {
      * @return the filter rule that was modified
      */
     protected FilterRule modifyFilterRule(String mdcKey, String path) {
-        if (path == null || path.isEmpty()) {
+        if (StringUtils.isBlank(path)) {
             throw new IllegalArgumentException(JSON_PATH_ERROR);
         }
         return modifyFilterRule(mdcKey, Arrays.asList(path));
@@ -197,11 +196,11 @@ public class MdcTopicFilter {
      * @return the filter rule that was modified
      */
     protected FilterRule modifyFilterRule(String mdcKey, List<String> paths) {
-        if (mdcKey == null || mdcKey.isEmpty()) {
+        if (StringUtils.isBlank(mdcKey)) {
             throw new IllegalArgumentException(MDC_KEY_ERROR);
         }
 
-        if (paths == null || paths.isEmpty()) {
+        if (nullOrEmpty(paths)) {
             throw new IllegalArgumentException(JSON_PATH_ERROR);
         }
 
@@ -224,18 +223,18 @@ public class MdcTopicFilter {
      * @return the filter rule that was modified
      */
     protected FilterRule modifyFilterRule(String oldMdcKey, String newMdcKey, List<String> paths) {
-        if (oldMdcKey == null || oldMdcKey.isEmpty()) {
+        if (StringUtils.isBlank(oldMdcKey)) {
             throw new IllegalArgumentException("current mdcKey must be provided");
         }
 
-        if (newMdcKey == null || newMdcKey.isEmpty()) {
+        if (StringUtils.isBlank(newMdcKey)) {
             throw new IllegalArgumentException("new mdcKey must be provided");
         }
 
         if (oldMdcKey.equals(newMdcKey)) {
             throw new IllegalArgumentException("the old and new mdcKey are equivalent");
         }
-        if (paths == null || paths.isEmpty()) {
+        if (nullOrEmpty(paths)) {
             throw new IllegalArgumentException(JSON_PATH_ERROR);
         }
 
@@ -268,7 +267,7 @@ public class MdcTopicFilter {
      * @return the filter rule that was deleted
      */
     protected FilterRule deleteFilterRule(String mdcKey) {
-        if (mdcKey == null || mdcKey.isEmpty()) {
+        if (StringUtils.isBlank(mdcKey)) {
             throw new IllegalArgumentException(MDC_KEY_ERROR);
         }
         return rules.remove(mdcKey);
