@@ -28,15 +28,11 @@ import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle State.
  */
 public abstract class LifecycleState implements Startable {
-
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleState.class);
 
     @GsonJsonIgnore
     protected final LifecycleFsm fsm;

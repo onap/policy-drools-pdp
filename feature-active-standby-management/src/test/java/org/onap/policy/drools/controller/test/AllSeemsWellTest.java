@@ -235,7 +235,7 @@ public class AllSeemsWellTest {
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
         StateManagementFeatureApi stateManagementFeatureApi = null;
-        for (StateManagementFeatureApi feature : stateManagementFeatureApi.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeatureApi = feature;
             logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",

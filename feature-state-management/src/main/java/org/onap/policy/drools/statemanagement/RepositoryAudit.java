@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,7 +56,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
     /**
      * Get the integrity monitor instance.
-     * 
+     *
      * @return the single 'RepositoryAudit' instance
      */
     public static DroolsPdpIntegrityMonitor.AuditBase getInstance() {
@@ -71,9 +71,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     @Override
     public void invoke(Properties properties)
             throws IOException, InterruptedException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Running 'RepositoryAudit.invoke'");
-        }
+        logger.debug("Running 'RepositoryAudit.invoke'");
 
         boolean isActive = true;
         // ignore errors by default
@@ -81,14 +79,14 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         String repoAuditIsActive = StateManagementProperties.getProperty("repository.audit.is.active");
         String repoAuditIgnoreErrors =
                 StateManagementProperties.getProperty("repository.audit.ignore.errors");
-        logger.debug("RepositoryAudit.invoke: repoAuditIsActive = {}" 
+        logger.debug("RepositoryAudit.invoke: repoAuditIsActive = {}"
                 + ", repoAuditIgnoreErrors = {}",repoAuditIsActive, repoAuditIgnoreErrors);
 
         if (repoAuditIsActive != null) {
             try {
                 isActive = Boolean.parseBoolean(repoAuditIsActive.trim());
             } catch (NumberFormatException e) {
-                logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.is.active = {}", 
+                logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.is.active = {}",
                         repoAuditIsActive);
             }
         }
@@ -103,7 +101,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
                 ignoreErrors = Boolean.parseBoolean(repoAuditIgnoreErrors.trim());
             } catch (NumberFormatException e) {
                 ignoreErrors = true;
-                logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.ignore.errors = {}", 
+                logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.ignore.errors = {}",
                         repoAuditIgnoreErrors);
             }
         } else {
@@ -134,7 +132,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             try {
                 timeoutInSeconds = Long.valueOf(timeoutString);
             } catch (NumberFormatException e) {
-                logger.error("RepositoryAudit: Invalid 'repository.audit.timeout' value: '{}'", 
+                logger.error("RepositoryAudit: Invalid 'repository.audit.timeout' value: '{}'",
                         timeoutString, e);
                 if (!ignoreErrors) {
                     response.append("Invalid 'repository.audit.timeout' value: '")
@@ -238,7 +236,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             .append(repo)
             .append("</localRepositoryDirectory>\n")
             .append("               <artifactItems>\n");
-        
+
         for (Artifact artifact : artifacts) {
             // each artifact results in an 'artifactItem' element
             sb.append("                 <artifactItem>\n"
@@ -315,7 +313,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
                 if (fileContents.regionMatches(index, "loading: ", 0, 9)) {
                     index += 9;
                     int endIndex = fileContents.indexOf('\n', index);
-                    logger.info("RepositoryAudit: Attempted download: '{}'", 
+                    logger.info("RepositoryAudit: Attempted download: '{}'",
                             fileContents.substring(index, endIndex));
                     index = endIndex;
                 } else if (fileContents.regionMatches(index, "loaded: ", 0, 8)) {
@@ -481,7 +479,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
         /**
          * Returns string representation.
-         * 
+         *
          * @return the artifact id in the form: {@code"<groupId>/<artifactId>/<version>/<type>"}
          */
         @Override

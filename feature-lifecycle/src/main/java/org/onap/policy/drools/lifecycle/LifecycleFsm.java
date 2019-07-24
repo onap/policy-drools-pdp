@@ -334,10 +334,6 @@ public class LifecycleFsm implements Startable {
         scheduler.shutdownNow();
     }
 
-    private PdpStatus statusPayload() {
-        return statusPayload(state());
-    }
-
     private PdpStatus statusPayload(@NonNull PdpState state) {
         PdpStatus status = new PdpStatus();
         status.setName(name);
