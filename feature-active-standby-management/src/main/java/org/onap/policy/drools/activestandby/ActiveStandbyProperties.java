@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActiveStandbyProperties {
-    // get an instance of logger 
+    // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(ActiveStandbyProperties.class);
 
     public static final String PDP_CHECK_INVERVAL = "pdp.checkInterval";
@@ -47,17 +47,17 @@ public class ActiveStandbyProperties {
     private static Properties properties = null;
 
     private ActiveStandbyProperties() {
-        throw new IllegalStateException("Utility class");
+        // do nothing
     }
-    
+
     /**
      * Initialize the parameter values from the droolsPersitence.properties file values.
-     * 
+     *
      * <p>This is designed so that the Properties object is obtained from properties
      * file and then is passed to this method to initialize the value of the parameters.
      * This allows the flexibility of JUnit tests using getProperties(filename) to get the
      * properties while runtime methods can use getPropertiesFromClassPath(filename).
-     * 
+     *
      * @param prop properties
      */
     public static void initProperties(Properties prop) {

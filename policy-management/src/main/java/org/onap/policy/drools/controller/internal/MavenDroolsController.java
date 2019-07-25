@@ -218,9 +218,7 @@ public class MavenDroolsController implements DroolsController {
 
         /* upgrade */
         String messages = this.policyContainer.updateToVersion(newVersion);
-        if (logger.isWarnEnabled()) {
-            logger.warn("{} UPGRADE results: {}", this, messages);
-        }
+        logger.warn("{} UPGRADE results: {}", this, messages);
 
         /*
          * If all sucessful (can load new container), now we can remove all coders from previous sessions
@@ -232,9 +230,7 @@ public class MavenDroolsController implements DroolsController {
          */
         this.init(decoderConfigurations, encoderConfigurations);
 
-        if (logger.isInfoEnabled()) {
-            logger.info("UPDATE-TO-VERSION: completed " +  this);
-        }
+        logger.info("UPDATE-TO-VERSION: completed {}", this);
     }
 
     /**
@@ -247,9 +243,7 @@ public class MavenDroolsController implements DroolsController {
     protected void initCoders(List<TopicCoderFilterConfiguration> coderConfigurations,
             boolean decoder) {
 
-        if (logger.isInfoEnabled()) {
-            logger.info("INIT-CODERS: " +  this);
-        }
+        logger.info("INIT-CODERS: {}", this);
 
         if (coderConfigurations == null) {
             return;
@@ -337,9 +331,7 @@ public class MavenDroolsController implements DroolsController {
      * remove decoders.
      */
     protected void removeDecoders() {
-        if (logger.isInfoEnabled()) {
-            logger.info("REMOVE-DECODERS: {}",  this);
-        }
+        logger.info("REMOVE-DECODERS: {}", this);
 
         if (this.decoderConfigurations == null) {
             return;
@@ -357,9 +349,7 @@ public class MavenDroolsController implements DroolsController {
      */
     protected void removeEncoders() {
 
-        if (logger.isInfoEnabled()) {
-            logger.info("REMOVE-ENCODERS: {}",  this);
-        }
+        logger.info("REMOVE-ENCODERS: {}", this);
 
         if (this.encoderConfigurations == null) {
             return;
@@ -380,18 +370,12 @@ public class MavenDroolsController implements DroolsController {
         }
 
         if (modelHash == this.modelClassLoaderHash) {
-            if (logger.isInfoEnabled()) {
-                logger.info(coderClass.getName()
-                        + this + " class loader matches original drools controller rules classloader "
-                        + coderClass.getClassLoader());
-            }
+            logger.info("{}{} class loader matches original drools controller rules classloader {}",
+                            coderClass.getName(), this, coderClass.getClassLoader());
             return true;
         } else {
-            if (logger.isWarnEnabled()) {
-                logger.warn(this + coderClass.getName() + " class loaders don't match  "
-                        + coderClass.getClassLoader() + " vs "
-                        + this.policyContainer.getClassLoader());
-            }
+            logger.warn("{}{} class loaders don't match {} vs {}", this, coderClass.getName(),
+                            coderClass.getClassLoader(), this.policyContainer.getClassLoader());
             return false;
         }
     }
@@ -399,9 +383,7 @@ public class MavenDroolsController implements DroolsController {
     @Override
     public boolean start() {
 
-        if (logger.isInfoEnabled()) {
-            logger.info("START: {}", this);
-        }
+        logger.info("START: {}", this);
 
         synchronized (this) {
             if (this.alive) {
@@ -572,9 +554,7 @@ public class MavenDroolsController implements DroolsController {
     @Override
     public boolean deliver(TopicSink sink, Object event) {
 
-        if (logger.isInfoEnabled()) {
-            logger.info("{}DELIVER: {} FROM {} TO {}", this, event, this, sink);
-        }
+        logger.info("{}DELIVER: {} FROM {} TO {}", this, event, this, sink);
 
         for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
             try {

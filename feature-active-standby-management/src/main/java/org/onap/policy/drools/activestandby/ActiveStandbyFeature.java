@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * 'PolicyContainer' and 'Main'. It was moved here as part of making this
  * a separate optional feature.
  */
-public class ActiveStandbyFeature implements ActiveStandbyFeatureApi, 
+public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
     PolicySessionFeatureApi, PolicyEngineFeatureApi {
     // get an instance of logger
     private static final Logger logger =
@@ -84,20 +84,16 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
 
         for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
             if (feature.getResourceName().equals(myPdp.getPdpId())) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("ActiveStandbyFeature.globalInit: Found StateManagementFeature"
-                            + " with resourceName: {}", myPdp.getPdpId());
-                }
+                logger.debug("ActiveStandbyFeature.globalInit: Found StateManagementFeature"
+                                + " with resourceName: {}", myPdp.getPdpId());
                 stateManagementFeature = feature;
                 break;
             }
         }
         if (stateManagementFeature == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("ActiveStandbyFeature failed to initialize.  "
-                        + "Unable to get instance of StateManagementFeatureApi "
-                        + "with resourceID: {}", myPdp.getPdpId());
-            }
+            logger.debug("ActiveStandbyFeature failed to initialize.  "
+                            + "Unable to get instance of StateManagementFeatureApi "
+                            + "with resourceID: {}", myPdp.getPdpId());
             logger.error("ActiveStandbyFeature failed to initialize.  "
                     + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", myPdp.getPdpId());
@@ -114,9 +110,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
 
         //Register the PMStandbyStateChangeNotifier Observer
         stateManagementFeature.addObserver(pmNotifier);
-        if (logger.isDebugEnabled()) {
-            logger.debug("ActiveStandbyFeature.globalInit() exit");
-        }
+        logger.debug("ActiveStandbyFeature.globalInit() exit");
     }
 
 

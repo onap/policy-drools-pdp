@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ public class IntegrityMonitorRestManager {
 
     /**
      * Test interface for Integrity Monitor.
-     * 
+     *
      * @return Exception message if exception, otherwise empty
      */
     @ApiOperation(
@@ -63,9 +63,7 @@ public class IntegrityMonitorRestManager {
     @GET
     @Path("test")
     public Response test() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("integrity monitor /test accessed");
-        }
+        logger.debug("integrity monitor /test accessed");
         // The responses are stored within the audit objects, so we need to
         // invoke the audits and get responses before we handle another
         // request.

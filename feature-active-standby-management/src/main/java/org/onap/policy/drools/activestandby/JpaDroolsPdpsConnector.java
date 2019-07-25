@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,17 +36,17 @@ import org.slf4j.LoggerFactory;
 
 public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
-    // get an instance of logger 
+    // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(JpaDroolsPdpsConnector.class);
     private EntityManagerFactory emf;
 
 
-    //not sure if we want to use the same entity manager factory 
+    //not sure if we want to use the same entity manager factory
     //for drools session and pass it in here, or create a new one
     public JpaDroolsPdpsConnector(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    
+
     @Override
     public Collection<DroolsPdp> getDroolsPdps() {
         //return a list of all the DroolsPdps in the database
@@ -96,9 +96,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     @Override
     public void update(DroolsPdp pdp) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("update: Entering, pdpId={}", pdp.getPdpId());
-        }
+        logger.debug("update: Entering, pdpId={}", pdp.getPdpId());
 
         //this is to update our own pdp in the database
         EntityManager em = emf.createEntityManager();
@@ -123,17 +121,13 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                     logger.error("Could not get PDP timeout property, using default.", e);
                 }
                 boolean isCurrent = difference < pdpTimeout;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("update: PDP= {}, isCurrent={}"
-                            + " difference= {}"
-                            + ", pdpTimeout= {}, designated= {}",
-                            pdp.getPdpId(), isCurrent, difference, pdpTimeout, droolsPdpEntity.isDesignated());
-                }
+                logger.debug("update: PDP= {}, isCurrent={}"
+                                + " difference= {}"
+                                + ", pdpTimeout= {}, designated= {}",
+                                pdp.getPdpId(), isCurrent, difference, pdpTimeout, droolsPdpEntity.isDesignated());
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("update: For PDP={}"
-                            + ", instantiating new DroolsPdpEntity", pdp.getPdpId());
-                }
+                logger.debug("update: For PDP={}"
+                                + ", instantiating new DroolsPdpEntity", pdp.getPdpId());
                 droolsPdpEntity = new DroolsPdpEntity();
                 em.persist(droolsPdpEntity);
                 droolsPdpEntity.setPdpId(pdp.getPdpId());
@@ -149,14 +143,12 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             }
 
             if (droolsPdpEntity.isDesignated() != pdp.isDesignated()) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("update: pdpId={}"
-                            + ", pdp.isDesignated={}"
-                            + ", droolsPdpEntity.pdpId= {}"
-                            + ", droolsPdpEntity.isDesignated={}",
-                            pdp.getPdpId(), pdp.isDesignated(),
-                            droolsPdpEntity.getPdpId(), droolsPdpEntity.isDesignated());
-                }
+                logger.debug("update: pdpId={}"
+                                + ", pdp.isDesignated={}"
+                                + ", droolsPdpEntity.pdpId= {}"
+                                + ", droolsPdpEntity.isDesignated={}",
+                                pdp.getPdpId(), pdp.isDesignated(),
+                                droolsPdpEntity.getPdpId(), droolsPdpEntity.isDesignated());
                 droolsPdpEntity.setDesignated(pdp.isDesignated());
                 //The isDesignated value is not the same and the new one == true
                 if (pdp.isDesignated()) {
@@ -168,14 +160,12 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             cleanup(em, "update");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("update: Exiting");
-        }
+        logger.debug("update: Exiting");
 
     }
 
     /*
-     * Note: A side effect of this boolean method is that if the PDP is designated but not current, the 
+     * Note: A side effect of this boolean method is that if the PDP is designated but not current, the
      * droolspdpentity.DESIGNATED column will be set to false (the PDP will be un-designated, i.e. marked as
      * being in standby mode)
      */
@@ -193,23 +183,19 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
                         .setFlushMode(FlushModeType.COMMIT).getResultList();
                 if (droolsPdpsList.size() == 1 && droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("isPdpCurrent: PDP={}  designated but not current; setting designated to false", 
-                                pdp.getPdpId());
-                    }
+                    logger.debug("isPdpCurrent: PDP={}  designated but not current; setting designated to false",
+                                    pdp.getPdpId());
                     DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity)droolsPdpsList.get(0);
                     droolsPdpEntity.setDesignated(false);
                     em.getTransaction().commit();
                 } else {
                     logger.warn("isPdpCurrent: PDP={} is designated but not current; "
-                            + "however it does not have a DB entry, so cannot set DESIGNATED to false!", 
+                            + "however it does not have a DB entry, so cannot set DESIGNATED to false!",
                             pdp.getPdpId());
                 }
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("isPdpCurrent: For PDP= {}, "
-                            + "designated={}, isCurrent={}", pdp.getPdpId(), pdp.isDesignated(), isCurrent);
-                }
+                logger.debug("isPdpCurrent: For PDP= {}, "
+                                + "designated={}, isCurrent={}", pdp.getPdpId(), pdp.isDesignated(), isCurrent);
             }
         } catch (Exception e) {
             logger.error("Could not update expired record marked as designated in the database", e);
@@ -223,10 +209,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     @Override
     public void setDesignated(DroolsPdp pdp, boolean designated) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("setDesignated: Entering, pdpId={}"
-                    + ", designated={}", pdp.getPdpId(), designated);
-        }
+        logger.debug("setDesignated: Entering, pdpId={}"
+                + ", designated={}", pdp.getPdpId(), designated);
 
         EntityManager em = null;
         try {
@@ -242,16 +226,14 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList
                         .get(0);
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("setDesignated: PDP={}"
-                            + " found, designated= {}"
-                            + ", setting to {}", pdp.getPdpId(), droolsPdpEntity.isDesignated(),
-                            designated);
-                }
+                logger.debug("setDesignated: PDP={}"
+                        + " found, designated= {}"
+                        + ", setting to {}", pdp.getPdpId(), droolsPdpEntity.isDesignated(),
+                        designated);
                 droolsPdpEntity.setDesignated(designated);
                 if (designated) {
                     em.refresh(droolsPdpEntity); //make sure we get the DB value
-                    if (!droolsPdpEntity.isDesignated()) { 
+                    if (!droolsPdpEntity.isDesignated()) {
                         droolsPdpEntity.setDesignatedDate(new Date());
                     }
 
@@ -267,18 +249,14 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             cleanup(em, "setDesignated");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("setDesignated: Exiting");
-        }
+        logger.debug("setDesignated: Exiting");
 
     }
 
 
     @Override
     public void standDownPdp(String pdpId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("standDownPdp: Entering, pdpId={}", pdpId);
-        }
+        logger.debug("standDownPdp: Entering, pdpId={}", pdpId);
 
         EntityManager em = null;
         try {
@@ -303,9 +281,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
                 droolsPdpEntity.setDesignated(false);
                 em.persist(droolsPdpEntity);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("standDownPdp: PDP={} persisted as non-designated.", pdpId );
-                }
+                logger.debug("standDownPdp: PDP={} persisted as non-designated.", pdpId );
             } else {
                 logger.error("standDownPdp: Missing record in droolspdpentity for pdpId={}"
                         + "; cannot stand down PDP", pdpId);
@@ -328,24 +304,20 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         } finally {
             cleanup(em, "standDownPdp");
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("standDownPdp: Exiting");
-        }
+        logger.debug("standDownPdp: Exiting");
 
     }
 
     /*
      * Determines whether or not a designated PDP has failed.
-     * 
+     *
      * Note: The update method, which is run periodically by the
      * TimerUpdateClass, will un-designate a PDP that is stale.
      */
     @Override
     public boolean hasDesignatedPdpFailed(Collection<DroolsPdp> pdps) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("hasDesignatedPdpFailed: Entering, pdps.size()={}", pdps.size());
-        }
+        logger.debug("hasDesignatedPdpFailed: Entering, pdps.size()={}", pdps.size());
 
         boolean failed = true;
         boolean foundDesignatedPdp = false;
@@ -356,40 +328,32 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
              * Normally, the update method will un-designate any stale PDP, but
              * we check here to see if the PDP has gone stale since the update
              * method was run.
-             * 
+             *
              * Even if we determine that the designated PDP is current, we keep
              * going (we don't break), so we can get visibility into the other
              * PDPs, when in DEBUG mode.
              */
             if (pdp.isDesignated() && isCurrent(pdp)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("hasDesignatedPdpFailed: Designated PDP={} is current", pdp.getPdpId());
-                }
+                logger.debug("hasDesignatedPdpFailed: Designated PDP={} is current", pdp.getPdpId());
                 failed = false;
                 foundDesignatedPdp = true;
             } else if (pdp.isDesignated() && !isCurrent(pdp)) {
                 logger.error("hasDesignatedPdpFailed: Designated PDP={} has failed", pdp.getPdpId());
                 foundDesignatedPdp = true;
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("hasDesignatedPdpFailed: PDP={} is not designated", pdp.getPdpId());
-                }
+                logger.debug("hasDesignatedPdpFailed: PDP={} is not designated", pdp.getPdpId());
             }
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("hasDesignatedPdpFailed: Exiting and returning, foundDesignatedPdp={}",
-                    foundDesignatedPdp);
-        }
+        logger.debug("hasDesignatedPdpFailed: Exiting and returning, foundDesignatedPdp={}",
+                foundDesignatedPdp);
         return failed;
     }
 
 
     private boolean isCurrent(DroolsPdp pdp) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("isCurrent: Entering, pdpId={}", pdp.getPdpId());
-        }
+        logger.debug("isCurrent: Entering, pdpId={}", pdp.getPdpId());
 
         boolean current = false;
 
@@ -405,18 +369,14 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         try {
             pdpTimeout = Long.parseLong(ActiveStandbyProperties
                     .getProperty(ActiveStandbyProperties.PDP_TIMEOUT));
-            if (logger.isDebugEnabled()) {
-                logger.debug("isCurrent: pdp.timeout={}", pdpTimeout);
-            }
+            logger.debug("isCurrent: pdp.timeout={}", pdpTimeout);
         } catch (Exception e) {
             logger.error("isCurrent: Could not get PDP timeout property, using default.", e);
         }
         current = difference < pdpTimeout;
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("isCurrent: Exiting, difference={}, pdpTimeout={}"
-                    + "; returning current={}", difference, pdpTimeout, current);
-        }
+        logger.debug("isCurrent: Exiting, difference={}, pdpTimeout={}"
+                + "; returning current={}", difference, pdpTimeout, current);
 
         return current;
     }
@@ -429,9 +389,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     @Override
     public DroolsPdpEntity getPdp(String pdpId) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("getPdp: Entering and getting PDP with pdpId={}", pdpId);
-        }
+        logger.debug("getPdp: Entering and getting PDP with pdpId={}", pdpId);
 
         DroolsPdpEntity droolsPdpEntity = null;
 
@@ -447,14 +405,12 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             if (droolsPdpsList.size() == 1
                     && droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
                 droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("getPdp: PDP={}"
-                            + " found, isDesignated={},"
-                            + " updatedDate={}, "
-                            + "priority={}", pdpId,
-                            droolsPdpEntity.isDesignated(), droolsPdpEntity.getUpdatedDate(),
-                            droolsPdpEntity.getPriority());
-                }
+                logger.debug("getPdp: PDP={}"
+                                + " found, isDesignated={},"
+                                + " updatedDate={}, "
+                                + "priority={}", pdpId,
+                                droolsPdpEntity.isDesignated(), droolsPdpEntity.getUpdatedDate(),
+                                droolsPdpEntity.getPriority());
 
                 // Make sure the droolsPdpEntity is not a cached version
                 em.refresh(droolsPdpEntity);
@@ -469,9 +425,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             cleanup(em, "getPdp");
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("getPdp: Returning droolsPdpEntity={}", droolsPdpEntity);
-        }
+        logger.debug("getPdp: Returning droolsPdpEntity={}", droolsPdpEntity);
         return droolsPdpEntity;
 
     }
@@ -482,9 +436,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
      */
     @Override
     public void insertPdp(DroolsPdp pdp) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("insertPdp: Entering and manually inserting PDP");
-        }
+        logger.debug("insertPdp: Entering and manually inserting PDP");
 
         /*
          * Start transaction
@@ -511,9 +463,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         } finally {
             cleanup(em, "insertPdp");
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("insertPdp: Exiting");
-        }
+        logger.debug("insertPdp: Exiting");
 
     }
 
@@ -524,9 +474,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     @Override
     public void deleteAllPdps() {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("deleteAllPdps: Entering");
-        }
+        logger.debug("deleteAllPdps: Entering");
 
         /*
          * Start transaction
@@ -540,9 +488,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             @SuppressWarnings("unchecked")
             List<DroolsPdp> droolsPdpsList = droolsPdpsListQuery.setLockMode(
                     LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
-            if (logger.isDebugEnabled()) {
-                logger.debug("deleteAllPdps: Deleting {} PDPs", droolsPdpsList.size());
-            }
+            logger.debug("deleteAllPdps: Deleting {} PDPs", droolsPdpsList.size());
             for (DroolsPdp droolsPdp : droolsPdpsList) {
                 String pdpId = droolsPdp.getPdpId();
                 deletePdp(pdpId);
@@ -555,9 +501,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         } finally {
             cleanup(em, "deleteAllPdps");
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("deleteAllPdps: Exiting");
-        }
+        logger.debug("deleteAllPdps: Exiting");
 
     }
 
@@ -567,9 +511,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
      */
     @Override
     public void deletePdp(String pdpId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("deletePdp: Entering and manually deleting pdpId={}", pdpId);
-        }
+        logger.debug("deletePdp: Entering and manually deleting pdpId={}", pdpId);
 
         /*
          * Start transaction
@@ -583,14 +525,10 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
              */
             DroolsPdpEntity droolsPdpEntity = em.find(DroolsPdpEntity.class, pdpId);
             if (droolsPdpEntity != null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("deletePdp: Removing PDP");
-                }
+                logger.debug("deletePdp: Removing PDP");
                 em.remove(droolsPdpEntity);
             } else {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("deletePdp: PDP with ID={} not currently in DB", pdpId);
-                }
+                logger.debug("deletePdp: PDP with ID={} not currently in DB", pdpId);
             }
 
             /*
@@ -600,9 +538,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         } finally {
             cleanup(em, "deletePdp");
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("deletePdp: Exiting");
-        }
+        logger.debug("deletePdp: Exiting");
 
     }
 

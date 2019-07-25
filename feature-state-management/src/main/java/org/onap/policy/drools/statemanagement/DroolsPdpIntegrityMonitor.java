@@ -73,10 +73,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
     }
 
     private static void logPropertyValue(String prop, String val) {
-        if (logger.isInfoEnabled()) {
-            String msg = "\n\n    init: property: " + prop + " = " + val + "\n";
-            logger.info(msg);
-        }
+        logger.info("\n\n    init: property: {} = {}\n", prop, val);
     }
 
     /**
@@ -427,9 +424,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
      * @throws IntegrityMonitorException exception
      */
     public static DroolsPdpIntegrityMonitor getInstance() throws IntegrityMonitorException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("getInstance() called");
-        }
+        logger.debug("getInstance() called");
         if (im == null) {
             String msg = "No DroolsPDPIntegrityMonitor instance exists."
                     + " Please use the method DroolsPDPIntegrityMonitor init(String configDir)";
