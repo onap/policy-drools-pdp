@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -72,7 +72,7 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
         updatedDate = new Date();
         //When this is translated to a TimeStamp in MySQL, it assumes the date is relative
         //to the local timezone.  So, a value of Date(0) is actually Dec 31 18:00:00 CST 1969
-        //which is an invalid value for the MySql TimeStamp 
+        //which is an invalid value for the MySql TimeStamp
         designatedDate = new Date(864000000);
     }
 
@@ -135,25 +135,4 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
     public void setDesignatedDate(Date designatedDate) {
         this.designatedDate = designatedDate;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (obj instanceof DroolsPdp) {
-            DroolsPdpEntity entity = (DroolsPdpEntity) obj;
-            return this.pdpId.equals(entity.getPdpId());
-        } else {
-            return false;
-        }
-
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.pdpId == null ? 0 : this.pdpId.hashCode());
-        return result;
-    }
-
 }

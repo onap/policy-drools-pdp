@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ public class DroolsPdpImpl extends DroolsPdpObject {
 
     /**
      * Contructor.
-     * 
+     *
      * @param pdpId ID for the PDP
      * @param designated is designated
      * @param priority priority
@@ -46,11 +46,11 @@ public class DroolsPdpImpl extends DroolsPdpObject {
         this.updatedDate = updatedDate;
         //When this is translated to a TimeStamp in MySQL, it assumes the date is relative
         //to the local timezone.  So, a value of Date(0) is actually Dec 31 18:00:00 CST 1969
-        //which is an invalid value for the MySql TimeStamp 
+        //which is an invalid value for the MySql TimeStamp
         this.designatedDate = new Date(864000000);
 
     }
-    
+
     @Override
     public boolean isDesignated() {
 
@@ -61,12 +61,12 @@ public class DroolsPdpImpl extends DroolsPdpObject {
     public int getPriority() {
         return priority;
     }
-    
+
     @Override
     public void setUpdatedDate(Date date) {
         this.updatedDate = date;
     }
-    
+
     @Override
     public Date getUpdatedDate() {
         return updatedDate;
@@ -76,7 +76,7 @@ public class DroolsPdpImpl extends DroolsPdpObject {
     public String getPdpId() {
         return pdpId;
     }
-    
+
     @Override
     public void setDesignated(boolean isDesignated) {
         this.designated = isDesignated;
@@ -87,41 +87,21 @@ public class DroolsPdpImpl extends DroolsPdpObject {
     public String getSiteName() {
         return site;
     }
-    
+
     @Override
     public void setSiteName(String siteName) {
         this.site = siteName;
 
     }
-    
+
     @Override
     public Date getDesignatedDate() {
         return designatedDate;
     }
-    
+
     @Override
     public void setDesignatedDate(Date designatedDate) {
         this.designatedDate = designatedDate;
 
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-
-        if (obj instanceof DroolsPdp) {
-            DroolsPdpImpl temp = (DroolsPdpImpl) obj;
-            return this.pdpId.equals(temp.getPdpId());
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (this.pdpId == null ? 0 : this.pdpId.hashCode());
-        return result;
     }
 }

@@ -66,6 +66,25 @@ public class DroolsPdpObjectTest {
     }
 
     @Test
+    public void testHashCode() {
+        int hc = pdp.hashCode();
+
+        // same data should yield same hash code
+        assertEquals(hc, pdp.hashCode());
+        assertEquals(hc, makePdp(PDP_ID, SITE, PRIORITY).hashCode());
+
+        // different data should yield different hash code
+        assertTrue(makePdp(PDP_ID2, SITE, PRIORITY).hashCode() != hc);
+
+        // these fields have no impact on hash code
+        assertEquals(hc, makePdp(PDP_ID, SITE, PRIORITY2).hashCode());
+        assertEquals(hc, makePdp(PDP_ID, SITE2, PRIORITY).hashCode());
+
+        // should not throw an exception
+        new MyPdp().hashCode();
+    }
+
+    @Test
     public void testNullSafeCompare() {
         // self, when null
         pdp.setSiteName(null);
