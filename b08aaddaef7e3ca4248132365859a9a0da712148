@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "623e3cbb_e0ac811c",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-07-25T13:06:17Z",
+      "side": 0,
+      "message": "I think a lot of these if wrappers were there because sonar complained about something. We shall see as it was something that was confusing to me as to why it got flagged.",
+      "range": {
+        "startLine": 87,
+        "startChar": 15,
+        "endLine": 87,
+        "endChar": 46
+      },
+      "revId": "b08aaddaef7e3ca4248132365859a9a0da712148",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
