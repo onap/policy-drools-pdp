@@ -32,6 +32,14 @@ public abstract class DroolsPdpObject implements DroolsPdp {
         }
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.getPdpId() == null ? 0 : this.getPdpId().hashCode());
+        return result;
+    }
+
     private int nullSafeCompare(String one, String two) {
         if (one != null) {
             if (two != null) {

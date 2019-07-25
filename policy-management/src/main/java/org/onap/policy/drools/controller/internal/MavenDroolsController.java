@@ -41,6 +41,7 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
+import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
@@ -148,7 +149,7 @@ public class MavenDroolsController implements DroolsController {
             throw new IllegalArgumentException("Missing maven version coordinate");
         }
 
-        this.policyContainer = new PolicyContainer(groupId, artifactId, version);
+        this.policyContainer = makePolicyContainer(groupId, artifactId, version);
         this.init(decoderConfigurations, encoderConfigurations);
 
         logger.debug("{}: instantiation completed ", this);
@@ -203,7 +204,7 @@ public class MavenDroolsController implements DroolsController {
         if (newGroupId.equalsIgnoreCase(this.getGroupId())
                 && newArtifactId.equalsIgnoreCase(this.getArtifactId())
                 && newVersion.equalsIgnoreCase(this.getVersion())) {
-            logger.warn("Al in the right version: " + newGroupId + ":"
+            logger.warn("All in the right version: " + newGroupId + ":"
                     + newArtifactId + ":" +  newVersion + " vs. " + this);
             return;
         }
@@ -254,18 +255,15 @@ public class MavenDroolsController implements DroolsController {
             String topic = coderConfig.getTopic();
 
             CustomGsonCoder customGsonCoder = coderConfig.getCustomGsonCoder();
-            if (coderConfig.getCustomGsonCoder() != null
-                    && coderConfig.getCustomGsonCoder().getClassContainer() != null
-                    && !coderConfig.getCustomGsonCoder().getClassContainer().isEmpty()) {
+            if (customGsonCoder != null
+                    && customGsonCoder.getClassContainer() != null
+                    && !customGsonCoder.getClassContainer().isEmpty()) {
 
-                String customGsonCoderClass = coderConfig.getCustomGsonCoder().getClassContainer();
-                if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(),
-                        customGsonCoderClass)) {
+                String customGsonCoderClass = customGsonCoder.getClassContainer();
+                if (!isClass(customGsonCoderClass)) {
                     throw makeRetrieveEx(customGsonCoderClass);
                 } else {
-                    if (logger.isInfoEnabled()) {
-                        logClassFetched(customGsonCoderClass);
-                    }
+                    logClassFetched(customGsonCoderClass);
                 }
             }
 
@@ -278,17 +276,14 @@ public class MavenDroolsController implements DroolsController {
                 String potentialCodedClass = coderFilter.getCodedClass();
                 JsonProtocolFilter protocolFilter = coderFilter.getFilter();
 
-                if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(),
-                        potentialCodedClass)) {
+                if (!isClass(potentialCodedClass)) {
                     throw makeRetrieveEx(potentialCodedClass);
                 } else {
-                    if (logger.isInfoEnabled()) {
-                        logClassFetched(potentialCodedClass);
-                    }
+                    logClassFetched(potentialCodedClass);
                 }
 
                 if (decoder) {
-                    EventProtocolCoder.manager.addDecoder(EventProtocolParams.builder()
+                    getCoderManager().addDecoder(EventProtocolParams.builder()
                             .groupId(this.getGroupId())
                             .artifactId(this.getArtifactId())
                             .topic(topic)
@@ -297,7 +292,7 @@ public class MavenDroolsController implements DroolsController {
                             .customGsonCoder(customGsonCoder)
                             .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
                 } else {
-                    EventProtocolCoder.manager.addEncoder(
+                    getCoderManager().addEncoder(
                             EventProtocolParams.builder().groupId(this.getGroupId())
                                     .artifactId(this.getArtifactId()).topic(topic)
                                     .eventClass(potentialCodedClass).protocolFilter(protocolFilter)
@@ -340,7 +335,7 @@ public class MavenDroolsController implements DroolsController {
 
         for (TopicCoderFilterConfiguration coderConfig: decoderConfigurations) {
             String topic = coderConfig.getTopic();
-            EventProtocolCoder.manager.removeDecoders(this.getGroupId(), this.getArtifactId(), topic);
+            getCoderManager().removeDecoders(this.getGroupId(), this.getArtifactId(), topic);
         }
     }
 
@@ -357,14 +352,14 @@ public class MavenDroolsController implements DroolsController {
 
         for (TopicCoderFilterConfiguration coderConfig: encoderConfigurations) {
             String topic = coderConfig.getTopic();
-            EventProtocolCoder.manager.removeEncoders(this.getGroupId(), this.getArtifactId(), topic);
+            getCoderManager().removeEncoders(this.getGroupId(), this.getArtifactId(), topic);
         }
     }
 
 
     @Override
     public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
-        if (!ReflectionUtil.isClass(this.policyContainer.getClassLoader(), coderClass.getName())) {
+        if (!isClass(coderClass.getName())) {
             logger.error("{}{} cannot be retrieved. ", this, coderClass.getName());
             return false;
         }
@@ -473,7 +468,7 @@ public class MavenDroolsController implements DroolsController {
 
         // 1. Now, check if this topic has a decoder:
 
-        if (!EventProtocolCoder.manager.isDecodingSupported(this.getGroupId(),
+        if (!getCoderManager().isDecodingSupported(this.getGroupId(),
                 this.getArtifactId(),
                 topic)) {
 
@@ -486,7 +481,7 @@ public class MavenDroolsController implements DroolsController {
 
         Object anEvent;
         try {
-            anEvent = EventProtocolCoder.manager.decode(this.getGroupId(),
+            anEvent = getCoderManager().decode(this.getGroupId(),
                     this.getArtifactId(),
                     topic,
                     event);
@@ -520,7 +515,7 @@ public class MavenDroolsController implements DroolsController {
 
         // Broadcast
 
-        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : getDroolsProviders().getList()) {
             try {
                 if (feature.beforeInsert(this, event)) {
                     return true;
@@ -536,7 +531,7 @@ public class MavenDroolsController implements DroolsController {
             logger.warn(this + "Failed to inject into PolicyContainer {}", this.getSessionNames());
         }
 
-        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : getDroolsProviders().getList()) {
             try {
                 if (feature.afterInsert(this, event, successInject)) {
                     return true;
@@ -556,7 +551,7 @@ public class MavenDroolsController implements DroolsController {
 
         logger.info("{}DELIVER: {} FROM {} TO {}", this, event, this, sink);
 
-        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : getDroolsProviders().getList()) {
             try {
                 if (feature.beforeDeliver(this, sink, event)) {
                     return true;
@@ -585,7 +580,7 @@ public class MavenDroolsController implements DroolsController {
         }
 
         String json =
-                EventProtocolCoder.manager.encode(sink.getTopic(), event, this);
+                getCoderManager().encode(sink.getTopic(), event, this);
 
         synchronized (this.recentSinkEvents) {
             this.recentSinkEvents.add(json);
@@ -593,7 +588,7 @@ public class MavenDroolsController implements DroolsController {
 
         boolean success = sink.send(json);
 
-        for (DroolsControllerFeatureApi feature : DroolsControllerFeatureApi.providers.getList()) {
+        for (DroolsControllerFeatureApi feature : getDroolsProviders().getList()) {
             try {
                 if (feature.afterDeliver(this, sink, event, json, success)) {
                     return true;
@@ -752,7 +747,7 @@ public class MavenDroolsController implements DroolsController {
         PolicySession session = getSession(sessionName);
         KieSession kieSession = session.getKieSession();
 
-        Collection<FactHandle> facts = session.getKieSession().getFactHandles();
+        Collection<FactHandle> facts = kieSession.getFactHandles();
         for (FactHandle fact : facts) {
             try {
                 String className = kieSession.getObject(fact).getClass().getName();
@@ -965,7 +960,7 @@ public class MavenDroolsController implements DroolsController {
         StringBuilder builder = new StringBuilder();
         builder
             .append("MavenDroolsController [policyContainer=")
-            .append((policyContainer != null) ? policyContainer.getName() : "NULL")
+            .append(policyContainer.getName())
             .append(":")
             .append(", alive=")
             .append(alive)
@@ -974,5 +969,23 @@ public class MavenDroolsController implements DroolsController {
             .append(modelClassLoaderHash)
             .append("]");
         return builder.toString();
+    }
+
+    // these may be overridden by junit tests
+
+    protected EventProtocolCoder getCoderManager() {
+        return EventProtocolCoder.manager;
+    }
+
+    protected OrderedServiceImpl<DroolsControllerFeatureApi> getDroolsProviders() {
+        return DroolsControllerFeatureApi.providers;
+    }
+
+    protected PolicyContainer makePolicyContainer(String groupId, String artifactId, String version) {
+        return new PolicyContainer(groupId, artifactId, version);
+    }
+
+    protected boolean isClass(String className) {
+        return ReflectionUtil.isClass(this.policyContainer.getClassLoader(), className);
     }
 }

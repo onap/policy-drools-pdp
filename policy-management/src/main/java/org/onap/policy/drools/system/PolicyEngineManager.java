@@ -747,6 +747,7 @@ class PolicyEngineManager implements PolicyEngine {
                 synchronized (PolicyEngineManager.this) {
                 }
                 logger.info("{}: finishing a graceful shutdown ", PolicyEngineManager.this, e);
+                Thread.currentThread().interrupt();
             } finally {
                 /*
                  * shut down the Policy Engine owned http servers as the very last thing
