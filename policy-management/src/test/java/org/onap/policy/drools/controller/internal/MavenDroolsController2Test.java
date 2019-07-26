@@ -65,7 +65,7 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 
-public class MavenDroolsControllerTest2 {
+public class MavenDroolsController2Test {
     private static final int FACT1_OBJECT = 1000;
     private static final int FACT3_OBJECT = 1001;
 
@@ -88,7 +88,7 @@ public class MavenDroolsControllerTest2 {
     private static final String TOPIC = "my-topic";
     private static final String TOPIC2 = "my-topic";
 
-    private static final ClassLoader CLASS_LOADER = MavenDroolsControllerTest2.class.getClassLoader();
+    private static final ClassLoader CLASS_LOADER = MavenDroolsController2Test.class.getClassLoader();
     private static final int CLASS_LOADER_HASHCODE = CLASS_LOADER.hashCode();
 
     private static final String SESSION1 = "session-A";
