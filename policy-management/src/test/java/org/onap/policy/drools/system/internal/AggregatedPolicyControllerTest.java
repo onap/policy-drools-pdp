@@ -109,8 +109,8 @@ public class AggregatedPolicyControllerTest {
         sinks = Arrays.asList(sink1, sink2);
 
         endpointMgr = mock(TopicEndpoint.class);
-        when(endpointMgr.addTopicSources(any())).thenReturn(sources);
-        when(endpointMgr.addTopicSinks(any())).thenReturn(sinks);
+        when(endpointMgr.addTopicSources(any(Properties.class))).thenReturn(sources);
+        when(endpointMgr.addTopicSinks(any(Properties.class))).thenReturn(sinks);
 
         persist = mock(SystemPersistence.class);
 

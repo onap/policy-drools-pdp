@@ -238,8 +238,8 @@ public class PolicyEngineManagerTest {
         when(controller4.lock()).thenReturn(true);
         when(controller4.unlock()).thenReturn(true);
 
-        when(endpoint.addTopicSources(any())).thenReturn(sources);
-        when(endpoint.addTopicSinks(any())).thenReturn(sinks);
+        when(endpoint.addTopicSources(any(Properties.class))).thenReturn(sources);
+        when(endpoint.addTopicSinks(any(Properties.class))).thenReturn(sinks);
         when(endpoint.start()).thenReturn(true);
         when(endpoint.stop()).thenReturn(true);
         when(endpoint.lock()).thenReturn(true);
@@ -452,7 +452,7 @@ public class PolicyEngineManagerTest {
 
         // source list of size 1
         setUp();
-        when(endpoint.addTopicSources(any())).thenReturn(Arrays.asList(source1));
+        when(endpoint.addTopicSources(any(Properties.class))).thenReturn(Arrays.asList(source1));
         mgr.configure(properties);
         assertTrue(mgr.configure(pdpConfig));
 
