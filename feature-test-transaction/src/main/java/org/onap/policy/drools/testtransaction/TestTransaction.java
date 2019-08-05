@@ -25,13 +25,6 @@ import org.onap.policy.drools.system.PolicyController;
 /** TestTransaction interface. */
 public interface TestTransaction {
 
-    public static final String TT_FPC = "TT.FPC";
-    public static final String TT_COUNTER = "$ttc";
-    public static final String TT_UUID = "43868e59-d1f3-43c2-bd6f-86f89a61eea5";
-    public static long DEFAULT_TT_TASK_SLEEP = 20000;
-
-    public static final TestTransaction manager = new TtImpl();
-
     /**
      * register a controller for monitoring test transactions.
      *

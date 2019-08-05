@@ -43,11 +43,14 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.jmx.PdpJmx;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
+import org.onap.policy.drools.features.DroolsControllerFeatureApiConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
@@ -63,6 +66,8 @@ import org.slf4j.LoggerFactory;
  * Drools containers instantiated using Maven.
  */
 public class MavenDroolsController implements DroolsController {
+
+    private static final String FACT_RETRIEVE_ERROR = "Object cannot be retrieved from fact {}";
 
     /**
      * logger.
@@ -193,9 +198,9 @@ public class MavenDroolsController implements DroolsController {
             throw new IllegalArgumentException("Missing maven version coordinate");
         }
 
-        if (newGroupId.equalsIgnoreCase(DroolsController.NO_GROUP_ID)
-                || newArtifactId.equalsIgnoreCase(DroolsController.NO_ARTIFACT_ID)
-                || newVersion.equalsIgnoreCase(DroolsController.NO_VERSION)) {
+        if (newGroupId.equalsIgnoreCase(DroolsControllerConstants.NO_GROUP_ID)
+                || newArtifactId.equalsIgnoreCase(DroolsControllerConstants.NO_ARTIFACT_ID)
+                || newVersion.equalsIgnoreCase(DroolsControllerConstants.NO_VERSION)) {
             throw new IllegalArgumentException("BRAINLESS maven coordinates provided: "
                     + newGroupId + ":" + newArtifactId + ":"
                     + newVersion);
@@ -755,7 +760,7 @@ public class MavenDroolsController implements DroolsController {
                     classNames.put(className, 1);
                 }
             } catch (Exception e) {
-                logger.warn("Object cannot be retrieved from fact {}", fact, e);
+                logger.warn(FACT_RETRIEVE_ERROR, fact, e);
             }
         }
 
@@ -803,7 +808,7 @@ public class MavenDroolsController implements DroolsController {
                     kieSession.delete(factHandle);
                 }
             } catch (Exception e) {
-                logger.warn("Object cannot be retrieved from fact {}", factHandle, e);
+                logger.warn(FACT_RETRIEVE_ERROR, factHandle, e);
             }
         }
 
@@ -881,7 +886,7 @@ public class MavenDroolsController implements DroolsController {
                     return true;
                 }
             } catch (Exception e) {
-                logger.warn("Object cannot be retrieved from fact {}", factHandle, e);
+                logger.warn(FACT_RETRIEVE_ERROR, factHandle, e);
             }
         }
         return false;
@@ -889,7 +894,7 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public <T> boolean delete(@NonNull T fact) {
-        return this.getSessionNames().stream().map((ss) -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
+        return this.getSessionNames().stream().map(ss -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
     }
 
     @Override
@@ -903,7 +908,7 @@ public class MavenDroolsController implements DroolsController {
             try {
                 kieSession.delete(factHandle);
             } catch (Exception e) {
-                logger.warn("Object cannot be retrieved from fact {}", factHandle, e);
+                logger.warn(FACT_RETRIEVE_ERROR, factHandle, e);
                 success = false;
             }
         }
@@ -912,7 +917,7 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public <T> boolean delete(@NonNull Class<T> fact) {
-        return this.getSessionNames().stream().map((ss) -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
+        return this.getSessionNames().stream().map(ss -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
     }
 
 
@@ -972,11 +977,11 @@ public class MavenDroolsController implements DroolsController {
     // these may be overridden by junit tests
 
     protected EventProtocolCoder getCoderManager() {
-        return EventProtocolCoder.manager;
+        return EventProtocolCoderConstants.getManager();
     }
 
     protected OrderedServiceImpl<DroolsControllerFeatureApi> getDroolsProviders() {
-        return DroolsControllerFeatureApi.providers;
+        return DroolsControllerFeatureApiConstants.getProviders();
     }
 
     protected PolicyContainer makePolicyContainer(String groupId, String artifactId, String version) {

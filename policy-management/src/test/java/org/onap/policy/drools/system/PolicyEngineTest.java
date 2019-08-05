@@ -39,9 +39,9 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsProperties;
-import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
@@ -106,7 +106,8 @@ public class PolicyEngineTest {
      */
     protected static void cleanUpWorkingDir() {
         final Path testControllerPath =
-                Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
+                        Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                        TEST_CONTROLLER_FILE);
         try {
             Files.deleteIfExists(testControllerPath);
         } catch (final Exception e) {
@@ -114,7 +115,8 @@ public class PolicyEngineTest {
         }
 
         final Path testControllerBakPath =
-                Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
+                        Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                        TEST_CONTROLLER_FILE_BAK);
         try {
             Files.deleteIfExists(testControllerBakPath);
         } catch (final Exception e) {
@@ -136,7 +138,7 @@ public class PolicyEngineTest {
         cleanUpWorkingDir();
 
         /* ensure presence of config directory */
-        final Path configDir = Paths.get(SystemPersistence.DEFAULT_CONFIGURATION_DIR);
+        final Path configDir = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
         if (Files.notExists(configDir)) {
             Files.createDirectories(configDir);
         }
@@ -152,56 +154,57 @@ public class PolicyEngineTest {
     public void test100Configure() {
         logger.info("enter");
 
-        final Properties engineProps = PolicyEngine.manager.defaultTelemetryConfig();
+        final Properties engineProps = PolicyEngineConstants.getManager().defaultTelemetryConfig();
 
         /* override default port */
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                        + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
+                        + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                         + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
 
-        assertFalse(PolicyEngine.manager.isAlive());
-        PolicyEngine.manager.configure(engineProps);
-        assertFalse(PolicyEngine.manager.isAlive());
+        assertFalse(PolicyEngineConstants.getManager().isAlive());
+        PolicyEngineConstants.getManager().configure(engineProps);
+        assertFalse(PolicyEngineConstants.getManager().isAlive());
 
-        logger.info("engine {} has configuration {}", PolicyEngine.manager, engineProps);
+        logger.info("engine {} has configuration {}", PolicyEngineConstants.getManager(), engineProps);
 
-        gson.compareGson(PolicyEngine.manager, new File(PolicyEngineTest.class.getSimpleName() + "Config.json"));
+        gson.compareGson(PolicyEngineConstants.getManager(),
+                        new File(PolicyEngineTest.class.getSimpleName() + "Config.json"));
     }
 
     @Test
     public void test200Start() {
         logger.info("enter");
 
-        PolicyEngine.manager.start();
+        PolicyEngineConstants.getManager().start();
 
-        assertTrue(PolicyEngine.manager.isAlive());
-        assertFalse(PolicyEngine.manager.isLocked());
-        assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
-        assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+        assertTrue(PolicyEngineConstants.getManager().isAlive());
+        assertFalse(PolicyEngineConstants.getManager().isLocked());
+        assertFalse(PolicyEngineConstants.getManager().getHttpServers().isEmpty());
+        assertTrue(PolicyEngineConstants.getManager().getHttpServers().get(0).isAlive());
     }
 
     @Test
     public void test300Lock() {
         logger.info("enter");
 
-        PolicyEngine.manager.lock();
+        PolicyEngineConstants.getManager().lock();
 
-        assertTrue(PolicyEngine.manager.isAlive());
-        assertTrue(PolicyEngine.manager.isLocked());
-        assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
-        assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+        assertTrue(PolicyEngineConstants.getManager().isAlive());
+        assertTrue(PolicyEngineConstants.getManager().isLocked());
+        assertFalse(PolicyEngineConstants.getManager().getHttpServers().isEmpty());
+        assertTrue(PolicyEngineConstants.getManager().getHttpServers().get(0).isAlive());
     }
 
     @Test
     public void test301Unlock() {
         logger.info("enter");
 
-        PolicyEngine.manager.unlock();
+        PolicyEngineConstants.getManager().unlock();
 
-        assertTrue(PolicyEngine.manager.isAlive());
-        assertFalse(PolicyEngine.manager.isLocked());
-        assertFalse(PolicyEngine.manager.getHttpServers().isEmpty());
-        assertTrue(PolicyEngine.manager.getHttpServers().get(0).isAlive());
+        assertTrue(PolicyEngineConstants.getManager().isAlive());
+        assertFalse(PolicyEngineConstants.getManager().isLocked());
+        assertFalse(PolicyEngineConstants.getManager().getHttpServers().isEmpty());
+        assertTrue(PolicyEngineConstants.getManager().getHttpServers().get(0).isAlive());
     }
 
     @Test
@@ -211,20 +214,20 @@ public class PolicyEngineTest {
 
         TopicEndpointManager.getManager().addTopicSinks(noopSinkProperties).get(0).start();
 
-        EventProtocolCoder.manager.addEncoder(
+        EventProtocolCoderConstants.getManager().addEncoder(
                 EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
                         .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getName())
                         .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
                         .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
 
-        assertTrue(PolicyEngine.manager.deliver(NOOP_TOPIC,
+        assertTrue(PolicyEngineConstants.getManager().deliver(NOOP_TOPIC,
                 new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION)));
 
         final TopicSink sink = NoopTopicFactories.getSinkFactory().get(NOOP_TOPIC);
         assertTrue(sink.getRecentEvents()[0].contains(ENCODER_GROUP));
         assertTrue(sink.getRecentEvents()[0].contains(ENCODER_ARTIFACT));
 
-        EventProtocolCoder.manager.removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
+        EventProtocolCoderConstants.getManager().removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
     }
 
     @Test
@@ -233,18 +236,19 @@ public class PolicyEngineTest {
 
         final Properties controllerProperties = new Properties();
         controllerProperties.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
-        PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
+        PolicyEngineConstants.getManager().createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
 
-        assertTrue(PolicyController.factory.inventory().size() == 1);
+        assertTrue(PolicyControllerFactoryInstance.getInstance().inventory().size() == 1);
 
-        gson.compareGson(PolicyEngine.manager, new File(PolicyEngineTest.class.getSimpleName() + "Add.json"));
+        gson.compareGson(PolicyEngineConstants.getManager(),
+                        new File(PolicyEngineTest.class.getSimpleName() + "Add.json"));
     }
 
     @Test
     public void test401ControllerVerify() {
         logger.info("enter");
 
-        final PolicyController testController = PolicyController.factory.get(TEST_CONTROLLER_NAME);
+        final PolicyController testController = PolicyControllerFactoryInstance.getInstance().get(TEST_CONTROLLER_NAME);
 
         assertFalse(testController.isAlive());
         assertFalse(testController.isLocked());
@@ -259,34 +263,34 @@ public class PolicyEngineTest {
     public void test500Deactivate() throws Exception {
         logger.info("enter");
 
-        PolicyEngine.manager.deactivate();
+        PolicyEngineConstants.getManager().deactivate();
 
-        final PolicyController testController = PolicyController.factory.get(TEST_CONTROLLER_NAME);
+        final PolicyController testController = PolicyControllerFactoryInstance.getInstance().get(TEST_CONTROLLER_NAME);
         assertFalse(testController.isAlive());
         assertTrue(testController.isLocked());
-        assertTrue(PolicyEngine.manager.isLocked());
-        assertTrue(PolicyEngine.manager.isAlive());
+        assertTrue(PolicyEngineConstants.getManager().isLocked());
+        assertTrue(PolicyEngineConstants.getManager().isAlive());
     }
 
     @Test
     public void test501Activate() throws Exception {
         logger.info("enter");
 
-        PolicyEngine.manager.activate();
+        PolicyEngineConstants.getManager().activate();
 
-        final PolicyController testController = PolicyController.factory.get(TEST_CONTROLLER_NAME);
+        final PolicyController testController = PolicyControllerFactoryInstance.getInstance().get(TEST_CONTROLLER_NAME);
         assertTrue(testController.isAlive());
         assertFalse(testController.isLocked());
-        assertFalse(PolicyEngine.manager.isLocked());
-        assertTrue(PolicyEngine.manager.isAlive());
+        assertFalse(PolicyEngineConstants.getManager().isLocked());
+        assertTrue(PolicyEngineConstants.getManager().isAlive());
     }
 
     @Test
     public void test900ControllerRemove() throws Exception {
         logger.info("enter");
 
-        PolicyEngine.manager.removePolicyController(TEST_CONTROLLER_NAME);
-        assertTrue(PolicyController.factory.inventory().isEmpty());
+        PolicyEngineConstants.getManager().removePolicyController(TEST_CONTROLLER_NAME);
+        assertTrue(PolicyControllerFactoryInstance.getInstance().inventory().isEmpty());
     }
 
     @Test
@@ -294,11 +298,11 @@ public class PolicyEngineTest {
         logger.info("enter");
 
         /* Shutdown managed resources */
-        PolicyController.factory.shutdown();
+        PolicyControllerFactoryInstance.getInstance().shutdown();
         TopicEndpointManager.getManager().shutdown();
-        PolicyEngine.manager.stop();
+        PolicyEngineConstants.getManager().stop();
 
         Thread.sleep(10000L);
-        assertFalse(PolicyEngine.manager.isAlive());
+        assertFalse(PolicyEngineConstants.getManager().isAlive());
     }
 }

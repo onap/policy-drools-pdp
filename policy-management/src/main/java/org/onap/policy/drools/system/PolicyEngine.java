@@ -46,25 +46,6 @@ import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
  * RestTopicWriter <br> PolicyEngine 1 --- 1 ManagementServer
  */
 public interface PolicyEngine extends Startable, Lockable, TopicListener {
-    /**
-     * Policy Engine Manager.
-     */
-    PolicyEngine manager = new PolicyEngineManager();
-
-    /**
-     * Default Telemetry Server Port.
-     */
-    int TELEMETRY_SERVER_DEFAULT_PORT = 9696;
-
-    /**
-     * Default Telemetry Server Hostname.
-     */
-    String TELEMETRY_SERVER_DEFAULT_HOST = "localhost";
-
-    /**
-     * Default Telemetry Server Name.
-     */
-    String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
 
     /**
      * Boot the engine.

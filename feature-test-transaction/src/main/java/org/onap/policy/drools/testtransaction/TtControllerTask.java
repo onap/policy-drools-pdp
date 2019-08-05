@@ -109,7 +109,7 @@ public class TtControllerTask implements Runnable {
                 }
 
                 if (!getCurrentThread().isInterrupted()) {
-                    doSleep(TestTransaction.DEFAULT_TT_TASK_SLEEP);
+                    doSleep(TestTransactionConstants.DEFAULT_TT_TASK_SLEEP);
                 }
             }
         } catch (final InterruptedException e) {
@@ -141,7 +141,7 @@ public class TtControllerTask implements Runnable {
             final List<Object> facts =
                     this.controller
                     .getDrools()
-                    .factQuery(session, TestTransaction.TT_FPC, TestTransaction.TT_COUNTER, false);
+                    .factQuery(session, TestTransactionConstants.TT_FPC, TestTransactionConstants.TT_COUNTER, false);
             if (facts == null || facts.size() != 1) {
                 /*
                  * unexpected something wrong here, can't expect to recover note this exception is
@@ -174,7 +174,7 @@ public class TtControllerTask implements Runnable {
                         fpc);
             }
             fpcs.put(session, fpc);
-            drools.getContainer().insert(session, new EventObject(TestTransaction.TT_UUID));
+            drools.getContainer().insert(session, new EventObject(TestTransactionConstants.TT_UUID));
         }
     }
 

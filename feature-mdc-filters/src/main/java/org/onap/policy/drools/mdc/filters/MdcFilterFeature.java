@@ -29,7 +29,7 @@ import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.features.NetLoggerFeatureApi;
 import org.onap.policy.common.endpoints.utils.NetLoggerUtil.EventType;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class MdcFilterFeature implements NetLoggerFeatureApi, PolicyControllerFe
      * @return the properties for this feature.
      */
     protected Properties getFeatureProps() {
-        return SystemPersistence.manager.getProperties(FEATURE_NAME);
+        return SystemPersistenceConstants.getManager().getProperties(FEATURE_NAME);
     }
 
     /**

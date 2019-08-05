@@ -40,9 +40,9 @@ public interface DroolsPdp {
     
     public int comparePriority(DroolsPdp other,String previousSite);
     
-    public String getSiteName();
+    public String getSite();
     
-    public void setSiteName(String siteName);
+    public void setSite(String site);
     
     public Date getDesignatedDate();
     

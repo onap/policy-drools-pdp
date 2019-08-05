@@ -22,7 +22,6 @@ package org.onap.policy.drools.core;
 
 import org.kie.api.runtime.KieSession;
 import org.onap.policy.common.utils.services.OrderedService;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
 /**
  * This interface provides a way to invoke optional features at various
@@ -33,12 +32,6 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
  * may
  */
 public interface PolicySessionFeatureApi extends OrderedService {
-    /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects
-     * implementing the 'FeatureAPI' interface.
-     */
-    public static OrderedServiceImpl<PolicySessionFeatureApi> impl =
-            new OrderedServiceImpl<>(PolicySessionFeatureApi.class);
 
     /**
      * This method is called during initialization at a point right after
