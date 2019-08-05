@@ -34,7 +34,7 @@ public class DroolsControllerFactoryTest {
     @Test
     public void buildNullController() {
         Properties droolsProps = new Properties();
-        DroolsController droolsController = DroolsController.factory.build(droolsProps, null, null);
+        DroolsController droolsController = DroolsControllerConstants.getFactory().build(droolsProps, null, null);
 
         if (!isNullController(droolsController)) {
             fail("drools controller is not a null controller");
@@ -44,20 +44,20 @@ public class DroolsControllerFactoryTest {
     @Test
     public void getNullController() {
         DroolsController controller =
-            DroolsController.factory.get(DroolsController.NO_GROUP_ID,
-                DroolsController.NO_ARTIFACT_ID, DroolsController.NO_VERSION);
+            DroolsControllerConstants.getFactory().get(DroolsControllerConstants.NO_GROUP_ID,
+                DroolsControllerConstants.NO_ARTIFACT_ID, DroolsControllerConstants.NO_VERSION);
 
         assertNotNull(controller);
-        assertEquals(DroolsController.NO_GROUP_ID, controller.getGroupId());
-        assertEquals(DroolsController.NO_ARTIFACT_ID, controller.getArtifactId());
-        assertEquals(DroolsController.NO_VERSION, controller.getVersion());
+        assertEquals(DroolsControllerConstants.NO_GROUP_ID, controller.getGroupId());
+        assertEquals(DroolsControllerConstants.NO_ARTIFACT_ID, controller.getArtifactId());
+        assertEquals(DroolsControllerConstants.NO_VERSION, controller.getVersion());
     }
 
     @Test
     public void inventory() {
-        List<DroolsController> controllers = DroolsController.factory.inventory();
+        List<DroolsController> controllers = DroolsControllerConstants.getFactory().inventory();
         assertNotNull(controllers);
-        
+
         for (int i = 0; i < controllers.size(); i++) {
             if (!isNullController(controllers.get(i)) && !isActualController(controllers.get(i))) {
                 fail("drools controller is not a null controller");
@@ -83,31 +83,31 @@ public class DroolsControllerFactoryTest {
         if (droolsController == null) {
             return false;
         }
-        
-        if (!DroolsController.NO_GROUP_ID.equals(droolsController.getGroupId())) {
-            return false;
-        }
-        
-        if (!DroolsController.NO_ARTIFACT_ID.equals(droolsController.getArtifactId())) {
+
+        if (!DroolsControllerConstants.NO_GROUP_ID.equals(droolsController.getGroupId())) {
             return false;
         }
 
-        return DroolsController.NO_VERSION.equals(droolsController.getVersion());
+        if (!DroolsControllerConstants.NO_ARTIFACT_ID.equals(droolsController.getArtifactId())) {
+            return false;
+        }
+
+        return DroolsControllerConstants.NO_VERSION.equals(droolsController.getVersion());
     }
 
     private boolean isActualController(DroolsController droolsController) {
         if (droolsController == null) {
             return false;
         }
-        
+
         if (!"org.onap.policy.drools.test".equals(droolsController.getGroupId())) {
             return false;
         }
-        
+
         if (!"protocolcoder".equals(droolsController.getArtifactId())) {
             return false;
         }
-        
+
         return droolsController.getVersion() != null && droolsController.getVersion().substring(0, 1).matches("[0-9]");
     }
 }

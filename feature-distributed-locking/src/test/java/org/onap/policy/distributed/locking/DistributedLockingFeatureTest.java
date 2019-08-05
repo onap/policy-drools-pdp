@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 
 /**
  * Partially tests DistributedLockingFeature; most of the methods are tested via
@@ -43,7 +43,7 @@ public class DistributedLockingFeatureTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
+        SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
     }
 
     @Before

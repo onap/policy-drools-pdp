@@ -33,10 +33,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.system.PolicyController;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyControllerFactoryInstance;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class TestTransactionTest {
 
     /**
      * Start up.
-     * 
+     *
      * @throws IOException exception
      */
     @BeforeClass
@@ -65,7 +66,7 @@ public class TestTransactionTest {
         cleanUpWorkingDir();
 
         /* ensure presence of config directory */
-        SystemPersistence.manager.setConfigurationDir(null);
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }
 
     @Test
@@ -73,12 +74,12 @@ public class TestTransactionTest {
         final Properties controllerProperties = new Properties();
         controllerProperties.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
         final PolicyController controller =
-                PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
-        assertNotNull(PolicyController.factory.get(TEST_CONTROLLER_NAME));
+                PolicyEngineConstants.getManager().createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
+        assertNotNull(PolicyControllerFactoryInstance.getInstance().get(TEST_CONTROLLER_NAME));
         logger.info(controller.toString());
-        
+
         CountDownLatch latch = new CountDownLatch(1);
-        
+
         // use our own impl so we can decrement the latch when run() completes
         TtImpl impl = new TtImpl() {
             @Override
@@ -90,11 +91,11 @@ public class TestTransactionTest {
                         latch.countDown();
                     }
                 };
-            }            
+            }
         };
 
         impl.register(controller);
-        assertNotNull(TestTransaction.manager);
+        assertNotNull(TestTransactionConstants.getManager());
 
         /*
          * Unregistering the controller should terminate its TestTransaction thread if it hasn't already
@@ -108,7 +109,7 @@ public class TestTransactionTest {
 
     /**
      * Returns thread object based on String name.
-     * @param latch indicates when the thread has finished running 
+     * @param latch indicates when the thread has finished running
      * @param threadName thread name
      * @return the thread
      * @throws InterruptedException exception
@@ -129,8 +130,8 @@ public class TestTransactionTest {
     /** clean up working directory. */
     protected static void cleanUpWorkingDir() {
         final Path testControllerPath =
-                Paths.get(
-                        SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE);
+                        Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                        TEST_CONTROLLER_FILE);
         try {
             Files.deleteIfExists(testControllerPath);
         } catch (final Exception e) {
@@ -138,8 +139,8 @@ public class TestTransactionTest {
         }
 
         final Path testControllerBakPath =
-                Paths.get(
-                        SystemPersistence.manager.getConfigurationPath().toString(), TEST_CONTROLLER_FILE_BAK);
+                        Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                        TEST_CONTROLLER_FILE_BAK);
         try {
             Files.deleteIfExists(testControllerBakPath);
         } catch (final Exception e) {

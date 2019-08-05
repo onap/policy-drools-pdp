@@ -29,6 +29,7 @@ import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyControllerFactoryInstance;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,8 @@ public class ControllerLoggingFeature
     public boolean afterDeliver(DroolsController controller, TopicSink sink, Object fact, String json,
                     boolean success) {
         if (success) {
-            Logger controllerLogger = LoggerFactory.getLogger(PolicyController.factory.get(controller).getName());
+            Logger controllerLogger = LoggerFactory
+                            .getLogger(PolicyControllerFactoryInstance.getInstance().get(controller).getName());
             controllerLogger.info("[OUT|{}|{}]{}{}", sink.getTopicCommInfrastructure(), sink.getTopic(),
                             System.lineSeparator(), json);
         }

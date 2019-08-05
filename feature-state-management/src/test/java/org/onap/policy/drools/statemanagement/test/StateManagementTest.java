@@ -44,6 +44,7 @@ import org.onap.policy.drools.statemanagement.DbAudit;
 import org.onap.policy.drools.statemanagement.IntegrityMonitorRestManager;
 import org.onap.policy.drools.statemanagement.RepositoryAudit;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApiConstants;
 import org.onap.policy.drools.statemanagement.StateManagementProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +116,7 @@ public class StateManagementTest {
                 .getProperty(StateManagementProperties.NODE_NAME);
 
         StateManagementFeatureApi stateManagementFeature = null;
-        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApiConstants.getImpl().getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeature = feature;
             logger.debug("testStateManagementOperation stateManagementFeature.getResourceName(): "

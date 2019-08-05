@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
 
     /**
      * Get instance.
-     * 
+     *
      * @return the manager singleton
      */
     public static PolicyResourceLockManager getInstance() {
@@ -118,7 +118,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
 
     /**
      * Is locked.
-     * 
+     *
      * @throws IllegalArgumentException if the resourceId is {@code null}
      */
     @Override
@@ -128,7 +128,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
         }
 
 
-        return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () -> 
+        return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () ->
 
            // implementer didn't do the work - defer to the superclass
            super.isLocked(resourceId)
@@ -137,7 +137,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
 
     /**
      *  Is locked by.
-     *  
+     *
      * @throws IllegalArgumentException if the resourceId or owner is {@code null}
      */
     @Override
@@ -150,7 +150,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
             throw makeNullArgException(MSG_NULL_OWNER);
         }
 
-        return doBoolIntercept(impl -> impl.beforeIsLockedBy(resourceId, owner), () -> 
+        return doBoolIntercept(impl -> impl.beforeIsLockedBy(resourceId, owner), () ->
 
             // implementer didn't do the work - defer to the superclass
             super.isLockedBy(resourceId, owner)
@@ -161,7 +161,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
      * Applies a function to each implementer of the lock feature. Returns as soon as one
      * of them returns a result other than <b>OPER_UNHANDLED</b>. If they all return
      * <b>OPER_UNHANDLED</b>, then it returns the result of applying the default function.
-     * 
+     *
      * @param interceptFunc intercept function
      * @param defaultFunc default function
      * @return {@code true} if success, {@code false} otherwise
@@ -180,7 +180,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     /**
      * Applies a function to each implementer of the lock feature. Returns as soon as one
      * of them returns a non-null value.
-     * 
+     *
      * @param continueValue if the implementer returns this value, then it continues to
      *        check addition implementers
      * @param func function to be applied to the implementers
@@ -208,11 +208,11 @@ public class PolicyResourceLockManager extends SimpleLockManager {
 
     /**
      * Get implementers.
-     * 
+     *
      * @return the list of feature implementers
      */
     protected List<PolicyResourceLockFeatureApi> getImplementers() {
-        return PolicyResourceLockFeatureApi.impl.getList();
+        return PolicyResourceLockFeatureApiConstants.getImpl().getList();
     }
 
     /**
@@ -221,7 +221,7 @@ public class PolicyResourceLockManager extends SimpleLockManager {
     private static class Singleton {
 
         private static final PolicyResourceLockManager instance = new PolicyResourceLockManager();
-        
+
         /**
          * Not invoked.
          */

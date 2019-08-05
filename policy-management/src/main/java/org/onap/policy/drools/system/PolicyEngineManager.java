@@ -20,6 +20,10 @@
 
 package org.onap.policy.drools.system;
 
+import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_HOST;
+import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME;
+import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_PORT;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
@@ -40,13 +44,18 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.jmx.PdpJmxListener;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApiConstants;
 import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
@@ -279,16 +288,17 @@ class PolicyEngineManager implements PolicyEngine {
                     .setTargetEntity(config.getEntity());
         }
 
-        switch (entity) {
-            case PdpdConfiguration.CONFIG_ENTITY_CONTROLLER:
-                boolean success = controllerConfig(config);
-                mdcTrans.resetSubTransaction().setStatusCode(success).transaction();
-                return success;
-            default:
-                final String msg = "Configuration Entity is not supported: " + entity;
-                mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
-                logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, msg);
-                throw new IllegalArgumentException(msg);
+
+        if (PdpdConfiguration.CONFIG_ENTITY_CONTROLLER.equals(entity)) {
+            boolean success = controllerConfig(config);
+            mdcTrans.resetSubTransaction().setStatusCode(success).transaction();
+            return success;
+
+        } else {
+            final String msg = "Configuration Entity is not supported: " + entity;
+            mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
+            logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, msg);
+            throw new IllegalArgumentException(msg);
         }
     }
 
@@ -425,12 +435,13 @@ class PolicyEngineManager implements PolicyEngine {
                         controllerName);
 
                 /*
-                 * try to bring up bad controller in brainless mode, after having it working, apply
-                 * the new create/update operation.
+                 * try to bring up bad controller in brainless mode, after having it
+                 * working, apply the new create/update operation.
                  */
-                controllerProperties.setProperty(DroolsProperties.RULES_GROUPID, DroolsController.NO_GROUP_ID);
-                controllerProperties.setProperty(DroolsProperties.RULES_ARTIFACTID, DroolsController.NO_ARTIFACT_ID);
-                controllerProperties.setProperty(DroolsProperties.RULES_VERSION, DroolsController.NO_VERSION);
+                controllerProperties.setProperty(DroolsProperties.RULES_GROUPID, DroolsControllerConstants.NO_GROUP_ID);
+                controllerProperties.setProperty(DroolsProperties.RULES_ARTIFACTID,
+                                DroolsControllerConstants.NO_ARTIFACT_ID);
+                controllerProperties.setProperty(DroolsProperties.RULES_VERSION, DroolsControllerConstants.NO_VERSION);
 
                 policyController = getPolicyEngine().createPolicyController(controllerName, controllerProperties);
 
@@ -1272,11 +1283,11 @@ class PolicyEngineManager implements PolicyEngine {
     // these methods may be overridden by junit tests
 
     protected List<PolicyEngineFeatureApi> getEngineProviders() {
-        return PolicyEngineFeatureApi.providers.getList();
+        return PolicyEngineFeatureApiConstants.getProviders().getList();
     }
 
     protected List<PolicyControllerFeatureApi> getControllerProviders() {
-        return PolicyControllerFeatureApi.providers.getList();
+        return PolicyControllerFeatureApiConstants.getProviders().getList();
     }
 
     protected void globalInitContainer(String[] cliArgs) {
@@ -1292,7 +1303,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     protected PolicyControllerFactory getControllerFactory() {
-        return PolicyController.factory;
+        return PolicyControllerFactoryInstance.getInstance();
     }
 
     protected void startPdpJmxListener() {
@@ -1308,14 +1319,14 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     protected EventProtocolCoder getProtocolCoder() {
-        return EventProtocolCoder.manager;
+        return EventProtocolCoderConstants.getManager();
     }
 
     protected SystemPersistence getPersistenceManager() {
-        return SystemPersistence.manager;
+        return SystemPersistenceConstants.getManager();
     }
 
     protected PolicyEngine getPolicyEngine() {
-        return PolicyEngine.manager;
+        return PolicyEngineConstants.getManager();
     }
 }

@@ -29,11 +29,6 @@ import org.onap.policy.drools.controller.DroolsController;
  */
 public interface EventProtocolCoder {
 
-    /**
-     * singleton reference to the global event protocol coder.
-     */
-    public static EventProtocolCoder manager = new MultiplexorEventProtocolCoder();
-
     public static class CoderFilters {
 
         /**

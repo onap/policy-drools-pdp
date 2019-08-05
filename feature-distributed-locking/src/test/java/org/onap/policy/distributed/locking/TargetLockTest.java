@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ public class TargetLockTest {
     public static void setup() {
         getDbConnection();
         createTable();
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
+        SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
         distLockFeat = new DistributedLockingFeature();
         distLockFeat.afterStart(null);
     }

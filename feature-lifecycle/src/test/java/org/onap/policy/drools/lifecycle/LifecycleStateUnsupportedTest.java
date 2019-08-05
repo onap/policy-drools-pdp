@@ -26,7 +26,7 @@ import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 
@@ -39,12 +39,12 @@ public abstract class LifecycleStateUnsupportedTest {
 
     @BeforeClass
     public static void setUp() {
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
+        SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
     }
 
     @AfterClass
     public static void tearDown() {
-        SystemPersistence.manager.setConfigurationDir(null);
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }
 
     public LifecycleStateUnsupportedTest(LifecycleState state) {

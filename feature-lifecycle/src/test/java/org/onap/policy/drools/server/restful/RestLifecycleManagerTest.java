@@ -33,7 +33,7 @@ import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.utils.network.NetworkUtil;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.models.pdp.enums.PdpState;
 
 /**
@@ -49,7 +49,7 @@ public class RestLifecycleManagerTest {
         HttpServletServerFactoryInstance.getServerFactory().destroy();
         HttpClientFactoryInstance.getClientFactory().destroy();
 
-        SystemPersistence.manager.setConfigurationDir("target/test-classes");
+        SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
         HttpClientFactoryInstance.getClientFactory().build(
             BusTopicParams.builder()

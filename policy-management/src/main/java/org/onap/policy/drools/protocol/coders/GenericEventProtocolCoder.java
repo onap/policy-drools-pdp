@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +36,11 @@ import org.slf4j.LoggerFactory;
  * parsing tools.
  */
 abstract class GenericEventProtocolCoder {
-
     private static final String INVALID_ARTIFACT_ID_MSG = "Invalid artifact id";
-
     private static final String INVALID_GROUP_ID_MSG = "Invalid group id";
-
     private static final String INVALID_TOPIC_MSG = "Invalid Topic";
-
     private static final String UNSUPPORTED_MSG = "Unsupported";
-
+    private static final String UNSUPPORTED_EX_MSG = "Unsupported:";
     private static final String MISSING_CLASS = "class must be provided";
 
     private static Logger logger = LoggerFactory.getLogger(GenericEventProtocolCoder.class);
@@ -287,7 +284,7 @@ abstract class GenericEventProtocolCoder {
 
         if (!isCodingSupported(groupId, artifactId, topic)) {
             throw new IllegalArgumentException(
-                    "Unsupported:" + codersKey(groupId, artifactId, topic) + " for encoding");
+                    UNSUPPORTED_EX_MSG + codersKey(groupId, artifactId, topic) + " for encoding");
         }
 
         String key = this.codersKey(groupId, artifactId, topic);
@@ -318,7 +315,7 @@ abstract class GenericEventProtocolCoder {
     public String encode(String groupId, String artifactId, String topic, Object event) {
 
         if (!isCodingSupported(groupId, artifactId, topic)) {
-            throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+            throw new IllegalArgumentException(UNSUPPORTED_EX_MSG + codersKey(groupId, artifactId, topic));
         }
 
         if (event == null) {
@@ -455,7 +452,8 @@ abstract class GenericEventProtocolCoder {
             List<CoderFilters> coderFilters = encoderSet.getCoders();
             for (CoderFilters coder : coderFilters) {
                 if (coder.getCodedClass().equals(encodedClass.getClass().getName())) {
-                    DroolsController droolsController = DroolsController.factory.get(groupId, artifactId, "");
+                    DroolsController droolsController =
+                                    DroolsControllerConstants.getFactory().get(groupId, artifactId, "");
                     if (droolsController.ownsCoder(
                             encodedClass.getClass(), coder.getModelClassLoaderHash())) {
                         droolsControllers.add(droolsController);
@@ -487,7 +485,7 @@ abstract class GenericEventProtocolCoder {
     public List<CoderFilters> getFilters(String groupId, String artifactId, String topic) {
 
         if (!isCodingSupported(groupId, artifactId, topic)) {
-            throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+            throw new IllegalArgumentException(UNSUPPORTED_EX_MSG + codersKey(groupId, artifactId, topic));
         }
 
         String key = this.codersKey(groupId, artifactId, topic);
@@ -540,7 +538,7 @@ abstract class GenericEventProtocolCoder {
             String groupId, String artifactId, String topic, String classname) {
 
         if (!isCodingSupported(groupId, artifactId, topic)) {
-            throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+            throw new IllegalArgumentException(UNSUPPORTED_EX_MSG + codersKey(groupId, artifactId, topic));
         }
 
         if (classname == null || classname.isEmpty()) {
@@ -565,7 +563,7 @@ abstract class GenericEventProtocolCoder {
             String groupId, String artifactId, String topic) {
 
         if (!isCodingSupported(groupId, artifactId, topic)) {
-            throw new IllegalArgumentException("Unsupported:" + codersKey(groupId, artifactId, topic));
+            throw new IllegalArgumentException(UNSUPPORTED_EX_MSG + codersKey(groupId, artifactId, topic));
         }
 
         String key = this.codersKey(groupId, artifactId, topic);
