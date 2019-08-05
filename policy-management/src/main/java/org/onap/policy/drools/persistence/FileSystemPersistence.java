@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Properties;
 
 import java.util.function.BiPredicate;
-import org.onap.policy.drools.properties.DroolsProperties;
+import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,7 @@ public class FileSystemPersistence implements SystemPersistence {
     /**
      * Configuration directory.
      */
-    protected Path configurationDirectory = Paths.get(DEFAULT_CONFIGURATION_DIR);
+    protected Path configurationDirectory = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
 
     /**
      * Logger.
@@ -123,11 +123,11 @@ public class FileSystemPersistence implements SystemPersistence {
         String tempConfigDir = configDir;
 
         if (tempConfigDir == null) {
-            tempConfigDir = DEFAULT_CONFIGURATION_DIR;
-            this.configurationDirectory = Paths.get(DEFAULT_CONFIGURATION_DIR);
+            tempConfigDir = SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR;
+            this.configurationDirectory = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
         }
 
-        if (!tempConfigDir.equals(DEFAULT_CONFIGURATION_DIR)) {
+        if (!tempConfigDir.equals(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR)) {
             this.configurationDirectory = Paths.get(tempConfigDir);
         }
 
@@ -263,9 +263,9 @@ public class FileSystemPersistence implements SystemPersistence {
     private boolean testControllerName(String controllerFilename, Properties controllerProperties) {
         String controllerName = controllerFilename
                 .substring(0, controllerFilename.length() - PROPERTIES_FILE_CONTROLLER_SUFFIX.length());
-        String controllerPropName = controllerProperties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME);
+        String controllerPropName = controllerProperties.getProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME);
         if (controllerPropName == null) {
-            controllerProperties.setProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME, controllerName);
+            controllerProperties.setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, controllerName);
         } else if (!controllerPropName.equals(controllerName)) {
             logger.error("{}: mismatch controller named {} against {} in file {}",
                          this, controllerPropName, controllerName, controllerFilename);
@@ -290,7 +290,7 @@ public class FileSystemPersistence implements SystemPersistence {
         if (Files.exists(path)) {
             try {
                 logger.info("{}: there is an existing configuration file @ {} ", this, path);
-                Path bakPath = Paths.get(this.configurationDirectory.toString(), 
+                Path bakPath = Paths.get(this.configurationDirectory.toString(),
                                             name + fileSuffix + FILE_BACKUP_SUFFIX);
                 Files.copy(path, bakPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
@@ -365,7 +365,7 @@ public class FileSystemPersistence implements SystemPersistence {
 
         if (Files.exists(path)) {
             try {
-                Path bakPath = Paths.get(this.configurationDirectory.toString(), 
+                Path bakPath = Paths.get(this.configurationDirectory.toString(),
                                             name + fileSuffix + FILE_BACKUP_SUFFIX);
                 Files.move(path, bakPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (final Exception e) {

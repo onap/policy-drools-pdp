@@ -35,10 +35,13 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.properties.DroolsProperties;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
@@ -148,14 +151,15 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         return droolsController
                 .getBaseDomainNames()
                 .stream()
-                .map(d -> new ToscaPolicyTypeIdentifier(d, DroolsProperties.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION))
+                .map(d -> new ToscaPolicyTypeIdentifier(d,
+                                DroolsPropertyConstants.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION))
                 .collect(Collectors.toList());
     }
 
     protected List<ToscaPolicyTypeIdentifier> getPolicyTypesFromProperties() {
         List<ToscaPolicyTypeIdentifier> policyTypeIds = new ArrayList<>();
 
-        String ptiPropValue = properties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_POLICY_TYPES);
+        String ptiPropValue = properties.getProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_POLICY_TYPES);
         if (ptiPropValue == null) {
             return policyTypeIds;
         }
@@ -165,7 +169,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             String[] ptv = pti.split(":");
             if (ptv.length == 1) {
                 policyTypeIds.add(new ToscaPolicyTypeIdentifier(ptv[0],
-                    DroolsProperties.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION));
+                    DroolsPropertyConstants.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION));
             } else if (ptv.length == 2) {
                 policyTypeIds.add(new ToscaPolicyTypeIdentifier(ptv[0], ptv[1]));
             }
@@ -221,9 +225,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         try {
             /* Drools Controller created, update initialization properties for restarts */
 
-            this.properties.setProperty(DroolsProperties.RULES_GROUPID, newDroolsConfiguration.getGroupId());
-            this.properties.setProperty(DroolsProperties.RULES_ARTIFACTID, newDroolsConfiguration.getArtifactId());
-            this.properties.setProperty(DroolsProperties.RULES_VERSION, newDroolsConfiguration.getVersion());
+            this.properties.setProperty(DroolsPropertyConstants.RULES_GROUPID, newDroolsConfiguration.getGroupId());
+            this.properties.setProperty(DroolsPropertyConstants.RULES_ARTIFACTID,
+                            newDroolsConfiguration.getArtifactId());
+            this.properties.setProperty(DroolsPropertyConstants.RULES_VERSION, newDroolsConfiguration.getVersion());
 
             getPersistenceManager().storeController(name, this.properties);
 
@@ -719,7 +724,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     // the following methods may be overridden by junit tests
 
     protected SystemPersistence getPersistenceManager() {
-        return SystemPersistence.manager;
+        return SystemPersistenceConstants.getManager();
     }
 
     protected TopicEndpoint getEndpointManager() {
@@ -727,11 +732,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     protected DroolsControllerFactory getDroolsFactory() {
-        return DroolsController.factory;
+        return DroolsControllerConstants.getFactory();
     }
 
     protected List<PolicyControllerFeatureApi> getProviders() {
-        return PolicyControllerFeatureApi.providers.getList();
+        return PolicyControllerFeatureApiConstants.getProviders().getList();
     }
 }
 

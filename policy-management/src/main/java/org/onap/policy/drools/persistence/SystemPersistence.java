@@ -28,16 +28,6 @@ import java.util.Properties;
  * System Configuration.
  */
 public interface SystemPersistence {
-    /**
-     * configuration directory.
-     */
-    String DEFAULT_CONFIGURATION_DIR = "config";
-
-    /**
-     * Persistence Manager. For now it is a file-based properties management, In the future, it will
-     * probably be DB based, so manager implementation will change.
-     */
-    SystemPersistence manager = new FileSystemPersistence();
 
     /**
      * sets a configuration directory and ensures it exists.

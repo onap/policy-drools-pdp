@@ -1,15 +1,15 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
- * policy-core
+ * policy-management
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,20 +18,24 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.properties;
+package org.onap.policy.drools.persistence;
 
-public interface DroolsProperties {
+import lombok.Getter;
 
-    /* Controller Properties */
+public class SystemPersistenceConstants {
+    /**
+     * configuration directory.
+     */
+    public static final String DEFAULT_CONFIGURATION_DIR = "config";
 
-    String PROPERTY_CONTROLLER_NAME = "controller.name";
+    /**
+     * Persistence Manager. For now it is a file-based properties management, In the future, it will
+     * probably be DB based, so manager implementation will change.
+     */
+    @Getter
+    private static final SystemPersistence manager = new FileSystemPersistence();
 
-    String DEFAULT_CONTROLLER_POLICY_TYPE_VERSION = "1.0.0";
-    String PROPERTY_CONTROLLER_POLICY_TYPES = "controller.policy.types";
-
-    /* Drools Properties */
-
-    String RULES_GROUPID = "rules.groupId";
-    String RULES_ARTIFACTID = "rules.artifactId";
-    String RULES_VERSION = "rules.version";
+    private SystemPersistenceConstants() {
+        // do nothing
+    }
 }

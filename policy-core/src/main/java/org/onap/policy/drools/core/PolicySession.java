@@ -143,7 +143,7 @@ public class PolicySession
         // loop through all of the features, and give each one
         // a chance to create the 'ThreadModel'
         for (PolicySessionFeatureApi feature :
-                PolicySessionFeatureApi.impl.getList()) {
+                PolicySessionFeatureApiConstants.getImpl().getList()) {
             try {
                 if ((threadModel = feature.selectThreadModel(this)) != null) {
                     break;

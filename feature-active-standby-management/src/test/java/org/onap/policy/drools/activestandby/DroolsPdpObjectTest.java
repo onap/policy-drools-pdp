@@ -87,7 +87,7 @@ public class DroolsPdpObjectTest {
     @Test
     public void testNullSafeCompare() {
         // self, when null
-        pdp.setSiteName(null);
+        pdp.setSite(null);
         assertEquals(0, pdp.comparePriority(pdp));
 
         // both null
@@ -138,7 +138,7 @@ public class DroolsPdpObjectTest {
         };
 
         pdp2.setPdpId(PDP_ID);
-        pdp2.setSiteName(SITE2);
+        pdp2.setSite(SITE2);
         pdp2.setPriority(PRIORITY);
 
         // should use overridden comparison method
@@ -152,7 +152,7 @@ public class DroolsPdpObjectTest {
     private MyPdp makePdp(String id, String site, int priority) {
         MyPdp pdp2 = new MyPdp();
 
-        pdp2.setSiteName(site);
+        pdp2.setSite(site);
         pdp2.setPdpId(id);
         pdp2.setPriority(priority);
 
@@ -166,7 +166,7 @@ public class DroolsPdpObjectTest {
         private boolean designated;
         private int priority;
         private Date updatedDate;
-        private String siteName;
+        private String site;
         private Date designatedDate;
     }
 }

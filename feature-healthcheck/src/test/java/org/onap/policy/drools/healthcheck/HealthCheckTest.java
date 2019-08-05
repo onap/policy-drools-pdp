@@ -70,7 +70,7 @@ public class HealthCheckTest {
     private List<HttpServletServer> servers;
     private List<HttpClient> clients;
     private PolicyEngine engineMgr;
-    private HealthCheckMonitor monitor;
+    private HealthCheckManager monitor;
 
     /**
      * Initializes the object to be tested.
@@ -310,23 +310,23 @@ public class HealthCheckTest {
 
     @Test
     public void testHealthCheckMonitor_GetEngineManager() {
-        assertNotNull(new HealthCheckMonitor().getEngineManager());
+        assertNotNull(new HealthCheckManager().getEngineManager());
     }
 
     @Test
     public void testHealthCheckMonitor_GetServerFactory() {
-        assertNotNull(new HealthCheckMonitor().getServerFactory());
+        assertNotNull(new HealthCheckManager().getServerFactory());
     }
 
     @Test
     public void testHealthCheckMonitor_GetClientFactory() {
-        assertNotNull(new HealthCheckMonitor().getClientFactory());
+        assertNotNull(new HealthCheckManager().getClientFactory());
     }
 
     /**
      * Monitor with overrides.
      */
-    private class HealthCheckMonitorImpl extends HealthCheckMonitor {
+    private class HealthCheckMonitorImpl extends HealthCheckManager {
 
         @Override
         protected PolicyEngine getEngineManager() {

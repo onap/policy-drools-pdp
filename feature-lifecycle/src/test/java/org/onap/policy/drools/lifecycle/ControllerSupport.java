@@ -27,8 +27,9 @@ import java.util.Properties;
 import lombok.Getter;
 import lombok.NonNull;
 import org.kie.api.builder.ReleaseId;
-import org.onap.policy.drools.properties.DroolsProperties;
+import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.util.KieUtils;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
@@ -75,27 +76,27 @@ public class ControllerSupport {
 
 
         Properties controllerProps = new Properties();
-        controllerProps.put(DroolsProperties.PROPERTY_CONTROLLER_NAME, name);
-        controllerProps.put(DroolsProperties.PROPERTY_CONTROLLER_POLICY_TYPES, getPolicyType());
-        controllerProps.put(DroolsProperties.RULES_GROUPID, coordinates.getGroupId());
-        controllerProps.put(DroolsProperties.RULES_ARTIFACTID, coordinates.getArtifactId());
-        controllerProps.put(DroolsProperties.RULES_VERSION, coordinates.getVersion());
+        controllerProps.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, name);
+        controllerProps.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_POLICY_TYPES, getPolicyType());
+        controllerProps.put(DroolsPropertyConstants.RULES_GROUPID, coordinates.getGroupId());
+        controllerProps.put(DroolsPropertyConstants.RULES_ARTIFACTID, coordinates.getArtifactId());
+        controllerProps.put(DroolsPropertyConstants.RULES_VERSION, coordinates.getVersion());
 
-        return PolicyController.factory.build(name, controllerProps);
+        return PolicyControllerConstants.getFactory().build(name, controllerProps);
     }
 
     /**
      * Destroy the echo controller.
      */
     public void destroyController() {
-        PolicyController.factory.destroy(name);
+        PolicyControllerConstants.getFactory().destroy(name);
     }
 
     /**
      * Get controller.
      */
     public PolicyController getController() {
-        return PolicyController.factory.get(name);
+        return PolicyControllerConstants.getFactory().get(name);
     }
 
     /**
@@ -109,7 +110,7 @@ public class ControllerSupport {
      * Get facts.
      */
     public <T> List<T> getFacts(Class<T> clazz) {
-        return PolicyController.factory.get(name)
+        return PolicyControllerConstants.getFactory().get(name)
             .getDrools()
             .facts(SESSION_NAME, clazz);
     }
