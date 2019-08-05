@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 
 /**
  * Partially tests DistributedLockingFeature; most of the methods are tested via
@@ -43,7 +43,7 @@ public class DistributedLockingFeatureTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
+        SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
     }
 
     @Before

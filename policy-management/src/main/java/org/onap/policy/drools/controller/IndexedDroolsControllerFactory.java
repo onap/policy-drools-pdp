@@ -32,7 +32,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.internal.MavenDroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
-import org.onap.policy.drools.properties.DroolsProperties;
+import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
@@ -79,19 +79,19 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     public DroolsController build(Properties properties, List<? extends TopicSource> eventSources,
             List<? extends TopicSink> eventSinks) throws LinkageError {
 
-        String groupId = properties.getProperty(DroolsProperties.RULES_GROUPID);
+        String groupId = properties.getProperty(DroolsPropertyConstants.RULES_GROUPID);
         if (groupId == null || groupId.isEmpty()) {
-            groupId = DroolsController.NO_GROUP_ID;
+            groupId = DroolsControllerConstants.NO_GROUP_ID;
         }
 
-        String artifactId = properties.getProperty(DroolsProperties.RULES_ARTIFACTID);
+        String artifactId = properties.getProperty(DroolsPropertyConstants.RULES_ARTIFACTID);
         if (artifactId == null || artifactId.isEmpty()) {
-            artifactId = DroolsController.NO_ARTIFACT_ID;
+            artifactId = DroolsControllerConstants.NO_ARTIFACT_ID;
         }
 
-        String version = properties.getProperty(DroolsProperties.RULES_VERSION);
+        String version = properties.getProperty(DroolsPropertyConstants.RULES_VERSION);
         if (version == null || version.isEmpty()) {
-            version = DroolsController.NO_VERSION;
+            version = DroolsControllerConstants.NO_VERSION;
         }
 
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = codersAndFilters(properties, eventSources);

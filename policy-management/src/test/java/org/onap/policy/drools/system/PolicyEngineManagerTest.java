@@ -56,7 +56,7 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.properties.DroolsProperties;
+import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
@@ -492,19 +492,19 @@ public class PolicyEngineManagerTest {
 
         // empty name in properties - same result
         setUp();
-        properties.setProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME, "");
+        properties.setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, "");
         assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
         verify(contProv1).beforeCreate(MY_NAME, properties);
 
         // matching name in properties - same result
         setUp();
-        properties.setProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME, MY_NAME);
+        properties.setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, MY_NAME);
         assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
         verify(contProv1).beforeCreate(MY_NAME, properties);
 
         // mismatching name in properties - nothing should happen besides exception
         setUp();
-        properties.setProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME, "mistmatched-name");
+        properties.setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, "mistmatched-name");
         assertThatIllegalStateException().isThrownBy(() -> mgr.createPolicyController(MY_NAME, properties));
         verify(contProv1, never()).beforeCreate(MY_NAME, properties);
 

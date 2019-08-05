@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,7 +46,7 @@ import org.onap.policy.drools.pooling.state.QueryState;
 import org.onap.policy.drools.pooling.state.StartState;
 import org.onap.policy.drools.pooling.state.State;
 import org.onap.policy.drools.pooling.state.StateTimerTask;
-import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +120,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Current state.
-     * 
+     *
      * <p>This uses a finite state machine, wherein the state object contains all of the data
      * relevant to that state. Each state object has a process() method, specific to each
      * type of {@link Message} subclass. The method returns the next state object, or
@@ -182,7 +182,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Should only be used by junit tests.
-     * 
+     *
      * @return the current state
      */
     protected State getCurrent() {
@@ -208,7 +208,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Makes properties for configuring extractors.
-     * 
+     *
      * @param controller the controller for which the extractors will be configured
      * @param source properties from which to get the extractor properties
      * @return extractor properties
@@ -324,7 +324,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Changes the finite state machine to a new state, provided the new state is not
      * {@code null}.
-     * 
+     *
      * @param newState new state, or {@code null} if to remain unchanged
      */
     private void changeState(State newState) {
@@ -340,7 +340,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Sets the server-side filter for the internal topic.
-     * 
+     *
      * @param filter new filter to be used
      */
     private void setFilter(Map<String, Object> filter) {
@@ -402,7 +402,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Handles an event from the internal topic.
-     * 
+     *
      * @param commType comm infrastructure
      * @param topic2 topic
      * @param event event
@@ -425,11 +425,11 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * Called by the PolicyController before it offers the event to the DroolsController.
      * If the controller is locked, then it isn't processing events. However, they still
      * need to be forwarded, thus in that case, they are decoded and forwarded.
-     * 
+     *
      * <p>On the other hand, if the controller is not locked, then we just return immediately
      * and let {@link #beforeInsert(Object, String, String, Object) beforeInsert()} handle
      * it instead, as it already has the decoded message.
-     * 
+     *
      * @param protocol protocol
      * @param topic2 topic
      * @param event event
@@ -448,7 +448,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Called by the DroolsController before it inserts the event into the rule engine.
-     * 
+     *
      * @param protocol protocol
      * @param topic2 topic
      * @param event original event text, as received from the Bus
@@ -468,7 +468,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Handles an event from an external topic.
-     * 
+     *
      * @param protocol protocol
      * @param topic2 topic
      * @param event event
@@ -503,7 +503,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Handles an event from an external topic.
-     * 
+     *
      * @param event event
      * @return {@code true} if the event was handled, {@code false} if the invoker should
      *         handle it
@@ -523,7 +523,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Handles a {@link Forward} event, possibly forwarding it again.
-     * 
+     *
      * @param event event
      * @return {@code true} if the event was handled, {@code false} if the invoker should
      *         handle it
@@ -564,7 +564,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Extract the request id from an event object.
-     * 
+     *
      * @param event the event object, or {@code null}
      * @return the event's request id, or {@code null} if it can't be extracted
      */
@@ -579,7 +579,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Decodes an event from a String into an event Object.
-     * 
+     *
      * @param topic2 topic
      * @param event event
      * @return the decoded event object, or {@code null} if it can't be decoded
@@ -609,7 +609,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Makes a {@link Forward}, and validates its contents.
-     * 
+     *
      * @param protocol protocol
      * @param topic2 topic
      * @param event event
@@ -645,7 +645,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Injects an event into the controller.
-     * 
+     *
      * @param event event
      */
     private void inject(Forward event) {
@@ -664,7 +664,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * Handles an event from the internal topic. This uses reflection to identify the
      * appropriate process() method to invoke, based on the type of Message that was
      * decoded.
-     * 
+     *
      * @param event the serialized {@link Message} read from the internal topic
      */
     private void handleInternal(String event) {
@@ -746,7 +746,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
         /**
          * Constructor.
-         * 
+         *
          * @param task task to execute when this timer runs
          */
         public TimerAction(StateTimerTask task) {
@@ -763,14 +763,14 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             }
         }
     }
-    
+
     /*
      * The remaining methods may be overridden by junit tests.
      */
 
     /**
      * Creates object extractors.
-     * 
+     *
      * @param props properties used to configure the extractors
      * @return a new set of extractors
      */
@@ -781,7 +781,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Creates a DMaaP manager.
-     * 
+     *
      * @param topic name of the internal DMaaP topic
      * @return a new DMaaP manager
      * @throws PoolingFeatureException if an error occurs
@@ -792,7 +792,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Creates a scheduled thread pool.
-     * 
+     *
      * @return a new scheduled thread pool
      */
     protected ScheduledThreadPoolExecutor makeScheduler() {
@@ -801,18 +801,19 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
     /**
      * Determines if the event can be decoded.
-     * 
+     *
      * @param drools drools controller
      * @param topic topic on which the event was received
      * @return {@code true} if the event can be decoded, {@code false} otherwise
      */
     protected boolean canDecodeEvent(DroolsController drools, String topic) {
-        return EventProtocolCoder.manager.isDecodingSupported(drools.getGroupId(), drools.getArtifactId(), topic);
+        return EventProtocolCoderConstants.getManager().isDecodingSupported(drools.getGroupId(), drools.getArtifactId(),
+                        topic);
     }
 
     /**
      * Decodes the event.
-     * 
+     *
      * @param drools drools controller
      * @param topic topic on which the event was received
      * @param event event text to be decoded
@@ -822,6 +823,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
      * @throws IllegalStateException illegal state
      */
     protected Object decodeEventWrapper(DroolsController drools, String topic, String event) {
-        return EventProtocolCoder.manager.decode(drools.getGroupId(), drools.getArtifactId(), topic, event);
+        return EventProtocolCoderConstants.getManager().decode(drools.getGroupId(), drools.getArtifactId(), topic,
+                        event);
     }
 }

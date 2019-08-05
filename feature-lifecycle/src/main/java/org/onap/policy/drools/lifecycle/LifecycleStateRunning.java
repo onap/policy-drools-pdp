@@ -42,6 +42,10 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleStateRunning.class);
 
+    protected LifecycleStateRunning(LifecycleFsm manager) {
+        super(manager);
+    }
+
     protected abstract boolean stateChangeToPassive(@NonNull PdpStateChange change);
 
     protected abstract boolean stateChangeToActive(@NonNull PdpStateChange change);
@@ -49,10 +53,6 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     protected abstract boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy);
 
     protected abstract boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy);
-
-    protected LifecycleStateRunning(LifecycleFsm manager) {
-        super(manager);
-    }
 
     @Override
     public boolean start() {
