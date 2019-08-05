@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@ import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureApi, Policy
     private BasicDataSource dataSource;
 
     /**
-     * UUID. 
+     * UUID.
      */
     private static final UUID uuid = UUID.randomUUID();
 
@@ -80,7 +80,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureApi, Policy
 
         TargetLock lock = new TargetLock(resourceId, uuid, owner, dataSource);
 
-        return (lock.refresh(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);                
+        return (lock.refresh(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
     }
 
     @Override
@@ -108,8 +108,8 @@ public class DistributedLockingFeature implements PolicyEngineFeatureApi, Policy
     public boolean afterStart(PolicyEngine engine) {
 
         try {
-            this.lockProps = new DistributedLockingProperties(
-                    SystemPersistence.manager.getProperties(DistributedLockingFeature.CONFIGURATION_PROPERTIES_NAME));
+            this.lockProps = new DistributedLockingProperties(SystemPersistenceConstants.getManager()
+                            .getProperties(DistributedLockingFeature.CONFIGURATION_PROPERTIES_NAME));
             this.dataSource = makeDataSource();
         } catch (PropertyException e) {
             logger.error("DistributedLockingFeature feature properies have not been loaded", e);
@@ -130,7 +130,7 @@ public class DistributedLockingFeature implements PolicyEngineFeatureApi, Policy
 
     /**
      * Make data source.
-     * 
+     *
      * @return a new, pooled data source
      * @throws Exception exception
      */

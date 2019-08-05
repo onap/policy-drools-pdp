@@ -21,7 +21,6 @@
 package org.onap.policy.drools.core.lock;
 
 import org.onap.policy.common.utils.services.OrderedService;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
 /**
  * Resource locks. Each lock has an "owner", which is intended to be unique across a
@@ -36,13 +35,6 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
  * choose to implement a global locking scheme (e.g., through a shared DB).
  */
 public interface PolicyResourceLockFeatureApi extends OrderedService {
-
-    /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
-     */
-    public static OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
 
     /**
      * Result of a requested operation.

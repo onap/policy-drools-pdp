@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * feature-healthcheck
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,24 +56,24 @@ public class RestHealthCheck {
     @Path("healthcheck")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
-            value = "Perform a system healthcheck", 
+            value = "Perform a system healthcheck",
             notes = "Provides healthy status of the PDP-D plus the components defined in its "
                 + "configuration by using a REST interface",
             response = Reports.class
             )
-    public Response healthcheck() {  
-        return Response.status(Response.Status.OK).entity(HealthCheck.monitor.healthCheck()).build();
+    public Response healthcheck() {
+        return Response.status(Response.Status.OK).entity(HealthCheckConstants.getInstance().healthCheck()).build();
     }
 
     @GET
     @Path("healthcheck/configuration")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
-            value = "Configuration", 
+            value = "Configuration",
             notes = "Provides the Healthcheck server configuration and monitored REST clients",
             response = HealthCheck.class
             )
-    public HealthCheck configuration() {  
-        return HealthCheck.monitor;
+    public HealthCheck configuration() {
+        return HealthCheckConstants.getInstance();
     }
 }

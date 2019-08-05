@@ -119,7 +119,7 @@ public class TestTransactionAdditionalTest {
 
     @Test
     public void testTestTransactionImpl() {
-        assertNotNull(TtImpl.manager);
+        assertNotNull(TestTransactionConstants.getManager());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class TestTransactionAdditionalTest {
         // unregister again - stop() should not be called again
         impl.unregister(controller3);
         verify(task3).stop();
-        
+
         // unregister original controller - no stop() should be called again
         impl.unregister(controller);
         verify(task, never()).stop();

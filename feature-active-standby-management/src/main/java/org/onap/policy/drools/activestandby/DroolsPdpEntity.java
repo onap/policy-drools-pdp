@@ -30,7 +30,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.drools.activestandby.DroolsPdpObject;
 
 @Entity
@@ -40,6 +41,8 @@ import org.onap.policy.drools.activestandby.DroolsPdpObject;
     @NamedQuery(name = "DroolsPdpEntity.findAll", query = "SELECT e FROM DroolsPdpEntity e "),
     @NamedQuery(name = "DroolsPdpEntity.deleteAll", query = "DELETE FROM DroolsPdpEntity WHERE 1=1")
     })
+@Getter
+@Setter
 public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -77,62 +80,12 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
     }
 
     @Override
-    public String getPdpId() {
-        return this.pdpId;
-    }
-
-    public void setPdpId(String pdpId) {
-        this.pdpId = pdpId;
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override
-    public boolean isDesignated() {
-        return this.designated;
-    }
-
-    @Override
-    public int getPriority() {
-        return this.priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    @Override
-    public Date getUpdatedDate() {
-        return this.updatedDate;
-    }
-
-    @Override
-    public void setDesignated(boolean isDesignated) {
-        this.designated = isDesignated;
-    }
-
-    @Override
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-
-    @Override
-    public String getSiteName() {
-        return site;
-    }
-
-    @Override
-    public void setSiteName(String siteName) {
-        site = siteName;
-
-    }
-
-    @Override
-    public Date getDesignatedDate() {
-        return designatedDate;
-    }
-
-    @Override
-    public void setDesignatedDate(Date designatedDate) {
-        this.designatedDate = designatedDate;
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

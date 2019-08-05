@@ -8,9 +8,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -169,7 +169,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get name.
-     * 
+     *
      * @return the name of the container, which is the String equivalent of the 'ReleaseId'. It has
      *         the form:
      *
@@ -184,7 +184,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get kie container.
-     * 
+     *
      * @return the associated 'KieContainer' instance
      */
     public KieContainer getKieContainer() {
@@ -193,7 +193,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get class loader.
-     * 
+     *
      * @return the 'ClassLoader' associated with the 'KieContainer' instance
      */
     public ClassLoader getClassLoader() {
@@ -202,7 +202,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get group Id.
-     * 
+     *
      * @return the Maven GroupId of the top-level artifact wrapped by the container.
      */
     public String getGroupId() {
@@ -211,7 +211,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get artifact id.
-     * 
+     *
      * @return the Maven ArtifactId of the top-level artifact wrapped by the container.
      */
     public String getArtifactId() {
@@ -220,7 +220,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get version.
-     * 
+     *
      * @return the version of the top-level artifact wrapped by the container (this may change as
      *         updates occur)
      */
@@ -258,7 +258,7 @@ public class PolicyContainer implements Startable {
 
             // loop through all of the features, and give each one
             // a chance to create the 'KieSession'
-            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
                 try {
                     if ((kieSession = feature.activatePolicySession(this, name, kieBaseName)) != null) {
                         break;
@@ -280,7 +280,7 @@ public class PolicyContainer implements Startable {
                 sessions.put(name, session);
 
                 // notify features
-                for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
+                for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
                     try {
                         feature.newPolicySession(session);
                     } catch (Exception e) {
@@ -289,7 +289,7 @@ public class PolicyContainer implements Startable {
                 }
                 logger.info("activatePolicySession:new session was added in sessions with name {}", name);
             }
-            logger.info("activatePolicySession:session - {} is returned.", 
+            logger.info("activatePolicySession:session - {} is returned.",
                     session == null ? "null" : session.getFullName());
             return session;
         }
@@ -350,7 +350,7 @@ public class PolicyContainer implements Startable {
             sessions.put(name, policySession);
 
             // notify features
-            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
                 try {
                     feature.newPolicySession(policySession);
                 } catch (Exception e) {
@@ -412,7 +412,7 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get policy containers.
-     * 
+     *
      * @return all existing 'PolicyContainer' instances
      */
     public static Collection<PolicyContainer> getPolicyContainers() {
@@ -423,14 +423,14 @@ public class PolicyContainer implements Startable {
 
     /**
      * Get policy sessions.
-     * 
+     *
      * @return all of the 'PolicySession' instances
      */
     public Collection<PolicySession> getPolicySessions() {
         // KLUDGE WARNING: this is a temporary workaround -- if there are
         // no features, we don't have persistence, and 'activate' is never
         // called. In this case, make sure the container is started.
-        if (PolicySessionFeatureApi.impl.getList().isEmpty()) {
+        if (PolicySessionFeatureApiConstants.getImpl().getList().isEmpty()) {
             start();
         }
 
@@ -562,7 +562,7 @@ public class PolicyContainer implements Startable {
             session.getKieSession().dispose();
 
             // notify features
-            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
                 try {
                     feature.disposeKieSession(session);
                 } catch (Exception e) {
@@ -625,7 +625,7 @@ public class PolicyContainer implements Startable {
             session.getKieSession().destroy();
 
             // notify features
-            for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
                 try {
                     feature.destroyKieSession(session);
                 } catch (Exception e) {
@@ -685,7 +685,7 @@ public class PolicyContainer implements Startable {
         logger.info("PolicyContainer.main: configDir={}", configDir);
 
         // invoke 'globalInit' on all of the features
-        for (PolicySessionFeatureApi feature : PolicySessionFeatureApi.impl.getList()) {
+        for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
             try {
                 feature.globalInit(args, configDir);
             } catch (Exception e) {

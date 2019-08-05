@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,56 +35,36 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 public interface DroolsController extends Startable, Lockable {
 
     /**
-     * No Group ID identifier.
-     */
-    String NO_GROUP_ID = "NO-GROUP-ID";
-
-    /**
-     * No Artifact ID identifier.
-     */
-    String NO_ARTIFACT_ID = "NO-ARTIFACT-ID";
-
-    /**
-     * No version identifier.
-     */
-    String NO_VERSION = "NO-VERSION";
-
-    /**
-     * Factory to track and manage drools controllers.
-     */
-    DroolsControllerFactory factory = new IndexedDroolsControllerFactory();
-
-    /**
      * get group id.
-     * 
+     *
      * @return group id
      */
     String getGroupId();
 
     /**
      * get artifact id.
-     * 
+     *
      * @return artifact id
      */
     String getArtifactId();
 
     /**
      * get version.
-     * 
+     *
      * @return version
      */
     String getVersion();
 
     /**
      * return the policy session names.
-     * 
+     *
      * @return policy session
      */
     List<String> getSessionNames();
 
     /**
      * return the policy full session names.
-     * 
+     *
      * @return policy session
      */
     List<String> getCanonicalSessionNames();
@@ -98,10 +78,10 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * offers a raw event to this controller for processing.
-     * 
+     *
      * @param topic topic associated with the event
      * @param event the event
-     * 
+     *
      * @return true if the operation was successful
      */
     boolean offer(String topic, String event);
@@ -117,7 +97,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * delivers "event" to "sink".
-     * 
+     *
      * @param sink destination
      * @param event event
      * @return true if successful, false if a failure has occurred.
@@ -131,28 +111,28 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * Get recent source events.
-     * 
+     *
      * @return the most recent received events.
      */
     Object[] getRecentSourceEvents();
 
     /**
      * Get recent sink events.
-     * 
+     *
      * @return the most recent delivered events
      */
     String[] getRecentSinkEvents();
 
     /**
      * Get container.
-     * 
+     *
      * @return the underlying policy container
      */
     PolicyContainer getContainer();
 
     /**
      * Does it owns the coder.
-     * 
+     *
      * @param coderClass the encoder object
      * @param modelHash the hash for the model
      * @return true it owns it
@@ -161,7 +141,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * fetches a class from the model.
-     * 
+     *
      * @param className the class to fetch
      * @return the actual class object, or null if not found
      */
@@ -174,13 +154,13 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * update the new version of the maven jar rules file.
-     * 
+     *
      * @param newGroupId - new group id
      * @param newArtifactId - new artifact id
      * @param newVersion - new version
      * @param decoderConfigurations - decoder configurations
      * @param encoderConfigurations - encoder configurations
-     * 
+     *
      * @throws Exception from within drools libraries
      * @throws LinkageError from within drools libraries
      */
@@ -190,7 +170,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * gets the classnames of facts as well as the current count.
-     * 
+     *
      * @param sessionName the session name
      * @return map of class to count
      */
@@ -198,7 +178,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * gets the count of facts for a given session.
-     * 
+     *
      * @param sessionName the session name
      * @return the fact count
      */
@@ -206,7 +186,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * gets all the facts of a given class for a given session.
-     * 
+     *
      * @param sessionName the session identifier
      * @param className the class type
      * @param delete retract from drools the results of the query?
@@ -221,7 +201,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * gets the facts associated with a query for a give session for a given queried entity.
-     * 
+     *
      * @param sessionName the session
      * @param queryName the query identifier
      * @param queriedEntity the queried entity
@@ -254,7 +234,7 @@ public interface DroolsController extends Startable, Lockable {
 
     /**
      * halts and permanently releases all resources.
-     * 
+     *
      */
     void halt();
 }
