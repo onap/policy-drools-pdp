@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,7 @@ import java.util.Map;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
@@ -78,17 +79,17 @@ public class NullDroolsController implements DroolsController {
 
     @Override
     public String getGroupId() {
-        return NO_GROUP_ID;
+        return DroolsControllerConstants.NO_GROUP_ID;
     }
 
     @Override
     public String getArtifactId() {
-        return NO_ARTIFACT_ID;
+        return DroolsControllerConstants.NO_ARTIFACT_ID;
     }
 
     @Override
     public String getVersion() {
-        return NO_VERSION;
+        return DroolsControllerConstants.NO_VERSION;
     }
 
     @Override
@@ -187,8 +188,8 @@ public class NullDroolsController implements DroolsController {
     }
 
     @Override
-    public List<Object> factQuery(String sessionName, String queryName, 
-            String queriedEntity, 
+    public List<Object> factQuery(String sessionName, String queryName,
+            String queriedEntity,
             boolean delete, Object... queryParams) {
         return new ArrayList<>();
     }

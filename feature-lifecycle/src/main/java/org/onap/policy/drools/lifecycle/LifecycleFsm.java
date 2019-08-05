@@ -45,7 +45,8 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
@@ -116,7 +117,7 @@ public class LifecycleFsm implements Startable {
      * Constructor.
      */
     public LifecycleFsm() {
-        this.properties = SystemPersistence.manager.getProperties(CONFIGURATION_PROPERTIES_NAME);
+        this.properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
 
         scheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
@@ -305,7 +306,7 @@ public class LifecycleFsm implements Startable {
 
     private boolean startTimers() {
         statusTask =
-                this.scheduler.scheduleAtFixedRate(() -> status(), 0, statusTimerSeconds, TimeUnit.SECONDS);
+                this.scheduler.scheduleAtFixedRate(this::status, 0, statusTimerSeconds, TimeUnit.SECONDS);
         return !statusTask.isCancelled() && !statusTask.isDone();
     }
 
@@ -381,7 +382,7 @@ public class LifecycleFsm implements Startable {
 
     private List<ToscaPolicyTypeIdentifier> getCapabilities() {
         List<ToscaPolicyTypeIdentifier> capabilities = new ArrayList<>();
-        for (DroolsController dc : DroolsController.factory.inventory()) {
+        for (DroolsController dc : DroolsControllerConstants.getFactory().inventory()) {
             if (!dc.isBrained()) {
                 continue;
             }

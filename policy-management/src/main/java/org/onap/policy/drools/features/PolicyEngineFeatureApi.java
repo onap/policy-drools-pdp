@@ -23,7 +23,6 @@ package org.onap.policy.drools.features;
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyEngine;
 
@@ -32,11 +31,6 @@ import org.onap.policy.drools.system.PolicyEngine;
  * Provides Interception Points during the Policy Engine lifecycle.
  */
 public interface PolicyEngineFeatureApi extends OrderedService {
-    /**
-     * Feature providers implementing this interface.
-     */
-    public static final OrderedServiceImpl<PolicyEngineFeatureApi> providers =
-            new OrderedServiceImpl<>(PolicyEngineFeatureApi.class);
 
     /**
      * intercept before the Policy Engine is commanded to boot.

@@ -32,7 +32,9 @@ import javax.persistence.Persistence;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApiConstants;
 import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +84,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
         // This must come first since it initializes myPdp
         initializePersistence(configDir);
 
-        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApiConstants.getImpl().getList()) {
             if (feature.getResourceName().equals(myPdp.getPdpId())) {
                 logger.debug("ActiveStandbyFeature.globalInit: Found StateManagementFeature"
                                 + " with resourceName: {}", myPdp.getPdpId());
@@ -120,7 +122,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
     @Override
     public boolean afterStart(PolicyEngine engine) {
         // ASSERTION: engine == PolicyEngine.manager
-        PolicyEngine.manager.lock();
+        PolicyEngineConstants.getManager().lock();
         return false;
     }
 

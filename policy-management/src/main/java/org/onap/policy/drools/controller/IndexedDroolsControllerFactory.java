@@ -81,17 +81,17 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
         String groupId = properties.getProperty(DroolsProperties.RULES_GROUPID);
         if (groupId == null || groupId.isEmpty()) {
-            groupId = DroolsController.NO_GROUP_ID;
+            groupId = DroolsControllerConstants.NO_GROUP_ID;
         }
 
         String artifactId = properties.getProperty(DroolsProperties.RULES_ARTIFACTID);
         if (artifactId == null || artifactId.isEmpty()) {
-            artifactId = DroolsController.NO_ARTIFACT_ID;
+            artifactId = DroolsControllerConstants.NO_ARTIFACT_ID;
         }
 
         String version = properties.getProperty(DroolsProperties.RULES_VERSION);
         if (version == null || version.isEmpty()) {
-            version = DroolsController.NO_VERSION;
+            version = DroolsControllerConstants.NO_VERSION;
         }
 
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = codersAndFilters(properties, eventSources);

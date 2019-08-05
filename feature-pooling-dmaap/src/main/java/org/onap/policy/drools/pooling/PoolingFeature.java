@@ -35,8 +35,9 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyControllerFactoryInstance;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.util.FeatureEnabledChecker;
 import org.slf4j.Logger;
@@ -386,7 +387,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
      * @return the properties for the specified feature
      */
     protected Properties getProperties(String featName) {
-        return SystemPersistence.manager.getProperties(featName);
+        return SystemPersistenceConstants.getManager().getProperties(featName);
     }
 
     /**
@@ -410,7 +411,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
      * @return the policy controller associated with a drools controller
      */
     protected PolicyController getController(DroolsController droolsController) {
-        return PolicyController.factory.get(droolsController);
+        return PolicyControllerFactoryInstance.getInstance().get(droolsController);
     }
 
     /**

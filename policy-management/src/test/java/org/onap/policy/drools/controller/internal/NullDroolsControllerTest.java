@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 
 public class NullDroolsControllerTest {
 
@@ -56,17 +57,17 @@ public class NullDroolsControllerTest {
 
     @Test
     public void getGroupId() {
-        Assert.assertEquals(new NullDroolsController().getGroupId(), DroolsController.NO_GROUP_ID);
+        Assert.assertEquals(new NullDroolsController().getGroupId(), DroolsControllerConstants.NO_GROUP_ID);
     }
 
     @Test
     public void getArtifactId() {
-        Assert.assertEquals(new NullDroolsController().getArtifactId(), DroolsController.NO_ARTIFACT_ID);
+        Assert.assertEquals(new NullDroolsController().getArtifactId(), DroolsControllerConstants.NO_ARTIFACT_ID);
     }
 
     @Test
     public void getVersion() {
-        Assert.assertEquals(new NullDroolsController().getVersion(), DroolsController.NO_VERSION);
+        Assert.assertEquals(new NullDroolsController().getVersion(), DroolsControllerConstants.NO_VERSION);
     }
 
     @Test
