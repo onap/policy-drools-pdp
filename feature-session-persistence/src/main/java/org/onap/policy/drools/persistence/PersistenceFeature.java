@@ -48,6 +48,7 @@ import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyControllerFactoryInstance;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
@@ -65,7 +66,7 @@ import org.slf4j.LoggerFactory;
 public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngineFeatureApi {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceFeature.class);
-    
+
     /** KieService factory. */
     private KieServices kieSvcFact;
 
@@ -75,7 +76,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
     /** Whether or not the SessionInfo records should be cleaned out. */
     private boolean sessInfoCleaned;
 
-    /** SessionInfo timeout, in milli-seconds, as read from 
+    /** SessionInfo timeout, in milli-seconds, as read from
      * {@link #persistProps}. */
     private long sessionInfoTimeoutMs;
 
@@ -103,7 +104,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return (ContainerAdjunct) rval;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -111,7 +112,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return 1;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -146,7 +147,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return null;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -159,7 +160,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return null;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -172,7 +173,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -185,7 +186,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         }
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -193,7 +194,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return false;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -205,7 +206,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return false;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -217,7 +218,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         return false;
     }
 
-    /** 
+    /**
      * {@inheritDoc}.
      **/
     @Override
@@ -673,7 +674,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
 
         /**
          * Get thread name.
-         *  
+         *
          * @return the String to use as the thread name */
         private String getThreadName() {
             return "Session " + session.getFullName() + " (persistent)";
@@ -683,7 +684,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         /* 'ThreadModel' interface */
         /*=========================*/
 
-        /** 
+        /**
          * {@inheritDoc}.
          **/
         @Override
@@ -691,7 +692,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
             thread.start();
         }
 
-        /** 
+        /**
          * {@inheritDoc}.
          **/
         @Override
@@ -714,7 +715,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
             }
         }
 
-        /** 
+        /**
          * {@inheritDoc}.
          **/
         @Override
@@ -727,7 +728,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         /* 'Runnable' interface */
         /*======================*/
 
-        /** 
+        /**
          * {@inheritDoc}.
          **/
         @Override
@@ -926,7 +927,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
      * @return the container's controller
      */
     protected PolicyController getPolicyController(PolicyContainer container) {
-        return PolicyController.factory.get(container.getGroupId(), container.getArtifactId());
+        return PolicyControllerFactoryInstance.getInstance().get(container.getGroupId(), container.getArtifactId());
     }
 
     /**
@@ -936,7 +937,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
     public static class PersistenceFeatureException extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
-        /** 
+        /**
          * Constructor.
          * */
         public PersistenceFeatureException(Exception ex) {

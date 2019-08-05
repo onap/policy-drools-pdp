@@ -35,9 +35,12 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
@@ -719,7 +722,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     // the following methods may be overridden by junit tests
 
     protected SystemPersistence getPersistenceManager() {
-        return SystemPersistence.manager;
+        return SystemPersistenceConstants.getManager();
     }
 
     protected TopicEndpoint getEndpointManager() {
@@ -727,11 +730,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     protected DroolsControllerFactory getDroolsFactory() {
-        return DroolsController.factory;
+        return DroolsControllerConstants.getFactory();
     }
 
     protected List<PolicyControllerFeatureApi> getProviders() {
-        return PolicyControllerFeatureApi.providers.getList();
+        return PolicyControllerFeatureApiConstants.getProviders().getList();
     }
 }
 

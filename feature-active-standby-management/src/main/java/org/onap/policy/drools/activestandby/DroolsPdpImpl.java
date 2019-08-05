@@ -21,7 +21,11 @@
 package org.onap.policy.drools.activestandby;
 
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class DroolsPdpImpl extends DroolsPdpObject {
 
     private boolean designated;
@@ -52,38 +56,6 @@ public class DroolsPdpImpl extends DroolsPdpObject {
     }
 
     @Override
-    public boolean isDesignated() {
-
-        return designated;
-    }
-
-    @Override
-    public int getPriority() {
-        return priority;
-    }
-
-    @Override
-    public void setUpdatedDate(Date date) {
-        this.updatedDate = date;
-    }
-
-    @Override
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    @Override
-    public String getPdpId() {
-        return pdpId;
-    }
-
-    @Override
-    public void setDesignated(boolean isDesignated) {
-        this.designated = isDesignated;
-
-    }
-
-    @Override
     public String getSiteName() {
         return site;
     }
@@ -95,13 +67,12 @@ public class DroolsPdpImpl extends DroolsPdpObject {
     }
 
     @Override
-    public Date getDesignatedDate() {
-        return designatedDate;
+    public int hashCode() {
+        return super.hashCode();
     }
 
     @Override
-    public void setDesignatedDate(Date designatedDate) {
-        this.designatedDate = designatedDate;
-
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

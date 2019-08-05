@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,19 +24,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import ch.qos.logback.classic.LoggerContext;
-
 import com.att.eelf.configuration.Configuration;
 import com.att.eelf.configuration.EELFLogger;
 import com.att.eelf.configuration.EELFLogger.Level;
 import com.att.eelf.configuration.EELFManager;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Test;
 import org.onap.policy.common.logging.flexlogger.FlexLogger;
 import org.onap.policy.drools.eelf.EelfFeature;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +55,12 @@ public class EElfTest {
 
     /**
      * Get all loggers.
-     * 
+     *
      * @return list of all loggers
      */
     protected List<String> loggers() {
         List<String> loggers = new ArrayList<String>();
-        LoggerContext context = 
+        LoggerContext context =
                 (LoggerContext) org.slf4j.LoggerFactory.getILoggerFactory();
         for (org.slf4j.Logger logger: context.getLoggerList()) {
             loggers.add(logger.getName());
@@ -74,7 +71,7 @@ public class EElfTest {
 
     /**
      * Assert Log Levels are the same between an EELF Logger and an SLF4J Logger.
-     * 
+     *
      * @param eelfLogger EELF Logger
      * @param slf4jLogger SLF4J Logger
      */
@@ -108,7 +105,7 @@ public class EElfTest {
         /* set up eelf throuth common loggings library */
 
         EelfFeature feature = new EelfFeature();
-        feature.beforeBoot(PolicyEngine.manager, null);
+        feature.beforeBoot(PolicyEngineConstants.getManager(), null);
 
         loggers = loggers();
         assertTrue(loggers.contains(Configuration.DEBUG_LOGGER_NAME));
@@ -118,7 +115,7 @@ public class EElfTest {
 
         final EELFLogger eelfAuditLogger = EELFManager.getInstance().getAuditLogger();
         final Logger slf4jAuditLogger = org.slf4j.LoggerFactory.getLogger(Configuration.AUDIT_LOGGER_NAME);
-        org.onap.policy.common.logging.flexlogger.Logger flexLogger = 
+        org.onap.policy.common.logging.flexlogger.Logger flexLogger =
                 FlexLogger.getLogger(EElfTest.class, true);
 
         /* generate an error entry */

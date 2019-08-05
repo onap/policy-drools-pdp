@@ -83,18 +83,18 @@ public class EventProtocolCoderTest {
 
         TopicEndpointManager.getManager().addTopicSinks(noopSinkProperties);
 
-        EventProtocolCoder.manager.addEncoder(
+        EventProtocolCoderConstants.getManager().addEncoder(
                 EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
                         .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getName())
                         .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
                         .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
 
-        final String json = EventProtocolCoder.manager.encode(NOOP_TOPIC,
+        final String json = EventProtocolCoderConstants.getManager().encode(NOOP_TOPIC,
                 new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION));
 
         assertTrue(json.contains(ENCODER_GROUP));
         assertTrue(json.contains(ENCODER_ARTIFACT));
 
-        EventProtocolCoder.manager.removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
+        EventProtocolCoderConstants.getManager().removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
     }
 }

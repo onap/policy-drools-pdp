@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 
 public abstract class LifecycleStateRunningTest {
@@ -42,7 +42,7 @@ public abstract class LifecycleStateRunningTest {
         LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
         LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
-        SystemPersistence.manager.setConfigurationDir("target/test-classes");
+        SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         controllerSupport.createController();
     }
 
@@ -52,11 +52,11 @@ public abstract class LifecycleStateRunningTest {
     @AfterClass
     public static void tearDown() {
         try {
-            Files.deleteIfExists(Paths.get(SystemPersistence.manager.getConfigurationPath().toString(),
+            Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));
         } catch (IOException e) {
             ;
         }
-        SystemPersistence.manager.setConfigurationDir(null);
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }
 }

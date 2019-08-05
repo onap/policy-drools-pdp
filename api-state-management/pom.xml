@@ -42,15 +42,20 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.onap.policy.drools-pdp</groupId>
-      <artifactId>policy-core</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
+        <groupId>org.onap.policy.drools-pdp</groupId>
+        <artifactId>policy-core</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.onap.policy.common</groupId>
-      <artifactId>integrity-monitor</artifactId>
-      <version>${policy.common.version}</version>
+        <groupId>org.onap.policy.common</groupId>
+        <artifactId>integrity-monitor</artifactId>
+        <version>${policy.common.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <scope>provided</scope>
     </dependency>
    </dependencies>
 
