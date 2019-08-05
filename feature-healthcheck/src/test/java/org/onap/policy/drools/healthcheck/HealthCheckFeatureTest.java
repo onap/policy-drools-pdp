@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-healthcheck
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,8 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.healthcheck.HealthCheck.Report;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
-import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +54,13 @@ public class HealthCheckFeatureTest {
      */
     private static final String HEALTH_CHECK_PROPERTIES_FILE = "feature-healthcheck.properties";
 
-    private static final Path healthCheckPropsPath = Paths
-                    .get(SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE);
+    private static final Path healthCheckPropsPath =
+                    Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                    HEALTH_CHECK_PROPERTIES_FILE);
 
-    private static final Path healthCheckPropsBackupPath = Paths.get(
-                    SystemPersistence.manager.getConfigurationPath().toString(), HEALTH_CHECK_PROPERTIES_FILE + ".bak");
+    private static final Path healthCheckPropsBackupPath =
+                    Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                    HEALTH_CHECK_PROPERTIES_FILE + ".bak");
 
     private static final String EXPECTED = "expected exception";
 
@@ -131,13 +133,13 @@ public class HealthCheckFeatureTest {
     public void test() throws IOException, InterruptedException {
 
         HealthCheckFeature feature = new HealthCheckFeature();
-        feature.afterStart(PolicyEngine.manager);
+        feature.afterStart(PolicyEngineConstants.getManager());
 
         if (!NetworkUtil.isTcpPortOpen("localhost", 7777, 5, 10000L)) {
             throw new IllegalStateException("cannot connect to port " + 7777);
         }
 
-        Reports reports = HealthCheck.monitor.healthCheck();
+        Reports reports = HealthCheckConstants.getManager().healthCheck();
 
         assertTrue(reports.getDetails().size() > 0);
 
@@ -150,7 +152,7 @@ public class HealthCheckFeatureTest {
             }
         }
 
-        feature.afterShutdown(PolicyEngine.manager);
+        feature.afterShutdown(PolicyEngineConstants.getManager());
 
     }
 
@@ -197,7 +199,7 @@ public class HealthCheckFeatureTest {
 
         File origPropsFile = new File(healthCheckPropsPath.toString());
         File backupPropsFile = new File(healthCheckPropsBackupPath.toString());
-        Path configDir = Paths.get(SystemPersistence.DEFAULT_CONFIGURATION_DIR);
+        Path configDir = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
 
         try {
 
@@ -243,7 +245,7 @@ public class HealthCheckFeatureTest {
         }
 
         @Override
-        public HealthCheck getMonitor() {
+        public HealthCheck getManager() {
             return checker;
         }
 

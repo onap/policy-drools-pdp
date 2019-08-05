@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.internal.AggregatedPolicyController;
 import org.slf4j.Logger;
@@ -382,6 +383,6 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     }
 
     protected List<PolicyControllerFeatureApi> getProviders() {
-        return PolicyControllerFeatureApi.providers.getList();
+        return PolicyControllerFeatureApiConstants.getProviders().getList();
     }
 }

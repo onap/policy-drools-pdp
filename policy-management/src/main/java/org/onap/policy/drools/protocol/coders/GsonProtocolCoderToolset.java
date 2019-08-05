@@ -37,6 +37,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ import org.slf4j.LoggerFactory;
  * Tools used for encoding/decoding using GSON.
  */
 class GsonProtocolCoderToolset extends ProtocolCoderToolset {
+    private static final String FETCH_CLASS_EX_MSG = "cannot fetch application class ";
+
     /**
      * Logger.
      */
@@ -155,7 +158,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     public Object decode(String json) {
 
         final DroolsController droolsController =
-                DroolsController.factory.get(this.groupId, this.artifactId, "");
+                        DroolsControllerConstants.getFactory().get(this.groupId, this.artifactId, "");
         if (droolsController == null) {
             logger.warn("{}: no drools-controller to process {}", this, json);
             throw new IllegalStateException("no drools-controller to process event");
@@ -173,13 +176,13 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
             if (decoderClass == null) {
                 logger.warn("{}: cannot fetch application class {}", this, decoderFilter.getCodedClass());
                 throw new IllegalStateException(
-                        "cannot fetch application class " + decoderFilter.getCodedClass());
+                        FETCH_CLASS_EX_MSG + decoderFilter.getCodedClass());
             }
         } catch (final Exception e) {
             logger.warn("{}: cannot fetch application class {} because of {}", this,
                     decoderFilter.getCodedClass(), e.getMessage());
             throw new UnsupportedOperationException(
-                    "cannot fetch application class " + decoderFilter.getCodedClass(), e);
+                    FETCH_CLASS_EX_MSG + decoderFilter.getCodedClass(), e);
         }
 
         if (this.customCoder != null) {
@@ -195,7 +198,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
                 logger.warn("{}: cannot fetch application class {} because of {}", this,
                         decoderFilter.getCodedClass(), e.getMessage());
                 throw new UnsupportedOperationException(
-                        "cannot fetch application class " + decoderFilter.getCodedClass(), e);
+                        FETCH_CLASS_EX_MSG + decoderFilter.getCodedClass(), e);
             }
         } else {
             try {
@@ -218,7 +221,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
         if (this.customCoder != null) {
             try {
                 final DroolsController droolsController =
-                        DroolsController.factory.get(this.groupId, this.artifactId, null);
+                                DroolsControllerConstants.getFactory().get(this.groupId, this.artifactId, null);
                 final Class<?> gsonClassContainer =
                         droolsController.fetchModelClass(this.customCoder.getClassContainer());
                 final Field gsonField = gsonClassContainer.getField(this.customCoder.staticCoderField);

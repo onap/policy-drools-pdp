@@ -30,8 +30,9 @@ import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +40,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Healthcheck Monitor.
  */
-public class HealthCheckMonitor implements HealthCheck {
+public class HealthCheckManager implements HealthCheck {
 
     /**
      * Logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(HealthCheckMonitor.class);
+    private static Logger logger = LoggerFactory.getLogger(HealthCheckManager.class);
 
     /**
      * Attached http servers.
@@ -233,7 +234,7 @@ public class HealthCheckMonitor implements HealthCheck {
     // the following methods may be overridden by junit tests
 
     protected PolicyEngine getEngineManager() {
-        return PolicyEngine.manager;
+        return PolicyEngineConstants.getManager();
     }
 
     protected HttpServletServerFactory getServerFactory() {
@@ -245,6 +246,6 @@ public class HealthCheckMonitor implements HealthCheck {
     }
 
     protected Properties getPersistentProperties(String propertyName) {
-        return SystemPersistence.manager.getProperties(propertyName);
+        return SystemPersistenceConstants.getManager().getProperties(propertyName);
     }
 }

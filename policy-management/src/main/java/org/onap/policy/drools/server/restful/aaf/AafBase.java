@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 package org.onap.policy.drools.server.restful.aaf;
 
 import org.onap.policy.common.endpoints.http.server.aaf.AafAuthFilter;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 
 /**
  * AAF Base Class.
@@ -30,6 +30,6 @@ public abstract class AafBase extends AafAuthFilter {
     public static final String AAF_NODETYPE = "pdpd";
     public static final String AAF_ROOT_PERMISSION_PROPERTY = "aaf.root.permission";
     public static final String AAF_ROOT_PERMISSION =
-        PolicyEngine.manager.getProperties().getProperty(
+        PolicyEngineConstants.getManager().getProperties().getProperty(
                 AAF_ROOT_PERMISSION_PROPERTY, DEFAULT_NAMESPACE + "." + AAF_NODETYPE);
 }

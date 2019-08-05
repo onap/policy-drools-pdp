@@ -71,13 +71,13 @@ public abstract class DroolsPdpObject implements DroolsPdp {
     }
 
     private int commonCompare(DroolsPdp other) {
-        if (nullSafeCompare(this.getSiteName(),other.getSiteName()) == 0) {
+        if (nullSafeCompare(this.getSite(),other.getSite()) == 0) {
             if (this.getPriority() != other.getPriority()) {
                 return this.getPriority() - other.getPriority();
             }
             return this.getPdpId().compareTo(other.getPdpId());
         } else {
-            return nullSafeCompare(this.getSiteName(),other.getSiteName());
+            return nullSafeCompare(this.getSite(),other.getSite());
         }
     }
 }

@@ -29,10 +29,13 @@ import java.util.TimerTask;
 
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApiConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
+    private static final String RUN_PRIMARY_MSG = "DesignatedWaiter.run mostRecentPrimary = {}";
+
     // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);
     private DroolsPdpsConnector pdpsConnector;
@@ -135,7 +138,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
         //Get the StateManagementFeature instance
 
-        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApiConstants.getImpl().getList()) {
             if (feature.getResourceName().equals(myPdp.getPdpId())) {
                 logger.debug("DroolsPdpsElectionHandler: Found StateManagementFeature"
                                 + " with resourceName: {}", myPdp.getPdpId());
@@ -625,7 +628,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             }
         }
         DroolsPdp mostRecentPrimary = new DroolsPdpImpl(null, true, 1, new Date(0));
-        mostRecentPrimary.setSiteName(null);
+        mostRecentPrimary.setSite(null);
         logger.debug("DesignatedWaiter.run listOfDesignated.size() = {}", listOfDesignated.size());
         if (listOfDesignated.size() <= 1) {
             logger.debug("DesignatedWainter.run: listOfDesignated.size <=1");
@@ -636,8 +639,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                                 pdp.getPdpId(), pdp.getDesignatedDate());
                 if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
                     mostRecentPrimary = pdp;
-                    logger.debug("DesignatedWaiter.run mostRecentPrimary = {}",
-                                    mostRecentPrimary.getPdpId());
+                    logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
                 }
             }
         } else if (listOfDesignated.size() == pdps.size()) {
@@ -652,12 +654,12 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 if (containsDesignated) { //Choose the site of the first designated date
                     if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) < 0) {
                         mostRecentPrimary = pdp;
-                        logger.debug("DesignatedWaiter.run mostRecentPrimary = {}", mostRecentPrimary.getPdpId());
+                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
                     }
                 } else { //Choose the site with the latest designated date
                     if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
                         mostRecentPrimary = pdp;
-                        logger.debug("DesignatedWaiter.run mostRecentPrimary = {}", mostRecentPrimary.getPdpId());
+                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
                     }
                 }
             }
@@ -679,7 +681,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                     }
                     if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
                         mostRecentPrimary = pdp;
-                        logger.debug("DesignatedWaiter.run mostRecentPrimary = {}", mostRecentPrimary.getPdpId());
+                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
                     }
                 }
             } else {
@@ -688,7 +690,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 for (DroolsPdp pdp : pdps) {
                     if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
                         mostRecentPrimary = pdp;
-                        logger.debug("DesignatedWaiter.run mostRecentPrimary = {}", mostRecentPrimary.getPdpId());
+                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
                     }
                 }
             }
@@ -714,7 +716,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             DroolsPdp lowestPriorityDifferentSite = null;
             for (DroolsPdp pdp : listOfDesignated) {
                 // We need to determine if another PDP is the lowest priority
-                if (nullSafeEquals(pdp.getSiteName(),mostRecentPrimary.getSiteName())) {
+                if (nullSafeEquals(pdp.getSite(),mostRecentPrimary.getSite())) {
                     if (lowestPrioritySameSite == null) {
                         if (lowestPriorityDifferentSite != null) {
                             rejectedPdp = lowestPriorityDifferentSite;
@@ -858,7 +860,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                         allSeemsWell = false;
                         logger.debug("checkWaitTimer: calling allSeemsWell with ALLNOTWELL param");
                         stateManagementFeature.allSeemsWell(this.getClass().getName(),
-                                StateManagementFeatureApi.ALLNOTWELL_STATE,
+                                StateManagementFeatureApiConstants.ALLNOTWELL_STATE,
                                 "DesignationWaiter/ElectionHandler has STALLED");
                     }
                     logger.error("checkWaitTimer: nowMs - waitTimerMs = {}"
@@ -867,7 +869,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 } else if (allSeemsWell == null || !allSeemsWell) {
                     allSeemsWell = true;
                     stateManagementFeature.allSeemsWell(this.getClass().getName(),
-                            StateManagementFeatureApi.ALLSEEMSWELL_STATE,
+                            StateManagementFeatureApiConstants.ALLSEEMSWELL_STATE,
                             "DesignationWaiter/ElectionHandler has RESUMED");
                     logger.info("DesignationWaiter/ElectionHandler has RESUMED");
                 }

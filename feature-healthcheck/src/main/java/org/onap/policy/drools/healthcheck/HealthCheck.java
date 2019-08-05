@@ -30,11 +30,6 @@ import org.onap.policy.common.capabilities.Startable;
 public interface HealthCheck extends Startable {
 
     /**
-     * Healthcheck Monitor.
-     */
-    public static final HealthCheck monitor = new HealthCheckMonitor();
-
-    /**
      * Healthcheck Report.
      */
     public static class Report {

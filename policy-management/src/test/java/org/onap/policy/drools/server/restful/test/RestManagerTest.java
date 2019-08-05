@@ -48,9 +48,9 @@ import org.junit.runners.MethodSorters;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.network.NetworkUtil;
-import org.onap.policy.drools.persistence.SystemPersistence;
-import org.onap.policy.drools.system.PolicyController;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.system.PolicyControllerConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,23 +107,23 @@ public class RestManagerTest {
     public static void setUp() throws IOException, InterruptedException {
         cleanUpWorkingDirs();
 
-        SystemPersistence.manager.setConfigurationDir(null);
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
         /* override default port */
-        final Properties engineProps = PolicyEngine.manager.defaultTelemetryConfig();
+        final Properties engineProps = PolicyEngineConstants.getManager().defaultTelemetryConfig();
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
-                "" + DEFAULT_TELEMETRY_PORT);
+                        + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
+                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
+                + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
                 TestAafTelemetryAuthFilter.class.getName());
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
+                + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
                 TELEMETRY_USER);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                + PolicyEngine.TELEMETRY_SERVER_DEFAULT_NAME
+                + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
                 TELEMETRY_PASSWORD);
 
@@ -141,11 +141,11 @@ public class RestManagerTest {
         engineProps.put(DMAAP_SINK_MECHID_KEY, DMAAP_MECHID);
         engineProps.put(DMAAP_SINK_PASSWD_KEY, DMAAP_PASSWD);
 
-        PolicyEngine.manager.configure(engineProps);
-        PolicyEngine.manager.start();
+        PolicyEngineConstants.getManager().configure(engineProps);
+        PolicyEngineConstants.getManager().start();
 
         Properties controllerProps = new Properties();
-        PolicyEngine.manager.createPolicyController(FOO_CONTROLLER, controllerProps);
+        PolicyEngineConstants.getManager().createPolicyController(FOO_CONTROLLER, controllerProps);
 
         // client = HttpClients.createDefault();
         CredentialsProvider provider = new BasicCredentialsProvider();
@@ -173,9 +173,9 @@ public class RestManagerTest {
     @AfterClass
     public static void tearDown() throws IOException, InterruptedException {
         /* Shutdown managed resources */
-        PolicyController.factory.shutdown();
+        PolicyControllerConstants.getFactory().shutdown();
         TopicEndpointManager.getManager().shutdown();
-        PolicyEngine.manager.stop();
+        PolicyEngineConstants.getManager().stop();
         Thread.sleep(10000L);
         client.close();
         cleanUpWorkingDirs();
@@ -441,7 +441,7 @@ public class RestManagerTest {
         assertEquals(200, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
 
-        PolicyEngine.manager.setEnvironmentProperty("foo", "bar");
+        PolicyEngineConstants.getManager().setEnvironmentProperty("foo", "bar");
         httpGet = new HttpGet(HOST_URL + "/engine/environment/foo");
         response = client.execute(httpGet);
         String responseBody = this.getResponseBody(response);
@@ -962,10 +962,11 @@ public class RestManagerTest {
     }
 
     private static void cleanUpWorkingDirs() throws IOException {
-        final Path testControllerPath =
-                Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), FOO_CONTROLLER_FILE);
+        final Path testControllerPath = Paths.get(
+                        SystemPersistenceConstants.getManager().getConfigurationPath().toString(), FOO_CONTROLLER_FILE);
         final Path testControllerBakPath =
-                Paths.get(SystemPersistence.manager.getConfigurationPath().toString(), FOO_CONTROLLER_FILE_BAK);
+                        Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                                        FOO_CONTROLLER_FILE_BAK);
 
         Files.deleteIfExists(testControllerPath);
         Files.deleteIfExists(testControllerBakPath);

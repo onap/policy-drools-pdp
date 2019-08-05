@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureApi {
     /**
      * Logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class); 
+    private static Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class);
 
     /**
      * Properties Configuration Name.
@@ -48,7 +48,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureApi {
     @Override
     public boolean afterStart(PolicyEngine engine) {
         try {
-            getMonitor().start();
+            getManager().start();
         } catch (IllegalStateException e) {
             logger.error("Healthcheck Monitor cannot be started", e);
         }
@@ -59,7 +59,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureApi {
     @Override
     public boolean afterShutdown(PolicyEngine engine) {
         try {
-            getMonitor().stop();
+            getManager().stop();
         } catch (IllegalStateException e) {
             logger.error("Healthcheck Monitor cannot be stopped", e);
         }
@@ -69,11 +69,11 @@ public class HealthCheckFeature implements PolicyEngineFeatureApi {
 
     /**
      * Gets the monitor.
-     * 
-     * @return the healthcheck monitor
+     *
+     * @return the healthcheck manager
      */
-    public HealthCheck getMonitor() {
-        return HealthCheck.monitor;
+    public HealthCheck getManager() {
+        return HealthCheckConstants.getManager();
     }
 
 }

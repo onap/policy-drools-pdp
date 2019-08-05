@@ -46,6 +46,7 @@ import java.util.TimerTask;
 import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,7 +288,7 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
                 isWaitingForActivation = false;
                 isNowActivating = false;
                 logger.warn("DelayActivateClass.run: caught an unexpected exception "
-                        + "calling PolicyEngine.manager.activate: ", e);
+                        + "calling PolicyEngineConstants.getManager().activate: ", e);
             }
         }
     }
@@ -299,7 +300,7 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
     // these may be overridden by junit tests
 
     protected PolicyEngine getPolicyEngineManager() {
-        return PolicyEngine.manager;
+        return PolicyEngineConstants.getManager();
     }
 
     protected Timer makeTimer() {

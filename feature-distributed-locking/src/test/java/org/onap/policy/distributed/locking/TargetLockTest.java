@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-distributed-locking
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ public class TargetLockTest {
     public static void setup() {
         getDbConnection();
         createTable();
-        SystemPersistence.manager.setConfigurationDir("src/test/resources");
+        SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
         distLockFeat = new DistributedLockingFeature();
         distLockFeat.afterStart(null);
     }

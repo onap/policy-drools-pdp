@@ -36,6 +36,9 @@ import org.slf4j.LoggerFactory;
 
 public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
+    private static final String SELECT_PDP_BY_ID = "SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId";
+    private static final String PDP_ID_PARAM = "pdpId";
+
     // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(JpaDroolsPdpsConnector.class);
     private EntityManagerFactory emf;
@@ -102,8 +105,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
-            droolsPdpsListQuery.setParameter("pdpId", pdp.getPdpId());
+            Query droolsPdpsListQuery = em.createQuery(SELECT_PDP_BY_ID);
+            droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdp.getPdpId());
             List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
                     .setFlushMode(FlushModeType.COMMIT).getResultList();
             DroolsPdpEntity droolsPdpEntity;
@@ -138,8 +141,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             if (!droolsPdpEntity.getUpdatedDate().equals(pdp.getUpdatedDate())) {
                 droolsPdpEntity.setUpdatedDate(pdp.getUpdatedDate());
             }
-            if (!nullSafeEquals(droolsPdpEntity.getSiteName(),pdp.getSiteName())) {
-                droolsPdpEntity.setSiteName(pdp.getSiteName());
+            if (!nullSafeEquals(droolsPdpEntity.getSite(),pdp.getSite())) {
+                droolsPdpEntity.setSite(pdp.getSite());
             }
 
             if (droolsPdpEntity.isDesignated() != pdp.isDesignated()) {
@@ -178,8 +181,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         try {
             if (!isCurrent && pdp.isDesignated()) {
                 em.getTransaction().begin();
-                Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
-                droolsPdpsListQuery.setParameter("pdpId", pdp.getPdpId());
+                Query droolsPdpsListQuery = em.createQuery(SELECT_PDP_BY_ID);
+                droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdp.getPdpId());
                 List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
                         .setFlushMode(FlushModeType.COMMIT).getResultList();
                 if (droolsPdpsList.size() == 1 && droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
@@ -217,8 +220,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             em = emf.createEntityManager();
             em.getTransaction().begin();
             Query droolsPdpsListQuery = em
-                    .createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
-            droolsPdpsListQuery.setParameter("pdpId", pdp.getPdpId());
+                    .createQuery(SELECT_PDP_BY_ID);
+            droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdp.getPdpId());
             List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
                     LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
             if (droolsPdpsList.size() == 1
@@ -271,8 +274,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
              * false.
              */
             Query droolsPdpsListQuery = em
-                    .createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
-            droolsPdpsListQuery.setParameter("pdpId", pdpId);
+                    .createQuery(SELECT_PDP_BY_ID);
+            droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdpId);
             List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
                     LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
             DroolsPdpEntity droolsPdpEntity;
@@ -398,8 +401,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             em = emf.createEntityManager();
             em.getTransaction().begin();
             Query droolsPdpsListQuery = em
-                    .createQuery("SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId");
-            droolsPdpsListQuery.setParameter("pdpId", pdpId);
+                    .createQuery(SELECT_PDP_BY_ID);
+            droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdpId);
             List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
                     LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
             if (droolsPdpsList.size() == 1
@@ -454,7 +457,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             droolsPdpEntity.setDesignated(pdp.isDesignated());
             droolsPdpEntity.setPriority(pdp.getPriority());
             droolsPdpEntity.setUpdatedDate(pdp.getUpdatedDate());
-            droolsPdpEntity.setSiteName(pdp.getSiteName());
+            droolsPdpEntity.setSite(pdp.getSite());
 
             /*
              * End transaction.
