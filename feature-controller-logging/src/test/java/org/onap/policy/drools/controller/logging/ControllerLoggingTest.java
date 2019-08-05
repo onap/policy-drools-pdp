@@ -39,12 +39,12 @@ import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicSink;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.controller.logging.ControllerLoggingFeature;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyController;
-import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.util.KieUtils;
 
 /**
@@ -116,7 +116,8 @@ public class ControllerLoggingTest {
         controllerProps.put(DroolsProperties.RULES_ARTIFACTID, TEST_ARTIFACT_ID);
         controllerProps.put(DroolsProperties.RULES_VERSION, TEST_VERSION);
 
-        policyController = PolicyEngine.manager.createPolicyController(TEST_CONTROLLER_NAME, controllerProps);
+        policyController = PolicyEngineConstants.getManager().createPolicyController(TEST_CONTROLLER_NAME,
+                        controllerProps);
 
         message = "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\",\"controllers\":"
                         + "[{\"name\":\"test-controller\",\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","
@@ -167,7 +168,8 @@ public class ControllerLoggingTest {
 
         final ControllerLoggingFeature nlf = new ControllerLoggingFeature();
 
-        DroolsController droolsController = DroolsController.factory.get(TEST_GROUP_ID, TEST_ARTIFACT_ID, TEST_VERSION);
+        DroolsController droolsController =
+                        DroolsControllerConstants.getFactory().get(TEST_GROUP_ID, TEST_ARTIFACT_ID, TEST_VERSION);
 
         NoopTopicSink sinkTopic = new NoopTopicSink(Arrays.asList(TEST_SERVER), TEST_TOPIC);
 
@@ -186,7 +188,8 @@ public class ControllerLoggingTest {
 
         final ControllerLoggingFeature nlf = new ControllerLoggingFeature();
 
-        DroolsController droolsController = DroolsController.factory.get(TEST_GROUP_ID, TEST_ARTIFACT_ID, TEST_VERSION);
+        DroolsController droolsController =
+                        DroolsControllerConstants.getFactory().get(TEST_GROUP_ID, TEST_ARTIFACT_ID, TEST_VERSION);
 
         NoopTopicSink sinkTopic = new NoopTopicSink(Arrays.asList(TEST_SERVER), TEST_TOPIC);
 
@@ -203,7 +206,8 @@ public class ControllerLoggingTest {
     public void afterOnTopicEventSuccess() {
         final ControllerLoggingFeature nlf = new ControllerLoggingFeature();
 
-        nlf.afterOnTopicEvent(PolicyEngine.manager, pdpdNotification, CommInfrastructure.UEB, TEST_TOPIC, message);
+        nlf.afterOnTopicEvent(PolicyEngineConstants.getManager(), pdpdNotification, CommInfrastructure.UEB, TEST_TOPIC,
+                        message);
 
         assertEquals(1, events.size());
     }
@@ -221,7 +225,8 @@ public class ControllerLoggingTest {
         config.setName("test-controller-2");
         notification.setControllers(Arrays.asList(config));
 
-        nlf.afterOnTopicEvent(PolicyEngine.manager, notification, CommInfrastructure.UEB, TEST_TOPIC, message);
+        nlf.afterOnTopicEvent(PolicyEngineConstants.getManager(), notification, CommInfrastructure.UEB, TEST_TOPIC,
+                        message);
 
         assertEquals(0, events.size());
     }

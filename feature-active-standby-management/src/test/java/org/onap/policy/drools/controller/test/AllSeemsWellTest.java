@@ -39,6 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.activestandby.ActiveStandbyFeatureApi;
+import org.onap.policy.drools.activestandby.ActiveStandbyFeatureApiConstants;
 import org.onap.policy.drools.activestandby.ActiveStandbyProperties;
 import org.onap.policy.drools.activestandby.DroolsPdpEntity;
 import org.onap.policy.drools.activestandby.DroolsPdpImpl;
@@ -47,6 +48,7 @@ import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
 import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
+import org.onap.policy.drools.statemanagement.StateManagementFeatureApiConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,7 +237,7 @@ public class AllSeemsWellTest {
         // discovered by the ActiveStandbyFeature when the election handler initializes.
 
         StateManagementFeatureApi stateManagementFeatureApi = null;
-        for (StateManagementFeatureApi feature : StateManagementFeatureApi.impl.getList()) {
+        for (StateManagementFeatureApi feature : StateManagementFeatureApiConstants.getImpl().getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             stateManagementFeatureApi = feature;
             logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",
@@ -255,7 +257,7 @@ public class AllSeemsWellTest {
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.
         ActiveStandbyFeatureApi activeStandbyFeature = null;
-        for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApi.impl.getList()) {
+        for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApiConstants.getImpl().getList()) {
             ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
             activeStandbyFeature = feature;
             logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}",

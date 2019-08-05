@@ -58,7 +58,9 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
+import org.onap.policy.drools.features.DroolsControllerFeatureApiConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
+import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
@@ -887,8 +889,8 @@ public class MavenDroolsController2Test {
             }
         };
 
-        assertSame(EventProtocolCoder.manager, drools.getCoderManager());
-        assertSame(DroolsControllerFeatureApi.providers, drools.getDroolsProviders());
+        assertSame(EventProtocolCoderConstants.getManager(), drools.getCoderManager());
+        assertSame(DroolsControllerFeatureApiConstants.getProviders(), drools.getDroolsProviders());
     }
 
     @Test

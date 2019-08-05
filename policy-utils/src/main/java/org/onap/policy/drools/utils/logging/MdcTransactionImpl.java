@@ -20,6 +20,36 @@
 
 package org.onap.policy.drools.utils.logging;
 
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.ALERT_SEVERITY;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.BEGIN_TIMESTAMP;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CLIENT_IP_ADDRESS;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTIP;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTNAME;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_SERVICE_NAME;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.ELAPSED_TIME;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.END_TIMESTAMP;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.INSTANCE_UUID;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.INVOCATION_ID;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.PARTNER_NAME;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.PROCESS_KEY;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.REMOTE_HOST;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.REQUEST_ID;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.RESPONSE_CODE;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.RESPONSE_DESCRIPTION;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.SERVER;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.SERVER_FQDN;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.SERVER_IP_ADDRESS;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.SERVICE_INSTANCE_ID;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.SERVICE_NAME;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.SEVERITY;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.STATUS_CODE;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.STATUS_CODE_COMPLETE;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.STATUS_CODE_FAILURE;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.TARGET_ENTITY;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.TARGET_SERVICE_NAME;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.TARGET_VIRTUAL_ENTITY;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.VIRTUAL_SERVER_NAME;
+
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -46,7 +76,7 @@ class MdcTransactionImpl implements MdcTransaction {
 
     private String invocationId;
     private String virtualServerName;
-    private String server;
+    private String serverName;
     private String serverIpAddress;
     private String serverFqdn;
 
@@ -63,7 +93,7 @@ class MdcTransactionImpl implements MdcTransaction {
     private String statusCode;
     private String responseCode;
     private String responseDescription;
-    private String severity;
+    private String theSeverity;
     private String alertSeverity;
 
     private String targetEntity;
@@ -207,8 +237,8 @@ class MdcTransactionImpl implements MdcTransaction {
             MDC.put(VIRTUAL_SERVER_NAME, this.virtualServerName);
         }
 
-        if (this.server != null) {
-            MDC.put(SERVER, this.server);
+        if (this.serverName != null) {
+            MDC.put(SERVER, this.serverName);
         }
 
         if (this.serverIpAddress != null) {
@@ -267,8 +297,8 @@ class MdcTransactionImpl implements MdcTransaction {
             MDC.put(RESPONSE_DESCRIPTION, this.responseDescription);
         }
 
-        if (this.severity != null) {
-            MDC.put(SEVERITY, this.severity);
+        if (this.theSeverity != null) {
+            MDC.put(SEVERITY, this.theSeverity);
         }
 
         if (this.alertSeverity != null) {
@@ -365,7 +395,7 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public String getServer() {
-        return this.server;
+        return this.serverName;
     }
 
     @Override
@@ -486,7 +516,7 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public MdcTransaction setSeverity(String severity) {
-        this.severity = severity;
+        this.theSeverity = severity;
         return this;
     }
 
@@ -535,7 +565,7 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public String getSeverity() {
-        return severity;
+        return theSeverity;
     }
 
     @Override
@@ -587,12 +617,12 @@ class MdcTransactionImpl implements MdcTransaction {
     @Override
     public MdcTransaction setServer(String server) {
         if (server == null || server.isEmpty()) {
-            this.server = DEFAULT_HOSTNAME;
+            this.serverName = DEFAULT_HOSTNAME;
         } else {
-            this.server = server;
+            this.serverName = server;
         }
 
-        MDC.put(SERVER, this.server);
+        MDC.put(SERVER, this.serverName);
         return this;
     }
 
@@ -669,7 +699,7 @@ class MdcTransactionImpl implements MdcTransaction {
         sb.append(", partner='").append(partner).append('\'');
         sb.append(", invocationId='").append(invocationId).append('\'');
         sb.append(", virtualServerName='").append(virtualServerName).append('\'');
-        sb.append(", server='").append(server).append('\'');
+        sb.append(", server='").append(serverName).append('\'');
         sb.append(", serverIpAddress='").append(serverIpAddress).append('\'');
         sb.append(", serverFqdn='").append(serverFqdn).append('\'');
         sb.append(", serviceName='").append(serviceName).append('\'');
@@ -682,7 +712,7 @@ class MdcTransactionImpl implements MdcTransaction {
         sb.append(", statusCode='").append(statusCode).append('\'');
         sb.append(", responseCode='").append(responseCode).append('\'');
         sb.append(", responseDescription='").append(responseDescription).append('\'');
-        sb.append(", severity='").append(severity).append('\'');
+        sb.append(", severity='").append(theSeverity).append('\'');
         sb.append(", alertSeverity='").append(alertSeverity).append('\'');
         sb.append(", targetEntity='").append(targetEntity).append('\'');
         sb.append(", targetServiceName='").append(targetServiceName).append('\'');

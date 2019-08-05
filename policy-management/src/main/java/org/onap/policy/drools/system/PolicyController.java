@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,11 +41,6 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
 public interface PolicyController extends Startable, Lockable {
 
     /**
-     * Factory that tracks and manages Policy Controllers.
-     */
-    static PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
-
-    /**
      * name of this Policy Controller.
      */
     String getName();
@@ -72,7 +67,7 @@ public interface PolicyController extends Startable, Lockable {
 
     /**
      * Update maven configuration.
-     * 
+     *
      * @param newDroolsConfiguration new drools configuration
      * @return true if the update was successful, false otherwise
      */
@@ -90,11 +85,11 @@ public interface PolicyController extends Startable, Lockable {
 
     /**
      * Attempts delivering of an String over communication infrastructure "busType".
-     * 
+     *
      * @param busType bus type
      * @param topic topic
      * @param event Communication infrastructure identifier
-     * 
+     *
      * @return true if successful, false if a failure has occurred.
      * @throws IllegalArgumentException when invalid or insufficient properties are provided
      * @throws IllegalStateException when the engine is in a state where this operation is not
@@ -106,7 +101,7 @@ public interface PolicyController extends Startable, Lockable {
 
     /**
      * halts and permanently releases all resources.
-     * 
+     *
      * @throws IllegalStateException throws illegal state exception
      */
     void halt();

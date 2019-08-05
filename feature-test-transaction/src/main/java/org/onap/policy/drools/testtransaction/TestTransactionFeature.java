@@ -83,6 +83,6 @@ public class TestTransactionFeature implements PolicyControllerFeatureApi {
      * @return the test transaction manager
      */
     protected TestTransaction getTestTransMgr() {
-        return TestTransaction.manager;
+        return TestTransactionConstants.getManager();
     }
 }

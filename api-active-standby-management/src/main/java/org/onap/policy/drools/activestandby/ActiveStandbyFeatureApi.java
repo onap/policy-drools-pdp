@@ -21,7 +21,6 @@
 package org.onap.policy.drools.activestandby;
 
 import org.onap.policy.common.utils.services.OrderedService;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
 /**
  * This interface provides a way to invoke optional features at various points in the code. At
@@ -29,12 +28,6 @@ import org.onap.policy.common.utils.services.OrderedServiceImpl;
  * optional methods.
  */
 public interface ActiveStandbyFeatureApi extends OrderedService {
-    /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the 'FeatureAPI'
-     * interface.
-     */
-    public static OrderedServiceImpl<ActiveStandbyFeatureApi> impl =
-            new OrderedServiceImpl<>(ActiveStandbyFeatureApi.class);
 
     /**
      * Returns the resourceName (PDP ID) for the Drools-PDP that is

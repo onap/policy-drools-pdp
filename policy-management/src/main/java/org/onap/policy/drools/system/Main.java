@@ -22,7 +22,7 @@ package org.onap.policy.drools.system;
 
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
-import org.onap.policy.drools.persistence.SystemPersistence;
+import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
@@ -51,35 +51,35 @@ public class Main {
 
         /* system properties */
 
-        for (Properties systemProperties : SystemPersistence.manager.getSystemProperties()) {
+        for (Properties systemProperties : SystemPersistenceConstants.getManager().getSystemProperties()) {
             PropertyUtil.setSystemProperties(systemProperties);
         }
 
         /* 0. boot */
 
-        PolicyEngine.manager.boot(args);
+        PolicyEngineConstants.getManager().boot(args);
 
         /* 1.a. Configure Engine */
 
         Properties engineProperties;
         try {
-            engineProperties = SystemPersistence.manager.getEngineProperties();
+            engineProperties = SystemPersistenceConstants.getManager().getEngineProperties();
         } catch (IllegalArgumentException iae) {
             logger.warn("Main: engine properties not found.  Using default configuration.", iae);
-            engineProperties = PolicyEngine.manager.defaultTelemetryConfig();
+            engineProperties = PolicyEngineConstants.getManager().defaultTelemetryConfig();
         }
 
-        PolicyEngine.manager.configure(engineProperties);
+        PolicyEngineConstants.getManager().configure(engineProperties);
 
         /* 1.b. Load Installation Environment(s) */
 
-        for (Properties env : SystemPersistence.manager.getEnvironmentProperties()) {
-            PolicyEngine.manager.setEnvironment(env);
+        for (Properties env : SystemPersistenceConstants.getManager().getEnvironmentProperties()) {
+            PolicyEngineConstants.getManager().setEnvironment(env);
         }
 
         /* 2. Add topics */
 
-        for (Properties topicProperties : SystemPersistence.manager.getTopicProperties()) {
+        for (Properties topicProperties : SystemPersistenceConstants.getManager().getTopicProperties()) {
             TopicEndpointManager.getManager().addTopics(topicProperties);
         }
 
@@ -91,13 +91,13 @@ public class Main {
                 .setTargetEntity("engine")
                 .setTargetServiceName("start");
         try {
-            final boolean success = PolicyEngine.manager.start();
+            final boolean success = PolicyEngineConstants.getManager().start();
             if (!success) {
                 trans.setStatusCode(false).setResponseDescription("partial start").flush();
                 logger.warn(
                         LoggerUtil.TRANSACTION_LOG_MARKER,
                         "Main: {} has been partially started",
-                        PolicyEngine.manager);
+                        PolicyEngineConstants.getManager());
             } else {
                 trans.setStatusCode(true).transaction();
             }
@@ -110,7 +110,7 @@ public class Main {
             logger.warn(
                     LoggerUtil.TRANSACTION_LOG_MARKER,
                     "Main: cannot start {} (bad state) because of {}",
-                    PolicyEngine.manager,
+                    PolicyEngineConstants.getManager(),
                     e.getMessage(),
                     e);
         } catch (final Exception e) {
@@ -122,7 +122,7 @@ public class Main {
             logger.warn(
                     LoggerUtil.TRANSACTION_LOG_MARKER,
                     "Main: cannot start {} because of {}",
-                    PolicyEngine.manager,
+                    PolicyEngineConstants.getManager(),
                     e.getMessage(),
                     e);
             System.exit(1);
@@ -131,7 +131,7 @@ public class Main {
         /* 4. Create and start the controllers */
 
         for (final Properties controllerProperties :
-            SystemPersistence.manager.getControllerProperties()) {
+            SystemPersistenceConstants.getManager().getControllerProperties()) {
             final String controllerName =
                     controllerProperties.getProperty(DroolsProperties.PROPERTY_CONTROLLER_NAME);
             try {
@@ -142,7 +142,7 @@ public class Main {
                         .setTargetServiceName("start");
 
                 final PolicyController controller =
-                        PolicyEngine.manager.createPolicyController(controllerName, controllerProperties);
+                        PolicyEngineConstants.getManager().createPolicyController(controllerName, controllerProperties);
                 controller.start();
 
                 trans

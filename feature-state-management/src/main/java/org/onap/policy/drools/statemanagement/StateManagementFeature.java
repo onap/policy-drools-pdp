@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * a separate optional feature.
  */
 
-public class StateManagementFeature implements StateManagementFeatureApi, 
+public class StateManagementFeature implements StateManagementFeatureApi,
     PolicySessionFeatureApi, PolicyEngineFeatureApi {
     // get an instance of logger
     private static final Logger logger =
@@ -187,7 +187,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * @return true if locked or false if failed
      */
     @Override
@@ -203,7 +203,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
 
     /**
      * {@inheritDoc}.
-     * 
+     *
      * @throws Exception exception
      */
     @Override
@@ -219,8 +219,8 @@ public class StateManagementFeature implements StateManagementFeatureApi,
 
     /**
      * {@inheritDoc}.
-     * 
-     * @throws Exception exception 
+     *
+     * @throws Exception exception
      */
     @Override
     public boolean isLocked() {
@@ -229,19 +229,19 @@ public class StateManagementFeature implements StateManagementFeatureApi,
 
     @Override
     public int getSequenceNumber() {
-        return SEQ_NUM;
+        return StateManagementFeatureApiConstants.SEQ_NUM;
     }
 
     /**
      * Read in the properties and initialize the StateManagementProperties.
      */
     private static void initializeProperties(String configDir) {
-        //Get the state management properties 
+        //Get the state management properties
         try {
             Properties props =
                     PropertyUtil.getProperties(configDir + "/feature-state-management.properties");
             StateManagementProperties.initProperties(props);
-            logger.info("initializeProperties: resourceName= {}", 
+            logger.info("initializeProperties: resourceName= {}",
                     StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME));
         } catch (IOException e1) {
             logger.error("initializeProperties", e1);

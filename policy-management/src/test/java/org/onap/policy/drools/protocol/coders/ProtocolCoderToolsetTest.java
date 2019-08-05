@@ -34,7 +34,7 @@ import org.kie.api.builder.ReleaseId;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
-import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.internal.MavenDroolsControllerTest;
 import org.onap.policy.drools.properties.DroolsProperties;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
@@ -240,7 +240,7 @@ public class ProtocolCoderToolsetTest {
         droolsControllerConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
                 + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX, Triple.class.getName());
 
-        DroolsController.factory.build(droolsControllerConfig, null, noopTopics);
+        DroolsControllerConstants.getFactory().build(droolsControllerConfig, null, noopTopics);
     }
 
     private JsonProtocolFilter createFilterSet() {
