@@ -26,5 +26,6 @@
 
     <groupId>org.onap.policy.drools.test</groupId>
     <artifactId>echo</artifactId>
-    <version>1.5.0-SNAPSHOT</version>
+    <!-- the version below is irrelevant -->
+    <version>1.0.0</version>
 </project>

@@ -25,7 +25,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.onap.policy.drools.test</groupId>
-    <artifactId>test</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <artifactId>test</artifactId>    
+    <!-- the version below is irrelevant, as long as it matches what is in ControllerLoggingTest -->
+    <version>1.0.0</version>
 
 </project>

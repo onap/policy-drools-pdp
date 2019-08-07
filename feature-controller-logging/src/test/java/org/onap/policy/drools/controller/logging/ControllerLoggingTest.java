@@ -67,7 +67,7 @@ public class ControllerLoggingTest {
     private static final String TEST_CONTROLLER_NAME = "test-controller";
     private static final String TEST_GROUP_ID = "org.onap.policy.drools.test";
     private static final String TEST_ARTIFACT_ID = "test";
-    private static final String TEST_VERSION = "1.4.1-SNAPSHOT";
+    private static final String TEST_VERSION = "1.0.0";
 
     /**
      * A test topic used for delivery and network logging.
