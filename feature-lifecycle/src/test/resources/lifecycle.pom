@@ -24,6 +24,7 @@
 
     <groupId>org.onap.policy.drools.test</groupId>
     <artifactId>lifecycle</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <!-- the version below is irrelevant -->
+    <version>1.0.0</version>
 
 </project>
