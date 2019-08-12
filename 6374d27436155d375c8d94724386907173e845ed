@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "febed591_e7cb7c6e",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-12T20:55:28Z",
+      "side": 1,
+      "message": "Because the field name is \"site\", lombok provides getSite \u0026 setSite, which does not meet the interface, which uses getSiteName \u0026 setSiteName.  Didn\u0027t want to rename the field to \"siteName\", because then we\u0027d have to provide a DB-migration script to rename the columns.\n\nHowever, there\u0027s no compelling reason to leave the interface as it is, so I\u0027ll go ahead and rename it to \"site\" in there.",
+      "parentUuid": "dfd6bc84_16222339",
+      "range": {
+        "startLine": 83,
+        "startChar": 4,
+        "endLine": 92,
+        "endChar": 5
+      },
+      "revId": "6374d27436155d375c8d94724386907173e845ed",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bed77a89_f830b5db",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpImpl.java",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2019-08-12T17:31:07Z",
       "side": 1,
       "message": "same question - oversight?",
+      "range": {
+        "startLine": 59,
+        "startChar": 4,
+        "endLine": 68,
+        "endChar": 0
+      },
+      "revId": "6374d27436155d375c8d94724386907173e845ed",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b883a1b_c3a4a789",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-12T20:55:28Z",
+      "side": 1,
+      "message": "same reply as with previous java file",
+      "parentUuid": "bed77a89_f830b5db",
       "range": {
         "startLine": 59,
         "startChar": 4,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "76be3712_86c2dd4b",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheckInstance.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-12T20:55:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7c3722fc_b68dbbd4",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 26
+      },
+      "revId": "6374d27436155d375c8d94724386907173e845ed",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "319cee4e_d7f2accb",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerConstants.java",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2019-08-12T17:31:07Z",
       "side": 1,
       "message": "remove 2017- for new file",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 22
+      },
+      "revId": "6374d27436155d375c8d94724386907173e845ed",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a210d368_53d96f73",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-12T20:55:28Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "319cee4e_d7f2accb",
       "range": {
         "startLine": 5,
         "startChar": 17,
