@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "79562262_9be9d584",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-08-12T22:16:28Z",
+      "side": 1,
+      "message": "Why do these needs to be explicitly written instead of relying on superclass providing them?",
+      "revId": "918ac9efbcaf345b3e03d603ec9a053ad5614175",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6521fa8a_81c70c05",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-08-12T22:16:28Z",
+      "side": 1,
+      "message": "Same question.",
+      "revId": "918ac9efbcaf345b3e03d603ec9a053ad5614175",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
