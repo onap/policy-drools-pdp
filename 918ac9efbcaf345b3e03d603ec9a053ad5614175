@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e94d33a9_4affea07",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-12T22:48:18Z",
+      "side": 1,
+      "message": "sonar complained about it - didn\u0027t like the fact that the subclass added methods but didn\u0027t define hashcode/equals",
+      "parentUuid": "79562262_9be9d584",
+      "revId": "918ac9efbcaf345b3e03d603ec9a053ad5614175",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6521fa8a_81c70c05",
         "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
         "patchSetId": 5
