@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "95fabbe1_2ef8497a",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/DroolsPdpEntity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-13T20:17:07Z",
+      "side": 1,
+      "message": "not sure - if so, can address it in a subsequent review",
+      "parentUuid": "1c7dded2_9b8e305a",
+      "revId": "751919e7db77b28cf14b40ad6449508084418284",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "04990969_93f6d9e8",
         "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2019-08-13T16:57:49Z",
       "side": 1,
       "message": "I am having trouble with some naming Jim.   For example here to me is misleading:\n\nPolicyControllerConstants.getInstance()\n\nThis seems to indicate that I am going to get an instance of a PolicyController but in reality it is just going to get the factory (and there would be only one instance in use of it).\n\nIt seems much better semantically and for code comprehension to me to say:\n\nPolicyControllerConstants.getFactory()\n\nin general this will be more readable for any methods using the factories.   \n\nCompare:\n\nPolicyControllerConstants.getInstance().get(\u003cparams\u003e)\nPolicyControllerConstants.getInstance().build(\u003cparams\u003e)\n\nto \n\nPolicyControllerConstants.getFactory().get(\u003cparams\u003e)\nPolicyControllerConstants.getFactory().build(\u003cparams\u003e)\n\nI found the latter more accurate and much easier to read.\n\nThis is a global comment when referring to factories from \n*Constant\" classes.\n\nThis is also consistent with the way you have other singletons, ie.\n\nPolicyEngineConstants.getManager().",
+      "revId": "751919e7db77b28cf14b40ad6449508084418284",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "743ab02b_054a0eb4",
+        "filename": "feature-controller-logging/src/main/java/org/onap/policy/drools/controller/logging/ControllerLoggingFeature.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-13T20:17:07Z",
+      "side": 1,
+      "message": "Totally agree - that was a side-effect that this had been in a FactoryInstance class which was renamed to Constants.",
+      "parentUuid": "04990969_93f6d9e8",
       "revId": "751919e7db77b28cf14b40ad6449508084418284",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "54fe8739_c8fcc456",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheckConstants.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-13T20:17:07Z",
+      "side": 1,
+      "message": "OK, renamed from Monitor to Manager",
+      "parentUuid": "624a5eb7_9a89905c",
+      "revId": "751919e7db77b28cf14b40ad6449508084418284",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9abccc23_1fff8160",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/properties/DroolsProperties.java",
         "patchSetId": 6
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "97dd5863_9f132547",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/properties/DroolsProperties.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-13T20:17:07Z",
+      "side": 1,
+      "message": "This class already existed, but yes, can rename it",
+      "parentUuid": "9abccc23_1fff8160",
+      "revId": "751919e7db77b28cf14b40ad6449508084418284",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "24ccc3b5_12796a3c",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
         "patchSetId": 6
@@ -98,6 +170,24 @@
       "writtenOn": "2019-08-13T16:57:49Z",
       "side": 1,
       "message": "Curious why it needs \"the\" prefix?   To be consistent I think all data members should contain \"the\" as well if the \"the\" convention is desired (ie. theServiceName, theStatusCode, ..)",
+      "revId": "751919e7db77b28cf14b40ad6449508084418284",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f78ef991_1f563a0f",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-13T20:17:07Z",
+      "side": 1,
+      "message": "sonar complained that \"severity\" can be confused with \"SEVERITY\" and requires it to be renamed (likewise with \"server\"), thus I added \"the\" prefix.  Will address this later with POLICY-1989.",
+      "parentUuid": "24ccc3b5_12796a3c",
       "revId": "751919e7db77b28cf14b40ad6449508084418284",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
