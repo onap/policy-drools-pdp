@@ -20,31 +20,12 @@
 
 package org.onap.policy.drools.activestandby;
 
-/*
- * Per MultiSite_v1-10.ppt:
- *
- * Extends the StateChangeNotifier class and overwrites the abstract handleStateChange() method to get state changes
- * and do the following:
- *
- * When the Standby Status changes (from providingservice) to hotstandby or coldstandby,
- * the Active/Standby selection algorithm must stand down if the PDP-D is currently the lead/active node
- * and allow another PDP-D to take over.  It must also call lock on all engines in the engine management.
- *
- * When the Standby Status changes from (hotstandby) to coldstandby, the Active/Standby algorithm must NOT assume
- * the active/lead role.
- *
- * When the Standby Status changes (from coldstandby or providingservice) to hotstandby,
- * the Active/Standby algorithm may assume the active/lead role if the active/lead fails.
- *
- * When the Standby Status changes to providingservice (from hotstandby or coldstandby) call unlock on all
- * engines in the engine management layer.
- */
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.im.StateManagement;
+import org.onap.policy.common.utils.time.CurrentTime;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
@@ -89,6 +70,8 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
     private long waitInterval;
     private boolean isNowActivating;
     private String previousStandbyStatus;
+    private final CurrentTime currentTime = MonitorTime.getInstance();
+    private final Factory timerFactory = Factory.getInstance();
     public static final String NONE = "none";
     public static final String UNSUPPORTED = "unsupported";
     public static final String HOTSTANDBY_OR_COLDSTANDBY = "hotstandby_or_coldstandby";
@@ -101,7 +84,7 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
         pdpUpdateInterval =
                 Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
         isWaitingForActivation = false;
-        startTimeWaitingForActivationMs = new Date().getTime();
+        startTimeWaitingForActivationMs = currentTime.getMillis();
         // delay the activate so the DesignatedWaiter can run twice - give it an extra 2 seconds
         waitInterval = 2 * pdpUpdateInterval + 2000L;
         isNowActivating = false;
@@ -222,11 +205,11 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
                 // Just in case there is an old timer hanging around
                 logger.debug("handleStateChange: PROVIDING_SERVICE cancelling delayActivationTimer.");
                 cancelTimer();
-                delayActivateTimer = makeTimer();
+                delayActivateTimer = timerFactory.makeTimer();
                 // delay the activate so the DesignatedWaiter can run twice
                 delayActivateTimer.schedule(new DelayActivateClass(), waitInterval);
                 isWaitingForActivation = true;
-                startTimeWaitingForActivationMs = new Date().getTime();
+                startTimeWaitingForActivationMs = currentTime.getMillis();
                 logger.debug("handleStateChange: PROVIDING_SERVICE scheduling delayActivationTimer in {} ms",
                                 waitInterval);
             } else {
@@ -244,7 +227,7 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
         if (isWaitingForActivation) {
             logger.debug("handleStateChange: PROVIDING_SERVICE isWaitingForActivation = {}",
                             isWaitingForActivation);
-            long now = new Date().getTime();
+            long now = currentTime.getMillis();
             long waitTimeMs = now - startTimeWaitingForActivationMs;
             if (waitTimeMs > 3 * waitInterval) {
                 logger.debug("handleStateChange: PROVIDING_SERVICE looks like the activation wait timer "
@@ -326,9 +309,5 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
 
     protected PolicyEngine getPolicyEngineManager() {
         return PolicyEngineConstants.getManager();
-    }
-
-    protected Timer makeTimer() {
-        return new Timer();
     }
 }

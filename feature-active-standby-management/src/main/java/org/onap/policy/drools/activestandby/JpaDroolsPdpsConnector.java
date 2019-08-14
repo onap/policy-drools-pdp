@@ -30,7 +30,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
-
+import org.onap.policy.common.im.MonitorTime;
+import org.onap.policy.common.utils.time.CurrentTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(JpaDroolsPdpsConnector.class);
     private EntityManagerFactory emf;
+
+    private final CurrentTime currentTime = MonitorTime.getInstance();
 
 
     //not sure if we want to use the same entity manager factory
@@ -114,7 +117,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             if (droolsPdpsList.size() == 1 && (droolsPdpsList.get(0) instanceof DroolsPdpEntity)) {
                 droolsPdpEntity = (DroolsPdpEntity)droolsPdpsList.get(0);
                 em.refresh(droolsPdpEntity); //Make sure we have current values
-                Date currentDate = new Date();
+                Date currentDate = currentTime.getDate();
                 long difference = currentDate.getTime() - droolsPdpEntity.getUpdatedDate().getTime();
                 //just set some kind of default here
                 long pdpTimeout = 15000;
@@ -156,7 +159,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 droolsPdpEntity.setDesignated(pdp.isDesignated());
                 //The isDesignated value is not the same and the new one == true
                 if (pdp.isDesignated()) {
-                    droolsPdpEntity.setDesignatedDate(new Date());
+                    droolsPdpEntity.setDesignatedDate(currentTime.getDate());
                 }
             }
             em.getTransaction().commit();
@@ -255,7 +258,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         if (designated) {
             em.refresh(droolsPdpEntity); //make sure we get the DB value
             if (!droolsPdpEntity.isDesignated()) {
-                droolsPdpEntity.setDesignatedDate(new Date());
+                droolsPdpEntity.setDesignatedDate(currentTime.getDate());
             }
 
         }
@@ -369,7 +372,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         // time box that may be.
         // If the the PDP is not current, we should mark it as not primary in
         // the database
-        Date currentDate = new Date();
+        Date currentDate = currentTime.getDate();
         long difference = currentDate.getTime()
                 - pdp.getUpdatedDate().getTime();
         // just set some kind of default here

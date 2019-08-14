@@ -21,8 +21,6 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.awaitility.core.ConditionTimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
@@ -63,7 +60,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     @Before
     public void startPassive() {
         /* start every test in passive mode */
-        fsm = new LifecycleFsm();
+        fsm = makeFsmWithPseudoTime();
         fsm.setStatusTimerSeconds(15L);
         simpleStart();
     }
@@ -78,13 +75,12 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     public void controller() {
         fsm.start(controllerSupport.getController());
         assertSame(controllerSupport.getController(),
-            fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
-                ControllerSupport.POLICY_TYPE_VERSION)));
+                        fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
+                                        ControllerSupport.POLICY_TYPE_VERSION)));
 
         fsm.stop(controllerSupport.getController());
-        assertNull(fsm.getController(
-            new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
-                                           ControllerSupport.POLICY_TYPE_VERSION)));
+        assertNull(fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
+                        ControllerSupport.POLICY_TYPE_VERSION)));
 
         fsm.shutdown();
     }
@@ -109,8 +105,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
             }
 
             String[] events = fsm.client.getSink().getRecentEvents();
-            PdpStatus status =
-                new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
+            PdpStatus status = new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
 
             return status.getMessageName() == PdpMessageType.PDP_STATUS && state == status.getState();
         };
@@ -133,7 +128,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void shutdown() throws CoderException {
+    public void shutdown() throws Exception {
         simpleStop();
 
         fsm.shutdown();
@@ -147,22 +142,14 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     private void status(PdpState state) {
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .until(isStatus(state, 1));
+        waitUntil(5, TimeUnit.SECONDS, isStatus(state, 1));
 
-        await()
-            .atMost(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS)
-            .until(isStatus(state, 2));
+        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, 2));
 
-        await()
-            .atMost(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS)
-            .until(isStatus(state, 3));
+        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, 3));
 
         assertTrue(fsm.status());
-        await()
-            .atMost(200, TimeUnit.MILLISECONDS)
-            .until(isStatus(state, 4));
+        waitUntil(200, TimeUnit.MILLISECONDS, isStatus(state, 4));
     }
 
     @Test
@@ -182,8 +169,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertTrue(fsm.update(update));
 
         int qlength = fsm.client.getSink().getRecentEvents().length;
-        PdpStatus lastStatus = new StandardCoder()
-                                    .decode(fsm.client.getSink().getRecentEvents()[qlength - 1], PdpStatus.class);
+        PdpStatus lastStatus = new StandardCoder().decode(fsm.client.getSink().getRecentEvents()[qlength - 1],
+                        PdpStatus.class);
         assertEquals(update.getRequestId(), lastStatus.getRequestId());
         assertEquals(update.getRequestId(), lastStatus.getResponse().getResponseTo());
 
@@ -193,8 +180,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("z", fsm.getSubgroup());
         assertBasicPassive();
 
-        String rawPolicy =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
+        String rawPolicy = new String(
+                        Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
         ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
         update.setPolicies(Arrays.asList(toscaPolicy));
 
@@ -287,8 +274,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
 
-        String rawPolicy =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
+        String rawPolicy = new String(
+                        Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
         ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
         update.setPolicies(Arrays.asList(toscaPolicy));
 
@@ -315,9 +302,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("A", fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
 
-        await()
-            .atMost(5, TimeUnit.SECONDS)
-            .until(() -> controllerSupport.getController().getDrools().factCount("junits") == 1);
+        waitUntil(5, TimeUnit.SECONDS, () -> controllerSupport.getController().getDrools().factCount("junits") == 1);
 
         assertTrue(controllerSupport.getController().getDrools().delete(ToscaPolicy.class));
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
@@ -331,24 +316,24 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertFalse(fsm.state.isAlive());
     }
 
-    private void assertExtendedTerminated() throws CoderException {
+    private void assertExtendedTerminated() throws Exception {
         assertBasicTerminated();
         assertTrue(fsm.statusTask.isCancelled());
         assertTrue(fsm.statusTask.isDone());
 
+        // verify there are no outstanding tasks that might change the state
+        assertTrue(time.isEmpty());
+
+        assertFalse(fsm.client.getSink().isAlive());
+
         String[] events = fsm.client.getSink().getRecentEvents();
-        PdpStatus status =
-            new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
+        PdpStatus status = new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
         assertEquals("drools", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
         assertEquals(NetworkUtil.getHostname(), status.getName());
         assertEquals(fsm.getName(), status.getName());
         assertEquals(PdpMessageType.PDP_STATUS, status.getMessageName());
-
-        assertThatThrownBy( () -> await()
-            .atMost(2 * fsm.statusTimerSeconds, TimeUnit.SECONDS)
-            .until(isStatus(PdpState.TERMINATED, events.length))).isInstanceOf(ConditionTimeoutException.class);
     }
 
     private void assertBasicPassive() {
