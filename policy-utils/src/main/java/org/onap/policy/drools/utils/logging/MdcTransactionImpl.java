@@ -55,6 +55,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -221,111 +222,45 @@ class MdcTransactionImpl implements MdcTransaction {
      */
     @Override
     public MdcTransaction flush() {
-        if (this.requestId != null && !this.requestId.isEmpty()) {
-            MDC.put(REQUEST_ID, this.requestId);
-        }
-
-        if (this.invocationId != null && !this.invocationId.isEmpty()) {
-            MDC.put(INVOCATION_ID, this.invocationId);
-        }
-
-        if (this.partner != null) {
-            MDC.put(PARTNER_NAME, this.partner);
-        }
-
-        if (this.virtualServerName != null) {
-            MDC.put(VIRTUAL_SERVER_NAME, this.virtualServerName);
-        }
-
-        if (this.serverName != null) {
-            MDC.put(SERVER, this.serverName);
-        }
-
-        if (this.serverIpAddress != null) {
-            MDC.put(SERVER_IP_ADDRESS, this.serverIpAddress);
-        }
-
-        if (this.serverFqdn != null) {
-            MDC.put(SERVER_FQDN, this.serverFqdn);
-        }
-
-        if (this.serviceName != null) {
-            MDC.put(SERVICE_NAME, this.serviceName);
-        }
-
-        if (this.startTime != null) {
-            MDC.put(BEGIN_TIMESTAMP, timestamp(this.startTime));
-        }
-
-        if (this.endTime != null) {
-            MDC.put(END_TIMESTAMP, timestamp(this.endTime));
-        } else {
-            this.setEndTime(null);
-            MDC.put(END_TIMESTAMP, timestamp(this.endTime));
-        }
+        setMdc(REQUEST_ID, this.requestId);
+        setMdc(INVOCATION_ID, this.invocationId);
+        setMdc(PARTNER_NAME, this.partner);
+        setMdc(VIRTUAL_SERVER_NAME, this.virtualServerName);
+        setMdc(SERVER, this.serverName);
+        setMdc(SERVER_IP_ADDRESS, this.serverIpAddress);
+        setMdc(SERVER_FQDN, this.serverFqdn);
+        setMdc(SERVICE_NAME, this.serviceName);
+        setMdc(BEGIN_TIMESTAMP, timestamp(this.startTime));
+        setMdc(END_TIMESTAMP, timestamp(this.endTime));
 
         if (this.elapsedTime != null) {
             MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
-        } else {
-            if (endTime != null && startTime != null) {
-                this.elapsedTime = Duration.between(startTime, endTime).toMillis();
-                MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
-            }
+        } else if (endTime != null && startTime != null) {
+            this.elapsedTime = Duration.between(startTime, endTime).toMillis();
+            MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
         }
 
-        if (this.serviceInstanceId != null) {
-            MDC.put(SERVICE_INSTANCE_ID, this.serviceInstanceId);
-        }
-
-        if (this.instanceUuid != null) {
-            MDC.put(INSTANCE_UUID, this.instanceUuid);
-        }
-
-        if (this.processKey != null) {
-            MDC.put(PROCESS_KEY, this.processKey);
-        }
-
-        if (this.statusCode != null) {
-            MDC.put(STATUS_CODE, this.statusCode);
-        }
-
-        if (this.responseCode != null) {
-            MDC.put(RESPONSE_CODE, this.responseCode);
-        }
-
-        if (this.responseDescription != null) {
-            MDC.put(RESPONSE_DESCRIPTION, this.responseDescription);
-        }
-
-        if (this.theSeverity != null) {
-            MDC.put(SEVERITY, this.theSeverity);
-        }
-
-        if (this.alertSeverity != null) {
-            MDC.put(ALERT_SEVERITY, this.alertSeverity);
-        }
-
-        if (this.targetEntity != null) {
-            MDC.put(TARGET_ENTITY, this.targetEntity);
-        }
-
-        if (this.targetServiceName != null) {
-            MDC.put(TARGET_SERVICE_NAME, this.targetServiceName);
-        }
-
-        if (this.targetVirtualEntity != null) {
-            MDC.put(TARGET_VIRTUAL_ENTITY, this.targetVirtualEntity);
-        }
-
-        if (this.clientIpAddress != null) {
-            MDC.put(CLIENT_IP_ADDRESS, this.clientIpAddress);
-        }
-
-        if (this.remoteHost != null) {
-            MDC.put(REMOTE_HOST, this.remoteHost);
-        }
+        setMdc(SERVICE_INSTANCE_ID, this.serviceInstanceId);
+        setMdc(INSTANCE_UUID, this.instanceUuid);
+        setMdc(PROCESS_KEY, this.processKey);
+        setMdc(STATUS_CODE, this.statusCode);
+        setMdc(RESPONSE_CODE, this.responseCode);
+        setMdc(RESPONSE_DESCRIPTION, this.responseDescription);
+        setMdc(SEVERITY, this.theSeverity);
+        setMdc(ALERT_SEVERITY, this.alertSeverity);
+        setMdc(TARGET_ENTITY, this.targetEntity);
+        setMdc(TARGET_SERVICE_NAME, this.targetServiceName);
+        setMdc(TARGET_VIRTUAL_ENTITY, this.targetVirtualEntity);
+        setMdc(CLIENT_IP_ADDRESS, this.clientIpAddress);
+        setMdc(REMOTE_HOST, this.remoteHost);
 
         return this;
+    }
+
+    private void setMdc(String paramName, String value) {
+        if (!StringUtils.isBlank(value)) {
+            MDC.put(paramName, value);
+        }
     }
 
     @Override
@@ -689,6 +624,10 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public String timestamp(Instant time) {
+        if (time == null) {
+            return null;
+        }
+
         return new SimpleDateFormat(DATE_FORMAT).format(Date.from(time));
     }
 

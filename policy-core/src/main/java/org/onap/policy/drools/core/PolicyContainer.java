@@ -448,24 +448,30 @@ public class PolicyContainer implements Startable {
      */
     public synchronized void startScanner(ReleaseId releaseId) {
         String version = releaseId.getVersion();
-        if (!scannerStarted && scanner == null && version != null
-                && ("LATEST".equals(version) || "RELEASE".equals(version) || version.endsWith("-SNAPSHOT"))) {
-            // create the scanner, and poll at 60 second intervals
-            try {
-                scannerStarted = true;
 
-                // start this in a separate thread -- it can block for a long time
-                new Thread("Scanner Starter " + getName()) {
-                    @Override
-                    public void run() {
-                        scanner = kieServices.newKieScanner(kieContainer);
-                        scanner.start(60000L);
-                    }
-                }.start();
-            } catch (Exception e) {
-                // sometimes the scanner initialization fails for some reason
-                logger.error("startScanner error", e);
-            }
+        if (scannerStarted || scanner != null || version == null) {
+            return;
+        }
+
+        if (!("LATEST".equals(version) || "RELEASE".equals(version) || version.endsWith("-SNAPSHOT"))) {
+            return;
+        }
+
+        // create the scanner, and poll at 60 second intervals
+        try {
+            scannerStarted = true;
+
+            // start this in a separate thread -- it can block for a long time
+            new Thread("Scanner Starter " + getName()) {
+                @Override
+                public void run() {
+                    scanner = kieServices.newKieScanner(kieContainer);
+                    scanner.start(60000L);
+                }
+            }.start();
+        } catch (Exception e) {
+            // sometimes the scanner initialization fails for some reason
+            logger.error("startScanner error", e);
         }
     }
 

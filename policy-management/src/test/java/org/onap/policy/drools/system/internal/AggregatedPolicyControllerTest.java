@@ -924,7 +924,7 @@ public class AggregatedPolicyControllerTest {
         // remaining methods should not have been invoked
         assertThatThrownBy(() -> verifyBefore.accept(prov2)).isInstanceOf(AssertionError.class);
 
-        assertThatThrownBy(() -> verifyMiddle.run()).isInstanceOf(AssertionError.class);
+        assertThatThrownBy(verifyMiddle::run).isInstanceOf(AssertionError.class);
 
         assertThatThrownBy(() -> verifyAfter.accept(prov1)).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);

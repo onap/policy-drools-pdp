@@ -202,255 +202,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                     logger.debug("DesignatedWaiter.run: pdps.size= {}", pdps.size());
 
                     //This is only true if all designated PDPs have failed
-                    boolean designatedPdpHasFailed = pdpsConnector.hasDesignatedPdpFailed(pdps);
-                    logger.debug("DesignatedWaiter.run: designatedPdpHasFailed= {}", designatedPdpHasFailed);
-                    for (DroolsPdp pdp : pdps) {
-                        logger.debug("DesignatedWaiter.run: evaluating pdp ID: {}", pdp.getPdpId());
-
-                        /*
-                         * Note: side effect of isPdpCurrent is that any stale but
-                         * designated PDPs will be marked as un-designated.
-                         */
-                        boolean isCurrent = pdpsConnector.isPdpCurrent(pdp);
-
-                        /*
-                         * We can't use stateManagement.getStandbyStatus() here, because
-                         * we need the standbyStatus, not for this PDP, but for the PDP
-                         * being processed by this loop iteration.
-                         */
-                        String standbyStatus = stateManagementFeature.getStandbyStatus(pdp.getPdpId());
-                        if (standbyStatus == null) {
-                            // Treat this case as a cold standby -- if we
-                            // abort here, no sessions will be created in a
-                            // single-node test environment.
-                            standbyStatus = StateManagement.COLD_STANDBY;
-                        }
-                        logger.debug("DesignatedWaiter.run: PDP= {},  isCurrent= {}", pdp.getPdpId(), isCurrent);
-
-                        /*
-                         * There are 4 combinations of isDesignated and isCurrent.  We will examine each one in-turn
-                         * and evaluate the each pdp in the list of pdps against each combination.
-                         *
-                         * This is the first combination of isDesignated and isCurrent
-                         */
-                        if (pdp.isDesignated()  &&  isCurrent) {
-                            //It is current, but it could have a standbystatus=coldstandby / hotstandby
-                            //If so, we need to stand it down and demote it
-                            if (!standbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {
-                                if (pdp.getPdpId().equals(myPdp.getPdpId())) {
-                                    logger.debug("\n\nDesignatedWaiter.run: myPdp {} is current and designated, "
-                                                    + "butstandbystatus is not providingservice. "
-                                                    + " Executing stateManagement.demote()" + "\n\n", myPdp.getPdpId());
-                                    // So, we must demote it
-                                    try {
-                                        //Keep the order like this.  StateManagement is last since it
-                                        //triggers controller shutdown
-                                        //This will change isDesignated and it can enter another if(combination) below
-                                        pdpsConnector.standDownPdp(pdp.getPdpId());
-                                        myPdp.setDesignated(false);
-                                        isDesignated = false;
-                                        if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
-                                                || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
-                                            /*
-                                             * Only demote it if it appears it has not already been demoted. Don't worry
-                                             * about synching with the topic endpoint states.  That is done by the
-                                             * refreshStateAudit
-                                             */
-                                            stateManagementFeature.demote();
-                                        }
-                                        //update the standbystatus to check in a later
-                                        //combination of isDesignated and isCurrent
-                                        standbyStatus = stateManagementFeature.getStandbyStatus(pdp.getPdpId());
-                                    } catch (Exception e) {
-                                        logger.error("DesignatedWaiter.run: myPdp: {} "
-                                                + "Caught Exception attempting to demote myPdp,"
-                                                + "message= {}", myPdp.getPdpId(), e);
-                                    }
-                                } else {
-                                    // Don't demote a remote PDP that is current.  It should catch itself
-                                    logger.debug("\n\nDesignatedWaiter.run: myPdp {} is current and designated, "
-                                                    + "but standbystatus is not providingservice. "
-                                                    + " Cannot execute stateManagement.demote() "
-                                                    + "since it it is not myPdp\n\n",
-                                                    myPdp.getPdpId());
-                                }
-
-                            } else {
-                                // If we get here, it is ok to be on the list
-                                logger.debug("DesignatedWaiter.run: PDP= {} is designated, "
-                                                + "current and {} Noting PDP as "
-                                                + "designated, standbyStatus= {}",
-                                                pdp.getPdpId(), standbyStatus, standbyStatus);
-                                listOfDesignated.add(pdp);
-                            }
-
-
-                        }
-
-
-                        /*
-                         * The second combination of isDesignated and isCurrent
-                         *
-                         * PDP is designated but not current; it has failed.
-                         * So we stand it down (it doesn't matter what
-                         * its standbyStatus is). None of these go on the list.
-                         */
-                        if (pdp.isDesignated()  &&  !isCurrent) {
-                            logger.debug("INFO: DesignatedWaiter.run: PDP= {} is currently "
-                                            + "designated but is not current; "
-                                            + "it has failed.  Standing down.  standbyStatus= {}",
-                                            pdp.getPdpId(), standbyStatus);
-                            /*
-                             * Changes designated to 0 but it is still potentially providing service
-                             * Will affect isDesignated, so, it can enter an if(combination) below
-                             */
-                            pdpsConnector.standDownPdp(pdp.getPdpId());
-
-                            //need to change standbystatus to coldstandby
-                            if (pdp.getPdpId().equals(myPdp.getPdpId())) {
-                                logger.debug("\n\nDesignatedWaiter.run: myPdp {} is not Current. "
-                                                + " Executing stateManagement.disableFailed()\n\n", myPdp.getPdpId());
-                                // We found that myPdp is designated but not current
-                                // So, we must cause it to disableFail
-                                try {
-                                    myPdp.setDesignated(false);
-                                    pdpsConnector.setDesignated(myPdp, false);
-                                    isDesignated = false;
-                                    stateManagementFeature.disableFailed();
-                                } catch (Exception e) {
-                                    logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception "
-                                            + "attempting to disableFail myPdp {}, message= {}",
-                                            myPdp.getPdpId(), myPdp.getPdpId(), e);
-                                }
-                            } else { //it is a remote PDP that is failed
-                                logger.debug("\n\nDesignatedWaiter.run: PDP {} is not Current. "
-                                                + " Executing stateManagement.disableFailed(otherResourceName)\n\n",
-                                                pdp.getPdpId() );
-                                // We found a PDP is designated but not current
-                                // We already called standdown(pdp) which will change designated to false
-                                // Now we need to disableFail it to get its states in synch.  The standbyStatus
-                                // should equal coldstandby
-                                try {
-                                    stateManagementFeature.disableFailed(pdp.getPdpId());
-                                } catch (Exception e) {
-                                    logger.error("DesignatedWaiter.run: for PDP {}  Caught Exception attempting to "
-                                            + "disableFail({}), message= {}",
-                                            pdp.getPdpId(), pdp.getPdpId(), e);
-                                }
-
-                            }
-                            continue; //we are not going to do anything else with this pdp
-                        }
-
-                        /*
-                         * The third combination of isDesignated and isCurrent
-                         * /*
-                         * If a PDP is not currently designated but is providing service
-                         * (erroneous, but recoverable) or hot standby
-                         * we can add it to the list of possible designated if all the designated have failed
-                         */
-                        if (!pdp.isDesignated() && isCurrent) {
-                            if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
-                                    || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
-                                logger.debug("\n\nDesignatedWaiter.run: PDP {}"
-                                                + " is NOT designated but IS current and"
-                                                + " has a standbystatus= {}", pdp.getPdpId(), standbyStatus);
-                                // Since it is current, we assume it can adjust its own state.
-                                // We will demote if it is myPdp
-                                if (pdp.getPdpId().equals(myPdp.getPdpId())) {
-                                    //demote it
-                                    logger.debug("DesignatedWaiter.run: PDP {} going to "
-                                                    + "setDesignated = false and calling stateManagement.demote",
-                                                    pdp.getPdpId());
-                                    try {
-                                        //Keep the order like this.
-                                        //StateManagement is last since it triggers controller shutdown
-                                        pdpsConnector.setDesignated(myPdp, false);
-                                        myPdp.setDesignated(false);
-                                        isDesignated = false;
-                                        //This is definitely not a redundant call.
-                                        //It is attempting to correct a problem
-                                        stateManagementFeature.demote();
-                                        //recheck the standbystatus
-                                        standbyStatus = stateManagementFeature.getStandbyStatus(pdp.getPdpId());
-                                    } catch (Exception e) {
-                                        logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception "
-                                                + "attempting to demote myPdp {}, message = {}",  myPdp.getPdpId(),
-                                                myPdp.getPdpId(), e);
-                                    }
-
-                                }
-                            }
-                            if (standbyStatus.equals(StateManagement.HOT_STANDBY) && designatedPdpHasFailed) {
-                                //add it to the list
-                                logger.debug("INFO: DesignatedWaiter.run: PDP= {}"
-                                                + " is not designated but is {} and designated PDP "
-                                                + "has failed.  standbyStatus= {}", pdp.getPdpId(),
-                                                standbyStatus, standbyStatus);
-                                listOfDesignated.add(pdp);
-                            }
-                            continue; //done with this one
-                        }
-
-                        /*
-                         * The fourth combination of isDesignated and isCurrent
-                         *
-                         * We are not going to put any of these on the list since it appears they have failed.
-
-                         *
-                         */
-                        if (!pdp.isDesignated() && !isCurrent) {
-                            logger.debug("INFO: DesignatedWaiter.run: PDP= {} "
-                                            + "designated= {}, current= {}, "
-                                            + "designatedPdpHasFailed= {}, "
-                                            + "standbyStatus= {}",pdp.getPdpId(),
-                                            pdp.isDesignated(), isCurrent, designatedPdpHasFailed, standbyStatus);
-                            if (!standbyStatus.equals(StateManagement.COLD_STANDBY)) {
-                                //stand it down
-                                //disableFail it
-                                pdpsConnector.standDownPdp(pdp.getPdpId());
-                                if (pdp.getPdpId().equals(myPdp.getPdpId())) {
-                                    /*
-                                     * I don't actually know how this condition could
-                                     * happen, but if it did, we would want to declare it
-                                     * failed.
-                                     */
-                                    logger.debug("\n\nDesignatedWaiter.run: myPdp {} is !current and !designated, "
-                                                    + " Executing stateManagement.disableFailed()\n\n",
-                                                    myPdp.getPdpId());
-                                    // So, we must disableFail it
-                                    try {
-                                        //Keep the order like this.
-                                        //StateManagement is last since it triggers controller shutdown
-                                        pdpsConnector.setDesignated(myPdp, false);
-                                        myPdp.setDesignated(false);
-                                        isDesignated = false;
-                                        stateManagementFeature.disableFailed();
-                                    } catch (Exception e) {
-                                        logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
-                                                + "disableFail myPdp {}, message= {}",
-                                                myPdp.getPdpId(), myPdp.getPdpId(), e);
-                                    }
-                                } else { //it is remote
-                                    logger.debug("\n\nDesignatedWaiter.run: myPdp {} is !current and !designated, "
-                                                    + " Executing stateManagement.disableFailed({})\n\n",
-                                                    myPdp.getPdpId(), pdp.getPdpId());
-                                    // We already called standdown(pdp) which will change designated to false
-                                    // Now we need to disableFail it to get its states in sync.
-                                    // StandbyStatus = coldstandby
-                                    try {
-                                        stateManagementFeature.disableFailed(pdp.getPdpId());
-                                    } catch (Exception e) {
-                                        logger.error("DesignatedWaiter.run: for PDP {}"
-                                                + " Caught Exception attempting to disableFail({})"
-                                                + ", message=", pdp.getPdpId(), pdp.getPdpId(), e);
-                                    }
-                                }
-                            }
-                        }
-
-
-                    } // end pdps loop
+                    allPdpsFailed(pdps, listOfDesignated);
 
                     /*
                      * We have checked the four combinations of isDesignated and isCurrent.  Where appropriate,
@@ -479,7 +231,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
 
                     /*
-                     * It is possible to get here with more than one pdp designated and providingservice. This normally
+                     * It is possible to get here with more than one pdp designated and providing service. This normally
                      * occurs when there is a race condition with multiple nodes coming up at the same time. If that is
                      * the case we must determine which one is the one that should be designated and which one should
                      * be demoted.
@@ -490,82 +242,22 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                      *   the previously designated pdp.
                      */
                     DroolsPdp designatedPdp = computeDesignatedPdp(listOfDesignated, mostRecentPrimary);
-                    if (designatedPdp != null) {
-                        pdpdNowActive = designatedPdp.getPdpId();
-                    }
 
                     if (designatedPdp == null) {
                         logger.warn("WARNING: DesignatedWaiter.run: No viable PDP found to be Designated. "
                             + "designatedPdp still null.");
-                        // Just to be sure the parameters are correctly set
-                        myPdp.setDesignated(false);
-                        pdpsConnector.setDesignated(myPdp,false);
-                        isDesignated = false;
-
-                        waitTimerLastRunDate = new Date();
-                        logger.debug("DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = {}",
-                                        waitTimerLastRunDate);
-                        myPdp.setUpdatedDate(waitTimerLastRunDate);
-                        pdpsConnector.update(myPdp);
-
-                        return;
-
-                    } else if (designatedPdp.getPdpId().equals(myPdp.getPdpId())) {
-                        logger.debug("DesignatedWaiter.run: designatedPdp is PDP={}", myPdp.getPdpId());
-                        /*
-                         * update function expects myPdp.isDesignated to be true.
-                         */
-                        try {
-                            //Keep the order like this.  StateManagement is last since it triggers controller init
-                            myPdp.setDesignated(true);
-                            myPdp.setDesignatedDate(new Date());
-                            pdpsConnector.setDesignated(myPdp, true);
-                            isDesignated = true;
-                            String standbyStatus = stateManagementFeature.getStandbyStatus();
-                            if (!standbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {
-                                /*
-                                 * Only call promote if it is not already in the right state.  Don't worry about
-                                 * synching the lower level topic endpoint states.  That is done by the
-                                 * refreshStateAudit.
-                                 * Note that we need to fetch the session list from 'mostRecentPrimary'
-                                 * at this point -- soon, 'mostRecentPrimary' will be set to this host.
-                                 */
-                                //this.sessions = mostRecentPrimary.getSessions();
-                                stateManagementFeature.promote();
-                            }
-                        } catch (Exception e) {
-                            logger.error("ERROR: DesignatedWaiter.run: Caught Exception attempting to promote PDP={}"
-                                    + ", message=", myPdp.getPdpId(), e);
-                            myPdp.setDesignated(false);
-                            pdpsConnector.setDesignated(myPdp,false);
-                            isDesignated = false;
-                            //If you can't promote it, demote it
-                            try {
-                                String standbyStatus = stateManagementFeature.getStandbyStatus();
-                                if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
-                                        || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
-                                    /*
-                                     * Only call demote if it is not already in the right state.  Don't worry about
-                                     * synching the lower level topic endpoint states.  That is done by the
-                                     * refreshStateAudit.
-                                     */
-                                    stateManagementFeature.demote();
-                                }
-                            } catch (Exception e1) {
-                                logger.error("ERROR: DesignatedWaiter.run: Caught StandbyStatusException "
-                                        + "attempting to promote then demote PDP={}, message=",
-                                        myPdp.getPdpId(), e1);
-                            }
-
-                        }
-                        waitTimerLastRunDate = new Date();
-                        logger.debug("DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) "
-                                        + "waitTimerLastRunDate = " + waitTimerLastRunDate);
-                        myPdp.setUpdatedDate(waitTimerLastRunDate);
-                        pdpsConnector.update(myPdp);
-
+                        designateNoPdp();
                         return;
                     }
+
+                    pdpdNowActive = designatedPdp.getPdpId();
+
+                    if (pdpdNowActive.equals(myPdp.getPdpId())) {
+                        logger.debug("DesignatedWaiter.run: designatedPdp is PDP={}", myPdp.getPdpId());
+                        designateMyPdp();
+                        return;
+                    }
+
                     isDesignated = false;
 
                 } // end synchronized
@@ -583,6 +275,350 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 logger.error("DesignatedWaiter.run caught an unexpected exception: ", e);
             }
         } // end run
+
+        private void allPdpsFailed(Collection<DroolsPdp> pdps, List<DroolsPdp> listOfDesignated) {
+            boolean designatedPdpHasFailed = pdpsConnector.hasDesignatedPdpFailed(pdps);
+            logger.debug("DesignatedWaiter.run: designatedPdpHasFailed= {}", designatedPdpHasFailed);
+            for (DroolsPdp pdp : pdps) {
+                logger.debug("DesignatedWaiter.run: evaluating pdp ID: {}", pdp.getPdpId());
+
+                /*
+                 * Note: side effect of isPdpCurrent is that any stale but
+                 * designated PDPs will be marked as un-designated.
+                 */
+                boolean isCurrent = pdpsConnector.isPdpCurrent(pdp);
+
+                /*
+                 * We can't use stateManagement.getStandbyStatus() here, because
+                 * we need the standbyStatus, not for this PDP, but for the PDP
+                 * being processed by this loop iteration.
+                 */
+                String standbyStatus = stateManagementFeature.getStandbyStatus(pdp.getPdpId());
+                if (standbyStatus == null) {
+                    // Treat this case as a cold standby -- if we
+                    // abort here, no sessions will be created in a
+                    // single-node test environment.
+                    standbyStatus = StateManagement.COLD_STANDBY;
+                }
+                logger.debug("DesignatedWaiter.run: PDP= {},  isCurrent= {}", pdp.getPdpId(), isCurrent);
+
+                adjustPdp(pdp, isCurrent, designatedPdpHasFailed, standbyStatus, listOfDesignated);
+
+
+            } // end pdps loop
+        }
+
+        private void adjustPdp(DroolsPdp pdp, boolean isCurrent, boolean designatedPdpHasFailed, String standbyStatus,
+                        List<DroolsPdp> listOfDesignated) {
+            /*
+             * There are 4 combinations of isDesignated and isCurrent.  We will examine each one in-turn
+             * and evaluate the each pdp in the list of pdps against each combination.
+             */
+            if (pdp.isDesignated()) {
+                /*
+                 * This is the first combination of isDesignated and isCurrent
+                 */
+                if (isCurrent) {
+                    pdpDesignatedCurrent(pdp, standbyStatus, listOfDesignated);
+
+                /*
+                 * The second combination of isDesignated and isCurrent
+                 *
+                 * PDP is designated but not current; it has failed.
+                 * So we stand it down (it doesn't matter what
+                 * its standbyStatus is). None of these go on the list.
+                 */
+                } else {
+                    logger.debug("INFO: DesignatedWaiter.run: PDP= {} is currently "
+                                    + "designated but is not current; "
+                                    + "it has failed.  Standing down.  standbyStatus= {}",
+                                    pdp.getPdpId(), standbyStatus);
+                    pdpDesignatedNotCurrent(pdp);
+                }
+
+            } else {
+                // NOT designated
+
+
+                /*
+                 * The third combination of isDesignated and isCurrent
+                 * /*
+                 * If a PDP is not currently designated but is providing service
+                 * (erroneous, but recoverable) or hot standby
+                 * we can add it to the list of possible designated if all the designated have failed
+                 */
+                if (isCurrent) {
+                    pdpNotDesignatedCurrent(pdp, designatedPdpHasFailed, standbyStatus,
+                                    listOfDesignated);
+
+                /*
+                 * The fourth combination of isDesignated and isCurrent
+                 *
+                 * We are not going to put any of these on the list since it appears they have failed.
+                 *
+                 */
+                } else {
+                    logger.debug("INFO: DesignatedWaiter.run: PDP= {} "
+                                    + "designated= {}, current= {}, "
+                                    + "designatedPdpHasFailed= {}, "
+                                    + "standbyStatus= {}",pdp.getPdpId(),
+                                    pdp.isDesignated(), false, designatedPdpHasFailed, standbyStatus);
+                    pdpNotDesignatedNotCurrent(pdp, standbyStatus);
+                }
+            }
+        }
+
+        private void pdpDesignatedCurrent(DroolsPdp pdp, String standbyStatus, List<DroolsPdp> listOfDesignated) {
+            //It is current, but it could have a standbystatus=coldstandby / hotstandby
+            //If so, we need to stand it down and demote it
+            if (!standbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {
+                if (pdp.getPdpId().equals(myPdp.getPdpId())) {
+                    logger.debug("\n\nDesignatedWaiter.run: myPdp {} is current and designated, "
+                                    + "butstandbystatus is not providingservice. "
+                                    + " Executing stateManagement.demote()" + "\n\n", myPdp.getPdpId());
+                    // So, we must demote it
+                    try {
+                        demoteMyPdp(pdp, standbyStatus);
+                    } catch (Exception e) {
+                        logger.error("DesignatedWaiter.run: myPdp: {} "
+                                + "Caught Exception attempting to demote myPdp,"
+                                + "message= {}", myPdp.getPdpId(), e);
+                    }
+                } else {
+                    // Don't demote a remote PDP that is current.  It should catch itself
+                    logger.debug("\n\nDesignatedWaiter.run: myPdp {} is current and designated, "
+                                    + "but standbystatus is not providingservice. "
+                                    + " Cannot execute stateManagement.demote() "
+                                    + "since it it is not myPdp\n\n",
+                                    myPdp.getPdpId());
+                }
+
+            } else {
+                // If we get here, it is ok to be on the list
+                logger.debug("DesignatedWaiter.run: PDP= {} is designated, "
+                                + "current and {} Noting PDP as "
+                                + "designated, standbyStatus= {}",
+                                pdp.getPdpId(), standbyStatus, standbyStatus);
+                listOfDesignated.add(pdp);
+            }
+        }
+
+        private void demoteMyPdp(DroolsPdp pdp, String standbyStatus) throws Exception {
+            //Keep the order like this.  StateManagement is last since it
+            //triggers controller shutdown
+            //This will change isDesignated and it can enter another if(combination) below
+            pdpsConnector.standDownPdp(pdp.getPdpId());
+            myPdp.setDesignated(false);
+            isDesignated = false;
+            if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
+                    || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
+                /*
+                 * Only demote it if it appears it has not already been demoted. Don't worry
+                 * about synching with the topic endpoint states.  That is done by the
+                 * refreshStateAudit
+                 */
+                stateManagementFeature.demote();
+            }
+        }
+
+        private void pdpDesignatedNotCurrent(DroolsPdp pdp) {
+            /*
+             * Changes designated to 0 but it is still potentially providing service
+             * Will affect isDesignated, so, it can enter an if(combination) below
+             */
+            pdpsConnector.standDownPdp(pdp.getPdpId());
+
+            //need to change standbystatus to coldstandby
+            if (pdp.getPdpId().equals(myPdp.getPdpId())) {
+                logger.debug("\n\nDesignatedWaiter.run: myPdp {} is not Current. "
+                                + " Executing stateManagement.disableFailed()\n\n", myPdp.getPdpId());
+                // We found that myPdp is designated but not current
+                // So, we must cause it to disableFail
+                try {
+                    myPdp.setDesignated(false);
+                    pdpsConnector.setDesignated(myPdp, false);
+                    isDesignated = false;
+                    stateManagementFeature.disableFailed();
+                } catch (Exception e) {
+                    logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception "
+                            + "attempting to disableFail myPdp {}, message= {}",
+                            myPdp.getPdpId(), myPdp.getPdpId(), e);
+                }
+            } else { //it is a remote PDP that is failed
+                logger.debug("\n\nDesignatedWaiter.run: PDP {} is not Current. "
+                                + " Executing stateManagement.disableFailed(otherResourceName)\n\n",
+                                pdp.getPdpId() );
+                // We found a PDP is designated but not current
+                // We already called standdown(pdp) which will change designated to false
+                // Now we need to disableFail it to get its states in synch.  The standbyStatus
+                // should equal coldstandby
+                try {
+                    stateManagementFeature.disableFailed(pdp.getPdpId());
+                } catch (Exception e) {
+                    logger.error("DesignatedWaiter.run: for PDP {}  Caught Exception attempting to "
+                            + "disableFail({}), message= {}",
+                            pdp.getPdpId(), pdp.getPdpId(), e);
+                }
+
+            }
+        }
+
+        private void pdpNotDesignatedCurrent(DroolsPdp pdp, boolean designatedPdpHasFailed, String standbyStatus,
+                        List<DroolsPdp> listOfDesignated) {
+            if (!(StateManagement.HOT_STANDBY.equals(standbyStatus)
+                    || StateManagement.COLD_STANDBY.equals(standbyStatus))) {
+                logger.debug("\n\nDesignatedWaiter.run: PDP {}"
+                                + " is NOT designated but IS current and"
+                                + " has a standbystatus= {}", pdp.getPdpId(), standbyStatus);
+                // Since it is current, we assume it can adjust its own state.
+                // We will demote if it is myPdp
+                if (pdp.getPdpId().equals(myPdp.getPdpId())) {
+                    //demote it
+                    logger.debug("DesignatedWaiter.run: PDP {} going to "
+                                    + "setDesignated = false and calling stateManagement.demote",
+                                    pdp.getPdpId());
+                    try {
+                        //Keep the order like this.
+                        //StateManagement is last since it triggers controller shutdown
+                        pdpsConnector.setDesignated(myPdp, false);
+                        myPdp.setDesignated(false);
+                        isDesignated = false;
+                        //This is definitely not a redundant call.
+                        //It is attempting to correct a problem
+                        stateManagementFeature.demote();
+                        //recheck the standbystatus
+                        standbyStatus = stateManagementFeature.getStandbyStatus(pdp.getPdpId());
+                    } catch (Exception e) {
+                        logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception "
+                                + "attempting to demote myPdp {}, message = {}",  myPdp.getPdpId(),
+                                myPdp.getPdpId(), e);
+                    }
+
+                }
+            }
+            if (StateManagement.HOT_STANDBY.equals(standbyStatus) && designatedPdpHasFailed) {
+                //add it to the list
+                logger.debug("INFO: DesignatedWaiter.run: PDP= {}"
+                                + " is not designated but is {} and designated PDP "
+                                + "has failed.  standbyStatus= {}", pdp.getPdpId(),
+                                standbyStatus, standbyStatus);
+                listOfDesignated.add(pdp);
+            }
+        }
+
+        private void pdpNotDesignatedNotCurrent(DroolsPdp pdp, String standbyStatus) {
+            if (StateManagement.COLD_STANDBY.equals(standbyStatus)) {
+                return;
+            }
+
+            //stand it down
+            //disableFail it
+            pdpsConnector.standDownPdp(pdp.getPdpId());
+            if (pdp.getPdpId().equals(myPdp.getPdpId())) {
+                /*
+                 * I don't actually know how this condition could
+                 * happen, but if it did, we would want to declare it
+                 * failed.
+                 */
+                logger.debug("\n\nDesignatedWaiter.run: myPdp {} is !current and !designated, "
+                                + " Executing stateManagement.disableFailed()\n\n",
+                                myPdp.getPdpId());
+                // So, we must disableFail it
+                try {
+                    //Keep the order like this.
+                    //StateManagement is last since it triggers controller shutdown
+                    pdpsConnector.setDesignated(myPdp, false);
+                    myPdp.setDesignated(false);
+                    isDesignated = false;
+                    stateManagementFeature.disableFailed();
+                } catch (Exception e) {
+                    logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
+                            + "disableFail myPdp {}, message= {}",
+                            myPdp.getPdpId(), myPdp.getPdpId(), e);
+                }
+            } else { //it is remote
+                logger.debug("\n\nDesignatedWaiter.run: myPdp {} is !current and !designated, "
+                                + " Executing stateManagement.disableFailed({})\n\n",
+                                myPdp.getPdpId(), pdp.getPdpId());
+                // We already called standdown(pdp) which will change designated to false
+                // Now we need to disableFail it to get its states in sync.
+                // StandbyStatus = coldstandby
+                try {
+                    stateManagementFeature.disableFailed(pdp.getPdpId());
+                } catch (Exception e) {
+                    logger.error("DesignatedWaiter.run: for PDP {}"
+                            + " Caught Exception attempting to disableFail({})"
+                            + ", message=", pdp.getPdpId(), pdp.getPdpId(), e);
+                }
+            }
+        }
+
+        private void designateNoPdp() {
+            // Just to be sure the parameters are correctly set
+            myPdp.setDesignated(false);
+            pdpsConnector.setDesignated(myPdp,false);
+            isDesignated = false;
+
+            waitTimerLastRunDate = new Date();
+            logger.debug("DesignatedWaiter.run (designatedPdp == null) waitTimerLastRunDate = {}",
+                            waitTimerLastRunDate);
+            myPdp.setUpdatedDate(waitTimerLastRunDate);
+            pdpsConnector.update(myPdp);
+        }
+
+        private void designateMyPdp() {
+            /*
+             * update function expects myPdp.isDesignated to be true.
+             */
+            try {
+                //Keep the order like this.  StateManagement is last since it triggers controller init
+                myPdp.setDesignated(true);
+                myPdp.setDesignatedDate(new Date());
+                pdpsConnector.setDesignated(myPdp, true);
+                isDesignated = true;
+                String standbyStatus = stateManagementFeature.getStandbyStatus();
+                if (!standbyStatus.equals(StateManagement.PROVIDING_SERVICE)) {
+                    /*
+                     * Only call promote if it is not already in the right state.  Don't worry about
+                     * synching the lower level topic endpoint states.  That is done by the
+                     * refreshStateAudit.
+                     * Note that we need to fetch the session list from 'mostRecentPrimary'
+                     * at this point -- soon, 'mostRecentPrimary' will be set to this host.
+                     */
+                    //this.sessions = mostRecentPrimary.getSessions();
+                    stateManagementFeature.promote();
+                }
+            } catch (Exception e) {
+                logger.error("ERROR: DesignatedWaiter.run: Caught Exception attempting to promote PDP={}"
+                        + ", message=", myPdp.getPdpId(), e);
+                myPdp.setDesignated(false);
+                pdpsConnector.setDesignated(myPdp,false);
+                isDesignated = false;
+                //If you can't promote it, demote it
+                try {
+                    String standbyStatus = stateManagementFeature.getStandbyStatus();
+                    if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
+                            || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
+                        /*
+                         * Only call demote if it is not already in the right state.  Don't worry about
+                         * synching the lower level topic endpoint states.  That is done by the
+                         * refreshStateAudit.
+                         */
+                        stateManagementFeature.demote();
+                    }
+                } catch (Exception e1) {
+                    logger.error("ERROR: DesignatedWaiter.run: Caught StandbyStatusException "
+                            + "attempting to promote then demote PDP={}, message=",
+                            myPdp.getPdpId(), e1);
+                }
+
+            }
+            waitTimerLastRunDate = new Date();
+            logger.debug("DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) "
+                            + "waitTimerLastRunDate = " + waitTimerLastRunDate);
+            myPdp.setUpdatedDate(waitTimerLastRunDate);
+            pdpsConnector.update(myPdp);
+        }
     }
 
     /**
@@ -621,53 +657,27 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      * @return drools pdp object
      */
     public DroolsPdp computeMostRecentPrimary(Collection<DroolsPdp> pdps, List<DroolsPdp> listOfDesignated) {
-        boolean containsDesignated = false;
-        for (DroolsPdp pdp : listOfDesignated) {
-            if (pdp.isDesignated()) {
-                containsDesignated = true;
-            }
-        }
+        boolean containsDesignated = listOfDesignated.stream().anyMatch(DroolsPdp::isDesignated);
+
         DroolsPdp mostRecentPrimary = new DroolsPdpImpl(null, true, 1, new Date(0));
         mostRecentPrimary.setSite(null);
         logger.debug("DesignatedWaiter.run listOfDesignated.size() = {}", listOfDesignated.size());
+
         if (listOfDesignated.size() <= 1) {
             logger.debug("DesignatedWainter.run: listOfDesignated.size <=1");
             //Only one or none is designated or hot standby.  Choose the latest designated date
-            for (DroolsPdp pdp : pdps) {
-                logger.debug("DesignatedWaiter.run pdp = {}"
-                                + " pdp.getDesignatedDate() = {}",
-                                pdp.getPdpId(), pdp.getDesignatedDate());
-                if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
-                    mostRecentPrimary = pdp;
-                    logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
-                }
-            }
+            mostRecentPrimary = getLatestDesignated(pdps, mostRecentPrimary);
+
         } else if (listOfDesignated.size() == pdps.size()) {
             logger.debug("DesignatedWainter.run: listOfDesignated.size = pdps.size() which is {}", pdps.size());
             //They are all designated or all hot standby.
-            mostRecentPrimary = null;
-            for (DroolsPdp pdp : pdps) {
-                if (mostRecentPrimary == null) {
-                    mostRecentPrimary = pdp;
-                    continue;
-                }
-                if (containsDesignated) { //Choose the site of the first designated date
-                    if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) < 0) {
-                        mostRecentPrimary = pdp;
-                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
-                    }
-                } else { //Choose the site with the latest designated date
-                    if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
-                        mostRecentPrimary = pdp;
-                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
-                    }
-                }
-            }
+            mostRecentPrimary = getBestDesignated(pdps, containsDesignated);
+
         } else {
             logger.debug("DesignatedWainter.run: Some but not all are designated or hot standby. ");
+            logger.debug("DesignatedWainter.run: containsDesignated = {}", containsDesignated);
             //Some but not all are designated or hot standby.
             if (containsDesignated) {
-                logger.debug("DesignatedWainter.run: containsDesignated = {}", containsDesignated);
                 /*
                  * The list only contains designated.  This is a problem.  It is most likely a race
                  * condition that resulted in two thinking they should be designated. Choose the
@@ -675,24 +685,61 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                  * This should be the site that had the last designation before this race condition
                  * occurred.
                  */
-                for (DroolsPdp pdp : pdps) {
-                    if (listOfDesignated.contains(pdp)) {
-                        continue; //Don't consider this entry
-                    }
-                    if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
-                        mostRecentPrimary = pdp;
-                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
-                    }
-                }
+                mostRecentPrimary = getLatestUndesignated(pdps, mostRecentPrimary, listOfDesignated);
+
             } else {
-                logger.debug("DesignatedWainter.run: containsDesignated = {}", containsDesignated);
                 //The list only contains hot standby. Choose the site of the latest designated date
-                for (DroolsPdp pdp : pdps) {
-                    if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
-                        mostRecentPrimary = pdp;
-                        logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
-                    }
+                mostRecentPrimary = getLatestDesignated(pdps, mostRecentPrimary);
+            }
+        }
+        return mostRecentPrimary;
+    }
+
+    private DroolsPdp getBestDesignated(Collection<DroolsPdp> pdps, boolean containsDesignated) {
+        DroolsPdp mostRecentPrimary;
+        mostRecentPrimary = null;
+        for (DroolsPdp pdp : pdps) {
+            if (mostRecentPrimary == null) {
+                mostRecentPrimary = pdp;
+                continue;
+            }
+            if (containsDesignated) { //Choose the site of the first designated date
+                if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) < 0) {
+                    mostRecentPrimary = pdp;
+                    logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
                 }
+            } else { //Choose the site with the latest designated date
+                if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
+                    mostRecentPrimary = pdp;
+                    logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
+                }
+            }
+        }
+        return mostRecentPrimary;
+    }
+
+    private DroolsPdp getLatestUndesignated(Collection<DroolsPdp> pdps, DroolsPdp mostRecentPrimary,
+                    List<DroolsPdp> listOfDesignated) {
+        for (DroolsPdp pdp : pdps) {
+            if (listOfDesignated.contains(pdp)) {
+                continue; //Don't consider this entry
+            }
+            if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
+                mostRecentPrimary = pdp;
+                logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
+            }
+        }
+        return mostRecentPrimary;
+    }
+
+    private DroolsPdp getLatestDesignated(Collection<DroolsPdp> pdps, DroolsPdp mostRecentPrimary) {
+        for (DroolsPdp pdp : pdps) {
+            logger.debug("DesignatedWaiter.run pdp = {}"
+                            + " pdp.getDesignatedDate() = {}",
+                            pdp.getPdpId(), pdp.getDesignatedDate());
+            if (pdp.getDesignatedDate().compareTo(mostRecentPrimary.getDesignatedDate()) > 0) {
+                mostRecentPrimary = pdp;
+                logger.debug(RUN_PRIMARY_MSG, mostRecentPrimary.getPdpId());
             }
         }
         return mostRecentPrimary;
@@ -706,125 +753,148 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      * @return drools pdp object
      */
     public DroolsPdp computeDesignatedPdp(List<DroolsPdp> listOfDesignated, DroolsPdp mostRecentPrimary) {
-        DroolsPdp designatedPdp = null;
-        DroolsPdp lowestPriorityPdp = null;
-        if (listOfDesignated.size() > 1) {
-            logger.debug("DesignatedWaiter.run: myPdp: {} listOfDesignated.size(): {}", myPdp.getPdpId(),
-                            listOfDesignated.size());
-            DroolsPdp rejectedPdp = null;
-            DroolsPdp lowestPrioritySameSite = null;
-            DroolsPdp lowestPriorityDifferentSite = null;
-            for (DroolsPdp pdp : listOfDesignated) {
-                // We need to determine if another PDP is the lowest priority
-                if (nullSafeEquals(pdp.getSite(),mostRecentPrimary.getSite())) {
-                    if (lowestPrioritySameSite == null) {
-                        if (lowestPriorityDifferentSite != null) {
-                            rejectedPdp = lowestPriorityDifferentSite;
-                        }
-                        lowestPrioritySameSite = pdp;
-                    } else {
-                        if (pdp.getPdpId().equals((lowestPrioritySameSite.getPdpId()))) {
-                            continue;//nothing to compare
-                        }
-                        if (pdp.comparePriority(lowestPrioritySameSite) < 0) {
-                            logger.debug("\nDesignatedWaiter.run: myPdp {}  listOfDesignated pdp ID: {}"
-                                            + " has lower priority than pdp ID: {}",myPdp.getPdpId(), pdp.getPdpId(),
-                                            lowestPrioritySameSite.getPdpId());
-                            //we need to reject lowestPrioritySameSite
-                            rejectedPdp = lowestPrioritySameSite;
-                            lowestPrioritySameSite = pdp;
-                        } else {
-                            //we need to reject pdp and keep lowestPrioritySameSite
-                            logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {} "
-                                            + " has higher priority than pdp ID: {}", myPdp.getPdpId(),pdp.getPdpId(),
-                                            lowestPrioritySameSite.getPdpId());
-                            rejectedPdp = pdp;
-                        }
-                    }
-                } else {
-                    if (lowestPrioritySameSite != null) {
-                        //if we already have a candidate for same site, we don't want to bother with different sites
-                        rejectedPdp = pdp;
-                    } else {
-                        if (lowestPriorityDifferentSite == null) {
-                            lowestPriorityDifferentSite = pdp;
-                            continue;
-                        }
-                        if (pdp.getPdpId().equals((lowestPriorityDifferentSite.getPdpId()))) {
-                            continue;//nothing to compare
-                        }
-                        if (pdp.comparePriority(lowestPriorityDifferentSite) < 0) {
-                            logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"
-                                            + " has lower priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
-                                            lowestPriorityDifferentSite.getPdpId());
-                            //we need to reject lowestPriorityDifferentSite
-                            rejectedPdp = lowestPriorityDifferentSite;
-                            lowestPriorityDifferentSite = pdp;
-                        } else {
-                            //we need to reject pdp and keep lowestPriorityDifferentSite
-                            logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"
-                                            + " has higher priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
-                                            lowestPriorityDifferentSite.getPdpId());
-                            rejectedPdp = pdp;
-                        }
-                    }
-                }
-                // If the rejectedPdp is myPdp, we need to stand it down and demote it.  Each pdp is responsible
-                // for demoting itself
-                if (rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(),myPdp.getPdpId())) {
-                    logger.debug("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated myPdp ID: {}"
-                                    + " is NOT the lowest priority.  Executing stateManagement.demote()\n\n",
-                                    myPdp.getPdpId(),
-                                    myPdp.getPdpId());
-                    // We found that myPdp is on the listOfDesignated and it is not the lowest priority
-                    // So, we must demote it
-                    try {
-                        //Keep the order like this.  StateManagement is last since it triggers controller shutdown
-                        myPdp.setDesignated(false);
-                        pdpsConnector.setDesignated(myPdp, false);
-                        isDesignated = false;
-                        String standbyStatus = stateManagementFeature.getStandbyStatus();
-                        if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
-                                || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
-                            /*
-                             * Only call demote if it is not already in the right state.  Don't worry about
-                             * synching the lower level topic endpoint states.  That is done by the
-                             * refreshStateAudit.
-                             */
-                            stateManagementFeature.demote();
-                        }
-                    } catch (Exception e) {
-                        myPdp.setDesignated(false);
-                        pdpsConnector.setDesignated(myPdp, false);
-                        isDesignated = false;
-                        logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
-                                + "demote myPdp {} myPdp.getPdpId(), message= {}", myPdp.getPdpId(),
-                                e);
-                    }
-                }
-            } //end: for(DroolsPdp pdp : listOfDesignated)
-            if (lowestPrioritySameSite != null) {
-                lowestPriorityPdp = lowestPrioritySameSite;
-            } else {
-                lowestPriorityPdp = lowestPriorityDifferentSite;
-            }
-            //now we have a valid value for lowestPriorityPdp
-            logger.debug("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated "
-                            + "found the LOWEST priority pdp ID: {} "
-                            + " It is now the designatedPpd from the perspective of myPdp ID: {} \n\n",
-                            myPdp.getPdpId(), lowestPriorityPdp.getPdpId(), myPdp);
-            designatedPdp = lowestPriorityPdp;
-
-        } else if (listOfDesignated.isEmpty()) {
+        if (listOfDesignated.isEmpty()) {
             logger.debug("\nDesignatedWaiter.run: myPdp: {} listOfDesignated is: EMPTY.", myPdp.getPdpId());
-            designatedPdp = null;
-        } else { //only one in listOfDesignated
+            return null;
+        }
+
+        if (listOfDesignated.size() == 1) {
             logger.debug("\nDesignatedWaiter.run: myPdp: {} listOfDesignated "
                             + "has ONE entry. PDP ID: {}", myPdp.getPdpId(), listOfDesignated.get(0).getPdpId());
-            designatedPdp = listOfDesignated.get(0);
+            return listOfDesignated.get(0);
         }
-        return designatedPdp;
 
+        logger.debug("DesignatedWaiter.run: myPdp: {} listOfDesignated.size(): {}", myPdp.getPdpId(),
+                        listOfDesignated.size());
+        DesignatedData data = new DesignatedData();
+        for (DroolsPdp pdp : listOfDesignated) {
+            DroolsPdp rejectedPdp;
+
+            // We need to determine if another PDP is the lowest priority
+            if (nullSafeEquals(pdp.getSite(), mostRecentPrimary.getSite())) {
+                rejectedPdp = data.compareSameSite(pdp);
+            } else {
+                rejectedPdp = data.compareDifferentSite(pdp);
+            }
+            // If the rejectedPdp is myPdp, we need to stand it down and demote it.  Each pdp is responsible
+            // for demoting itself
+            if (rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(),myPdp.getPdpId())) {
+                logger.debug("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated myPdp ID: {}"
+                                + " is NOT the lowest priority.  Executing stateManagement.demote()\n\n",
+                                myPdp.getPdpId(),
+                                myPdp.getPdpId());
+                // We found that myPdp is on the listOfDesignated and it is not the lowest priority
+                // So, we must demote it
+                demoteMyPdp();
+            }
+        } //end: for(DroolsPdp pdp : listOfDesignated)
+
+        DroolsPdp lowestPriorityPdp = data.getLowestPriority();
+
+        //now we have a valid value for lowestPriorityPdp
+        logger.debug("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated "
+                        + "found the LOWEST priority pdp ID: {} "
+                        + " It is now the designatedPpd from the perspective of myPdp ID: {} \n\n",
+                        myPdp.getPdpId(), lowestPriorityPdp.getPdpId(), myPdp);
+        return lowestPriorityPdp;
+
+    }
+
+    private class DesignatedData {
+        private DroolsPdp lowestPrioritySameSite = null;
+        private DroolsPdp lowestPriorityDifferentSite = null;
+
+        private DroolsPdp compareSameSite(DroolsPdp pdp) {
+            if (lowestPrioritySameSite == null) {
+                if (lowestPriorityDifferentSite != null) {
+                    //we need to reject lowestPriorityDifferentSite
+                    DroolsPdp rejectedPdp = lowestPriorityDifferentSite;
+                    lowestPriorityDifferentSite = pdp;
+                    return rejectedPdp;
+                }
+                lowestPrioritySameSite = pdp;
+                return null;
+            } else {
+                if (pdp.getPdpId().equals((lowestPrioritySameSite.getPdpId()))) {
+                    return null;//nothing to compare
+                }
+                if (pdp.comparePriority(lowestPrioritySameSite) < 0) {
+                    logger.debug("\nDesignatedWaiter.run: myPdp {}  listOfDesignated pdp ID: {}"
+                                    + " has lower priority than pdp ID: {}",myPdp.getPdpId(), pdp.getPdpId(),
+                                    lowestPrioritySameSite.getPdpId());
+                    //we need to reject lowestPrioritySameSite
+                    DroolsPdp rejectedPdp = lowestPrioritySameSite;
+                    lowestPrioritySameSite = pdp;
+                    return rejectedPdp;
+                } else {
+                    //we need to reject pdp and keep lowestPrioritySameSite
+                    logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {} "
+                                    + " has higher priority than pdp ID: {}", myPdp.getPdpId(),pdp.getPdpId(),
+                                    lowestPrioritySameSite.getPdpId());
+                    return pdp;
+                }
+            }
+        }
+
+        private DroolsPdp compareDifferentSite(DroolsPdp pdp) {
+            if (lowestPrioritySameSite != null) {
+                //if we already have a candidate for same site, we don't want to bother with different sites
+                return pdp;
+            } else {
+                if (lowestPriorityDifferentSite == null) {
+                    lowestPriorityDifferentSite = pdp;
+                    return null;
+                }
+                if (pdp.getPdpId().equals((lowestPriorityDifferentSite.getPdpId()))) {
+                    return null;//nothing to compare
+                }
+                if (pdp.comparePriority(lowestPriorityDifferentSite) < 0) {
+                    logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"
+                                    + " has lower priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
+                                    lowestPriorityDifferentSite.getPdpId());
+                    //we need to reject lowestPriorityDifferentSite
+                    DroolsPdp rejectedPdp = lowestPriorityDifferentSite;
+                    lowestPriorityDifferentSite = pdp;
+                    return rejectedPdp;
+                } else {
+                    //we need to reject pdp and keep lowestPriorityDifferentSite
+                    logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"
+                                    + " has higher priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
+                                    lowestPriorityDifferentSite.getPdpId());
+                    return pdp;
+                }
+            }
+        }
+
+        private DroolsPdp getLowestPriority() {
+            return (lowestPrioritySameSite != null ? lowestPrioritySameSite : lowestPriorityDifferentSite);
+        }
+    }
+
+    private void demoteMyPdp() {
+        try {
+            //Keep the order like this.  StateManagement is last since it triggers controller shutdown
+            myPdp.setDesignated(false);
+            pdpsConnector.setDesignated(myPdp, false);
+            isDesignated = false;
+            String standbyStatus = stateManagementFeature.getStandbyStatus();
+            if (!(standbyStatus.equals(StateManagement.HOT_STANDBY)
+                    || standbyStatus.equals(StateManagement.COLD_STANDBY))) {
+                /*
+                 * Only call demote if it is not already in the right state.  Don't worry about
+                 * synching the lower level topic endpoint states.  That is done by the
+                 * refreshStateAudit.
+                 */
+                stateManagementFeature.demote();
+            }
+        } catch (Exception e) {
+            myPdp.setDesignated(false);
+            pdpsConnector.setDesignated(myPdp, false);
+            isDesignated = false;
+            logger.error("DesignatedWaiter.run: myPdp: {} Caught Exception attempting to "
+                    + "demote myPdp {} myPdp.getPdpId(), message= {}", myPdp.getPdpId(),
+                    e);
+        }
     }
 
     private class TimerUpdateClass extends TimerTask {

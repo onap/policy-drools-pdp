@@ -48,12 +48,12 @@ public interface PolicyController extends Startable, Lockable {
     /**
      * Get the topic readers of interest for this controller.
      */
-    List<? extends TopicSource> getTopicSources();
+    List<TopicSource> getTopicSources();
 
     /**
      * Get the topic readers of interest for this controller.
      */
-    List<? extends TopicSink> getTopicSinks();
+    List<TopicSink> getTopicSinks();
 
     /**
      * Get the Drools Controller.

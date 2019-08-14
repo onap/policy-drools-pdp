@@ -99,7 +99,7 @@ public class DMaaPSimulatorJaxRs {
         return response;
     }
 
-    private String waitForNextMessageFromQueue(int timeout, String topicName) {
+    protected String waitForNextMessageFromQueue(int timeout, String topicName) {
         try {
             sleep(timeout);
             if (queues.containsKey(topicName)) {
@@ -129,10 +129,7 @@ public class DMaaPSimulatorJaxRs {
     @Consumes(MediaType.TEXT_PLAIN)
     public String publish(@PathParam("topicName") String topicName, String body) {
         BlockingQueue<String> queue = queues.computeIfAbsent(topicName, entry -> new LinkedBlockingQueue<>());
-
-        if (!queue.offer(body)) {
-            logger.warn("error on topic {}, failed to place body {} on queue", topicName, body);
-        }
+        queue.offer(body);
 
         return "";
     }

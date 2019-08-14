@@ -61,18 +61,19 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                     .setFlushMode(FlushModeType.COMMIT).getResultList();
             LinkedList<DroolsPdp> droolsPdpsReturnList = new LinkedList<>();
             for (Object o : droolsPdpsList) {
-                if (o instanceof DroolsPdp) {
-                    //Make sure it is not a cached version
-                    em.refresh((DroolsPdpEntity)o);
-                    droolsPdpsReturnList.add((DroolsPdp)o);
-                    if (logger.isDebugEnabled()) {
-                        DroolsPdp droolsPdp = (DroolsPdp)o;
-                        logger.debug("getDroolsPdps: PDP= {}"
-                                + ", isDesignated= {}"
-                                + ", updatedDate= {}"
-                                + ", priority= {}", droolsPdp.getPdpId(), droolsPdp.isDesignated(),
-                                droolsPdp.getUpdatedDate(), droolsPdp.getPriority());
-                    }
+                if (!(o instanceof DroolsPdp)) {
+                    continue;
+                }
+                //Make sure it is not a cached version
+                DroolsPdp droolsPdp = (DroolsPdp)o;
+                em.refresh(droolsPdp);
+                droolsPdpsReturnList.add(droolsPdp);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("getDroolsPdps: PDP= {}"
+                            + ", isDesignated= {}"
+                            + ", updatedDate= {}"
+                            + ", priority= {}", droolsPdp.getPdpId(), droolsPdp.isDesignated(),
+                            droolsPdp.getUpdatedDate(), droolsPdp.getPriority());
                 }
             }
             try {
@@ -233,14 +234,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                         + " found, designated= {}"
                         + ", setting to {}", pdp.getPdpId(), droolsPdpEntity.isDesignated(),
                         designated);
-                droolsPdpEntity.setDesignated(designated);
-                if (designated) {
-                    em.refresh(droolsPdpEntity); //make sure we get the DB value
-                    if (!droolsPdpEntity.isDesignated()) {
-                        droolsPdpEntity.setDesignatedDate(new Date());
-                    }
-
-                }
+                setPdpDesignation(em, droolsPdpEntity, designated);
                 em.getTransaction().commit();
             } else {
                 logger.error("setDesignated: PDP={}"
@@ -254,6 +248,17 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
         logger.debug("setDesignated: Exiting");
 
+    }
+
+    private void setPdpDesignation(EntityManager em, DroolsPdpEntity droolsPdpEntity, boolean designated) {
+        droolsPdpEntity.setDesignated(designated);
+        if (designated) {
+            em.refresh(droolsPdpEntity); //make sure we get the DB value
+            if (!droolsPdpEntity.isDesignated()) {
+                droolsPdpEntity.setDesignatedDate(new Date());
+            }
+
+        }
     }
 
 
