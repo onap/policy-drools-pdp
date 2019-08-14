@@ -18,37 +18,39 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.controller.test;
+package org.onap.policy.drools.activestandby;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
-import java.util.function.Supplier;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.im.IntegrityMonitor;
+import org.onap.policy.common.im.IntegrityMonitorException;
+import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.common.im.StateManagement;
-import org.onap.policy.drools.activestandby.ActiveStandbyFeatureApi;
-import org.onap.policy.drools.activestandby.ActiveStandbyFeatureApiConstants;
-import org.onap.policy.drools.activestandby.ActiveStandbyProperties;
-import org.onap.policy.drools.activestandby.DroolsPdpEntity;
-import org.onap.policy.drools.activestandby.DroolsPdpImpl;
-import org.onap.policy.drools.activestandby.DroolsPdpsConnector;
-import org.onap.policy.drools.activestandby.DroolsPdpsElectionHandler;
-import org.onap.policy.drools.activestandby.JpaDroolsPdpsConnector;
+import org.onap.policy.common.utils.time.CurrentTime;
+import org.onap.policy.common.utils.time.PseudoTimer;
+import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApiConstants;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +61,10 @@ import org.slf4j.LoggerFactory;
 
 public class AllSeemsWellTest {
     private static final Logger  logger = LoggerFactory.getLogger(AllSeemsWellTest.class);
+
+    private static final String MONITOR_FIELD_NAME = "instance";
+    private static final String HANDLER_INSTANCE_FIELD = "electionHandler";
+
     /*
      * Currently, the DroolsPdpsElectionHandler.DesignationWaiter is invoked every 1 seconds, starting
      * at the start of the next multiple of pdpUpdateInterval, but with a minimum of 5 sec cushion
@@ -66,7 +72,7 @@ public class AllSeemsWellTest {
      * checking the results. Add a few seconds for safety
      */
 
-    private static int SLEEP_TIME_SEC = 10;
+    private static final int SLEEP_TIME_SEC = 10;
 
     /*
      * DroolsPdpsElectionHandler runs every 1 seconds, so it takes 10 seconds for the
@@ -74,7 +80,7 @@ public class AllSeemsWellTest {
      * the forward progress counter to go stale which should add an additional 5 sec.
      */
 
-    private static int STALLED_ELECTION_HANDLER_SLEEP_TIME_SEC = 15;
+    private static final int STALLED_ELECTION_HANDLER_SLEEP_TIME_SEC = 15;
 
     /*
      * As soon as the election hander successfully runs, it will resume the forward progress.
@@ -82,7 +88,7 @@ public class AllSeemsWellTest {
      * then fpc is written every 1 sec and then the fpc is checked every 2 sec, that could
      * take a total of 5 sec to recognize the resumption of progress.  So, add 1 for safety.
      */
-    private static int RESUMED_ELECTION_HANDLER_SLEEP_TIME_SEC = 6;
+    private static final int RESUMED_ELECTION_HANDLER_SLEEP_TIME_SEC = 6;
 
     private static EntityManagerFactory emfx;
     private static EntityManagerFactory emfd;
@@ -90,7 +96,12 @@ public class AllSeemsWellTest {
     private static EntityManager emd;
     private static EntityTransaction et;
 
-    private final String configDir = "src/test/resources/asw";
+    private static final String CONFIG_DIR = "src/test/resources/asw";
+
+    private static CurrentTime saveTime;
+    private static Factory saveFactory;
+
+    private TestTimeMulti testTime;
 
     /*
      * See the IntegrityMonitor.getJmxUrl() method for the rationale behind this jmx related processing.
@@ -108,10 +119,50 @@ public class AllSeemsWellTest {
         logger.debug("setUpClass: userDir={}", userDir);
         System.setProperty("com.sun.management.jmxremote.port", "9980");
         System.setProperty("com.sun.management.jmxremote.authenticate","false");
+
+        DroolsPdpsElectionHandler.setIsUnitTesting(true);
+
+        saveTime = Whitebox.getInternalState(MonitorTime.class, MONITOR_FIELD_NAME);
+        saveFactory = Factory.getInstance();
+
+        resetInstanceObjects();
+
+        //Create the data access for xacml db
+        Properties stateManagementProperties = loadStateManagementProperties();
+
+        emfx = Persistence.createEntityManagerFactory("junitXacmlPU", stateManagementProperties);
+
+        // Create an entity manager to use the DB
+        emx = emfx.createEntityManager();
+
+        //Create the data access for drools db
+        Properties activeStandbyProperties = loadActiveStandbyProperties();
+
+        emfd = Persistence.createEntityManagerFactory("junitDroolsPU", activeStandbyProperties);
+
+        // Create an entity manager to use the DB
+        emd = emfd.createEntityManager();
     }
 
+    /**
+     * Restores the system state.
+     *
+     * @throws IntegrityMonitorException if the integrity monitor cannot be shut down
+     */
     @AfterClass
-    public static void tearDownClass() throws Exception {
+    public static void tearDownClass() throws IntegrityMonitorException {
+        resetInstanceObjects();
+
+        Whitebox.setInternalState(MonitorTime.class, MONITOR_FIELD_NAME, saveTime);
+        Factory.setInstance(saveFactory);
+
+        DroolsPdpsElectionHandler.setIsUnitTesting(false);
+
+        emd.close();
+        emfd.close();
+
+        emx.close();
+        emfx.close();
     }
 
     /**
@@ -121,31 +172,23 @@ public class AllSeemsWellTest {
      */
     @Before
     public void setUp() throws Exception {
-        //Create teh data access for xaml db
-        Properties stateManagementProperties = new Properties();
-        stateManagementProperties.load(new FileInputStream(new File(
-                configDir + "/feature-state-management.properties")));
+        resetInstanceObjects();
 
-        emfx = Persistence.createEntityManagerFactory("junitXacmlPU", stateManagementProperties);
+        // set test time
+        testTime = new TestTimeMulti();
+        Whitebox.setInternalState(MonitorTime.class, MONITOR_FIELD_NAME, testTime);
 
-        // Create an entity manager to use the DB
-        emx = emfx.createEntityManager();
-
-        //Create the data access for drools db
-        Properties activeStandbyProperties = new Properties();
-        activeStandbyProperties.load(new FileInputStream(new File(
-                configDir + "/feature-active-standby-management.properties")));
-
-        emfd = Persistence.createEntityManagerFactory("junitDroolsPU", activeStandbyProperties);
-
-        // Create an entity manager to use the DB
-        emd = emfd.createEntityManager();
-
-        DroolsPdpsElectionHandler.setIsUnitTesting(true);
+        Factory factory = mock(Factory.class);
+        when(factory.makeTimer()).thenAnswer(ans -> new PseudoTimer(testTime));
+        Factory.setInstance(factory);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    private static void resetInstanceObjects() throws IntegrityMonitorException {
+        IntegrityMonitor.setUnitTesting(true);
+        IntegrityMonitor.deleteInstance();
+        IntegrityMonitor.setUnitTesting(false);
+
+        Whitebox.setInternalState(ActiveStandbyFeature.class, HANDLER_INSTANCE_FIELD, (Object) null);
 
     }
 
@@ -188,19 +231,13 @@ public class AllSeemsWellTest {
         cleanXacmlDb();
         cleanDroolsDb();
 
-        logger.debug("testAllSeemsWell: Reading stateManagementProperties");
-        Properties stateManagementProperties = new Properties();
-        stateManagementProperties.load(new FileInputStream(new File(
-                configDir + "/feature-state-management.properties")));
+        Properties stateManagementProperties = loadStateManagementProperties();
 
         logger.debug("testAllSeemsWell: Creating emfXacml");
         final EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
                 "junitXacmlPU", stateManagementProperties);
 
-        logger.debug("testAllSeemsWell: Reading activeStandbyProperties");
-        Properties activeStandbyProperties = new Properties();
-        activeStandbyProperties.load(new FileInputStream(new File(
-                configDir + "/feature-active-standby-management.properties")));
+        Properties activeStandbyProperties = loadActiveStandbyProperties();
         final String thisPdpId = activeStandbyProperties
                 .getProperty(ActiveStandbyProperties.NODE_NAME);
 
@@ -220,7 +257,7 @@ public class AllSeemsWellTest {
          */
 
         logger.debug("testAllSeemsWell: Inserting PDP={} as not designated", thisPdpId);
-        Date yesterday = DateUtils.addDays(new Date(), -1);
+        Date yesterday = DateUtils.addDays(testTime.getDate(), -1);
         DroolsPdpImpl pdp = new DroolsPdpImpl(thisPdpId, false, 4, yesterday);
         conn.insertPdp(pdp);
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(thisPdpId);
@@ -238,40 +275,27 @@ public class AllSeemsWellTest {
 
         StateManagementFeatureApi stateManagementFeatureApi = null;
         for (StateManagementFeatureApi feature : StateManagementFeatureApiConstants.getImpl().getList()) {
-            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, CONFIG_DIR);
             stateManagementFeatureApi = feature;
             logger.debug("testAllSeemsWell stateManagementFeature.getResourceName(): {}",
                 stateManagementFeatureApi.getResourceName());
             break;
         }
-        if (stateManagementFeatureApi == null) {
-            logger.error("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureApi "
-                    + "with resourceID: {}", thisPdpId);
-            logger.debug("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of StateManagementFeatureApi "
-                    + "with resourceID: {}", thisPdpId);
-        }
+        assertNotNull(stateManagementFeatureApi);
+
         final StateManagementFeatureApi smf = stateManagementFeatureApi;
 
         // Create an ActiveStandbyFeature and initialize it. It will discover the StateManagementFeature
         // that has been created.
         ActiveStandbyFeatureApi activeStandbyFeature = null;
         for (ActiveStandbyFeatureApi feature : ActiveStandbyFeatureApiConstants.getImpl().getList()) {
-            ((PolicySessionFeatureApi) feature).globalInit(null, configDir);
+            ((PolicySessionFeatureApi) feature).globalInit(null, CONFIG_DIR);
             activeStandbyFeature = feature;
             logger.debug("testAllSeemsWell activeStandbyFeature.getResourceName(): {}",
                     activeStandbyFeature.getResourceName());
             break;
         }
-        if (activeStandbyFeature == null) {
-            logger.error("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of ActiveStandbyFeatureAPI "
-                    + "with resourceID: {}", thisPdpId);
-            logger.debug("testAllSeemsWell failed to initialize.  "
-                    + "Unable to get instance of ActiveStandbyFeatureAPI "
-                    + "with resourceID: {}", thisPdpId);
-        }
+        assertNotNull(activeStandbyFeature);
 
 
         logger.debug("testAllSeemsWell: Demoting PDP={}", thisPdpId);
@@ -332,12 +356,24 @@ public class AllSeemsWellTest {
 
     }
 
-    private void waitForCondition(Supplier<Boolean> testCondition, int timeoutInSeconds) throws InterruptedException {
-        int maxIterations = timeoutInSeconds * 10;
-        int iterations = 0;
-        while (!testCondition.get() && iterations < maxIterations) {
-            iterations++;
-            Thread.sleep(100);
+    private static Properties loadStateManagementProperties() throws IOException {
+        try (FileInputStream input = new FileInputStream(CONFIG_DIR + "/feature-state-management.properties")) {
+            Properties props = new Properties();
+            props.load(input);
+            return props;
         }
+    }
+
+    private static Properties loadActiveStandbyProperties() throws IOException {
+        try (FileInputStream input =
+                        new FileInputStream(CONFIG_DIR + "/feature-active-standby-management.properties")) {
+            Properties props = new Properties();
+            props.load(input);
+            return props;
+        }
+    }
+
+    private void waitForCondition(Callable<Boolean> testCondition, int timeoutInSeconds) throws InterruptedException {
+        testTime.waitUntil(10 * SLEEP_TIME_SEC, TimeUnit.SECONDS, testCondition);
     }
 }

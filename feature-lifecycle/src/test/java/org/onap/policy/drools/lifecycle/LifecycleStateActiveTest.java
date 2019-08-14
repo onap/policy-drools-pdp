@@ -21,7 +21,6 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -59,7 +58,8 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
      */
     @Before
     public void startActive() throws CoderException {
-        fsm = new LifecycleFsm();
+        fsm = makeFsmWithPseudoTime();
+
         fsm.setStatusTimerSeconds(15);
         assertTrue(fsm.start());
 
@@ -99,7 +99,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals("A", fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
         assertTrue(fsm.isAlive());
-        await().atMost(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS).until(isStatus(PdpState.ACTIVE));
+        waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals(PdpState.TERMINATED, fsm.state());
         assertFalse(fsm.isAlive());
         assertFalse(fsm.state.isAlive());
-        await().atMost(1, TimeUnit.SECONDS).until(isStatus(PdpState.TERMINATED));
+        waitUntil(1, TimeUnit.SECONDS, isStatus(PdpState.TERMINATED));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
     @Test
     public void status() {
-        await().atMost(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS).until(isStatus(PdpState.ACTIVE));
+        waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
         int preCount = fsm.client.getSink().getRecentEvents().length;
 
         assertTrue(fsm.status());
@@ -184,7 +184,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setState(PdpState.PASSIVE);
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.PASSIVE, fsm.state());
-        await().atMost(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS).until(isStatus(PdpState.PASSIVE));
+        waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.PASSIVE));
 
         fsm.shutdown();
     }

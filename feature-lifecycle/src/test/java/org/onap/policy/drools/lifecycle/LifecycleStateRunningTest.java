@@ -23,8 +23,13 @@ package org.onap.policy.drools.lifecycle;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
+import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 
@@ -32,6 +37,7 @@ public abstract class LifecycleStateRunningTest {
 
     private static final String CONTROLLER_NAME = "lifecycle";
     protected static ControllerSupport controllerSupport = new ControllerSupport(CONTROLLER_NAME);
+    protected TestTimeMulti time;
     protected LifecycleFsm fsm;
 
     /**
@@ -58,5 +64,24 @@ public abstract class LifecycleStateRunningTest {
             ;
         }
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
+    }
+
+    /**
+     * Creates an FSM that uses pseudo time.
+     * @return a new FSM
+     */
+    public LifecycleFsm makeFsmWithPseudoTime() {
+        time = new TestTimeMulti();
+
+        return new LifecycleFsm() {
+            @Override
+            protected ScheduledExecutorService makeExecutor() {
+                return new PseudoScheduledExecutorService(time);
+            }
+        };
+    }
+
+    public void waitUntil(long twait, TimeUnit units, Callable<Boolean> condition) {
+        time.waitUntil(twait, units, condition);
     }
 }

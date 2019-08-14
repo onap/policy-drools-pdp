@@ -21,14 +21,12 @@
 package org.onap.policy.drools.activestandby;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
+import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.statemanagement.StateManagementFeatureApi;
@@ -163,7 +161,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
         synchronized (myPdpSync) {
             if (myPdp == null) {
 
-                myPdp = new DroolsPdpImpl(resourceName,false,4,new Date());
+                myPdp = new DroolsPdpImpl(resourceName,false,4,MonitorTime.getInstance().getDate());
             }
             String siteName = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
             if (siteName == null) {
