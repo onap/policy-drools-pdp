@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -85,7 +86,7 @@ public class LifecycleFsm implements Startable {
     protected volatile LifecycleState state = new LifecycleStateTerminated(this);
 
     @GsonJsonIgnore
-    protected ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
+    protected ScheduledExecutorService scheduler = makeExecutor();
 
     @GsonJsonIgnore
     protected ScheduledFuture<?> statusTask;
@@ -118,10 +119,6 @@ public class LifecycleFsm implements Startable {
      */
     public LifecycleFsm() {
         this.properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
-
-        scheduler.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-        scheduler.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-        scheduler.setRemoveOnCancelPolicy(true);
     }
 
     @Override
@@ -475,5 +472,16 @@ public class LifecycleFsm implements Startable {
 
             return fsm.isItMe(update.getName(), update.getPdpGroup(), update.getPdpSubgroup());
         }
+    }
+
+    // these may be overridden by junit tests
+
+    protected ScheduledExecutorService makeExecutor() {
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        exec.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+        exec.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+        exec.setRemoveOnCancelPolicy(true);
+
+        return exec;
     }
 }

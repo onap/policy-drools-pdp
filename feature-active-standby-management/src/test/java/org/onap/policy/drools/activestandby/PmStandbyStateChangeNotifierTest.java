@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,6 +47,11 @@ public class PmStandbyStateChangeNotifierTest {
     private static final String PDP_ID = "my-pdp";
     private static final long UPDATE_INTERVAL = 100;
     private static final long WAIT_INTERVAL = 2 * UPDATE_INTERVAL + 2000;
+
+    private static Factory saveFactory;
+
+    @Mock
+    private Factory factory;
 
     @Mock
     private PolicyEngine engmgr;
@@ -68,15 +74,24 @@ public class PmStandbyStateChangeNotifierTest {
         props.setProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL, String.valueOf(UPDATE_INTERVAL));
 
         ActiveStandbyProperties.initProperties(props);
+
+        saveFactory = Factory.getInstance();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        Factory.setInstance(saveFactory);
     }
 
     /**
      * Initializes objects, including the notifier.
      */
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        Factory.setInstance(factory);
+        when(factory.makeTimer()).thenReturn(timer);
 
         notifier = new MyNotifier();
     }
@@ -167,12 +182,7 @@ public class PmStandbyStateChangeNotifierTest {
 
     @Test
     public void testHandleStateChange_ProvidingService_Ex() {
-        notifier = new MyNotifier() {
-            @Override
-            protected Timer makeTimer() {
-                throw new MyException();
-            }
-        };
+        when(factory.makeTimer()).thenThrow(new MyException());
 
         when(mgmt.getStandbyStatus()).thenReturn(StateManagement.PROVIDING_SERVICE);
         notifier.update(mgmt, null);
@@ -256,21 +266,10 @@ public class PmStandbyStateChangeNotifierTest {
         new PmStandbyStateChangeNotifier().getPolicyEngineManager();
     }
 
-    @Test
-    public void testMakeTimer() {
-        // use real object with real method
-        new PmStandbyStateChangeNotifier().makeTimer().cancel();
-    }
-
     private class MyNotifier extends PmStandbyStateChangeNotifier {
         @Override
         protected PolicyEngine getPolicyEngineManager() {
             return engmgr;
-        }
-
-        @Override
-        protected Timer makeTimer() {
-            return timer;
         }
     }
 

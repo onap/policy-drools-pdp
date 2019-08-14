@@ -32,6 +32,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
+import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.drools.activestandby.DroolsPdpObject;
 
 @Entity
@@ -72,7 +73,7 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
      * Constructor.
      */
     public DroolsPdpEntity() {
-        updatedDate = new Date();
+        updatedDate = MonitorTime.getInstance().getDate();
         //When this is translated to a TimeStamp in MySQL, it assumes the date is relative
         //to the local timezone.  So, a value of Date(0) is actually Dec 31 18:00:00 CST 1969
         //which is an invalid value for the MySql TimeStamp
