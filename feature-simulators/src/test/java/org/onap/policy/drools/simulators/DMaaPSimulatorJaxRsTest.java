@@ -21,6 +21,7 @@
 package org.onap.policy.drools.simulators;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -130,6 +132,16 @@ public class DMaaPSimulatorJaxRsTest {
 
     @Test
     public void testWaitForNextMessageFromQueue() throws InterruptedException {
+        CountDownLatch waitCalled = new CountDownLatch(1);
+
+        sim = new DMaaPSimulatorJaxRs() {
+            @Override
+            protected String waitForNextMessageFromQueue(int timeout, String topicName) {
+                waitCalled.countDown();
+                return super.waitForNextMessageFromQueue(timeout, topicName);
+            }
+        };
+
         BlockingQueue<String> queue = new LinkedBlockingQueue<>();
 
         CountDownLatch latch1 = backgroundSubscribe(queue);
@@ -143,7 +155,7 @@ public class DMaaPSimulatorJaxRsTest {
          * Must pause to prevent the topic from being created before subscribe() is
          * invoked.
          */
-        Thread.sleep(LONG_TIMEOUT_MS / 3);
+        assertTrue(waitCalled.await(1, TimeUnit.SECONDS));
 
         // only publish one message
         sim.publish(TOPIC, MESSAGE);

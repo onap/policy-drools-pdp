@@ -171,8 +171,6 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     protected List<TopicCoderFilterConfiguration> codersAndFilters(Properties properties,
             List<? extends Topic> topicEntities) {
 
-        String propertyTopicEntityPrefix;
-
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = new ArrayList<>();
 
         if (topicEntities == null || topicEntities.isEmpty()) {
@@ -181,80 +179,29 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
         for (Topic topic : topicEntities) {
 
-            /* source or sink ? ueb or dmaap? */
-            boolean isSource = topic instanceof TopicSource;
-            CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
-            if (commInfra == CommInfrastructure.UEB) {
-                if (isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
-                } else {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + ".";
-                }
-            } else if (commInfra == CommInfrastructure.DMAAP) {
-                if (isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
-                } else {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
-                }
-            } else if (commInfra == CommInfrastructure.NOOP) {
-                if (isSource) {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS + ".";
-                } else {
-                    propertyTopicEntityPrefix = PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
-                }
-            } else {
-                throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
-            }
-
             // 1. first the topic
 
             String firstTopic = topic.getTopic();
 
+            String propertyTopicEntityPrefix = getPropertyTopicPrefix(topic) + firstTopic;
+
             // 2. check if there is a custom decoder for this topic that the user prefers to use
             // instead of the ones provided in the platform
 
-            String customGson = properties.getProperty(propertyTopicEntityPrefix + firstTopic
-                    + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
-
-            CustomGsonCoder customGsonCoder = null;
-            if (customGson != null && !customGson.isEmpty()) {
-                try {
-                    customGsonCoder = new CustomGsonCoder(customGson);
-                } catch (IllegalArgumentException e) {
-                    logger.warn("{}: cannot create custom-gson-coder {} because of {}", this, customGson,
-                            e.getMessage(), e);
-                }
-            }
+            CustomGsonCoder customGsonCoder = getCustomCoder(properties, propertyTopicEntityPrefix);
 
             // 3. second the list of classes associated with each topic
 
             String eventClasses = properties
-                    .getProperty(propertyTopicEntityPrefix + firstTopic
-                            + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
+                    .getProperty(propertyTopicEntityPrefix + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
 
             if (eventClasses == null || eventClasses.isEmpty()) {
                 logger.warn("There are no event classes for topic {}", firstTopic);
                 continue;
             }
 
-            List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
-
-            List<String> topicClasses = new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
-
-            for (String theClass : topicClasses) {
-
-
-                // 4. third, for each coder class, get the filter expression
-
-                String filter = properties
-                        .getProperty(propertyTopicEntityPrefix + firstTopic
-                                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
-                                + "." + theClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
-
-                JsonProtocolFilter protocolFilter = new JsonProtocolFilter(filter);
-                PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
-                classes2Filters.add(class2Filters);
-            }
+            List<PotentialCoderFilter> classes2Filters =
+                            getFilterExpressions(properties, propertyTopicEntityPrefix, eventClasses);
 
             TopicCoderFilterConfiguration topic2Classes2Filters =
                     new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder);
@@ -262,6 +209,72 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         }
 
         return topics2DecodedClasses2Filters;
+    }
+
+    private String getPropertyTopicPrefix(Topic topic) {
+        boolean isSource = topic instanceof TopicSource;
+        CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
+        if (commInfra == CommInfrastructure.UEB) {
+            if (isSource) {
+                return PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
+            } else {
+                return PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + ".";
+            }
+        } else if (commInfra == CommInfrastructure.DMAAP) {
+            if (isSource) {
+                return PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
+            } else {
+                return PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
+            }
+        } else if (commInfra == CommInfrastructure.NOOP) {
+            if (isSource) {
+                return PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS + ".";
+            } else {
+                return PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
+        }
+    }
+
+    private CustomGsonCoder getCustomCoder(Properties properties, String propertyPrefix) {
+        String customGson = properties.getProperty(propertyPrefix
+                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
+
+        CustomGsonCoder customGsonCoder = null;
+        if (customGson != null && !customGson.isEmpty()) {
+            try {
+                customGsonCoder = new CustomGsonCoder(customGson);
+            } catch (IllegalArgumentException e) {
+                logger.warn("{}: cannot create custom-gson-coder {} because of {}", this, customGson,
+                        e.getMessage(), e);
+            }
+        }
+        return customGsonCoder;
+    }
+
+    private List<PotentialCoderFilter> getFilterExpressions(Properties properties, String propertyPrefix,
+                    String eventClasses) {
+
+        List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
+
+        List<String> topicClasses = new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
+
+        for (String theClass : topicClasses) {
+
+            // 4. for each coder class, get the filter expression
+
+            String filter = properties
+                    .getProperty(propertyPrefix
+                            + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
+                            + "." + theClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
+
+            JsonProtocolFilter protocolFilter = new JsonProtocolFilter(filter);
+            PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
+            classes2Filters.add(class2Filters);
+        }
+
+        return classes2Filters;
     }
 
     @Override

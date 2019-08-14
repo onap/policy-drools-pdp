@@ -41,6 +41,7 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
+import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
@@ -186,25 +187,11 @@ public class MavenDroolsController implements DroolsController {
 
         logger.info("updating version -> [{}:{}:{}]", newGroupId, newArtifactId, newVersion);
 
-        if (newGroupId == null || newGroupId.isEmpty()) {
-            throw new IllegalArgumentException("Missing maven group-id coordinate");
-        }
+        validateText(newGroupId, "Missing maven group-id coordinate");
+        validateText(newArtifactId, "Missing maven artifact-id coordinate");
+        validateText(newVersion, "Missing maven version coordinate");
 
-        if (newArtifactId == null || newArtifactId.isEmpty()) {
-            throw new IllegalArgumentException("Missing maven artifact-id coordinate");
-        }
-
-        if (newVersion == null || newVersion.isEmpty()) {
-            throw new IllegalArgumentException("Missing maven version coordinate");
-        }
-
-        if (newGroupId.equalsIgnoreCase(DroolsControllerConstants.NO_GROUP_ID)
-                || newArtifactId.equalsIgnoreCase(DroolsControllerConstants.NO_ARTIFACT_ID)
-                || newVersion.equalsIgnoreCase(DroolsControllerConstants.NO_VERSION)) {
-            throw new IllegalArgumentException("BRAINLESS maven coordinates provided: "
-                    + newGroupId + ":" + newArtifactId + ":"
-                    + newVersion);
-        }
+        validateHasBrain(newGroupId, newArtifactId, newVersion);
 
         if (newGroupId.equalsIgnoreCase(this.getGroupId())
                 && newArtifactId.equalsIgnoreCase(this.getArtifactId())
@@ -214,13 +201,7 @@ public class MavenDroolsController implements DroolsController {
             return;
         }
 
-        if (!newGroupId.equalsIgnoreCase(this.getGroupId())
-                || !newArtifactId.equalsIgnoreCase(this.getArtifactId())) {
-            throw new IllegalArgumentException(
-                    "Group ID and Artifact ID maven coordinates must be identical for the upgrade: "
-                    + newGroupId + ":" + newArtifactId + ":"
-                    + newVersion + " vs. " + this);
-        }
+        validateNewVersion(newGroupId, newArtifactId, newVersion);
 
         /* upgrade */
         String messages = this.policyContainer.updateToVersion(newVersion);
@@ -237,6 +218,32 @@ public class MavenDroolsController implements DroolsController {
         this.init(decoderConfigurations, encoderConfigurations);
 
         logger.info("UPDATE-TO-VERSION: completed {}", this);
+    }
+
+    private void validateText(String text, String errorMessage) {
+        if (text == null || text.isEmpty()) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+
+    private void validateHasBrain(String newGroupId, String newArtifactId, String newVersion) {
+        if (newGroupId.equalsIgnoreCase(DroolsControllerConstants.NO_GROUP_ID)
+                || newArtifactId.equalsIgnoreCase(DroolsControllerConstants.NO_ARTIFACT_ID)
+                || newVersion.equalsIgnoreCase(DroolsControllerConstants.NO_VERSION)) {
+            throw new IllegalArgumentException("BRAINLESS maven coordinates provided: "
+                    + newGroupId + ":" + newArtifactId + ":"
+                    + newVersion);
+        }
+    }
+
+    private void validateNewVersion(String newGroupId, String newArtifactId, String newVersion) {
+        if (!newGroupId.equalsIgnoreCase(this.getGroupId())
+                || !newArtifactId.equalsIgnoreCase(this.getArtifactId())) {
+            throw new IllegalArgumentException(
+                    "Group ID and Artifact ID maven coordinates must be identical for the upgrade: "
+                    + newGroupId + ":" + newArtifactId + ":"
+                    + newVersion + " vs. " + this);
+        }
     }
 
     /**
@@ -259,18 +266,7 @@ public class MavenDroolsController implements DroolsController {
         for (TopicCoderFilterConfiguration coderConfig: coderConfigurations) {
             String topic = coderConfig.getTopic();
 
-            CustomGsonCoder customGsonCoder = coderConfig.getCustomGsonCoder();
-            if (customGsonCoder != null
-                    && customGsonCoder.getClassContainer() != null
-                    && !customGsonCoder.getClassContainer().isEmpty()) {
-
-                String customGsonCoderClass = customGsonCoder.getClassContainer();
-                if (!isClass(customGsonCoderClass)) {
-                    throw makeRetrieveEx(customGsonCoderClass);
-                } else {
-                    logClassFetched(customGsonCoderClass);
-                }
-            }
+            CustomGsonCoder customGsonCoder = getCustomCoder(coderConfig);
 
             List<PotentialCoderFilter> coderFilters = coderConfig.getCoderFilters();
             if (coderFilters == null || coderFilters.isEmpty()) {
@@ -306,6 +302,22 @@ public class MavenDroolsController implements DroolsController {
                 }
             }
         }
+    }
+
+    private CustomGsonCoder getCustomCoder(TopicCoderFilterConfiguration coderConfig) {
+        CustomGsonCoder customGsonCoder = coderConfig.getCustomGsonCoder();
+        if (customGsonCoder != null
+                && customGsonCoder.getClassContainer() != null
+                && !customGsonCoder.getClassContainer().isEmpty()) {
+
+            String customGsonCoderClass = customGsonCoder.getClassContainer();
+            if (!isClass(customGsonCoderClass)) {
+                throw makeRetrieveEx(customGsonCoderClass);
+            } else {
+                logClassFetched(customGsonCoderClass);
+            }
+        }
+        return customGsonCoder;
     }
 
     /**
@@ -520,15 +532,11 @@ public class MavenDroolsController implements DroolsController {
 
         // Broadcast
 
-        for (DroolsControllerFeatureApi feature : getDroolsProviders().getList()) {
-            try {
-                if (feature.beforeInsert(this, event)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-insert failure because of {}",
-                    this, feature.getClass().getName(), e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getDroolsProviders().getList(),
+            feature -> feature.beforeInsert(this, event),
+            (feature, ex) -> logger.error("{}: feature {} before-insert failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         boolean successInject = this.policyContainer.insertAll(event);
@@ -536,16 +544,10 @@ public class MavenDroolsController implements DroolsController {
             logger.warn(this + "Failed to inject into PolicyContainer {}", this.getSessionNames());
         }
 
-        for (DroolsControllerFeatureApi feature : getDroolsProviders().getList()) {
-            try {
-                if (feature.afterInsert(this, event, successInject)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-insert failure because of {}",
-                    this, feature.getClass().getName(), e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getDroolsProviders().getList(),
+            feature -> feature.afterInsert(this, event, successInject),
+            (feature, ex) -> logger.error("{}: feature {} after-insert failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return true;
 
@@ -840,18 +842,7 @@ public class MavenDroolsController implements DroolsController {
         PolicySession session = getSession(sessionName);
         KieSession kieSession = session.getKieSession();
 
-        boolean found = false;
-        for (KiePackage kiePackage : kieSession.getKieBase().getKiePackages()) {
-            for (Query q : kiePackage.getQueries()) {
-                if (q.getName() != null && q.getName().equals(queryName)) {
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (!found) {
-            throw new IllegalArgumentException("Invalid Query Name: " + queryName);
-        }
+        validateQueryName(kieSession, queryName);
 
         List<Object> factObjects = new ArrayList<>();
 
@@ -868,6 +859,18 @@ public class MavenDroolsController implements DroolsController {
         }
 
         return factObjects;
+    }
+
+    private void validateQueryName(KieSession kieSession, String queryName) {
+        for (KiePackage kiePackage : kieSession.getKieBase().getKiePackages()) {
+            for (Query q : kiePackage.getQueries()) {
+                if (q.getName() != null && q.getName().equals(queryName)) {
+                    return;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid Query Name: " + queryName);
     }
 
     @Override

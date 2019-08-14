@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.system;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -302,7 +304,6 @@ public class PolicyEngineTest {
         TopicEndpointManager.getManager().shutdown();
         PolicyEngineConstants.getManager().stop();
 
-        Thread.sleep(10000L);
-        assertFalse(PolicyEngineConstants.getManager().isAlive());
+        await().atMost(10, TimeUnit.SECONDS).until(() -> !PolicyEngineConstants.getManager().isAlive());
     }
 }

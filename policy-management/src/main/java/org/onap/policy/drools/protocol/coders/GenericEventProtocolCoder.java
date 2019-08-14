@@ -124,40 +124,44 @@ abstract class GenericEventProtocolCoder {
 
             coders.put(key, coderTools);
 
-            if (reverseCoders.containsKey(reverseKey)) {
-                // There is another controller (different group id/artifact id/topic)
-                // that shares the class and the topic.
+            addReverseCoder(coderTools, key, reverseKey);
+        }
+    }
 
-                List<ProtocolCoderToolset> toolsets =
-                        reverseCoders.get(reverseKey);
-                boolean present = false;
-                for (ProtocolCoderToolset parserSet : toolsets) {
-                    // just doublecheck
-                    present = parserSet.getControllerId().equals(key);
-                    if (present) {
-                        /* anomaly */
-                        logger.error(
-                                "{}: unexpected toolset reverse mapping found for {}:{}: {}",
-                                this,
-                                reverseKey,
-                                key,
-                                parserSet);
-                    }
-                }
+    private void addReverseCoder(GsonProtocolCoderToolset coderTools, String key, String reverseKey) {
+        if (reverseCoders.containsKey(reverseKey)) {
+            // There is another controller (different group id/artifact id/topic)
+            // that shares the class and the topic.
 
+            List<ProtocolCoderToolset> toolsets =
+                    reverseCoders.get(reverseKey);
+            boolean present = false;
+            for (ProtocolCoderToolset parserSet : toolsets) {
+                // just doublecheck
+                present = parserSet.getControllerId().equals(key);
                 if (present) {
-                    return;
-                } else {
-                    logger.info("{}: adding coder set for {}: {} ", this, reverseKey, coderTools);
-                    toolsets.add(coderTools);
+                    /* anomaly */
+                    logger.error(
+                            "{}: unexpected toolset reverse mapping found for {}:{}: {}",
+                            this,
+                            reverseKey,
+                            key,
+                            parserSet);
                 }
-            } else {
-                List<ProtocolCoderToolset> toolsets = new ArrayList<>();
-                toolsets.add(coderTools);
-
-                logger.info("{}: adding toolset for reverse key {}: {}", this, reverseKey, toolsets);
-                reverseCoders.put(reverseKey, toolsets);
             }
+
+            if (present) {
+                return;
+            } else {
+                logger.info("{}: adding coder set for {}: {} ", this, reverseKey, coderTools);
+                toolsets.add(coderTools);
+            }
+        } else {
+            List<ProtocolCoderToolset> toolsets = new ArrayList<>();
+            toolsets.add(coderTools);
+
+            logger.info("{}: adding toolset for reverse key {}: {}", this, reverseKey, toolsets);
+            reverseCoders.put(reverseKey, toolsets);
         }
     }
 
@@ -217,27 +221,33 @@ abstract class GenericEventProtocolCoder {
                 for (CoderFilters codeFilter : coderToolset.getCoders()) {
                     String className = codeFilter.getCodedClass();
                     String reverseKey = this.reverseCodersKey(topic, className);
-                    if (this.reverseCoders.containsKey(reverseKey)) {
-                        List<ProtocolCoderToolset> toolsets =
-                                this.reverseCoders.get(reverseKey);
-                        Iterator<ProtocolCoderToolset> toolsetsIter =
-                                toolsets.iterator();
-                        while (toolsetsIter.hasNext()) {
-                            ProtocolCoderToolset toolset = toolsetsIter.next();
-                            if (toolset.getControllerId().equals(key)) {
-                                logger.info(
-                                        "{}: removed coder from toolset for {} from reverse mapping", this, reverseKey);
-                                toolsetsIter.remove();
-                            }
-                        }
-
-                        if (this.reverseCoders.get(reverseKey).isEmpty()) {
-                            logger.info("{}: removing reverse mapping for {}: ", this, reverseKey);
-                            this.reverseCoders.remove(reverseKey);
-                        }
-                    }
+                    removeReverseCoder(key, reverseKey);
                 }
             }
+        }
+    }
+
+    private void removeReverseCoder(String key, String reverseKey) {
+        if (!this.reverseCoders.containsKey(reverseKey)) {
+            return;
+        }
+
+        List<ProtocolCoderToolset> toolsets =
+                this.reverseCoders.get(reverseKey);
+        Iterator<ProtocolCoderToolset> toolsetsIter =
+                toolsets.iterator();
+        while (toolsetsIter.hasNext()) {
+            ProtocolCoderToolset toolset = toolsetsIter.next();
+            if (toolset.getControllerId().equals(key)) {
+                logger.info(
+                        "{}: removed coder from toolset for {} from reverse mapping", this, reverseKey);
+                toolsetsIter.remove();
+            }
+        }
+
+        if (this.reverseCoders.get(reverseKey).isEmpty()) {
+            logger.info("{}: removing reverse mapping for {}: ", this, reverseKey);
+            this.reverseCoders.remove(reverseKey);
         }
     }
 
@@ -446,20 +456,7 @@ abstract class GenericEventProtocolCoder {
         }
 
         for (ProtocolCoderToolset encoderSet : toolsets) {
-            // figure out the right toolset
-            String groupId = encoderSet.getGroupId();
-            String artifactId = encoderSet.getArtifactId();
-            List<CoderFilters> coderFilters = encoderSet.getCoders();
-            for (CoderFilters coder : coderFilters) {
-                if (coder.getCodedClass().equals(encodedClass.getClass().getName())) {
-                    DroolsController droolsController =
-                                    DroolsControllerConstants.getFactory().get(groupId, artifactId, "");
-                    if (droolsController.ownsCoder(
-                            encodedClass.getClass(), coder.getModelClassLoaderHash())) {
-                        droolsControllers.add(droolsController);
-                    }
-                }
-            }
+            addToolsetControllers(droolsControllers, encodedClass, encoderSet);
         }
 
         if (droolsControllers.isEmpty()) {
@@ -471,6 +468,24 @@ abstract class GenericEventProtocolCoder {
         }
 
         return droolsControllers;
+    }
+
+    private void addToolsetControllers(List<DroolsController> droolsControllers, Object encodedClass,
+                    ProtocolCoderToolset encoderSet) {
+        // figure out the right toolset
+        String groupId = encoderSet.getGroupId();
+        String artifactId = encoderSet.getArtifactId();
+        List<CoderFilters> coderFilters = encoderSet.getCoders();
+        for (CoderFilters coder : coderFilters) {
+            if (coder.getCodedClass().equals(encodedClass.getClass().getName())) {
+                DroolsController droolsController =
+                                DroolsControllerConstants.getFactory().get(groupId, artifactId, "");
+                if (droolsController.ownsCoder(
+                        encodedClass.getClass(), coder.getModelClassLoaderHash())) {
+                    droolsControllers.add(droolsController);
+                }
+            }
+        }
     }
 
     /**

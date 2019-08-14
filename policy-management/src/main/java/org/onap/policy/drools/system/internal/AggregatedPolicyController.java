@@ -34,6 +34,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
+import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
@@ -54,6 +55,9 @@ import org.slf4j.LoggerFactory;
  */
 public class AggregatedPolicyController implements PolicyController, TopicListener {
 
+    private static final String BEFORE_OFFER_FAILURE = "{}: feature {} before-offer failure because of {}";
+    private static final String AFTER_OFFER_FAILURE = "{}: feature {} after-offer failure because of {}";
+
     /**
      * Logger.
      */
@@ -67,12 +71,12 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Abstracted Event Sources List regardless communication technology.
      */
-    private final List<? extends TopicSource> sources;
+    private final List<TopicSource> sources;
 
     /**
      * Abstracted Event Sinks List regardless communication technology.
      */
-    private final List<? extends TopicSink> sinks;
+    private final List<TopicSink> sinks;
 
     /**
      * Mapping topics to sinks.
@@ -273,15 +277,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean start() {
         logger.info("{}: start", this);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeStart(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-start failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeStart(this),
+            (feature, ex) -> logger.error("{}: feature {} before-start failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         if (this.isLocked()) {
@@ -312,16 +312,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             }
         }
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterStart(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-start failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterStart(this),
+            (feature, ex) -> logger.error("{}: feature {} after-start failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return success;
     }
@@ -333,15 +327,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean stop() {
         logger.info("{}: stop", this);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeStop(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-stop failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeStop(this),
+            (feature, ex) -> logger.error("{}: feature {} before-stop failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         /* stop regardless locked state */
@@ -362,16 +352,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.stop();
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterStop(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-stop failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterStop(this),
+            (feature, ex) -> logger.error("{}: feature {} after-stop failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return success;
     }
@@ -383,31 +367,21 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public void shutdown() {
         logger.info("{}: shutdown", this);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeShutdown(this)) {
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-shutdown failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeShutdown(this),
+            (feature, ex) -> logger.error("{}: feature {} before-shutdown failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return;
         }
 
         this.stop();
 
         getDroolsFactory().shutdown(this.droolsController);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterShutdown(this)) {
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-shutdown failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterShutdown(this),
+            (feature, ex) -> logger.error("{}: feature {} after-shutdown failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
     }
 
     /**
@@ -417,31 +391,21 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public void halt() {
         logger.info("{}: halt", this);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeHalt(this)) {
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-halt failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeHalt(this),
+            (feature, ex) -> logger.error("{}: feature {} before-halt failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return;
         }
 
         this.stop();
         getDroolsFactory().destroy(this.droolsController);
         getPersistenceManager().deleteController(this.name);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterHalt(this)) {
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-halt failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterHalt(this),
+            (feature, ex) -> logger.error("{}: feature {} after-halt failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
     }
 
     /**
@@ -455,29 +419,19 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return;
         }
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeOffer(this, commType, topic, event)) {
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-offer failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeOffer(this, commType, topic, event),
+            (feature, ex) -> logger.error(BEFORE_OFFER_FAILURE, this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return;
         }
 
         boolean success = this.droolsController.offer(topic, event);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterOffer(this, commType, topic, event, success)) {
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-offer failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterOffer(this, commType, topic, event, success),
+            (feature, ex) -> logger.error(AFTER_OFFER_FAILURE, this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
     }
 
     @Override
@@ -488,29 +442,19 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return true;
         }
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeOffer(this, event)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-offer failure because of {}", this, feature.getClass().getName(),
-                    e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeOffer(this, event),
+            (feature, ex) -> logger.error(BEFORE_OFFER_FAILURE, this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         boolean success = this.droolsController.offer(event);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterOffer(this, event, success)) {
-                    return success;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-offer failure because of {}", this, feature.getClass().getName(),
-                    e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterOffer(this, event, success),
+            (feature, ex) -> logger.error(AFTER_OFFER_FAILURE, this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return success;
     }
@@ -527,15 +471,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.debug("{}: deliver event to {}:{}: {}", this, commType, topic, event);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeDeliver(this, commType, topic, event)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-deliver failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeDeliver(this, commType, topic, event),
+            (feature, ex) -> logger.error("{}: feature {} before-deliver failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         if (topic == null || topic.isEmpty()) {
@@ -562,16 +502,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.deliver(this.topic2Sinks.get(topic), event);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterDeliver(this, commType, topic, event, success)) {
-                    return success;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-deliver failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterDeliver(this, commType, topic, event, success),
+            (feature, ex) -> logger.error("{}: feature {} after-deliver failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return success;
     }
@@ -591,15 +525,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     public boolean lock() {
         logger.info("{}: lock", this);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeLock(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-lock failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeLock(this),
+            (feature, ex) -> logger.error("{}: feature {} before-lock failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         synchronized (this) {
@@ -615,16 +545,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.lock();
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterLock(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-lock failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterLock(this),
+            (feature, ex) -> logger.error("{}: feature {} after-lock failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return success;
     }
@@ -637,15 +561,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         logger.info("{}: unlock", this);
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.beforeUnlock(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} before-unlock failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforeUnlock(this),
+            (feature, ex) -> logger.error("{}: feature {} before-unlock failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
         }
 
         synchronized (this) {
@@ -658,16 +578,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean success = this.droolsController.unlock();
 
-        for (PolicyControllerFeatureApi feature : getProviders()) {
-            try {
-                if (feature.afterUnlock(this)) {
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.error("{}: feature {} after-unlock failure because of {}", this, feature.getClass().getName(),
-                        e.getMessage(), e);
-            }
-        }
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterUnlock(this),
+            (feature, ex) -> logger.error("{}: feature {} after-unlock failure because of {}", this,
+                            feature.getClass().getName(), ex.getMessage(), ex));
 
         return success;
     }
@@ -684,7 +598,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * {@inheritDoc}.
      */
     @Override
-    public List<? extends TopicSource> getTopicSources() {
+    public List<TopicSource> getTopicSources() {
         return this.sources;
     }
 
@@ -692,7 +606,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * {@inheritDoc}.
      */
     @Override
-    public List<? extends TopicSink> getTopicSinks() {
+    public List<TopicSink> getTopicSinks() {
         return this.sinks;
     }
 

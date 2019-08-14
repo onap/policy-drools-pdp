@@ -231,7 +231,7 @@ public class ProtocolCoderToolsetTest {
 
         Properties sinkConfig = new Properties();
         sinkConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, JUNIT_PROTOCOL_CODER_TOPIC);
-        final List<? extends TopicSink> noopTopics = TopicEndpointManager.getManager().addTopicSinks(sinkConfig);
+        final List<TopicSink> noopTopics = TopicEndpointManager.getManager().addTopicSinks(sinkConfig);
 
         Properties droolsControllerConfig = new Properties();
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_GROUPID, releaseId.getGroupId());

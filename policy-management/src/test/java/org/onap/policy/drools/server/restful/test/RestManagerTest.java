@@ -171,13 +171,17 @@ public class RestManagerTest {
      * @throws InterruptedException Interrupted exception
      */
     @AfterClass
-    public static void tearDown() throws IOException, InterruptedException {
+    public static void tearDown() throws IOException {
+        try {
+            client.close();
+        } catch (IOException ex) {
+            logger.warn("cannot close HTTP client connection", ex);
+        }
+
         /* Shutdown managed resources */
         PolicyControllerConstants.getFactory().shutdown();
         TopicEndpointManager.getManager().shutdown();
         PolicyEngineConstants.getManager().stop();
-        Thread.sleep(10000L);
-        client.close();
         cleanUpWorkingDirs();
     }
 

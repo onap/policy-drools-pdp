@@ -30,9 +30,9 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,96 +73,172 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             throws IOException, InterruptedException {
         logger.debug("Running 'RepositoryAudit.invoke'");
 
-        boolean isActive = true;
-        // ignore errors by default
-        boolean ignoreErrors = true;
-        String repoAuditIsActive = StateManagementProperties.getProperty("repository.audit.is.active");
-        String repoAuditIgnoreErrors =
-                StateManagementProperties.getProperty("repository.audit.ignore.errors");
+        InvokeData data = new InvokeData();
+
         logger.debug("RepositoryAudit.invoke: repoAuditIsActive = {}"
-                + ", repoAuditIgnoreErrors = {}",repoAuditIsActive, repoAuditIgnoreErrors);
+                + ", repoAuditIgnoreErrors = {}",data.repoAuditIsActive, data.repoAuditIgnoreErrors);
 
-        if (repoAuditIsActive != null) {
-            try {
-                isActive = Boolean.parseBoolean(repoAuditIsActive.trim());
-            } catch (NumberFormatException e) {
-                logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.is.active = {}",
-                        repoAuditIsActive);
-            }
-        }
+        data.initIsActive();
 
-        if (!isActive) {
-            logger.info("RepositoryAudit.invoke: exiting because isActive = {}", isActive);
+        if (!data.isActive) {
+            logger.info("RepositoryAudit.invoke: exiting because isActive = {}", data.isActive);
             return;
         }
 
-        if (repoAuditIgnoreErrors != null) {
-            try {
-                ignoreErrors = Boolean.parseBoolean(repoAuditIgnoreErrors.trim());
-            } catch (NumberFormatException e) {
-                ignoreErrors = true;
-                logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.ignore.errors = {}",
-                        repoAuditIgnoreErrors);
-            }
-        } else {
-            ignoreErrors = true;
-        }
-
-        // Fetch repository information from 'IntegrityMonitorProperties'
-        String repositoryId =
-                StateManagementProperties.getProperty("repository.audit.id");
-        String repositoryUrl =
-                StateManagementProperties.getProperty("repository.audit.url");
-        String repositoryUsername =
-                StateManagementProperties.getProperty("repository.audit.username");
-        String repositoryPassword =
-                StateManagementProperties.getProperty("repository.audit.password");
-        boolean upload =
-                repositoryId != null && repositoryUrl != null
-                && repositoryUsername != null && repositoryPassword != null;
-
-        // used to incrementally construct response as problems occur
-        // (empty = no problems)
-        StringBuilder response = new StringBuilder();
-
-        long timeoutInSeconds = DEFAULT_TIMEOUT;
-        String timeoutString =
-                StateManagementProperties.getProperty("repository.audit.timeout");
-        if (timeoutString != null && !timeoutString.isEmpty()) {
-            try {
-                timeoutInSeconds = Long.valueOf(timeoutString);
-            } catch (NumberFormatException e) {
-                logger.error("RepositoryAudit: Invalid 'repository.audit.timeout' value: '{}'",
-                        timeoutString, e);
-                if (!ignoreErrors) {
-                    response.append("Invalid 'repository.audit.timeout' value: '")
-                    .append(timeoutString).append("'\n");
-                    setResponse(response.toString());
-                }
-            }
-        }
-
-        // artifacts to be downloaded
-        LinkedList<Artifact> artifacts = new LinkedList<>();
+        data.initIgnoreErrors();
+        data.initTimeout();
 
         /*
          * 1) create temporary directory
          */
-        Path dir = Files.createTempDirectory("auditRepo");
-        logger.info("RepositoryAudit: temporary directory = {}", dir);
+        data.dir = Files.createTempDirectory("auditRepo");
+        logger.info("RepositoryAudit: temporary directory = {}", data.dir);
 
         // nested 'pom.xml' file and 'repo' directory
-        final Path pom = dir.resolve("pom.xml");
-        final Path repo = dir.resolve("repo");
+        final Path pom = data.dir.resolve("pom.xml");
+        final Path repo = data.dir.resolve("repo");
 
         /*
          * 2) Create test file, and upload to repository
          *    (only if repository information is specified)
          */
-        String groupId = null;
-        String artifactId = null;
-        String version = null;
-        if (upload) {
+        if (data.upload) {
+            data.uploadTestFile();
+        }
+
+        /*
+         * 3) create 'pom.xml' file in temporary directory
+         */
+        data.createPomFile(repo, pom);
+
+        /*
+         * 4) Invoke external 'mvn' process to do the downloads
+         */
+
+        // output file = ${dir}/out (this supports step '4a')
+        File output = data.dir.resolve("out").toFile();
+
+        // invoke process, and wait for response
+        int rval = data.runMaven(output);
+
+        /*
+         * 4a) Check attempted and successful downloads from output file
+         *     Note: at present, this step just generates log messages,
+         *     but doesn't do any verification.
+         */
+        if (rval == 0 && output != null) {
+            generateDownloadLogs(output);
+        }
+
+        /*
+         * 5) Check the contents of the directory to make sure the downloads
+         *    were successful
+         */
+        data.verifyDownloads(repo);
+
+        /*
+         * 6) Use 'curl' to delete the uploaded test file
+         *    (only if repository information is specified)
+         */
+        if (data.upload) {
+            data.deleteUploadedTestFile();
+        }
+
+        /*
+         * 7) Remove the temporary directory
+         */
+        Files.walkFileTree(data.dir, new RecursivelyDeleteDirectory());
+    }
+
+    private class InvokeData {
+        private boolean isActive = true;
+
+        // ignore errors by default
+        private boolean ignoreErrors = true;
+
+        private final String repoAuditIsActive;
+        private final String repoAuditIgnoreErrors;
+
+        private final String repositoryId;
+        private final String repositoryUrl;
+        private final String repositoryUsername;
+        private final String repositoryPassword;
+        private final boolean upload;
+
+        // used to incrementally construct response as problems occur
+        // (empty = no problems)
+        private final StringBuilder response = new StringBuilder();
+
+        private long timeoutInSeconds = DEFAULT_TIMEOUT;
+
+        private Path dir;
+
+        private String groupId = null;
+        private String artifactId = null;
+        private String version = null;
+
+        // artifacts to be downloaded
+        private final List<Artifact> artifacts = new LinkedList<>();
+
+        public InvokeData() {
+            repoAuditIsActive = StateManagementProperties.getProperty("repository.audit.is.active");
+            repoAuditIgnoreErrors = StateManagementProperties.getProperty("repository.audit.ignore.errors");
+
+            // Fetch repository information from 'IntegrityMonitorProperties'
+            repositoryId = StateManagementProperties.getProperty("repository.audit.id");
+            repositoryUrl = StateManagementProperties.getProperty("repository.audit.url");
+            repositoryUsername = StateManagementProperties.getProperty("repository.audit.username");
+            repositoryPassword = StateManagementProperties.getProperty("repository.audit.password");
+
+            upload = repositoryId != null && repositoryUrl != null
+                    && repositoryUsername != null && repositoryPassword != null;
+        }
+
+        public void initIsActive() {
+            if (repoAuditIsActive != null) {
+                try {
+                    isActive = Boolean.parseBoolean(repoAuditIsActive.trim());
+                } catch (NumberFormatException e) {
+                    logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.is.active = {}",
+                            repoAuditIsActive);
+                }
+            }
+        }
+
+        public void initIgnoreErrors() {
+            if (repoAuditIgnoreErrors != null) {
+                try {
+                    ignoreErrors = Boolean.parseBoolean(repoAuditIgnoreErrors.trim());
+                } catch (NumberFormatException e) {
+                    ignoreErrors = true;
+                    logger.warn(
+                        "RepositoryAudit.invoke: Ignoring invalid property: repository.audit.ignore.errors = {}",
+                        repoAuditIgnoreErrors);
+                }
+            } else {
+                ignoreErrors = true;
+            }
+        }
+
+        public void initTimeout() {
+            String timeoutString =
+                            StateManagementProperties.getProperty("repository.audit.timeout");
+            if (timeoutString != null && !timeoutString.isEmpty()) {
+                try {
+                    timeoutInSeconds = Long.valueOf(timeoutString);
+                } catch (NumberFormatException e) {
+                    logger.error("RepositoryAudit: Invalid 'repository.audit.timeout' value: '{}'",
+                            timeoutString, e);
+                    if (!ignoreErrors) {
+                        response.append("Invalid 'repository.audit.timeout' value: '")
+                        .append(timeoutString).append("'\n");
+                        setResponse(response.toString());
+                    }
+                }
+            }
+        }
+
+        private void uploadTestFile() throws IOException, InterruptedException {
             groupId = "org.onap.policy.audit";
             artifactId = "repository-audit";
             version = "0." + System.currentTimeMillis();
@@ -204,155 +280,105 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             }
         }
 
-        /*
-         * 3) create 'pom.xml' file in temporary directory
-         */
-        artifacts.add(new Artifact("org.apache.maven/maven-embedder/3.2.2"));
+        private void createPomFile(final Path repo, final Path pom)
+                        throws IOException {
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n"
-                + "\n"
-                + "  <modelVersion>4.0.0</modelVersion>\n"
-                + "  <groupId>empty</groupId>\n"
-                + "  <artifactId>empty</artifactId>\n"
-                + "  <version>1.0-SNAPSHOT</version>\n"
-                + "  <packaging>pom</packaging>\n"
-                + "\n"
-                + "  <build>\n"
-                + "    <plugins>\n"
-                + "      <plugin>\n"
-                + "         <groupId>org.apache.maven.plugins</groupId>\n"
-                + "         <artifactId>maven-dependency-plugin</artifactId>\n"
-                + "         <version>2.10</version>\n"
-                + "         <executions>\n"
-                + "           <execution>\n"
-                + "             <id>copy</id>\n"
-                + "             <goals>\n"
-                + "               <goal>copy</goal>\n"
-                + "             </goals>\n"
-                + "             <configuration>\n"
-                + "               <localRepositoryDirectory>")
-            .append(repo)
-            .append("</localRepositoryDirectory>\n")
-            .append("               <artifactItems>\n");
+            artifacts.add(new Artifact("org.apache.maven/maven-embedder/3.2.2"));
 
-        for (Artifact artifact : artifacts) {
-            // each artifact results in an 'artifactItem' element
-            sb.append("                 <artifactItem>\n"
-                    + "                   <groupId>")
-                .append(artifact.groupId)
-                .append("</groupId>\n"
-                    + "                   <artifactId>")
-                .append(artifact.artifactId)
-                .append("</artifactId>\n"
-                    + "                   <version>")
-                .append(artifact.version)
-                .append("</version>\n"
-                    + "                   <type>")
-                .append(artifact.type)
-                .append("</type>\n"
-                    + "                 </artifactItem>\n");
-        }
-        sb.append("               </artifactItems>\n"
-                + "             </configuration>\n"
-                + "           </execution>\n"
-                + "         </executions>\n"
-                + "      </plugin>\n"
-                + "    </plugins>\n"
-                + "  </build>\n"
-                + "</project>\n");
+            StringBuilder sb = new StringBuilder();
+            sb.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                    + "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n"
+                    + "\n"
+                    + "  <modelVersion>4.0.0</modelVersion>\n"
+                    + "  <groupId>empty</groupId>\n"
+                    + "  <artifactId>empty</artifactId>\n"
+                    + "  <version>1.0-SNAPSHOT</version>\n"
+                    + "  <packaging>pom</packaging>\n"
+                    + "\n"
+                    + "  <build>\n"
+                    + "    <plugins>\n"
+                    + "      <plugin>\n"
+                    + "         <groupId>org.apache.maven.plugins</groupId>\n"
+                    + "         <artifactId>maven-dependency-plugin</artifactId>\n"
+                    + "         <version>2.10</version>\n"
+                    + "         <executions>\n"
+                    + "           <execution>\n"
+                    + "             <id>copy</id>\n"
+                    + "             <goals>\n"
+                    + "               <goal>copy</goal>\n"
+                    + "             </goals>\n"
+                    + "             <configuration>\n"
+                    + "               <localRepositoryDirectory>")
+                .append(repo)
+                .append("</localRepositoryDirectory>\n")
+                .append("               <artifactItems>\n");
 
-        try (FileOutputStream fos = new FileOutputStream(pom.toFile())) {
-            fos.write(sb.toString().getBytes());
-        }
+            for (Artifact artifact : artifacts) {
+                // each artifact results in an 'artifactItem' element
+                sb.append("                 <artifactItem>\n"
+                        + "                   <groupId>")
+                    .append(artifact.groupId)
+                    .append("</groupId>\n"
+                        + "                   <artifactId>")
+                    .append(artifact.artifactId)
+                    .append("</artifactId>\n"
+                        + "                   <version>")
+                    .append(artifact.version)
+                    .append("</version>\n"
+                        + "                   <type>")
+                    .append(artifact.type)
+                    .append("</type>\n"
+                        + "                 </artifactItem>\n");
+            }
+            sb.append("               </artifactItems>\n"
+                    + "             </configuration>\n"
+                    + "           </execution>\n"
+                    + "         </executions>\n"
+                    + "      </plugin>\n"
+                    + "    </plugins>\n"
+                    + "  </build>\n"
+                    + "</project>\n");
 
-        /*
-         * 4) Invoke external 'mvn' process to do the downloads
-         */
-
-        // output file = ${dir}/out (this supports step '4a')
-        File output = dir.resolve("out").toFile();
-
-        // invoke process, and wait for response
-        int rval = runProcess(timeoutInSeconds, dir.toFile(), output, "mvn", "compile");
-        logger.info("RepositoryAudit: 'mvn' return value = {}", rval);
-        if (rval != 0) {
-            logger.error("RepositoryAudit: 'mvn compile' invocation failed");
-            if (!ignoreErrors) {
-                response.append("'mvn compile' invocation failed\n");
-                setResponse(response.toString());
+            try (FileOutputStream fos = new FileOutputStream(pom.toFile())) {
+                fos.write(sb.toString().getBytes());
             }
         }
 
-        /*
-         * 4a) Check attempted and successful downloads from output file
-         *     Note: at present, this step just generates log messages,
-         *     but doesn't do any verification.
-         */
-        if (rval == 0 && output != null) {
-            // place output in 'fileContents' (replacing the Return characters
-            // with Newline)
-            byte[] outputData = new byte[(int)output.length()];
-            String fileContents;
-            try (FileInputStream fis = new FileInputStream(output)) {
-                //
-                // Ideally this should be in a loop or even better use
-                // Java 8 nio functionality.
-                //
-                int bytesRead = fis.read(outputData);
-                logger.info("fileContents read {} bytes", bytesRead);
-                fileContents = new String(outputData).replace('\r','\n');
-            }
-
-            // generate log messages from 'Downloading' and 'Downloaded'
-            // messages within the 'mvn' output
-            int index = 0;
-            while ((index = fileContents.indexOf("\nDown", index)) > 0) {
-                index += 5;
-                if (fileContents.regionMatches(index, "loading: ", 0, 9)) {
-                    index += 9;
-                    int endIndex = fileContents.indexOf('\n', index);
-                    logger.info("RepositoryAudit: Attempted download: '{}'",
-                            fileContents.substring(index, endIndex));
-                    index = endIndex;
-                } else if (fileContents.regionMatches(index, "loaded: ", 0, 8)) {
-                    index += 8;
-                    int endIndex = fileContents.indexOf(' ', index);
-                    logger.info("RepositoryAudit: Successful download: '{}'",fileContents.substring(index, endIndex));
-                    index = endIndex;
-                }
-            }
-        }
-
-        /*
-         * 5) Check the contents of the directory to make sure the downloads
-         *    were successful
-         */
-        for (Artifact artifact : artifacts) {
-            if (repo.resolve(artifact.groupId.replace('.','/'))
-                    .resolve(artifact.artifactId)
-                    .resolve(artifact.version)
-                    .resolve(artifact.artifactId + "-" + artifact.version + "."
-                            + artifact.type).toFile().exists()) {
-                // artifact exists, as expected
-                logger.info("RepositoryAudit: {} : exists", artifact.toString());
-            } else {
-                // Audit ERROR: artifact download failed for some reason
-                logger.error("RepositoryAudit: {}: does not exist", artifact.toString());
+        private int runMaven(File output) throws IOException, InterruptedException {
+            int rval = runProcess(timeoutInSeconds, dir.toFile(), output, "mvn", "compile");
+            logger.info("RepositoryAudit: 'mvn' return value = {}", rval);
+            if (rval != 0) {
+                logger.error("RepositoryAudit: 'mvn compile' invocation failed");
                 if (!ignoreErrors) {
-                    response.append("Failed to download artifact: ")
-                    .append(artifact).append('\n');
+                    response.append("'mvn compile' invocation failed\n");
                     setResponse(response.toString());
                 }
             }
+            return rval;
         }
 
-        /*
-         * 6) Use 'curl' to delete the uploaded test file
-         *    (only if repository information is specified)
-         */
-        if (upload) {
+        private void verifyDownloads(final Path repo) {
+            for (Artifact artifact : artifacts) {
+                if (repo.resolve(artifact.groupId.replace('.','/'))
+                        .resolve(artifact.artifactId)
+                        .resolve(artifact.version)
+                        .resolve(artifact.artifactId + "-" + artifact.version + "."
+                                + artifact.type).toFile().exists()) {
+                    // artifact exists, as expected
+                    logger.info("RepositoryAudit: {} : exists", artifact.toString());
+                } else {
+                    // Audit ERROR: artifact download failed for some reason
+                    logger.error("RepositoryAudit: {}: does not exist", artifact.toString());
+                    if (!ignoreErrors) {
+                        response.append("Failed to download artifact: ")
+                        .append(artifact).append('\n');
+                        setResponse(response.toString());
+                    }
+                }
+            }
+        }
+
+        private void deleteUploadedTestFile() throws IOException, InterruptedException {
             if (runProcess(timeoutInSeconds, dir.toFile(), null,
                             "curl",
                             "--request", "DELETE",
@@ -370,11 +396,41 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
                 artifacts.add(new Artifact(groupId, artifactId, version, "txt"));
             }
         }
+    }
 
-        /*
-         * 7) Remove the temporary directory
-         */
-        Files.walkFileTree(dir, new RecursivelyDeleteDirectory());
+    private void generateDownloadLogs(File output) throws IOException {
+        // place output in 'fileContents' (replacing the Return characters
+        // with Newline)
+        byte[] outputData = new byte[(int)output.length()];
+        String fileContents;
+        try (FileInputStream fis = new FileInputStream(output)) {
+            //
+            // Ideally this should be in a loop or even better use
+            // Java 8 nio functionality.
+            //
+            int bytesRead = fis.read(outputData);
+            logger.info("fileContents read {} bytes", bytesRead);
+            fileContents = new String(outputData).replace('\r','\n');
+        }
+
+        // generate log messages from 'Downloading' and 'Downloaded'
+        // messages within the 'mvn' output
+        int index = 0;
+        while ((index = fileContents.indexOf("\nDown", index)) > 0) {
+            index += 5;
+            if (fileContents.regionMatches(index, "loading: ", 0, 9)) {
+                index += 9;
+                int endIndex = fileContents.indexOf('\n', index);
+                logger.info("RepositoryAudit: Attempted download: '{}'",
+                        fileContents.substring(index, endIndex));
+                index = endIndex;
+            } else if (fileContents.regionMatches(index, "loaded: ", 0, 8)) {
+                index += 8;
+                int endIndex = fileContents.indexOf(' ', index);
+                logger.info("RepositoryAudit: Successful download: '{}'",fileContents.substring(index, endIndex));
+                index = endIndex;
+            }
+        }
     }
 
     /**

@@ -22,7 +22,10 @@ package org.onap.policy.drools.controller.internal;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
@@ -42,18 +45,29 @@ public class MavenDroolsControllerTest {
 
     private static volatile ReleaseId releaseId;
 
+    private static volatile CountDownLatch running;
+
     /**
      * Set up.
      *
      * @throws IOException throws an IO exception
      */
     @BeforeClass
-    public static void setUp() throws IOException {
+    public static void setUpBeforeClass() throws IOException {
         releaseId =
             KieUtils.installArtifact(Paths.get(JUNIT_ECHO_KMODULE_PATH).toFile(),
                 Paths.get(JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
                 JUNIT_ECHO_KJAR_DRL_PATH,
                 Paths.get(JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
+    }
+
+    @Before
+    public void setUp() {
+        running = new CountDownLatch(1);
+    }
+
+    public static void setRunning() {
+        running.countDown();
     }
 
     @Test
@@ -106,8 +120,8 @@ public class MavenDroolsControllerTest {
         Assert.assertEquals(releaseId.getArtifactId(), controller.getContainer().getArtifactId());
         Assert.assertEquals(releaseId.getVersion(), controller.getContainer().getVersion());
 
-        /* courtesy timer to allow full initialization from local maven repository */
-        Thread.sleep(courtesyStartTimeMs);
+        /* allow full initialization from local maven repository */
+        Assert.assertTrue(running.await(courtesyStartTimeMs, TimeUnit.MILLISECONDS));
 
         Assert.assertEquals(1, controller.getSessionNames().size());
         Assert.assertEquals(JUNIT_ECHO_KSESSION, controller.getSessionNames().get(0));
