@@ -16,6 +16,24 @@
       "revId": "59e9b9a8b56d563814ef21a23716959f772f9194",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e61e00a_00b08d45",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleStatePassiveTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-22T18:06:45Z",
+      "side": 0,
+      "message": "It takes a while to time out and isn\u0027t really an effective test when using TimeTestMulti.  I assume the purpose of it was to verify that no new status messages were published after the initial TERMINATED message.  That being the case, by adding the earlier assertTrue(time.isEmpty()), we know that there\u0027s nothing in the task queue that could issue another status message.\n\nIf that was not it\u0027s purpose, then please let me know so I can add an appropriate replacement.",
+      "parentUuid": "d3bd5c98_88c33c99",
+      "revId": "59e9b9a8b56d563814ef21a23716959f772f9194",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
