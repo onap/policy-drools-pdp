@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3bd5c98_88c33c99",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleStatePassiveTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-08-22T17:16:30Z",
+      "side": 0,
+      "message": "Is there a reason to eliminate this assert?",
+      "revId": "59e9b9a8b56d563814ef21a23716959f772f9194",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
