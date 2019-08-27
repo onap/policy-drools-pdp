@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.utils.logging;
 
-import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.ALERT_SEVERITY;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.BEGIN_TIMESTAMP;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CLIENT_IP_ADDRESS;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTIP;
@@ -94,7 +93,6 @@ class MdcTransactionImpl implements MdcTransaction {
     private String statusCode;
     private String responseCode;
     private String responseDescription;
-    private String theSeverity;
     private String alertSeverity;
 
     private String targetEntity;
@@ -158,7 +156,6 @@ class MdcTransactionImpl implements MdcTransaction {
      */
     public MdcTransactionImpl(MdcTransaction transaction) {
         MDC.clear();
-        this.setAlertSeverity(transaction.getAlertSeverity());
         this.setClientIpAddress(transaction.getClientIpAddress());
         this.setElapsedTime(transaction.getElapsedTime());
         this.setEndTime(transaction.getEndTime());
@@ -205,7 +202,6 @@ class MdcTransactionImpl implements MdcTransaction {
         MDC.remove(PROCESS_KEY);
         MDC.remove(CLIENT_IP_ADDRESS);
         MDC.remove(REMOTE_HOST);
-        MDC.remove(ALERT_SEVERITY);
         MDC.remove(TARGET_VIRTUAL_ENTITY);
 
         return this;
@@ -246,8 +242,7 @@ class MdcTransactionImpl implements MdcTransaction {
         setMdc(STATUS_CODE, this.statusCode);
         setMdc(RESPONSE_CODE, this.responseCode);
         setMdc(RESPONSE_DESCRIPTION, this.responseDescription);
-        setMdc(SEVERITY, this.theSeverity);
-        setMdc(ALERT_SEVERITY, this.alertSeverity);
+        setMdc(SEVERITY, this.alertSeverity);
         setMdc(TARGET_ENTITY, this.targetEntity);
         setMdc(TARGET_SERVICE_NAME, this.targetServiceName);
         setMdc(TARGET_VIRTUAL_ENTITY, this.targetVirtualEntity);
@@ -306,12 +301,6 @@ class MdcTransactionImpl implements MdcTransaction {
     }
 
     @Override
-    public MdcTransaction setAlertSeverity(String alertSeverity) {
-        this.alertSeverity = alertSeverity;
-        return this;
-    }
-
-    @Override
     public MdcTransaction setClientIpAddress(String clientIpAddress) {
         this.clientIpAddress = clientIpAddress;
         return this;
@@ -351,11 +340,6 @@ class MdcTransactionImpl implements MdcTransaction {
     @Override
     public String getClientIpAddress() {
         return this.clientIpAddress;
-    }
-
-    @Override
-    public String getAlertSeverity() {
-        return this.alertSeverity;
     }
 
     @Override
@@ -451,7 +435,7 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public MdcTransaction setSeverity(String severity) {
-        this.theSeverity = severity;
+        this.alertSeverity = severity;
         return this;
     }
 
@@ -500,7 +484,7 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public String getSeverity() {
-        return theSeverity;
+        return alertSeverity;
     }
 
     @Override
@@ -651,8 +635,7 @@ class MdcTransactionImpl implements MdcTransaction {
         sb.append(", statusCode='").append(statusCode).append('\'');
         sb.append(", responseCode='").append(responseCode).append('\'');
         sb.append(", responseDescription='").append(responseDescription).append('\'');
-        sb.append(", severity='").append(theSeverity).append('\'');
-        sb.append(", alertSeverity='").append(alertSeverity).append('\'');
+        sb.append(", severity='").append(alertSeverity).append('\'');
         sb.append(", targetEntity='").append(targetEntity).append('\'');
         sb.append(", targetServiceName='").append(targetServiceName).append('\'');
         sb.append(", targetVirtualEntity='").append(targetVirtualEntity).append('\'');
