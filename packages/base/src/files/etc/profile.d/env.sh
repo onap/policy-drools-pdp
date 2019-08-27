@@ -35,16 +35,15 @@ if [[ -z "${POLICY_HOME}" ]]; then
     fi
 fi
 
-confs=$(ls "${POLICY_HOME}"/etc/profile.d/*.conf 2> /dev/null)
-c=
-
 set -a
 
 POLICY_HOME=${POLICY_HOME:=/opt/app/policy}
 
-for c in ${confs} ; do
-    source ${c}
-done
+if ls "${POLICY_HOME}"/etc/profile.d/*.conf > /dev/null 2>&1; then
+    for conf in "${POLICY_HOME}"/etc/profile.d/*.conf ; do
+        source ${conf}
+    done
+fi
 
 for x in "${POLICY_HOME}"/bin "${JAVA_HOME}"/bin "${HOME}"/bin ; do
   if [ -d $x ] ; then
