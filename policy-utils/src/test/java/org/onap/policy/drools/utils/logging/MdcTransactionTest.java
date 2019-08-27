@@ -66,7 +66,6 @@ public class MdcTransactionTest {
         assertNull(MDC.get(MdcTransactionConstants.RESPONSE_CODE));
         assertNull(MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));
         assertNull(MDC.get(MdcTransactionConstants.SEVERITY));
-        assertNull(MDC.get(MdcTransactionConstants.ALERT_SEVERITY));
         assertNull(MDC.get(MdcTransactionConstants.TARGET_ENTITY));
         assertNull(MDC.get(MdcTransactionConstants.TARGET_SERVICE_NAME));
         assertNull(MDC.get(MdcTransactionConstants.TARGET_VIRTUAL_ENTITY));
@@ -100,7 +99,7 @@ public class MdcTransactionTest {
         assertNull(trans.getProcessKey());
         assertNull(trans.getClientIpAddress());
         assertNull(trans.getRemoteHost());
-        assertNull(trans.getAlertSeverity());
+        assertNull(trans.getSeverity());
         assertNull(trans.getTargetVirtualEntity());
     }
 
@@ -136,7 +135,6 @@ public class MdcTransactionTest {
                 .setResponseCode("response-code")
                 .setResponseDescription("response-description")
                 .setSeverity("severity")
-                .setAlertSeverity("alert-severity")
                 .setTargetEntity("target-entity")
                 .setTargetServiceName("target-service-name")
                 .setTargetVirtualEntity("target-virtual-entity")
@@ -157,7 +155,6 @@ public class MdcTransactionTest {
         assertNotNull(MDC.get(MdcTransactionConstants.RESPONSE_CODE));
         assertNotNull(MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));
         assertNotNull(MDC.get(MdcTransactionConstants.SEVERITY));
-        assertNotNull(MDC.get(MdcTransactionConstants.ALERT_SEVERITY));
         assertNotNull(MDC.get(MdcTransactionConstants.TARGET_ENTITY));
         assertNotNull(MDC.get(MdcTransactionConstants.TARGET_SERVICE_NAME));
         assertNotNull(MDC.get(MdcTransactionConstants.TARGET_VIRTUAL_ENTITY));
@@ -177,7 +174,6 @@ public class MdcTransactionTest {
         assertEquals(trans.getResponseCode(), MDC.get(MdcTransactionConstants.RESPONSE_CODE));
         assertEquals(trans.getResponseDescription(), MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));
         assertEquals(trans.getSeverity(), MDC.get(MdcTransactionConstants.SEVERITY));
-        assertEquals(trans.getAlertSeverity(), MDC.get(MdcTransactionConstants.ALERT_SEVERITY));
         assertEquals(trans.getTargetEntity(), MDC.get(MdcTransactionConstants.TARGET_ENTITY));
         assertEquals(trans.getTargetServiceName(), MDC.get(MdcTransactionConstants.TARGET_SERVICE_NAME));
         assertEquals(trans.getTargetVirtualEntity(), MDC.get(MdcTransactionConstants.TARGET_VIRTUAL_ENTITY));
@@ -190,7 +186,6 @@ public class MdcTransactionTest {
         assertEquals("response-code", trans.getResponseCode());
         assertEquals("response-description", trans.getResponseDescription());
         assertEquals("severity", trans.getSeverity());
-        assertEquals("alert-severity", trans.getAlertSeverity());
         assertEquals("target-entity", trans.getTargetEntity());
         assertEquals("target-service-name", trans.getTargetServiceName());
         assertEquals("target-virtual-entity", trans.getTargetVirtualEntity());
@@ -246,7 +241,6 @@ public class MdcTransactionTest {
             .setResponseCode("response-code")
             .setResponseDescription("response-description")
             .setSeverity("severity")
-            .setAlertSeverity("alert-severity")
             .setTargetEntity("target-entity")
             .setTargetServiceName("target-service-name")
             .setTargetVirtualEntity("target-virtual-entity")
