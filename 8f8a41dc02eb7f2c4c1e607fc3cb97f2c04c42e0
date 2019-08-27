@@ -22,6 +22,30 @@
       "revId": "8f8a41dc02eb7f2c4c1e607fc3cb97f2c04c42e0",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47ae1892_698ee944",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-27T19:33:59Z",
+      "side": 0,
+      "message": "I should have added a comment to the commit - this line included both Severity and AlertSeverity, thus I removed the latter.",
+      "parentUuid": "7653ade2_2a43a34c",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 463
+      },
+      "revId": "8f8a41dc02eb7f2c4c1e607fc3cb97f2c04c42e0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
