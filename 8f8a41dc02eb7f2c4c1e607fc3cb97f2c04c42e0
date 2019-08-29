@@ -46,6 +46,30 @@
       "revId": "8f8a41dc02eb7f2c4c1e607fc3cb97f2c04c42e0",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13ce922f_2206daf1",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-08-29T21:49:04Z",
+      "side": 0,
+      "message": "Actually, to maintain the same number of fields, this will be replaced with an empty place-holder.",
+      "parentUuid": "47ae1892_698ee944",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 463
+      },
+      "revId": "8f8a41dc02eb7f2c4c1e607fc3cb97f2c04c42e0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
