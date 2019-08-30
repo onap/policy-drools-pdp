@@ -187,11 +187,6 @@ public interface MdcTransaction {
     MdcTransaction setProcessKey(String processKey);
 
     /**
-     * sets alert severity.
-     */
-    MdcTransaction setAlertSeverity(String alertSeverity);
-
-    /**
      * sets client ip address.
      */
     MdcTransaction setClientIpAddress(String clientIpAddress);
@@ -230,11 +225,6 @@ public interface MdcTransaction {
      * get client ip address.
      */
     String getClientIpAddress();
-
-    /**
-     * get alert severity.
-     */
-    String getAlertSeverity();
 
     /**
      * get process key.

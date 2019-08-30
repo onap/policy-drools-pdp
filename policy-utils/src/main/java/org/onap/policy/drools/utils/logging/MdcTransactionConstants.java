@@ -139,11 +139,6 @@ public class MdcTransactionConstants {
     public static final String REMOTE_HOST = "RemoteHost";
 
     /**
-     * Alert Severity Both transactions and subtransactions will have its own copy.
-     */
-    public static final String ALERT_SEVERITY = "AlertSeverity";
-
-    /**
      * Target Virtual Entity Both transactions and subtransactions will have its own copy.
      */
     public static final String TARGET_VIRTUAL_ENTITY = "TargetVirtualEntity";
