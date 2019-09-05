@@ -73,6 +73,14 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     boolean configure(PdpdConfiguration configuration);
 
     /**
+     * open the Policy Engine to external configuration systems.
+     *
+     * @return success or failure
+     */
+    boolean open();
+
+
+    /**
      * configure the engine's environment. General lab installation configuration is made available
      * to the Engine. Typically, custom lab installation that may be needed by arbitrary drools
      * applications are made available, for example network component and database host addresses.

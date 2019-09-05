@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-engine
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -33,200 +33,200 @@ import org.onap.policy.drools.system.PolicyEngine;
 public interface PolicyEngineFeatureApi extends OrderedService {
 
     /**
-     * intercept before the Policy Engine is commanded to boot.
+     * Intercept before the Policy Engine is commanded to boot.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
+    default boolean beforeBoot(PolicyEngine engine, String[] cliArgs) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is booted.
+     * Intercept after the Policy Engine is booted.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterBoot(PolicyEngine engine) {
+    default boolean afterBoot(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is configured.
+     * Intercept before the Policy Engine is configured.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeConfigure(PolicyEngine engine, Properties properties) {
+    default boolean beforeConfigure(PolicyEngine engine, Properties properties) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is configured.
+     * Intercept after the Policy Engine is configured.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterConfigure(PolicyEngine engine) {
+    default boolean afterConfigure(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine goes active.
+     * Intercept before the Policy Engine goes active.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeActivate(PolicyEngine engine) {
+    default boolean beforeActivate(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine goes active.
+     * Intercept after the Policy Engine goes active.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterActivate(PolicyEngine engine) {
+    default boolean afterActivate(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine goes standby.
+     * Intercept before the Policy Engine goes standby.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeDeactivate(PolicyEngine engine) {
+    default boolean beforeDeactivate(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine goes standby.
+     * Intercept after the Policy Engine goes standby.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterDeactivate(PolicyEngine engine) {
+    default boolean afterDeactivate(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is started.
+     * Intercept before the Policy Engine is started.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeStart(PolicyEngine engine) {
+    default boolean beforeStart(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is started.
+     * Intercept after the Policy Engine is started.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterStart(PolicyEngine engine) {
+    default boolean afterStart(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is stopped.
+     * Intercept before the Policy Engine is stopped.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeStop(PolicyEngine engine) {
+    default boolean beforeStop(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is stopped.
+     * Intercept after the Policy Engine is stopped.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.d.
      */
-    public default boolean afterStop(PolicyEngine engine) {
+    default boolean afterStop(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is locked.
+     * Intercept before the Policy Engine is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeLock(PolicyEngine engine) {
+    default boolean beforeLock(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is locked.
+     * Intercept after the Policy Engine is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean afterLock(PolicyEngine engine) {
+    default boolean afterLock(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept before the Policy Engine is locked.
+     * Intercept before the Policy Engine is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean beforeUnlock(PolicyEngine engine) {
+    default boolean beforeUnlock(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept after the Policy Engine is locked.
+     * Intercept after the Policy Engine is locked.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterUnlock(PolicyEngine engine) {
+    default boolean afterUnlock(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * intercept the Policy Engine is shut down.
+     * Intercept the Policy Engine is shut down.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise..
      */
-    public default boolean beforeShutdown(PolicyEngine engine) {
+    default boolean beforeShutdown(PolicyEngine engine) {
         return false;
     }
 
     /**
-     * called after the Policy Engine is shut down.
+     * Called after the Policy Engine is shut down.
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    public default boolean afterShutdown(PolicyEngine engine) {
+    default boolean afterShutdown(PolicyEngine engine) {
         return false;
     }
 
@@ -236,7 +236,7 @@ public interface PolicyEngineFeatureApi extends OrderedService {
      * @return True if this feature intercepts and takes ownership of the operation
      *         preventing the invocation of lower priority features. False, otherwise.
      */
-    public default boolean beforeOnTopicEvent(PolicyEngine engine, CommInfrastructure commType, String topic,
+    default boolean beforeOnTopicEvent(PolicyEngine engine, CommInfrastructure commType, String topic,
                     String event) {
         return false;
     }
@@ -247,8 +247,28 @@ public interface PolicyEngineFeatureApi extends OrderedService {
      * @return True if this feature intercepts and takes ownership of the operation
      *         preventing the invocation of lower priority features. False, otherwise
      */
-    public default boolean afterOnTopicEvent(PolicyEngine engine, PdpdConfiguration configuration,
+    default boolean afterOnTopicEvent(PolicyEngine engine, PdpdConfiguration configuration,
                     CommInfrastructure commType, String topic, String event) {
+        return false;
+    }
+
+    /**
+     * Called before the PolicyEngine opens its external configuration interfaces.
+     *
+     * @return True if this feature intercepts and takes ownership of the operation
+     *         preventing the invocation of lower priority features. False, otherwise
+     */
+    default boolean beforeOpen(PolicyEngine engine) {
+        return false;
+    }
+
+    /**
+     * Called after the PolicyEngine opens its external configuration interfaces.
+     *
+     * @return True if this feature intercepts and takes ownership of the operation
+     *         preventing the invocation of lower priority features. False, otherwise
+     */
+    default boolean afterOpen(PolicyEngine engine) {
         return false;
     }
 }
