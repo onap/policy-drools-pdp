@@ -670,11 +670,11 @@ public class PolicyEngineManagerTest {
         // servlet wait fails - still does everything
         testStart(false, () -> when(server1.waitedStart(anyLong())).thenReturn(false));
 
-        // topic source fails to start - still does everything
-        testStart(false, () -> when(source1.start()).thenReturn(false));
+        // topic source is not started with start
+        testStart(true, () -> when(source1.start()).thenReturn(false));
 
-        // topic sink fails to start - still does everything
-        testStart(false, () -> when(sink1.start()).thenReturn(false));
+        // topic sink is not started with start
+        testStart(true, () -> when(sink1.start()).thenReturn(false));
 
         // controller fails to start - still does everything
         testStart(false, () -> when(controller.start()).thenReturn(false));
@@ -735,11 +735,11 @@ public class PolicyEngineManagerTest {
         verify(server1).waitedStart(anyLong());
         verify(server2).waitedStart(anyLong());
 
-        verify(source1).start();
-        verify(source2).start();
+        verify(source1, never()).start();
+        verify(source2, never()).start();
 
-        verify(sink1).start();
-        verify(sink2).start();
+        verify(sink1, never()).start();
+        verify(sink2, never()).start();
 
         verify(controller).start();
         verify(controller2).start();
@@ -1481,6 +1481,61 @@ public class PolicyEngineManagerTest {
 
         verify(prov1).afterDeactivate(mgr);
         verify(prov2).afterDeactivate(mgr);
+    }
+
+    @Test
+    public void testOpen() throws Throwable {
+        when(prov1.beforeOpen(mgr)).thenThrow(new RuntimeException(EXPECTED));
+        when(prov1.afterOpen(mgr)).thenThrow(new RuntimeException(EXPECTED));
+
+        assertTrue(mgr.lock());
+        assertThatIllegalStateException().isThrownBy(() -> mgr.open());
+        unsuccessfulOpen();
+
+        assertTrue(mgr.unlock());
+        unsuccessfulOpen();
+
+        setUp();
+        mgr.configure(properties);
+        assertTrue(mgr.start());
+
+        verify(source1, never()).start();
+        verify(source2, never()).start();
+
+        assertTrue(mgr.open());
+
+        verify(prov1).beforeOpen(mgr);
+        verify(prov2).beforeOpen(mgr);
+
+        verify(source1).start();
+        verify(source2).start();
+
+        verify(prov1).afterOpen(mgr);
+        verify(prov2).afterOpen(mgr);
+
+        when(source1.start()).thenReturn(false);
+        assertFalse(mgr.open());
+        when(source1.start()).thenReturn(true);
+
+        when(sink1.start()).thenReturn(false);
+        assertFalse(mgr.open());
+        when(sink1.start()).thenReturn(true);
+
+        assertTrue(mgr.open());
+    }
+
+    private void unsuccessfulOpen() {
+        verify(prov1).beforeOpen(mgr);
+        verify(prov2).beforeOpen(mgr);
+
+        verify(prov1, never()).afterOpen(mgr);
+        verify(prov2, never()).afterOpen(mgr);
+
+        verify(source1, never()).start();
+        verify(source2, never()).start();
+
+        verify(sink1, never()).start();
+        verify(sink2, never()).start();
     }
 
     @Test

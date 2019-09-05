@@ -175,5 +175,7 @@ public class Main {
                         e);
             }
         }
+
+        PolicyEngineConstants.getManager().open();
     }
 }
