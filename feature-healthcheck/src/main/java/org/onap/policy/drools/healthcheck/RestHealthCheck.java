@@ -31,20 +31,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
 
 @Path("/")
 @Api
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
 @SwaggerDefinition(
     info = @Info(
         description = "PDP-D Healthcheck Service",
         version = "v1.0",
         title = "PDP-D Healthcheck"
     ),
-    consumes = {MediaType.APPLICATION_JSON},
-    produces = {MediaType.APPLICATION_JSON},
+    consumes = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML},
+    produces = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML},
     schemes = {SwaggerDefinition.Scheme.HTTP},
     tags = {
         @Tag(name = "pdp-d-healthcheck", description = "Drools PDP Healthcheck Operations")
@@ -54,7 +54,6 @@ public class RestHealthCheck {
 
     @GET
     @Path("healthcheck")
-    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Perform a system healthcheck",
             notes = "Provides healthy status of the PDP-D plus the components defined in its "
@@ -67,7 +66,6 @@ public class RestHealthCheck {
 
     @GET
     @Path("healthcheck/configuration")
-    @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Configuration",
             notes = "Provides the Healthcheck server configuration and monitored REST clients",
