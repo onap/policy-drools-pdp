@@ -26,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.drools.lifecycle.LifecycleFeature;
 import org.onap.policy.drools.lifecycle.LifecycleFsm;
 
@@ -34,8 +35,8 @@ import org.onap.policy.drools.lifecycle.LifecycleFsm;
  */
 
 @Path("/policy/pdp")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
+@Consumes({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
 @Api
 public class RestLifecycleManager {
 

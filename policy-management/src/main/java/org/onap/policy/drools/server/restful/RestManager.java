@@ -55,6 +55,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -78,11 +79,12 @@ import org.slf4j.LoggerFactory;
  */
 
 @Path("/policy/pdp")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
+@Consumes({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
 @Api
 @SwaggerDefinition(info = @Info(description = "PDP-D Telemetry Services", version = "v1.0", title = "PDP-D Telemetry"),
-        consumes = {MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN}, produces = {MediaType.APPLICATION_JSON},
+        consumes = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML, MediaType.TEXT_PLAIN},
+        produces = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML},
         schemes = {SwaggerDefinition.Scheme.HTTP},
         tags = {@Tag(name = "pdp-d-telemetry", description = "Drools PDP Telemetry Operations")})
 public class RestManager {
