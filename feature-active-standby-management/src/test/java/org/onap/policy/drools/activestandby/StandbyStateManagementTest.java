@@ -60,11 +60,6 @@ import org.slf4j.LoggerFactory;
  * All JUnits are designed to run in the local development environment
  * where they have write privileges and can execute time-sensitive
  * tasks.
- *
- * These tests can be run as JUnits, but there is some issue with running them
- * as part of a "mvn install" build.  Also, they take a very long time to run
- * due to many real time breaks.  Consequently, they are marked as @Ignore and
- * only run from the desktop.
  */
 
 public class StandbyStateManagementTest {
@@ -109,6 +104,12 @@ public class StandbyStateManagementTest {
     private TestTimeMulti testTime;
 
     /*
+     * This cannot be shared by tests, as each integrity monitor may manipulate it by
+     * adding its own property values.
+     */
+    private Properties activeStandbyProperties;
+
+    /*
      * See the IntegrityMonitor.getJmxUrl() method for the rationale behind this jmx related processing.
      */
 
@@ -131,17 +132,17 @@ public class StandbyStateManagementTest {
         resetInstanceObjects();
 
         //Create the data access for xacml db
-        Properties stateManagementProperties = loadStateManagementProperties();
+        Properties smProps = loadStateManagementProperties();
 
-        emfx = Persistence.createEntityManagerFactory("junitXacmlPU", stateManagementProperties);
+        emfx = Persistence.createEntityManagerFactory("junitXacmlPU", smProps);
 
         // Create an entity manager to use the DB
         emx = emfx.createEntityManager();
 
         //Create the data access for drools db
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
+        Properties asbProps = loadActiveStandbyProperties();
 
-        emfd = Persistence.createEntityManagerFactory("junitDroolsPU", activeStandbyProperties);
+        emfd = Persistence.createEntityManagerFactory("junitDroolsPU", asbProps);
 
         // Create an entity manager to use the DB
         emd = emfd.createEntityManager();
@@ -174,14 +175,24 @@ public class StandbyStateManagementTest {
     @Before
     public void setUp() throws Exception {
         resetInstanceObjects();
+        cleanXacmlDb();
+        cleanDroolsDb();
 
-        // set test time
-        testTime = new TestTimeMulti();
+        /*
+         * set test time
+         *
+         * All threads use the test time object for sleeping.  As a result, we don't have
+         * to wait more than an instant for them to complete their work, thus we'll use
+         * a very small REAL wait time in the constructor.
+         */
+        testTime = new TestTimeMulti(5);
         Whitebox.setInternalState(MonitorTime.class, MONITOR_FIELD_NAME, testTime);
 
         Factory factory = mock(Factory.class);
         when(factory.makeTimer()).thenAnswer(ans -> new PseudoTimer(testTime));
         Factory.setInstance(factory);
+
+        activeStandbyProperties = loadActiveStandbyProperties();
     }
 
     private static void resetInstanceObjects() throws IntegrityMonitorException {
@@ -222,60 +233,16 @@ public class StandbyStateManagementTest {
         et.commit();
     }
 
-    /*
-     * These JUnit tests must be run one at a time in an eclipse environment
-     * by right-clicking StandbyStateManagementTest and selecting
-     * "Run As" -> "JUnit Test".
-     *
-     * They will run successfully when you run all of them under runAllTests(),
-     * however, you will get all sorts of non-fatal errors in the log and on the
-     * console that result from overlapping threads that are not terminated at the
-     * end of each test. The problem is that the JUnit environment does not terminate
-     * all the test threads between tests. This is true even if you break each JUnit
-     * into a separate file. Consequently, all the tests would have to be refactored
-     * so all test object initializations are coordinated.  In other words, you
-     * retrieve the ActiveStandbyFeature instance and other class instances only once
-     * at the beginning of the JUnits and then reuse them throughout the tests.
-     * Initialization of the state of the objects is pretty straight forward as it
-     * just amounts to manipulating the entries in StateManagementEntity and
-     * DroolsPdpEntity tables. However, some thought needs to be given to how to
-     * "pause" the processing in ActiveStandbyFeature class.  I think we could "pause"
-     * it by calling globalInit() which will, I think, restart it. So long as it
-     * does not create a new instance, it will force it to go through an initialization
-     * cycle which includes a "pause" at the beginning of proecessing.  We just must
-     * be sure it does not create another instance - which may mean we need to add
-     * a factory interface instead of calling the constructor directly.
-     */
-
-
-    //@Ignore
-    @Test
-    public void runAllTests() throws Exception {
-        testColdStandby();
-        testHotStandby1();
-        testHotStandby2();
-        testLocking1();
-        testLocking2();
-        testPmStandbyStateChangeNotifier();
-        testSanitizeDesignatedList();
-        testComputeMostRecentPrimary();
-        testComputeDesignatedPdp();
-    }
-
     /**
      * Test the standby state change notifier.
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testPmStandbyStateChangeNotifier() throws Exception {
         logger.debug("\n\ntestPmStandbyStateChangeNotifier: Entering\n\n");
-        cleanXacmlDb();
 
         logger.debug("testPmStandbyStateChangeNotifier: Reading activeStandbyProperties");
-
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
 
         String resourceName = "testPMS";
         activeStandbyProperties.setProperty("resource.name", resourceName);
@@ -349,21 +316,14 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testSanitizeDesignatedList() throws Exception {
 
         logger.debug("\n\ntestSanitizeDesignatedList: Entering\n\n");
 
         // Get a DroolsPdpsConnector
 
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
-
-        logger.debug("testSanitizeDesignatedList: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        final DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfDrools);
+        final DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfd);
 
         // Create 4 pdpd all not designated
 
@@ -436,19 +396,12 @@ public class StandbyStateManagementTest {
     *
     * @throws Exception exception
     */
-    //@Ignore
-    //@Test
+    @Test
     public void testComputeMostRecentPrimary() throws Exception {
 
         logger.debug("\n\ntestComputeMostRecentPrimary: Entering\n\n");
 
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
-
-        logger.debug("testComputeMostRecentPrimary: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        final DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfDrools);
+        final DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfd);
 
 
         // Create 4 pdpd all not designated
@@ -604,20 +557,12 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testComputeDesignatedPdp() throws Exception {
 
         logger.debug("\n\ntestComputeDesignatedPdp: Entering\n\n");
 
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
-
-
-        logger.debug("testComputeDesignatedPdp: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        final DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfDrools);
+        final DroolsPdpsConnector droolsPdpsConnector = new JpaDroolsPdpsConnector(emfd);
 
 
         // Create 4 pdpd all not designated.  Two on site1. Two on site2
@@ -728,31 +673,14 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testColdStandby() throws Exception {
 
         logger.debug("\n\ntestColdStandby: Entering\n\n");
-        cleanXacmlDb();
-        cleanDroolsDb();
 
-        Properties stateManagementProperties = loadStateManagementProperties();
-
-        logger.debug("testColdStandby: Creating emfXacml");
-        final EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
-                "junitXacmlPU", stateManagementProperties);
-
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
         final String thisPdpId = activeStandbyProperties.getProperty(ActiveStandbyProperties.NODE_NAME);
 
-        logger.debug("testColdStandby: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfDrools);
-
-        logger.debug("testColdStandby: Cleaning up tables");
-        conn.deleteAllPdps();
+        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfd);
 
         logger.debug("testColdStandby: Inserting PDP={} as designated", thisPdpId);
         DroolsPdp pdp = new DroolsPdpImpl(thisPdpId, true, 4, testTime.getDate());
@@ -779,7 +707,7 @@ public class StandbyStateManagementTest {
          */
         logger.debug("testColdStandby: Instantiating stateManagement object");
 
-        StateManagement sm = new StateManagement(emfXacml, "dummy");
+        StateManagement sm = new StateManagement(emfx, "dummy");
         sm.deleteAllStateManagementEntities();
 
         // Now we want to create a StateManagementFeature and initialize it.  It will be
@@ -835,8 +763,6 @@ public class StandbyStateManagementTest {
         assertTrue(droolsPdpEntity.isDesignated() == false);
 
         logger.debug("\n\ntestColdStandby: Exiting\n\n");
-        sleep(INTERRUPT_RECOVERY_TIME);
-
     }
 
     // Tests hot standby when there is only one PDP.
@@ -846,32 +772,15 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testHotStandby1() throws Exception {
 
         logger.debug("\n\ntestHotStandby1: Entering\n\n");
-        cleanXacmlDb();
-        cleanDroolsDb();
 
-        Properties stateManagementProperties = loadStateManagementProperties();
-
-        logger.debug("testHotStandby1: Creating emfXacml");
-        final EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
-                "junitXacmlPU", stateManagementProperties);
-
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
         final String thisPdpId = activeStandbyProperties
                 .getProperty(ActiveStandbyProperties.NODE_NAME);
 
-        logger.debug("testHotStandby1: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfDrools);
-
-        logger.debug("testHotStandby1: Cleaning up tables");
-        conn.deleteAllPdps();
+        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfd);
 
         /*
          * Insert this PDP as not designated.  Initial standby state will be
@@ -889,7 +798,7 @@ public class StandbyStateManagementTest {
         assertTrue(droolsPdpEntity.isDesignated() == false);
 
         logger.debug("testHotStandby1: Instantiating stateManagement object");
-        StateManagement sm = new StateManagement(emfXacml, "dummy");
+        StateManagement sm = new StateManagement(emfx, "dummy");
         sm.deleteAllStateManagementEntities();
 
 
@@ -942,8 +851,6 @@ public class StandbyStateManagementTest {
         logger.debug("testHotStandby1: Stopping policyManagementRunner");
 
         logger.debug("\n\ntestHotStandby1: Exiting\n\n");
-        sleep(INTERRUPT_RECOVERY_TIME);
-
     }
 
     /*
@@ -955,32 +862,15 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testHotStandby2() throws Exception {
 
         logger.info("\n\ntestHotStandby2: Entering\n\n");
-        cleanXacmlDb();
-        cleanDroolsDb();
 
-        Properties stateManagementProperties = loadStateManagementProperties();
-
-        logger.info("testHotStandby2: Creating emfXacml");
-        final EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
-                "junitXacmlPU", stateManagementProperties);
-
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
         final String thisPdpId = activeStandbyProperties
                 .getProperty(ActiveStandbyProperties.NODE_NAME);
 
-        logger.info("testHotStandby2: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfDrools);
-
-        logger.info("testHotStandby2: Cleaning up tables");
-        conn.deleteAllPdps();
+        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfd);
 
 
         // Insert a PDP that's designated but not current.
@@ -1004,11 +894,11 @@ public class StandbyStateManagementTest {
 
 
         logger.info("testHotStandby2: Promoting PDP={}", activePdpId);
-        StateManagement sm = new StateManagement(emfXacml, "dummy");
+        StateManagement sm = new StateManagement(emfx, "dummy");
         sm.deleteAllStateManagementEntities();
 
 
-        sm = new StateManagement(emfXacml, activePdpId);//pdp2
+        sm = new StateManagement(emfx, activePdpId);//pdp2
 
         // Artificially putting a PDP into service is really a two step process, 1)
         // inserting it as designated and 2) promoting it so that its standbyStatus
@@ -1097,8 +987,6 @@ public class StandbyStateManagementTest {
         logger.info("testHotStandby2: Stopping policyManagementRunner");
 
         logger.info("\n\ntestHotStandby2: Exiting\n\n");
-        sleep(INTERRUPT_RECOVERY_TIME);
-
     }
 
     /*
@@ -1124,31 +1012,14 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testLocking1() throws Exception {
         logger.debug("testLocking1: Entry");
-        cleanXacmlDb();
-        cleanDroolsDb();
 
-        Properties stateManagementProperties = loadStateManagementProperties();
-
-        logger.debug("testLocking1: Creating emfXacml");
-        final EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
-                "junitXacmlPU", stateManagementProperties);
-
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
         final String thisPdpId = activeStandbyProperties
                 .getProperty(ActiveStandbyProperties.NODE_NAME);
 
-        logger.debug("testLocking1: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfDrools);
-
-        logger.debug("testLocking1: Cleaning up tables");
-        conn.deleteAllPdps();
+        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfd);
 
         /*
          * Insert this PDP as designated.  Initial standby state will be
@@ -1164,7 +1035,7 @@ public class StandbyStateManagementTest {
         assertTrue(droolsPdpEntity.isDesignated() == true);
 
         logger.debug("testLocking1: Instantiating stateManagement object");
-        StateManagement smDummy = new StateManagement(emfXacml, "dummy");
+        StateManagement smDummy = new StateManagement(emfx, "dummy");
         smDummy.deleteAllStateManagementEntities();
 
         // Now we want to create a StateManagementFeature and initialize it.  It will be
@@ -1308,10 +1179,6 @@ public class StandbyStateManagementTest {
         logger.debug("testLocking1: demoting PDP={}", thisPdpId);
         sm.demote();
 
-        // Just to avoid any race conditions, sleep a little after promoting
-        logger.debug("testLocking1: Sleeping a few millis after demoting, to avoid race condition");
-        sleep(100);
-
         logger.debug("testLocking1: Invoking startTransaction on demoted PDP={}"
                 + ", designated={}", thisPdpId, conn.getPdp(thisPdpId).isDesignated());
         try {
@@ -1330,8 +1197,6 @@ public class StandbyStateManagementTest {
         }
 
         logger.debug("\n\ntestLocking1: Exiting\n\n");
-        sleep(INTERRUPT_RECOVERY_TIME);
-
     }
 
 
@@ -1350,32 +1215,15 @@ public class StandbyStateManagementTest {
      *
      * @throws Exception exception
      */
-    //@Ignore
-    //@Test
+    @Test
     public void testLocking2() throws Exception {
 
         logger.debug("\n\ntestLocking2: Entering\n\n");
-        cleanXacmlDb();
-        cleanDroolsDb();
 
-        Properties stateManagementProperties = loadStateManagementProperties();
-
-        logger.debug("testLocking2: Creating emfXacml");
-        final EntityManagerFactory emfXacml = Persistence.createEntityManagerFactory(
-                "junitXacmlPU", stateManagementProperties);
-
-        Properties activeStandbyProperties = loadActiveStandbyProperties();
         final String thisPdpId = activeStandbyProperties
                 .getProperty(ActiveStandbyProperties.NODE_NAME);
 
-        logger.debug("testLocking2: Creating emfDrools");
-        EntityManagerFactory emfDrools = Persistence.createEntityManagerFactory(
-                "junitDroolsPU", activeStandbyProperties);
-
-        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfDrools);
-
-        logger.debug("testLocking2: Cleaning up tables");
-        conn.deleteAllPdps();
+        DroolsPdpsConnector conn = new JpaDroolsPdpsConnector(emfd);
 
         /*
          * Insert this PDP as designated.  Initial standby state will be
@@ -1392,7 +1240,7 @@ public class StandbyStateManagementTest {
         assertTrue(droolsPdpEntity.isDesignated() == true);
 
         logger.debug("testLocking2: Instantiating stateManagement object and promoting PDP={}", thisPdpId);
-        StateManagement smDummy = new StateManagement(emfXacml, "dummy");
+        StateManagement smDummy = new StateManagement(emfx, "dummy");
         smDummy.deleteAllStateManagementEntities();
 
         // Now we want to create a StateManagementFeature and initialize it.  It will be
@@ -1436,7 +1284,7 @@ public class StandbyStateManagementTest {
         assertTrue(droolsPdpEntity.isDesignated() == false);
 
         logger.debug("testLocking2: Demoting PDP= {}", standbyPdpId);
-        final StateManagement sm2 = new StateManagement(emfXacml, standbyPdpId);
+        final StateManagement sm2 = new StateManagement(emfx, standbyPdpId);
 
         logger.debug("testLocking2: Runner started; Sleeping {} ms "
                 + "before promoting/demoting", INTERRUPT_RECOVERY_TIME);
@@ -1503,7 +1351,6 @@ public class StandbyStateManagementTest {
         assertTrue(standbyPdpDesignated == false);
 
         logger.debug("\n\ntestLocking2: Exiting\n\n");
-        sleep(INTERRUPT_RECOVERY_TIME);
     }
 
     private static Properties loadStateManagementProperties() throws IOException {
