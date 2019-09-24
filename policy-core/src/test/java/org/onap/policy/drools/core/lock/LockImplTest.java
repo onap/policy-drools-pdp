@@ -1,0 +1,218 @@
+/*
+ * ============LICENSE_START=======================================================
+ * ONAP
+ * ================================================================================
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * ================================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=========================================================
+ */
+
+package org.onap.policy.drools.core.lock;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import org.junit.Before;
+import org.junit.Test;
+
+public class LockImplTest {
+    private static final LockState STATE = LockState.WAITING;
+    private static final String RESOURCE = "hello";
+    private static final Object OWNER = new Object();
+    private static final String OWNER_KEY = "world";
+    private static final int HOLD_SEC = 10;
+    private static final int HOLD_SEC2 = 20;
+    private static final String EXPECTED_EXCEPTION = "expected exception";
+
+    private LockCallback callback;
+    private MyLock lock;
+
+    /**
+     * Populates {@link #lock}.
+     */
+    @Before
+    public void setUp() {
+        callback = mock(LockCallback.class);
+
+        lock = new MyLock(STATE, RESOURCE, OWNER, OWNER_KEY, HOLD_SEC, callback);
+    }
+
+    @Test
+    public void testSerializable() throws Exception {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(lock);
+        }
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+            lock = (MyLock) ois.readObject();
+        }
+
+        assertEquals(STATE, lock.getState());
+        assertEquals(RESOURCE, lock.getResourceId());
+        assertEquals(OWNER_KEY, lock.getOwnerKey());
+        assertEquals(HOLD_SEC, lock.getHoldSec());
+
+        // these fields are transient
+        assertNull(lock.getOwnerInfo());
+        assertNull(lock.getCallback());
+    }
+
+    @Test
+    public void testLockImplNoArgs() {
+        // use no-arg constructor
+        lock = new MyLock();
+        assertEquals(LockState.UNAVAILABLE, lock.getState());
+        assertNull(lock.getResourceId());
+        assertNull(lock.getOwnerInfo());
+        assertNull(lock.getOwnerKey());
+        assertNull(lock.getCallback());
+        assertEquals(0, lock.getHoldSec());
+    }
+
+    @Test
+    public void testLockImpl_testGetters() {
+        assertEquals(STATE, lock.getState());
+        assertEquals(RESOURCE, lock.getResourceId());
+        assertEquals(OWNER, lock.getOwnerInfo());
+        assertEquals(OWNER_KEY, lock.getOwnerKey());
+        assertSame(callback, lock.getCallback());
+        assertEquals(HOLD_SEC, lock.getHoldSec());
+
+        // test illegal args
+        assertThatIllegalArgumentException()
+                        .isThrownBy(() -> new MyLock(STATE, RESOURCE, OWNER, OWNER_KEY, -1, callback))
+                        .withMessageContaining("holdSec");
+    }
+
+    @Test
+    public void testNotifyAvailable() {
+        lock.notifyAvailable();
+
+        verify(callback).lockAvailable(any());
+        verify(callback, never()).lockUnavailable(any());
+    }
+
+    @Test
+    public void testNotifyAvailable_Ex() {
+        doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockAvailable(any());
+        doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockUnavailable(any());
+
+        // should not throw an exception
+        lock.notifyAvailable();
+    }
+
+    @Test
+    public void testNotifyUnavailable() {
+        lock.notifyUnavailable();
+
+        verify(callback, never()).lockAvailable(any());
+        verify(callback).lockUnavailable(any());
+    }
+
+    @Test
+    public void testNotifyUnavailable_Ex() {
+        doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockAvailable(any());
+        doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockUnavailable(any());
+
+        // should not throw an exception
+        lock.notifyUnavailable();
+    }
+
+    @Test
+    public void testSetState_testIsActive_testIsWaiting_testIsUnavailable() {
+        lock.setState(LockState.WAITING);
+        assertEquals(LockState.WAITING, lock.getState());
+        assertFalse(lock.isActive());
+        assertFalse(lock.isUnavailable());
+        assertTrue(lock.isWaiting());
+
+        lock.setState(LockState.ACTIVE);
+        assertEquals(LockState.ACTIVE, lock.getState());
+        assertTrue(lock.isActive());
+        assertFalse(lock.isUnavailable());
+        assertFalse(lock.isWaiting());
+
+        lock.setState(LockState.UNAVAILABLE);
+        assertEquals(LockState.UNAVAILABLE, lock.getState());
+        assertFalse(lock.isActive());
+        assertTrue(lock.isUnavailable());
+        assertFalse(lock.isWaiting());
+    }
+
+    @Test
+    public void testSetHoldSec() {
+        assertEquals(HOLD_SEC, lock.getHoldSec());
+
+        lock.setHoldSec(HOLD_SEC2);
+        assertEquals(HOLD_SEC2, lock.getHoldSec());
+    }
+
+    @Test
+    public void testSetCallback() {
+        assertSame(callback, lock.getCallback());
+
+        LockCallback callback2 = mock(LockCallback.class);
+        lock.setCallback(callback2);
+        assertSame(callback2, lock.getCallback());
+    }
+
+    @Test
+    public void testToString() {
+        String text = lock.toString();
+
+        assertNotNull(text);
+        assertThat(text).doesNotContain("ownerInfo").doesNotContain("callback").doesNotContain("succeed");
+    }
+
+
+    public static class MyLock extends LockImpl {
+        private static final long serialVersionUID = 1L;
+
+        MyLock() {
+            super();
+        }
+
+        public MyLock(LockState state, String resourceId, Object ownerInfo, String ownerKey, int holdSec,
+                        LockCallback callback) {
+            super(state, resourceId, ownerInfo, ownerKey, holdSec, callback);
+        }
+
+        @Override
+        public boolean free() {
+            return false;
+        }
+
+        @Override
+        public void extend(int holdSec, LockCallback callback) {
+            // does nothing
+        }
+    }
+}

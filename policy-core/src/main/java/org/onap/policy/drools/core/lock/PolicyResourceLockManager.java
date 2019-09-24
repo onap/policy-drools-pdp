@@ -21,198 +21,94 @@
 package org.onap.policy.drools.core.lock;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi.OperResult;
+import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Manager of resource locks. Checks for API implementers.
  */
-public class PolicyResourceLockManager extends SimpleLockManager {
-
+public class PolicyResourceLockManager {
     private static Logger logger = LoggerFactory.getLogger(PolicyResourceLockManager.class);
 
     /**
-     * Used by junit tests.
+     * Possible providers.
      */
-    protected PolicyResourceLockManager() {
+    private static List<PolicyResourceLockFeatureApi> providers =
+                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class).getList();
+
+
+    /**
+     * Constructs the object.
+     */
+    public PolicyResourceLockManager() {
         super();
     }
 
     /**
-     * Get instance.
+     * Gets the lock manager singleton.
      *
-     * @return the manager singleton
+     * @return the lock manager singleton
      */
     public static PolicyResourceLockManager getInstance() {
         return Singleton.instance;
     }
 
-    @Override
-    public boolean lock(String resourceId, String owner, int holdSec) {
-        if (resourceId == null) {
-            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
-        }
-
-        if (owner == null) {
-            throw makeNullArgException(MSG_NULL_OWNER);
-        }
-
-
-        return doBoolIntercept(impl -> impl.beforeLock(resourceId, owner, holdSec), () -> {
-
-            // implementer didn't do the work - defer to the superclass
-            boolean locked = super.lock(resourceId, owner, holdSec);
-
-            doIntercept(false, impl -> impl.afterLock(resourceId, owner, locked));
-
-            return locked;
-        });
-    }
-
-    @Override
-    public boolean refresh(String resourceId, String owner, int holdSec) {
-        if (resourceId == null) {
-            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
-        }
-
-        if (owner == null) {
-            throw makeNullArgException(MSG_NULL_OWNER);
-        }
-
-
-        return doBoolIntercept(impl -> impl.beforeRefresh(resourceId, owner, holdSec), () -> {
-
-            // implementer didn't do the work - defer to the superclass
-            boolean refreshed = super.refresh(resourceId, owner, holdSec);
-
-            doIntercept(false, impl -> impl.afterRefresh(resourceId, owner, refreshed));
-
-            return refreshed;
-        });
-    }
-
-    @Override
-    public boolean unlock(String resourceId, String owner) {
-        if (resourceId == null) {
-            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
-        }
-
-        if (owner == null) {
-            throw makeNullArgException(MSG_NULL_OWNER);
-        }
-
-
-        return doBoolIntercept(impl -> impl.beforeUnlock(resourceId, owner), () -> {
-
-            // implementer didn't do the work - defer to the superclass
-            boolean unlocked = super.unlock(resourceId, owner);
-
-            doIntercept(false, impl -> impl.afterUnlock(resourceId, owner, unlocked));
-
-            return unlocked;
-        });
-    }
-
     /**
-     * Is locked.
+     * Requests a lock on a resource. Typically, the lock is not immediately granted,
+     * though a "lock" object is always returned. Once the lock has been granted (or
+     * denied), the callback will be invoked to indicate the result.
      *
-     * @throws IllegalArgumentException if the resourceId is {@code null}
-     */
-    @Override
-    public boolean isLocked(String resourceId) {
-        if (resourceId == null) {
-            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
-        }
-
-
-        return doBoolIntercept(impl -> impl.beforeIsLocked(resourceId), () ->
-
-           // implementer didn't do the work - defer to the superclass
-           super.isLocked(resourceId)
-        );
-    }
-
-    /**
-     *  Is locked by.
+     * <p/>
+     * Notes:
+     * <dl>
+     * <li>The callback may be invoked <i>before</i> this method returns</li>
+     * <li>The implementation need not honor waitForLock={@code true}</li>
+     * </dl>
      *
-     * @throws IllegalArgumentException if the resourceId or owner is {@code null}
+     * @param resourceId identifier of the resource to be locked
+     * @param ownerInfo information identifying the owner requesting the lock
+     * @param holdSec amount of time, in seconds, for which the lock should be held once
+     *        it has been granted, after which it will automatically be released
+     * @param callback callback to be invoked once the lock is granted, or subsequently
+     *        lost; must not be {@code null}
+     * @param waitForLock {@code true} to wait for the lock, if it is currently locked,
+     *        {@code false} otherwise
+     * @return a new lock
      */
-    @Override
-    public boolean isLockedBy(String resourceId, String owner) {
-        if (resourceId == null) {
-            throw makeNullArgException(MSG_NULL_RESOURCE_ID);
-        }
+    public Lock createLock(String resourceId, Object ownerInfo, int holdSec, LockCallback callback,
+                    boolean waitForLock) {
 
-        if (owner == null) {
-            throw makeNullArgException(MSG_NULL_OWNER);
-        }
-
-        return doBoolIntercept(impl -> impl.beforeIsLockedBy(resourceId, owner), () ->
-
-            // implementer didn't do the work - defer to the superclass
-            super.isLockedBy(resourceId, owner)
-        );
-    }
-
-    /**
-     * Applies a function to each implementer of the lock feature. Returns as soon as one
-     * of them returns a result other than <b>OPER_UNHANDLED</b>. If they all return
-     * <b>OPER_UNHANDLED</b>, then it returns the result of applying the default function.
-     *
-     * @param interceptFunc intercept function
-     * @param defaultFunc default function
-     * @return {@code true} if success, {@code false} otherwise
-     */
-    private boolean doBoolIntercept(Function<PolicyResourceLockFeatureApi, OperResult> interceptFunc,
-                    Supplier<Boolean> defaultFunc) {
-
-        OperResult result = doIntercept(OperResult.OPER_UNHANDLED, interceptFunc);
-        if (result != OperResult.OPER_UNHANDLED) {
-            return (result == OperResult.OPER_ACCEPTED);
-        }
-
-        return defaultFunc.get();
-    }
-
-    /**
-     * Applies a function to each implementer of the lock feature. Returns as soon as one
-     * of them returns a non-null value.
-     *
-     * @param continueValue if the implementer returns this value, then it continues to
-     *        check addition implementers
-     * @param func function to be applied to the implementers
-     * @return first non-null value returned by an implementer, <i>continueValue</i> if
-     *       they all returned <i>continueValue</i>
-     */
-    private <T> T doIntercept(T continueValue, Function<PolicyResourceLockFeatureApi, T> func) {
-
-        for (PolicyResourceLockFeatureApi impl : getImplementers()) {
+        // see if any provider handles the lock
+        for (PolicyResourceLockFeatureApi feature : getProviders()) {
             try {
-                T result = func.apply(impl);
-                if (result != continueValue) {
-                    return result;
+                Lock lock = feature.beforeCreateLock(resourceId, ownerInfo, holdSec, callback, waitForLock);
+                if (lock != null) {
+                    return lock;
                 }
-
             } catch (RuntimeException e) {
-                logger.warn("lock feature {} threw an exception", impl, e);
+                logger.error("{}: lock feature {} failure because of {}", this, feature.getName(), e.getMessage(), e);
+                break;
             }
         }
 
-        return continueValue;
-    }
+        // no provider handled it - return a lock that always fails
+        logger.error("{}: no lock available", this);
+        AlwaysFailLock lock = new AlwaysFailLock(resourceId, ownerInfo, null, holdSec, callback);
 
-    // these may be overridden by junit tests
+        // see if any provider handled the lock
+        for (PolicyResourceLockFeatureApi feature : getProviders()) {
+            try {
+                if (feature.afterCreateLock(lock, holdSec, callback, waitForLock)) {
+                    return lock;
+                }
+            } catch (RuntimeException e) {
+                logger.error("{}: lock feature {} failure because of {}", this, feature.getName(), e.getMessage(), e);
+            }
+        }
 
-    /**
-     * Get implementers.
-     *
-     * @return the list of feature implementers
-     */
-    protected List<PolicyResourceLockFeatureApi> getImplementers() {
-        return PolicyResourceLockFeatureApiConstants.getImpl().getList();
+        lock.notifyUnavailable();
+        return lock;
     }
 
     /**
@@ -228,5 +124,11 @@ public class PolicyResourceLockManager extends SimpleLockManager {
         private Singleton() {
             super();
         }
+    }
+
+    // these may be overridden by junit tests
+
+    protected List<PolicyResourceLockFeatureApi> getProviders() {
+        return providers;
     }
 }

@@ -22,6 +22,7 @@ package org.onap.policy.drools.system;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -196,6 +197,11 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @return http servers
      */
     List<HttpServletServer> getHttpServers();
+
+    /**
+     * Gets a thread pool that can be used to execute background tasks.
+     */
+    ScheduledExecutorService getExecutorService();
 
     /**
      * get properties configuration.
