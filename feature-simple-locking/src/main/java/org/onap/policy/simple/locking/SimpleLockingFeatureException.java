@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * api-resource-locks
+ * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,17 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.core.lock;
+package org.onap.policy.simple.locking;
 
-import lombok.Getter;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
-
-public class PolicyResourceLockFeatureApiConstants {
+public class SimpleLockingFeatureException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
+     * Constructor.
+     *
+     * @param ex exception to be wrapped
      */
-    @Getter
-    private static final OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
-
-    private PolicyResourceLockFeatureApiConstants() {
-        // do nothing
+    public SimpleLockingFeatureException(Exception ex) {
+        super(ex);
     }
 }
