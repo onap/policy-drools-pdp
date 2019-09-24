@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * api-resource-locks
+ * ONAP
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -20,20 +20,32 @@
 
 package org.onap.policy.drools.core.lock;
 
-import lombok.Getter;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PolicyResourceLockFeatureApiConstants {
+/**
+ * Lock feature provider whose locks always fail. This is used if no other provider is
+ * available.
+ */
+public class AlwaysFailProvider implements PolicyResourceLockFeatureApi {
+    private static Logger logger = LoggerFactory.getLogger(PolicyResourceLockManager.class);
 
-    /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
-     */
-    @Getter
-    private static final OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
 
-    private PolicyResourceLockFeatureApiConstants() {
-        // do nothing
+    @Override
+    public int getSequenceNumber() {
+        return 1000;
+    }
+
+    @Override
+    public boolean enabled() {
+        return true;
+    }
+
+    @Override
+    public Lock lock(String resourceId, Object ownerInfo, int holdSec, LockCallback callback, boolean waitForLock) {
+        logger.warn("{}: no lock feature available at this time", this);
+        AlwaysFailLock lock = new AlwaysFailLock(resourceId, ownerInfo, null, holdSec, callback);
+        lock.notifyUnavailable();
+        return lock;
     }
 }
