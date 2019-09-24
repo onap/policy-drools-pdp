@@ -23,6 +23,7 @@ package org.onap.policy.drools.features;
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
+import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyEngine;
 
@@ -269,6 +270,28 @@ public interface PolicyEngineFeatureApi extends OrderedService {
      *         preventing the invocation of lower priority features. False, otherwise
      */
     default boolean afterOpen(PolicyEngine engine) {
+        return false;
+    }
+
+    /**
+     * Called before the PolicyEngine creates a lock manager.
+     *
+     * @return a lock manager if this feature intercepts and takes ownership of the
+     *         operation preventing the invocation of lower priority features. Null,
+     *         otherwise
+     */
+    default PolicyResourceLockManager beforeCreateLockManager(PolicyEngine engine, Properties properties) {
+        return null;
+    }
+
+    /**
+     * Called after the PolicyEngine creates a lock manager.
+     *
+     * @return True if this feature intercepts and takes ownership of the operation
+     *         preventing the invocation of lower priority features. False, otherwise
+     */
+    default boolean afterCreateLockManager(PolicyEngine engine, Properties properties,
+                    PolicyResourceLockManager lockManager) {
         return false;
     }
 }
