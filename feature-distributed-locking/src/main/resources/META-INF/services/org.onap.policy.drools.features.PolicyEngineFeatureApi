@@ -1,1 +1,1 @@
-org.onap.policy.distributed.locking.DistributedLockingFeature
+org.onap.policy.distributed.locking.DistributedLockManager
