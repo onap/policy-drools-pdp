@@ -81,6 +81,7 @@
         <module>api-active-standby-management</module>
         <module>feature-active-standby-management</module>
         <module>feature-simulators</module>
+        <module>feature-simple-locking</module>
         <module>feature-distributed-locking</module>
         <module>feature-controller-logging</module>
         <module>feature-mdc-filters</module>

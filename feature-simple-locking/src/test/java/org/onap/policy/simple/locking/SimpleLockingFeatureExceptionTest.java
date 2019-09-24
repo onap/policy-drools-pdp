@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * api-resource-locks
+ * feature-distributed-locking
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,17 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.core.lock;
+package org.onap.policy.simple.locking;
 
-import lombok.Getter;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
+import static org.junit.Assert.assertEquals;
 
-public class PolicyResourceLockFeatureApiConstants {
+import org.junit.Test;
+import org.onap.policy.common.utils.test.ExceptionsTester;
 
-    /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
-     */
-    @Getter
-    private static final OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
+public class SimpleLockingFeatureExceptionTest extends ExceptionsTester {
 
-    private PolicyResourceLockFeatureApiConstants() {
-        // do nothing
+    @Test
+    public void test() {
+        assertEquals(1, test(SimpleLockingFeatureException.class));
     }
 }
