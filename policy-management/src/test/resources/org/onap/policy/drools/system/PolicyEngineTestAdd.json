@@ -13,7 +13,9 @@
             "aaf": false
         }
     ],
-    "features": [],
+    "features": [
+        "org.onap.policy.drools.features.lock.SimpleLockingFeature"
+    ],
     "controllers": [
         "foo"
     ]

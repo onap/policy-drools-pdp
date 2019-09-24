@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * api-resource-locks
+ * ONAP
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -18,22 +18,35 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.core.lock;
+package org.onap.policy.drools.features.lock;
 
+import java.util.Properties;
 import lombok.Getter;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
+import lombok.Setter;
+import org.onap.policy.common.utils.properties.BeanConfigurator;
+import org.onap.policy.common.utils.properties.Property;
+import org.onap.policy.common.utils.properties.exception.PropertyException;
 
-public class PolicyResourceLockFeatureApiConstants {
+
+@Getter
+@Setter
+public class SimpleLockingProperties {
+
+    public static final String EXPIRE_CHECK_SEC = "expire.check.seconds";
 
     /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
+     * Time, in seconds, to wait between checks for expired locks.
      */
-    @Getter
-    private static final OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
+    @Property(name = EXPIRE_CHECK_SEC, defaultValue = "900")
+    private int expireCheckSec;
 
-    private PolicyResourceLockFeatureApiConstants() {
-        // do nothing
+    /**
+     * Constructs the object, populating fields from the properties.
+     *
+     * @param props properties from which to configure this
+     * @throws PropertyException if an error occurs
+     */
+    public SimpleLockingProperties(Properties props) throws PropertyException {
+        new BeanConfigurator().configureFromProperties(this, props);
     }
 }
