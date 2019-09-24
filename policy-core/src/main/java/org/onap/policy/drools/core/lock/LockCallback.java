@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * api-resource-locks
+ * ONAP
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -20,20 +20,25 @@
 
 package org.onap.policy.drools.core.lock;
 
-import lombok.Getter;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
-
-public class PolicyResourceLockFeatureApiConstants {
+/**
+ * Callback invoked when a lock is granted or lost.
+ *
+ * <p/>
+ * Note: these methods may or may not be invoked by the thread that requested the lock.
+ */
+public interface LockCallback {
 
     /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
+     * Called to indicate that a lock has been granted.
+     *
+     * @param lock lock that has been granted
      */
-    @Getter
-    private static final OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
+    void lockAvailable(Lock lock);
 
-    private PolicyResourceLockFeatureApiConstants() {
-        // do nothing
-    }
+    /**
+     * Called to indicate that a lock is permanently unavailable (e.g., lost, expired).
+     *
+     * @param lock lock that has been lost
+     */
+    void lockUnavailable(Lock lock);
 }
