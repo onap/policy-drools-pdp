@@ -1,6 +1,6 @@
-/*
+/*-
  * ============LICENSE_START=======================================================
- * api-resource-locks
+ * ONAP
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -20,20 +20,24 @@
 
 package org.onap.policy.drools.core.lock;
 
-import lombok.Getter;
-import org.onap.policy.common.utils.services.OrderedServiceImpl;
+/**
+ * States of a Lock.
+ */
 
-public class PolicyResourceLockFeatureApiConstants {
+public enum LockState {
 
     /**
-     * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the
-     * 'FeatureAPI' interface.
+     * Waiting for the lock request to complete.
      */
-    @Getter
-    private static final OrderedServiceImpl<PolicyResourceLockFeatureApi> impl =
-                    new OrderedServiceImpl<>(PolicyResourceLockFeatureApi.class);
+    WAITING,
 
-    private PolicyResourceLockFeatureApiConstants() {
-        // do nothing
-    }
+    /**
+     * This lock currently holds the resource.
+     */
+    ACTIVE,
+
+    /**
+     * The resource is no longer available to the lock.
+     */
+    UNAVAILABLE
 }
