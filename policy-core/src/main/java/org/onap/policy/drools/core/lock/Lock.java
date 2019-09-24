@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,145 +20,77 @@
 
 package org.onap.policy.drools.core.lock;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import org.onap.policy.drools.utils.Pair;
-
 /**
- * Lock that is held for a resource. This not only identifies the current owner of the
- * lock, but it also includes a queue of requesters. An item is associated with each
- * requester that is waiting in the queue. Note: this class is <b>not</b> thread-safe.
- * 
- * @param <T> type of item to be associated with a request
+ * Lock held on a resource.
  */
-public class Lock<T> {
+public interface Lock {
 
-    /**
-     * Result returned by <i>removeRequester()</i>.
-     */
-    public enum RemoveResult {
-        /**
-         * The requester was the owner of the lock, and the lock is no longer needed,
-         * because there were no other requesters waiting to get the lock.
-         */
-        UNLOCKED,
+    enum State {
 
         /**
-         * The requester was the owner of the lock, and has been replaced with the next
-         * requester waiting in the queue.
+         * Waiting for the lock request to complete.
          */
-        RELOCKED,
+        WAITING,
 
         /**
-         * The requester had been waiting in the queue, and has now been removed.
+         * This lock currently holds the resource.
          */
-        REMOVED,
+        ACTIVE,
 
         /**
-         * The requester was not the owner, nor was it waiting in the queue.
+         * The resource is no longer available to the lock.
          */
-        NOT_FOUND
+        UNAVAILABLE
     }
 
     /**
-     * The last owner to grab the lock, never {@code null}.
+     * Frees/release the lock.
+     *
+     * <p/>
+     * Note: client code may choose to invoke this method <i>before</i> the lock has been
+     * granted.
+     *
+     * @return {@code true} if the request was accepted, {@code false} if the state is
+     *         neither <b>WAITING</b> nor <b>ACTIVE</b>
      */
-    private String owner;
+    boolean free();
 
     /**
-     * Requesters waiting to get the lock. Maps the requester (i.e., owner for which the
-     * request is being made) to its associated item. Uses a Linked map so that the order
-     * of the requesters is maintained. We don't expect many requesters for any given
-     * lock, thus we'll start with a small hash size.
+     * Determines if the lock is active.
+     *
+     * @return {@code true} if the lock is <b>ACTIVE</b>, {@code false} otherwise
      */
-    private LinkedHashMap<String, T> requester2item = new LinkedHashMap<>(5);
-
-    /**
-     * Constructor.
-     * 
-     * @param owner the current owner of this lock
-     */
-    public Lock(String owner) {
-        this.owner = owner;
+    default boolean isActive() {
+        return (getState() == State.ACTIVE);
     }
 
     /**
-     * Get owner.
-     * 
-     * @return the current owner of the lock, or the last owner of the lock, if the lock
-     *         is not currently owned. (This will never be {@code null}.)
+     * Gets the id of the resource to which the lock applies.
+     *
+     * @return the id of the resource to which the lock applies
      */
-    public String getOwner() {
-        return owner;
-    }
+    String getResourceId();
 
     /**
-     * Adds a new requester to the queue of requesters.
-     * 
-     * @param requester the requester
-     * @param item to be associated with the requester, must not be {@code null}
-     * @return {@code true} if the requester was added, {@code false} if it already owns
-     *         the lock or is already in the queue
-     * @throws IllegalArgumentException if the item is null
+     * Gets the lock's owner information.
+     *
+     * @return the lock's owner information
      */
-    public boolean add(String requester, T item) {
-        if (item == null) {
-            throw SimpleLockManager.makeNullArgException("lock requester item is null");
-        }
-
-        if (requester.equals(owner)) {
-            // requester already owns the lock
-            return false;
-        }
-
-        T prev = requester2item.putIfAbsent(requester, item);
-
-        // if there's a previous value, then that means this requester is already
-        // waiting for a lock on this resource. In that case, we return false
-        return (prev == null);
-    }
+    Object getOwnerInfo();
 
     /**
-     * Removes a requester from the lock. The requester may currently own the lock, or it
-     * may be in the queue waiting for the lock. Note: as this is agnostic to the type of
-     * item associated with the requester, it is unable to notify the new owner that it's
-     * the new owner; that is left up to the code that invokes this method.
-     * 
-     * @param requester the requester
-     * @param newOwner the new owner info is placed here, if the result is <i>RELOCKED</i>
-     * @return the result
+     * Gets the state of the lock.
+     *
+     * @return the state of the lock
      */
-    public RemoveResult removeRequester(String requester, Pair<String, T> newOwner) {
+    State getState();
 
-        if (!requester.equals(owner)) {
-            // requester does not currently own the lock - remove it from the
-            // queue
-            T ent = requester2item.remove(requester);
-
-            // if there was an entry in the queue, then return true to indicate
-            // that it was removed. Otherwise, return false
-            return (ent != null ? RemoveResult.REMOVED : RemoveResult.NOT_FOUND);
-        }
-
-        /*
-         * requester was the owner - find something to take over
-         */
-        Iterator<Entry<String, T>> it = requester2item.entrySet().iterator();
-        if (!it.hasNext()) {
-            // no one to take over the lock - it's now unlocked
-            return RemoveResult.UNLOCKED;
-        }
-
-        // there's another requester to take over
-        Entry<String, T> ent = it.next();
-        it.remove();
-
-        owner = ent.getKey();
-
-        newOwner.first(owner);
-        newOwner.second(ent.getValue());
-
-        return RemoveResult.RELOCKED;
-    }
+    /**
+     * Extends a lock an additional amount of time from now. The callback will always be
+     * invoked.
+     *
+     * @param holdSec the additional amount of time to hold the lock, in seconds
+     * @param callback callback to be invoked when the extension completes
+     */
+    void extend(int holdSec, LockCallback callback);
 }

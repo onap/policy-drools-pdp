@@ -80,11 +80,13 @@
         <module>api-active-standby-management</module>
         <module>feature-active-standby-management</module>
         <module>feature-simulators</module>
+        <module>feature-simple-locking</module>
         <module>feature-distributed-locking</module>
         <module>feature-controller-logging</module>
         <module>feature-mdc-filters</module>
         <module>feature-lifecycle</module>
         <module>packages</module>
+        <module>../../../Users/JH7358/workspaceONAP_DP/feature-simple-locking</module>
     </modules>
 
     <dependencyManagement>

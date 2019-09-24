@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.distributed.locking;
+package org.onap.policy.simple.locking;
 
 import java.util.Properties;
 import lombok.Getter;
@@ -30,45 +30,15 @@ import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 @Getter
 @Setter
-public class DistributedLockingProperties {
+public class SimpleLockingProperties {
 
     /**
      * Feature properties all begin with this prefix.
      */
-    public static final String PREFIX = "distributed.locking.";
+    public static final String PREFIX = "simple.locking.";
 
-    public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
-    public static final String DB_URL = "javax.persistence.jdbc.url";
-    public static final String DB_USER = "javax.persistence.jdbc.user";
-    public static final String DB_PASS = "javax.persistence.jdbc.password";
     public static final String EXPIRE_CHECK_SEC = "expire.check.seconds";
-    public static final String RETRY_SEC = "retry.seconds";
-    public static final String MAX_RETRIES = "max.retries";
     public static final String MAX_THREADS = "max.threads";
-
-    /**
-     * Database driver.
-     */
-    @Property(name = DB_DRIVER)
-    private String dbDriver;
-
-    /**
-     * Database url.
-     */
-    @Property(name = DB_URL)
-    private String dbUrl;
-
-    /**
-     * Database user.
-     */
-    @Property(name = DB_USER)
-    private String dbUser;
-
-    /**
-     * Database password.
-     */
-    @Property(name = DB_PASS)
-    private String dbPwd;
 
     /**
      * Time, in seconds, to wait between checks for expired locks.
@@ -77,21 +47,9 @@ public class DistributedLockingProperties {
     private int expireCheckSec;
 
     /**
-     * Number of seconds to wait before retrying, after a DB error.
-     */
-    @Property(name = RETRY_SEC, defaultValue = "60")
-    private int retrySec;
-
-    /**
-     * Maximum number of times to retry a DB operation.
-     */
-    @Property(name = MAX_RETRIES, defaultValue = "2")
-    private int maxRetries;
-
-    /**
      * Maximum number of threads in the thread pool.
      */
-    @Property(name = MAX_THREADS, defaultValue = "5")
+    @Property(name = MAX_THREADS, defaultValue = "1")
     private int maxThreads;
 
     /**
@@ -100,7 +58,7 @@ public class DistributedLockingProperties {
      * @param props properties from which to configure this
      * @throws PropertyException if an error occurs
      */
-    public DistributedLockingProperties(Properties props) throws PropertyException {
+    public SimpleLockingProperties(Properties props) throws PropertyException {
         new BeanConfigurator().configureFromProperties(this, props);
     }
 }
