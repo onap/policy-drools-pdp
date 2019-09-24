@@ -27,12 +27,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import org.junit.Before;
@@ -53,6 +56,7 @@ import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistence;
@@ -61,6 +65,8 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
+import org.onap.policy.drools.system.internal.SimpleLockManager;
+import org.onap.policy.drools.system.internal.SimpleLockProperties;
 
 public class PolicyEngineManagerTest {
 
@@ -125,6 +131,8 @@ public class PolicyEngineManagerTest {
     private PdpdConfiguration pdpConfig;
     private String pdpConfigJson;
     private PolicyEngineManager mgr;
+    private ScheduledExecutorService exsvc;
+    private PolicyResourceLockManager lockmgr;
 
     /**
      * Initializes the object to be tested.
@@ -176,6 +184,15 @@ public class PolicyEngineManagerTest {
         config3 = new ControllerConfiguration();
         config4 = new ControllerConfiguration();
         pdpConfig = new PdpdConfiguration();
+        exsvc = mock(ScheduledExecutorService.class);
+        lockmgr = mock(PolicyResourceLockManager.class);
+
+        when(lockmgr.start()).thenReturn(true);
+        when(lockmgr.stop()).thenReturn(true);
+        when(lockmgr.lock()).thenReturn(true);
+        when(lockmgr.unlock()).thenReturn(true);
+
+        when(prov2.beforeCreateLockManager(any(), any())).thenReturn(lockmgr);
 
         when(prov1.getName()).thenReturn(FEATURE1);
         when(prov2.getName()).thenReturn(FEATURE2);
@@ -385,6 +402,86 @@ public class PolicyEngineManagerTest {
         Properties config = mgr.defaultTelemetryConfig();
         assertNotNull(config);
         assertFalse(config.isEmpty());
+    }
+
+    /**
+     * Tests that makeExecutorService() uses the value from the thread
+     * property.
+     */
+    @Test
+    public void testMakeExecutorServicePropertyProvided() {
+        PolicyEngineManager mgrspy = spy(mgr);
+
+        properties.setProperty(PolicyEngineManager.EXECUTOR_THREAD_PROP, "3");
+        mgrspy.configure(properties);
+        assertSame(exsvc, mgrspy.getExecutorService());
+        verify(mgrspy).makeScheduledExecutor(3);
+    }
+
+    /**
+     * Tests that makeExecutorService() uses the default thread count when no thread
+     * property is provided.
+     */
+    @Test
+    public void testMakeExecutorServiceNoProperty() {
+        PolicyEngineManager mgrspy = spy(mgr);
+
+        mgrspy.configure(properties);
+        assertSame(exsvc, mgrspy.getExecutorService());
+        verify(mgrspy).makeScheduledExecutor(PolicyEngineManager.DEFAULT_EXECUTOR_THREADS);
+    }
+
+    /**
+     * Tests that makeExecutorService() uses the default thread count when the thread
+     * property is invalid.
+     */
+    @Test
+    public void testMakeExecutorServiceInvalidProperty() {
+        PolicyEngineManager mgrspy = spy(mgr);
+
+        properties.setProperty(PolicyEngineManager.EXECUTOR_THREAD_PROP, "abc");
+        mgrspy.configure(properties);
+        assertSame(exsvc, mgrspy.getExecutorService());
+        verify(mgrspy).makeScheduledExecutor(PolicyEngineManager.DEFAULT_EXECUTOR_THREADS);
+    }
+
+    /**
+     * Tests createLockManager() when beforeCreateLock throws an exception and returns a
+     * manager.
+     */
+    @Test
+    public void testCreateLockManagerHaveProvider() {
+        // first provider throws an exception
+        when(prov1.beforeCreateLockManager(any(), any())).thenThrow(new RuntimeException(EXPECTED));
+
+        mgr.configure(properties);
+        assertSame(lockmgr, mgr.getLockManager());
+    }
+
+    /**
+     * Tests createLockManager() when SimpleLockManager throws an exception.
+     */
+    @Test
+    public void testCreateLockManagerSimpleEx() {
+        when(prov2.beforeCreateLockManager(any(), any())).thenReturn(null);
+
+        // invalid property for SimpleLockManager
+        properties.setProperty(SimpleLockProperties.EXPIRE_CHECK_SEC, "abc");
+        mgr.configure(properties);
+
+        // should create a manager using default properties
+        assertTrue(mgr.getLockManager() instanceof SimpleLockManager);
+    }
+
+    /**
+     * Tests createLockManager() when SimpleLockManager is returned.
+     */
+    @Test
+    public void testCreateLockManagerSimple() {
+        when(prov2.beforeCreateLockManager(any(), any())).thenReturn(null);
+
+        mgr.configure(properties);
+        assertTrue(mgr.getLockManager() instanceof SimpleLockManager);
     }
 
     @Test
@@ -667,6 +764,12 @@ public class PolicyEngineManagerTest {
             when(sink1.start()).thenThrow(new RuntimeException(EXPECTED));
         });
 
+        // lock manager fails to start - still does everything
+        testStart(false, () -> when(lockmgr.start()).thenReturn(false));
+
+        //  lock manager throws an exception - still does everything
+        testStart(false, () -> when(lockmgr.start()).thenThrow(new RuntimeException(EXPECTED)));
+
         // servlet wait fails - still does everything
         testStart(false, () -> when(server1.waitedStart(anyLong())).thenReturn(false));
 
@@ -796,6 +899,12 @@ public class PolicyEngineManagerTest {
         // servlet fails to stop - still does everything
         testStop(false, () -> when(server1.stop()).thenReturn(false));
 
+        // lock manager fails to stop - still does everything
+        testStop(false, () -> when(lockmgr.stop()).thenReturn(false));
+
+        // lock manager throws an exception - still does everything
+        testStop(false, () -> when(lockmgr.stop()).thenThrow(new RuntimeException(EXPECTED)));
+
         // other tests
         checkBeforeAfter(
             (prov, flag) -> when(prov.beforeStop(mgr)).thenReturn(flag),
@@ -861,6 +970,10 @@ public class PolicyEngineManagerTest {
         assertTrue(threadStarted);
         assertTrue(threadInterrupted);
 
+
+        // lock manager throws an exception - still does everything
+        testShutdown(() -> doThrow(new RuntimeException(EXPECTED)).when(lockmgr).shutdown());
+
         // other tests
         checkBeforeAfter(
             (prov, flag) -> when(prov.beforeShutdown(mgr)).thenReturn(flag),
@@ -906,6 +1019,8 @@ public class PolicyEngineManagerTest {
 
         verify(prov1).afterShutdown(mgr);
         verify(prov2).afterShutdown(mgr);
+
+        verify(exsvc).shutdownNow();
     }
 
     @Test
@@ -985,6 +1100,12 @@ public class PolicyEngineManagerTest {
         // endpoint manager fails to lock - still does everything
         testLock(false, () -> when(endpoint.lock()).thenReturn(false));
 
+        // lock manager fails to lock - still does everything
+        testLock(false, () -> when(lockmgr.lock()).thenReturn(false));
+
+        // lock manager throws an exception - still does everything
+        testLock(false, () -> when(lockmgr.lock()).thenThrow(new RuntimeException(EXPECTED)));
+
         // other tests
         checkBeforeAfter(
             (prov, flag) -> when(prov.beforeLock(mgr)).thenReturn(flag),
@@ -1054,6 +1175,12 @@ public class PolicyEngineManagerTest {
 
         // endpoint manager fails to unlock - still does everything
         testUnlock(false, () -> when(endpoint.unlock()).thenReturn(false));
+
+        // lock manager fails to lock - still does everything
+        testUnlock(false, () -> when(lockmgr.unlock()).thenReturn(false));
+
+        // lock manager throws an exception - still does everything
+        testUnlock(false, () -> when(lockmgr.unlock()).thenThrow(new RuntimeException(EXPECTED)));
 
         // other tests
         checkBeforeAfter(
@@ -1787,6 +1914,11 @@ public class PolicyEngineManagerTest {
         @Override
         protected PolicyEngine getPolicyEngine() {
             return engine;
+        }
+
+        @Override
+        protected ScheduledExecutorService makeScheduledExecutor(int nthreads) {
+            return exsvc;
         }
 
         /**

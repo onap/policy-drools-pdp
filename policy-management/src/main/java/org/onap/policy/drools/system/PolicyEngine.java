@@ -22,6 +22,7 @@ package org.onap.policy.drools.system;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -29,6 +30,8 @@ import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
+import org.onap.policy.drools.core.lock.Lock;
+import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
@@ -198,6 +201,11 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
     List<HttpServletServer> getHttpServers();
 
     /**
+     * Gets a thread pool that can be used to execute background tasks.
+     */
+    ScheduledExecutorService getExecutorService();
+
+    /**
      * get properties configuration.
      *
      * @return properties objects
@@ -278,6 +286,31 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      *                                       missing (ie. communication infrastructure not supported.
      */
     boolean deliver(CommInfrastructure busType, String topic, String event);
+
+    /**
+     * Requests a lock on a resource. Typically, the lock is not immediately granted,
+     * though a "lock" object is always returned. Once the lock has been granted (or
+     * denied), the callback will be invoked to indicate the result.
+     *
+     * <p/>
+     * Notes:
+     * <dl>
+     * <li>The callback may be invoked <i>before</i> this method returns</li>
+     * <li>The implementation need not honor waitForLock={@code true}</li>
+     * </dl>
+     *
+     * @param resourceId identifier of the resource to be locked
+     * @param ownerKey information identifying the owner requesting the lock
+     * @param holdSec amount of time, in seconds, for which the lock should be held once
+     *        it has been granted, after which it will automatically be released
+     * @param callback callback to be invoked once the lock is granted, or subsequently
+     *        lost; must not be {@code null}
+     * @param waitForLock {@code true} to wait for the lock, if it is currently locked,
+     *        {@code false} otherwise
+     * @return a new lock
+     */
+    public Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,
+                    boolean waitForLock);
 
     /**
      * Invoked when the host goes into the active state.
