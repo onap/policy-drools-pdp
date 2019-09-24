@@ -32,6 +32,8 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -78,7 +80,6 @@ import org.slf4j.LoggerFactory;
  * Policy Engine Manager Implementation.
  */
 class PolicyEngineManager implements PolicyEngine {
-
     /**
      * String literals.
      */
@@ -87,6 +88,9 @@ class PolicyEngineManager implements PolicyEngine {
 
     private static final String ENGINE_STOPPED_MSG = "Policy Engine is stopped";
     private static final String ENGINE_LOCKED_MSG = "Policy Engine is locked";
+
+    public static final String EXECUTOR_THREAD_PROP = "executor.threads";
+    protected static final int DEFAULT_EXECUTOR_THREADS = 5;
 
     /**
      * logger.
@@ -132,6 +136,11 @@ class PolicyEngineManager implements PolicyEngine {
      */
     @Getter
     private List<HttpServletServer> httpServers = new ArrayList<>();
+
+    /**
+     * Thread pool used to execute background tasks.
+     */
+    private ScheduledExecutorService exsvc = null;
 
     /**
      * gson parser to decode configuration requests.
@@ -214,6 +223,28 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
+    @JsonIgnore
+    @GsonJsonIgnore
+    public ScheduledExecutorService getExecutorService() {
+        return exsvc;
+    }
+
+    private ScheduledExecutorService makeExecutorService(Properties properties) {
+        int nthreads = DEFAULT_EXECUTOR_THREADS;
+        try {
+            String value = properties.getProperty(EXECUTOR_THREAD_PROP);
+            if (value != null) {
+                nthreads = Integer.valueOf(value);
+            }
+
+        } catch (NumberFormatException e) {
+            logger.error("invalid number for " + EXECUTOR_THREAD_PROP + " property", e);
+        }
+
+        return makeScheduledExecutor(nthreads);
+    }
+
+    @Override
     public synchronized void configure(Properties properties) {
 
         if (properties == null) {
@@ -256,6 +287,8 @@ class PolicyEngineManager implements PolicyEngine {
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-http-servers failed", this, e);
         }
+
+        exsvc = makeExecutorService(properties);
 
         /* policy-engine dispatch post configure hook */
         FeatureApiUtils.apply(getEngineProviders(),
@@ -639,9 +672,10 @@ class PolicyEngineManager implements PolicyEngine {
             (item, ex) -> logger.error("{}: cannot stop http-server {} because of {}", this, item,
                             ex.getMessage(), ex));
 
+        // stop exsvc?
         // stop JMX?
 
-        /* policy-engine dispatch pre stop hook */
+        /* policy-engine dispatch post stop hook */
         FeatureApiUtils.apply(getEngineProviders(),
             feature -> feature.afterStop(this),
             (feature, ex) -> logger.error("{}: feature {} after-stop failure because of {}", this,
@@ -687,6 +721,8 @@ class PolicyEngineManager implements PolicyEngine {
         getControllerFactory().shutdown();
         getTopicEndpointManager().shutdown();
         getServletFactory().destroy();
+
+        exsvc.shutdownNow();
 
         // Stop the JMX listener
 
@@ -1233,5 +1269,9 @@ class PolicyEngineManager implements PolicyEngine {
 
     protected PolicyEngine getPolicyEngine() {
         return PolicyEngineConstants.getManager();
+    }
+
+    protected ScheduledExecutorService makeScheduledExecutor(int nthreads) {
+        return Executors.newScheduledThreadPool(nthreads);
     }
 }

@@ -27,12 +27,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import org.junit.Before;
@@ -125,6 +128,7 @@ public class PolicyEngineManagerTest {
     private PdpdConfiguration pdpConfig;
     private String pdpConfigJson;
     private PolicyEngineManager mgr;
+    private ScheduledExecutorService exsvc;
 
     /**
      * Initializes the object to be tested.
@@ -176,6 +180,7 @@ public class PolicyEngineManagerTest {
         config3 = new ControllerConfiguration();
         config4 = new ControllerConfiguration();
         pdpConfig = new PdpdConfiguration();
+        exsvc = mock(ScheduledExecutorService.class);
 
         when(prov1.getName()).thenReturn(FEATURE1);
         when(prov2.getName()).thenReturn(FEATURE2);
@@ -385,6 +390,47 @@ public class PolicyEngineManagerTest {
         Properties config = mgr.defaultTelemetryConfig();
         assertNotNull(config);
         assertFalse(config.isEmpty());
+    }
+
+    /**
+     * Tests that makeExecutorService() uses the value from the thread
+     * property.
+     */
+    @Test
+    public void testMakeExecutorServicePropertyProvided() {
+        PolicyEngineManager mgrspy = spy(mgr);
+
+        properties.setProperty(PolicyEngineManager.EXECUTOR_THREAD_PROP, "3");
+        mgrspy.configure(properties);
+        assertSame(exsvc, mgrspy.getExecutorService());
+        verify(mgrspy).makeScheduledExecutor(3);
+    }
+
+    /**
+     * Tests that makeExecutorService() uses the default thread count when no thread
+     * property is provided.
+     */
+    @Test
+    public void testMakeExecutorServiceNoProperty() {
+        PolicyEngineManager mgrspy = spy(mgr);
+
+        mgrspy.configure(properties);
+        assertSame(exsvc, mgrspy.getExecutorService());
+        verify(mgrspy).makeScheduledExecutor(PolicyEngineManager.DEFAULT_EXECUTOR_THREADS);
+    }
+
+    /**
+     * Tests that makeExecutorService() uses the default thread count when the thread
+     * property is invalid.
+     */
+    @Test
+    public void testMakeExecutorServiceInvalidProperty() {
+        PolicyEngineManager mgrspy = spy(mgr);
+
+        properties.setProperty(PolicyEngineManager.EXECUTOR_THREAD_PROP, "abc");
+        mgrspy.configure(properties);
+        assertSame(exsvc, mgrspy.getExecutorService());
+        verify(mgrspy).makeScheduledExecutor(PolicyEngineManager.DEFAULT_EXECUTOR_THREADS);
     }
 
     @Test
@@ -906,6 +952,8 @@ public class PolicyEngineManagerTest {
 
         verify(prov1).afterShutdown(mgr);
         verify(prov2).afterShutdown(mgr);
+
+        verify(exsvc).shutdownNow();
     }
 
     @Test
@@ -1787,6 +1835,11 @@ public class PolicyEngineManagerTest {
         @Override
         protected PolicyEngine getPolicyEngine() {
             return engine;
+        }
+
+        @Override
+        protected ScheduledExecutorService makeScheduledExecutor(int nthreads) {
+            return exsvc;
         }
 
         /**
