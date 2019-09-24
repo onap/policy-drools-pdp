@@ -18,20 +18,19 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.distributed.locking;
+package org.onap.policy.simple.locking;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.onap.policy.common.utils.time.CurrentTime;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockImpl;
@@ -46,13 +45,13 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Distributed implementation of the Lock Feature. Maintains locks across servers using a
- * shared DB.
+ * Simple implementation of the Lock Feature. Locks do not span across instances of this
+ * object (i.e., locks do not span across servers).
  */
-public class DistributedLockingFeature
+public class SimpleLockingFeature
                 implements PolicyResourceLockFeatureApi, PolicyEngineFeatureApi, PolicyControllerFeatureApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(DistributedLockingFeature.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLockingFeature.class);
 
     /**
      * Property prefix for extractor definitions.
@@ -65,15 +64,9 @@ public class DistributedLockingFeature
     private static final long EXPIRE_CHECK_MIN = 15;
 
     /**
-     * Maximum number of threads in the thread pool.
+     * Provider of current time. May be overridden by junit tests.
      */
-    // TODO move this to a property
-    private static final int MAX_THREADS = 5;
-
-    /**
-     * UUID of this object.
-     */
-    private final UUID uuid = UUID.randomUUID();
+    private static CurrentTime currentTime = new CurrentTime();
 
     /**
      * Maps a resource to its data.
@@ -95,14 +88,14 @@ public class DistributedLockingFeature
     /**
      * Constructs the object.
      */
-    public DistributedLockingFeature() {
+    public SimpleLockingFeature() {
         super();
     }
 
     @Override
     public int getSequenceNumber() {
-        // low priority, but still higher than the default implementation
-        return 10;
+        // lowest priority, as this is the default implementation
+        return 0;
     }
 
     @Override
@@ -145,23 +138,33 @@ public class DistributedLockingFeature
         // lazy initialization
         init();
 
-        DistributedLock lock = new DistributedLock(Lock.State.WAITING, resourceId, ownerInfo, callback, holdSec);
+        SimpleLock lock = new SimpleLock(Lock.State.WAITING, resourceId, ownerInfo, callback, holdSec);
 
         resource2data.compute(resourceId, (key, curdata) -> {
             if (curdata == null) {
-                // no data yet - attempt a DB update
+                // no data yet - implies that the lock is available
+                lock.grant();
                 return new Data(lock);
             }
 
             if (waitForLock) {
                 curdata.add(lock);
-
-            } else {
-                lock.deny("resource is busy");
             }
 
             return curdata;
         });
+
+
+        if (lock.getState() == Lock.State.ACTIVE) {
+            return lock;
+        }
+
+        if (!waitForLock) {
+            // based on the logic above, the state must be WAITING
+
+            // lock is permanently unavailable since invoker does not want to wait
+            lock.deny("resource is busy");
+        }
 
         return lock;
     }
@@ -170,57 +173,18 @@ public class DistributedLockingFeature
      * Checks for expired locks.
      */
     private void checkExpired() {
-        Set<String> unseen = new HashSet<>(resource2data.keySet());
+        long currentMs = currentTime.getMillis();
+        logger.info("checking for expired locks at {}", currentMs);
 
-        // TODO don't enter this method twice at the same time
-        // TODO handle retries when the DB connection fails
-
-        getDbLocks(unseen);
-
-        // process the ones that weren't seen - these can attempt to get the lock now
-        for (String resourceId : unseen) {
-            resource2data.compute(resourceId, (key, data) -> {
-                if (data == null) {
-                    return null;
-                }
-
-                if (data.owner != null) {
-                    data.owner.deny("lock lost");
-                    data.owner = null;
-                }
-
-                if (data.waiting.isEmpty()) {
-                    return null;
-                }
-
-                exsvc.execute(data.waiting.peek()::requestLock);
-
-                return data;
-            });
-        }
-    }
-
-    protected void getDbLocks(Set<String> unseen) {
-        // TODO scan DB, identifying the resources that are still locked
-        for (;;) {
-            String resourceId = "";
-            UUID dbuuid = UUID.randomUUID();
-
-            if (!unseen.remove(resourceId)) {
+        for (Entry<String, Data> ent : resource2data.entrySet()) {
+            if (!ent.getValue().expired(currentMs)) {
                 continue;
             }
 
-            resource2data.compute(resourceId, (key, data) -> {
-                if (data == null || data.owner == null) {
-                    return data;
-                }
-
-                if (!uuid.equals(dbuuid)) {
-                    data.owner.deny("lock lost");
-                    data.owner = null;
-                    if (data.waiting.isEmpty()) {
-                        return null;
-                    }
+            resource2data.compute(ent.getKey(), (resourceId, data) -> {
+                if (data != null && data.expired(currentMs)) {
+                    data.owner.deny("lock expired");
+                    return data.nextLock(ent.getKey());
                 }
 
                 return data;
@@ -232,27 +196,34 @@ public class DistributedLockingFeature
      * Data about a resource.
      */
     protected class Data {
-
         /**
-         * Lock that currently owns the resource, or {@code null} if the lock is currently
-         * owned by another UUID.
+         * Lock that currently owns the resource.  This always has a value.
          */
-        private DistributedLock owner = null;
+        private SimpleLock owner;
 
         /**
          * Locks waiting to lock the resource.
          */
-        private Queue<DistributedLock> waiting = new LinkedList<>();
+        private Queue<SimpleLock> waiting = new LinkedList<>();
 
 
         /**
          * Constructs the object.
          *
-         * @param lock lock that wants the resource
+         * @param lock lock that currently owns the resource
          */
-        public Data(DistributedLock lock) {
-            add(lock);
-            exsvc.execute(lock::requestLock);
+        public Data(SimpleLock lock) {
+            owner = lock;
+        }
+
+        /**
+         * Determines if the owner's lock has expired.
+         *
+         * @param currentMs current time, in milliseconds
+         * @return {@code true} if the owner's lock has expired, {@code false} otherwise
+         */
+        public boolean expired(long currentMs) {
+            return owner.expired(currentMs);
         }
 
         /**
@@ -260,7 +231,7 @@ public class DistributedLockingFeature
          *
          * @param lock lock to be added
          */
-        public void add(DistributedLock lock) {
+        public void add(SimpleLock lock) {
             logger.info("waiting for lock: {}", lock);
             waiting.add(lock);
         }
@@ -272,7 +243,7 @@ public class DistributedLockingFeature
          * @return {@code true} if the lock was removed, {@code false} if it was not in
          *         the queue
          */
-        public boolean remove(DistributedLock lock) {
+        public boolean remove(SimpleLock lock) {
             return waiting.remove(lock);
         }
 
@@ -286,24 +257,31 @@ public class DistributedLockingFeature
          *         otherwise
          */
         public Data nextLock(String resourceId) {
-
-            if ((owner = waiting.poll()) == null) {
+            SimpleLock lock = waiting.poll();
+            if (lock == null) {
                 // nothing in the queue - this is no longer needed
                 logger.info("no locks waiting for: {}", resourceId);
                 return null;
             }
 
-            // set the hold time for the new lock
-            exsvc.execute(owner::requestExtension);
+            lock.grant();
+
+            owner = lock;
 
             return this;
         }
     }
 
     /**
-     * Distributed Lock implementation.
+     * Simple Lock implementation.
      */
-    protected class DistributedLock extends LockImpl {
+    protected class SimpleLock extends LockImpl {
+
+        /**
+         * Time, in milliseconds, when the lock expires.
+         */
+        private long holdUntilMs;
+
 
         /**
          * Constructs the object.
@@ -316,7 +294,7 @@ public class DistributedLockingFeature
          * @param holdSec amount of time, in seconds, for which the lock should be held,
          *        after which it will automatically be released
          */
-        public DistributedLock(State state, String resourceId, Object ownerInfo, LockCallback callback, int holdSec) {
+        public SimpleLock(State state, String resourceId, Object ownerInfo, LockCallback callback, int holdSec) {
 
             /*
              * Get the owner key via the extractor. This is only used for logging, so OK
@@ -327,6 +305,8 @@ public class DistributedLockingFeature
             if (holdSec < 0) {
                 throw new IllegalArgumentException("holdSec is negative");
             }
+
+            setHoldUntil();
         }
 
         /**
@@ -334,6 +314,7 @@ public class DistributedLockingFeature
          */
         protected void grant() {
             setState(Lock.State.ACTIVE);
+            setHoldUntil();
 
             logger.info("lock granted: {}", this);
 
@@ -342,7 +323,6 @@ public class DistributedLockingFeature
 
         /**
          * Permanently denies this lock.
-         *
          * @param reason the reason the lock was denied
          */
         protected void deny(String reason) {
@@ -351,6 +331,16 @@ public class DistributedLockingFeature
             logger.info("{}: {}", reason, this);
 
             notifyUnavailable();
+        }
+
+        /**
+         * Determines if the lock has expired.
+         *
+         * @param currentMs current time, in milliseconds
+         * @return {@code true} if the lock has expired, {@code false} otherwise
+         */
+        public boolean expired(long currentMs) {
+            return (holdUntilMs <= currentMs);
         }
 
         @Override
@@ -407,9 +397,9 @@ public class DistributedLockingFeature
 
                 if (curdata.owner == this) {
                     result.set(true);
-                    setState(Lock.State.EXTENDING);
                     setHoldSec(holdSec);
-                    exsvc.execute(this::requestExtension);
+                    setHoldUntil();
+                    notifyAvailable();
                 }
                 // else: this lock is not the owner - no change
 
@@ -419,34 +409,29 @@ public class DistributedLockingFeature
             return result.get();
         }
 
-        private void requestLock() {
-            // TODO insert or update a record in the DB
-            // TODO make two attempts
-
-        }
-
-        private void requestExtension() {
-            // TODO update the hold time on the DB
-            // TODO make two attempts
-
-        }
-
         @Override
-        public DistributedLock notifyAvailable() {
+        public SimpleLock notifyAvailable() {
             exsvc.execute(() -> getCallback().lockAvailable(this));
             return this;
         }
 
         @Override
-        public DistributedLock notifyUnavailable() {
+        public SimpleLock notifyUnavailable() {
             exsvc.execute(() -> getCallback().lockUnavailable(this));
             return this;
+        }
+
+        /**
+         * Sets the time, {@link #holdUntilMs}, when the lock will expire.
+         */
+        private void setHoldUntil() {
+            holdUntilMs = currentTime.getMillis() + getHoldSec();
         }
     }
 
     // these may be overridden by junit tests
 
     protected ScheduledExecutorService makeThreadPool() {
-        return Executors.newScheduledThreadPool(MAX_THREADS);
+        return Executors.newScheduledThreadPool(1);
     }
 }

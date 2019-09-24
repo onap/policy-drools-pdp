@@ -53,7 +53,7 @@ public class DistributedLockingFeatureTest {
 
     @Test
     public void testGetSequenceNumber() {
-        assertEquals(1000, new DistributedLockingFeature().getSequenceNumber());
+        assertEquals(1000, new DistributedLockingFeatureOld().getSequenceNumber());
     }
 
     @Test(expected = DistributedLockingFeatureException.class)
@@ -81,7 +81,7 @@ public class DistributedLockingFeatureTest {
     /**
      * Feature that overrides {@link #makeDataSource()}.
      */
-    private class DistributedLockingFeatureImpl extends DistributedLockingFeature {
+    private class DistributedLockingFeatureImpl extends DistributedLockingFeatureOld {
         /**
          * Exception to throw when {@link #makeDataSource()} is invoked.
          */
