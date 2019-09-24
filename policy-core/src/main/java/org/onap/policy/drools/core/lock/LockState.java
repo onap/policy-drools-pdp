@@ -1,15 +1,15 @@
-/*
+/*-
  * ============LICENSE_START=======================================================
- * feature-distributed-locking
+ * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,17 +18,26 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.distributed.locking;
+package org.onap.policy.drools.core.lock;
 
-public class DistributedLockingFeatureException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+/**
+ * States of a Lock.
+ */
+
+public enum LockState {
 
     /**
-     * Constructor.
-     * 
-     * @param ex exception to be wrapped
+     * Waiting for the lock request to complete.
      */
-    public DistributedLockingFeatureException(Exception ex) {
-        super(ex);
-    }
+    WAITING,
+
+    /**
+     * This lock currently holds the resource.
+     */
+    ACTIVE,
+
+    /**
+     * The resource is no longer available to the lock.
+     */
+    UNAVAILABLE
 }
