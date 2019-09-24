@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * feature-distributed-locking
+ * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,108 +22,147 @@ package org.onap.policy.distributed.locking;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
-import org.onap.policy.common.utils.properties.exception.PropertyException;
+import org.onap.policy.common.utils.network.NetworkUtil;
+import org.onap.policy.drools.core.Extractor;
+import org.onap.policy.drools.core.lock.LockCallback;
+import org.onap.policy.drools.core.lock.LockImpl;
+import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi;
+import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DistributedLockingFeature implements PolicyEngineFeatureApi, PolicyResourceLockFeatureApi {
 
-    /**
-     * Logger instance.
-     */
+/**
+ * Distributed implementation of the Lock Feature. Maintains locks across servers using a
+ * shared DB.
+ *
+ * <p/>
+ * Notes:
+ * <dl>
+ * <li>This implementation does not honor the waitForLocks={@code true} parameter.</li>
+ * <li>The <i>owner</i> field in the DB is not derived from the lock's owner info, but is
+ * instead the {@link #uuidString}.</li>
+ * <li>A periodic check of the DB is made to determine if any of the locks have expired.
+ * If a DB error occurs, then it will retry a couple of times (configurable). If the retry
+ * count is exhausted, then it will assume that all of the locks have been lost.
+ * </dl>
+ */
+public class DistributedLockingFeature
+                implements PolicyResourceLockFeatureApi, PolicyEngineFeatureApi, PolicyControllerFeatureApi {
+
     private static final Logger logger = LoggerFactory.getLogger(DistributedLockingFeature.class);
 
-    /**
-     * Properties Configuration Name.
-     */
-    public static final String CONFIGURATION_PROPERTIES_NAME = "feature-distributed-locking";
+    private static final String CONFIGURATION_PROPERTIES_NAME = "feature-distributed-locking";
+    private static final String LOCK_LOST_MSG = "lock lost";
+    private static final String NOT_LOCKED_MSG = "not locked";
+    private static final String HOST_NAME = NetworkUtil.getHostname();
 
     /**
-     * Properties for locking feature.
+     * Property prefix for extractor definitions.
      */
-    private DistributedLockingProperties lockProps;
+    public static final String EXTRACTOR_PREFIX = "locking.extractor.";
 
     /**
-     * Data source used to connect to the DB containing locks.
+     * Feature properties.
+     */
+    private DistributedLockingProperties featProps;
+
+    /**
+     * UUID of this object.
+     */
+    private final String uuidString = UUID.randomUUID().toString();
+
+    /**
+     * Maps a resource to the lock that owns it, or is awaiting a request for it. Once a
+     * lock is added to the map, it remains in the map until the lock is lost or until the
+     * unlock request completes.
+     */
+    private final Map<String, DistributedLock> resource2lock = new ConcurrentHashMap<>();
+
+    /**
+     * Used to extract the owner key from the ownerInfo.
+     */
+    private final Extractor extractor = new Extractor();
+
+    /**
+     * Thread pool used to check for lock expiration and to notify owners when locks are
+     * granted or lost.
+     */
+    private ScheduledExecutorService exsvc = null;
+
+    /**
+     * Number of times we've attempted to check expired locks.
+     */
+    private int nchecks = 0;
+
+    /**
+     * Data source used to connect to the DB.
      */
     private BasicDataSource dataSource;
 
+
     /**
-     * UUID.
+     * Constructs the object.
      */
-    private static final UUID uuid = UUID.randomUUID();
+    public DistributedLockingFeature() {
+        super();
+    }
 
     @Override
     public int getSequenceNumber() {
-        return 1000;
+        // low priority, but still higher than the default implementation
+        return 10;
     }
 
     @Override
-    public OperResult beforeLock(String resourceId, String owner, int holdSec) {
-
-        TargetLock lock = new TargetLock(resourceId, uuid, owner, dataSource);
-
-        return (lock.lock(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
+    public boolean enabled() {
+        return true;
     }
 
     @Override
-    public OperResult beforeRefresh(String resourceId, String owner, int holdSec) {
-
-        TargetLock lock = new TargetLock(resourceId, uuid, owner, dataSource);
-
-        return (lock.refresh(holdSec) ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
-    }
-
-    @Override
-    public OperResult beforeUnlock(String resourceId, String owner) {
-        TargetLock lock = new TargetLock(resourceId, uuid, owner, dataSource);
-
-        return (lock.unlock() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
-    }
-
-    @Override
-    public OperResult beforeIsLockedBy(String resourceId, String owner) {
-        TargetLock lock = new TargetLock(resourceId, uuid, owner, dataSource);
-
-        return (lock.isActive() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
-    }
-
-    @Override
-    public OperResult beforeIsLocked(String resourceId) {
-        TargetLock lock = new TargetLock(resourceId, uuid, "dummyOwner", dataSource);
-
-        return (lock.isLocked() ? OperResult.OPER_ACCEPTED : OperResult.OPER_DENIED);
+    public PolicyController beforeCreate(String name, Properties properties) {
+        extractor.register(properties, EXTRACTOR_PREFIX);
+        return null;
     }
 
     @Override
     public boolean afterStart(PolicyEngine engine) {
 
         try {
-            this.lockProps = new DistributedLockingProperties(SystemPersistenceConstants.getManager()
-                            .getProperties(DistributedLockingFeature.CONFIGURATION_PROPERTIES_NAME));
-            this.dataSource = makeDataSource();
-        } catch (PropertyException e) {
-            logger.error("DistributedLockingFeature feature properies have not been loaded", e);
-            throw new DistributedLockingFeatureException(e);
-        } catch (InterruptedException e) {
-            logger.error("DistributedLockingFeature failed to create data source", e);
-            Thread.currentThread().interrupt();
-            throw new DistributedLockingFeatureException(e);
+            featProps = new DistributedLockingProperties(getProperties(CONFIGURATION_PROPERTIES_NAME));
+            dataSource = makeDataSource();
+
+            exsvc = makeThreadPool(featProps.getMaxThreads());
+            exsvc.execute(this::deleteExpiredDbLocks);
+            exsvc.schedule(this::checkExpired, featProps.getExpireCheckSec(), TimeUnit.SECONDS);
+
         } catch (Exception e) {
-            logger.error("DistributedLockingFeature failed to create data source", e);
+            closeDataSource();
             throw new DistributedLockingFeatureException(e);
         }
-
-        cleanLockTable();
 
         return false;
     }
@@ -136,10 +175,10 @@ public class DistributedLockingFeature implements PolicyEngineFeatureApi, Policy
      */
     protected BasicDataSource makeDataSource() throws Exception {
         Properties props = new Properties();
-        props.put("driverClassName", lockProps.getDbDriver());
-        props.put("url", lockProps.getDbUrl());
-        props.put("username", lockProps.getDbUser());
-        props.put("password", lockProps.getDbPwd());
+        props.put("driverClassName", featProps.getDbDriver());
+        props.put("url", featProps.getDbUrl());
+        props.put("username", featProps.getDbUser());
+        props.put("password", featProps.getDbPwd());
         props.put("testOnBorrow", "true");
         props.put("poolPreparedStatements", "true");
 
@@ -149,31 +188,508 @@ public class DistributedLockingFeature implements PolicyEngineFeatureApi, Policy
     }
 
     /**
-     * This method kills the heartbeat thread and calls refreshLockTable which removes
-     * any records from the db where the current host is the owner.
+     * Deletes expired locks from the DB.
+     */
+    private void deleteExpiredDbLocks() {
+        logger.info("deleting all expired locks from the DB");
+
+        try (Connection conn = dataSource.getConnection();
+                        PreparedStatement stmt = conn
+                                        .prepareStatement("DELETE FROM pooling.locks WHERE expirationTime <= now()")) {
+
+            int ndel = stmt.executeUpdate();
+            logger.info("deleted {} expired locks from the DB", ndel);
+
+        } catch (SQLException e) {
+            logger.warn("failed to delete expired locks from the DB", e);
+        }
+    }
+
+    /**
+     * Shuts down the thread pool.
      */
     @Override
     public boolean beforeShutdown(PolicyEngine engine) {
-        cleanLockTable();
+        if (exsvc != null) {
+            exsvc.shutdown();
+            exsvc = null;
+        }
+
+        closeDataSource();
+
         return false;
     }
 
     /**
-     * This method removes all records owned by the current host from the db.
+     * Closes {@link #dataSource} and sets it to {@code null}.
      */
-    private void cleanLockTable() {
-
-        try (Connection conn = dataSource.getConnection();
-                PreparedStatement statement = conn.prepareStatement(
-                        "DELETE FROM pooling.locks WHERE host = ? OR expirationTime < now()")
-                ) {
-
-            statement.setString(1, uuid.toString());
-            statement.executeUpdate();
+    private void closeDataSource() {
+        try {
+            if (dataSource != null) {
+                dataSource.close();
+            }
 
         } catch (SQLException e) {
-            logger.error("error in refreshLockTable()", e);
+            logger.error("cannot close the distributed lockinc DB", e);
         }
 
+        dataSource = null;
+    }
+
+    @Override
+    public DistributedLock lock(String resourceId, Object ownerInfo, int holdSec, LockCallback callback,
+                    boolean waitForLock) {
+
+        DistributedLock lock = new DistributedLock(LockState.WAITING, resourceId, ownerInfo, holdSec, callback);
+
+        resource2lock.compute(resourceId, (key, curlock) -> {
+            if (curlock == null) {
+                // no lock yet - we can try to grab it
+                lock.scheduleRequest(lock::doLock);
+                return lock;
+
+            } else {
+                lock.deny("resource is busy");
+                return curlock;
+            }
+        });
+
+        return lock;
+    }
+
+    /**
+     * Checks for expired locks.
+     */
+    private void checkExpired() {
+
+        try {
+            if (nchecks++ > featProps.getMaxRetries()) {
+                logger.error("max retry count exhausted - all locks lost");
+                expireAllLocks();
+
+            } else {
+                logger.info("checking for expired locks");
+                Set<String> expiredIds = new HashSet<>(resource2lock.keySet());
+                identifyDbLocks(expiredIds);
+                expireLocks(expiredIds);
+            }
+
+            // reset this AFTER the above work succeeds
+            nchecks = 0;
+            exsvc.schedule(this::checkExpired, featProps.getExpireCheckSec(), TimeUnit.SECONDS);
+
+        } catch (RejectedExecutionException e) {
+            logger.warn("thread pool is no longer accepting requests", e);
+
+        } catch (SQLException | RuntimeException e) {
+            logger.error("error checking expired locks", e);
+            exsvc.schedule(this::checkExpired, featProps.getRetrySec(), TimeUnit.SECONDS);
+        }
+
+        logger.info("done checking for expired locks");
+    }
+
+    /**
+     * Expires all of the locks that are currently owned by this feature.
+     */
+    private void expireAllLocks() {
+        Iterator<DistributedLock> it = resource2lock.values().iterator();
+        while (it.hasNext()) {
+            DistributedLock lock = it.next();
+
+            if (lock.isActive()) {
+                it.remove();
+                lock.deny(LOCK_LOST_MSG);
+            }
+        }
+    }
+
+    /**
+     * Identifies locks that the DB indicates are still active.
+     *
+     * @param expiredIds IDs of resources that have expired locks. If a resource is still
+     *        locked, it's ID is removed from this set
+     * @throws SQLException if a DB error occurs
+     */
+    private void identifyDbLocks(Set<String> expiredIds) throws SQLException {
+        try (Connection conn = dataSource.getConnection();
+                        PreparedStatement stmt = conn.prepareStatement("SELECT resourceId FROM pooling.locks "
+                                        + "WHERE host=? AND owner=? AND expirationTime > now()")) {
+
+            stmt.setString(1, HOST_NAME);
+            stmt.setString(2, uuidString);
+
+            identifyDbLocks(expiredIds, stmt);
+        }
+    }
+
+    /**
+     * Identifies locks that the DB indicates are still active.
+     *
+     * @param expiredIds IDs of resources that have expired locks. If a resource is still
+     *        locked, it's ID is removed from this set
+     * @param stmt statement to query the records
+     * @throws SQLException if a DB error occurs
+     */
+    private void identifyDbLocks(Set<String> expiredIds, PreparedStatement stmt) throws SQLException {
+        try (ResultSet resultSet = stmt.executeQuery()) {
+            while (resultSet.next()) {
+                String resourceId = resultSet.getString(1);
+
+                // we have now seen this resource id
+                expiredIds.remove(resourceId);
+            }
+        }
+    }
+
+    /**
+     * Expires locks for the resources that no longer appear within the DB.
+     *
+     * @param expiredIds IDs of resources that have expired locks
+     */
+    private void expireLocks(Set<String> expiredIds) {
+        for (String resourceId : expiredIds) {
+            resource2lock.compute(resourceId, (key, lock) -> {
+                if (lock != null && lock.isActive()) {
+                    // it thinks it's active, but it isn't
+                    lock.deny(LOCK_LOST_MSG);
+                    return null;
+                }
+
+                return lock;
+            });
+        }
+    }
+
+    /**
+     * Distributed Lock implementation.
+     */
+    protected class DistributedLock extends LockImpl {
+
+        /**
+         * {@code True} if the lock is busy making a request, {@code false} otherwise.
+         */
+        private AtomicBoolean busy = new AtomicBoolean(false);
+
+        /**
+         * Request to be performed.
+         */
+        private AtomicReference<RunnableWithEx> request = new AtomicReference<>(null);
+
+        /**
+         * Number of times we've attempted a request.
+         */
+        private AtomicInteger nattempts = new AtomicInteger(0);
+
+        /**
+         * Constructs the object.
+         *
+         * @param state initial state of the lock
+         * @param resourceId identifier of the resource to be locked
+         * @param ownerInfo information identifying the owner requesting the lock
+         * @param holdSec amount of time, in seconds, for which the lock should be held,
+         *        after which it will automatically be released
+         * @param callback callback to be invoked once the lock is granted, or
+         *        subsequently lost; must not be {@code null}
+         */
+        public DistributedLock(LockState state, String resourceId, Object ownerInfo, int holdSec,
+                        LockCallback callback) {
+
+            /*
+             * Get the owner key via the extractor. This is only used for logging, so OK
+             * if it fails (i.e., returns null).
+             */
+            super(state, resourceId, ownerInfo, extractor.extract(ownerInfo), holdSec, callback, true);
+
+            if (holdSec < 0) {
+                throw new IllegalArgumentException("holdSec is negative");
+            }
+        }
+
+        /**
+         * Grants this lock.
+         */
+        protected void grant() {
+            setState(LockState.ACTIVE);
+
+            logger.info("lock granted: {}", this);
+
+            notifyAvailable();
+        }
+
+        /**
+         * Permanently denies this lock.
+         *
+         * @param reason the reason the lock was denied
+         */
+        protected void deny(String reason) {
+            setState(LockState.UNAVAILABLE);
+
+            logger.info("{}: {}", reason, this);
+
+            notifyUnavailable();
+        }
+
+        @Override
+        public boolean free() {
+            // do a quick check of the state
+            if (isUnavailable()) {
+                return false;
+            }
+
+            logger.info("releasing lock: {}", this);
+
+            AtomicBoolean result = new AtomicBoolean(false);
+
+            resource2lock.compute(getResourceId(), (resourceId, curlock) -> {
+                if (curlock == this && !isUnavailable()) {
+                    // this lock was the owner
+                    result.set(true);
+                    setState(LockState.UNAVAILABLE);
+                    scheduleRequest(this::doUnlock);
+
+                    // NOTE: do NOT return null; it must remain until doUnlock completes
+                }
+
+                return curlock;
+            });
+
+            return result.get();
+        }
+
+        @Override
+        public void extend(int holdSec, LockCallback callback) {
+            if (holdSec < 0) {
+                throw new IllegalArgumentException("holdSec is negative");
+            }
+
+            setCallback(callback);
+
+            // do a quick check of the state
+            if (isUnavailable()) {
+                deny(NOT_LOCKED_MSG);
+                return;
+            }
+
+            resource2lock.compute(getResourceId(), (resourceId, curlock) -> {
+                if (curlock == this && !isUnavailable()) {
+                    setState(LockState.WAITING);
+                    setHoldSec(holdSec);
+                    scheduleRequest(this::doExtend);
+
+                } else {
+                    deny(NOT_LOCKED_MSG);
+
+                    // note: leave it in the map until doUnlock() removes it
+                }
+
+                return curlock;
+            });
+        }
+
+        /**
+         * Schedules a request for execution.
+         *
+         * @param schedreq the request that should be scheduled
+         */
+        private void scheduleRequest(RunnableWithEx schedreq) {
+            nattempts.set(0);
+            request.set(schedreq);
+            exsvc.execute(this::doRequest);
+        }
+
+        /**
+         * Executes the current request, if none are currently executing.
+         */
+        private void doRequest() {
+            if (!busy.compareAndSet(false, true)) {
+                // already busy
+                return;
+            }
+
+            try {
+                if (nattempts.getAndIncrement() > featProps.getMaxRetries()) {
+                    logger.warn("retry count exhausted for lock: {}", this);
+                    removeFromMap(getState() == LockState.UNAVAILABLE ? null : LOCK_LOST_MSG);
+                    return;
+                }
+
+                RunnableWithEx req;
+                while ((req = request.getAndSet(null)) != null) {
+                    req.run();
+                }
+
+            } catch (SQLException e) {
+                logger.warn("request failed for lock: {}", this, e);
+                exsvc.schedule(this::doRequest, featProps.getRetrySec(), TimeUnit.SECONDS);
+
+            } finally {
+                busy.set(false);
+            }
+        }
+
+        /**
+         * Attempts to add a lock to the DB. Generates a callback, indicating success or
+         * failure.
+         *
+         * @throws SQLException if a DB error occurs
+         */
+        private void doLock() throws SQLException {
+            try (Connection conn = dataSource.getConnection()) {
+                boolean success = false;
+                try {
+                    success = doInsert(conn);
+
+                } catch (SQLException e) {
+                    logger.info("failed to insert lock record - attempting update: {}", this, e);
+                    success = doUpdate(conn);
+                }
+
+                if (success) {
+                    grant();
+                    return;
+                }
+            }
+
+            removeFromMap(LOCK_LOST_MSG);
+        }
+
+        /**
+         * Attempts to remove a lock from the DB. Does <i>not</i> generate a callback if
+         * it fails, as this should only be executed in response to a call to
+         * {@link #free()}.
+         *
+         * @throws SQLException if a DB error occurs
+         */
+        private void doUnlock() throws SQLException {
+            try (Connection conn = dataSource.getConnection()) {
+                doDelete(conn);
+            }
+
+            removeFromMap(null);
+        }
+
+        /**
+         * Attempts to extend a lock in the DB. Generates a callback, indicating success
+         * or failure.
+         *
+         * @throws SQLException if a DB error occurs
+         */
+        private void doExtend() throws SQLException {
+            try (Connection conn = dataSource.getConnection()) {
+                if (doUpdate(conn)) {
+                    grant();
+                    return;
+                }
+            }
+
+            removeFromMap(LOCK_LOST_MSG);
+        }
+
+        /**
+         * Inserts the lock into the DB.
+         *
+         * @param conn DB connection
+         * @return {@code true} if a record was successfully inserted, {@code false}
+         *         otherwise
+         * @throws SQLException if a DB error occurs
+         */
+        private boolean doInsert(Connection conn) throws SQLException {
+            try (PreparedStatement stmt =
+                            conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
+                                            + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
+
+                stmt.setString(1, getResourceId());
+                stmt.setString(2, HOST_NAME);
+                stmt.setString(3, uuidString);
+                stmt.setInt(4, getHoldSec());
+
+                return (stmt.executeUpdate() == 1);
+            }
+        }
+
+        /**
+         * Updates the lock in the DB.
+         *
+         * @param conn DB connection
+         * @return {@code true} if a record was successfully updated, {@code false}
+         *         otherwise
+         * @throws SQLException if a DB error occurs
+         */
+        private boolean doUpdate(Connection conn) throws SQLException {
+            try (PreparedStatement stmt =
+                            conn.prepareStatement("UPDATE pooling.locks SET resourceId=?, host=?, owner=?,"
+                                            + " expirationTime=timestampadd(second, ?, now()) "
+                                            + "WHERE resourceId=? AND (owner=? OR expirationTime < now())")) {
+
+                stmt.setString(1, getResourceId());
+                stmt.setString(2, HOST_NAME);
+                stmt.setString(3, uuidString);
+                stmt.setInt(4, getHoldSec());
+
+                stmt.setString(5, getResourceId());
+                stmt.setString(6, uuidString);
+
+                return (stmt.executeUpdate() == 1);
+            }
+        }
+
+        /**
+         * Deletes the lock from the DB.
+         *
+         * @param conn DB connection
+         * @throws SQLException if a DB error occurs
+         */
+        private void doDelete(Connection conn) throws SQLException {
+            try (PreparedStatement stmt =
+                            conn.prepareStatement("DELETE pooling.locks WHERE resourceId=? AND host=? AND owner=?")) {
+
+                stmt.setString(1, getResourceId());
+                stmt.setString(2, HOST_NAME);
+                stmt.setString(3, uuidString);
+
+                stmt.executeUpdate();
+            }
+        }
+
+        /**
+         * Removes the lock from the map.
+         *
+         * @param reason reason for which the lock was denied, {@code null} if no callback
+         *        should be generated
+         */
+        private void removeFromMap(String reason) {
+            resource2lock.remove(getResourceId(), this);
+            request.set(null);
+
+            if (reason != null) {
+                deny(reason);
+            }
+        }
+
+        @Override
+        public void notifyAvailable() {
+            exsvc.execute(() -> getCallback().lockAvailable(this));
+        }
+
+        @Override
+        public void notifyUnavailable() {
+            exsvc.execute(() -> getCallback().lockUnavailable(this));
+        }
+    }
+
+    @FunctionalInterface
+    private static interface RunnableWithEx {
+        void run() throws SQLException;
+    }
+
+    // these may be overridden by junit tests
+
+    protected Properties getProperties(String fileName) {
+        return SystemPersistenceConstants.getManager().getProperties(fileName);
+    }
+
+    protected ScheduledExecutorService makeThreadPool(int nthreads) {
+        return Executors.newScheduledThreadPool(nthreads);
     }
 }
