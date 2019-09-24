@@ -21,11 +21,15 @@
 package org.onap.policy.distributed.locking;
 
 import java.util.Properties;
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.common.utils.properties.BeanConfigurator;
 import org.onap.policy.common.utils.properties.Property;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 
+@Getter
+@Setter
 public class DistributedLockingProperties {
 
     /**
@@ -36,7 +40,11 @@ public class DistributedLockingProperties {
     public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
     public static final String DB_URL = "javax.persistence.jdbc.url";
     public static final String DB_USER = "javax.persistence.jdbc.user";
-    public static final String DB_PWD = "javax.persistence.jdbc.password";
+    public static final String DB_PASS = "javax.persistence.jdbc.password";
+    public static final String EXPIRE_CHECK_SEC = "expire.check.seconds";
+    public static final String RETRY_SEC = "retry.seconds";
+    public static final String MAX_RETRIES = "max.retries";
+    public static final String MAX_THREADS = "max.threads";
 
     /**
      * Properties from which this was constructed.
@@ -64,8 +72,32 @@ public class DistributedLockingProperties {
     /**
      * Database password.
      */
-    @Property(name = DB_PWD)
+    @Property(name = DB_PASS)
     private String dbPwd;
+
+    /**
+     * Time, in seconds, to wait between checks for expired locks.
+     */
+    @Property(name = EXPIRE_CHECK_SEC)
+    private int expireCheckSec;
+
+    /**
+     * Number of seconds to wait before retrying, after a DB error.
+     */
+    @Property(name = RETRY_SEC)
+    private int retrySec;
+
+    /**
+     * Maximum number of times to retry a DB operation.
+     */
+    @Property(name = MAX_RETRIES)
+    private int maxRetries;
+
+    /**
+     * Maximum number of threads in the thread pool.
+     */
+    @Property(name = MAX_THREADS)
+    private int maxThreads;
 
     /**
      * Constructs the object, populating fields from the properties.
@@ -78,50 +110,4 @@ public class DistributedLockingProperties {
 
         new BeanConfigurator().configureFromProperties(this, props);
     }
-
-
-    public Properties getSource() {
-        return source;
-    }
-
-
-    public String getDbDriver() {
-        return dbDriver;
-    }
-
-
-    public String getDbUrl() {
-        return dbUrl;
-    }
-
-
-    public String getDbUser() {
-        return dbUser;
-    }
-
-
-    public String getDbPwd() {
-        return dbPwd;
-    }
-
-
-    public void setDbDriver(String dbDriver) {
-        this.dbDriver = dbDriver;
-    }
-
-
-    public void setDbUrl(String dbUrl) {
-        this.dbUrl = dbUrl;
-    }
-
-
-    public void setDbUser(String dbUser) {
-        this.dbUser = dbUser;
-    }
-
-
-    public void setDbPwd(String dbPwd) {
-        this.dbPwd = dbPwd;
-    }
-
 }
