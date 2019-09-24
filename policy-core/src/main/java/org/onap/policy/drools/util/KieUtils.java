@@ -56,7 +56,7 @@ public class KieUtils {
      * @return releaseId result o a sucessful installation
      * @throws IOException error accessing necessary resources
      */
-    public static ReleaseId installArtifact(String kmodule, String pom, String drlKJarPath, 
+    public static ReleaseId installArtifact(String kmodule, String pom, String drlKJarPath,
             String drl) throws IOException {
         KieModuleModel kieModule = KieModuleModelImpl.fromXML(kmodule);
 
