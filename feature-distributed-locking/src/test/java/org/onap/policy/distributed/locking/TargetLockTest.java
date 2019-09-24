@@ -55,7 +55,7 @@ public class TargetLockTest {
     private static final String MY_OWNER = "my-owner";
     private static final UUID MY_UUID = UUID.randomUUID();
     private static Connection conn = null;
-    private static DistributedLockingFeature distLockFeat;
+    private static DistributedLockingFeatureOld distLockFeat;
 
     /**
      * Setup the database.
@@ -65,7 +65,7 @@ public class TargetLockTest {
         getDbConnection();
         createTable();
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
-        distLockFeat = new DistributedLockingFeature();
+        distLockFeat = new DistributedLockingFeatureOld();
         distLockFeat.afterStart(null);
     }
 
