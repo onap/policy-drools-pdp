@@ -20,28 +20,30 @@
 
 package org.onap.policy.distributed.locking;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.common.utils.properties.BeanConfigurator;
 import org.onap.policy.common.utils.properties.Property;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
 
+@Getter
+@Setter
 public class DistributedLockingProperties {
-
-    /**
-     * Feature properties all begin with this prefix.
-     */
-    public static final String PREFIX = "distributed.locking.";
 
     public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
     public static final String DB_URL = "javax.persistence.jdbc.url";
     public static final String DB_USER = "javax.persistence.jdbc.user";
-    public static final String DB_PWD = "javax.persistence.jdbc.password";
-
-    /**
-     * Properties from which this was constructed.
-     */
-    private final Properties source;
+    public static final String DB_PASS = "javax.persistence.jdbc.password";
+    public static final String TRANSIENT_ERROR_CODES = "transient.error.codes";
+    public static final String EXPIRE_CHECK_SEC = "expire.check.seconds";
+    public static final String RETRY_SEC = "retry.seconds";
+    public static final String MAX_RETRIES = "max.retries";
+    public static final String MAX_THREADS = "max.threads";
 
     /**
      * Database driver.
@@ -64,8 +66,42 @@ public class DistributedLockingProperties {
     /**
      * Database password.
      */
-    @Property(name = DB_PWD)
+    @Property(name = DB_PASS)
     private String dbPwd;
+
+    /**
+     * Vendor-specific error codes that are "transient", meaning they may go away if the
+     * command is repeated (e.g., connection issue), as opposed to something like a syntax
+     * error or a duplicate key.
+     */
+    @Property(name = TRANSIENT_ERROR_CODES)
+    private String errorCodeStrings;
+
+    private final Set<Integer> transientErrorCodes;
+
+    /**
+     * Time, in seconds, to wait between checks for expired locks.
+     */
+    @Property(name = EXPIRE_CHECK_SEC, defaultValue = "900")
+    private int expireCheckSec;
+
+    /**
+     * Number of seconds to wait before retrying, after a DB error.
+     */
+    @Property(name = RETRY_SEC, defaultValue = "60")
+    private int retrySec;
+
+    /**
+     * Maximum number of times to retry a DB operation.
+     */
+    @Property(name = MAX_RETRIES, defaultValue = "2")
+    private int maxRetries;
+
+    /**
+     * Maximum number of threads in the thread pool.
+     */
+    @Property(name = MAX_THREADS, defaultValue = "5")
+    private int maxThreads;
 
     /**
      * Constructs the object, populating fields from the properties.
@@ -74,54 +110,33 @@ public class DistributedLockingProperties {
      * @throws PropertyException if an error occurs
      */
     public DistributedLockingProperties(Properties props) throws PropertyException {
-        source = props;
-
         new BeanConfigurator().configureFromProperties(this, props);
+
+        Set<Integer> set = new HashSet<>();
+        for (String text : errorCodeStrings.split(",")) {
+            text = text.trim();
+            if (text.isEmpty()) {
+                continue;
+            }
+
+            try {
+                set.add(Integer.valueOf(text));
+
+            } catch (NumberFormatException e) {
+                throw new PropertyException(TRANSIENT_ERROR_CODES, "errorCodeStrings", e);
+            }
+        }
+
+        transientErrorCodes = Collections.unmodifiableSet(set);
     }
 
-
-    public Properties getSource() {
-        return source;
+    /**
+     * Determines if an error is transient.
+     *
+     * @param errorCode error code to check
+     * @return {@code true} if the error is transient, {@code false} otherwise
+     */
+    public boolean isTransient(int errorCode) {
+        return transientErrorCodes.contains(errorCode);
     }
-
-
-    public String getDbDriver() {
-        return dbDriver;
-    }
-
-
-    public String getDbUrl() {
-        return dbUrl;
-    }
-
-
-    public String getDbUser() {
-        return dbUser;
-    }
-
-
-    public String getDbPwd() {
-        return dbPwd;
-    }
-
-
-    public void setDbDriver(String dbDriver) {
-        this.dbDriver = dbDriver;
-    }
-
-
-    public void setDbUrl(String dbUrl) {
-        this.dbUrl = dbUrl;
-    }
-
-
-    public void setDbUser(String dbUser) {
-        this.dbUser = dbUser;
-    }
-
-
-    public void setDbPwd(String dbPwd) {
-        this.dbPwd = dbPwd;
-    }
-
 }
