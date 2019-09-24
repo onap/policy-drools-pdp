@@ -82,7 +82,7 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * In a distributed host environment, features have the ability to send
      * the object do a different host, and do the insert.
      *
-     * @param policySession the 'PolicySession' object associated with the
+     * @param PolicySession the 'PolicySession' object associated with the
      *     Drools session
      * @param object the object to insert in Drools memory
      * @return 'true' if this feature is handling the operation,
