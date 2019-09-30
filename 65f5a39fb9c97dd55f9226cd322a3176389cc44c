@@ -115,6 +115,23 @@
       "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6e9cd15_58bc141d",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-09-30T18:26:13Z",
+      "side": 1,
+      "message": "why were these added?",
+      "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
