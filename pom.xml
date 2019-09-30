@@ -1,6 +1,7 @@
-<!-- 
-  ============LICENSE_START======================================================= 
-  ONAP Policy Engine - Drools PDP 
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============LICENSE_START=======================================================
+  ONAP Policy Engine - Drools PDP
   ================================================================================
   Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -15,7 +16,7 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  ============LICENSE_END========================================================= 
+  ============LICENSE_END=========================================================
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -49,7 +50,7 @@
         <staging.path>content/repositories/staging/</staging.path>
 
         <!-- sonar/jacoco overrides -->
-        <!-- Overriding oparent default sonar/jacoco settings Combine all our reports 
+        <!-- Overriding oparent default sonar/jacoco settings Combine all our reports
              into one file shared across sub-modules -->
         <sonar.jacoco.reportPath>${project.basedir}/../target/code-coverage/jacoco-ut.exec</sonar.jacoco.reportPath>
         <sonar.jacoco.itReportPath>${project.basedir}/../target/code-coverage/jacoco-it.exec</sonar.jacoco.itReportPath>
@@ -175,7 +176,7 @@
                             </goals>
                             <phase>process-sources</phase>
                             <configuration>
-                                <!-- Use Google Java Style Guide: https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml 
+                                <!-- Use Google Java Style Guide: https://github.com/checkstyle/checkstyle/blob/master/src/main/resources/google_checks.xml
                                     with minor changes -->
                                 <configLocation>onap-checkstyle/onap-java-style.xml</configLocation>
                                 <!-- <sourceDirectory> is needed so that checkstyle ignores the generated sources directory -->
@@ -205,7 +206,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
-                    <skip />
+                    <skip/>
                 </configuration>
             </plugin>
             <plugin>
@@ -244,7 +245,7 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
                     <configuration>
-                        <!-- Note: This exclusion list should match <sonar.exclusions> property 
+                        <!-- Note: This exclusion list should match <sonar.exclusions> property
                              above -->
                         <excludes>
                             <exclude>**/gen/**</exclude>
@@ -254,7 +255,7 @@
                         </excludes>
                     </configuration>
                     <executions>
-                        <!-- Prepares the property pointing to the JaCoCo runtime agent which 
+                        <!-- Prepares the property pointing to the JaCoCo runtime agent which
                              is passed as VM argument when Maven the Surefire plugin is executed. -->
                         <execution>
                             <id>pre-unit-test</id>
@@ -265,7 +266,7 @@
                                 <destFile>${sonar.jacoco.reportPath}</destFile>
                             </configuration>
                         </execution>
-                        <!-- Ensures that the code coverage report for unit tests is created 
+                        <!-- Ensures that the code coverage report for unit tests is created
                              after unit tests have been run. -->
                         <execution>
                             <id>post-unit-test</id>
@@ -296,7 +297,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
