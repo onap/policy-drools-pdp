@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- 
   ============LICENSE_START======================================================= 
   ONAP Policy Engine - Drools PDP 
@@ -205,7 +206,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
-                    <skip />
+                    <skip/>
                 </configuration>
             </plugin>
             <plugin>
@@ -296,7 +297,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
