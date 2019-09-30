@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe1849d9_5f234fb6",
+        "filename": "feature-controller-logging/src/assembly/assemble_zip.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-09-30T17:44:01Z",
+      "side": 1,
+      "message": "What are the changes here? Looks exactly the same.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 4
+      },
+      "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9df1504_55ef100d",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-09-30T17:44:01Z",
+      "side": 1,
+      "message": "The version for common is already set - see below. These repos do not have the same version.",
+      "range": {
+        "startLine": 42,
+        "startChar": 7,
+        "endLine": 43,
+        "endChar": 0
+      },
+      "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a0800aa_c351b4e6",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-09-30T17:44:01Z",
+      "side": 1,
+      "message": "Right here is the version - they happen to be the same but are not guaranteed to be when we start releasing artifacts.",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 65,
+        "endChar": 69
+      },
+      "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c936cac3_32fb7cab",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-09-30T17:44:01Z",
+      "side": 1,
+      "message": "Please delete this - it is not appropriate anymore due to new ONAP release process.",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 29
+      },
+      "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
