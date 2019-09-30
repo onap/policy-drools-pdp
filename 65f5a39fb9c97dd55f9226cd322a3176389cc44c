@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b768c82e_e48b6597",
+        "filename": "feature-controller-logging/src/assembly/assemble_zip.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-09-30T18:15:44Z",
+      "side": 1,
+      "message": "This file was not intended to be submitted for review in this commit. The changes in this file correspond to POLICY-2032: replacing windows carriage returns with line feeds.",
+      "parentUuid": "fe1849d9_5f234fb6",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 4
+      },
+      "revId": "65f5a39fb9c97dd55f9226cd322a3176389cc44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e9df1504_55ef100d",
         "filename": "pom.xml",
         "patchSetId": 1
