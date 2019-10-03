@@ -16,6 +16,24 @@
       "revId": "931744d36c2f4abd787330b9bee079d81c95cc58",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd3d4efc_2f5053be",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-10-03T14:13:41Z",
+      "side": 1,
+      "message": "Yes, these have been removed. Please see patchset 2.",
+      "parentUuid": "8e6aabfa_f962ee07",
+      "revId": "931744d36c2f4abd787330b9bee079d81c95cc58",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
