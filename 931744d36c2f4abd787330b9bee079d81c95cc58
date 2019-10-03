@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e6aabfa_f962ee07",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-03T13:40:00Z",
+      "side": 1,
+      "message": "as long as you\u0027re at it, could you remove the trailing whitespace on this line and line 4, too?",
+      "revId": "931744d36c2f4abd787330b9bee079d81c95cc58",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
