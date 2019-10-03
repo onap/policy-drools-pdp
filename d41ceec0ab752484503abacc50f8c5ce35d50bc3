@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df4bb7f2_331daf14",
+        "filename": "feature-active-standby-management/src/main/feature/config/feature-active-standby-management.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-03T22:02:31Z",
+      "side": 1,
+      "message": "I\u0027m pretty sure we do not want to revert back to the \"${{ }}\" syntax",
+      "revId": "d41ceec0ab752484503abacc50f8c5ce35d50bc3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
