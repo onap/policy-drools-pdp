@@ -16,6 +16,41 @@
       "revId": "d41ceec0ab752484503abacc50f8c5ce35d50bc3",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd2fbf5f_25750deb",
+        "filename": "feature-active-standby-management/src/main/feature/config/feature-active-standby-management.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-04T15:37:49Z",
+      "side": 1,
+      "message": "Right, the \"env:\" format does not require a install script at container installation (best practice).  If it is in the base.conf will be automatically applied to these properties file.\n\nONAP does not use SQL_RELEASE neither, this addition would be problematic.",
+      "parentUuid": "df4bb7f2_331daf14",
+      "revId": "d41ceec0ab752484503abacc50f8c5ce35d50bc3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "493fecf6_304dd538",
+        "filename": "feature-active-standby-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-04T15:37:49Z",
+      "side": 1,
+      "message": "I would assume if new properties are introduced, new code would be added too that uses these new properties, but I don\u0027t see any accompanying java code changes, at least in this review?",
+      "revId": "d41ceec0ab752484503abacc50f8c5ce35d50bc3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
