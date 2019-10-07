@@ -51,6 +51,24 @@
       "revId": "d41ceec0ab752484503abacc50f8c5ce35d50bc3",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ac8184f_96dcc27e",
+        "filename": "feature-active-standby-management/src/test/resources/feature-state-management.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-10-07T15:17:10Z",
+      "side": 1,
+      "message": "I will submit another review that has java code changes for https://jira.onap.org/browse/POLICY-2035.",
+      "parentUuid": "493fecf6_304dd538",
+      "revId": "d41ceec0ab752484503abacc50f8c5ce35d50bc3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
