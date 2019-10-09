@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af1f4cc9_e91891e9",
+        "filename": "feature-simple-locking/pom.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-09T15:49:07Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 5,
+        "startChar": 16,
+        "endLine": 5,
+        "endChar": 20
+      },
+      "revId": "632fb7e78bba59694217af2da92c8a329fddbdc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d16b8944_759249df",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeatureException.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-09T15:49:07Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "632fb7e78bba59694217af2da92c8a329fddbdc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1950d41_b3b5713a",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingProperties.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-09T15:49:07Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "632fb7e78bba59694217af2da92c8a329fddbdc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4909b44e_d9678399",
+        "filename": "feature-simple-locking/src/test/java/org/onap/policy/simple/locking/SimpleLockingFeatureExceptionTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-09T15:49:07Z",
+      "side": 1,
+      "message": "2019",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "632fb7e78bba59694217af2da92c8a329fddbdc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a855fbc_91f54b6c",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/Lock.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-09T15:49:07Z",
+      "side": 1,
+      "message": "2018-2019",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 21
+      },
+      "revId": "632fb7e78bba59694217af2da92c8a329fddbdc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "141e1422_731f3068",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/core/lock/PolicyResourceLockManagerTest.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-09T15:49:07Z",
+      "side": 1,
+      "message": "should still be 2018-2019?",
+      "range": {
+        "startLine": 5,
+        "startChar": 17,
+        "endLine": 5,
+        "endChar": 22
+      },
+      "revId": "632fb7e78bba59694217af2da92c8a329fddbdc0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
