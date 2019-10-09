@@ -1,0 +1,344 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9444eb6b_2db72956",
+        "filename": "feature-distributed-locking/src/test/resources/feature-distributed-locking.properties",
+        "patchSetId": 15
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "want to prefix properties with distributed.locking as before?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "830b1da7_b2ebdfec",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "I think we should centralized the service in PolicyEngine so we don\u0027t have a proliferation of these.",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6434a59_51dfee3d",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "I wonder if we need this vs relying on sequenceNumber and usual feature takeover mechanisms when invoking the lock or unlock as in other feature work.",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "530ebdc8_85862ab2",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "what would be an example of extractor being used in CL context?  In which properties file would this go, in the controllers?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7775d05c_4282811e",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "I don\u0027t think there is value in rethrowing the exception when afterStart is called from the feature invoker mechanism.",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8829bc82_de2ffea5",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "Is there a reason for this vs afterStop?\nShould it go and iterate over \"checkExpired\" ? or release any locks that are being held to freed up CL transactions in progress?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d58d748a_d31e3eeb",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "should this be checked in super() ?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d39ee95_8d653986",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "synchronization ?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "47191c35_3e370155",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "synchronization?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c8983eb_8a2b808f",
+        "filename": "feature-simple-locking/src/main/java/org/onap/policy/simple/locking/SimpleLockingFeature.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "synchronization ?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96113fac_daad5408",
+        "filename": "feature-simple-locking/src/test/resources/feature-simple-locking.properties",
+        "patchSetId": 15
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "is this file used?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ffd7700_b5b235b0",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/Extractor.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this class would need to go into either policy-utils (similar package as PropertyUtils) or directly into commons?    There is a class called Extractor.java in feature-pooling-dmaap, may be a more expressive name for this class?  Where is the class used?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df1397b8_b4ec03ff",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/Extractor.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "probably better to make the exception more noticeable, WARN ?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d2d93d31_b7cb4f4f",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "is the parameter number ok for sonar, or need a builder?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65848845_f8b6cefe",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "does it need synchronization?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b1def275_96dbc31f",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "does it need synchronization?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "182e3c13_f40eaecc",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureApi.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "Not sure if needed?",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a3ea203_b89fb648",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureApi.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "If a lock is returned it may mean that the feature provider underneath owns the operation so next features in list should be skipped.    The feature priority could dictate which one wins as usual.  One idea to have the code more consistent with current uses.",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8d60e798_e5cb3ae1",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "It seems to me that the PolicyResouceLockManager should be instantiated from PolicyEngine and accessible from there (which eliminates need for singleton here too).\n\nBear with me Jim, just trying to understand:\nIs it a PolicyResourceLockManager necessary, or could we somehow rely on patterns that we had before to do the locking, ie.. \n\nclient code (for example drools applications):\n\n\nLock lock \u003d PolicyEngine.lock(lock-parameters-here).\n\nIn PolicyEngine:\n\nPolicyEngine.lock(lock-parameters-here) {\n   /* before lock hook */\n   iterate-through-all-features implementing the interface calling\n   Lock beforeLock(lock-parameters-here).\n   if Lock is NOT null, the feature took ownership, done with this method.\n   else continue\n\n   /* default implementation which is the one that you have in the\n      DefaultProvider below */\n\n   /* after lock hook similar to the before lock hook */\n}",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b212342d_57f93f62",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-09T23:38:08Z",
+      "side": 1,
+      "message": "Does this overlap with the one in feature-simple-lock?   Could the feature-simple-lock one be made the default instead?   It has the same sequence number.",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
