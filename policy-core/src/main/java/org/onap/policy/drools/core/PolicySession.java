@@ -232,6 +232,29 @@ public class PolicySession
         }
     }
 
+    /**
+     * This method will insert an object into the Drools memory associated
+     * with this 'PolicySession' instance. Features are given the opportunity
+     * to handle the insert, and a distributed host feature could use this to
+     * send the object to another host, and insert it in the corresponding
+     * Drools session.
+     *
+     * @param object the object to insert in Drools memory
+     */
+    public void insertDrools(Object object) {
+        for (PolicySessionFeatureApi feature :
+                PolicySessionFeatureApiConstants.getImpl().getList()) {
+            if (feature.insertDrools(this, object)) {
+                // feature is performing the insert
+                return;
+            }
+        }
+        // no feature has intervened -- do the insert locally
+        if (kieSession != null) {
+            kieSession.insert(object);
+        }
+    }
+
     /*=================================*/
     /* 'AgendaEventListener' interface */
     /*=================================*/
