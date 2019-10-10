@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a301b649_d7fd0e0c",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicySessionFeatureApi.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-10T19:21:08Z",
+      "side": 1,
+      "message": "I think insertKieSession is a better name as drools is used in other places and this really is intercepting a kieSessionInsert.",
+      "revId": "2d672ba7e3aae1617b580c7496553d8936901ef4",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
