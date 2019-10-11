@@ -339,6 +339,23 @@
       "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6bf5e7cf_4431328a",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-11T13:09:42Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this have a high sequence number? It should not be chosen if there are other providers.",
+      "revId": "1ef92a5173be4b0864062b1d6aba6d1a65192b8c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
