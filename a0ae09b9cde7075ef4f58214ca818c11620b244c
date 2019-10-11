@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e42f9ffb_b5397685",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-11T13:09:42Z",
+      "side": 1,
+      "message": "It\u0027s not a \u0027Singleton\u0027 if you never build one. Why isn\u0027t \u0027instance\u0027 a member of \u0027PolicyResourceLockManager\u0027?",
+      "revId": "a0ae09b9cde7075ef4f58214ca818c11620b244c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91de4b44_a24f8f18",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-11T13:09:42Z",
+      "side": 1,
+      "message": "This creates a \u0027ServiceLoader\u0027, which searches through all of the resources, looking for those with the name \u0027META-INF/services/org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi\u0027, looks up the corresponding class instances, and sorts the resulting list according to sequence number.\n\nNote that this will be happening every time a lock is created -- this should only be done once.",
+      "revId": "a0ae09b9cde7075ef4f58214ca818c11620b244c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
