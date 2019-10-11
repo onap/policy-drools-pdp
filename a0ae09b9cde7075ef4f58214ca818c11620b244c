@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f8104125_bf5a8ae6",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-11T13:25:41Z",
+      "side": 1,
+      "message": "This is how an \"initialization on demand holder\" is done - can find it on the web.  This takes advantage of how the JVM compiles stuff so that the \"instance\" is only created on first use, yet avoids the need for synchronization",
+      "parentUuid": "e42f9ffb_b5397685",
+      "revId": "a0ae09b9cde7075ef4f58214ca818c11620b244c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "91de4b44_a24f8f18",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
         "patchSetId": 16
@@ -30,6 +48,24 @@
       "writtenOn": "2019-10-11T13:09:42Z",
       "side": 1,
       "message": "This creates a \u0027ServiceLoader\u0027, which searches through all of the resources, looking for those with the name \u0027META-INF/services/org.onap.policy.drools.core.lock.PolicyResourceLockFeatureApi\u0027, looks up the corresponding class instances, and sorts the resulting list according to sequence number.\n\nNote that this will be happening every time a lock is created -- this should only be done once.",
+      "revId": "a0ae09b9cde7075ef4f58214ca818c11620b244c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73249f86_0dbdb0fd",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-11T13:25:41Z",
+      "side": 1,
+      "message": "in theory, this is only invoked once and then a feature is found and cached.  However, I\u0027ll go ahead and make the data static, just in case",
+      "parentUuid": "91de4b44_a24f8f18",
       "revId": "a0ae09b9cde7075ef4f58214ca818c11620b244c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
