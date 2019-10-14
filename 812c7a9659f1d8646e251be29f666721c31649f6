@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f7fa28a_5ea99d9f",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureApi.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-14T16:09:24Z",
+      "side": 1,
+      "message": "Should there be a default implementation of this method, and perhaps \u0027beforeCreateLock\u0027 as well?",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1484bf75_3e4b9e0a",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-14T16:09:24Z",
+      "side": 1,
+      "message": "What is the intent of the \u0027afterCreateLock\u0027 method? It is only invoked when the \u0027AlwaysFailLock\u0027 instance is created, so you are already on an error leg. What is it that a feature might want to do?",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d765e72_4a8f781c",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/lock/SimpleLockingFeature.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-14T16:09:24Z",
+      "side": 1,
+      "message": "Isn\u0027t \u0027getHoldSec()\u0027 returning seconds, rather than milliseconds? If not, it is badly named.",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
