@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f7ff06d1_f725d67e",
+        "filename": "feature-distributed-locking/src/test/resources/feature-distributed-locking.properties",
+        "patchSetId": 20
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-15T16:21:15Z",
+      "side": 1,
+      "message": "What did you have in mind?",
+      "parentUuid": "0a95d227_f6f7c3c5",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0f7fa28a_5ea99d9f",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureApi.java",
         "patchSetId": 20
@@ -47,6 +65,24 @@
       "writtenOn": "2019-10-15T00:54:37Z",
       "side": 1,
       "message": "I think I have issues with the break .. but may be if implementing with my preamble this would not be an issue .. here it is the issue ..\n\nLet\u0027s say that I want a feature that tracks all locks that the system is using, with resourceIds, etc .. for a report, audit, or anything else .. my feature is set at highest priority because I want to track all .. my tracking feature gets invoked first, but it has a bug and throws an exception, from that point on, the always-fail-lock will render the \"Call processing functionality\" useless .. Further working on a single node mode with no db for example won\u0027t work.\n\nI think a conflict between features (exclusion) may be solved at installation time, making sure scripts guarantee only one feature is active at the time, or perhaps pro grammatically perhaps having an API that allows for disabling features, to guarantee exclusivity.",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c2846480_9d64ddb8",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-15T16:21:15Z",
+      "side": 1,
+      "message": "you and Ralph have to agree on the strategy here: if a provider throws an exception, should it try the next provider, or should it return an AlwaysFailLock?",
+      "parentUuid": "b76d40c1_3148de31",
       "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -104,6 +140,24 @@
     },
     {
       "key": {
+        "uuid": "b64f4633_2203f24c",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/lock/SimpleLockingFeature.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-15T16:21:15Z",
+      "side": 1,
+      "message": "this serves one purpose: extract the request ID so it can be included when logging messages about the lock",
+      "parentUuid": "a5d7a0fb_87833aa0",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d765e72_4a8f781c",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/features/lock/SimpleLockingFeature.java",
         "patchSetId": 20
@@ -121,6 +175,24 @@
     },
     {
       "key": {
+        "uuid": "bc626ef3_1c397190",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/lock/SimpleLockingFeature.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-15T16:21:15Z",
+      "side": 1,
+      "message": "good catch - thx (originally had it all using milliseconds; maybe I\u0027ll stick with that in the future)",
+      "parentUuid": "8d765e72_4a8f781c",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3a8c6d2b_103fedcb",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
         "patchSetId": 20
@@ -132,6 +204,24 @@
       "writtenOn": "2019-10-15T00:54:37Z",
       "side": 1,
       "message": "better spelled out for executionService, xService, or scheduler, something of that sort .. for consistency with other variable naming in this class (no substantial abbreviation is the pattern in this class)",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa4c71dc_e7c2476f",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-15T16:21:15Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "3a8c6d2b_103fedcb",
       "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
