@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "0a95d227_f6f7c3c5",
+        "filename": "feature-distributed-locking/src/test/resources/feature-distributed-locking.properties",
+        "patchSetId": 20
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "I think most of the .properties we use in drools-pdp have a hierarchical kind of naming, self explanatory for a reader, I tend to think it would be more readable here as well, if indicating the resource to which those parameters are applied against.",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0f7fa28a_5ea99d9f",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockFeatureApi.java",
         "patchSetId": 20
@@ -16,6 +33,40 @@
       "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b76d40c1_3148de31",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "I think I have issues with the break .. but may be if implementing with my preamble this would not be an issue .. here it is the issue ..\n\nLet\u0027s say that I want a feature that tracks all locks that the system is using, with resourceIds, etc .. for a report, audit, or anything else .. my feature is set at highest priority because I want to track all .. my tracking feature gets invoked first, but it has a bug and throws an exception, from that point on, the always-fail-lock will render the \"Call processing functionality\" useless .. Further working on a single node mode with no db for example won\u0027t work.\n\nI think a conflict between features (exclusion) may be solved at installation time, making sure scripts guarantee only one feature is active at the time, or perhaps pro grammatically perhaps having an API that allows for disabling features, to guarantee exclusivity.",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0aa04e89_a2477403",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/PolicyResourceLockManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "I would prefer the simplelock here ..",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -36,6 +87,23 @@
     },
     {
       "key": {
+        "uuid": "a5d7a0fb_87833aa0",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/lock/SimpleLockingFeature.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "What would be a practical use of the extractor?   I am concerned with adding too much complexity into the configuration unless needed.   Where is the extract call taken place in the code to get it?",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d765e72_4a8f781c",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/features/lock/SimpleLockingFeature.java",
         "patchSetId": 20
@@ -50,6 +118,91 @@
       "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a8c6d2b_103fedcb",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "better spelled out for executionService, xService, or scheduler, something of that sort .. for consistency with other variable naming in this class (no substantial abbreviation is the pattern in this class)",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a4292e7e_b8389004",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "Can use alternative version instead to avoid the null check:\n\nString value \u003d properties.getProperty(EXECUTOR_THREAD_PROP, DEFAULT_EXECUTOR_THREADS);",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6408ecc_b010abd4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 675,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "Not needed, I think it is best to assume engine lifetime scope",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a4a2d6a_7ada81ce",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 1275,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "I seem to recall that there are some issues when cancelling tasks with the default version.   I needed to do something special in LifeCycleFsm.java (makeExecutor), it may be a safer way to construct the executor.",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a76b8e71_cb0dcbea",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/Extractor.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-15T00:54:37Z",
+      "side": 1,
+      "message": "should there be a suffix in addition, just for consistency, case is used in other properties files, for example, the controllers, topics, etc .. uses suffixes for example .class, .filters, etc ..",
+      "revId": "812c7a9659f1d8646e251be29f666721c31649f6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
