@@ -78,6 +78,21 @@ public interface PolicySessionFeatureApi extends OrderedService {
     }
 
     /**
+     * This method is called when 'PolicySession.insertDrools' is called.
+     * In a distributed host environment, features have the ability to send
+     * the object do a different host, and do the insert.
+     *
+     * @param policySession the 'PolicySession' object associated with the
+     *     Drools session
+     * @param object the object to insert in Drools memory
+     * @return 'true' if this feature is handling the operation,
+     *     and 'false' if not.
+     */
+    public default boolean insertDrools(PolicySession session, Object object) {
+        return false;
+    }
+
+    /**
      * This method is called after 'KieSession.dispose()' is called.
      *
      * @param policySession the 'PolicySession' object that wrapped the

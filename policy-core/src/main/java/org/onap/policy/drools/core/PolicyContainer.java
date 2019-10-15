@@ -489,7 +489,7 @@ public class PolicyContainer implements Startable {
         synchronized (sessions) {
             PolicySession session = sessions.get(name);
             if (session != null) {
-                session.getKieSession().insert(object);
+                session.insertDrools(object);
                 return true;
             }
         }
@@ -506,7 +506,7 @@ public class PolicyContainer implements Startable {
         boolean rval = false;
         synchronized (sessions) {
             for (PolicySession session : sessions.values()) {
-                session.getKieSession().insert(object);
+                session.insertDrools(object);
                 rval = true;
             }
         }
