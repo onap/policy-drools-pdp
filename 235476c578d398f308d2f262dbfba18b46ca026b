@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91a9abba_a48fd816",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-16T16:22:41Z",
+      "side": 1,
+      "message": "should it check for non-null arguments?   For example callback invocations below could throw NullPointerExceptions.",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f920e776_39cadc33",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-16T16:22:41Z",
+      "side": 1,
+      "message": "Should there be a FeatureApiUtils method?",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4d02602_0d2ca64b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-16T16:22:41Z",
+      "side": 1,
+      "message": "I think we should move 776-780 above 771, since this may (should) trigger callbacks typically to drools-applications holding locks.",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24b6a095_60dcea4c",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-16T16:22:41Z",
+      "side": 1,
+      "message": "check for null and return IllegalArgumentException",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
