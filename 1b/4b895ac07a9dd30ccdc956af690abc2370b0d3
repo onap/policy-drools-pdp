@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Jim Hahn <jrh3@att.com>
+Code-Review+1: Rashmi Pujar <rashmi.pujar@bell.ca>
+Submitted-by: Pamela Dragosh <pdragosh@research.att.com>
+Submitted-at: Wed, 16 Oct 2019 11:41:54 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/policy/drools-pdp/+/97147
+Project: policy/drools-pdp
+Branch: refs/heads/elalto
