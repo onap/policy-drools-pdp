@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b0af9611_1f2dc86b",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-10-16T18:17:59Z",
+      "side": 1,
+      "message": "Hi Jim, I\u0027m not sure if it \"has\" to be hard coded. This is the code Ralph sent over, he may have more insight.",
+      "parentUuid": "6e85f8a4_4ef19b00",
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd1f6b0e_f59a917b",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
