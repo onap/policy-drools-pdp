@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e85f8a4_4ef19b00",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-16T18:00:00Z",
+      "side": 1,
+      "message": "does this have to be hard coded?  If so, maybe make \"10\" a static constant field.\n\nthe traditional syntax is \"index++\" instead of \"index +\u003d 1\"",
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd1f6b0e_f59a917b",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-16T18:00:00Z",
+      "side": 1,
+      "message": "add \"private\" and maybe \"final\"",
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
