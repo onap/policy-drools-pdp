@@ -75,7 +75,6 @@
                             <excludes>
                             </excludes>
                             <consoleOutput>true</consoleOutput>
-                            <failsOnViolation>true</failsOnViolation>
                             <violationSeverity>warning</violationSeverity>
                         </configuration>
                     </execution>

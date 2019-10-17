@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-utils
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -21,6 +21,7 @@
 package org.onap.policy.drools.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,21 +32,35 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.utils.security.CryptoUtils;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PropertyUtilTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertyUtilTest.class);
     private static final String INTERPOLATION_PROPERTIES = "src/test/resources/interpolation.properties";
+    private static final String INTERPOLATION_CRYPTO_KEY = "MTIzNDU2Nzg5MDEyMzQ1Ng==";
+    private static final String INTERPOLATION_PLAINTEXT = "HelloWorld";
+    private static final String INTERPOLATION_ENVD_DEFAULT_VALUE = "default";
+
     private static final String INTERPOLATION_NO = "interpolation.no";
     private static final String INTERPOLATION_ENV = "interpolation.env";
+    private static final String INTERPOLATION_ENVD = "interpolation.envd";
     private static final String INTERPOLATION_CONST = "interpolation.const";
     private static final String INTERPOLATION_SYS = "interpolation.sys";
+    private static final String INTERPOLATION_ENVD_NONE = "interpolation.envd.none";
+    private static final String INTERPOLATION_ENVD_DEFAULT = "interpolation.envd.default";
+    private static final String INTERPOLATION_ENVD_NO_DEFAULT = "interpolation.envd.nodefault";
+    private static final String INTERPOLATION_ENC = "interpolation.enc";
+    private static final String INTERPOLATION_ENC2 = "interpolation.enc2";
+    private static final String INTERPOLATION_ENVENC = "interpolation.envenc";
+
+    private static final Logger logger = LoggerFactory.getLogger(PropertyUtilTest.class);
 
     private static File directory = null;
 
@@ -136,25 +151,51 @@ public class PropertyUtilTest {
         // they should match
         assertEquals(prop1, prop2);
 
-        Properties prop3 = PropertyUtil.getProperties(INTERPOLATION_PROPERTIES);
+        Properties props =
+            PropertyUtil.getProperties(INTERPOLATION_PROPERTIES, new CryptoUtils(INTERPOLATION_CRYPTO_KEY));
 
-        assertEquals("no", prop3.getProperty(INTERPOLATION_NO));
-        assertEquals(System.getenv("HOME"), prop3.getProperty(INTERPOLATION_ENV));
-        assertEquals(LoggerUtil.ROOT_LOGGER, prop3.getProperty(INTERPOLATION_CONST));
-        assertEquals(System.getProperty("user.home"), prop3.getProperty(INTERPOLATION_SYS));
+        assertPropInterpolation(props);
+        assertPropEncInterpolation(props);
 
-        Properties prop4 = new Properties();
-        prop4.put(INTERPOLATION_NO, "no");
-        prop4.put(INTERPOLATION_ENV, "${env:HOME}");
-        prop4.put(INTERPOLATION_CONST, "${const:org.onap.policy.drools.utils.logging.LoggerUtil.ROOT_LOGGER}");
-        prop4.put(INTERPOLATION_SYS, "${sys:user.home}");
+        props = PropertyUtil.getProperties(INTERPOLATION_PROPERTIES);
+        assertPropInterpolation(props);
+        assertNotEquals(INTERPOLATION_PLAINTEXT, props.getProperty(INTERPOLATION_ENC));
+        assertNotEquals(INTERPOLATION_PLAINTEXT, props.getProperty(INTERPOLATION_ENC2));
+        assertNotEquals(INTERPOLATION_PLAINTEXT, props.getProperty(INTERPOLATION_ENVENC));
 
-        PropertyUtil.setSystemProperties(prop4);
+        PropertyUtil.setCryptoCoder(new CryptoUtils(INTERPOLATION_CRYPTO_KEY));
+        props = PropertyUtil.getProperties(INTERPOLATION_PROPERTIES);
+        assertPropInterpolation(props);
+        assertPropEncInterpolation(props);
+
+        props = new Properties();
+        props.put(INTERPOLATION_NO, "no");
+        props.put(INTERPOLATION_ENV, "${env:HOME}");
+        props.put(INTERPOLATION_CONST, "${const:org.onap.policy.drools.utils.logging.LoggerUtil.ROOT_LOGGER}");
+        props.put(INTERPOLATION_SYS, "${sys:user.home}");
+        PropertyUtil.setSystemProperties(props);
 
         assertEquals("no", System.getProperty(INTERPOLATION_NO));
         assertEquals(System.getenv("HOME"), System.getProperty(INTERPOLATION_ENV));
         assertEquals(LoggerUtil.ROOT_LOGGER, System.getProperty(INTERPOLATION_CONST));
         assertEquals(System.getProperty("user.home"), System.getProperty(INTERPOLATION_SYS));
+    }
+
+    private void assertPropEncInterpolation(Properties props) {
+        assertEquals(INTERPOLATION_PLAINTEXT, props.getProperty(INTERPOLATION_ENC));
+        assertEquals(INTERPOLATION_PLAINTEXT, props.getProperty(INTERPOLATION_ENC2));
+        assertEquals(INTERPOLATION_PLAINTEXT, props.getProperty(INTERPOLATION_ENVENC));
+    }
+
+    private void assertPropInterpolation(Properties props) {
+        assertEquals("no", props.getProperty(INTERPOLATION_NO));
+        assertEquals(System.getenv("HOME"), props.getProperty(INTERPOLATION_ENV));
+        assertEquals(System.getenv("HOME"), props.getProperty(INTERPOLATION_ENVD));
+        assertEquals(StringUtils.EMPTY, props.getProperty(INTERPOLATION_ENVD_NONE));
+        assertEquals(StringUtils.EMPTY, props.getProperty(INTERPOLATION_ENVD_NO_DEFAULT));
+        assertEquals(LoggerUtil.ROOT_LOGGER, props.getProperty(INTERPOLATION_CONST));
+        assertEquals(System.getProperty("user.home"), props.getProperty(INTERPOLATION_SYS));
+        assertEquals(INTERPOLATION_ENVD_DEFAULT_VALUE, props.getProperty(INTERPOLATION_ENVD_DEFAULT));
     }
 
     /**
