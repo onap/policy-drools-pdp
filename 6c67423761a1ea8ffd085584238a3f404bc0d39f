@@ -120,6 +120,24 @@
     },
     {
       "key": {
+        "uuid": "04174fe5_75d776f8",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-17T16:29:14Z",
+      "side": 1,
+      "message": "I thought about that.\n\nI also thought about another possible change, which is to not abort if an entry is missing -- perhaps you had entries #1 and #3, and wanted to comment out #2 and have it skip to #3.\n\nIf you make both of these changes, you have an infinite loop. For this reason, I thought it best to have some limit.",
+      "parentUuid": "768375a2_4715f118",
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd1f6b0e_f59a917b",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
