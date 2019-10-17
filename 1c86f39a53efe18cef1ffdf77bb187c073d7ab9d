@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "4fcdbf45_fe993f0c",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-17T17:46:58Z",
+      "side": 1,
+      "message": "mark it final",
+      "revId": "1c86f39a53efe18cef1ffdf77bb187c073d7ab9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b722e512_90911ff7",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 3
@@ -43,6 +60,23 @@
         "endLine": 93,
         "endChar": 89
       },
+      "revId": "1c86f39a53efe18cef1ffdf77bb187c073d7ab9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45e0cd11_b5d97537",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-17T17:46:58Z",
+      "side": 1,
+      "message": "I think if the scanning of the properties file happened ahead of time before start running audits, should be able to compile a exact list of the repos to scan?  It may be a little cleaner.\n\nThis also brings the question how multiple repos would be provisioned, installed, and would assumed synchronized, we will need to add that to the documentation.   Does this feature work for both nexus 2 and nexus 3?   There are also some constraints to be documented as all the repos have the same username and password.\n\nThe properties right now only provide support for one repo, so in reality providing multiple repos to scan is not really there since this goes inside the docker image and so on, and will require restart of process, so in practicality multiple repos don\u0027t seem will be used unless something is done at installation.   Point being, this will have to documented in the ONAP documentation, can be kept separate from this review.",
       "revId": "1c86f39a53efe18cef1ffdf77bb187c073d7ab9d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
