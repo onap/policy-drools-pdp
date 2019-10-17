@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "a6119e4c_111fa6f0",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-17T19:44:58Z",
+      "side": 1,
+      "message": "What about the simple lock manager or distributed lock manager when it goes through the stop and forwards to the simple lock manager.   Is there some way to trigger whichever is holding them to release the, fail them, or some kind of graceful behavior to put some end in the in progress transactions in the drools applications ?",
+      "parentUuid": "ac42a126_60bc0403",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "24b6a095_60dcea4c",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
         "patchSetId": 25
