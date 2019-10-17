@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c5c0777_6b874a67",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T13:24:09Z",
+      "side": 1,
+      "message": "so no warnings if the values contain \"enc:\"?",
+      "revId": "d2d6734a34535ce83498dbf5544ad1fc0e6cfb3e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b23ea04d_c60effb2",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T13:24:09Z",
+      "side": 1,
+      "message": "should probably use replaceProperty (or some such); it\u0027s generally a bad idea to update a map while iterating through it",
+      "revId": "d2d6734a34535ce83498dbf5544ad1fc0e6cfb3e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
