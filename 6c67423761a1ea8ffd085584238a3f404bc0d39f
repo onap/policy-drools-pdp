@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "cdfa1dcf_b9983c5e",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-17T08:02:34Z",
+      "side": 1,
+      "message": "A static constant would be fine -- the number 10 is somewhat arbitrary",
+      "parentUuid": "b0af9611_1f2dc86b",
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd1f6b0e_f59a917b",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
