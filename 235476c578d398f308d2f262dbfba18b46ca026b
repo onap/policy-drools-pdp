@@ -125,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "35e031b4_93e89862",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T20:02:44Z",
+      "side": 1,
+      "message": "if persistence is enabled, then you probably don\u0027t want to free/fail them, as the session expects them to still be active when it is reloaded.",
+      "parentUuid": "a6119e4c_111fa6f0",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "24b6a095_60dcea4c",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
         "patchSetId": 25
