@@ -102,6 +102,24 @@
     },
     {
       "key": {
+        "uuid": "768375a2_4715f118",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T13:14:35Z",
+      "side": 1,
+      "message": "maybe it should just keep looping until one of the required properties is missing?",
+      "parentUuid": "cdfa1dcf_b9983c5e",
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd1f6b0e_f59a917b",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
