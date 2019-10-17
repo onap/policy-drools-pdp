@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "64256a58_f6c270ca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-10-17T12:36:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "695f87ab_c94c9fc7",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 14
+      },
+      "revId": "6c67423761a1ea8ffd085584238a3f404bc0d39f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6e85f8a4_4ef19b00",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 1
