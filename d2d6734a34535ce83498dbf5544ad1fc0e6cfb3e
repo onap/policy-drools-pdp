@@ -51,6 +51,24 @@
       "revId": "d2d6734a34535ce83498dbf5544ad1fc0e6cfb3e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "673bfd6e_9ec0fdcc",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T18:58:32Z",
+      "side": 1,
+      "message": "ah, you\u0027re absolutely right",
+      "parentUuid": "692ae6ac_315c6ed6",
+      "revId": "d2d6734a34535ce83498dbf5544ad1fc0e6cfb3e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
