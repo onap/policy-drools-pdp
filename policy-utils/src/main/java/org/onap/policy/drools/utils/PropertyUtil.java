@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-utils
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -31,8 +31,10 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.configuration2.SystemConfiguration;
+import org.onap.policy.common.utils.security.CryptoCoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,8 @@ import org.slf4j.LoggerFactory;
  * file, and optionally get notifications of future changes.
  */
 public class PropertyUtil {
+    public static final String ENV_WITH_DEFAULT_PROPERTY_PREFIX = "envd";
+    public static final String CRYPTO_CODER_PROPERTY_PREFIX = "enc";
 
     // timer thread used for polling for property file changes
     private static Timer timer = null;
@@ -51,10 +55,17 @@ public class PropertyUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyUtil.class.getName());
 
+    private static volatile CryptoCoder cryptoCoder;
+
     /**
-     * Read in a properties file.  Variable interpolation is performed by using
-     * apache commons configuration2 library.   This allows for embedding system properties,
-     * constants, and environment variables in property files.
+     * Sets a default Crypto Coder.
+     */
+    public static void setCryptoCoder(CryptoCoder cryptoCoder) {
+        PropertyUtil.cryptoCoder = cryptoCoder;
+    }
+
+    /**
+     * Read in a properties file and performs variable interpolation.
      *
      * @param file the properties file
      * @return a Properties object, containing the associated properties
@@ -63,22 +74,22 @@ public class PropertyUtil {
      *     a problem loading the properties file.
      */
     public static Properties getProperties(File file) throws IOException {
-        // create an InputStream (may throw a FileNotFoundException)
-        Properties rval = new Properties();
-        try (FileInputStream fis = new FileInputStream(file)) {
-            // create the properties instance
+        return getInterpolatedProperties(getPropertiesFile(file));
+    }
 
-            // load properties (may throw an IOException)
-            rval.load(fis);
-        }
-
-        /*
-         * Return properties file with environment variables interpolated.
-         * It is necessary to construct the object in this fashion and avoid
-         * builders since they use the commons-beanutils (optional) library that has been
-         * flagged as insecured.
-         */
-        return getInterpolatedProperties(rval);
+    /**
+     * Reads a property files and performs variable interpolation.  It uses a
+     * crypto coder to interpolate encrypted sensitive data.
+     *
+     * @param file the properties file
+     * @param cryptoCoder a custom CryptoCoder implementation
+     * @return a Properties object, containing the associated properties
+     * @throws IOException - subclass 'FileNotFoundException' if the file
+     *     does not exist or can't be opened, and 'IOException' if there is
+     *     a problem loading the properties file.
+     */
+    public static Properties getProperties(File file, CryptoCoder cryptoCoder) throws IOException {
+        return getInterpolatedProperties(getPropertiesFile(file), cryptoCoder);
     }
 
     /**
@@ -88,10 +99,25 @@ public class PropertyUtil {
      * @return a Properties object, containing the associated properties
      * @throws IOException - subclass 'FileNotFoundException' if the file
      *     does not exist or can't be opened, and 'IOException' if there is
-     *     a problem loading the properties file.
+     *     a problem loading the properties file
      */
     public static Properties getProperties(String fileName) throws IOException {
         return getProperties(new File(fileName));
+    }
+
+    /**
+     * Reads a property files and performs variable interpolation.  It uses a
+     * crypto coder to interpolate encrypted sensitive data.
+     *
+     * @param fileName the properties file name
+     * @param cryptoCoder a custom CryptoCoder implementation
+     * @return a Properties object, containing the associated properties
+     * @throws IOException - subclass 'FileNotFoundException' if the file
+     *     does not exist or can't be opened, and 'IOException' if there is
+     *     a problem loading the properties file
+     */
+    public static Properties getProperties(String fileName, CryptoCoder cryptoCoder) throws IOException {
+        return getProperties(new File(fileName), cryptoCoder);
     }
 
     /**
@@ -157,13 +183,58 @@ public class PropertyUtil {
     }
 
     /**
-     * gets interpolated properties from a properties object.
+     * Get an interpolated properties object from a properties one.
      *
-     * @param properties object
-     * @return properties
+     * @param properties non-interpolated properties object
+     * @return Properties - interpolated properties object
      */
     public static Properties getInterpolatedProperties(Properties properties) {
-        return ConfigurationConverter.getProperties(ConfigurationConverter.getConfiguration(properties));
+        return getInterpolatedProperties(properties, cryptoCoder);
+    }
+
+    /**
+     * Get an interpolated properties object from a properties one.
+     *
+     * @param properties non-interpolated properties object
+     * @param cryptoCoder crypto coder
+     * @return Properties - interpolated properties object
+     */
+    public static Properties getInterpolatedProperties(Properties properties, CryptoCoder cryptoCoder) {
+        Configuration config = ConfigurationConverter.getConfiguration(properties);
+        config.getInterpolator()
+              .registerLookup(ENV_WITH_DEFAULT_PROPERTY_PREFIX, new EnvironmentVariableWithDefaultLookup());
+
+        if (cryptoCoder == null) {
+            return ConfigurationConverter.getProperties(config);
+        }
+
+        config.getInterpolator().registerLookup(CRYPTO_CODER_PROPERTY_PREFIX, new CryptoCoderValueLookup(cryptoCoder));
+        Properties props = ConfigurationConverter.getProperties(config);
+        props.stringPropertyNames().forEach(key -> {
+            props.setProperty(key, cryptoCoder.decrypt(props.getProperty(key)));
+        });
+        return props;
+    }
+
+    /**
+     * Read in a properties file from disk.
+     *
+     * @param file the properties file
+     * @return a Properties object, containing the associated properties
+     * @throws IOException - subclass 'FileNotFoundException' if the file
+     *     does not exist or can't be opened, and 'IOException' if there is
+     *     a problem loading the properties file.
+     */
+    private static Properties getPropertiesFile(File file) throws IOException {
+        // create an InputStream (may throw a FileNotFoundException)
+        Properties rval = new Properties();
+        try (FileInputStream fis = new FileInputStream(file)) {
+            // create the properties instance
+
+            // load properties (may throw an IOException)
+            rval.load(fis);
+        }
+        return rval;
     }
 
     /**
