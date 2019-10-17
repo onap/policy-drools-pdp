@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "521bffe2_787524c0",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T19:35:36Z",
+      "side": 1,
+      "message": "added null checks",
+      "parentUuid": "91a9abba_a48fd816",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f920e776_39cadc33",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
         "patchSetId": 25
@@ -30,6 +48,24 @@
       "writtenOn": "2019-10-16T16:22:41Z",
       "side": 1,
       "message": "Should there be a FeatureApiUtils method?",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9730a03_00c96bb6",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T19:35:36Z",
+      "side": 1,
+      "message": "May do that in another review",
+      "parentUuid": "f920e776_39cadc33",
       "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ac42a126_60bc0403",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 780,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T19:35:36Z",
+      "side": 1,
+      "message": "Kind of a catch-22.  The endpoints could trigger calls into the manager, thus we want to shut the manager down after the endpoints.\nThe manager is not required to trigger callbacks when shutting down.  In fact, the ones in ONAP specifically do NOT trigger callbacks just for this reason.",
+      "parentUuid": "e4d02602_0d2ca64b",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "24b6a095_60dcea4c",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
         "patchSetId": 25
@@ -64,6 +118,24 @@
       "writtenOn": "2019-10-16T16:22:41Z",
       "side": 1,
       "message": "check for null and return IllegalArgumentException",
+      "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1c8fc845_737195f8",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-17T19:35:36Z",
+      "side": 1,
+      "message": "Added parameter checks, as well as a null check for the lock manager, itself.",
+      "parentUuid": "24b6a095_60dcea4c",
       "revId": "235476c578d398f308d2f262dbfba18b46ca026b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
