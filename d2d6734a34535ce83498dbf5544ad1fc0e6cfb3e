@@ -33,6 +33,24 @@
       "revId": "d2d6734a34535ce83498dbf5544ad1fc0e6cfb3e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "692ae6ac_315c6ed6",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-17T18:26:51Z",
+      "side": 1,
+      "message": "I don\u0027t think it is iterating over the map, right? the stringPropertyNames() returns a list, a different object, that is iterated with, right?",
+      "parentUuid": "b23ea04d_c60effb2",
+      "revId": "d2d6734a34535ce83498dbf5544ad1fc0e6cfb3e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
