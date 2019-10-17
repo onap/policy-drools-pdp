@@ -23,6 +23,7 @@ package org.onap.policy.drools.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -33,6 +34,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.configuration2.SystemConfiguration;
+import org.onap.policy.common.utils.security.CryptoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +81,18 @@ public class PropertyUtil {
          * flagged as insecured.
          */
         return getInterpolatedProperties(rval);
+    }
+
+    public static Properties getProperties(File file, CryptoUtils cryptoCoder) throws IOException {
+        Properties props = getProperties(file);
+        if (cryptoCoder == null) {
+            return props;
+        }
+
+        props.stringPropertyNames().forEach(key -> {
+            props.setProperty(key, cryptoCoder.decrypt((props.getProperty(key)));
+        });
+        return props;
     }
 
     /**
