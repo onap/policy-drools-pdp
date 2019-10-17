@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "10bf7741_32156a6f",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-10-17T17:00:47Z",
+      "side": 1,
+      "message": "Hi Pamela, I initially had this statement include \"repository1\". However, this first repository is listed in the properties files without any numeric identifier as \"repository\". Instead, I added \"first\" to help clarify this. The remaining repositories use the numeric indicator. \"repository2,repository3, .... repository9\". I can work on a better solution to help identify which repo is which.",
+      "parentUuid": "b722e512_90911ff7",
+      "range": {
+        "startLine": 93,
+        "startChar": 22,
+        "endLine": 93,
+        "endChar": 89
+      },
+      "revId": "1c86f39a53efe18cef1ffdf77bb187c073d7ab9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f0b2f53b_9b12c74f",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 3
