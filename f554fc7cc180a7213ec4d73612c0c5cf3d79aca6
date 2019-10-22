@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "33f8d503_ee42c7d5",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-22T18:17:01Z",
+      "side": 1,
+      "message": "could iterate over the entrySet instead and use getValue \u0026 setValue",
+      "revId": "f554fc7cc180a7213ec4d73612c0c5cf3d79aca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
