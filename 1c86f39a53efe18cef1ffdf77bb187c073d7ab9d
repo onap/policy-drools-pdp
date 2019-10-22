@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "48e391de_42b4d2e2",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-22T11:30:26Z",
+      "side": 1,
+      "message": "Peyton - please format the comments like this example here to avoid sonar issues.",
+      "range": {
+        "startLine": 88,
+        "startChar": 25,
+        "endLine": 88,
+        "endChar": 78
+      },
+      "revId": "1c86f39a53efe18cef1ffdf77bb187c073d7ab9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b722e512_90911ff7",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 3
@@ -94,6 +117,30 @@
       "writtenOn": "2019-10-17T16:10:37Z",
       "side": 1,
       "message": "Same question here. If you are intending to include index then use {} and make index a param.",
+      "range": {
+        "startLine": 98,
+        "startChar": 25,
+        "endLine": 98,
+        "endChar": 95
+      },
+      "revId": "1c86f39a53efe18cef1ffdf77bb187c073d7ab9d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38a69796_abab4200",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-22T11:30:26Z",
+      "side": 1,
+      "message": "Example:\n            logger.debug(\"Running read-only audit on nexus repository: repository {}\", index);",
+      "parentUuid": "f0b2f53b_9b12c74f",
       "range": {
         "startLine": 98,
         "startChar": 25,
