@@ -94,6 +94,30 @@
       "revId": "6e0b450abe7e62fa47ffe14e95a67d035174dbdb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cda185f2_27ae3d2d",
+        "filename": "policy-utils/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-23T17:57:27Z",
+      "side": 0,
+      "message": "I don\u0027t know about that are you sure the version of the maven plugin matches. Because the problem is this specification now matches EXACTLY what was defined in oparent for this plugin. That plugin specifically did NOT fail on any violation, else every repo in ONAP would never verify. Hence, why I had to go through the laborious process in Casablanca to go into every repository and add the plugin specification back in and specifically ensure failsOnViolation is set to true.",
+      "parentUuid": "77d55b76_f923012e",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 69
+      },
+      "revId": "6e0b450abe7e62fa47ffe14e95a67d035174dbdb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
