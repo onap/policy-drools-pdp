@@ -16,6 +16,24 @@
       "revId": "f554fc7cc180a7213ec4d73612c0c5cf3d79aca6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ca9d6f8_ec9dee1f",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/PropertyUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-23T05:47:34Z",
+      "side": 1,
+      "message": "yeah, I considered it, but was more inclined to do it this way, I find it more readable than working with the map.",
+      "parentUuid": "33f8d503_ee42c7d5",
+      "revId": "f554fc7cc180a7213ec4d73612c0c5cf3d79aca6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
