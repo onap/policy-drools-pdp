@@ -70,6 +70,30 @@
       "revId": "6e0b450abe7e62fa47ffe14e95a67d035174dbdb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77d55b76_f923012e",
+        "filename": "policy-utils/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-23T16:59:23Z",
+      "side": 0,
+      "message": "It is here in the official doc:  https://maven.apache.org/plugins/maven-checkstyle-plugin/check-mojo.html#failOnViolation",
+      "parentUuid": "c0e7571d_8b007dda",
+      "range": {
+        "startLine": 78,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 69
+      },
+      "revId": "6e0b450abe7e62fa47ffe14e95a67d035174dbdb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
