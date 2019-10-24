@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59ffce93_05a9bfd8",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/Main.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-24T12:21:13Z",
+      "side": 1,
+      "message": "In some other places, the key used is \u0027System.getenv(\"AES_ENCRYPTION_KEY\")\u0027 -- it would be nice to have consistency.",
+      "revId": "da01ad48f809f9c7e8164323caa5bac6c15cb011",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
