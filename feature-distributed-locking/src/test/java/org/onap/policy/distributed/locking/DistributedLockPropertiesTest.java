@@ -20,13 +20,9 @@
 
 package org.onap.policy.distributed.locking;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
-import java.util.TreeSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
@@ -46,7 +42,6 @@ public class DistributedLockPropertiesTest {
         props.setProperty(DistributedLockProperties.DB_URL, "my url");
         props.setProperty(DistributedLockProperties.DB_USER, "my user");
         props.setProperty(DistributedLockProperties.DB_PASS, "my pass");
-        props.setProperty(DistributedLockProperties.TRANSIENT_ERROR_CODES, "10,-20,,,30");
         props.setProperty(DistributedLockProperties.EXPIRE_CHECK_SEC, "100");
         props.setProperty(DistributedLockProperties.RETRY_SEC, "200");
         props.setProperty(DistributedLockProperties.MAX_RETRIES, "300");
@@ -60,22 +55,8 @@ public class DistributedLockPropertiesTest {
         assertEquals("my url", dlp.getDbUrl());
         assertEquals("my user", dlp.getDbUser());
         assertEquals("my pass", dlp.getDbPwd());
-        assertEquals("10,-20,,,30", dlp.getErrorCodeStrings());
-        assertEquals("[-20, 10, 30]", new TreeSet<>(dlp.getTransientErrorCodes()).toString());
         assertEquals(100, dlp.getExpireCheckSec());
         assertEquals(200, dlp.getRetrySec());
         assertEquals(300, dlp.getMaxRetries());
-
-        assertTrue(dlp.isTransient(10));
-        assertTrue(dlp.isTransient(-20));
-        assertTrue(dlp.isTransient(30));
-
-        assertFalse(dlp.isTransient(-10));
-
-        // invalid value
-        props.setProperty(DistributedLockProperties.TRANSIENT_ERROR_CODES, "10,abc,30");
-
-        assertThatThrownBy(() -> new DistributedLockProperties(props)).isInstanceOf(PropertyException.class)
-                        .hasMessageContaining(DistributedLockProperties.TRANSIENT_ERROR_CODES);
     }
 }

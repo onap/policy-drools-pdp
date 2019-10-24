@@ -48,6 +48,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLTransientException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -100,8 +101,8 @@ public class DistributedLockManagerTest {
     private static final int HOLD_SEC2 = 120;
     private static final int MAX_THREADS = 5;
     private static final int MAX_LOOPS = 100;
-    private static final int TRANSIENT = 500;
-    private static final int PERMANENT = 600;
+    private static final boolean TRANSIENT = true;
+    private static final boolean PERMANENT = false;
 
     // number of execute() calls before the first lock attempt
     private static final int PRE_LOCK_EXECS = 1;
@@ -1673,15 +1674,15 @@ public class DistributedLockManagerTest {
      * Feature whose data source all throws exceptions.
      */
     private class InvalidDbLockingFeature extends MyLockingFeature {
-        private int errcode;
+        private boolean isTransient;
         private boolean freeLock = false;
 
-        public InvalidDbLockingFeature(int errcode) {
+        public InvalidDbLockingFeature(boolean isTransient) {
             // pass "false" because we have to set the error code BEFORE calling
             // afterStart()
             super(false);
 
-            this.errcode = errcode;
+            this.isTransient = isTransient;
 
             this.beforeCreateLockManager(engine, new Properties());
             this.afterStart(engine);
@@ -1695,12 +1696,21 @@ public class DistributedLockManagerTest {
                     lock.free();
                 }
 
-                throw new SQLException(EXPECTED_EXCEPTION, "", errcode);
+                throw makeEx();
             });
 
-            doThrow(new SQLException(EXPECTED_EXCEPTION, "", errcode)).when(datasrc).close();
+            doThrow(makeEx()).when(datasrc).close();
 
             return datasrc;
+        }
+
+        private SQLException makeEx() {
+            if (isTransient) {
+                return new SQLException(new SQLTransientException(EXPECTED_EXCEPTION));
+
+            } else {
+                return new SQLException(EXPECTED_EXCEPTION);
+            }
         }
     }
 

@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLTransientException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -77,8 +78,7 @@ import org.slf4j.LoggerFactory;
  * instance.</li>
  * </dl>
  */
-public class DistributedLockManager
-                implements PolicyResourceLockManager, PolicyEngineFeatureApi {
+public class DistributedLockManager implements PolicyResourceLockManager, PolicyEngineFeatureApi {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributedLockManager.class);
 
@@ -396,6 +396,8 @@ public class DistributedLockManager
      * Distributed Lock implementation.
      */
     public static class DistributedLock extends LockImpl {
+        private static final String SQL_FAILED_MSG = "request failed for lock: {}";
+
         private static final long serialVersionUID = 1L;
 
         /**
@@ -702,9 +704,9 @@ public class DistributedLockManager
                     req.run();
 
                 } catch (SQLException e) {
-                    logger.warn("request failed for lock: {}", this, e);
+                    logger.warn(SQL_FAILED_MSG, this, e);
 
-                    if (feature.featProps.isTransient(e.getErrorCode())) {
+                    if (e.getCause() instanceof SQLTransientException) {
                         // retry the request a little later
                         rescheduleRequest(req);
                     } else {
@@ -712,7 +714,7 @@ public class DistributedLockManager
                     }
 
                 } catch (RuntimeException e) {
-                    logger.warn("request failed for lock: {}", this, e);
+                    logger.warn(SQL_FAILED_MSG, this, e);
                     removeFromMap();
                 }
             }

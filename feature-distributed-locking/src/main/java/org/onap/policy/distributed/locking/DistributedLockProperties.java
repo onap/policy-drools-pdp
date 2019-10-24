@@ -20,10 +20,7 @@
 
 package org.onap.policy.distributed.locking;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.onap.policy.common.utils.properties.BeanConfigurator;
@@ -40,7 +37,6 @@ public class DistributedLockProperties {
     public static final String DB_URL = "javax.persistence.jdbc.url";
     public static final String DB_USER = "javax.persistence.jdbc.user";
     public static final String DB_PASS = "javax.persistence.jdbc.password";
-    public static final String TRANSIENT_ERROR_CODES = PREFIX + "transient.error.codes";
     public static final String EXPIRE_CHECK_SEC = PREFIX + "expire.check.seconds";
     public static final String RETRY_SEC = PREFIX + "retry.seconds";
     public static final String MAX_RETRIES = PREFIX + "max.retries";
@@ -70,16 +66,6 @@ public class DistributedLockProperties {
     private String dbPwd;
 
     /**
-     * Vendor-specific error codes that are "transient", meaning they may go away if the
-     * command is repeated (e.g., connection issue), as opposed to something like a syntax
-     * error or a duplicate key.
-     */
-    @Property(name = TRANSIENT_ERROR_CODES)
-    private String errorCodeStrings;
-
-    private final Set<Integer> transientErrorCodes;
-
-    /**
      * Time, in seconds, to wait between checks for expired locks.
      */
     @Property(name = EXPIRE_CHECK_SEC, defaultValue = "900")
@@ -105,32 +91,5 @@ public class DistributedLockProperties {
      */
     public DistributedLockProperties(Properties props) throws PropertyException {
         new BeanConfigurator().configureFromProperties(this, props);
-
-        Set<Integer> set = new HashSet<>();
-        for (String text : errorCodeStrings.split(",")) {
-            text = text.trim();
-            if (text.isEmpty()) {
-                continue;
-            }
-
-            try {
-                set.add(Integer.valueOf(text));
-
-            } catch (NumberFormatException e) {
-                throw new PropertyException(TRANSIENT_ERROR_CODES, "errorCodeStrings", e);
-            }
-        }
-
-        transientErrorCodes = Collections.unmodifiableSet(set);
-    }
-
-    /**
-     * Determines if an error is transient.
-     *
-     * @param errorCode error code to check
-     * @return {@code true} if the error is transient, {@code false} otherwise
-     */
-    public boolean isTransient(int errorCode) {
-        return transientErrorCodes.contains(errorCode);
     }
 }
