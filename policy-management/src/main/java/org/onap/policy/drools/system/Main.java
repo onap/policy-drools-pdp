@@ -21,7 +21,9 @@
 package org.onap.policy.drools.system;
 
 import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
+import org.onap.policy.common.utils.security.CryptoUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -34,6 +36,10 @@ import org.slf4j.LoggerFactory;
  * Programmatic entry point to the management layer.
  */
 public class Main {
+    /**
+     * Symmetric Key to decode sensitive configuration data.
+     */
+    protected static final String SYSTEM_SYMM_KEY = "engine.symm.key";
 
     /** constructor (hides public default one). */
     private Main() {}
@@ -52,6 +58,9 @@ public class Main {
         /* system properties */
 
         for (Properties systemProperties : SystemPersistenceConstants.getManager().getSystemProperties()) {
+            if (!StringUtils.isBlank(systemProperties.getProperty(SYSTEM_SYMM_KEY))) {
+                PropertyUtil.setDefaultCryptoCoder(new CryptoUtils(systemProperties.getProperty(SYSTEM_SYMM_KEY)));
+            }
             PropertyUtil.setSystemProperties(systemProperties);
         }
 
