@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9149be50_1cbc251a",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-28T13:45:24Z",
+      "side": 1,
+      "message": "trailing spaces\n\nsame comment below and in other files",
+      "revId": "3874e72d0834a839886853bfc1a138b812d91c96",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "39db5e00_d780a189",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-28T13:45:24Z",
+      "side": 1,
+      "message": "delete this line",
+      "revId": "3874e72d0834a839886853bfc1a138b812d91c96",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a512ae5_6bc2ed45",
+        "filename": "feature-drools-init/src/main/java/org/onap/policy/drools/droolsinit/DroolsInitFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-28T13:45:24Z",
+      "side": 1,
+      "message": "PolicyEngine now has a scheduled executor - can use that for the clean-up instead of creating a thread and having it sleep",
+      "revId": "3874e72d0834a839886853bfc1a138b812d91c96",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f14b1309_1061bfec",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-28T13:45:24Z",
+      "side": 1,
+      "message": "need a test for the \"deleter\" thread - at very least, just grab it and execute the \"run\" method, and then verify that it deleted the fact from the kie session",
+      "revId": "3874e72d0834a839886853bfc1a138b812d91c96",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
