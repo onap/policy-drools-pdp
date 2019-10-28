@@ -53,6 +53,23 @@
     },
     {
       "key": {
+        "uuid": "697e5dd4_1dec6157",
+        "filename": "feature-drools-init/src/main/java/org/onap/policy/drools/droolsinit/DroolsInitFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-28T14:14:40Z",
+      "side": 1,
+      "message": "sonar would flag no handling of the InterruptedException. Logging it, or re-interrupting would clear the sonar.",
+      "revId": "3874e72d0834a839886853bfc1a138b812d91c96",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f14b1309_1061bfec",
         "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
         "patchSetId": 1
