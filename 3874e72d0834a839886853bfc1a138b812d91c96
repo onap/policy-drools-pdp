@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "45768289_88c0765b",
+        "filename": "feature-drools-init/src/main/java/org/onap/policy/drools/droolsinit/DroolsInitFeature.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-28T14:19:03Z",
+      "side": 1,
+      "message": "Good catch - yes, should log AND re-interrupt.  Note: using the PolicyEngine executor would eliminate the need for the sleep/catch, altogether",
+      "parentUuid": "697e5dd4_1dec6157",
+      "revId": "3874e72d0834a839886853bfc1a138b812d91c96",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f14b1309_1061bfec",
         "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
         "patchSetId": 1
