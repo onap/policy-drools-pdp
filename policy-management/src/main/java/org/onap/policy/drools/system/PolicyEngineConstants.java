@@ -43,7 +43,7 @@ public class PolicyEngineConstants {
      * Policy Engine Manager.
      */
     @Getter
-    private static final PolicyEngine manager = new PolicyEngineManager();
+    private static PolicyEngine manager = new PolicyEngineManager();
 
     private PolicyEngineConstants() {
         // do nothing
