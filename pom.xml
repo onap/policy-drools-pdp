@@ -85,6 +85,7 @@
         <module>feature-controller-logging</module>
         <module>feature-mdc-filters</module>
         <module>feature-lifecycle</module>
+        <module>feature-drools-init</module>
         <module>packages</module>
     </modules>
 
