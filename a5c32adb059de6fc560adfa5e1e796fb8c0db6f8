@@ -2,6 +2,74 @@
   "comments": [
     {
       "key": {
+        "uuid": "472227f1_751cecf6",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-29T16:21:00Z",
+      "side": 1,
+      "message": "remove this line - my eclipse complains about it",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebe89681_60d0ee50",
+        "filename": "feature-drools-init/src/main/java/org/onap/policy/drools/droolsinit/DroolsInitFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-29T16:21:00Z",
+      "side": 1,
+      "message": "eclipse warning: need a \"serial version\"",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e79d1e36_fdc860fc",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-29T16:21:00Z",
+      "side": 1,
+      "message": "eclipse \u0026 sonar: unused import",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e67a8d67_a358cec4",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-29T16:21:00Z",
+      "side": 1,
+      "message": "eclipse warning: unused",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3720b8be_56b82cb0",
         "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
         "patchSetId": 2
