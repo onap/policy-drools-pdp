@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -207,9 +207,7 @@ public class PropertyUtil {
 
         config.getInterpolator().registerLookup(CRYPTO_CODER_PROPERTY_PREFIX, new CryptoCoderValueLookup(cryptoCoder));
         Properties props = ConfigurationConverter.getProperties(config);
-        props.stringPropertyNames().forEach(key -> {
-            props.setProperty(key, cryptoCoder.decrypt(props.getProperty(key)));
-        });
+        props.stringPropertyNames().forEach(key -> props.setProperty(key, cryptoCoder.decrypt(props.getProperty(key))));
         return props;
     }
 
@@ -266,7 +264,7 @@ public class PropertyUtil {
     public interface Listener {
         /**
          * Notification of a properties file change.
-         * 
+         *
          * @param properties the new properties
          * @param changedKeys the set of property names that have changed, including
          *      additions and removals
@@ -342,7 +340,7 @@ public class PropertyUtil {
 
         /**
          * Add a listener to the notification list.
-         * 
+         *
          * @param listener this is the listener to add to the list
          * @return the properties at the moment the listener was added to the list
          */
@@ -353,7 +351,7 @@ public class PropertyUtil {
 
         /**
          * Remove a listener from the notification list.
-         * 
+         *
          * @param listener this is the listener to remove
          */
         synchronized void removeListener(Listener listener) {
@@ -373,7 +371,7 @@ public class PropertyUtil {
 
         /**
          * This method is periodically called to check for property list updates.
-         * 
+         *
          * @throws IOException if there is an error in reading the properties file
          */
         synchronized void poll() throws IOException {
@@ -441,7 +439,7 @@ public class PropertyUtil {
 
     /**
      * Stop listenening for updates.
-     * 
+     *
      * @param file the properties file
      * @param listener notify if not null, this is a callback interface that was used for
      *     notifications of changes
@@ -457,7 +455,7 @@ public class PropertyUtil {
 
     /**
      * Stop listenening for updates.
-     * 
+     *
      * @param fileName the properties file
      * @param listener notify if not null, this is a callback interface that was used for
      *     notifications of changes
