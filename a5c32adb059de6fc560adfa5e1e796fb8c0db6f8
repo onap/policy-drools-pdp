@@ -16,6 +16,24 @@
       "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d9a3bf6_df31671d",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-29T13:07:27Z",
+      "side": 1,
+      "message": "The static field is marked \u0027final\u0027 -- I tried saving it in the \u0027BeforeClass\u0027 and restoring it in \u0027AfterClass\u0027, but then it bombed at this point.",
+      "parentUuid": "3720b8be_56b82cb0",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
