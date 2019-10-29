@@ -58,7 +58,6 @@ import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
-import org.onap.policy.drools.core.lock.LockImpl;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
