@@ -192,6 +192,24 @@
       "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4db5d81a_859abed0",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-30T12:49:30Z",
+      "side": 1,
+      "message": "works for me - thanks!",
+      "parentUuid": "182f4bd0_5f9f445a",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
