@@ -23,8 +23,6 @@ package org.onap.policy.drools.system.internal;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,13 +32,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 import org.onap.policy.common.utils.time.CurrentTime;
-import org.onap.policy.drools.core.lock.AlwaysFailLock;
-import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
-import org.onap.policy.drools.core.lock.LockImpl;
 import org.onap.policy.drools.core.lock.LockState;
-import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.system.PolicyEngine;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,12 +53,9 @@ import org.slf4j.LoggerFactory;
  * will be added to the map once free() or extend() is invoked, provided there isn't
  * already an entry.
  */
-public class SimpleLockManager implements PolicyResourceLockManager {
+public class SimpleLockManager extends LockManager<SimpleLockManager.SimpleLock> {
 
     private static final Logger logger = LoggerFactory.getLogger(SimpleLockManager.class);
-
-    private static final String NOT_LOCKED_MSG = "not locked";
-    private static final String LOCK_LOST_MSG = "lock lost";
 
     /**
      * Provider of current time. May be overridden by junit tests.
@@ -74,12 +66,6 @@ public class SimpleLockManager implements PolicyResourceLockManager {
     @Setter(AccessLevel.PROTECTED)
     private static SimpleLockManager latestInstance = null;
 
-
-    /**
-     * Engine with which this manager is associated.
-     */
-    private final PolicyEngine engine;
-
     /**
      * Feature properties.
      */
@@ -88,13 +74,7 @@ public class SimpleLockManager implements PolicyResourceLockManager {
     /**
      * Maps a resource to the lock that owns it.
      */
-    private final Map<String, SimpleLock> resource2lock = new ConcurrentHashMap<>();
-
-    /**
-     * Thread pool used to check for lock expiration and to notify owners when locks are
-     * lost.
-     */
-    private ScheduledExecutorService exsvc = null;
+    private final Map<String, SimpleLock> resource2lock;
 
     /**
      * Used to cancel the expiration checker on shutdown.
@@ -110,8 +90,8 @@ public class SimpleLockManager implements PolicyResourceLockManager {
      */
     public SimpleLockManager(PolicyEngine engine, Properties properties) {
         try {
-            this.engine = engine;
             this.featProps = new SimpleLockProperties(properties);
+            this.resource2lock = getResource2lock();
 
         } catch (PropertyException e) {
             throw new SimpleLockManagerException(e);
@@ -119,24 +99,17 @@ public class SimpleLockManager implements PolicyResourceLockManager {
     }
 
     @Override
-    public boolean isAlive() {
-        return (checker != null);
-    }
-
-    @Override
-    public boolean start() {
-        if (checker != null) {
+    public synchronized boolean start() {
+        if (isAlive()) {
             return false;
         }
 
-        exsvc = getThreadPool();
-
-        checker = exsvc.scheduleWithFixedDelay(this::checkExpired, featProps.getExpireCheckSec(),
-                        featProps.getExpireCheckSec(), TimeUnit.SECONDS);
+        checker = PolicyEngineConstants.getManager().getExecutorService().scheduleWithFixedDelay(this::checkExpired,
+                        featProps.getExpireCheckSec(), featProps.getExpireCheckSec(), TimeUnit.SECONDS);
 
         setLatestInstance(this);
 
-        return true;
+        return super.start();
     }
 
     /**
@@ -144,9 +117,7 @@ public class SimpleLockManager implements PolicyResourceLockManager {
      */
     @Override
     public synchronized boolean stop() {
-        exsvc = null;
-
-        if (checker == null) {
+        if (!super.stop()) {
             return false;
         }
 
@@ -156,49 +127,6 @@ public class SimpleLockManager implements PolicyResourceLockManager {
         checker2.cancel(true);
 
         return true;
-    }
-
-    @Override
-    public void shutdown() {
-        stop();
-    }
-
-    @Override
-    public boolean isLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean lock() {
-        return true;
-    }
-
-    @Override
-    public boolean unlock() {
-        return true;
-    }
-
-    @Override
-    public Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,
-                    boolean waitForLock) {
-
-        if (latestInstance != this) {
-            AlwaysFailLock lock = new AlwaysFailLock(resourceId, ownerKey, holdSec, callback);
-            lock.notifyUnavailable();
-            return lock;
-        }
-
-        SimpleLock lock = makeLock(LockState.WAITING, resourceId, ownerKey, holdSec, callback);
-
-        SimpleLock existingLock = resource2lock.putIfAbsent(resourceId, lock);
-
-        if (existingLock == null) {
-            lock.grant();
-        } else {
-            lock.deny("resource is busy");
-        }
-
-        return lock;
     }
 
     /**
@@ -230,15 +158,25 @@ public class SimpleLockManager implements PolicyResourceLockManager {
 
             SimpleLock lock = lockref.get();
             if (lock != null) {
-                lock.deny("lock expired");
+                lock.deny("lock expired", false);
             }
         }
+    }
+
+    @Override
+    protected void finishLock(SimpleLock lock) {
+        lock.grant(true);
+    }
+
+    @Override
+    protected boolean hasInstanceChanged() {
+        return (getLatestInstance() != this);
     }
 
     /**
      * Simple Lock implementation.
      */
-    public static class SimpleLock extends LockImpl {
+    public static class SimpleLock extends FeatureLockImpl {
         private static final long serialVersionUID = 1L;
 
         /**
@@ -248,17 +186,16 @@ public class SimpleLockManager implements PolicyResourceLockManager {
         private long holdUntilMs;
 
         /**
-         * Feature containing this lock. May be {@code null} until the feature is
-         * identified. Note: this can only be null if the lock has been de-serialized.
+         * Map that should hold this lock.
          */
-        private transient SimpleLockManager feature;
+        private transient Map<String, SimpleLock> resource2lock;
 
         /**
          * Constructs the object.
          */
         public SimpleLock() {
             this.holdUntilMs = 0;
-            this.feature = null;
+            this.resource2lock = null;
         }
 
         /**
@@ -276,7 +213,7 @@ public class SimpleLockManager implements PolicyResourceLockManager {
         public SimpleLock(LockState state, String resourceId, String ownerKey, int holdSec, LockCallback callback,
                         SimpleLockManager feature) {
             super(state, resourceId, ownerKey, holdSec, callback);
-            this.feature = feature;
+            this.resource2lock = feature.resource2lock;
         }
 
         /**
@@ -289,62 +226,15 @@ public class SimpleLockManager implements PolicyResourceLockManager {
             return (holdUntilMs <= currentMs);
         }
 
-        /**
-         * Grants this lock. The notification is <i>always</i> invoked via a background
-         * thread.
-         */
-        protected synchronized void grant() {
-            if (isUnavailable()) {
-                return;
-            }
-
-            setState(LockState.ACTIVE);
-            holdUntilMs = currentTime.getMillis() + TimeUnit.SECONDS.toMillis(getHoldSec());
-
-            logger.info("lock granted: {}", this);
-
-            feature.exsvc.execute(this::notifyAvailable);
-        }
-
-        /**
-         * Permanently denies this lock. The notification is invoked via a background
-         * thread, if a feature instance is attached, otherwise it uses the foreground
-         * thread.
-         *
-         * @param reason the reason the lock was denied
-         */
-        protected void deny(String reason) {
-            synchronized (this) {
-                setState(LockState.UNAVAILABLE);
-            }
-
-            logger.info("{}: {}", reason, this);
-
-            if (feature == null) {
-                notifyUnavailable();
-
-            } else {
-                feature.exsvc.execute(this::notifyUnavailable);
-            }
-        }
-
         @Override
         public boolean free() {
-            // do a quick check of the state
-            if (isUnavailable()) {
-                return false;
-            }
-
-            logger.info("releasing lock: {}", this);
-
-            if (!attachFeature()) {
-                setState(LockState.UNAVAILABLE);
+            if (!freeAllowed()) {
                 return false;
             }
 
             AtomicBoolean result = new AtomicBoolean(false);
 
-            feature.resource2lock.computeIfPresent(getResourceId(), (resourceId, curlock) -> {
+            resource2lock.computeIfPresent(getResourceId(), (resourceId, curlock) -> {
 
                 if (curlock == this) {
                     // this lock was the owner - resource is now available
@@ -362,46 +252,33 @@ public class SimpleLockManager implements PolicyResourceLockManager {
 
         @Override
         public void extend(int holdSec, LockCallback callback) {
-            if (holdSec < 0) {
-                throw new IllegalArgumentException("holdSec is negative");
-            }
-
-            setHoldSec(holdSec);
-            setCallback(callback);
-
-            // do a quick check of the state
-            if (isUnavailable() || !attachFeature()) {
-                deny(LOCK_LOST_MSG);
+            if (!extendAllowed(holdSec, callback)) {
                 return;
             }
 
-            if (feature.resource2lock.get(getResourceId()) == this) {
-                grant();
+            if (resource2lock.get(getResourceId()) == this) {
+                grant(true);
             } else {
-                deny(NOT_LOCKED_MSG);
+                deny(NOT_LOCKED_MSG, true);
             }
         }
 
-        /**
-         * Attaches to the feature instance, if not already attached.
-         *
-         * @return {@code true} if the lock is now attached to a feature, {@code false}
-         *         otherwise
-         */
-        private synchronized boolean attachFeature() {
-            if (feature != null) {
-                // already attached
-                return true;
-            }
+        @Override
+        protected void updateGrant() {
+            holdUntilMs = currentTime.getMillis() + TimeUnit.SECONDS.toMillis(getHoldSec());
+        }
 
-            feature = latestInstance;
+        @Override
+        protected boolean addToFeature() {
+            SimpleLockManager feature = getLatestInstance();
             if (feature == null) {
                 logger.warn("no feature yet for {}", this);
                 return false;
             }
 
             // put this lock into the map
-            feature.resource2lock.putIfAbsent(getResourceId(), this);
+            resource2lock = feature.resource2lock;
+            resource2lock.putIfAbsent(getResourceId(), this);
 
             return true;
         }
@@ -414,10 +291,6 @@ public class SimpleLockManager implements PolicyResourceLockManager {
     }
 
     // these may be overridden by junit tests
-
-    protected ScheduledExecutorService getThreadPool() {
-        return engine.getExecutorService();
-    }
 
     protected SimpleLock makeLock(LockState waiting, String resourceId, String ownerKey, int holdSec,
                     LockCallback callback) {
