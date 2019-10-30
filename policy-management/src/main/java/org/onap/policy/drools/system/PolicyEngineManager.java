@@ -268,10 +268,10 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            this.lockManager = new SimpleLockManager(this, properties);
+            this.lockManager = new SimpleLockManager(properties);
         } catch (RuntimeException e) {
             logger.error("{}: cannot create simple lock manager because of {}", this, e.getMessage(), e);
-            this.lockManager = new SimpleLockManager(this, new Properties());
+            this.lockManager = new SimpleLockManager(new Properties());
         }
 
         /* policy-engine dispatch post operation hook */

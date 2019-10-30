@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -55,6 +56,7 @@ import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -115,16 +117,19 @@ public class DistributedLockManagerTest {
     private static ScheduledExecutorService realExec;
 
     @Mock
+    private PolicyEngine engine;
+
+    @Mock
     private ScheduledExecutorService exsvc;
+
+    @Mock
+    private ScheduledFuture<?> checker;
 
     @Mock
     private LockCallback callback;
 
     @Mock
     private BasicDataSource datasrc;
-
-    @Mock
-    private PolicyEngine engine;
 
     private DistributedLock lock;
 
@@ -153,7 +158,6 @@ public class DistributedLockManagerTest {
         saveExec = Whitebox.getInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD);
 
         realExec = Executors.newScheduledThreadPool(3);
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
     }
 
     /**
@@ -180,8 +184,6 @@ public class DistributedLockManagerTest {
         nsuccesses = new AtomicInteger(0);
 
         cleanDb();
-
-        when(engine.getExecutorService()).thenReturn(exsvc);
 
         feature = new MyLockingFeature(true);
     }
@@ -214,49 +216,9 @@ public class DistributedLockManagerTest {
                         .anyMatch(obj -> obj instanceof DistributedLockManager));
     }
 
-    /**
-     * Tests constructor() when properties are invalid.
-     */
-    @Test
-    public void testDistributedLockManagerInvalidProperties() {
-        // use properties containing an invalid value
-        Properties props = new Properties();
-        props.setProperty(DistributedLockProperties.EXPIRE_CHECK_SEC, "abc");
-
-        feature = new MyLockingFeature(false) {
-            @Override
-            protected Properties getProperties(String fileName) {
-                return props;
-            }
-        };
-
-        assertThatThrownBy(() -> feature.afterStart(engine)).isInstanceOf(DistributedLockManagerException.class);
-    }
-
     @Test
     public void testGetSequenceNumber() {
         assertEquals(1000, feature.getSequenceNumber());
-    }
-
-    @Test
-    public void testStartableApi() {
-        assertTrue(feature.isAlive());
-        assertTrue(feature.start());
-        assertTrue(feature.stop());
-        feature.shutdown();
-
-        // above should have had no effect
-        assertTrue(feature.isAlive());
-
-        feature.afterStop(engine);
-        assertFalse(feature.isAlive());
-    }
-
-    @Test
-    public void testLockApi() {
-        assertFalse(feature.isLocked());
-        assertTrue(feature.lock());
-        assertTrue(feature.unlock());
     }
 
     @Test
@@ -298,8 +260,7 @@ public class DistributedLockManagerTest {
 
         feature = new MyLockingFeature(false);
 
-        when(exsvc.schedule(any(Runnable.class), anyLong(), any()))
-                        .thenThrow(new IllegalArgumentException(EXPECTED_EXCEPTION));
+        doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(exsvc).execute(any());
 
         assertThatThrownBy(() -> feature.afterStart(engine)).isInstanceOf(DistributedLockManagerException.class);
     }
@@ -350,6 +311,7 @@ public class DistributedLockManagerTest {
     @Test
     public void testAfterStop() {
         shutdownFeature();
+        verify(checker).cancel(anyBoolean());
 
         feature = new DistributedLockManager();
 
@@ -424,7 +386,7 @@ public class DistributedLockManagerTest {
     }
 
     /**
-     * Tests lock() when the feature is not the latest instance.
+     * Tests createLock() when the feature is not the latest instance.
      */
     @Test
     public void testCreateLockNotLatestInstance() {
@@ -520,6 +482,27 @@ public class DistributedLockManagerTest {
 
         // it should have scheduled another check, sooner
         runChecker(0, 0, RETRY_SEC);
+    }
+
+    /**
+     * Tests checkExpired(), when getConnection() throws an exception and the feature is
+     * no longer alive.
+     */
+    @Test
+    public void testCheckExpiredSqlExFeatureStopped() {
+        // use a data source that throws an exception when getConnection() is called
+        feature = new InvalidDbLockingFeature(TRANSIENT) {
+            @Override
+            protected SQLException makeEx() {
+                this.stop();
+                return super.makeEx();
+            }
+        };
+
+        runChecker(0, 0, EXPIRE_SEC);
+
+        // it should NOT have scheduled another check
+        verify(exsvc, times(1)).schedule(any(Runnable.class), anyLong(), any());
     }
 
     @Test
@@ -644,7 +627,7 @@ public class DistributedLockManagerTest {
     public void testDistributedLockGrantUnavailable() {
         DistributedLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
         lock.setState(LockState.UNAVAILABLE);
-        lock.grant();
+        // lock.grant();
 
         assertTrue(lock.isUnavailable());
         verify(callback, never()).lockAvailable(any());
@@ -1464,6 +1447,8 @@ public class DistributedLockManagerTest {
      */
     @Test
     public void testMultiThreaded() throws InterruptedException {
+        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
+
         feature = new DistributedLockManager();
         feature.beforeCreateLockManager(PolicyEngineConstants.getManager(), new Properties());
         feature.afterStart(PolicyEngineConstants.getManager());
@@ -1661,10 +1646,12 @@ public class DistributedLockManagerTest {
             shutdownFeature();
 
             exsvc = mock(ScheduledExecutorService.class);
-            when(engine.getExecutorService()).thenReturn(exsvc);
+            when(exsvc.schedule(any(Runnable.class), anyLong(), any())).thenAnswer(ans -> checker);
+            Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
             if (init) {
                 beforeCreateLockManager(engine, new Properties());
+                start();
                 afterStart(engine);
             }
         }
@@ -1685,6 +1672,7 @@ public class DistributedLockManagerTest {
             this.isTransient = isTransient;
 
             this.beforeCreateLockManager(engine, new Properties());
+            this.start();
             this.afterStart(engine);
         }
 
@@ -1704,7 +1692,7 @@ public class DistributedLockManagerTest {
             return datasrc;
         }
 
-        private SQLException makeEx() {
+        protected SQLException makeEx() {
             if (isTransient) {
                 return new SQLException(new SQLTransientException(EXPECTED_EXCEPTION));
 
