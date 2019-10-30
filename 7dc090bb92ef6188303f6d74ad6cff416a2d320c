@@ -62,6 +62,24 @@
       "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4aa58bd5_7d1bc73e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-10-30T15:39:30Z",
+      "side": 1,
+      "message": "that being the case, do we really want to remove the \"final\" modifier (i.e., do we really want to make this changeable by other code)?",
+      "parentUuid": "d6237660_42643a8b",
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
