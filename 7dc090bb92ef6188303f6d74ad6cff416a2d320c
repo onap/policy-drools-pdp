@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99c0a553_7ae9eabe",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-30T11:47:16Z",
+      "side": 1,
+      "message": "these should not be necessary - as the parent pom.xml defines these for all the repos. ONAP is investigating Java11 upgrade this release (year) and these should not be spread out among the pom\u0027s in the sub-modules.",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 0
+      },
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04fba528_afdede40",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-10-30T11:47:16Z",
+      "side": 1,
+      "message": "Not sure this needs to be there.",
+      "range": {
+        "startLine": 62,
+        "startChar": 1,
+        "endLine": 70,
+        "endChar": 1
+      },
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
