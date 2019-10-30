@@ -89,6 +89,7 @@ import org.slf4j.LoggerFactory;
         tags = {@Tag(name = "pdp-d-telemetry", description = "Drools PDP Telemetry Operations")})
 public class RestManager {
 
+    private static final String OFFER_FAILED = "{}: cannot offer to topic {} because of {}";
     private static final String CANNOT_PERFORM_OPERATION = "cannot perform operation";
     private static final String NO_FILTERS = " no filters";
     private static final String NOT_FOUND = " not found: ";
@@ -2085,17 +2086,16 @@ public class RestManager {
                     .build();
             }
         } catch (IllegalArgumentException e) {
-            logger.debug("{}: cannot offer to topic {} because of {}", this, topic, e.getMessage(),
-                            e);
+            logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(new Error(topic + NOT_FOUND_MSG)).build();
         } catch (IllegalStateException e) {
-            logger.debug("{}: cannot offer to topic {} because of {}", this, topic, e.getMessage(),
-                            e);
+            logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
             return Response.status(Response.Status.NOT_ACCEPTABLE)
                     .entity(new Error(topic + " not acceptable due to current state"))
                     .build();
         } catch (Exception e) {
+            logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage()))
                             .build();
         }

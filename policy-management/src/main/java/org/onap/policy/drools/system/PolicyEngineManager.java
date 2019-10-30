@@ -841,8 +841,8 @@ class PolicyEngineManager implements PolicyEngine {
                 logger.warn("{}: abnormal termination - shutdown graceful time period expiration",
                         PolicyEngineManager.this);
             } catch (final InterruptedException e) {
-                /* courtesy to shutdown() to allow it to return */
                 synchronized (PolicyEngineManager.this) {
+                    /* courtesy to shutdown() to allow it to return */
                 }
                 logger.info("{}: finishing a graceful shutdown ", PolicyEngineManager.this, e);
             } finally {
