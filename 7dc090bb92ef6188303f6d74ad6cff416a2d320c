@@ -45,6 +45,23 @@
       "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d6237660_42643a8b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-10-30T15:24:08Z",
+      "side": 1,
+      "message": "mark as \"volatile\".\n\nI think this may give sonars since it is currently unchangeable, I think it will reflect the inconsistency and suggest to be marked as final. I am not very keen on changing code just to satisfy tests.\n\nIf doing this, better to add a setter to make it easier for all unit tests in the future regardless.   You can mark with lombok @NonNull in the setter method, as should protect against week references.   So the other comment is to add a setter protecting against null values.",
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
