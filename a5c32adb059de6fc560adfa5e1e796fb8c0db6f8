@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d5b0aa04_363783c5",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-30T09:41:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "472227f1_751cecf6",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ebe89681_60d0ee50",
         "filename": "feature-drools-init/src/main/java/org/onap/policy/drools/droolsinit/DroolsInitFeature.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2019-10-29T16:21:00Z",
       "side": 1,
       "message": "eclipse warning: need a \"serial version\"",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f321619_35811296",
+        "filename": "feature-drools-init/src/main/java/org/onap/policy/drools/droolsinit/DroolsInitFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-30T09:41:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ebe89681_60d0ee50",
       "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c8bc08b0_3bd44af2",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-30T09:41:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e79d1e36_fdc860fc",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e67a8d67_a358cec4",
         "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2019-10-29T16:21:00Z",
       "side": 1,
       "message": "eclipse warning: unused",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fc412ce_c5fda3ce",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-30T09:41:16Z",
+      "side": 1,
+      "message": "It is now being used",
+      "parentUuid": "e67a8d67_a358cec4",
       "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -102,6 +174,24 @@
       "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "182f4bd0_5f9f445a",
+        "filename": "feature-drools-init/src/test/java/org/onap/policy/drools/droolsinit/DroolsInitFeatureTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-30T09:41:16Z",
+      "side": 1,
+      "message": "I removed the \u0027final\u0027 qualifier, and added back the save/restore of \u0027PolicyEngineConstants.manager\u0027",
+      "parentUuid": "9d9a3bf6_df31671d",
+      "revId": "a5c32adb059de6fc560adfa5e1e796fb8c0db6f8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
