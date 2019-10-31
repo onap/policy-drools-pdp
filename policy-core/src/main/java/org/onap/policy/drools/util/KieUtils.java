@@ -34,7 +34,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 
 /**
  * Kie related utilities.
@@ -73,10 +73,11 @@ public class KieUtils {
         pomFile.deleteOnExit();
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        MavenRepository.getMavenRepository()
+        KieMavenRepository
+            .getKieMavenRepository()
             .installArtifact(releaseId,
-                            (InternalKieModule) kieBuilder.getKieModule(),
-                            pomFile);
+                (InternalKieModule) kieBuilder.getKieModule(),
+                pomFile);
         return releaseId;
     }
 
@@ -102,7 +103,8 @@ public class KieUtils {
         KieBuilder kieBuilder = kieBuild(kieFileSystem);
 
         ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
-        MavenRepository.getMavenRepository()
+        KieMavenRepository
+            .getKieMavenRepository()
             .installArtifact(releaseId, (InternalKieModule) kieBuilder.getKieModule(), pom);
         return releaseId;
     }

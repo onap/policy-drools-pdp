@@ -72,7 +72,7 @@ public class FilterUtils {
      * @param items items to be checked
      * @return an "and" filter
      */
-    public static Map<String, Object> makeAnd(@SuppressWarnings("unchecked") Map<String, Object>... items) {
+    public static Map<String, Object> makeAnd(Map<String, Object>... items) {
         Map<String, Object> map = new TreeMap<>();
         map.put(JSON_CLASS, CLASS_AND);
         map.put(JSON_FILTERS, items);
@@ -86,7 +86,7 @@ public class FilterUtils {
      * @param items items to be checked
      * @return an "or" filter
      */
-    public static Map<String, Object> makeOr(@SuppressWarnings("unchecked") Map<String, Object>... items) {
+    public static Map<String, Object> makeOr(Map<String, Object>... items) {
         Map<String, Object> map = new TreeMap<>();
         map.put(JSON_CLASS, CLASS_OR);
         map.put(JSON_FILTERS, items);
