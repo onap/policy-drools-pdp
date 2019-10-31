@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53f65f3a_a0a199a9",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/extractor/ClassExtractors.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-10-31T18:44:35Z",
+      "side": 1,
+      "message": "Should this license be updated?",
+      "revId": "f722f4197a9186dc5aa9f0bda255550f8119fa8f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51b4df67_8f7f261b",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/state/FilterUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-10-31T18:44:35Z",
+      "side": 1,
+      "message": "License Update?",
+      "revId": "f722f4197a9186dc5aa9f0bda255550f8119fa8f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "efef5f1d_51648ba1",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2019-10-31T18:44:35Z",
+      "side": 1,
+      "message": "License update?",
+      "revId": "f722f4197a9186dc5aa9f0bda255550f8119fa8f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
