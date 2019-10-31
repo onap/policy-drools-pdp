@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class FilterUtils {
      * @param items items to be checked
      * @return an "and" filter
      */
-    public static Map<String, Object> makeAnd(@SuppressWarnings("unchecked") Map<String, Object>... items) {
+    public static Map<String, Object> makeAnd(Map<String, Object>... items) {
         Map<String, Object> map = new TreeMap<>();
         map.put(JSON_CLASS, CLASS_AND);
         map.put(JSON_FILTERS, items);
@@ -86,7 +86,7 @@ public class FilterUtils {
      * @param items items to be checked
      * @return an "or" filter
      */
-    public static Map<String, Object> makeOr(@SuppressWarnings("unchecked") Map<String, Object>... items) {
+    public static Map<String, Object> makeOr(Map<String, Object>... items) {
         Map<String, Object> map = new TreeMap<>();
         map.put(JSON_CLASS, CLASS_OR);
         map.put(JSON_FILTERS, items);

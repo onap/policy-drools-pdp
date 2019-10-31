@@ -30,129 +30,96 @@
         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <protobuf.version>3.6.1</protobuf.version>
-    </properties>
-
     <dependencies>
-    <!--
-    Issue: 1 of 2
-    These 3 dependencies are trying to upgrade security fixes
-    identified. If they are removed or manipulated then please
-    fix the 2nd change as noted below. 
-    -->
+
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.24</version>
-        </dependency>
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>${protobuf.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
-            <version>6.5.0.Final</version>
         </dependency>
+
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
-            <version>6.5.0.Final</version>
-      <!--
-      Issue: 2 of 2
-      Excluding these 2 dependencies in order to force upgrade security fixes
-      identified. As declared above. Any changes here should be reflected above
-      and vice versa.
-      -->
+            <!--
+            Issue: 2 of 2
+            Excluding these 2 dependencies in order to force upgrade security fixes
+            identified. As declared above. Any changes here should be reflected above
+            and vice versa.
+            -->
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-utils</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.thoughtworks.xstream</groupId>
-                    <artifactId>xstream</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.protobuf</groupId>
-                    <artifactId>protobuf-java</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
-            <version>6.5.0.Final</version>
         </dependency>
+
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
-            <version>6.5.0.Final</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.protobuf</groupId>
-                    <artifactId>protobuf-java</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>capabilities</artifactId>
             <version>${policy.common.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils</artifactId>
             <version>${policy.common.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>policy-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils-test</artifactId>
             <version>${policy.common.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
