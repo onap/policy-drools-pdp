@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "148d8c3c_7422ecbb",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-31T09:12:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99c0a553_7ae9eabe",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 0
+      },
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "04fba528_afdede40",
         "filename": "feature-drools-init/pom.xml",
         "patchSetId": 3
@@ -45,6 +69,30 @@
       "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd8b6e80_2c9bc628",
+        "filename": "feature-drools-init/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-31T09:12:44Z",
+      "side": 1,
+      "message": "I have removed it.\n\nIt turns out that this feature was copied from our application-specific build, and it contained some historical baggage.",
+      "parentUuid": "04fba528_afdede40",
+      "range": {
+        "startLine": 62,
+        "startChar": 1,
+        "endLine": 70,
+        "endChar": 1
+      },
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -77,6 +125,24 @@
       "side": 1,
       "message": "that being the case, do we really want to remove the \"final\" modifier (i.e., do we really want to make this changeable by other code)?",
       "parentUuid": "d6237660_42643a8b",
+      "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "19d68e18_a2b9c0b3",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-10-31T09:12:44Z",
+      "side": 1,
+      "message": "On the surface, it seemed that changing a static field was cleaner and simpler than changing an internal field of an object -- apparently, that wasn\u0027t really the case. So, I put the \u0027final\u0027 back in, and used the suggested approach in \u0027SimpleLockManagerTest\u0027.",
+      "parentUuid": "4aa58bd5_7d1bc73e",
       "revId": "7dc090bb92ef6188303f6d74ad6cff416a2d320c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
