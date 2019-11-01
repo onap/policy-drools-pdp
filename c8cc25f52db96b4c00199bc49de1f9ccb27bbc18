@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2c0f8be_e69dbe38",
+        "filename": "feature-simulators/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2019-11-01T12:05:20Z",
+      "side": 1,
+      "message": "This is needed in later versions of Jersey for injection from annotations.",
+      "range": {
+        "startLine": 64,
+        "startChar": 8,
+        "endLine": 68,
+        "endChar": 21
+      },
+      "revId": "c8cc25f52db96b4c00199bc49de1f9ccb27bbc18",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
