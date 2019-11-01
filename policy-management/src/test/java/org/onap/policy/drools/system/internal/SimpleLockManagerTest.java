@@ -63,7 +63,6 @@ import org.onap.policy.common.utils.time.TestTime;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
-import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.system.internal.SimpleLockManager.SimpleLock;
 import org.powermock.reflect.Whitebox;
@@ -95,9 +94,6 @@ public class SimpleLockManagerTest {
     private ScheduledExecutorService exsvc;
 
     @Mock
-    private PolicyEngine engine;
-
-    @Mock
     private ScheduledFuture<?> future;
 
     @Mock
@@ -113,7 +109,6 @@ public class SimpleLockManagerTest {
         saveExec = Whitebox.getInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD);
 
         realExec = Executors.newScheduledThreadPool(3);
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
     }
 
     /**
@@ -141,7 +136,7 @@ public class SimpleLockManagerTest {
 
         Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, testTime);
 
-        when(engine.getExecutorService()).thenReturn(exsvc);
+        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
         feature = new MyLockingFeature();
         feature.start();
@@ -156,19 +151,14 @@ public class SimpleLockManagerTest {
         Properties props = new Properties();
         props.setProperty(SimpleLockProperties.EXPIRE_CHECK_SEC, "abc");
 
-        assertThatThrownBy(() -> new MyLockingFeature(engine, props)).isInstanceOf(SimpleLockManagerException.class);
-    }
-
-    @Test
-    public void testIsAlive() {
-        assertTrue(feature.isAlive());
-
-        feature.stop();
-        assertFalse(feature.isAlive());
+        assertThatThrownBy(() -> new MyLockingFeature(props)).isInstanceOf(SimpleLockManagerException.class);
     }
 
     @Test
     public void testStart() {
+        assertTrue(feature.isAlive());
+        verify(exsvc).scheduleWithFixedDelay(any(), anyLong(), anyLong(), any());
+
         assertFalse(feature.start());
 
         feature.stop();
@@ -178,6 +168,7 @@ public class SimpleLockManagerTest {
     @Test
     public void testStop() {
         assertTrue(feature.stop());
+        assertFalse(feature.isAlive());
         verify(future).cancel(true);
 
         assertFalse(feature.stop());
@@ -194,20 +185,11 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testLockApi() {
-        assertFalse(feature.isLocked());
-        assertTrue(feature.lock());
-        assertTrue(feature.unlock());
-    }
-
-    @Test
     public void testCreateLock() {
         // this lock should be granted immediately
         SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
         assertTrue(lock.isActive());
         assertEquals(testTime.getMillis() + HOLD_MS, lock.getHoldUntilMs());
-
-        invokeCallback(1);
 
         verify(callback).lockAvailable(lock);
         verify(callback, never()).lockUnavailable(lock);
@@ -217,8 +199,6 @@ public class SimpleLockManagerTest {
         Lock lock2 = feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
         assertFalse(lock2.isActive());
         assertTrue(lock2.isUnavailable());
-
-        invokeCallback(2);
 
         verify(callback, never()).lockAvailable(lock2);
         verify(callback).lockUnavailable(lock2);
@@ -231,13 +211,12 @@ public class SimpleLockManagerTest {
         // should work with "true" value also
         Lock lock3 = feature.createLock(RESOURCE2, OWNER_KEY, HOLD_SEC, callback, true);
         assertTrue(lock3.isActive());
-        invokeCallback(3);
         verify(callback).lockAvailable(lock3);
         verify(callback, never()).lockUnavailable(lock3);
     }
 
     /**
-     * Tests lock() when the feature is not the latest instance.
+     * Tests createLock() when the feature is not the latest instance.
      */
     @Test
     public void testCreateLockNotLatestInstance() {
@@ -275,7 +254,7 @@ public class SimpleLockManagerTest {
 
         // run the callbacks
         captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(5)).execute(captor.capture());
+        verify(exsvc, times(2)).execute(captor.capture());
         captor.getAllValues().forEach(Runnable::run);
         verify(callback).lockUnavailable(lock);
         verify(callback).lockUnavailable(lock2);
@@ -295,7 +274,7 @@ public class SimpleLockManagerTest {
 
         // run the callback
         captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(9)).execute(captor.capture());
+        verify(exsvc, times(3)).execute(captor.capture());
         captor.getValue().run();
         verify(callback).lockUnavailable(lock3);
     }
@@ -328,7 +307,6 @@ public class SimpleLockManagerTest {
         feature.start();
 
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(1);
 
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
         verify(exsvc).scheduleWithFixedDelay(captor.capture(), anyLong(), anyLong(), any());
@@ -339,14 +317,12 @@ public class SimpleLockManagerTest {
 
         // lock should now be gone and we should be able to get another
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(2);
 
         // should have succeeded twice
         verify(callback, times(2)).lockAvailable(any());
 
         // lock should not be available now
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(3);
         verify(callback).lockUnavailable(any());
     }
 
@@ -389,7 +365,6 @@ public class SimpleLockManagerTest {
         feature.start();
 
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(1);
 
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
         verify(exsvc).scheduleWithFixedDelay(captor.capture(), anyLong(), anyLong(), any());
@@ -400,14 +375,13 @@ public class SimpleLockManagerTest {
 
         // lock should not be available now
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(3);
         verify(callback).lockUnavailable(any());
     }
 
     @Test
     public void testGetThreadPool() {
         // use a real feature
-        feature = new SimpleLockManager(engine, new Properties());
+        feature = new SimpleLockManager(null, new Properties());
 
         // load properties
         feature.start();
@@ -459,25 +433,11 @@ public class SimpleLockManagerTest {
     @Test
     public void testSimpleLockExpired() {
         SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        lock.grant();
+        lock.grant(true);
 
         assertFalse(lock.expired(testTime.getMillis()));
         assertFalse(lock.expired(testTime.getMillis() + HOLD_MS - 1));
         assertTrue(lock.expired(testTime.getMillis() + HOLD_MS));
-    }
-
-    /**
-     * Tests grant() when the lock is already unavailable.
-     */
-    @Test
-    public void testSimpleLockGrantUnavailable() {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        lock.setState(LockState.UNAVAILABLE);
-        lock.grant();
-
-        assertTrue(lock.isUnavailable());
-        verify(callback, never()).lockAvailable(any());
-        verify(callback, never()).lockUnavailable(any());
     }
 
     @Test
@@ -486,18 +446,15 @@ public class SimpleLockManagerTest {
 
         // lock2 should be denied
         SimpleLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(2);
         verify(callback, never()).lockAvailable(lock2);
         verify(callback).lockUnavailable(lock2);
 
         // lock2 was denied, so nothing new should happen when freed
         assertFalse(lock2.free());
-        invokeCallback(2);
 
         // force lock2 to be active - still nothing should happen
         Whitebox.setInternalState(lock2, "state", LockState.ACTIVE);
         assertFalse(lock2.free());
-        invokeCallback(2);
 
         // now free the first lock
         assertTrue(lock.free());
@@ -506,6 +463,9 @@ public class SimpleLockManagerTest {
         // should be able to get the lock now
         SimpleLock lock3 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
         assertTrue(lock3.isActive());
+
+        verify(callback).lockAvailable(lock3);
+        verify(callback, never()).lockUnavailable(lock3);
     }
 
     /**
@@ -525,41 +485,22 @@ public class SimpleLockManagerTest {
         assertTrue(lock.isUnavailable());
     }
 
-    /**
-     * Tests free() on a serialized lock without a feature.
-     *
-     * @throws Exception if an error occurs
-     */
-    @Test
-    public void testSimpleLockFreeNoFeature() throws Exception {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-
-        SimpleLockManager.setLatestInstance(null);
-
-        lock = roundTrip(lock);
-        assertFalse(lock.free());
-        assertTrue(lock.isUnavailable());
-    }
-
     @Test
     public void testSimpleLockExtend() {
         final SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
 
         // lock2 should be denied
         SimpleLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        invokeCallback(2);
         verify(callback, never()).lockAvailable(lock2);
         verify(callback).lockUnavailable(lock2);
 
         // lock2 will still be denied
         lock2.extend(HOLD_SEC, callback);
-        invokeCallback(3);
         verify(callback, times(2)).lockUnavailable(lock2);
 
         // force lock2 to be active - should still be denied
         Whitebox.setInternalState(lock2, "state", LockState.ACTIVE);
         lock2.extend(HOLD_SEC, callback);
-        invokeCallback(4);
         verify(callback, times(3)).lockUnavailable(lock2);
 
         assertThatIllegalArgumentException().isThrownBy(() -> lock.extend(-1, callback))
@@ -569,8 +510,7 @@ public class SimpleLockManagerTest {
         lock.extend(HOLD_SEC2, callback);
         assertEquals(HOLD_SEC2, lock.getHoldSec());
         assertEquals(testTime.getMillis() + HOLD_MS2, lock.getHoldUntilMs());
-        invokeCallback(5);
-        verify(callback).lockAvailable(lock);
+        verify(callback, times(2)).lockAvailable(lock);
         verify(callback, never()).lockUnavailable(lock);
     }
 
@@ -592,13 +532,12 @@ public class SimpleLockManagerTest {
         lock.extend(HOLD_SEC, scallback);
         assertTrue(lock.isActive());
 
-        invokeCallback(1);
         verify(scallback).lockAvailable(lock);
         verify(scallback, never()).lockUnavailable(lock);
     }
 
     /**
-     * Tests extend() on a serialized lock without a feature.
+     * Tests that extend() fails when there is no feature.
      *
      * @throws Exception if an error occurs
      */
@@ -614,7 +553,6 @@ public class SimpleLockManagerTest {
         lock.extend(HOLD_SEC, scallback);
         assertTrue(lock.isUnavailable());
 
-        invokeCallback(1);
         verify(scallback, never()).lockAvailable(lock);
         verify(scallback).lockUnavailable(lock);
     }
@@ -635,7 +573,8 @@ public class SimpleLockManagerTest {
     @Test
     public void testMultiThreaded() throws InterruptedException {
         Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, testTime);
-        feature = new SimpleLockManager(PolicyEngineConstants.getManager(), new Properties());
+        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
+        feature = new SimpleLockManager(null, new Properties());
         feature.start();
 
         List<MyThread> threads = new ArrayList<>(MAX_THREADS);
@@ -677,33 +616,19 @@ public class SimpleLockManagerTest {
     }
 
     /**
-     * Invokes the last call-back in the work queue.
-     *
-     * @param nexpected number of call-backs expected in the work queue
-     */
-    private void invokeCallback(int nexpected) {
-        ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(nexpected)).execute(captor.capture());
-
-        if (nexpected > 0) {
-            captor.getAllValues().get(nexpected - 1).run();
-        }
-    }
-
-    /**
      * Feature that uses <i>exsvc</i> to execute requests.
      */
     private class MyLockingFeature extends SimpleLockManager {
 
         public MyLockingFeature() {
-            this(engine, new Properties());
+            this(new Properties());
         }
 
-        public MyLockingFeature(PolicyEngine engine, Properties props) {
-            super(engine, props);
+        public MyLockingFeature(Properties props) {
+            super(null, props);
 
             exsvc = mock(ScheduledExecutorService.class);
-            when(engine.getExecutorService()).thenReturn(exsvc);
+            Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
             when(exsvc.scheduleWithFixedDelay(any(), anyLong(), anyLong(), any())).thenAnswer(answer -> {
                 return future;
