@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "64724782_f28f9b57",
+        "filename": "policy-management/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-01T12:48:27Z",
+      "side": 0,
+      "message": "oh, good!",
+      "revId": "f7222f85e8c472e0d434d96191930dc989452e87",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
