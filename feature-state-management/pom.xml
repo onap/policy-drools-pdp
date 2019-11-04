@@ -120,11 +120,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jersey2-jaxrs</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>policy-core</artifactId>
             <version>${project.version}</version>
