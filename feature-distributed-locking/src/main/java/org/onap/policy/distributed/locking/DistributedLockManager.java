@@ -769,8 +769,8 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
         protected void doDbDelete(Connection conn) throws SQLException {
             logger.debug("delete lock record {}", this);
-            try (PreparedStatement stmt =
-                            conn.prepareStatement("DELETE pooling.locks WHERE resourceId=? AND host=? AND owner=?")) {
+            try (PreparedStatement stmt = conn
+                            .prepareStatement("DELETE FROM pooling.locks WHERE resourceId=? AND host=? AND owner=?")) {
 
                 stmt.setString(1, getResourceId());
                 stmt.setString(2, this.hostName);
