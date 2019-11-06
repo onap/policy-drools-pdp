@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02e2056e_f9ff35f4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/configuration/ControllerConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T14:17:50Z",
+      "side": 1,
+      "message": "License date",
+      "revId": "69fe70a3dbd5dd93bacfdd4ffac6bac7e0aa0181",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
