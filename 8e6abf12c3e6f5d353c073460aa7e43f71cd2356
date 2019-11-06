@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01559ce3_972a29fa",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsController3Test.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T20:53:55Z",
+      "side": 1,
+      "message": "don\u0027t think \"volatile\" is needed",
+      "revId": "8e6abf12c3e6f5d353c073460aa7e43f71cd2356",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
