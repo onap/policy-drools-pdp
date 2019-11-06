@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,13 +54,13 @@ public class DroolsContainerTest {
         KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
                 Paths.get("src/test/resources/drools-artifact-1.1/pom.xml").toFile(),
-                "src/main/resources/rules/org/onap/policy/drools/core/test/rules.drl",
+                "src/main/resources/rules/org/onap/policy/drools/core/test/",
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/rules.drl").toFile());
 
         KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.2/src/main/resources/META-INF/kmodule.xml").toFile(),
                 Paths.get("src/test/resources/drools-artifact-1.2/pom.xml").toFile(),
-                "src/main/resources/rules/org/onap/policy/drools/core/test/rules.drl",
+                "src/main/resources/rules/org/onap/policy/drools/core/test/",
                 Paths.get("src/test/resources/drools-artifact-1.2/src/main/resources/rules.drl").toFile());
     }
 

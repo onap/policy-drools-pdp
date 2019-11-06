@@ -59,7 +59,7 @@ public class ControllerLoggingTest {
     private static final String JUNIT_KMODULE_DRL_PATH = "src/test/resources/test.drl";
     private static final String JUNIT_KMODULE_POM_PATH = "src/test/resources/test.pom";
     private static final String JUNIT_KMODULE_PATH = "src/test/resources/kmodule.xml";
-    private static final String JUNIT_KJAR_DRL_PATH = "src/main/resources/org/onap/policy/drools/test/test.drl";
+    private static final String JUNIT_KJAR_DRL_PATH = "src/main/resources/org/onap/policy/drools/test/";
 
     /**
      * These properties are used for the Policy Controller to point to the test artifact.
