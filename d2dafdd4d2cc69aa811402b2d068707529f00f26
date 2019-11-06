@@ -16,6 +16,24 @@
       "revId": "d2dafdd4d2cc69aa811402b2d068707529f00f26",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2dc8c79a_247d7641",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2097,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-11-06T15:27:55Z",
+      "side": 1,
+      "message": "I think so, that way would also be more uniform.",
+      "parentUuid": "cf6d891f_c5256517",
+      "revId": "d2dafdd4d2cc69aa811402b2d068707529f00f26",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
