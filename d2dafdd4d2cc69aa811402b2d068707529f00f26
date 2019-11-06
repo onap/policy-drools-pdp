@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf6d891f_c5256517",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2097,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T14:35:03Z",
+      "side": 1,
+      "message": "this functions like existing code, which just returns e.getMessage().  Would it be appropriate to model this like the previous two \"catch\" clauses, where it adds a prefix to the message?",
+      "revId": "d2dafdd4d2cc69aa811402b2d068707529f00f26",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}

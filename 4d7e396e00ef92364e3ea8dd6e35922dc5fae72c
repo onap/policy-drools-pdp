@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1b176caa_5a07f127",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 725,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T14:35:03Z",
+      "side": 0,
+      "message": "this will now be NOT_FOUND.  Is that ok?  If not, I can change this method back",
+      "revId": "4d7e396e00ef92364e3ea8dd6e35922dc5fae72c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "271e644b_ad363a67",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1656,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T14:35:03Z",
+      "side": 0,
+      "message": "same comment as before - this can be reverted if we really want to return BAD_REQUEST instead of NOT_FOUND",
+      "revId": "4d7e396e00ef92364e3ea8dd6e35922dc5fae72c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b54b409_3f58e3a4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1662,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T14:35:03Z",
+      "side": 0,
+      "message": "this message will be slightly different, too - now says \"not acceptable\"",
+      "revId": "4d7e396e00ef92364e3ea8dd6e35922dc5fae72c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a3905c4_5cb3df34",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2095,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T14:35:03Z",
+      "side": 0,
+      "message": "this message now simply says \"not acceptable\"",
+      "revId": "4d7e396e00ef92364e3ea8dd6e35922dc5fae72c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
