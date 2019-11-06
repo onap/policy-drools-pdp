@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,13 +25,11 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.HashMap;
 import java.util.Map;
-
+import lombok.ToString;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
 import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
@@ -39,47 +37,48 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 
 /**
  * Maven Related Information.
- * 
+ *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
 public class DroolsConfiguration {
 
     /**
      * Maven Artifact ID
      * (Required).
-     * 
+     *
      */
     @JsonProperty("artifactId")
     @GsonJsonProperty("artifactId")
     private String artifactId;
-    
+
     /**
      * Maven Group ID
      * (Required).
-     * 
+     *
      */
     @JsonProperty("groupId")
     @GsonJsonProperty("groupId")
     private String groupId;
-    
+
     /**
      * Maven Version
      * (Required).
-     * 
+     *
      */
     @JsonProperty("version")
     @GsonJsonProperty("version")
     private String version;
-    
+
     @JsonIgnore
     @GsonJsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    
+
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
      * No args constructor for use in serialization.
-     * 
+     *
      */
     public DroolsConfiguration() {
         // Empty
@@ -87,7 +86,7 @@ public class DroolsConfiguration {
 
     /**
      * Constructor.
-     * 
+     *
      * @param groupId group id
      * @param artifactId artifact id
      * @param version version
@@ -101,7 +100,7 @@ public class DroolsConfiguration {
     /**
      * Maven Artifact ID
      * (Required).
-     * 
+     *
      * @return
      *     The artifactId
      */
@@ -114,7 +113,7 @@ public class DroolsConfiguration {
     /**
      * Maven Artifact ID
      * (Required).
-     * 
+     *
      * @param artifactId
      *     The artifactId
      */
@@ -132,7 +131,7 @@ public class DroolsConfiguration {
     /**
      * Maven Group ID
      * (Required).
-     * 
+     *
      * @return
      *     The groupId
      */
@@ -145,7 +144,7 @@ public class DroolsConfiguration {
     /**
      * Maven Group ID
      * (Required).
-     * 
+     *
      * @param groupId
      *     The groupId
      */
@@ -163,7 +162,7 @@ public class DroolsConfiguration {
     /**
      * Maven Version
      * (Required).
-     * 
+     *
      * @return
      *     The version
      */
@@ -176,7 +175,7 @@ public class DroolsConfiguration {
     /**
      * Maven Version
      * (Required).
-     * 
+     *
      * @param version
      *     The version
      */
@@ -189,11 +188,6 @@ public class DroolsConfiguration {
     public DroolsConfiguration withVersion(String version) {
         this.version = version;
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
     @JsonAnyGetter
@@ -244,7 +238,7 @@ public class DroolsConfiguration {
 
     /**
      * Get declared property.
-     * 
+     *
      * @param name property name
      * @return the property object
      */
@@ -262,7 +256,7 @@ public class DroolsConfiguration {
 
     /**
      * Set property value.
-     * 
+     *
      * @param name property name
      * @param value property value
      */
@@ -274,7 +268,7 @@ public class DroolsConfiguration {
 
     /**
      * Set property value and return object.
-     * 
+     *
      * @param name property name
      * @param value property value
      * @return this
@@ -305,10 +299,10 @@ public class DroolsConfiguration {
                 .append(groupId, rhs.groupId).append(version, rhs.version)
                 .append(additionalProperties, rhs.additionalProperties).isEquals();
     }
-    
+
     /**
      * Call set artifact id.
-     * 
+     *
      * @param value id
      */
     public void callSetArtifactId(Object value) {
@@ -322,7 +316,7 @@ public class DroolsConfiguration {
 
     /**
      * Call set group id.
-     * 
+     *
      * @param value id
      */
     public void callSetGroupId(Object value) {
@@ -336,7 +330,7 @@ public class DroolsConfiguration {
 
     /**
      * Call set version.
-     * 
+     *
      * @param value version
      */
     public void callSetVersion(Object value) {

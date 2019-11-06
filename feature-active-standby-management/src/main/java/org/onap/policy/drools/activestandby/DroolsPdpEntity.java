@@ -22,26 +22,21 @@ package org.onap.policy.drools.activestandby;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import org.onap.policy.common.im.MonitorTime;
-import org.onap.policy.drools.activestandby.DroolsPdpObject;
 
 @Entity
 //@Table(name="DroolsPdpEntity")
 
-@NamedQueries({
-    @NamedQuery(name = "DroolsPdpEntity.findAll", query = "SELECT e FROM DroolsPdpEntity e "),
-    @NamedQuery(name = "DroolsPdpEntity.deleteAll", query = "DELETE FROM DroolsPdpEntity WHERE 1=1")
-    })
+@NamedQuery(name = "DroolsPdpEntity.findAll", query = "SELECT e FROM DroolsPdpEntity e ")
+@NamedQuery(name = "DroolsPdpEntity.deleteAll", query = "DELETE FROM DroolsPdpEntity WHERE 1=1")
 @Getter
 @Setter
 public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
