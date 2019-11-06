@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -590,17 +592,15 @@ public class RestManager {
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response controller(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             return Response.status(Response.Status.OK)
                             .entity(PolicyControllerConstants.getFactory().get(controllerName)).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(controllerName + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
+                return (controllerName);
+            });
     }
 
     /**
@@ -665,17 +665,15 @@ public class RestManager {
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response controllerProperties(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final PolicyController controller = PolicyControllerConstants.getFactory().get(controllerName);
             return Response.status(Response.Status.OK).entity(controller.getProperties()).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(controllerName + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
+                return (controllerName);
+            });
     }
 
     /**
@@ -712,26 +710,21 @@ public class RestManager {
                     .entity("A valid or matching controller names must be provided").build();
         }
 
-        PolicyController controller;
-        try {
-            controller = PolicyEngineConstants.getManager().updatePolicyController(controllerConfiguration);
+        return catchArgStateGenericEx(() -> {
+            PolicyController controller =
+                            PolicyEngineConstants.getManager().updatePolicyController(controllerConfiguration);
             if (controller == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new Error(controllerName + DOES_NOT_EXIST_MSG)).build();
+                                .entity(new Error(controllerName + DOES_NOT_EXIST_MSG)).build();
             }
-        } catch (final IllegalArgumentException e) {
-            logger.info("{}: cannot update policy-controller {} because of {}", this, controllerName, e.getMessage(),
-                    e);
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + NOT_FOUND + e.getMessage())).build();
-        } catch (final Exception e) {
-            logger.info("{}: cannot update policy-controller {} because of {}", this, controllerName, e.getMessage(),
-                            e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
 
-        return Response.status(Response.Status.OK).entity(controller).build();
+            return Response.status(Response.Status.OK).entity(controller).build();
+
+        }, e -> {
+                logger.info("{}: cannot update policy-controller {} because of {}", this, controllerName,
+                    e.getMessage(), e);
+                return (controllerName);
+            });
     }
 
     /**
@@ -808,17 +801,15 @@ public class RestManager {
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response drools(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             return Response.status(Response.Status.OK).entity(drools).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(controllerName + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
+                return (controllerName);
+            });
     }
 
     /**
@@ -836,21 +827,19 @@ public class RestManager {
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response droolsFacts(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final Map<String, Long> sessionCounts = new HashMap<>();
             final DroolsController drools = this.getDroolsController(controllerName);
             for (final String session : drools.getSessionNames()) {
                 sessionCounts.put(session, drools.factCount(session));
             }
-            return Response.status(Response.Status.OK).entity(sessionCounts).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(controllerName + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
+            return sessionCounts;
+
+        }, e -> {
+                logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
+                return controllerName;
+            });
     }
 
     /**
@@ -869,17 +858,15 @@ public class RestManager {
     public Response droolsFacts(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            return Response.status(Response.Status.OK).entity(drools.factClassNames(sessionName)).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error("entity not found")).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + sessionName + NOT_ACCEPTABLE_MSG)).build();
-        }
+            return drools.factClassNames(sessionName);
+
+        }, e -> {
+                logger.debug(FETCH_DROOLS_FAILED, this, controllerName, e.getMessage(), e);
+                return (controllerName + ":" + sessionName);
+            });
     }
 
     /**
@@ -902,24 +889,16 @@ public class RestManager {
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
             @ApiParam(value = "Drools Fact Type", required = true) @PathParam("factType") String factType) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final List<Object> facts = drools.facts(sessionName, factType, false);
-            if (!count) {
-                return Response.status(Response.Status.OK).entity(facts).build();
-            } else {
-                return Response.status(Response.Status.OK).entity(facts.size()).build();
-            }
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + sessionName + ":" + factType + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + ":" + sessionName + ":" + factType + NOT_ACCEPTABLE_MSG))
-                            .build();
-        }
+            return (count ? facts.size() : facts);
+
+        }, e -> {
+                logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
+                return (controllerName + ":" + sessionName + ":" + factType);
+            });
     }
 
     /**
@@ -946,33 +925,17 @@ public class RestManager {
             @ApiParam(value = "Query Name Present in DRL", required = true) @PathParam("query") String queryName,
             @ApiParam(value = "Query Identifier Present in the DRL Query",
                     required = true) @PathParam("queriedEntity") String queriedEntity) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final List<Object> facts = drools.factQuery(sessionName, queryName, queriedEntity, false);
-            if (!count) {
-                return Response.status(Response.Status.OK).entity(facts).build();
-            } else {
-                return Response.status(Response.Status.OK).entity(facts.size()).build();
-            }
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DROOLS_BY_ENTITY_FAILED, this,
-                    controllerName, sessionName, queryName, queriedEntity, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(
-                            controllerName + ":" + sessionName + ":" + queryName + queriedEntity + NOT_FOUND_MSG))
-                    .build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DROOLS_BY_ENTITY_FAILED, this,
-                    controllerName, sessionName, queryName, queriedEntity, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(
-                            controllerName + ":" + sessionName + ":" + queryName + queriedEntity + NOT_ACCEPTABLE_MSG))
-                    .build();
-        } catch (final Exception e) {
-            logger.debug(FETCH_DROOLS_BY_ENTITY_FAILED, this,
-                    controllerName, sessionName, queryName, queriedEntity, e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
-        }
+            return (count ? facts.size() : facts);
+
+        }, e -> {
+                logger.debug(FETCH_DROOLS_BY_ENTITY_FAILED, this,
+                            controllerName, sessionName, queryName, queriedEntity, e.getMessage(), e);
+                return (controllerName + ":" + sessionName + ":" + queryName + queriedEntity);
+            });
     }
 
     /**
@@ -999,37 +962,20 @@ public class RestManager {
                     required = true) @PathParam("queriedEntity") String queriedEntity,
             @ApiParam(value = "Query Parameter Values to pass in the DRL Query",
                     required = false) List<Object> queryParameters) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            List<Object> facts;
             if (queryParameters == null || queryParameters.isEmpty()) {
-                facts = drools.factQuery(sessionName, queryName, queriedEntity, false);
+                return drools.factQuery(sessionName, queryName, queriedEntity, false);
             } else {
-                facts = drools.factQuery(sessionName, queryName, queriedEntity, false, queryParameters.toArray());
+                return drools.factQuery(sessionName, queryName, queriedEntity, false, queryParameters.toArray());
             }
-            return Response.status(Response.Status.OK).entity(facts).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(
-                    FETCH_DROOLS_BY_PARAMS_FAILED,
+
+        }, e -> {
+                logger.debug(FETCH_DROOLS_BY_PARAMS_FAILED,
                     this, controllerName, sessionName, queryName, queriedEntity, queryParameters, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(
-                            controllerName + ":" + sessionName + ":" + queryName + queriedEntity + NOT_FOUND_MSG))
-                    .build();
-        } catch (final IllegalStateException e) {
-            logger.debug(
-                    FETCH_DROOLS_BY_PARAMS_FAILED,
-                    this, controllerName, sessionName, queryName, queriedEntity, queryParameters, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(
-                            controllerName + ":" + sessionName + ":" + queryName + queriedEntity + NOT_ACCEPTABLE_MSG))
-                    .build();
-        } catch (final Exception e) {
-            logger.debug(
-                    FETCH_DROOLS_BY_PARAMS_FAILED,
-                    this, controllerName, sessionName, queryName, queriedEntity, queryParameters, e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
-        }
+                return (controllerName + ":" + sessionName + ":" + queryName + queriedEntity);
+            });
     }
 
     /**
@@ -1053,26 +999,16 @@ public class RestManager {
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
             @ApiParam(value = "Drools Fact Type", required = true) @PathParam("factType") String factType) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            final List<Object> facts = drools.facts(sessionName, factType, true);
-            return Response.status(Response.Status.OK).entity(facts).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DROOLS_BY_FACTTYPE_FAILED, this,
-                    controllerName, sessionName, factType, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + sessionName + ":" + factType + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DROOLS_BY_FACTTYPE_FAILED, this,
+            return drools.facts(sessionName, factType, true);
+
+        }, e -> {
+                logger.debug(FETCH_DROOLS_BY_FACTTYPE_FAILED, this,
                             controllerName, sessionName, factType, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + ":" + sessionName + ":" + factType + NOT_ACCEPTABLE_MSG))
-                            .build();
-        } catch (final Exception e) {
-            logger.debug(FETCH_DROOLS_BY_FACTTYPE_FAILED, this,
-                    controllerName, sessionName, factType, e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
-        }
+                return (controllerName + ":" + sessionName + ":" + factType);
+            });
     }
 
     /**
@@ -1100,37 +1036,20 @@ public class RestManager {
                     required = true) @PathParam("queriedEntity") String queriedEntity,
             @ApiParam(value = "Query Parameter Values to pass in the DRL Query",
                     required = false) List<Object> queryParameters) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            List<Object> facts;
             if (queryParameters == null || queryParameters.isEmpty()) {
-                facts = drools.factQuery(sessionName, queryName, queriedEntity, true);
+                return drools.factQuery(sessionName, queryName, queriedEntity, true);
             } else {
-                facts = drools.factQuery(sessionName, queryName, queriedEntity, true, queryParameters.toArray());
+                return drools.factQuery(sessionName, queryName, queriedEntity, true, queryParameters.toArray());
             }
-            return Response.status(Response.Status.OK).entity(facts).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(
-                    FETCH_DROOLS_BY_PARAMS_FAILED,
+
+        }, e -> {
+                logger.debug(FETCH_DROOLS_BY_PARAMS_FAILED,
                     this, controllerName, sessionName, queryName, queriedEntity, queryParameters, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(
-                            controllerName + ":" + sessionName + ":" + queryName + queriedEntity + NOT_FOUND_MSG))
-                    .build();
-        } catch (final IllegalStateException e) {
-            logger.debug(
-                    FETCH_DROOLS_BY_PARAMS_FAILED,
-                    this, controllerName, sessionName, queryName, queriedEntity, queryParameters, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(
-                            controllerName + ":" + sessionName + ":" + queryName + queriedEntity + NOT_ACCEPTABLE_MSG))
-                    .build();
-        } catch (final Exception e) {
-            logger.debug(
-                    FETCH_DROOLS_BY_PARAMS_FAILED,
-                    this, controllerName, sessionName, queryName, queriedEntity, queryParameters, e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
-        }
+                return (controllerName + ":" + sessionName + ":" + queryName + queriedEntity);
+            });
     }
 
     /**
@@ -1165,21 +1084,16 @@ public class RestManager {
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoders(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            final List<ProtocolCoderToolset> decoders =
-                    EventProtocolCoderConstants.getManager().getDecoders(drools.getGroupId(), drools.getArtifactId());
-            return Response.status(Response.Status.OK).entity(decoders).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName,
-                    e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(controllerName + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName,
+            return EventProtocolCoderConstants.getManager().getDecoders(drools.getGroupId(), drools.getArtifactId());
+
+        }, e -> {
+                logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName,
                             e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
+                return (controllerName);
+            });
     }
 
     /**
@@ -1201,21 +1115,16 @@ public class RestManager {
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilters(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            final List<CoderFilters> filters = EventProtocolCoderConstants.getManager()
+            return EventProtocolCoderConstants.getManager()
                             .getDecoderFilters(drools.getGroupId(), drools.getArtifactId());
-            return Response.status(Response.Status.OK).entity(filters).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName,
-                    e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND).entity(new Error(controllerName + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName,
-                            e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                            .entity(new Error(controllerName + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_DECODERS_BY_POLICY_FAILED, this, controllerName, e.getMessage(), e);
+                return (controllerName);
+            });
     }
 
     /**
@@ -1237,22 +1146,16 @@ public class RestManager {
     public Response decoder(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Networked Topic Name", required = true) @PathParam("topic") String topic) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
+            return EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
-            return Response.status(Response.Status.OK).entity(decoder).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this,
-                    controllerName, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this,
-                    controllerName, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + topic + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this, controllerName, topic, e.getMessage(), e);
+                return (controllerName + ":" + topic);
+            });
     }
 
     /**
@@ -1275,7 +1178,8 @@ public class RestManager {
     public Response decoderFilter(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Networked Topic Name", required = true) @PathParam("topic") String topic) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
@@ -1283,19 +1187,13 @@ public class RestManager {
                 return Response.status(Response.Status.BAD_REQUEST).entity(new Error(topic + DOES_NOT_EXIST_MSG))
                         .build();
             } else {
-                return Response.status(Response.Status.OK).entity(decoder.getCoders()).build();
+                return decoder.getCoders();
             }
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this,
-                    controllerName, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this,
-                    controllerName, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + topic + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_DECODERS_BY_TOPIC_FAILED, this, controllerName, topic, e.getMessage(), e);
+                return (controllerName + ":" + topic);
+            });
     }
 
     /**
@@ -1319,7 +1217,8 @@ public class RestManager {
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Networked Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
@@ -1328,19 +1227,14 @@ public class RestManager {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity(new Error(topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
             } else {
-                return Response.status(Response.Status.OK).entity(filters).build();
+                return filters;
             }
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
-                    controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
-                    controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_ACCEPTABLE_MSG)).build();
-        }
+
+        }, e -> {
+                logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
+                            controllerName, topic, factClass, e.getMessage(), e);
+                return (controllerName + ":" + topic + ":" + factClass);
+            });
     }
 
     /**
@@ -1373,7 +1267,7 @@ public class RestManager {
                     .build();
         }
 
-        try {
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
@@ -1383,20 +1277,13 @@ public class RestManager {
                         .entity(new Error(topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
             }
             filters.setFilter(configFilters);
-            return Response.status(Response.Status.OK).entity(filters).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(
-                    FETCH_DECODER_BY_FILTER_FAILED,
-                    this, controllerName, topic, factClass, configFilters, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(
-                    FETCH_DECODER_BY_FILTER_FAILED,
-                    this, controllerName, topic, factClass, configFilters, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_ACCEPTABLE_MSG)).build();
-        }
+            return filters;
+
+        }, e -> {
+                logger.debug(FETCH_DECODER_BY_FILTER_FAILED,
+                            this, controllerName, topic, factClass, configFilters, e.getMessage(), e);
+                return (controllerName + ":" + topic + ":" + factClass);
+            });
     }
 
     /**
@@ -1418,7 +1305,8 @@ public class RestManager {
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
@@ -1435,18 +1323,13 @@ public class RestManager {
                         .entity(new Error(controllerName + ":" + topic + ":" + factClass + NO_FILTERS)).build();
             }
 
-            return Response.status(Response.Status.OK).entity(filter.getRule()).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
-                    controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
-                    controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_ACCEPTABLE_MSG)).build();
-        }
+            return filter.getRule();
+
+        }, e -> {
+                logger.debug(FETCH_DECODER_BY_TYPE_FAILED, this,
+                            controllerName, topic, factClass, e.getMessage(), e);
+                return (controllerName + ":" + topic + ":" + factClass);
+            });
     }
 
     /**
@@ -1470,7 +1353,7 @@ public class RestManager {
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
 
-        try {
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
@@ -1488,23 +1371,13 @@ public class RestManager {
             }
 
             filter.setRule(null);
-            return Response.status(Response.Status.OK).entity(filter.getRule()).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(
-                    FETCH_DECODER_BY_TYPE_FAILED,
-                    this, controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_FOUND_MSG))
-                    .build();
-        } catch (final IllegalStateException e) {
-            logger.debug(
-                    FETCH_DECODER_BY_TYPE_FAILED,
-                    this, controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(
-                            controllerName + ":" + topic + ":" + factClass + NOT_ACCEPTABLE_MSG))
-                    .build();
-        }
+            return filter.getRule();
+
+        }, e -> {
+                logger.debug(FETCH_DECODER_BY_TYPE_FAILED,
+                            this, controllerName, topic, factClass, e.getMessage(), e);
+                return (controllerName + ":" + topic + ":" + factClass);
+            });
     }
 
     /**
@@ -1528,7 +1401,7 @@ public class RestManager {
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass,
             @ApiParam(value = "JsonPath filter expression", required = true) String rule) {
 
-        try {
+        return catchArgStateGenericEx(() -> {
             final DroolsController drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
@@ -1551,22 +1424,14 @@ public class RestManager {
             }
 
             filter.setRule(rule);
-            return Response.status(Response.Status.OK).entity(filter.getRule()).build();
-        } catch (final IllegalArgumentException e) {
-            logger.debug(
-                    "{}: cannot access decoder filter rules for policy-controller {} "
-                            + "topic {} type {} because of {}",
-                            this, controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(controllerName + ":" + topic + NOT_FOUND_MSG)).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(
-                    "{}: cannot access decoder filter rules for policy-controller {} "
-                            + "topic {} type {} because of {}",
-                            this, controllerName, topic, factClass, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NOT_ACCEPTABLE_MSG)).build();
-        }
+            return filter.getRule();
+
+        }, e -> {
+                logger.debug("{}: cannot access decoder filter rules for policy-controller {} "
+                                    + "topic {} type {} because of {}",
+                                    this, controllerName, topic, factClass, e.getMessage(), e);
+                return (controllerName + ":" + topic + ":" + factClass);
+            });
     }
 
     /**
@@ -1644,25 +1509,18 @@ public class RestManager {
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response encoderFilters(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        List<CoderFilters> encoders;
-        try {
+
+        return catchArgStateGenericEx(() -> {
             final PolicyController controller = PolicyControllerConstants.getFactory().get(controllerName);
             final DroolsController drools = controller.getDrools();
-            encoders = EventProtocolCoderConstants.getManager().getEncoderFilters(drools.getGroupId(),
-                            drools.getArtifactId());
-        } catch (final IllegalArgumentException e) {
-            logger.debug(FETCH_ENCODER_BY_FILTER_FAILED, this, controllerName,
-                    e.getMessage(), e);
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new Error(controllerName + NOT_FOUND + e.getMessage())).build();
-        } catch (final IllegalStateException e) {
-            logger.debug(FETCH_ENCODER_BY_FILTER_FAILED, this, controllerName,
-                    e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(controllerName + " is not accepting the request")).build();
-        }
+            return EventProtocolCoderConstants.getManager()
+                            .getEncoderFilters(drools.getGroupId(), drools.getArtifactId());
 
-        return Response.status(Response.Status.OK).entity(encoders).build();
+        }, e -> {
+                logger.debug(FETCH_ENCODER_BY_FILTER_FAILED, this, controllerName,
+                            e.getMessage(), e);
+                return (controllerName);
+            });
     }
 
     @GET
@@ -2073,32 +1931,20 @@ public class RestManager {
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "Network Message", required = true) String json) {
 
-        try {
-            TopicSource source =
-                TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
+        return catchArgStateGenericEx(() -> {
+            TopicSource source = TopicEndpointManager.getManager()
+                            .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
             if (source.offer(json)) {
-                return Response.status(Status.OK)
-                    .entity(Arrays.asList(source.getRecentEvents()))
-                    .build();
+                return Arrays.asList(source.getRecentEvents());
             } else {
-                return Response.status(Status.NOT_ACCEPTABLE)
-                    .entity(new Error("Failure to inject event over " + topic))
-                    .build();
+                return Response.status(Status.NOT_ACCEPTABLE).entity(new Error("Failure to inject event over " + topic))
+                                .build();
             }
-        } catch (IllegalArgumentException e) {
-            logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(new Error(topic + NOT_FOUND_MSG)).build();
-        } catch (IllegalStateException e) {
-            logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
-            return Response.status(Response.Status.NOT_ACCEPTABLE)
-                    .entity(new Error(topic + " not acceptable due to current state"))
-                    .build();
-        } catch (Exception e) {
-            logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage()))
-                            .build();
-        }
+
+        }, e -> {
+                logger.debug(OFFER_FAILED, this, topic, e.getMessage(), e);
+                return (topic);
+            });
     }
 
     /**
@@ -2216,6 +2062,40 @@ public class RestManager {
         }
 
         return drools;
+    }
+
+    /**
+     * Invokes a function and returns the generated response, catching illegal argument,
+     * illegal state, and generic runtime exceptions.
+     *
+     * @param responder function that will generate a response. If it returns a "Response"
+     *        object, then that object is returned as-is. Otherwise, this method will
+     *        return an "OK" Response, using the function's return value as the "entity"
+     * @param errorMsg function that will generate an error message prefix to be included
+     *        in responses generated as a result of catching an exception
+     * @return a response
+     */
+    private Response catchArgStateGenericEx(Supplier<Object> responder, Function<Exception, String> errorMsg) {
+        try {
+            Object result = responder.get();
+            if (result instanceof Response) {
+                return (Response) result;
+            }
+
+            return Response.status(Response.Status.OK).entity(result).build();
+
+        } catch (final IllegalArgumentException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new Error(errorMsg.apply(e) + NOT_FOUND_MSG))
+                            .build();
+
+        } catch (final IllegalStateException e) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                            .entity(new Error(errorMsg.apply(e) + NOT_ACCEPTABLE_MSG)).build();
+
+        } catch (final RuntimeException e) {
+            errorMsg.apply(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
+        }
     }
 
     /*
