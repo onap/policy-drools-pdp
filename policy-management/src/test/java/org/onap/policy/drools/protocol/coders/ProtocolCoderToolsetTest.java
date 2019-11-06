@@ -23,12 +23,11 @@ package org.onap.policy.drools.protocol.coders;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
@@ -45,45 +44,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ProtocolCoder Toolset JUNITs.
+ * ProtocolCoder Toolset Junits.
  */
 public class ProtocolCoderToolsetTest {
     public static final String JUNIT_PROTOCOL_CODER_ARTIFACT_ID = "protocolcoder";
     public static final String JUNIT_PROTOCOL_CODER_TOPIC = JUNIT_PROTOCOL_CODER_ARTIFACT_ID;
     public static final String CONTROLLER_ID = "blah";
-    public static final String ARTIFACT_ID_ECHO = "echo";
-    public static final String ARTIFACT_ID_POM_LINE = "<artifactId>" + ARTIFACT_ID_ECHO + "</artifactId>";
 
     private static Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
 
-    private volatile ReleaseId releaseId;
+    private static volatile ReleaseId releaseId;
 
+    // customCoder has to be public to be accessed in tests below
     public static final Gson customCoder = new GsonBuilder().create();
 
     /**
-     * Setup.
-     *
-     * @throws IOException throws IO Exception
+     * Test Class Initialization.
      */
-    @Before
-    public void setUp() throws IOException {
-        if (releaseId != null) {
-            return;
-        }
-
-        String pom = new String(Files.readAllBytes(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH)));
-
-        if (!pom.contains(ARTIFACT_ID_POM_LINE)) {
-            throw new IllegalArgumentException("unexpected junit test pom");
-        }
-
-        String newPom = pom.replace(ARTIFACT_ID_ECHO, JUNIT_PROTOCOL_CODER_ARTIFACT_ID);
-
-        String kmodule = new String(Files.readAllBytes(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH)));
-
-        String drl = new String(Files.readAllBytes(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH)));
-
-        releaseId = KieUtils.installArtifact(kmodule, newPom, MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH, drl);
+    @BeforeClass
+    public static void setupClass() throws IOException {
+        releaseId = KieUtils.installArtifact(
+            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
+            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
+            MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH,
+            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
     }
 
     @Test
