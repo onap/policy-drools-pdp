@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5130061_fe1bc855",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsController3Test.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T20:20:32Z",
+      "side": 1,
+      "message": "\"volatile\" \u003d\u003e \"final\"?\n\nsame comment below and in some of the other files",
+      "revId": "0ff1e3fb12085f18429fc8d8e7af7a6c75522e3c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
