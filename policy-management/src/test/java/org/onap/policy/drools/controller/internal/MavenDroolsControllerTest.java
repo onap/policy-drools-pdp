@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,17 +34,14 @@ import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.util.KieUtils;
 
 public class MavenDroolsControllerTest {
-
     public static final String JUNIT_ECHO_KSESSION = "echo";
     public static final String JUNIT_ECHO_KBASE = "onap.policies.test";
     public static final String JUNIT_ECHO_KMODULE_DRL_PATH = "src/test/resources/echo.drl";
     public static final String JUNIT_ECHO_KMODULE_POM_PATH = "src/test/resources/echo.pom";
     public static final String JUNIT_ECHO_KMODULE_PATH = "src/test/resources/echo.kmodule";
-    public static final String JUNIT_ECHO_KJAR_DRL_PATH =
-        "src/main/resources/kbEcho/org/onap/policy/drools/test/echo.drl";
+    public static final String JUNIT_ECHO_KJAR_DRL_PATH = "src/main/resources/kbEcho/org/onap/policy/drools/test/";
 
     private static volatile ReleaseId releaseId;
-
     private static volatile CountDownLatch running;
 
     /**
