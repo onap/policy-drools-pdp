@@ -42,7 +42,7 @@ public class ControllerSupport {
     protected static final String JUNIT_KMODULE_POM_PATH = "src/test/resources/lifecycle.pom";
     protected static final String JUNIT_KMODULE_PATH = "src/test/resources/lifecycle.kmodule";
     protected static final String JUNIT_KJAR_DRL_PATH =
-        "src/main/resources/kbLifecycle/org/onap/policy/drools/test/lifecycle.drl";
+        "src/main/resources/kbLifecycle/org/onap/policy/drools/test/";
 
     protected static final String POLICY_TYPE = "onap.policies.controlloop.Operational";
     protected static final String POLICY_TYPE_VERSION = "1.0.0";

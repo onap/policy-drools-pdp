@@ -264,7 +264,7 @@ public class PolicySession
      */
     @Override
     public void afterMatchFired(AfterMatchFiredEvent event) {
-        logger.debug("afterMatchFired: {}: AgendaEventListener.afterMatchFired({})", getFullName(), event);
+        logger.info("afterMatchFired: {}: AgendaEventListener.afterMatchFired({})", getFullName(), event);
         PdpJmx.getInstance().ruleFired();
     }
 
@@ -273,7 +273,7 @@ public class PolicySession
      */
     @Override
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-        logger.debug("afterRuleFlowGroupActivated: {}: AgendaEventListener.afterRuleFlowGroupActivated({})",
+        logger.info("afterRuleFlowGroupActivated: {}: AgendaEventListener.afterRuleFlowGroupActivated({})",
                         getFullName(), event);
     }
 
@@ -282,7 +282,7 @@ public class PolicySession
      */
     @Override
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-        logger.debug("afterRuleFlowGroupDeactivated: {}: AgendaEventListener.afterRuleFlowGroupDeactivated({})",
+        logger.info("afterRuleFlowGroupDeactivated: {}: AgendaEventListener.afterRuleFlowGroupDeactivated({})",
                         getFullName(), event);
     }
 
@@ -291,7 +291,7 @@ public class PolicySession
      */
     @Override
     public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-        logger.debug("agendaGroupPopped: {}: AgendaEventListener.agendaGroupPopped({})", getFullName(), event);
+        logger.info("agendaGroupPopped: {}: AgendaEventListener.agendaGroupPopped({})", getFullName(), event);
     }
 
     /**
@@ -299,7 +299,7 @@ public class PolicySession
      */
     @Override
     public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-        logger.debug("agendaGroupPushed: {}: AgendaEventListener.agendaGroupPushed({})", getFullName(), event);
+        logger.info("agendaGroupPushed: {}: AgendaEventListener.agendaGroupPushed({})", getFullName(), event);
     }
 
     /**
@@ -307,7 +307,7 @@ public class PolicySession
      */
     @Override
     public void beforeMatchFired(BeforeMatchFiredEvent event) {
-        logger.debug("beforeMatchFired: {}: AgendaEventListener.beforeMatchFired({})", getFullName(), event);
+        logger.info("beforeMatchFired: {}: AgendaEventListener.beforeMatchFired({})", getFullName(), event);
     }
 
     /**
@@ -315,7 +315,7 @@ public class PolicySession
      */
     @Override
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-        logger.debug("beforeRuleFlowGroupActivated: {}: AgendaEventListener.beforeRuleFlowGroupActivated({})",
+        logger.info("beforeRuleFlowGroupActivated: {}: AgendaEventListener.beforeRuleFlowGroupActivated({})",
                         getFullName(), event);
     }
 
@@ -324,7 +324,7 @@ public class PolicySession
      */
     @Override
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
-        logger.debug("beforeRuleFlowGroupDeactivated: {}: AgendaEventListener.beforeRuleFlowGroupDeactivated({})",
+        logger.info("beforeRuleFlowGroupDeactivated: {}: AgendaEventListener.beforeRuleFlowGroupDeactivated({})",
                         getFullName(), event);
     }
 
@@ -333,7 +333,7 @@ public class PolicySession
      */
     @Override
     public void matchCancelled(MatchCancelledEvent event) {
-        logger.debug("matchCancelled: {}: AgendaEventListener.matchCancelled({})", getFullName(), event);
+        logger.info("matchCancelled: {}: AgendaEventListener.matchCancelled({})", getFullName(), event);
     }
 
     /**
@@ -341,7 +341,7 @@ public class PolicySession
      */
     @Override
     public void matchCreated(MatchCreatedEvent event) {
-        logger.debug("matchCreated: {}: AgendaEventListener.matchCreated({})", getFullName(), event);
+        logger.info("matchCreated: {}: AgendaEventListener.matchCreated({})", getFullName(), event);
     }
 
     /* ====================================== */
@@ -353,7 +353,7 @@ public class PolicySession
      */
     @Override
     public void objectDeleted(ObjectDeletedEvent event) {
-        logger.debug("objectDeleted: {}: AgendaEventListener.objectDeleted({})", getFullName(), event);
+        logger.info("objectDeleted: {}: AgendaEventListener.objectDeleted({})", getFullName(), event);
     }
 
     /**
@@ -361,7 +361,7 @@ public class PolicySession
      */
     @Override
     public void objectInserted(ObjectInsertedEvent event) {
-        logger.debug("objectInserted: {}: AgendaEventListener.objectInserted({})", getFullName(), event);
+        logger.info("objectInserted: {}: AgendaEventListener.objectInserted({})", getFullName(), event);
     }
 
     /**
@@ -369,7 +369,7 @@ public class PolicySession
      */
     @Override
     public void objectUpdated(ObjectUpdatedEvent event) {
-        logger.debug("objectUpdated: {}: AgendaEventListener.objectUpdated({})", getFullName(), event);
+        logger.info("objectUpdated: {}: AgendaEventListener.objectUpdated({})", getFullName(), event);
     }
 
     /* ============================================================ */
