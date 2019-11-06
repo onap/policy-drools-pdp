@@ -593,11 +593,10 @@ public class RestManager {
     public Response controller(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
 
-        return catchArgStateGenericEx(() -> {
-            return Response.status(Response.Status.OK)
-                            .entity(PolicyControllerConstants.getFactory().get(controllerName)).build();
-
-        }, e -> {
+        return catchArgStateGenericEx(
+            () -> Response.status(Response.Status.OK)
+                            .entity(PolicyControllerConstants.getFactory().get(controllerName)).build(),
+            e -> {
                 logger.debug(FETCH_POLICY_BY_NAME_FAILED, this, controllerName, e.getMessage(), e);
                 return (controllerName);
             });
@@ -1401,37 +1400,38 @@ public class RestManager {
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass,
             @ApiParam(value = "JsonPath filter expression", required = true) String rule) {
 
-        return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
-            final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
-                            .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
+        return catchArgStateGenericEx(() -> decoderFilterRule2(controllerName, topic, factClass, rule), e -> {
+            logger.debug("{}: cannot access decoder filter rules for policy-controller {} "
+                                + "topic {} type {} because of {}",
+                                this, controllerName, topic, factClass, e.getMessage(), e);
+            return (controllerName + ":" + topic + ":" + factClass);
+        });
+    }
 
-            final CoderFilters filters = decoder.getCoder(factClass);
-            if (filters == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new Error(controllerName + ":" + topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
-            }
+    private Object decoderFilterRule2(String controllerName, String topic, String factClass, String rule) {
+        final DroolsController drools = this.getDroolsController(controllerName);
+        final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
+                        .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
 
-            final JsonProtocolFilter filter = filters.getFilter();
-            if (filter == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(new Error(controllerName + ":" + topic + ":" + factClass + NO_FILTERS)).build();
-            }
+        final CoderFilters filters = decoder.getCoder(factClass);
+        if (filters == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + DOES_NOT_EXIST_MSG)).build();
+        }
 
-            if (rule == null || rule.isEmpty()) {
-                return Response.status(Response.Status.BAD_REQUEST).entity(new Error(controllerName + ":" + topic + ":"
-                        + factClass + " no filter rule provided")).build();
-            }
+        final JsonProtocolFilter filter = filters.getFilter();
+        if (filter == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new Error(controllerName + ":" + topic + ":" + factClass + NO_FILTERS)).build();
+        }
 
-            filter.setRule(rule);
-            return filter.getRule();
+        if (rule == null || rule.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new Error(controllerName + ":" + topic + ":"
+                    + factClass + " no filter rule provided")).build();
+        }
 
-        }, e -> {
-                logger.debug("{}: cannot access decoder filter rules for policy-controller {} "
-                                    + "topic {} type {} because of {}",
-                                    this, controllerName, topic, factClass, e.getMessage(), e);
-                return (controllerName + ":" + topic + ":" + factClass);
-            });
+        filter.setRule(rule);
+        return filter.getRule();
     }
 
     /**
