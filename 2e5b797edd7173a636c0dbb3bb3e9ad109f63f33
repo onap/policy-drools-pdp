@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76dd60b0_45a5c540",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T18:22:35Z",
+      "side": 1,
+      "message": "will the same property name contained both \"id\" and \"url\"??",
+      "revId": "2e5b797edd7173a636c0dbb3bb3e9ad109f63f33",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3ebe5b5_04017ca5",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T18:22:35Z",
+      "side": 1,
+      "message": "there\u0027s an inconsistency here: this assumes they\u0027re sequential, but countAdditionalNexusRepos() does not",
+      "revId": "2e5b797edd7173a636c0dbb3bb3e9ad109f63f33",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
