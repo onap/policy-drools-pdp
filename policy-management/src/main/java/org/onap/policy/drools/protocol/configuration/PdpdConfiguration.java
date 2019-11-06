@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
 import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
@@ -42,6 +42,7 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
  * ENGINE-CONFIGURATION.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
 public class PdpdConfiguration {
 
     /** Controller Entity ID. */
@@ -161,11 +162,6 @@ public class PdpdConfiguration {
     public PdpdConfiguration withController(List<ControllerConfiguration> controllers) {
         this.controllers = controllers;
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
     @JsonAnyGetter

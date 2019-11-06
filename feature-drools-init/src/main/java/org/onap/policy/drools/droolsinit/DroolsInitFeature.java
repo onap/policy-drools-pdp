@@ -72,16 +72,12 @@ public class DroolsInitFeature implements PolicySessionFeatureApi {
             final FactHandle factHandle = policySession.getKieSession().insert(this);
 
             // after 10 minutes, remove the object from Drools memory (if needed)
-            PolicyEngineConstants.getManager().getExecutorService().schedule(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (policySession.getKieSession().getObject(factHandle) != null) {
-                            // object has not been removed by application -- remove it here
-                            policySession.getKieSession().delete(factHandle);
-                        }
-                    }
-                }, DELAY, TimeUnit.MILLISECONDS);
+            PolicyEngineConstants.getManager().getExecutorService().schedule(() -> {
+                if (policySession.getKieSession().getObject(factHandle) != null) {
+                    // object has not been removed by application -- remove it here
+                    policySession.getKieSession().delete(factHandle);
+                }
+            }, DELAY, TimeUnit.MILLISECONDS);
         }
     }
 }

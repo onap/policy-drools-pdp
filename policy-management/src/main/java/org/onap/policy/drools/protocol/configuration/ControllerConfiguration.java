@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,13 +25,11 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.HashMap;
 import java.util.Map;
-
+import lombok.ToString;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
 import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
@@ -40,9 +38,10 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 
 /**
  * Drools Related Information.
- * 
+ *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
 public class ControllerConfiguration {
 
     public static final String CONFIG_CONTROLLER_OPERATION_CREATE = "create";
@@ -52,7 +51,7 @@ public class ControllerConfiguration {
 
     /**
      * (Required).
-     * 
+     *
      */
     @JsonProperty("name")
     @GsonJsonProperty("name")
@@ -60,28 +59,28 @@ public class ControllerConfiguration {
     /**
      * Set of operations that can be applied to a controller: create, lock
      * (Required).
-     * 
+     *
      */
     @JsonProperty("operation")
     @GsonJsonProperty("operation")
     private String operation;
     /**
      * Maven Related Information.
-     * 
+     *
      */
     @JsonProperty("drools")
     @GsonJsonProperty("drools")
     private DroolsConfiguration drools;
-    
+
     @JsonIgnore
     @GsonJsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
-    
+
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
      * No args constructor for use in serialization.
-     * 
+     *
      */
     public ControllerConfiguration() {
         // Empty
@@ -89,7 +88,7 @@ public class ControllerConfiguration {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name name
      * @param operation operation
      * @param drools drools
@@ -102,7 +101,7 @@ public class ControllerConfiguration {
 
     /**
      * (Required).
-     * 
+     *
      * @return
      *     The name
      */
@@ -114,7 +113,7 @@ public class ControllerConfiguration {
 
     /**
      * (Required).
-     * 
+     *
      * @param name
      *     The name
      */
@@ -132,7 +131,7 @@ public class ControllerConfiguration {
     /**
      * Set of operations that can be applied to a controller: create, lock
      * (Required).
-     * 
+     *
      * @return
      *     The operation
      */
@@ -145,7 +144,7 @@ public class ControllerConfiguration {
     /**
      * Set of operations that can be applied to a controller: create, lock
      * (Required).
-     * 
+     *
      * @param operation
      *     The operation
      */
@@ -162,7 +161,7 @@ public class ControllerConfiguration {
 
     /**
      * Maven Related Information.
-     * 
+     *
      * @return
      *     The drools
      */
@@ -174,7 +173,7 @@ public class ControllerConfiguration {
 
     /**
      * Maven Related Information.
-     * 
+     *
      * @param drools
      *     The drools
      */
@@ -187,11 +186,6 @@ public class ControllerConfiguration {
     public ControllerConfiguration withDrools(DroolsConfiguration drools) {
         this.drools = drools;
         return this;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
     @JsonAnyGetter
@@ -242,7 +236,7 @@ public class ControllerConfiguration {
 
     /**
      * Get.
-     * 
+     *
      * @param name name
      * @return the object
      */
@@ -260,7 +254,7 @@ public class ControllerConfiguration {
 
     /**
      * Set the property.
-     * 
+     *
      * @param name property name
      * @param value property value
      */
@@ -272,7 +266,7 @@ public class ControllerConfiguration {
 
     /**
      * With - sets the property and additionally returns the object.
-     * 
+     *
      * @param name property name
      * @param value property value
      * @return this
@@ -302,10 +296,10 @@ public class ControllerConfiguration {
         return new EqualsBuilder().append(name, rhs.name).append(operation, rhs.operation).append(drools, rhs.drools)
                 .append(additionalProperties, rhs.additionalProperties).isEquals();
     }
-    
+
     /**
      * Call set name.
-     * 
+     *
      * @param value value
      */
     public void callSetName(Object value) {
@@ -316,10 +310,10 @@ public class ControllerConfiguration {
                     + value.getClass().toString());
         }
     }
-    
+
     /**
      * Call set operation.
-     * 
+     *
      * @param value value
      */
     public void callSetOperation(Object value) {
@@ -330,10 +324,10 @@ public class ControllerConfiguration {
                     + value.getClass().toString());
         }
     }
-    
+
     /**
      * Call set drools.
-     * 
+     *
      * @param value value
      */
     public void callSetDrools(Object value) {
