@@ -32,6 +32,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +42,18 @@ import org.slf4j.LoggerFactory;
  * This class audits the Maven repository.
  */
 public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
-    private static final long DEFAULT_TIMEOUT = 60; //timeout in 60 seconds
+    //timeout in 60 seconds
+    private static final long DEFAULT_TIMEOUT = 60;
 
     // get an instance of logger
-    private static Logger  logger = LoggerFactory.getLogger(RepositoryAudit.class);
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryAudit.class);
+
     // single global instance of this audit object
     private static RepositoryAudit instance = new RepositoryAudit();
+
+    // set of indices for supported nexus repos (ex: repository2 -> 2)
+    // TreeSet is used to maintain order so repos can be audited in numerical order
+    private static TreeSet<Integer> repoIndices = new TreeSet<>();
 
     /**
      * Constructor - set the name to 'Repository'.
@@ -61,6 +69,33 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
      */
     public static DroolsPdpIntegrityMonitor.AuditBase getInstance() {
         return instance;
+    }
+
+    /**
+     * First, get the names of each property from StateManagementProperties.
+     * For each property name, check if it is of the form "repository(number).audit.id"
+     * If so, we extract the number and determine if there exists another property
+     * in the form "repository(number).audit.url" with the same "number".
+     * Only the 'repository(number).audit.id' and 'repository(number).audit.url" properties
+     * need to be specified.
+     * InvokeData.getProperty(String, boolean) will determine the other 4 properties:
+     * '*.username', '*.password', '*.is.active', and '*.ignore.errors', or use default values.
+     *
+     * @return count additional nexus repositories that defined in 'feature-state-management.properties'
+     */
+    private static void countAdditionalNexusRepos() {
+        Properties properties = StateManagementProperties.getProperties();
+        Set<String> propertyNames = properties.stringPropertyNames();
+
+        for (String currName: propertyNames) {
+            if (currName.matches("repository[0-9]+.audit.id")) {
+                int currRepoNum = Integer.parseInt(currName.substring(10, currName.indexOf(".")));
+
+                if (propertyNames.contains("repository" + currRepoNum + ".audit.url")) {
+                    repoIndices.add(currRepoNum);
+                }
+            }
+        }
     }
 
     /**
@@ -85,6 +120,29 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             return;
         }
 
+        // Run audit for first nexus repository
+        logger.debug("Running read-only audit on first nexus repository: repository");
+        runAudit(data);
+
+        // arbitrary number of Nexus repositories to support
+        countAdditionalNexusRepos();
+        logger.debug("The number of additional nexus repositories is {}", repoIndices.size());
+
+        // Run audit for remaining 'numNexusRepos' repositories
+        for (int index: repoIndices) {
+            logger.debug("Running read-only audit on nexus repository = repository{}", index);
+
+            data = new InvokeData(index);
+            data.initIsActive();
+            if (!data.isActive) {
+                break;
+            }
+
+            runAudit(data);
+        }
+    }
+
+    private void runAudit(InvokeData data) throws IOException, InterruptedException {
         data.initIgnoreErrors();
         data.initTimeout();
 
@@ -150,6 +208,22 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         Files.walkFileTree(data.dir, new RecursivelyDeleteDirectory());
     }
 
+
+    /**
+     * Set the response string to the specified value.
+     * Overrides 'setResponse(String value)' from DroolsPdpIntegrityMonitor
+     * This method prevents setting a response string that indicates
+     * whether the caller should receive an error list from the audit.
+     * By NOT setting the response string to a value, this indicates
+     * that there are no errors.
+     *
+     * @param value the new value of the response string (null = no errors)
+     */
+    @Override
+    public void setResponse(String value) {
+        // Do nothing, prevent the caller from receiving a list of errors.
+    }
+
     private class InvokeData {
         private boolean isActive = true;
 
@@ -180,18 +254,41 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         // artifacts to be downloaded
         private final List<Artifact> artifacts = new LinkedList<>();
 
+        // 0 = base repository, 2-n = additional repositories
+        private final int index;
+
         public InvokeData() {
-            repoAuditIsActive = StateManagementProperties.getProperty("repository.audit.is.active");
-            repoAuditIgnoreErrors = StateManagementProperties.getProperty("repository.audit.ignore.errors");
+            this(0);
+        }
+
+        public InvokeData(int index) {
+            this.index = index;
+            repoAuditIsActive = getProperty("audit.is.active", true);
+            repoAuditIgnoreErrors = getProperty("audit.ignore.errors", true);
 
             // Fetch repository information from 'IntegrityMonitorProperties'
-            repositoryId = StateManagementProperties.getProperty("repository.audit.id");
-            repositoryUrl = StateManagementProperties.getProperty("repository.audit.url");
-            repositoryUsername = StateManagementProperties.getProperty("repository.audit.username");
-            repositoryPassword = StateManagementProperties.getProperty("repository.audit.password");
+            repositoryId = getProperty("audit.id", false);
+            repositoryUrl = getProperty("audit.url", false);
+            repositoryUsername = getProperty("audit.username", true);
+            repositoryPassword = getProperty("audit.password", true);
 
-            upload = repositoryId != null && repositoryUrl != null
-                    && repositoryUsername != null && repositoryPassword != null;
+            logger.debug("Nexus Repository Information retrieved from 'IntegrityMonitorProperties':");
+            logger.debug("repositoryId: " + repositoryId);
+            logger.debug("repositoryUrl: " + repositoryUrl);
+
+            // Setting upload to be false so that files can no longer be created/deleted
+            upload = false;
+        }
+
+        private String getProperty(String property, boolean useDefault) {
+            String fullProperty = (index == 0
+                                   ? "repository." + property
+                                   : "repository" + index + "." + property);
+            String rval = StateManagementProperties.getProperty(fullProperty);
+            if (rval == null && index != 0 && useDefault) {
+                rval = StateManagementProperties.getProperty("repository." + property);
+            }
+            return rval;
         }
 
         public void initIsActive() {
@@ -202,6 +299,9 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
                     logger.warn("RepositoryAudit.invoke: Ignoring invalid property: repository.audit.is.active = {}",
                             repoAuditIsActive);
                 }
+            }
+            if (repositoryId == null || repositoryUrl == null) {
+                isActive = false;
             }
         }
 
@@ -221,8 +321,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         }
 
         public void initTimeout() {
-            String timeoutString =
-                            StateManagementProperties.getProperty("repository.audit.timeout");
+            String timeoutString = getProperty("audit.timeout", true);
             if (timeoutString != null && !timeoutString.isEmpty()) {
                 try {
                     timeoutInSeconds = Long.valueOf(timeoutString);
@@ -280,8 +379,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             }
         }
 
-        private void createPomFile(final Path repo, final Path pom)
-                        throws IOException {
+        private void createPomFile(final Path repo, final Path pom) throws IOException {
 
             artifacts.add(new Artifact("org.apache.maven/maven-embedder/3.2.2"));
 
