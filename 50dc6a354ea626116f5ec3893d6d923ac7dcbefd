@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9265627b_5aa7d3b6",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T21:59:07Z",
+      "side": 1,
+      "message": "good idea!",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "44dc13b0_57944922",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T21:59:07Z",
+      "side": 1,
+      "message": "as a general rule, static methods should be side-effect-free (e.g., shouldn\u0027t modify data structures); better to construct a map locally and then return it",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1bbb0aeb_0bed02b5",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T21:59:07Z",
+      "side": 1,
+      "message": "this should work fine.  However, another option would be to use a Pattern/Matcher with a capture group - that would avoid doing the substring junk.  (this is just a suggestion)",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d697938_b565dd42",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-06T21:59:07Z",
+      "side": 1,
+      "message": "perhaps just log repoIndices instead of its size (this is just a suggestion)",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
