@@ -52,6 +52,24 @@
       "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4571b0ba_7583a539",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T14:58:38Z",
+      "side": 1,
+      "message": "#1) I disagree.  Most of the times this is used, the client spells them out anyway, and then has to wrap them in a list.  On the other hand, since it already takes a number of similar looking arguments, maybe its best left as a list so it\u0027s clear this is a different type of thing than the other arguments.  Regardless, that was just a suggestion, so if you prefer this, that\u0027s fine.\n#4) Yes and no.  It\u0027s useful for some parameters, particularly if the developer describes it a bit more (e.g., drlKJarPath).  However, a lot of the times, they do seem pretty superfluous.  At least checkstyle lets you know if a parameter is deleted or renamed.",
+      "parentUuid": "dad882cc_e3bddb50",
+      "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
