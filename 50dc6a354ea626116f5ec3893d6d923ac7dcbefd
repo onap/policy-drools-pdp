@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "59ef577e_7260efa8",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T15:36:34Z",
+      "side": 1,
+      "message": "good point.  Ralph, do you agree?",
+      "parentUuid": "6d3a18ff_46ff770e",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3d697938_b565dd42",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 4
