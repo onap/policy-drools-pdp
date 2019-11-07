@@ -34,6 +34,24 @@
       "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b48828d1_2949aad6",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-07T16:57:38Z",
+      "side": 1,
+      "message": "Good point -- as currently coded, index 0 is mandatory, and any other indices are optional.\n\nMaybe index 0 should be optional as well? It could no longer be a special case, except for the property name. That way, they could use \u0027repository1.\u0027 and \u0027repository2.\u0027 to define their repositories, and \u0027repository.\u0027 to define common parameters, such as userids and passwords.",
+      "parentUuid": "af3b2f66_12c13424",
+      "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
