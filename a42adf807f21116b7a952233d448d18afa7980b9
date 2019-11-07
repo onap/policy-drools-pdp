@@ -16,6 +16,24 @@
       "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6806239e_ac75a34e",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T13:59:25Z",
+      "side": 1,
+      "message": "Or could combine the two methods and use:\n  File...drls",
+      "parentUuid": "bd89b450_0eeb2d63",
+      "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
