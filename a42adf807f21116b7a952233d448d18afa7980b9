@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd89b450_0eeb2d63",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-07T10:10:51Z",
+      "side": 1,
+      "message": "How about \u0027installArtifact(File kmodule, File pom, String drlKJarPath, File... drls)\u0027, which should take care of the next method as well. It might be nice to still support the use of \u0027String\u0027 instead of \u0027File\u0027, so you don\u0027t break existing calls (e.g. in application-specific code).\n\nAlso, what happened to the details in the Javadoc description?",
+      "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
