@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "5d739d81_c64b78a3",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T13:55:09Z",
+      "side": 1,
+      "message": "good point - how about this:\n  repository[1-9][0-9]*\\\\.audit\\\\.id\n\nor could get more specific and limit the number of digits to two:\n  repository[1-9][0-9]?\\\\.audit\\\\.id",
+      "parentUuid": "65806952_c253434a",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3d697938_b565dd42",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 4
