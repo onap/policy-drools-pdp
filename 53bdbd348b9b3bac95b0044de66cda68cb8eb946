@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6496ef4_e433724a",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-07T16:22:35Z",
+      "side": 1,
+      "message": "This pattern doesn\u0027t match \"repository.audit.id\".\n\nAlso, the advantage of compiling the pattern is you can save the pattern, and reuse it (unlike String.matches). However, this code is compiling the pattern each time through the loop -- why not use a static private variable instead?",
+      "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
