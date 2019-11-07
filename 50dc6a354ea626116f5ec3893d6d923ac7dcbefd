@@ -53,6 +53,23 @@
     },
     {
       "key": {
+        "uuid": "65806952_c253434a",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-07T09:49:09Z",
+      "side": 1,
+      "message": "Shouldn\u0027t the pattern be: \"repository[0-9]*\\\\.audit\\\\.id\" ?\n\nThe \u0027*\u0027 allows no digits, so the current properties still work, and the \u0027.\u0027 character in a pattern ordinarily matches any character, so it needs to be escaped. One additional problem: this pattern also matches \"repository0.audit.id\", \"repository00.audit.id\", and \"repository007.audit.id\", none of which will work correctly. You could use the pattern I suggested above, and add an additional check to ensure it doesn\u0027t start with \"repository0\".",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3d697938_b565dd42",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 4
@@ -67,6 +84,23 @@
       "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "791c2a09_4d600fd5",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-07T09:49:09Z",
+      "side": 1,
+      "message": "I think it is best if you don\u0027t break out of the loop, so an incompletely-provisioned index doesn\u0027t cause the loop to terminate prematurely. How about:\n\nif (data.isActive) {\n  runAudit(data);\n}",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
