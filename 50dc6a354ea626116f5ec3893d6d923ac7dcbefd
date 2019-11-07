@@ -88,6 +88,24 @@
     },
     {
       "key": {
+        "uuid": "16fa37ed_aab2edf3",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-07T14:21:39Z",
+      "side": 1,
+      "message": "We also want to match the string \u0027repository.audit.id\u0027, which corresponds to index 0 (note that it is treated differently in \u0027InvokeData.getProperty(...)\u0027). The easiest approach seems to be to use the following test:\n\ncurrName.matches(\"repository[0-9]*\\\\.audit\\\\.id\") \u0026\u0026 !currName.startsWith(\"resource0\")\n\nYou could also use a more complex pattern in \u0027matches\u0027 to get the same result.",
+      "parentUuid": "5d739d81_c64b78a3",
+      "revId": "50dc6a354ea626116f5ec3893d6d923ac7dcbefd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3d697938_b565dd42",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 4
