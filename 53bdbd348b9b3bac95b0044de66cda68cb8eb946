@@ -52,6 +52,41 @@
       "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd0b86bd_d80a96f0",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T17:03:09Z",
+      "side": 1,
+      "message": "I don\u0027t think so.  However, I\u0027d move this Pattern to a static final field.",
+      "parentUuid": "af3b2f66_12c13424",
+      "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd44e271_2486dbb8",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T17:03:09Z",
+      "side": 1,
+      "message": "since there are no optional groups, there is no need to check the group count",
+      "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
