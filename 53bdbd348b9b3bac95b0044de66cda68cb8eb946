@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "8c673a06_3f6ac6e1",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-07T17:19:38Z",
+      "side": 1,
+      "message": "that would be ok, too, though in that case, I\u0027d just get rid of the \"0\" case.  If this approach is taken, then I would also add a check, in the invoke() method, to ensure the set is not empty (and remove \"Additional\" from this method name).",
+      "parentUuid": "b48828d1_2949aad6",
+      "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dd44e271_2486dbb8",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
         "patchSetId": 5
