@@ -34,6 +34,24 @@
       "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dad882cc_e3bddb50",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-11-07T14:45:47Z",
+      "side": 1,
+      "message": "A few comments on this thread regarding KieUtils.java:\n  \n1) I don\u0027t like the varargs proposal as it forces caller to spell out the arguments in every call \"installArtifact( .. file1, file2, file3, .., fileN).   Ugly if you have let\u0027s say to explicitly pass 10 drl arguments, it is also more difficult to maintain generically in the client side.\n\n2) This functionality now supports multiple drls to test upgrade scenarios and preserves the file names given to the kie libraries as they also play a role during upgrades, trying to mimic brmsgw behavior here with regards to names.   The previous\"String drl\" method would need to be changed to pass file names as well.   I shouldn\u0027t have added that method in the first place when I created the KieUtils.java class in the first place.\n\n3) When I created this class was for testing rules jar, still I think that\u0027s the case all over, all the occurrences to the \"String\" method deleted in ONAP seem to occur just in this method.\n\n4) The parameters section in the javadoc. find them difficult to maintain and don\u0027t provide much value.   But could add them back if desired.   Same approach is taken in some other files, omit the parameters section, I believe for the same reason.",
+      "parentUuid": "6806239e_ac75a34e",
+      "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
