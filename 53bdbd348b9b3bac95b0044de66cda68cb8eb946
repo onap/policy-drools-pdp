@@ -16,6 +16,24 @@
       "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af3b2f66_12c13424",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-11-07T16:43:00Z",
+      "side": 1,
+      "message": "Is it necessary to match \"repository.audit.id\" since it is being treated as the default case and is handled in RepositoryAudit.invoke(...) before handling any additional repositories?",
+      "parentUuid": "e6496ef4_e433724a",
+      "revId": "53bdbd348b9b3bac95b0044de66cda68cb8eb946",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
