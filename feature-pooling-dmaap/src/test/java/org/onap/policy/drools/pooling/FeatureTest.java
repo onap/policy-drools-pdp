@@ -1105,6 +1105,6 @@ public class FeatureTest {
     @FunctionalInterface
     private static interface VoidFunction {
 
-        public void apply();
+        void apply();
     }
 }

@@ -309,8 +309,8 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      *        {@code false} otherwise
      * @return a new lock
      */
-    public Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,
-                    boolean waitForLock);
+    Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,
+        boolean waitForLock);
 
     /**
      * Invoked when the host goes into the active state.

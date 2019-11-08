@@ -138,7 +138,7 @@ public class NullDroolsController implements DroolsController {
     }
 
     @Override
-    public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
+    public boolean ownsCoder(Class<?> coderClass, int modelHash) {
         throw new IllegalStateException(makeInvokeMsg());
     }
 

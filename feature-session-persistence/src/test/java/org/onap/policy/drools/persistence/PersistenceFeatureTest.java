@@ -114,7 +114,6 @@ public class PersistenceFeatureTest {
     private KieSessionConfiguration kiecfg;
     private KieBase kiebase;
     private KieStoreServices kiestore;
-    private KieContainer kiecont;
     private TransactionManager transmgr;
     private UserTransaction usertrans;
     private TransactionSynchronizationRegistry transreg;
@@ -166,7 +165,6 @@ public class PersistenceFeatureTest {
         kiecfg = mock(KieSessionConfiguration.class);
         kiebase = mock(KieBase.class);
         kiestore = mock(KieStoreServices.class);
-        kiecont = mock(KieContainer.class);
         transmgr = mock(TransactionManager.class);
         usertrans = mock(UserTransaction.class);
         transreg = mock(TransactionSynchronizationRegistry.class);
@@ -176,7 +174,7 @@ public class PersistenceFeatureTest {
         emfCount = 0;
         jpaCount = 0;
         propName = null;
-        
+
         feat = new PersistenceFeatureImpl();
 
         props.putAll(stdprops);
@@ -188,6 +186,7 @@ public class PersistenceFeatureTest {
         when(kiesvc.getStoreServices()).thenReturn(kiestore);
         when(kiesvc.newKieSessionConfiguration()).thenReturn(kiecfg);
 
+        KieContainer kiecont = mock(KieContainer.class);
         when(polcont.getKieContainer()).thenReturn(kiecont);
 
         when(polsess.getPolicyContainer()).thenReturn(polcont);

@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.activestandby;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -688,7 +689,7 @@ public class StandbyStateManagementTest {
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testColdStandby: After insertion, DESIGNATED= {} "
                 + "for PDP= {}", droolsPdpEntity.isDesignated(), thisPdpId);
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
 
         /*
          * When the Standby Status changes (from providingservice) to hotstandby
@@ -760,7 +761,7 @@ public class StandbyStateManagementTest {
         droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testColdStandby: After lock sm.lock() invoked, "
                 + "DESIGNATED= {} for PDP={}", droolsPdpEntity.isDesignated(), thisPdpId);
-        assertTrue(droolsPdpEntity.isDesignated() == false);
+        assertFalse(droolsPdpEntity.isDesignated());
 
         logger.debug("\n\ntestColdStandby: Exiting\n\n");
     }
@@ -795,7 +796,7 @@ public class StandbyStateManagementTest {
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testHotStandby1: After insertion, PDP={} has DESIGNATED={}",
                 thisPdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == false);
+        assertTrue(!droolsPdpEntity.isDesignated());
 
         logger.debug("testHotStandby1: Instantiating stateManagement object");
         StateManagement sm = new StateManagement(emfx, "dummy");
@@ -842,7 +843,7 @@ public class StandbyStateManagementTest {
         droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testHotStandby1: After sm.demote() invoked, DESIGNATED= {} "
                 + "for PDP= {}", droolsPdpEntity.isDesignated(), thisPdpId);
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
         String standbyStatus = smf.getStandbyStatus(thisPdpId);
         logger.debug("testHotStandby1: After demotion, PDP= {} "
                 + "has standbyStatus= {}", thisPdpId, standbyStatus);
@@ -883,7 +884,7 @@ public class StandbyStateManagementTest {
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(activePdpId);
         logger.info("testHotStandby2: After insertion, PDP= {}, which is "
                 + "not current, has DESIGNATED= {}", activePdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
 
         /*
          * Promote the designated PDP.
@@ -917,7 +918,7 @@ public class StandbyStateManagementTest {
         droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.info("testHotStandby2: After insertion, PDP={} "
                 + "has DESIGNATED= {}", thisPdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == false);
+        assertTrue(!droolsPdpEntity.isDesignated());
 
 
         // Now we want to create a StateManagementFeature and initialize it.  It will be
@@ -976,7 +977,7 @@ public class StandbyStateManagementTest {
         logger.info("testHotStandby2: After demoting PDP={}"
                 + ", DESIGNATED= {}"
                 + " for PDP= {}", activePdpId, droolsPdpEntity.isDesignated(), thisPdpId);
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
         standbyStatus = sm2.getStandbyStatus(thisPdpId);
         logger.info("testHotStandby2: After demoting PDP={}"
                 + ", PDP={} has standbyStatus= {}",
@@ -1032,7 +1033,7 @@ public class StandbyStateManagementTest {
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testLocking1: After insertion, PDP= {} has DESIGNATED= {}",
                 thisPdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
 
         logger.debug("testLocking1: Instantiating stateManagement object");
         StateManagement smDummy = new StateManagement(emfx, "dummy");
@@ -1237,7 +1238,7 @@ public class StandbyStateManagementTest {
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testLocking2: After insertion, PDP= {} has DESIGNATED= {}",
                 thisPdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
 
         logger.debug("testLocking2: Instantiating stateManagement object and promoting PDP={}", thisPdpId);
         StateManagement smDummy = new StateManagement(emfx, "dummy");
@@ -1281,7 +1282,7 @@ public class StandbyStateManagementTest {
         droolsPdpEntity = conn.getPdp(standbyPdpId);
         logger.debug("testLocking2: After insertion, PDP={} has DESIGNATED= {}",
                 standbyPdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == false);
+        assertTrue(!droolsPdpEntity.isDesignated());
 
         logger.debug("testLocking2: Demoting PDP= {}", standbyPdpId);
         final StateManagement sm2 = new StateManagement(emfx, standbyPdpId);
@@ -1347,8 +1348,7 @@ public class StandbyStateManagementTest {
         }
 
         logger.debug("testLocking2: Verifying designated status for PDP= {}", standbyPdpId);
-        boolean standbyPdpDesignated = conn.getPdp(standbyPdpId).isDesignated();
-        assertTrue(standbyPdpDesignated == false);
+        assertFalse(conn.getPdp(standbyPdpId).isDesignated());
 
         logger.debug("\n\ntestLocking2: Exiting\n\n");
     }

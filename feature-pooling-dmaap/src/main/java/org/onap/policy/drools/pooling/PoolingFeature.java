@@ -339,7 +339,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
          * @return {@code true} if the request was handled by the manager, {@code false} otherwise
          * @throws PoolingFeatureException feature exception
          */
-        public boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
+        boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
     }
 
     /**

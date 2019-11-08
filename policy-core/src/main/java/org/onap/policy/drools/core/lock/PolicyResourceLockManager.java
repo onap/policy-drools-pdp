@@ -50,6 +50,6 @@ public interface PolicyResourceLockManager extends Startable, Lockable {
      *        {@code false} otherwise
      * @return a new lock
      */
-    public Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,
-                    boolean waitForLock);
+    Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,
+        boolean waitForLock);
 }

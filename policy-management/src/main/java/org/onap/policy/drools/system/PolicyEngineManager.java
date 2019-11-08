@@ -221,7 +221,7 @@ class PolicyEngineManager implements PolicyEngine {
         defaultConfig.put(
                 PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
                         + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX,
-                "" + Integer.toString(TELEMETRY_SERVER_DEFAULT_PORT));
+                "" + TELEMETRY_SERVER_DEFAULT_PORT);
         defaultConfig.put(
                 PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
                         + PolicyEndPointProperties.PROPERTY_HTTP_REST_PACKAGES_SUFFIX,
@@ -663,7 +663,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     @FunctionalInterface
     private static interface PredicateWithEx<T> {
-        public boolean test(T value) throws InterruptedException;
+        boolean test(T value) throws InterruptedException;
     }
 
     @Override

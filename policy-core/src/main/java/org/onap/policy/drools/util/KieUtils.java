@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,8 +48,6 @@ import org.slf4j.LoggerFactory;
  * Kie related utilities.
  */
 public class KieUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(KieUtils.class);
 
     private KieUtils() {
         // Utility class

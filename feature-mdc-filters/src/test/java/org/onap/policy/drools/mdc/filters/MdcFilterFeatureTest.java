@@ -57,11 +57,6 @@ public class MdcFilterFeatureTest {
     private static final String TEST_TOPIC_B = "org.onap.policy.test-topic-b";
 
     /**
-     * The mock PolicyController to be used for the junits.
-     */
-    private PolicyController controller;
-
-    /**
      * The mock properties to be used for the junits.
      */
     private Properties props;
@@ -85,11 +80,13 @@ public class MdcFilterFeatureTest {
         message = new String(Files.readAllBytes(Paths.get("src/test/resources/onset.json")));
 
         props = mockFeatureProperties();
-        controller = mock(PolicyController.class);
 
         props.setProperty("dmaap.source.topics", TEST_TOPIC_A);
         props.setProperty("dmaap.source.topics." + TEST_TOPIC_A + ".servers", "http://testing123.com/");
         props.setProperty("noop.sink.topics", TEST_TOPIC_B);
+
+        // The mock PolicyController to be used for the junits.
+        PolicyController controller = mock(PolicyController.class);
 
         List<TopicSource> topicSources = TopicEndpointManager.getManager().addTopicSources(props);
         doReturn(topicSources).when(controller).getTopicSources();

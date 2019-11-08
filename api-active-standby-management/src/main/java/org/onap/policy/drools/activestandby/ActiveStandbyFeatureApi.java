@@ -35,7 +35,7 @@ public interface ActiveStandbyFeatureApi extends OrderedService {
      *
      * @return String (resourceName)
      */
-    public String getPdpdNowActive();
+    String getPdpdNowActive();
 
     /**
      * Returns the resourceName (PDP ID) for the Drools-PDP that is
@@ -43,12 +43,12 @@ public interface ActiveStandbyFeatureApi extends OrderedService {
      *
      * @return String (resourceName)
      */
-    public String getPdpdLastActive();
+    String getPdpdLastActive();
 
     /**
      * Returns the resourceName associated with this instance of the feature.
      *
      * @return String (resourceName)
      */
-    public String getResourceName();
+    String getResourceName();
 }

@@ -53,7 +53,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *        problem that has resolved).
      * @throws AllSeemsWellException exception
      */
-    public void allSeemsWell(@NotNull String key, @NotNull Boolean asw, @NotNull String msg)
+    void allSeemsWell(@NotNull String key, @NotNull Boolean asw, @NotNull String msg)
             throws AllSeemsWellException;
 
     /**
@@ -61,35 +61,35 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @param stateChangeObserver observer
      */
-    public void addObserver(Observer stateChangeObserver);
+    void addObserver(Observer stateChangeObserver);
 
     /**
      * Returns the X.731 Administrative State for this resource.
      *
      * @return String (locked, unlocked)
      */
-    public String getAdminState();
+    String getAdminState();
 
     /**
      * Returns the X.731 Operational State for this resource.
      *
      * @return String (enabled, disabled)
      */
-    public String getOpState();
+    String getOpState();
 
     /**
      * Returns the X.731 Availability Status for this resource.
      *
      * @return String (failed; dependency; dependency,failed)
      */
-    public String getAvailStatus();
+    String getAvailStatus();
 
     /**
      * Returns the X.731 Standby Status for this resource.
      *
      * @return String (providingservice, hotstandby or coldstandby)
      */
-    public String getStandbyStatus();
+    String getStandbyStatus();
 
     /**
      * Returns the X.731 Standby Status for the named resource
@@ -97,7 +97,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * @param resourceName the resource name
      * @return String (providingservice, hotstandby or coldstandby)
      */
-    public String getStandbyStatus(String resourceName);
+    String getStandbyStatus(String resourceName);
 
     /**
      * This method moves the X.731 Operational State for the named resource into a value of disabled
@@ -107,7 +107,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * @param resourceName resource name
      * @throws Exception exception
      */
-    public void disableFailed(String resourceName) throws Exception;
+    void disableFailed(String resourceName) throws Exception;
 
     /**
      * This method moves the X.731 Operational State for this resource into a value of disabled and
@@ -116,7 +116,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @throws Exception exception
      */
-    public void disableFailed() throws Exception;
+    void disableFailed() throws Exception;
 
     /**
      * This method moves the X.731 Standby Status for this resource from hotstandby to
@@ -126,7 +126,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @throws Exception exception
      */
-    public void promote() throws Exception;
+    void promote() throws Exception;
 
     /**
      * This method moves the X.731 Standby Status for this resource from providingservice to
@@ -135,7 +135,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @throws Exception exception
      */
-    public void demote() throws Exception;
+    void demote() throws Exception;
 
     /**
      * Returns the resourceName associated with this instance of the
@@ -143,7 +143,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @return String (resourceName)
      */
-    public String getResourceName();
+    String getResourceName();
 
     /**
      * This Lockable method will lock the StateManagement object Admin state.
@@ -151,7 +151,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * @return true if successful, false otherwise
      */
     @Override
-    public boolean lock();
+    boolean lock();
 
     /**
      * This Lockable method will unlock the StateManagement object Admin state.
@@ -159,7 +159,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * @return true if successfull, false otherwise
      */
     @Override
-    public boolean unlock();
+    boolean unlock();
 
     /**
      * This Lockable method indicates the Admin state StateManagement object.
@@ -167,5 +167,5 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * @return true if locked, false otherwise
      */
     @Override
-    public boolean isLocked();
+    boolean isLocked();
 }
