@@ -137,7 +137,7 @@ public interface DroolsController extends Startable, Lockable {
      * @param modelHash the hash for the model
      * @return true it owns it
      */
-    boolean ownsCoder(Class<? extends Object> coderClass, int modelHash);
+    boolean ownsCoder(Class<?> coderClass, int modelHash);
 
     /**
      * fetches a class from the model.

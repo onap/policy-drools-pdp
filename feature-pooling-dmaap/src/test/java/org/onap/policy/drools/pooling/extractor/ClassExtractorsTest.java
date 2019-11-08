@@ -410,9 +410,9 @@ public class ClassExtractorsTest {
     /**
      * Used to verify extraction when the property refers to an interface.
      */
-    private static interface WithString {
+    private interface WithString {
 
-        public String getStrValue();
+        String getStrValue();
     }
 
     /**

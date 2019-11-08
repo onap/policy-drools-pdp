@@ -29,7 +29,7 @@ import org.onap.policy.drools.controller.DroolsController;
  */
 public interface EventProtocolCoder {
 
-    public static class CoderFilters {
+    class CoderFilters {
 
         /**
          * coder class.
@@ -120,7 +120,7 @@ public interface EventProtocolCoder {
      * @param eventProtocolParams parameter object for event protocol
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public void addDecoder(EventProtocolParams eventProtocolParams);
+    void addDecoder(EventProtocolParams eventProtocolParams);
 
     /**
      * removes all decoders associated with the controller id.
@@ -140,7 +140,7 @@ public interface EventProtocolCoder {
      * @param topic      the topic
      * @throws IllegalArgumentException if invalid arguments have been provided
      */
-    public void removeDecoders(String groupId, String artifactId, String topic);
+    void removeDecoders(String groupId, String artifactId, String topic);
 
     /**
      * Given a controller id and a topic, it gives back its filters.
@@ -151,7 +151,7 @@ public interface EventProtocolCoder {
      * @return list of decoders
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public List<CoderFilters> getDecoderFilters(String groupId, String artifactId, String topic);
+    List<CoderFilters> getDecoderFilters(String groupId, String artifactId, String topic);
 
     /**
      * gets all decoders associated with the group and artifact ids.
@@ -160,7 +160,7 @@ public interface EventProtocolCoder {
      * @param artifactId of the controller
      * @throws IllegalArgumentException if invalid arguments have been provided
      */
-    public List<CoderFilters> getDecoderFilters(String groupId, String artifactId);
+    List<CoderFilters> getDecoderFilters(String groupId, String artifactId);
 
     /**
      * Given a controller id, a topic, and a classname, it gives back the classes that implements the decoding.
@@ -172,8 +172,8 @@ public interface EventProtocolCoder {
      * @return list of decoders
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public CoderFilters getDecoderFilters(
-            String groupId, String artifactId, String topic, String classname);
+    CoderFilters getDecoderFilters(
+        String groupId, String artifactId, String topic, String classname);
 
     /**
      * Given a controller id and a topic, it gives back the decoding configuration.
@@ -184,7 +184,7 @@ public interface EventProtocolCoder {
      * @return decoding toolset
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public ProtocolCoderToolset getDecoders(String groupId, String artifactId, String topic);
+    ProtocolCoderToolset getDecoders(String groupId, String artifactId, String topic);
 
     /**
      * Given a controller id and a topic, it gives back all the decoding configurations.
@@ -194,7 +194,7 @@ public interface EventProtocolCoder {
      * @return decoding toolset
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public List<ProtocolCoderToolset> getDecoders(String groupId, String artifactId);
+    List<ProtocolCoderToolset> getDecoders(String groupId, String artifactId);
 
     /**
      * Given a controller id and a topic, it gives back the classes that implements the encoding.
@@ -205,7 +205,7 @@ public interface EventProtocolCoder {
      * @return list of decoders
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public List<CoderFilters> getEncoderFilters(String groupId, String artifactId, String topic);
+    List<CoderFilters> getEncoderFilters(String groupId, String artifactId, String topic);
 
     /**
      * gets all encoders associated with the group and artifact ids.
@@ -215,7 +215,7 @@ public interface EventProtocolCoder {
      * @return List of filters
      * @throws IllegalArgumentException if invalid arguments have been provided
      */
-    public List<CoderFilters> getEncoderFilters(String groupId, String artifactId);
+    List<CoderFilters> getEncoderFilters(String groupId, String artifactId);
 
     /**
      * get encoder based on coordinates and classname.
@@ -227,8 +227,8 @@ public interface EventProtocolCoder {
      * @return CoderFilters decoders
      * @throws IllegalArgumentException invalid arguments passed in
      */
-    public CoderFilters getEncoderFilters(
-            String groupId, String artifactId, String topic, String classname);
+    CoderFilters getEncoderFilters(
+        String groupId, String artifactId, String topic, String classname);
 
     /**
      * is there a decoder supported for the controller id and topic.
@@ -238,7 +238,7 @@ public interface EventProtocolCoder {
      * @param topic      protocol
      * @return true if supported
      */
-    public boolean isDecodingSupported(String groupId, String artifactId, String topic);
+    boolean isDecodingSupported(String groupId, String artifactId, String topic);
 
     /**
      * Adds a Encoder class to encode the protocol over this topic.
@@ -246,7 +246,7 @@ public interface EventProtocolCoder {
      * @param eventProtocolParams parameter object for event protocol
      * @throw IllegalArgumentException if an invalid parameter is passed
      */
-    public void addEncoder(EventProtocolParams eventProtocolParams);
+    void addEncoder(EventProtocolParams eventProtocolParams);
 
     /**
      * is there an encoder supported for the controller id and topic.
@@ -256,7 +256,7 @@ public interface EventProtocolCoder {
      * @param topic      protocol
      * @return true if supported
      */
-    public boolean isEncodingSupported(String groupId, String artifactId, String topic);
+    boolean isEncodingSupported(String groupId, String artifactId, String topic);
 
     /**
      * get encoder based on topic and encoded class.
@@ -266,7 +266,7 @@ public interface EventProtocolCoder {
      * @return list of filters
      * @throws IllegalArgumentException invalid arguments passed in
      */
-    public List<CoderFilters> getReverseEncoderFilters(String topic, String encodedClass);
+    List<CoderFilters> getReverseEncoderFilters(String topic, String encodedClass);
 
     /**
      * gets the identifier of the creator of the encoder.
@@ -276,7 +276,7 @@ public interface EventProtocolCoder {
      * @return a drools controller
      * @throws IllegalArgumentException invalid arguments passed in
      */
-    public DroolsController getDroolsController(String topic, Object encodedClass);
+    DroolsController getDroolsController(String topic, Object encodedClass);
 
     /**
      * gets the identifier of the creator of the encoder.
@@ -286,7 +286,7 @@ public interface EventProtocolCoder {
      * @return list of drools controllers
      * @throws IllegalArgumentException invalid arguments passed in
      */
-    public List<DroolsController> getDroolsControllers(String topic, Object encodedClass);
+    List<DroolsController> getDroolsControllers(String topic, Object encodedClass);
 
     /**
      * decode topic's stringified event (json) to corresponding Event Object.
@@ -300,7 +300,7 @@ public interface EventProtocolCoder {
      * @throws UnsupportedOperationException if the operation is not supported
      * @throws IllegalStateException         if the system is in an illegal state
      */
-    public Object decode(String groupId, String artifactId, String topic, String json);
+    Object decode(String groupId, String artifactId, String topic, String json);
 
     /**
      * encodes topic's stringified event (json) to corresponding Event Object.
@@ -312,7 +312,7 @@ public interface EventProtocolCoder {
      * @return encoded string
      * @throws IllegalArgumentException invalid arguments passed in
      */
-    public String encode(String groupId, String artifactId, String topic, Object event);
+    String encode(String groupId, String artifactId, String topic, Object event);
 
     /**
      * encodes topic's stringified event (json) to corresponding Event Object.
@@ -323,7 +323,7 @@ public interface EventProtocolCoder {
      * @throws IllegalArgumentException      invalid arguments passed in
      * @throws UnsupportedOperationException operation cannot be performed
      */
-    public String encode(String topic, Object event);
+    String encode(String topic, Object event);
 
     /**
      * encodes topic's stringified event (json) to corresponding Event Object.
@@ -335,5 +335,5 @@ public interface EventProtocolCoder {
      * @throws IllegalArgumentException      invalid arguments passed in
      * @throws UnsupportedOperationException operation cannot be performed
      */
-    public String encode(String topic, Object event, DroolsController droolsController);
+    String encode(String topic, Object event, DroolsController droolsController);
 }

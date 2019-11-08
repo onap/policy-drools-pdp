@@ -330,7 +330,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
      * Function that operates on a manager.
      */
     @FunctionalInterface
-    private static interface MgrFunc {
+    private interface MgrFunc {
 
         /**
          * Apply.
@@ -339,7 +339,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
          * @return {@code true} if the request was handled by the manager, {@code false} otherwise
          * @throws PoolingFeatureException feature exception
          */
-        public boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
+        boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
     }
 
     /**

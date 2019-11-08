@@ -49,13 +49,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      */
     private static DroolsPdp myPdp;
 
-    private DesignationWaiter designationWaiter;
-    private Timer updateWorker;
-    private Timer waitTimer;
     private Date waitTimerLastRunDate;
-
-    // The interval between checks of the DesignationWaiter to be sure it is running.
-    private int pdpCheckInterval;
 
     // The interval between runs of the DesignationWaiter
     private int pdpUpdateInterval;
@@ -100,12 +94,13 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         this.pdpsConnector = pdps;
         DroolsPdpsElectionHandler.myPdp = myPdp;
         this.isDesignated = false;
-        pdpCheckInterval = 3000;
+        // The interval between checks of the DesignationWaiter to be sure it is running.
+        int pdpCheckInterval = 3000;
         try {
             pdpCheckInterval = Integer.parseInt(ActiveStandbyProperties.getProperty(
                     ActiveStandbyProperties.PDP_CHECK_INVERVAL));
         } catch (Exception e) {
-            logger.error("Could not get pdpCheckInterval property. Using default {}",pdpCheckInterval, e);
+            logger.error("Could not get pdpCheckInterval property. Using default {}", pdpCheckInterval, e);
         }
         pdpUpdateInterval = 2000;
         try {
@@ -122,7 +117,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
         // Create the timer which will update the updateDate in DroolsPdpEntity table.
         // This is the heartbeat
-        updateWorker = Factory.getInstance().makeTimer();
+        Timer updateWorker = Factory.getInstance().makeTimer();
 
         // Schedule the TimerUpdateClass to run at 100 ms and run at pdpCheckInterval ms thereafter
         // NOTE: The first run of the TimerUpdateClass results in myPdp being added to the
@@ -130,12 +125,12 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         updateWorker.scheduleAtFixedRate(new TimerUpdateClass(), 100, pdpCheckInterval);
 
         // Create the timer which will run the election algorithm
-        waitTimer = Factory.getInstance().makeTimer();
+        Timer waitTimer = Factory.getInstance().makeTimer();
 
         // Schedule it to start in startMs ms
         // (so it will run after the updateWorker and run at pdpUpdateInterval ms thereafter
         long startMs = getDWaiterStartMs();
-        designationWaiter = new DesignationWaiter();
+        DesignationWaiter designationWaiter = new DesignationWaiter();
         waitTimer.scheduleAtFixedRate(designationWaiter, startMs, pdpUpdateInterval);
         waitTimerLastRunDate = new Date(nowMs + startMs);
 

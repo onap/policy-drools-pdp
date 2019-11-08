@@ -36,14 +36,14 @@ public interface PoolingManager {
      * 
      * @return pooling properties
      */
-    public PoolingProperties getProperties();
+    PoolingProperties getProperties();
 
     /**
      * Gets the host id.
      * 
      * @return the host id
      */
-    public String getHost();
+    String getHost();
 
     /**
      * Gets the name of the internal DMaaP topic used by this manager to communicate with
@@ -51,14 +51,14 @@ public interface PoolingManager {
      * 
      * @return the name of the internal DMaaP topic
      */
-    public String getTopic();
+    String getTopic();
 
     /**
      * Starts distributing requests according to the given bucket assignments.
      * 
      * @param assignments must <i>not</i> be {@code null}
      */
-    public void startDistributing(BucketAssignments assignments);
+    void startDistributing(BucketAssignments assignments);
 
     /**
      * Gets the current bucket assignments.
@@ -66,14 +66,14 @@ public interface PoolingManager {
      * @return the current bucket assignments, or {@code null} if no assignments have been
      *         made
      */
-    public BucketAssignments getAssignments();
+    BucketAssignments getAssignments();
 
     /**
      * Publishes a message to the internal topic on the administrative channel.
      * 
      * @param msg message to be published
      */
-    public void publishAdmin(Message msg);
+    void publishAdmin(Message msg);
 
     /**
      * Publishes a message to the internal topic on a particular channel.
@@ -81,14 +81,14 @@ public interface PoolingManager {
      * @param channel channel on which the message should be published
      * @param msg message to be published
      */
-    public void publish(String channel, Message msg);
+    void publish(String channel, Message msg);
 
     /**
      * Handles a {@link Forward} event that was received from the internal topic.
      * 
      * @param event event
      */
-    public void handle(Forward event);
+    void handle(Forward event);
 
     /**
      * Schedules a timer to fire after a delay.
@@ -97,7 +97,7 @@ public interface PoolingManager {
      * @param task task
      * @return a new scheduled task
      */
-    public CancellableScheduledTask schedule(long delayMs, StateTimerTask task);
+    CancellableScheduledTask schedule(long delayMs, StateTimerTask task);
 
     /**
      * Schedules a timer to fire repeatedly.
@@ -107,34 +107,34 @@ public interface PoolingManager {
      * @param task task
      * @return a new scheduled task
      */
-    public CancellableScheduledTask scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);
+    CancellableScheduledTask scheduleWithFixedDelay(long initialDelayMs, long delayMs, StateTimerTask task);
 
     /**
      * Transitions to the "start" state.
      * 
      * @return the new state
      */
-    public State goStart();
+    State goStart();
 
     /**
      * Transitions to the "query" state.
      * 
      * @return the new state
      */
-    public State goQuery();
+    State goQuery();
 
     /**
      * Transitions to the "active" state.
      * 
      * @return the new state
      */
-    public State goActive();
+    State goActive();
 
     /**
      * Transitions to the "inactive" state.
      * 
      * @return the new state
      */
-    public State goInactive();
+    State goInactive();
 
 }

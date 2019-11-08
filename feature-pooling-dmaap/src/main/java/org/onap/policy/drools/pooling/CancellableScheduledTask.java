@@ -29,5 +29,5 @@ public interface CancellableScheduledTask {
     /**
      * Cancels the scheduled task.
      */
-    public void cancel();
+    void cancel();
 }

@@ -375,7 +375,7 @@ public class MavenDroolsController implements DroolsController {
 
 
     @Override
-    public boolean ownsCoder(Class<? extends Object> coderClass, int modelHash) {
+    public boolean ownsCoder(Class<?> coderClass, int modelHash) {
         if (!isClass(coderClass.getName())) {
             logger.error("{}{} cannot be retrieved. ", this, coderClass.getName());
             return false;

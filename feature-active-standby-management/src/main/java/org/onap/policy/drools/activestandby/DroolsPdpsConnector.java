@@ -26,39 +26,39 @@ public interface DroolsPdpsConnector {
 
 
     //return a list of PDPs, NOT including this PDP
-    public Collection<DroolsPdp> getDroolsPdps();
+    Collection<DroolsPdp> getDroolsPdps();
 
-    public void update(DroolsPdp pdp);
+    void update(DroolsPdp pdp);
 
     //determines if the DroolsPdp parameter is considered "current" or expired 
     //(has it been too long since the Pdp sent an update)
-    public boolean isPdpCurrent(DroolsPdp pdp);
+    boolean isPdpCurrent(DroolsPdp pdp);
 
     // Updates DESIGNATED boolean in PDP record.
-    public void setDesignated(DroolsPdp pdp, boolean designated);
+    void setDesignated(DroolsPdp pdp, boolean designated);
 
     // Marks droolspdpentity.DESIGNATED=false, so another PDP-D will go active.
-    public void standDownPdp(String pdpId);
+    void standDownPdp(String pdpId);
 
     // This is used in a JUnit test environment to manually
     // insert a PDP
-    public void insertPdp(DroolsPdp pdp);
+    void insertPdp(DroolsPdp pdp);
 
     // This is used in a JUnit test environment to manually
     // delete a PDP
-    public void deletePdp(String pdpId);
+    void deletePdp(String pdpId);
 
     // This is used in a JUnit test environment to manually
     // clear the droolspdpentity table.
-    public void deleteAllPdps();
+    void deleteAllPdps();
 
     // This is used in a JUnit test environment to manually
     // get a PDP
-    public DroolsPdpEntity getPdp(String pdpId);
+    DroolsPdpEntity getPdp(String pdpId);
 
     // Used by DroolsPdpsElectionHandler to determine if the currently designated
     // PDP has failed.
-    public boolean hasDesignatedPdpFailed(Collection<DroolsPdp> pdps);
+    boolean hasDesignatedPdpFailed(Collection<DroolsPdp> pdps);
 
 
 }

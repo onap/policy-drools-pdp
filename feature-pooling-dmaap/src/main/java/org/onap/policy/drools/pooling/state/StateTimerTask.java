@@ -31,6 +31,6 @@ public interface StateTimerTask {
      * 
      * @return the new state, or {@code null} if the state is unchanged
      */
-    public State fire();
+    State fire();
 
 }

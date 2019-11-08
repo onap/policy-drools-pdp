@@ -26,12 +26,12 @@ public interface DroolsSessionConnector {
      * @param sessName session name
      * @return a session, or {@code null} if it is not found
      */
-    public DroolsSession get(String sessName);
+    DroolsSession get(String sessName);
 
     /**
      * Replaces a session, adding it if it does not exist.
      * @param sess session to be replaced
      */
-    public void replace(DroolsSession sess);
+    void replace(DroolsSession sess);
 
 }

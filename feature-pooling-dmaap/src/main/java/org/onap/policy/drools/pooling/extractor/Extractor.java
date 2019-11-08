@@ -32,5 +32,5 @@ public interface Extractor {
      * @param object object from which to extract the contained object
      * @return the extracted value, or {@code null} if it cannot be extracted
      */
-    public Object extract(Object object);
+    Object extract(Object object);
 }

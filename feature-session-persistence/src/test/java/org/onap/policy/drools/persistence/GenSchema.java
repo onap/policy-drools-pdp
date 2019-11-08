@@ -34,8 +34,6 @@ public class GenSchema {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceFeatureTest.class);
 
-    private EntityManagerFactory emf;
-
     /**
      * Opens the EMF, which generates the schema, as a side-effect.
      *
@@ -47,7 +45,7 @@ public class GenSchema {
         propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
         propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:JpaDroolsSessionConnectorTest");
 
-        emf = Persistence.createEntityManagerFactory("schemaDroolsPU", propMap);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("schemaDroolsPU", propMap);
 
         emf.close();
     }

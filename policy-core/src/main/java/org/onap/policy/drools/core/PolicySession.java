@@ -382,19 +382,19 @@ public class PolicySession
         /**
          * Start the thread or threads that do the 'KieSession' processing.
          */
-        public void start();
+        void start();
 
         /**
          * Stop the thread or threads that do the 'KieSession' processing.
          */
-        public void stop();
+        void stop();
 
         /**
          * This method is called to notify the running session that
          * 'KieContainer.updateToVersion(...)' has been called (meaning the
          * full name of this session has changed).
          */
-        public default void updated() {
+        default void updated() {
         }
     }
 

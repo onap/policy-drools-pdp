@@ -804,7 +804,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     }
 
     @FunctionalInterface
-    private static interface RunnableWithEx {
+    private interface RunnableWithEx {
         void run() throws SQLException;
     }
 
