@@ -156,5 +156,5 @@ public interface HealthCheck extends Startable {
      *
      * @return a report
      */
-    public Reports healthCheck();
+    Reports healthCheck();
 }

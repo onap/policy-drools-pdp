@@ -84,8 +84,8 @@ public class ProtocolCoderToolsetTest {
     public void testGsonToolset(JsonProtocolFilter protocolFilter) {
         GsonProtocolCoderToolset gsonToolset = new GsonProtocolCoderToolset(
                 EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
-                        .groupId(this.releaseId.getGroupId())
-                        .artifactId(this.releaseId.getArtifactId())
+                        .groupId(releaseId.getGroupId())
+                        .artifactId(releaseId.getArtifactId())
                         .eventClass(Triple.class.getName())
                         .protocolFilter(protocolFilter)
                         .customGsonCoder(null)
@@ -193,8 +193,8 @@ public class ProtocolCoderToolsetTest {
 
     private void validateInitialization(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
         Assert.assertTrue(CONTROLLER_ID.equals(coderToolset.getControllerId()));
-        Assert.assertTrue(this.releaseId.getGroupId().equals(coderToolset.getGroupId()));
-        Assert.assertTrue(this.releaseId.getArtifactId().equals(coderToolset.getArtifactId()));
+        Assert.assertTrue(releaseId.getGroupId().equals(coderToolset.getGroupId()));
+        Assert.assertTrue(releaseId.getArtifactId().equals(coderToolset.getArtifactId()));
         Assert.assertNull(coderToolset.getCustomCoder());
 
         Assert.assertTrue(coderToolset.getCoders().size() == 1);

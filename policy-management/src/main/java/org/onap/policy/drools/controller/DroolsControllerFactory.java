@@ -43,8 +43,8 @@ public interface DroolsControllerFactory {
      * @throws IllegalArgumentException with invalid parameters
      * @throws LinkageError Failure to link rules and models in Drools Libraries
      */
-    public DroolsController build(Properties properties, List<? extends TopicSource> eventSources,
-            List<? extends TopicSink> eventSinks) throws LinkageError;
+    DroolsController build(Properties properties, List<? extends TopicSource> eventSources,
+        List<? extends TopicSink> eventSinks) throws LinkageError;
 
     /**
      * Explicit construction of a Drools Controller.
@@ -59,33 +59,33 @@ public interface DroolsControllerFactory {
      * @throws IllegalArgumentException with invalid parameters
      * @throws LinkageError Failure to link rules and models in Drools Libraries
      */
-    public DroolsController build(String groupId, String artifactId, String version,
-            List<TopicCoderFilterConfiguration> decoderConfigurations,
-            List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
+    DroolsController build(String groupId, String artifactId, String version,
+        List<TopicCoderFilterConfiguration> decoderConfigurations,
+        List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
 
     /**
      * Releases the Drools Controller from operation.
      *
      * @param controller the Drools Controller to shut down
      */
-    public void shutdown(DroolsController controller);
+    void shutdown(DroolsController controller);
 
     /**
      * Disables all Drools Controllers from operation.
      */
-    public void shutdown();
+    void shutdown();
 
     /**
      * Destroys and releases resources for a Drools Controller.
      *
      * @param controller the Drools Controller to destroy
      */
-    public void destroy(DroolsController controller);
+    void destroy(DroolsController controller);
 
     /**
      * Destroys all Drools Controllers.
      */
-    public void destroy();
+    void destroy();
 
     /**
      * Gets the Drools Controller associated with the maven group and artifact id.
@@ -97,12 +97,12 @@ public interface DroolsControllerFactory {
      * @return the Drools Controller
      * @throws IllegalArgumentException with invalid parameters
      */
-    public DroolsController get(String groupId, String artifactId, String version);
+    DroolsController get(String groupId, String artifactId, String version);
 
     /**
      * returns the current inventory of Drools Controllers.
      *
      * @return a list of Drools Controllers
      */
-    public List<DroolsController> inventory();
+    List<DroolsController> inventory();
 }

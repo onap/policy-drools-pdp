@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,6 @@ public class GenSchema {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistenceFeatureTest.class);
 
-    private EntityManagerFactory emf;
-
     /**
      * Opens the EMF, which generates the schema, as a side-effect.
      *
@@ -47,9 +45,7 @@ public class GenSchema {
         propMap.put("javax.persistence.jdbc.driver", "org.h2.Driver");
         propMap.put("javax.persistence.jdbc.url", "jdbc:h2:mem:JpaDroolsSessionConnectorTest");
 
-        emf = Persistence.createEntityManagerFactory("schemaDroolsPU", propMap);
-
-        emf.close();
+        Persistence.createEntityManagerFactory("schemaDroolsPU", propMap).close();
     }
 
     /**
