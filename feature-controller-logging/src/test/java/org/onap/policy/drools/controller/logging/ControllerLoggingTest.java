@@ -75,10 +75,6 @@ public class ControllerLoggingTest {
     private static final String TEST_TOPIC = "test-topic";
     private static final String TEST_SERVER = "http://test.com";
 
-    /**
-     * These are used for sending PDPD configuration notifications to a policy controller.
-     */
-    private static Properties controllerProps = null;
     private static String message = null;
     private static PdpdConfiguration pdpdNotification = null;
     private static PolicyController policyController = null;
@@ -110,14 +106,15 @@ public class ControllerLoggingTest {
         KieUtils.installArtifact(Paths.get(JUNIT_KMODULE_PATH).toFile(), Paths.get(JUNIT_KMODULE_POM_PATH).toFile(),
                         JUNIT_KJAR_DRL_PATH, Paths.get(JUNIT_KMODULE_DRL_PATH).toFile());
 
-        controllerProps = new Properties();
+        // These properties are used for sending PDPD configuration notifications to a policy controller.
+        Properties controllerProps = new Properties();
         controllerProps.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
         controllerProps.put(DroolsPropertyConstants.RULES_GROUPID, TEST_GROUP_ID);
         controllerProps.put(DroolsPropertyConstants.RULES_ARTIFACTID, TEST_ARTIFACT_ID);
         controllerProps.put(DroolsPropertyConstants.RULES_VERSION, TEST_VERSION);
 
-        policyController = PolicyEngineConstants.getManager().createPolicyController(TEST_CONTROLLER_NAME,
-                        controllerProps);
+        policyController =
+            PolicyEngineConstants.getManager().createPolicyController(TEST_CONTROLLER_NAME, controllerProps);
 
         message = "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\",\"controllers\":"
                         + "[{\"name\":\"test-controller\",\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","

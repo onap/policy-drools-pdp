@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,5 +32,5 @@ public interface Extractor {
      * @param object object from which to extract the contained object
      * @return the extracted value, or {@code null} if it cannot be extracted
      */
-    public Object extract(Object object);
+    Object extract(Object object);
 }

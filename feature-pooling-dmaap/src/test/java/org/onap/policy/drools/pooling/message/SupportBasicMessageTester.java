@@ -221,14 +221,14 @@ public abstract class SupportBasicMessageTester<T extends Message> {
      * @param <T> type of Message the function updates
      */
     @FunctionalInterface
-    public static interface MessageUpdateFunction<T extends Message> {
+    public interface MessageUpdateFunction<T extends Message> {
 
         /**
          * Updates a message.
          * 
          * @param msg message to be updated
          */
-        public void update(T msg);
+        void update(T msg);
     }
 
     /**
@@ -237,7 +237,7 @@ public abstract class SupportBasicMessageTester<T extends Message> {
      * @param <T> type of Message the function updates
      */
     @FunctionalInterface
-    public static interface MessageFieldUpdateFunction<T extends Message> {
+    public interface MessageFieldUpdateFunction<T extends Message> {
 
         /**
          * Updates a field within a message.
@@ -245,6 +245,6 @@ public abstract class SupportBasicMessageTester<T extends Message> {
          * @param msg message to be updated
          * @param newValue new field value
          */
-        public void update(T msg, String newValue);
+        void update(T msg, String newValue);
     }
 }

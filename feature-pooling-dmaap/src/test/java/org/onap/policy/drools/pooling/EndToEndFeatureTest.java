@@ -791,7 +791,7 @@ public class EndToEndFeatureTest {
     /**
      * Controller that also implements the {@link TopicListener} interface.
      */
-    private static interface ListenerController extends PolicyController, TopicListener {
+    private interface ListenerController extends PolicyController, TopicListener {
 
     }
 }

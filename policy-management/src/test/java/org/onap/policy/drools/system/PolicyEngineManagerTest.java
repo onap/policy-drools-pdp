@@ -1982,7 +1982,7 @@ public class PolicyEngineManagerTest {
     }
 
     @FunctionalInterface
-    private static interface RunnableWithEx {
+    private interface RunnableWithEx {
         void run() throws Exception;
     }
 }

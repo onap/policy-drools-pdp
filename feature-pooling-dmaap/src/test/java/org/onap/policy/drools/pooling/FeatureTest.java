@@ -1095,7 +1095,7 @@ public class FeatureTest {
     /**
      * Controller that also implements the {@link TopicListener} interface.
      */
-    private static interface ListenerController extends PolicyController, TopicListener {
+    private interface ListenerController extends PolicyController, TopicListener {
 
     }
 
@@ -1103,8 +1103,8 @@ public class FeatureTest {
      * Simple function that takes no arguments and returns nothing.
      */
     @FunctionalInterface
-    private static interface VoidFunction {
+    private interface VoidFunction {
 
-        public void apply();
+        void apply();
     }
 }

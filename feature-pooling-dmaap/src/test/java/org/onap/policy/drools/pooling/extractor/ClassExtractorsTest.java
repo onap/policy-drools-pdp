@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -410,9 +410,9 @@ public class ClassExtractorsTest {
     /**
      * Used to verify extraction when the property refers to an interface.
      */
-    private static interface WithString {
+    private interface WithString {
 
-        public String getStrValue();
+        String getStrValue();
     }
 
     /**

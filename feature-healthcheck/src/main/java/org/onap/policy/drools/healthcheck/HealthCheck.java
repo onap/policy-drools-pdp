@@ -32,7 +32,7 @@ public interface HealthCheck extends Startable {
     /**
      * Healthcheck Report.
      */
-    public static class Report {
+    class Report {
         /**
          * Named Entity in the report.
          */
@@ -119,7 +119,7 @@ public interface HealthCheck extends Startable {
     /**
      * Report aggregation.
      */
-    public static class Reports {
+    class Reports {
         private boolean healthy;
         private List<Report> details = new ArrayList<>();
 
@@ -156,5 +156,5 @@ public interface HealthCheck extends Startable {
      *
      * @return a report
      */
-    public Reports healthCheck();
+    Reports healthCheck();
 }

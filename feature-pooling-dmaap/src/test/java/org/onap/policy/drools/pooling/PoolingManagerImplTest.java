@@ -95,7 +95,6 @@ public class PoolingManagerImplTest {
      */
     private Queue<ScheduledFuture<?>> futures;
 
-    private Properties plainProps;
     private PoolingProperties poolProps;
     private ListeningController controller;
     private ClassExtractors extractors;
@@ -116,7 +115,7 @@ public class PoolingManagerImplTest {
      */
     @Before
     public void setUp() throws Exception {
-        plainProps = new Properties();
+        Properties plainProps = new Properties();
 
         poolProps = mock(PoolingProperties.class);
         when(poolProps.getSource()).thenReturn(plainProps);
