@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.activestandby;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -262,7 +263,7 @@ public class AllSeemsWellTest {
         DroolsPdpEntity droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testAllSeemsWell: After insertion, PDP={} has DESIGNATED={}",
                 thisPdpId, droolsPdpEntity.isDesignated());
-        assertTrue(droolsPdpEntity.isDesignated() == false);
+        assertFalse(droolsPdpEntity.isDesignated());
 
         logger.debug("testAllSeemsWell: Instantiating stateManagement object");
         StateManagement sm = new StateManagement(emfXacml, "dummy");
@@ -311,7 +312,7 @@ public class AllSeemsWellTest {
         droolsPdpEntity = conn.getPdp(thisPdpId);
         logger.debug("testAllSeemsWell: After sm.demote() invoked, DESIGNATED= {} "
                 + "for PDP= {}", droolsPdpEntity.isDesignated(), thisPdpId);
-        assertTrue(droolsPdpEntity.isDesignated() == true);
+        assertTrue(droolsPdpEntity.isDesignated());
         String standbyStatus = smf.getStandbyStatus(thisPdpId);
         logger.debug("testAllSeemsWell: After demotion, PDP= {} "
                 + "has standbyStatus= {}", thisPdpId, standbyStatus);

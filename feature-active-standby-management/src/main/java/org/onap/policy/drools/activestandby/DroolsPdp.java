@@ -24,27 +24,27 @@ import java.util.Date;
 
 public interface DroolsPdp {
 
-    public String getPdpId();
+    String getPdpId();
 
-    public boolean isDesignated();
+    boolean isDesignated();
 
-    public int getPriority();
+    int getPriority();
 
-    public Date getUpdatedDate();
+    Date getUpdatedDate();
 
-    public void setDesignated(boolean isDesignated);
+    void setDesignated(boolean isDesignated);
 
-    public void setUpdatedDate(Date updatedDate);
+    void setUpdatedDate(Date updatedDate);
 
-    public int comparePriority(DroolsPdp other);
+    int comparePriority(DroolsPdp other);
 
-    public int comparePriority(DroolsPdp other,String previousSite);
+    int comparePriority(DroolsPdp other, String previousSite);
 
-    public String getSite();
+    String getSite();
 
-    public void setSite(String site);
+    void setSite(String site);
 
-    public Date getDesignatedDate();
+    Date getDesignatedDate();
 
-    public void setDesignatedDate(Date designatedDate);
+    void setDesignatedDate(Date designatedDate);
 }
