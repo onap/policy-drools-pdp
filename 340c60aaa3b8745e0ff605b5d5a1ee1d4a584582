@@ -16,6 +16,24 @@
       "revId": "340c60aaa3b8745e0ff605b5d5a1ee1d4a584582",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e159281_ddfedd91",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 6006
+      },
+      "writtenOn": "2019-11-08T13:58:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af3dab1a_634b4250",
+      "revId": "340c60aaa3b8745e0ff605b5d5a1ee1d4a584582",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
