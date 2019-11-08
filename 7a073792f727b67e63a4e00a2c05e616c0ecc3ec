@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17cd59ac_04d68280",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/activestandby/StandbyStateManagementTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 799,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-08T20:21:44Z",
+      "side": 1,
+      "message": "use assertFalse instead?\n\nsame comment in various cases below",
+      "revId": "7a073792f727b67e63a4e00a2c05e616c0ecc3ec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1aa6cc3_caeaf3be",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/SupportBasicMessageTester.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-08T20:21:44Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "7a073792f727b67e63a4e00a2c05e616c0ecc3ec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "82f8b24f_286f04fc",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/GenSchema.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-08T20:21:44Z",
+      "side": 1,
+      "message": "guess we could just combine lines 48 \u0026 50",
+      "revId": "7a073792f727b67e63a4e00a2c05e616c0ecc3ec",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
