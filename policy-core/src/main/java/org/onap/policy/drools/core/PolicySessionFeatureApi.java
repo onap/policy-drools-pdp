@@ -40,7 +40,7 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @param args standard 'main' arguments, which are currently ignored
      * @param configDir the relative directory containing configuration files
      */
-    public default void globalInit(String[] args, String configDir) {}
+    default void globalInit(String[] args, String configDir) {}
 
     /**
      * This method is used to create a 'KieSession' as part of a
@@ -57,7 +57,7 @@ public interface PolicySessionFeatureApi extends OrderedService {
      *     (this depends on the capabilities and state of the object implementing
      *     this interface)
      */
-    public default KieSession activatePolicySession(PolicyContainer policyContainer, String name, String kieBaseName) {
+    default KieSession activatePolicySession(PolicyContainer policyContainer, String name, String kieBaseName) {
         return null;
     }
 
@@ -67,13 +67,13 @@ public interface PolicySessionFeatureApi extends OrderedService {
      *
      * @param policySession the new 'PolicySession' instance
      */
-    public default void newPolicySession(PolicySession policySession) {}
+    default void newPolicySession(PolicySession policySession) {}
 
     /**
      * This method is called to select the 'ThreadModel' instance associated
      * with a 'PolicySession' instance.
      */
-    public default PolicySession.ThreadModel selectThreadModel(PolicySession session) {
+    default PolicySession.ThreadModel selectThreadModel(PolicySession session) {
         return null;
     }
 
@@ -88,7 +88,7 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @return 'true' if this feature is handling the operation,
      *     and 'false' if not.
      */
-    public default boolean insertDrools(PolicySession session, Object object) {
+    default boolean insertDrools(PolicySession session, Object object) {
         return false;
     }
 
@@ -98,7 +98,7 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @param policySession the 'PolicySession' object that wrapped the
      *     'KieSession'
      */
-    public default void disposeKieSession(PolicySession policySession) {}
+    default void disposeKieSession(PolicySession policySession) {}
 
     /**
      * This method is called after 'KieSession.destroy()' is called.
@@ -106,5 +106,5 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @param policySession the 'PolicySession' object that wrapped the
      *     'KieSession'
      */
-    public default void destroyKieSession(PolicySession policySession) {}
+    default void destroyKieSession(PolicySession policySession) {}
 }

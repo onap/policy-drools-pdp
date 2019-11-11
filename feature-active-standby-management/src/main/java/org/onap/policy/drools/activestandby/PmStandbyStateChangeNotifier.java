@@ -64,7 +64,6 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
     // get an instance of logger
     private static final Logger logger = LoggerFactory.getLogger(PmStandbyStateChangeNotifier.class);
     private Timer delayActivateTimer;
-    private int pdpUpdateInterval;
     private boolean isWaitingForActivation;
     private long startTimeWaitingForActivationMs;
     private long waitInterval;
@@ -81,8 +80,8 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
      *
      */
     public PmStandbyStateChangeNotifier() {
-        pdpUpdateInterval =
-                Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
+        int pdpUpdateInterval =
+            Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
         isWaitingForActivation = false;
         startTimeWaitingForActivationMs = currentTime.getMillis();
         // delay the activate so the DesignatedWaiter can run twice - give it an extra 2 seconds

@@ -30,12 +30,12 @@ public interface TestTransaction {
      *
      * @param controller policy controller
      */
-    public void register(PolicyController controller);
+    void register(PolicyController controller);
 
     /**
      * unregisters a controller for monitoring test transactions.
      *
      * @param controller policy controller
      */
-    public void unregister(PolicyController controller);
+    void unregister(PolicyController controller);
 }
