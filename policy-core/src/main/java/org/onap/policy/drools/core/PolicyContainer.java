@@ -33,9 +33,11 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.onap.policy.common.capabilities.Startable;
+import org.onap.policy.drools.util.KieUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,12 @@ public class PolicyContainer implements Startable {
 
     private static final String ERROR_STRING = "ERROR: Feature API: ";
 
+    // packages that are included in all 'KieContainer' instances
+    private static Collection<KiePackage> commonPackages = null;
+
+    // all resources with this name consist of rules that are added to each container
+    private static final String COMMON_PACKAGES_RESOURCE_NAME = "META-INF/drools/drl";
+
     /**
      * uses 'groupId', 'artifactId' and 'version', and fetches the associated artifact and remaining
      * dependencies from the Maven repository to create the 'PolicyContainer' and associated
@@ -107,6 +115,9 @@ public class PolicyContainer implements Startable {
         } else {
             kieContainer = kieServices.newKieContainer(newReleaseId);
         }
+
+        // add common KiePackage instances
+        addCommonPackages();
         synchronized (containers) {
             if (newReleaseId != null) {
                 logger.info("Add a new kieContainer in containers: releaseId: {}", newReleaseId);
@@ -400,6 +411,10 @@ public class PolicyContainer implements Startable {
 
         // update the version
         Results results = kieContainer.updateToVersion(releaseId);
+
+
+        // add common KiePackage instances
+        addCommonPackages();
 
         // restart all session threads, and notify the sessions
         for (PolicySession session : sessions.values()) {
@@ -724,6 +739,34 @@ public class PolicyContainer implements Startable {
             adjuncts.remove(object);
         } else {
             adjuncts.put(object, value);
+        }
+    }
+
+    /**
+     * Add 'KiePackages' that are common to all containers.
+     */
+    private void addCommonPackages() {
+        // contains the list of 'KiePackages' to add to each 'KieBase'
+        Collection<KiePackage> kiePackages;
+        synchronized (PolicyContainer.class) {
+            if (commonPackages == null) {
+                commonPackages = KieUtils.resourceToPackages(
+                    PolicyContainer.class.getClassLoader(), COMMON_PACKAGES_RESOURCE_NAME);
+                if (commonPackages == null) {
+                    // a problem occurred, which has already been logged --
+                    // just store an empty collection, so we don't keep doing
+                    // this over again
+                    commonPackages = new HashSet<>();
+                    return;
+                }
+            }
+            kiePackages = commonPackages;
+        }
+
+        // if we reach this point, 'kiePackages' contains a non-null list
+        // of packages to add
+        for (String name : kieContainer.getKieBaseNames()) {
+            KieUtils.addKiePackages(kieContainer.getKieBase(name), kiePackages);
         }
     }
 }
