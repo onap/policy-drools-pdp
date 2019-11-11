@@ -74,6 +74,7 @@ public class ProtocolCoderToolsetTest {
     public void testToolsets() {
         createController();
         testGsonToolset(createFilterSet());
+        DroolsControllerConstants.getFactory().destroy();
     }
 
     /**

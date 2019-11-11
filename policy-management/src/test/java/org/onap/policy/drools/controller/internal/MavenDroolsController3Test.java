@@ -35,6 +35,19 @@ import java.util.stream.Stream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.util.KieUtils;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
@@ -99,7 +112,9 @@ public class MavenDroolsController3Test {
                 null, null);
 
         assertTrue(rules.start());
+        logKieEvents(rules);
         assertTrue(running1a.await(30, TimeUnit.SECONDS));
+
         summary(rules);
         assertKie(rules, Arrays.asList("SETUP.1", "VERSION.12"), 1);
 
@@ -123,6 +138,8 @@ public class MavenDroolsController3Test {
         assertTrue(running1b.await(30, TimeUnit.SECONDS));
         summary(rules);
         assertKie(rules, Arrays.asList("SETUP.1", "VERSION.12"), 1);
+
+        rules.halt();
     }
 
     private void summary(DroolsController rules) {
@@ -140,5 +157,90 @@ public class MavenDroolsController3Test {
         assertEquals(Arrays.asList("kbRules"), KieUtils.getBases(controller.getContainer().getKieContainer()));
         assertEquals(expectedRuleNames, KieUtils.getRuleNames(controller.getContainer().getKieContainer()));
         assertEquals(expectedFactCount, controller.factCount(controller.getSessionNames().get(0)));
+    }
+
+    private void logKieEvents(DroolsController controller) {
+        controller.getContainer()
+            .getPolicySession(KBSESSION_RULES)
+            .getKieSession()
+            .addEventListener( new RuleRuntimeEventListener() {
+                    @Override
+                    public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
+                        logger.info("RULE {}: inserting {}",
+                            objectInsertedEvent.getRule().getName(), objectInsertedEvent.getObject());
+                    }
+
+                    @Override
+                    public void objectUpdated(ObjectUpdatedEvent objectUpdatedEvent) {
+                        logger.info("RULE {}: updating {}",
+                            objectUpdatedEvent.getRule().getName(), objectUpdatedEvent.getObject());
+                    }
+
+                    @Override
+                    public void objectDeleted(ObjectDeletedEvent objectDeletedEvent) {
+                        logger.info("RULE {}: deleting {}",
+                            objectDeletedEvent.getRule().getName(), objectDeletedEvent.getOldObject());
+                    }
+                } );
+
+        controller.getContainer()
+            .getPolicySession(KBSESSION_RULES)
+            .getKieSession()
+            .addEventListener(new AgendaEventListener() {
+                @Override
+                public void matchCreated(MatchCreatedEvent matchCreatedEvent) {
+                    logger.info("RULE {}: matchCreated", matchCreatedEvent.getMatch().getRule().getName());
+                }
+
+                @Override
+                public void matchCancelled(MatchCancelledEvent matchCancelledEvent) {
+                    logger.info("RULE {}: matchCancelled {}", matchCancelledEvent.getMatch().getRule().getName());
+                }
+
+                @Override
+                public void beforeMatchFired(BeforeMatchFiredEvent beforeMatchFiredEvent) {
+                    logger.info("RULE {}: beforeMatchFired {}", beforeMatchFiredEvent.getMatch().getRule().getName());
+                }
+
+                @Override
+                public void afterMatchFired(AfterMatchFiredEvent afterMatchFiredEvent) {
+                    logger.info("RULE {}: afterMatchFired {}", afterMatchFiredEvent.getMatch().getRule().getName());
+                }
+
+                @Override
+                public void agendaGroupPopped(AgendaGroupPoppedEvent agendaGroupPoppedEvent) {
+                    /* do nothing */
+                }
+
+                @Override
+                public void agendaGroupPushed(AgendaGroupPushedEvent agendaGroupPushedEvent) {
+                    /* do nothing */
+
+                }
+
+                @Override
+                public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent ruleFlowGroupActivatedEvent) {
+                    /* do nothing */
+
+                }
+
+                @Override
+                public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent ruleFlowGroupActivatedEvent) {
+                    /* do nothing */
+
+                }
+
+                @Override
+                public void beforeRuleFlowGroupDeactivated(
+                    RuleFlowGroupDeactivatedEvent ruleFlowGroupDeactivatedEvent) {
+                    /* do nothing */
+
+                }
+
+                @Override
+                public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent ruleFlowGroupDeactivatedEvent) {
+                    /* do nothing */
+                }
+            } );
     }
 }
