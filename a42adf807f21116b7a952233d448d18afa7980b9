@@ -70,6 +70,24 @@
       "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17efb82c_b69b3a84",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-11T09:14:26Z",
+      "side": 1,
+      "message": "Regarding varargs, you can explicitly pass an array:\n\nimport java.util.*;\n\npublic class VarargsTest\n{\n  static public void main(String args[])\n  {\n    List\u003cString\u003e list \u003d new LinkedList\u003c\u003e();\n    list.add(\"c\");\n    list.add(\"d\");\n\n    varargs(\"a\", \"b\");\t\t\t// standard call\n    varargs(args);\t\t\t\t// passing an array\n    varargs(list.toArray(new String[0]));\t// converting a list\n  }\n\n  static public void varargs(String... args)\n  {\n    System.out.println(\"varargs called: \" + Arrays.asList(args));\n  }\n}\n\n$ java VarargsTest x y z\nvarargs called: [a, b]\nvarargs called: [x, y, z]\nvarargs called: [c, d]",
+      "parentUuid": "4571b0ba_7583a539",
+      "revId": "a42adf807f21116b7a952233d448d18afa7980b9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
