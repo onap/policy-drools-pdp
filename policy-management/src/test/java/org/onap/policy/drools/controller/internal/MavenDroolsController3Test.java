@@ -32,6 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
@@ -123,6 +124,8 @@ public class MavenDroolsController3Test {
         assertTrue(running1b.await(30, TimeUnit.SECONDS));
         summary(rules);
         assertKie(rules, Arrays.asList("SETUP.1", "VERSION.12"), 1);
+
+        rules.halt();
     }
 
     private void summary(DroolsController rules) {
