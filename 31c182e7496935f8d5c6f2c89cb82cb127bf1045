@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e151bfed_aa4fd59d",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/internal/MavenDroolsController3Test.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-11T23:44:55Z",
+      "side": 1,
+      "message": "should this be in @After so it\u0027s always done, even if a test fails in the middle?",
+      "revId": "31c182e7496935f8d5c6f2c89cb82cb127bf1045",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
