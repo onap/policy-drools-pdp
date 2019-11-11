@@ -20,6 +20,8 @@
 
 package rules;
 
+import org.onap.policy.drools.controller.internal.MavenDroolsControllerUpgradesTest;
+
 declare Version
     version : String
 end
@@ -31,7 +33,7 @@ then
     v2.setVersion("2");
     insert(v2);
 
-    MavenDroolsController3Test.running2a.countDown();
+    MavenDroolsControllerUpgradesTest.running2a.countDown();
 end
 
 rule "VERSION.2"
@@ -44,5 +46,5 @@ then
     v12.setVersion("12");
     insert(v12);
 
-    MavenDroolsController3Test.running2b.countDown();
+    MavenDroolsControllerUpgradesTest.running2b.countDown();
 end
