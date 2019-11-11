@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "9a9fb21c_9a8765b9",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 751,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-11T22:25:27Z",
+      "side": 1,
+      "message": "I think additional junit coverage tests are needed here",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e5e0ca8b_80cc6a35",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
         "patchSetId": 1
