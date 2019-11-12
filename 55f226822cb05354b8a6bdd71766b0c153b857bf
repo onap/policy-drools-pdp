@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "ff896829_5f511647",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T14:25:38Z",
+      "side": 1,
+      "message": "I added some additional checks in \u0027KieUtilsTest\u0027, but don\u0027t have a good way to trigger all of the exception cases.",
+      "parentUuid": "4bd84455_019532f6",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a899bbd4_16a6ec46",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
         "patchSetId": 1
