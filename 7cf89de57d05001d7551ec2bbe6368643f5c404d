@@ -52,6 +52,24 @@
       "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "36bb9e48_cdbfd3f3",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/util/KieUtilsTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T22:19:10Z",
+      "side": 1,
+      "message": "I have modified the comments.",
+      "parentUuid": "8e52713c_454e1629",
+      "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
