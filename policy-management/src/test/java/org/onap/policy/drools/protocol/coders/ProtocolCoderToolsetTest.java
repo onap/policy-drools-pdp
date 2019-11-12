@@ -26,13 +26,16 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.internal.MavenDroolsControllerTest;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
@@ -47,9 +50,9 @@ import org.slf4j.LoggerFactory;
  * ProtocolCoder Toolset Junits.
  */
 public class ProtocolCoderToolsetTest {
-    public static final String JUNIT_PROTOCOL_CODER_ARTIFACT_ID = "protocolcoder";
-    public static final String JUNIT_PROTOCOL_CODER_TOPIC = JUNIT_PROTOCOL_CODER_ARTIFACT_ID;
-    public static final String CONTROLLER_ID = "blah";
+    private static final String JUNIT_PROTOCOL_CODER_ARTIFACT_ID = "protocolcoder";
+    private static final String JUNIT_PROTOCOL_CODER_TOPIC = JUNIT_PROTOCOL_CODER_ARTIFACT_ID;
+    private static final String CONTROLLER_ID = "blah";
 
     private static Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
 
@@ -58,11 +61,13 @@ public class ProtocolCoderToolsetTest {
     // customCoder has to be public to be accessed in tests below
     public static final Gson customCoder = new GsonBuilder().create();
 
+    private DroolsController controller;
+
     /**
      * Test Class Initialization.
      */
     @BeforeClass
-    public static void setupClass() throws IOException {
+    public static void setUpClass() throws IOException {
         releaseId = KieUtils.installArtifact(
             Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
             Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
@@ -70,11 +75,27 @@ public class ProtocolCoderToolsetTest {
             Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
     }
 
+    /**
+     * Test Set Up.
+     */
+    @Before
+    public void setUp() {
+        controller = createController();
+    }
+
+    /**
+     * Test Termination.
+     */
+    @After
+    public void tearDown() {
+        if (controller != null) {
+            DroolsControllerConstants.getFactory().destroy(controller);
+        }
+    }
+
     @Test
     public void testToolsets() {
-        createController();
         testGsonToolset(createFilterSet());
-        DroolsControllerConstants.getFactory().destroy();
     }
 
     /**
@@ -82,7 +103,7 @@ public class ProtocolCoderToolsetTest {
      *
      * @param protocolFilter protocol filter
      */
-    public void testGsonToolset(JsonProtocolFilter protocolFilter) {
+    private void testGsonToolset(JsonProtocolFilter protocolFilter) {
         GsonProtocolCoderToolset gsonToolset = new GsonProtocolCoderToolset(
                 EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
                         .groupId(releaseId.getGroupId())
@@ -209,7 +230,7 @@ public class ProtocolCoderToolsetTest {
         Assert.assertEquals(coderFilters.getFilter(), protocolFilter);
     }
 
-    private void createController() {
+    private DroolsController createController() {
         if (releaseId == null) {
             throw new IllegalStateException("no prereq artifact installed in maven repository");
         }
@@ -225,7 +246,7 @@ public class ProtocolCoderToolsetTest {
         droolsControllerConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
                 + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX, Triple.class.getName());
 
-        DroolsControllerConstants.getFactory().build(droolsControllerConfig, null, noopTopics);
+        return DroolsControllerConstants.getFactory().build(droolsControllerConfig, null, noopTopics);
     }
 
     private JsonProtocolFilter createFilterSet() {
