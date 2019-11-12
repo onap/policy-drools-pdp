@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "58ef8102_c1e4f070",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T09:30:14Z",
+      "side": 1,
+      "message": "It also references \u0027kieContainer\u0027, which is an instance variable.\n\nThe initial portion of the method, up through the end of the \u0027synchronized\u0027 block, generates the set of packages, which is common across all of the Drools containers (lazy evaluation). The remaining few lines add the packages to the current Drools container.\n\nWould Sonar really have a problem with this?",
+      "parentUuid": "46f1de7e_b24f3823",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9a9fb21c_9a8765b9",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "d6dcfc3e_343e32b5",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 751,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T09:30:14Z",
+      "side": 1,
+      "message": "The only part that is not covered is the failure case, if \u0027KieUtils.resourceToPackages\u0027 fails to generate any packages, for some reason (lines 755-760).",
+      "parentUuid": "9a9fb21c_9a8765b9",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e5e0ca8b_80cc6a35",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
         "patchSetId": 1
@@ -50,6 +86,24 @@
       "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4bd84455_019532f6",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T09:30:14Z",
+      "side": 1,
+      "message": "The only places not covered are the legs containing \u0027return null\u0027, most of which are exceptions.",
+      "parentUuid": "e5e0ca8b_80cc6a35",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     },
     {
       "key": {
