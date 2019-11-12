@@ -34,6 +34,24 @@
       "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8e52713c_454e1629",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/util/KieUtilsTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T15:19:31Z",
+      "side": 1,
+      "message": "ah, I misunderstood the comment; I thought it was saying that it would immediately trigger an exception.  Perhaps adjust the comment",
+      "parentUuid": "6a61e9df_eca9f008",
+      "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
