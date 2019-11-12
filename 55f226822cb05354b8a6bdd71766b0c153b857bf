@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "7e92e77d_8a3ec130",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T14:15:47Z",
+      "side": 1,
+      "message": "missed that.  In that case, sonar would say to create a separate method, for updating \"commonPackages\", that this method would invoke.\n\nIf this were to be executed often, then I\u0027d suggest using the initialization-on-demand-holder idiom, but don\u0027t see the need here.",
+      "parentUuid": "58ef8102_c1e4f070",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9a9fb21c_9a8765b9",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "The only part that is not covered is the failure case, if \u0027KieUtils.resourceToPackages\u0027 fails to generate any packages, for some reason (lines 755-760).",
       "parentUuid": "9a9fb21c_9a8765b9",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d574274_381a0556",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/PolicyContainer.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 751,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T14:15:47Z",
+      "side": 1,
+      "message": "yep, that\u0027s the case that would need coverage",
+      "parentUuid": "d6dcfc3e_343e32b5",
       "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -107,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "ecf35bcd_1effcf50",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T14:15:47Z",
+      "side": 1,
+      "message": "yep, those are the cases that would need coverage.  Part of the reason for test coverage is to ensure that the exception/rainy day scenarios work as expected",
+      "parentUuid": "4bd84455_019532f6",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a899bbd4_16a6ec46",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
         "patchSetId": 1
@@ -136,6 +190,24 @@
       "side": 1,
       "message": "I don\u0027t see \u0027encoding\u0027 as an option, when passing \u0027InputStream\u0027 as an argument. It is an option when passing a \u0027Reader\u0027 as an argument.",
       "parentUuid": "a899bbd4_16a6ec46",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ccb3349e_57dee3e3",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T14:15:47Z",
+      "side": 1,
+      "message": "oh sorry, yeah, this is converting to an array of bytes, not characters, so doesn\u0027t need a character encoding parameter",
+      "parentUuid": "243d70a0_4bc73dbe",
       "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
