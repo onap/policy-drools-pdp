@@ -179,6 +179,24 @@
     },
     {
       "key": {
+        "uuid": "195859cd_ad8f5543",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T15:19:31Z",
+      "side": 1,
+      "message": "downside of using static data and/or methods",
+      "parentUuid": "ff896829_5f511647",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a899bbd4_16a6ec46",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
         "patchSetId": 1
