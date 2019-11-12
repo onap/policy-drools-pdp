@@ -124,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "243d70a0_4bc73dbe",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T10:23:45Z",
+      "side": 1,
+      "message": "I don\u0027t see \u0027encoding\u0027 as an option, when passing \u0027InputStream\u0027 as an argument. It is an option when passing a \u0027Reader\u0027 as an argument.",
+      "parentUuid": "a899bbd4_16a6ec46",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "25c5ccae_11fbf3d7",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
         "patchSetId": 1
@@ -141,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7244b280_d70fcfdb",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/util/KieUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T10:23:45Z",
+      "side": 1,
+      "message": "I changed it to \u0027!isEmpty()\u0027.",
+      "parentUuid": "25c5ccae_11fbf3d7",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f3511e4_5152c4ca",
         "filename": "policy-core/src/main/resources/META-INF/drools/drl",
         "patchSetId": 1
@@ -152,6 +188,24 @@
       "writtenOn": "2019-11-11T20:47:47Z",
       "side": 1,
       "message": "tabs \u003d\u003e spaces\n\nsame comment through-out this file",
+      "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ef297d5_f899c14f",
+        "filename": "policy-core/src/main/resources/META-INF/drools/drl",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T10:23:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f3511e4_5152c4ca",
       "revId": "55f226822cb05354b8a6bdd71766b0c153b857bf",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
