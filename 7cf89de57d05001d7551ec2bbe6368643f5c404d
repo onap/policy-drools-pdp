@@ -16,6 +16,24 @@
       "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a61e9df_eca9f008",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/util/KieUtilsTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2019-11-12T14:25:38Z",
+      "side": 1,
+      "message": "The \u0027return null\u0027 would only get called if \u0027new URL(\"http://127.0.0.1:1\")\u0027 caused an IOException, which it never should -- the URL syntax is valid, even though the destination is not. The goal here is to trigger an IOException in the call to \u0027IOUtils.toByteArray(is)\u0027 in \u0027KieUtils.resourceToPackages(...)\u0027, and this URL should do that.",
+      "parentUuid": "5abab20f_0647d78e",
+      "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
