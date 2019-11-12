@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5abab20f_0647d78e",
+        "filename": "policy-core/src/test/java/org/onap/policy/drools/util/KieUtilsTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-11-12T14:15:47Z",
+      "side": 1,
+      "message": "could just \"return null\", right?",
+      "revId": "7cf89de57d05001d7551ec2bbe6368643f5c404d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
