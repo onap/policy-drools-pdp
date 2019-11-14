@@ -165,6 +165,18 @@ public class DroolsContainerTest {
             container.insert("session1", result);
 
             assertEquals(48, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
+
+            // verify that default KiePackages have been added by testing
+            // that 'DroolsRunnable' is functioning
+
+            final LinkedBlockingQueue<String> lbq = new LinkedBlockingQueue<>();
+            container.insert("session1", new DroolsRunnable() {
+                    @Override
+                    public void run() {
+                        lbq.add("DroolsRunnable String");
+                    }
+                });
+            assertEquals("DroolsRunnable String", lbq.poll(TIMEOUT_SEC, TimeUnit.SECONDS));
         } finally {
             container.shutdown();
             assertFalse(container.isAlive());

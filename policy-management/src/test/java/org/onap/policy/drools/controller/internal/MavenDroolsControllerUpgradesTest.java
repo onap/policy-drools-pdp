@@ -140,7 +140,7 @@ public class MavenDroolsControllerUpgradesTest {
 
         assertTrue(running1a.await(30, TimeUnit.SECONDS));
         summary();
-        assertKie(Arrays.asList("SETUP.1", "VERSION.12"), 1);
+        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12"), 1);
 
         controller.updateToVersion(
             rulesDescriptor2.getGroupId(),
@@ -151,7 +151,7 @@ public class MavenDroolsControllerUpgradesTest {
         assertTrue(running2a.await(30, TimeUnit.SECONDS));
         assertTrue(running2b.await(30, TimeUnit.SECONDS));
         summary();
-        assertKie(Arrays.asList("SETUP.1", "VERSION.12", "SETUP.2", "VERSION.2"), 2);
+        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12", "SETUP.2", "VERSION.2"), 2);
 
         controller.updateToVersion(
             rulesDescriptor1.getGroupId(),
@@ -161,7 +161,7 @@ public class MavenDroolsControllerUpgradesTest {
 
         assertTrue(running1b.await(30, TimeUnit.SECONDS));
         summary();
-        assertKie(Arrays.asList("SETUP.1", "VERSION.12"), 1);
+        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12"), 1);
     }
 
     private void summary() {

@@ -22,12 +22,15 @@ package org.onap.policy.drools.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.stream.Collectors;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,5 +121,62 @@ public class KieUtilsTest {
     @Test
     public void getFacts() {
         assertEquals(0, KieUtils.getFacts(session).size());
+    }
+
+    @Test
+    public void resourceToPackagesTests() {
+        // Some minimal logging -- it would be nice to verify the 'KieUtils' logger messages
+        StringBuffer log;
+
+        // test IOException from ClassLoader
+        log = new StringBuffer();
+        assertNull(KieUtils.resourceToPackages(new BogusClassLoader(log), "BogusClassLoader"));
+        assertEquals("IOException(BogusClassLoader)", log.toString());
+
+        // test 'null' return when no resources are found
+        assertNull(KieUtils.resourceToPackages(ClassLoader.getSystemClassLoader(), "no/such/url"));
+
+        // test IOException in 'IOUtils.toByteArray()' -> 'InputStream.read()'
+        log = new StringBuffer();
+        assertNull(KieUtils.resourceToPackages(new BogusClassLoader(log), "BogusUrl"));
+        assertEquals("", log.toString());
+
+        // don't know how to test 'KieBuilder' errors at this point
+
+        // success legs are tested in 'DroolsContainerTest'
+    }
+
+    static class BogusClassLoader extends ClassLoader {
+        StringBuffer log;
+
+        BogusClassLoader(StringBuffer log) {
+            this.log = log;
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if ("BogusUrl".equals(name)) {
+                return new Enumeration<URL>() {
+                    @Override
+                    public boolean hasMoreElements() {
+                        return true;
+                    }
+
+                    @Override
+                    public URL nextElement() {
+                        try {
+                            // when the following URL is used, an IOException will occur
+                            return new URL("http://127.0.0.1:1");
+                        } catch (IOException e) {
+                            // this should never happen, as the URL above is syntactically valid
+                            return null;
+                        }
+                    }
+                };
+            } else {
+                log.append("IOException(BogusClassLoader)");
+                throw new IOException("BogusClassLoader");
+            }
+        }
     }
 }
