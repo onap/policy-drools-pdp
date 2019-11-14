@@ -46,6 +46,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.onap.policy.drools.core.DroolsRunnable;
+import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.system.PolicyEngineConstants;
@@ -126,30 +128,10 @@ public class FeatureLockImplTest {
         assertEquals(HOLD_SEC, lock.getHoldSec());
     }
 
-    /**
-     * Tests grant(), when using the foreground thread.
-     */
     @Test
-    public void testGrantForeground() {
+    public void testGrant() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
-        lock.grant(true);
-
-        assertTrue(lock.isActive());
-        assertEquals(1, lock.nupdates);
-
-        verify(exsvc, never()).execute(any());
-
-        verify(callback).lockAvailable(any());
-        verify(callback, never()).lockUnavailable(any());
-    }
-
-    /**
-     * Tests grant(), when using the background thread.
-     */
-    @Test
-    public void testGrantBackground() {
-        MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
-        lock.grant(false);
+        lock.grant();
 
         assertTrue(lock.isActive());
         assertEquals(1, lock.nupdates);
@@ -166,7 +148,7 @@ public class FeatureLockImplTest {
     public void testGrantUnavailable() {
         MyLock lock = new MyLock(LockState.UNAVAILABLE, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         lock.setState(LockState.UNAVAILABLE);
-        lock.grant(true);
+        lock.grant();
 
         assertTrue(lock.isUnavailable());
         assertEquals(0, lock.nupdates);
@@ -174,35 +156,65 @@ public class FeatureLockImplTest {
         verify(exsvc, never()).execute(any());
     }
 
-    /**
-     * Tests deny(), when using the foreground thread.
-     */
     @Test
-    public void testDenyForeground() {
+    public void testDeny() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
-        lock.deny("my reason", true);
-
-        assertTrue(lock.isUnavailable());
-
-        verify(exsvc, never()).execute(any());
-
-        verify(callback, never()).lockAvailable(any());
-        verify(callback).lockUnavailable(any());
-    }
-
-    /**
-     * Tests deny(), when using the background thread.
-     */
-    @Test
-    public void testDenyBackground() {
-        MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
-        lock.deny("my reason", false);
+        lock.deny("my reason");
 
         assertTrue(lock.isUnavailable());
 
         invokeCallback(1);
         verify(callback, never()).lockAvailable(any());
         verify(callback).lockUnavailable(any());
+    }
+
+    /**
+     * Tests doNotify() when a session exists.
+     */
+    @Test
+    public void testDoNotifySession() {
+        PolicySession session = mock(PolicySession.class);
+
+        MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected PolicySession getSession() {
+                return session;
+            }
+        };
+
+        lock.grant();
+
+        assertTrue(lock.isActive());
+        assertEquals(1, lock.nupdates);
+
+        verify(exsvc, never()).execute(any());
+
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify(session).insertDrools(captor.capture());
+
+        DroolsRunnable runner = (DroolsRunnable) captor.getValue();
+        runner.run();
+
+        verify(callback).lockAvailable(any());
+        verify(callback, never()).lockUnavailable(any());
+    }
+
+    /**
+     * Tests doNotify() when there is no session.
+     */
+    @Test
+    public void testDoNotifyNoSession() {
+        MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
+        lock.grant();
+
+        assertTrue(lock.isActive());
+        assertEquals(1, lock.nupdates);
+
+        invokeCallback(1);
+        verify(callback).lockAvailable(any());
+        verify(callback, never()).lockUnavailable(any());
     }
 
     @Test
@@ -283,6 +295,7 @@ public class FeatureLockImplTest {
         assertEquals(HOLD_SEC2, lock.getHoldSec());
         assertSame(scallback, lock.getCallback());
 
+        invokeCallback(1);
         verify(scallback, never()).lockAvailable(lock);
         verify(scallback).lockUnavailable(lock);
     }
@@ -324,8 +337,17 @@ public class FeatureLockImplTest {
         assertEquals(HOLD_SEC2, lock.getHoldSec());
         assertSame(scallback, lock.getCallback());
 
+        invokeCallback(1);
         verify(scallback, never()).lockAvailable(lock);
         verify(scallback).lockUnavailable(lock);
+    }
+
+    @Test
+    public void testGetSession() {
+        MyLockStdSession lock = new MyLockStdSession(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
+
+        // this should invoke the real policy session without throwing an exception
+        lock.grant();
     }
 
     @Test
@@ -361,15 +383,19 @@ public class FeatureLockImplTest {
         }
     }
 
-    public static class MyLock extends FeatureLockImpl {
+    /**
+     * Lock that inherits the normal getSession() method.
+     */
+    public static class MyLockStdSession extends FeatureLockImpl {
         private static final long serialVersionUID = 1L;
-        private int nupdates = 0;
+        protected int nupdates = 0;
 
-        public MyLock() {
+        public MyLockStdSession() {
             super();
         }
 
-        public MyLock(LockState state, String resourceId, String ownerKey, int holdSec, LockCallback callback) {
+        public MyLockStdSession(LockState state, String resourceId, String ownerKey, int holdSec,
+                        LockCallback callback) {
             super(state, resourceId, ownerKey, holdSec, callback);
         }
 
@@ -392,6 +418,23 @@ public class FeatureLockImplTest {
         @Override
         protected boolean addToFeature() {
             return true;
+        }
+    }
+
+    public static class MyLock extends MyLockStdSession {
+        private static final long serialVersionUID = 1L;
+
+        public MyLock() {
+            super();
+        }
+
+        public MyLock(LockState state, String resourceId, String ownerKey, int holdSec, LockCallback callback) {
+            super(state, resourceId, ownerKey, holdSec, callback);
+        }
+
+        @Override
+        protected PolicySession getSession() {
+            return null;
         }
     }
 

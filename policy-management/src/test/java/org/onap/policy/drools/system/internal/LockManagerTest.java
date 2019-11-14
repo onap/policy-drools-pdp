@@ -208,7 +208,7 @@ public class LockManagerTest {
 
         @Override
         protected void finishLock(MyLock lock) {
-            lock.grant(true);
+            lock.grant();
         }
 
         @Override

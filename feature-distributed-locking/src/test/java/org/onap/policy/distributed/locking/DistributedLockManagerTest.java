@@ -68,11 +68,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.distributed.locking.DistributedLockManager.DistributedLock;
+import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
@@ -120,6 +122,9 @@ public class DistributedLockManagerTest {
     private PolicyEngine engine;
 
     @Mock
+    private KieSession kieSess;
+
+    @Mock
     private ScheduledExecutorService exsvc;
 
     @Mock
@@ -132,6 +137,7 @@ public class DistributedLockManagerTest {
     private BasicDataSource datasrc;
 
     private DistributedLock lock;
+    private PolicySession session;
 
     private AtomicInteger nactive;
     private AtomicInteger nsuccesses;
@@ -179,6 +185,16 @@ public class DistributedLockManagerTest {
     @Before
     public void setUp() throws SQLException {
         MockitoAnnotations.initMocks(this);
+
+        // grant() and deny() calls will come through here and be immediately executed
+        session = new PolicySession(null, null, kieSess) {
+            @Override
+            public void insertDrools(Object object) {
+                ((Runnable) object).run();
+            }
+        };
+
+        session.setPolicySession();
 
         nactive = new AtomicInteger(0);
         nsuccesses = new AtomicInteger(0);
@@ -443,9 +459,9 @@ public class DistributedLockManagerTest {
         assertTrue(lock5.isUnavailable());
 
         // allow callbacks
-        runLock(5, 2);
-        runLock(6, 1);
-        runLock(7, 0);
+        runLock(2, 2);
+        runLock(3, 1);
+        runLock(4, 0);
         verify(callback).lockUnavailable(lock);
         verify(callback3).lockUnavailable(lock3);
         verify(callback5).lockUnavailable(lock5);
@@ -565,8 +581,8 @@ public class DistributedLockManagerTest {
         assertTrue(lock3.isWaiting());
         assertTrue(lock4.isUnavailable());
 
-        runLock(5, 0);
-        verify(exsvc, times(PRE_LOCK_EXECS + 6)).execute(any());
+        runLock(4, 0);
+        verify(exsvc, times(PRE_LOCK_EXECS + 5)).execute(any());
 
         verify(callback).lockUnavailable(lock);
         verify(callback2, never()).lockUnavailable(lock2);
