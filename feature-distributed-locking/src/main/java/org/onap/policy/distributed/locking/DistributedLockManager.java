@@ -341,7 +341,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
             DistributedLock lock = lockref.get();
             if (lock != null) {
                 logger.debug("removed lock from map {}", lock);
-                lock.deny(DistributedLock.LOCK_LOST_MSG, false);
+                lock.deny(DistributedLock.LOCK_LOST_MSG);
             }
         }
     }
@@ -473,7 +473,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                 scheduleRequest(this::doExtend);
 
             } else {
-                deny(NOT_LOCKED_MSG, true);
+                deny(NOT_LOCKED_MSG);
             }
         }
 
@@ -639,7 +639,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                 }
 
                 if (success) {
-                    grant(true);
+                    grant();
                     return;
                 }
             }
@@ -690,7 +690,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                  * the record, thus we have to try to insert, if the update fails
                  */
                 if (doDbUpdate(conn) || doDbInsert(conn)) {
-                    grant(true);
+                    grant();
                     return;
                 }
             }
@@ -790,7 +790,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
 
             synchronized (this) {
                 if (!isUnavailable()) {
-                    deny(LOCK_LOST_MSG, true);
+                    deny(LOCK_LOST_MSG);
                 }
             }
         }

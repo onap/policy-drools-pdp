@@ -21,6 +21,8 @@
 package org.onap.policy.drools.system.internal;
 
 import java.util.concurrent.ScheduledExecutorService;
+import org.onap.policy.drools.core.DroolsRunnable;
+import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockImpl;
 import org.onap.policy.drools.core.lock.LockState;
@@ -66,13 +68,9 @@ public abstract class FeatureLockImpl extends LockImpl {
     }
 
     /**
-     * Grants this lock. The notification is <i>always</i> invoked via a background
-     * thread.
-     *
-     * @param foreground {@code true} if to invoke the callback in the foreground thread,
-     *        {@code false} otherwise
+     * Grants this lock.
      */
-    protected synchronized void grant(boolean foreground) {
+    protected synchronized void grant() {
         if (isUnavailable()) {
             return;
         }
@@ -81,32 +79,37 @@ public abstract class FeatureLockImpl extends LockImpl {
         updateGrant();
 
         logger.info("lock granted: {}", this);
-
-        if (foreground) {
-            notifyAvailable();
-        } else {
-            getThreadPool().execute(this::notifyAvailable);
-        }
+        doNotify(this::notifyAvailable);
     }
 
     /**
      * Permanently denies this lock.
      *
      * @param reason the reason the lock was denied
-     * @param foreground {@code true} if to invoke the callback in the foreground thread,
-     *        {@code false} otherwise
      */
-    public void deny(String reason, boolean foreground) {
+    public void deny(String reason) {
         synchronized (this) {
             setState(LockState.UNAVAILABLE);
         }
 
         logger.info("{}: {}", reason, this);
+        doNotify(this::notifyUnavailable);
+    }
 
-        if (foreground) {
-            notifyUnavailable();
+    /**
+     * Notifies the session of a change in the lock state. If a session is attached, then
+     * it simply injects the notifier into the session. Otherwise, it executes it via a
+     * background thread.
+     *
+     * @param notifier function to invoke the callback
+     */
+    private void doNotify(DroolsRunnable notifier) {
+        PolicySession sess = getSession();
+        if (sess != null) {
+            sess.insertDrools(notifier);
+
         } else {
-            getThreadPool().execute(this::notifyUnavailable);
+            getThreadPool().execute(notifier);
         }
     }
 
@@ -164,7 +167,7 @@ public abstract class FeatureLockImpl extends LockImpl {
 
         // do a quick check of the state
         if (isUnavailable() || !attachFeature()) {
-            deny(LOCK_LOST_MSG, true);
+            deny(LOCK_LOST_MSG);
             return false;
         }
 
@@ -200,12 +203,13 @@ public abstract class FeatureLockImpl extends LockImpl {
      */
     protected abstract boolean addToFeature();
 
-    /**
-     * Gets the thread pool.
-     *
-     * @return the thread pool
-     */
+    // these may be overridden by junit tests
+
     protected ScheduledExecutorService getThreadPool() {
         return PolicyEngineConstants.getManager().getExecutorService();
+    }
+
+    protected PolicySession getSession() {
+        return PolicySession.getCurrentSession();
     }
 }

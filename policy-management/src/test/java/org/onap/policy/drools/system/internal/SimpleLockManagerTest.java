@@ -55,11 +55,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.onap.policy.common.utils.time.CurrentTime;
 import org.onap.policy.common.utils.time.TestTime;
+import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
@@ -85,10 +87,14 @@ public class SimpleLockManagerTest {
     private static ScheduledExecutorService saveExec;
     private static ScheduledExecutorService realExec;
 
+    private PolicySession session;
     private TestTime testTime;
     private AtomicInteger nactive;
     private AtomicInteger nsuccesses;
     private SimpleLockManager feature;
+
+    @Mock
+    private KieSession kieSess;
 
     @Mock
     private ScheduledExecutorService exsvc;
@@ -129,6 +135,15 @@ public class SimpleLockManagerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        session = new PolicySession(null, null, kieSess) {
+            @Override
+            public void insertDrools(Object object) {
+                ((Runnable) object).run();
+            }
+        };
+
+        session.setPolicySession();
 
         testTime = new TestTime();
         nactive = new AtomicInteger(0);
@@ -252,10 +267,6 @@ public class SimpleLockManagerTest {
         assertFalse(lock2.isActive());
         assertTrue(lock3.isActive());
 
-        // run the callbacks
-        captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(2)).execute(captor.capture());
-        captor.getAllValues().forEach(Runnable::run);
         verify(callback).lockUnavailable(lock);
         verify(callback).lockUnavailable(lock2);
         verify(callback, never()).lockUnavailable(lock3);
@@ -272,10 +283,6 @@ public class SimpleLockManagerTest {
         checker.run();
         assertFalse(lock3.isActive());
 
-        // run the callback
-        captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(3)).execute(captor.capture());
-        captor.getValue().run();
         verify(callback).lockUnavailable(lock3);
     }
 
@@ -433,7 +440,7 @@ public class SimpleLockManagerTest {
     @Test
     public void testSimpleLockExpired() {
         SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        lock.grant(true);
+        lock.grant();
 
         assertFalse(lock.expired(testTime.getMillis()));
         assertFalse(lock.expired(testTime.getMillis() + HOLD_MS - 1));

@@ -156,7 +156,7 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
             logger.debug("added lock to map {}", lock);
             finishLock(lock);
         } else {
-            lock.deny("resource is busy", true);
+            lock.deny("resource is busy");
         }
 
         return lock;

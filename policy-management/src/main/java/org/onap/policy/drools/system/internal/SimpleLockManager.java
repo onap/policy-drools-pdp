@@ -158,14 +158,14 @@ public class SimpleLockManager extends LockManager<SimpleLockManager.SimpleLock>
 
             SimpleLock lock = lockref.get();
             if (lock != null) {
-                lock.deny("lock expired", false);
+                lock.deny("lock expired");
             }
         }
     }
 
     @Override
     protected void finishLock(SimpleLock lock) {
-        lock.grant(true);
+        lock.grant();
     }
 
     @Override
@@ -257,9 +257,9 @@ public class SimpleLockManager extends LockManager<SimpleLockManager.SimpleLock>
             }
 
             if (resource2lock.get(getResourceId()) == this) {
-                grant(true);
+                grant();
             } else {
-                deny(NOT_LOCKED_MSG, true);
+                deny(NOT_LOCKED_MSG);
             }
         }
 
