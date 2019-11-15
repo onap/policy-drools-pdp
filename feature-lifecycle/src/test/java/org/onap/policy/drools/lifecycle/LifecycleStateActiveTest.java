@@ -74,7 +74,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setState(PdpState.ACTIVE);
         change.setName(fsm.getName());
 
-        fsm.setGroupAction("A", "a");
+        fsm.setSubGroupAction("a");
         fsm.source.offer(new StandardCoder().encode(change));
         controllerSupport.getController().start();
     }
@@ -96,7 +96,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
     private void assertActive() {
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("A", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
         assertTrue(fsm.isAlive());
         waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
@@ -164,13 +164,13 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertNotEquals("B", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());;
         assertNotEquals("b", fsm.getSubgroup());
 
         change.setName(fsm.getName());
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("A", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
 
         change.setState(PdpState.SAFE);
@@ -204,7 +204,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertTrue(fsm.update(update));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("W", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("w", fsm.getSubgroup());
 
         String restartV1 =
