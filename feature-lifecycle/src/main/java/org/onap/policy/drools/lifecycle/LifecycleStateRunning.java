@@ -117,7 +117,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
                 return false;
             }
 
-            fsm.setGroupAction(update.getPdpGroup(), update.getPdpSubgroup());
+            fsm.setSubGroupAction(update.getPdpSubgroup());
 
             if (!updatePolicies(update.getPolicies())) {
                 fsm.statusAction(response(update.getRequestId(), PdpResponseStatus.FAIL, "cannot process policies"));

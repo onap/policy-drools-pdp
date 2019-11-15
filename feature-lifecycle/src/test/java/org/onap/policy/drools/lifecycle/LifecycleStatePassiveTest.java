@@ -176,7 +176,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertEquals("Z", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("z", fsm.getSubgroup());
         assertBasicPassive();
 
@@ -189,7 +189,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertEquals("Z", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("z", fsm.getSubgroup());
         assertBasicPassive();
 
@@ -203,7 +203,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertNull(fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertNull(fsm.getSubgroup());
         assertBasicPassive();
         assertTrue(fsm.policyTypesMap.isEmpty());
@@ -216,7 +216,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertEquals("A", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
         assertBasicPassive();
         assertTrue(fsm.policyTypesMap.isEmpty());
@@ -232,7 +232,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertEquals("A", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
         assertBasicPassive();
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
@@ -245,7 +245,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(0, fsm.policiesMap.size());
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
-        assertNull(fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertNull(fsm.getSubgroup());
         assertBasicPassive();
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
@@ -266,7 +266,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm.source.offer(new StandardCoder().encode(change));
 
         assertEquals(PdpState.PASSIVE, fsm.state());
-        assertNull(fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertNull(fsm.getSubgroup());
 
         PdpUpdate update = new PdpUpdate();
@@ -289,7 +289,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(1, fsm.policiesMap.size());
         assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
         assertEquals(PdpState.PASSIVE, fsm.state());
-        assertEquals("A", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
         assertBasicPassive();
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
@@ -299,7 +299,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm.source.offer(new StandardCoder().encode(change));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals("A", fsm.getGroup());
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
 
         waitUntil(5, TimeUnit.SECONDS, () -> controllerSupport.getController().getDrools().factCount("junits") == 1);

@@ -68,6 +68,8 @@ import org.slf4j.LoggerFactory;
 public class LifecycleFsm implements Startable {
 
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
+    protected static final String GROUP_NAME = "lifecycle.pdp.group";
+    protected static final String DEFAULT_PDP_GROUP = "defaultGroup";
     protected static final String POLICY_TYPE_VERSION = "1.0.0";
     protected static final long DEFAULT_STATUS_TIMER_SECONDS = 120L;
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
@@ -92,7 +94,7 @@ public class LifecycleFsm implements Startable {
     protected ScheduledFuture<?> statusTask;
 
     @GsonJsonIgnore
-    protected MessageTypeDispatcher sourceDispatcher = new MessageTypeDispatcher(new String[]{PDP_MESSAGE_NAME});
+    protected MessageTypeDispatcher sourceDispatcher = new MessageTypeDispatcher(PDP_MESSAGE_NAME);
 
     @GsonJsonIgnore
     protected PdpStateChangeFeed stateChangeFeed = new PdpStateChangeFeed(PdpStateChange.class, this);
@@ -105,7 +107,7 @@ public class LifecycleFsm implements Startable {
     protected long statusTimerSeconds = DEFAULT_STATUS_TIMER_SECONDS;
 
     @Getter
-    protected String group;
+    private final String group;
 
     @Getter
     protected String subgroup;
@@ -119,6 +121,7 @@ public class LifecycleFsm implements Startable {
      */
     public LifecycleFsm() {
         this.properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
+        this.group = this.properties.getProperty(GROUP_NAME, DEFAULT_PDP_GROUP);
     }
 
     @Override
@@ -238,8 +241,7 @@ public class LifecycleFsm implements Startable {
         return client.send(status);
     }
 
-    protected void setGroupAction(String group, String subgroup) {
-        this.group = group;
+    protected void setSubGroupAction(String subgroup) {
         this.subgroup = subgroup;
     }
 
