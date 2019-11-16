@@ -16,6 +16,24 @@
       "revId": "197a876f2019879322435681a471f2c1cf82d253",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "56f86ea9_9cbf0921",
+        "filename": "feature-lifecycle/src/main/feature/config/feature-lifecycle.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2019-11-16T20:10:58Z",
+      "side": 1,
+      "message": "\u003e I think we should use \"envd\" configuration instead and comment it\n \u003e out as this configuration would need to be exposed externally for\n \u003e docker and OOM helm charts repos.   The follwoing below will assume\n \u003e defaultGroup by default if no group is set.\n \u003e \n \u003e lifecycle.pdp.group\u003d${envd:POLICY_PDP_PAP_GROUP:defaultGroup}",
+      "parentUuid": "58067278_0b1272d4",
+      "revId": "197a876f2019879322435681a471f2c1cf82d253",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
