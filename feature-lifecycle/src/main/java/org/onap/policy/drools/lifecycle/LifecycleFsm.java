@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
@@ -45,8 +44,6 @@ import org.onap.policy.common.endpoints.listeners.ScoListener;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
-import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
@@ -342,7 +339,6 @@ public class LifecycleFsm implements Startable {
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType("drools");
-        status.setSupportedPolicyTypes(getCapabilities());
         status.setPolicies(new ArrayList<>(policiesMap.keySet()));
         return status;
     }
@@ -377,25 +373,6 @@ public class LifecycleFsm implements Startable {
 
         this.client = new TopicSinkClient(sinks.get(0));
         return this.client.getSink().start();
-    }
-
-    private List<ToscaPolicyTypeIdentifier> getCapabilities() {
-        List<ToscaPolicyTypeIdentifier> capabilities = new ArrayList<>();
-        for (DroolsController dc : DroolsControllerConstants.getFactory().inventory()) {
-            if (!dc.isBrained()) {
-                continue;
-            }
-
-            for (String domain : dc.getBaseDomainNames()) {
-                // HACK: until legacy controllers are removed
-                if (StringUtils.countMatches(domain, ".") > 1) {
-                    capabilities.add(new ToscaPolicyTypeIdentifier(domain, POLICY_TYPE_VERSION));
-                } else {
-                    logger.info("legacy controller {} with domain {}", dc.getCanonicalSessionNames(), domain);
-                }
-            }
-        }
-        return capabilities;
     }
 
     protected boolean isItMe(String name, String group, String subgroup) {
