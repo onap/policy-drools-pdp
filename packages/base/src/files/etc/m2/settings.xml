@@ -30,6 +30,17 @@
             <id>policy-local</id>
 
             <repositories>
+              <!-- Disable central -->
+              <repository>
+                <id>central</id>
+                <url>http://repo1.maven.org/maven2</url>
+                <releases>
+                  <enabled>false</enabled>
+                </releases>
+                <snapshots>
+                  <enabled>false</enabled>
+                </snapshots>
+              </repository>
                 <repository>
                     <id>file-repository</id>
                     <url>file:${user.home}/.m2/file-repository</url>
@@ -93,6 +104,7 @@
           <url>https://nexus.onap.org/content/repositories/releases/</url>
           <releases>
             <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
           </releases>
           <snapshots>
             <enabled>false</enabled>
@@ -116,7 +128,7 @@
           </releases>
           <snapshots>
             <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
+            <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
       </repositories>
