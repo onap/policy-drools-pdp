@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8208240_9be5d135",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2019-12-10T14:26:39Z",
+      "side": 1,
+      "message": "no longer sending errors messages to stderr?\n\nsame question applies through-out",
+      "revId": "4112fecf3d65f1d5dd1eb99334061b2b17c6ad43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
