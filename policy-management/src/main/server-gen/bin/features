@@ -612,7 +612,7 @@ function enableFeatureArtifacts()
 
 	artifacts=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_ARTIFACTS}"/* 2> /dev/null)
 	for artifactPath in ${artifacts}; do
-	    deploy-artifact -f -a "${artifactPath}"
+	    deploy-artifact -l -a "${artifactPath}"
 	done
 }
 

@@ -4,7 +4,7 @@
 # ============LICENSE_START=======================================================
 # ONAP
 # ================================================================================
-# Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,14 +27,114 @@
 function usage() {
     echo
     echo -e "syntax: $(basename "$0") "
-    echo -e "\t [-f]"
+    echo -e "\t [-f|-l|-d]"
+    echo -e "\t -s <custom-settings> "
     echo -e "\t -a <artifact> "
     echo
     echo -e "Options:"
-    echo -e "\t -f|--file-repo: deployment in the file repository"
-    echo -e "\t -a|--artifact: file artifact (jar or pom) to deploy"
+    echo -e "\t -f|--file-repo: deploy in the file repository"
+    echo -e "\t -l|--local-repo: install in the local repository"
+    echo -e "\t -d|--dependencies: install dependencies in the local repository"
+    echo -e "\t -s|--settings: custom settings.xml"
+    echo -e "\t -a|--artifact: file artifact (jar or pom) to deploy and/or install"
     echo
     echo
+}
+
+##############################################################################
+# Usage: init <artifact>
+#
+# If the artifact is a jar, this function extracts the maven metadata for
+# consumption in this script.
+#
+# As a result the global variables will be set:
+# WORKING_DIR: working directory with extracted files.
+# WORKING_POM: pom file location
+# WORKING_POM_PROPERTIES: pom properties file location
+##############################################################################
+
+function init
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local artifact="${1}"
+    if [[ ! -f ${artifact} ]]; then
+        echo "${artifact}: artifact does not exist"
+        return 1
+    fi
+
+    if [[ ${artifact} != *.jar ]]; then
+        return 0
+    fi
+
+    local dir=$(mktemp -d)
+    local jar="${artifact##*/}"
+
+    WORKING_DIR=$(realpath "${dir}")
+
+    cp -p "${artifact}" "${WORKING_DIR}/${jar}"
+    pushd "${dir}"
+
+    local rc=0
+
+    # determine name of 'pom' file within JAR
+    local pom=$(jar tf "${jar}" META-INF | grep '/pom\.xml$' | head -1)
+    if [[ -n ${pom} ]] ; then
+        jar xf "${jar}" "${pom}"
+        WORKING_POM=$(realpath "${pom}")
+    else
+        echo "${artifact}: pom not found"
+    fi
+
+    local pomProperties=$(jar tf "${jar}" META-INF | grep '/pom\.properties$' | head -1)
+    if [[ -n ${pomProperties} ]]; then
+        jar xf "${jar}" "${pomProperties}"
+        WORKING_POM_PROPERTIES=$(realpath ${pomProperties})
+        source "${WORKING_POM_PROPERTIES}"
+        echo "${artifact}: sourcing in ${WORKING_POM_PROPERTIES}"
+    else
+        echo "${artifact}: pom.properties not found"
+        if [[ -n ${WORKING_POM} ]]; then
+            if ! getPomAttributes "${WORKING_POM}" artifactId groupId version ; then
+                echo "${WORKING_POM}: cannot extract maven coordinates"
+                rc=1
+            fi
+        else
+            echo "${artifact}: cannot extract maven coordinates"
+            rc=1
+        fi
+    fi
+
+    if [[ -z ${version} ]] || [[ -z ${groupId} ]] || [[ -z ${artifactId} ]]; then
+        echo "${artifact}: some coordinates cannot be extracted"
+        rc=1
+    fi
+
+    echo "${artifact}: coordinates ${groupId}:${artifactId}:${version}"
+    popd
+
+    return ${rc}
+}
+
+##############################################################################
+# Usage: cleanup
+#
+# Clean up temporary resources.
+##############################################################################
+
+function cleanup
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    if [[ -n ${WORKING_DIR} ]]; then
+        rm -rf "${WORKING_DIR}"
+    fi
 }
 
 ##############################################################################
@@ -54,7 +154,7 @@ function getPomAttributes
 
     local file="$1"
     if [[ ! -f "${file}" ]]; then
-        echo "{1}: file does not exist"
+        echo "${file}: file does not exist"
         return 1
     fi
 
@@ -92,7 +192,7 @@ function getPomAttributes
                 <"${file}")
 
             if [[ "${value}" == "" ]] ; then
-                echo "${file}: Can't determine ${attr}" >&2
+                echo "${file}: Can't determine ${attr}"
                 rval=1
             fi
         fi
@@ -103,8 +203,6 @@ function getPomAttributes
     done
     return ${rval}
 }
-
-
 
 ##############################################################################
 # Usage: deployJar <jar-file>
@@ -120,65 +218,40 @@ function deployJar
         set -x
     fi
 
-    local artifact="${1}"
-    if [[ ! -f "${artifact}" ]]; then
-        echo "{artifact}: does not exist"
+    local file="${1}"
+
+    if [[ ! -f ${file} ]]; then
         return 1
     fi
 
-    local dir=$(mktemp -d)
-    local jar="${artifact##*/}"
+    local repoId repoUrl
+    if [[ "${version}" =~ SNAPSHOT ]] ; then
+        repoId=${SNAPSHOT_REPOSITORY_ID}
+        repoUrl=${SNAPSHOT_REPOSITORY_URL}
+    else
+        repoId=${RELEASE_REPOSITORY_ID}
+        repoUrl=${RELEASE_REPOSITORY_URL}
+    fi
 
-    cp -p "${artifact}" "${dir}/${jar}"
+    if [[ -z ${repoUrl} ]] || [[ -z ${repoId} ]]; then
+        echo "{file}: no repository id/url to deploy jar"
+        return 1
+    fi
 
-    (
-        local rval=0
-        cd "${dir}"
+    echo "${file}: deploying jar artifact to repository ${repoId}: ${repoUrl}"
+    echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-        # determine name of 'pom' file within JAR
-        local pom=$(jar tf "${jar}" META-INF | grep '/pom\.xml$' | head -1)
-        if [[ -z ${pom} ]] ; then
-            echo "${jar}: Can't find 'pom.xml'" >&2
-            return 1
-        fi
-        jar xf "${jar}" "${pom}"
+    mvn ${CUSTOM_SETTINGS} deploy:deploy-file \
+        -Dfile="${file}" \
+        -Dversion="${version}" \
+        -Dpackaging=jar \
+        -DgeneratePom=false \
+        -DpomFile="${WORKING_POM}" \
+        -DrepositoryId="${repoId}" \
+        -Durl="${repoUrl}" \
+        -DupdateReleaseInfo=true
 
-        local pomProperties=$(jar tf "${jar}" META-INF | grep '/pom\.properties$' | head -1)
-        if [[ -n ${pomProperties} ]] ; then
-            # extract pom file
-            jar xf "${jar}" "${pomProperties}"
-            source "${pomProperties}"
-        fi
-
-        if [[ -z ${version} ]]; then
-            if ! getPomAttributes "${pom}" version ; then
-                echo "${pom}: Can't extract 'version' from pom" >&2
-                return 2
-            fi
-        fi
-
-        local repoId repoUrl
-        if [[ "${version}" =~ SNAPSHOT ]] ; then
-            repoId=${SNAPSHOT_REPOSITORY_ID}
-            repoUrl=${SNAPSHOT_REPOSITORY_URL}
-        else
-            repoId=${RELEASE_REPOSITORY_ID}
-            repoUrl=${RELEASE_REPOSITORY_URL}
-        fi
-
-        echo "${artifact}: Deploying JAR artifact to repository ${repoUrl} (${repoId})"
-        mvn deploy:deploy-file \
-            -Dfile="${jar}" \
-            -Dversion="${version}" \
-            -Dpackaging=jar -DgeneratePom=false -DpomFile="${pom}" \
-            -DrepositoryId="${repoId}" -Durl="${repoUrl}" \
-            -DupdateReleaseInfo=true
-
-        retval=${?}
-        rm -rf "${dir}"
-
-        return ${retval}
-    )
+    return ${?}
 }
 
 ##############################################################################
@@ -196,39 +269,45 @@ function deployPom
 
     local file="${1}"
 
-    if [[ -f ${file} ]]; then
+    if [[ ! -f ${file} ]]; then
         return 1
     fi
 
-    # need to extract attributes from POM file
-    if getPomAttributes "${1}" artifactId groupId version ; then
-        local repoId repoUrl
-        if [[ "${version}" =~ SNAPSHOT ]] ; then
-            repoId=${SNAPSHOT_REPOSITORY_ID}
-            repoUrl=${SNAPSHOT_REPOSITORY_URL}
-        else
-            repoId=${RELEASE_REPOSITORY_ID}
-            repoUrl=${RELEASE_REPOSITORY_URL}
-        fi
+    if ! getPomAttributes "${file}" artifactId groupId version ; then
+        echo "${file}: cannot deploy pom due to missing attributes"
+        return 1
+    fi
 
-        echo "${file}: Deploying POM artifact to remote repository"
-        mvn deploy:deploy-file -Dfile="${file}" \
-            -Dpackaging=pom -DgeneratePom=false \
-            -DgroupId="${groupId}" \
-            -DartifactId="${artifactId}" \
-            -Dversion="${version}" \
-            -DrepositoryId="${repoId}" -Durl="${repoUrl}" \
-            -DupdateReleaseInfo=true
+    local repoId repoUrl
+    if [[ "${version}" =~ SNAPSHOT ]] ; then
+        repoId=${SNAPSHOT_REPOSITORY_ID}
+        repoUrl=${SNAPSHOT_REPOSITORY_URL}
     else
-        echo "${file}: Can't install pom due to missing attributes" >&2
-        return 1
+        repoId=${RELEASE_REPOSITORY_ID}
+        repoUrl=${RELEASE_REPOSITORY_URL}
     fi
+
+    echo "${file}: deploying pom artifact to repository ${repoId}: ${repoUrl}"
+    echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
+
+    mvn ${CUSTOM_SETTINGS} deploy:deploy-file \
+        -Dfile="${file}" \
+        -Dpackaging=pom \
+        -DgeneratePom=false \
+        -DgroupId="${groupId}" \
+        -DartifactId="${artifactId}" \
+        -Dversion="${version}" \
+        -DrepositoryId="${repoId}" \
+        -Durl="${repoUrl}" \
+        -DupdateReleaseInfo=true
+
+    return ${?}
 }
 
 ##############################################################################
 # Usage: deployArtifact
 #
-# This function deploys a maven artifacts in a repository
+# This function deploys a maven artifact in a repository
 ##############################################################################
 
 function deployArtifact
@@ -252,14 +331,142 @@ function deployArtifact
     case "${file}" in
         *pom.xml|*.pom)
             deployPom "${file}"
+            return ${?}
             ;;
         *.jar)
             deployJar "${file}"
+            return ${?}
             ;;
-        *)  echo "${file}: Don't know how to install artifact" >&2
-            return 2
+        *)  echo "${file}: Don't know how to deploy artifact"
+            return 1
             ;;
     esac
+}
+
+##############################################################################
+# Usage: installJar <artifact-file>
+#
+# This function installs a jar packaged artifact in the local repository
+##############################################################################
+
+function installJar
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="${1}"
+
+    if [[ ! -f ${file} ]]; then
+        return 1
+    fi
+
+    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+        -Dfile="${file}"
+
+    return $?
+}
+
+##############################################################################
+# Usage: installPom <pom-file>
+#
+# This function installs a pom file in the local repository
+##############################################################################
+
+function installPom
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="${1}"
+
+    if [[ ! -f ${file} ]]; then
+        return 1
+    fi
+
+    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+        -Dpackaging=pom \
+        -Dfile="${file}" \
+        -DpomFile="${file}"
+
+    return $?
+}
+
+##############################################################################
+# Usage: installArtifact
+#
+# This function installs a maven artifacts in the local repository
+##############################################################################
+
+function installArtifact
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="${1}"
+    if [[ -z "${file}" ]]; then
+        echo "${file}: artifact file not provided"
+        return 1
+    fi
+
+    if [[ ! -f "${file}" ]]; then
+        echo "${file}: artifact file does not exist"
+        return 1
+    fi
+
+    case "${file}" in
+        *pom.xml|*.pom)
+            installPom "${file}"
+            return ${?}
+            ;;
+        *.jar)
+            installJar "${file}"
+            return ${?}
+            ;;
+        *)  echo "${file}: Don't know how to install the artifact"
+            return 1
+            ;;
+    esac
+}
+
+##############################################################################
+# Usage: installDependencies <pom-file>
+#
+# This function installs the dependencies of an artifact in the file or
+# local repository
+##############################################################################
+
+function installDependencies
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    local file="${1}"
+
+    if [[ ! -f ${file} ]]; then
+        return 1
+    fi
+
+    if [[ -z ${DEPENDENCY_REPO_URL} ]]; then
+        echo "${file}: no repo url to install dependencies"
+        return 1
+    fi
+
+    echo "${file}: deploying dependencies from repository ${DEPENDENCY_REPO_URL}"
+    echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
+
+    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
+        -DartifactId="${artifactId}" \
+        -DgroupId="${groupId}" \
+        -Dversion="${version}" \
+        -DremoteRepositories="${DEPENDENCY_REPO_URL}"
 
     return ${?}
 }
@@ -273,46 +480,114 @@ if [[ ${DEBUG} == y ]]; then
     set -x
 fi
 
-retval=0
+# reset globals
+
+unset ARTIFACT_FILE
+unset LOCAL_INSTALL
+unset INSTALL_DEPS
+unset FILE_REPO_INSTALL
+unset WORKING_DIR
+unset WORKING_POM
+unset WORKING_POM_PROPERTIES
+unset DEPENDENCY_REPO_URL
+unset SETTINGS_FILE
+unset CUSTOM_SETTINGS
+
+# process input
 
 until [[ -z "$1" ]]; do
     case $1 in
-        -a|--artifact)  shift
-                        ARTIFACT=$1
-                        ;;
-        -f|--file-repo) FILE_REPO_ID="file-repository"
-                        FILE_REPO_URL="file:${HOME}/.m2/file-repository"
-                        ;;
-        *)              usage
-                        exit 1
-                        ;;
+        -a|--artifact)     shift
+                           ARTIFACT_FILE=$1
+                           ;;
+        -s|--settings)     shift
+                           SETTINGS_FILE=$1
+                           ;;
+        -l|--local-repo)   LOCAL_INSTALL="true"
+                           ;;
+        -d|--dependencies) INSTALL_DEPS="true"
+                           ;;
+        -f|--file-repo)    FILE_REPO_INSTALL="true"
+                           ;;
+        *)                 usage
+                           exit 1
+                           ;;
     esac
     shift
 done
 
-if [[ -z ${ARTIFACT} ]]; then
+if [[ -z ${ARTIFACT_FILE} ]]; then
     echo "No artifact file provided: $*"
     usage
     exit 1
 fi
 
-if [[ -n ${SNAPSHOT_REPOSITORY_URL} ]] && [[ -n ${RELEASE_REPOSITORY_URL} ]]; then
-    deployArtifact "${ARTIFACT}"
-    retval=${?}
-else
-    FILE_REPO_ID="file-repository"
-    FILE_REPO_URL="file:${HOME}/.m2/file-repository"
+if [[ -n ${SETTINGS_FILE} ]]; then
+    CUSTOM_SETTINGS="--settings=${SETTINGS_FILE}"
 fi
 
-if [[ -n ${FILE_REPO_ID} ]]; then
+# retval has the count of failed operations
+
+retval=0
+
+# initialize
+
+init "${ARTIFACT_FILE}"
+retval=$?
+if [[ ${retval} != 0 ]]; then
+    cleanup
+    exit ${retval}
+fi
+
+# remote repo deploy operation
+#
+# SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL
+# are pre-existing environmental variables (base.conf)
+
+if [[ -n ${SNAPSHOT_REPOSITORY_URL} ]] || [[ -n ${RELEASE_REPOSITORY_URL} ]]; then
+    deployArtifact "${ARTIFACT_FILE}"
+    retval=$(( retval + ${?} ))
+fi
+
+# deploy in file repository
+
+if [[ -n ${FILE_REPO_INSTALL} ]]; then
+    FILE_REPO_ID="file-repository"
+    FILE_REPO_URL="file:${HOME}/.m2/file-repository"
+
     SNAPSHOT_REPOSITORY_ID="${FILE_REPO_ID}"
     SNAPSHOT_REPOSITORY_URL="${FILE_REPO_URL}"
     RELEASE_REPOSITORY_ID="${FILE_REPO_ID}"
     RELEASE_REPOSITORY_URL="${FILE_REPO_URL}"
 
     mkdir -p "${FILE_REPO_URL#file:}" 2> /dev/null
-    deployArtifact "${ARTIFACT}"
-    retval=${?}
+    deployArtifact "${ARTIFACT_FILE}"
+    retval=$(( retval + ${?} ))
 fi
+
+# install in local repository
+
+if [[ -n ${LOCAL_INSTALL} ]]; then
+    installArtifact "${ARTIFACT_FILE}"
+    retval=$(( retval + ${?} ))
+fi
+
+# install dependencies in local and/or file repositories
+
+if [[ -n ${INSTALL_DEPS} ]]; then
+    if [[ -n ${FILE_REPO_INSTALL} ]]; then
+        DEPENDENCY_REPO_URL="${FILE_REPO_URL}"
+        installDependencies "${ARTIFACT_FILE}"
+        retval=$(( retval + ${?} ))
+    fi
+
+    if [[ -n ${LOCAL_INSTALL} ]]; then
+        DEPENDENCY_REPO_URL="file:${HOME}/.m2/repository"
+        installDependencies "${ARTIFACT_FILE}"
+        retval=$(( retval + ${?} ))
+    fi
+fi
+
+cleanup
 
 exit ${retval}
