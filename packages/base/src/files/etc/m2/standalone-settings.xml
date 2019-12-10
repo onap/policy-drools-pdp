@@ -17,12 +17,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   ============LICENSE_END=========================================================
-  -->
+-->
 
 
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <offline>false</offline>
 
     <profiles>
 
@@ -66,26 +68,6 @@
         </profile>
 
         <profile>
-            <id>onap-staging</id>
-
-            <repositories>
-                <repository>
-                    <id>onap-staging</id>
-                    <name>onap-staging</name>
-                    <url>https://nexus.onap.org/content/repositories/staging/</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-
-        </profile>
-
-        <profile>
             <id>onap-snapshots</id>
 
             <repositories>
@@ -98,7 +80,6 @@
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
                     </snapshots>
                 </repository>
             </repositories>
@@ -110,9 +91,7 @@
     <activeProfiles>
         <activeProfile>policy-local</activeProfile>
         <activeProfile>onap-releases</activeProfile>
-        <activeProfile>onap-staging</activeProfile>
         <activeProfile>onap-snapshots</activeProfile>
     </activeProfiles>
 
 </settings>
-
