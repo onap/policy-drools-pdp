@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "422f6328_186e5492",
+        "filename": "feature-pooling-dmaap/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-12-19T22:22:08Z",
+      "side": 0,
+      "message": "hmmm - this should be removed. oparent defines the version of jetty to use.",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 55
+      },
+      "revId": "4112fecf3d65f1d5dd1eb99334061b2b17c6ad43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76ddb9e5_370e82a9",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/PairTripleTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-12-19T22:22:08Z",
+      "side": 1,
+      "message": "seems to have a lot of extra whitespace here.",
+      "revId": "a179f3234300ce1f756d19adb0f08784c0602fa2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8717c18_0b2be3e5",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/ReflectionUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2019-12-19T22:22:08Z",
+      "side": 1,
+      "message": "here to",
+      "revId": "a179f3234300ce1f756d19adb0f08784c0602fa2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
