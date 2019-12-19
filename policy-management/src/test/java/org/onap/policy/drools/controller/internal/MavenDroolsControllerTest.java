@@ -78,7 +78,7 @@ public class MavenDroolsControllerTest {
     }
 
     @Test
-    public void lock() throws InterruptedException {
+    public void testLock() throws InterruptedException {
         DroolsController controller = createDroolsController(30000L);
 
         controller.lock();

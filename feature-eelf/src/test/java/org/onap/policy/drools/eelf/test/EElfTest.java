@@ -84,7 +84,7 @@ public class EElfTest {
     }
 
     @Test
-    public void slf4jLog() {
+    public void testSlf4jLog() {
 
         /* standard slf4j using defaults */
 

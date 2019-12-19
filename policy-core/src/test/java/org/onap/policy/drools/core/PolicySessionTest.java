@@ -135,7 +135,8 @@ public class PolicySessionTest {
             }
 
             @Override
-            public void start() {}
+            public void start() {
+            }
         };
 
         model.updated();

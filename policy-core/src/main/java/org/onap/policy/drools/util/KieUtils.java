@@ -74,7 +74,7 @@ public class KieUtils {
      * Installs a rules artifact in the local maven repository.
      */
     public static ReleaseId installArtifact(File kmodule, File pom, String drlKJarPath, @NonNull List<File> drls)
-    throws IOException {
+        throws IOException {
         KieModuleModel kieModule = KieModuleModelImpl.fromXML(kmodule);
 
         final KieFileSystem kieFileSystem = KieServices.Factory.get().newKieFileSystem();
@@ -92,7 +92,7 @@ public class KieUtils {
      * Installs a rules artifact in the local maven repository.
      */
     public static ReleaseId installArtifact(File kmodule, File pom, String drlKJarPath, File drl)
-    throws IOException {
+        throws IOException {
         return installArtifact(kmodule, pom, drlKJarPath, Collections.singletonList(drl));
     }
 

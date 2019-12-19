@@ -65,7 +65,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void installArtifact() throws IOException {
+    public void testInstallArtifact() throws IOException {
         ReleaseId releaseId =
             KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -77,7 +77,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void installArtifactList() throws IOException {
+    public void testInstallArtifactList() throws IOException {
         ReleaseId releaseId =
             KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -124,7 +124,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void resourceToPackagesTests() {
+    public void testResourceToPackages() {
         // Some minimal logging -- it would be nice to verify the 'KieUtils' logger messages
         StringBuffer log;
 

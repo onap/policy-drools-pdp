@@ -187,7 +187,7 @@ public class RestManagerTest {
 
 
     @Test
-    public void putDeleteTest() throws IOException {
+    public void testPutDelete() throws IOException {
         HttpDelete httpDelete;
         CloseableHttpResponse response;
 
@@ -394,7 +394,7 @@ public class RestManagerTest {
     }
 
     @Test
-    public void getTest() throws IOException {
+    public void testGet() throws IOException {
         HttpGet httpGet;
         CloseableHttpResponse response;
 

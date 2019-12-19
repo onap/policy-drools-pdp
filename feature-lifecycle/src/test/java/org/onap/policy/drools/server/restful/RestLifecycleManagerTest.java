@@ -80,7 +80,7 @@ public class RestLifecycleManagerTest {
     }
 
     @Test
-    public void fsm() {
+    public void testFsm() {
         Response response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm");
         assertNotNull(HttpClient.getBody(response, String.class));
         assertEquals(Status.OK.getStatusCode(), response.getStatus());

@@ -32,7 +32,7 @@ import org.junit.Test;
 public class DroolsControllerFactoryTest {
 
     @Test
-    public void buildNullController() {
+    public void testBuildNullController() {
         Properties droolsProps = new Properties();
         DroolsController droolsController = DroolsControllerConstants.getFactory().build(droolsProps, null, null);
 
@@ -42,7 +42,7 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void getNullController() {
+    public void testGetNullController() {
         DroolsController controller =
             DroolsControllerConstants.getFactory().get(DroolsControllerConstants.NO_GROUP_ID,
                 DroolsControllerConstants.NO_ARTIFACT_ID, DroolsControllerConstants.NO_VERSION);
@@ -54,7 +54,7 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void inventory() {
+    public void testInventory() {
         List<DroolsController> controllers = DroolsControllerConstants.getFactory().inventory();
         assertNotNull(controllers);
 
@@ -66,14 +66,14 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void shutdown() {
+    public void testShutdown() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         droolsFactory.shutdown();
         assertTrue(droolsFactory.inventory().isEmpty());
     }
 
     @Test
-    public void destroy() {
+    public void testDestroy() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         droolsFactory.destroy();
         assertTrue(droolsFactory.inventory().isEmpty());

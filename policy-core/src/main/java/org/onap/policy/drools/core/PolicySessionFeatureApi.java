@@ -40,7 +40,8 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @param args standard 'main' arguments, which are currently ignored
      * @param configDir the relative directory containing configuration files
      */
-    default void globalInit(String[] args, String configDir) {}
+    default void globalInit(String[] args, String configDir) {
+    }
 
     /**
      * This method is used to create a 'KieSession' as part of a
@@ -67,7 +68,8 @@ public interface PolicySessionFeatureApi extends OrderedService {
      *
      * @param policySession the new 'PolicySession' instance
      */
-    default void newPolicySession(PolicySession policySession) {}
+    default void newPolicySession(PolicySession policySession) {
+    }
 
     /**
      * This method is called to select the 'ThreadModel' instance associated
@@ -98,7 +100,8 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @param policySession the 'PolicySession' object that wrapped the
      *     'KieSession'
      */
-    default void disposeKieSession(PolicySession policySession) {}
+    default void disposeKieSession(PolicySession policySession) {
+    }
 
     /**
      * This method is called after 'KieSession.destroy()' is called.
@@ -106,5 +109,6 @@ public interface PolicySessionFeatureApi extends OrderedService {
      * @param policySession the 'PolicySession' object that wrapped the
      *     'KieSession'
      */
-    default void destroyKieSession(PolicySession policySession) {}
+    default void destroyKieSession(PolicySession policySession) {
+    }
 }

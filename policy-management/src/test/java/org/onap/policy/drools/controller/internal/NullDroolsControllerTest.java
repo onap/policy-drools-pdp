@@ -29,7 +29,7 @@ import org.onap.policy.drools.controller.DroolsControllerConstants;
 public class NullDroolsControllerTest {
 
     @Test
-    public void start() {
+    public void testStart() {
         DroolsController controller = new NullDroolsController();
         controller.start();
         Assert.assertFalse(controller.isAlive());
@@ -47,7 +47,7 @@ public class NullDroolsControllerTest {
     }
 
     @Test
-    public void lock() {
+    public void testLock() {
         DroolsController controller = new NullDroolsController();
         controller.lock();
         Assert.assertFalse(controller.isLocked());

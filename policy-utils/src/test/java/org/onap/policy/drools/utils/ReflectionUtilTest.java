@@ -39,7 +39,7 @@ public class ReflectionUtilTest {
     }
 
     @Test
-    public void reflectionTest() {
+    public void testReflection() {
         
         try {
 

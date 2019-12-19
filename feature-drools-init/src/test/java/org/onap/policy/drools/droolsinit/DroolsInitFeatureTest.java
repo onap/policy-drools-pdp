@@ -85,7 +85,7 @@ public class DroolsInitFeatureTest {
     }
 
     @Test
-    public void initTest() {
+    public void testInit() {
         FactHandle factHandle = mock(FactHandle.class);
         when(kieSession.insert(any())).thenReturn(factHandle);
         when(kieSession.getObject(factHandle)).thenReturn(new Object());

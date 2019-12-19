@@ -51,7 +51,8 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
     @Column(name = "updatedDate", nullable = false)
     private Date updatedDate;
 
-    public DroolsSessionEntity() {}
+    public DroolsSessionEntity() {
+    }
 
     public DroolsSessionEntity(String sessionName, long sessionId) {
         this.sessionName = sessionName;

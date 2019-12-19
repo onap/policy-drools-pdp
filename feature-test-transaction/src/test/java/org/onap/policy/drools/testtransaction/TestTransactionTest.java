@@ -70,7 +70,7 @@ public class TestTransactionTest {
     }
 
     @Test
-    public void registerUnregisterTest() throws InterruptedException {
+    public void testRegisterUnregister() throws InterruptedException {
         final Properties controllerProperties = new Properties();
         controllerProperties.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
         final PolicyController controller =

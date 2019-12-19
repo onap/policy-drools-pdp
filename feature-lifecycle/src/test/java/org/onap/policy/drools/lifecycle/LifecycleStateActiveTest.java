@@ -86,7 +86,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void start() {
+    public void testStart() {
         assertActive();
         assertFalse(fsm.start());
         assertActive();
@@ -103,7 +103,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void stop() {
+    public void testStop() {
         assertTrue(fsm.stop());
         assertBasicTerminated();
 
@@ -118,7 +118,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void shutdown() {
+    public void testShutdown() {
         fsm.shutdown();
 
         assertBasicTerminated();
@@ -142,7 +142,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void status() {
+    public void testStatus() {
         waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
         int preCount = fsm.client.getSink().getRecentEvents().length;
 
@@ -153,7 +153,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void stateChange() throws CoderException {
+    public void testStateChange() throws CoderException {
         assertActive();
 
         /* no name and mismatching group info */
@@ -190,7 +190,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void update() throws IOException, CoderException {
+    public void testUpdate() throws IOException, CoderException {
 
         // TODO: extract repeated similar assertion blocks into their own helper methods
 

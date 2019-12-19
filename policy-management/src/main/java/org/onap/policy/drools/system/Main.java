@@ -42,7 +42,8 @@ public class Main {
     protected static final String SYSTEM_SYMM_KEY = "engine.symm.key";
 
     /** constructor (hides public default one). */
-    private Main() {}
+    private Main() {
+    }
 
     /**
      * main.

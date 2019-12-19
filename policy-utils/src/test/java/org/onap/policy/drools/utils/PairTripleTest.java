@@ -28,7 +28,7 @@ import org.junit.Test;
 public class PairTripleTest {
     
     @Test
-    public void pairTest() {
+    public void testPair() {
         Pair<String, String> pair = new Pair<String, String>("foo", "bar");
         
         assertEquals("foo", pair.first());
@@ -49,7 +49,7 @@ public class PairTripleTest {
     } 
 
     @Test
-    public void tripleTest() {
+    public void testTriple() {
         Triple<String, String, String> triple = new Triple<String, String,String>("foo", "bar", "fiz");
         
         assertEquals("foo", triple.first());

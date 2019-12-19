@@ -63,7 +63,8 @@ public class StateManagementProperties {
 
     private static Properties properties = null;
 
-    private StateManagementProperties() {}
+    private StateManagementProperties() {
+    }
 
     /**
      * Initialize the parameter values from the feature-state-management.properties file values.
