@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,7 +80,11 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     @Override
     public boolean status() {
         synchronized (fsm) {
-            return fsm.statusAction();
+            if (!fsm.getCapabilities().isEmpty()) {
+                return true;
+            } else {
+                return fsm.statusAction();
+            }
         }
     }
 

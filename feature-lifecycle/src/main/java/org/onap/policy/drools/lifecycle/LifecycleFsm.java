@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,6 @@ import org.onap.policy.common.endpoints.listeners.ScoListener;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
-import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
@@ -70,7 +68,6 @@ public class LifecycleFsm implements Startable {
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String GROUP_NAME = "lifecycle.pdp.group";
     protected static final String DEFAULT_PDP_GROUP = "defaultGroup";
-    protected static final String POLICY_TYPE_VERSION = "1.0.0";
     protected static final long DEFAULT_STATUS_TIMER_SECONDS = 120L;
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
@@ -150,7 +147,9 @@ public class LifecycleFsm implements Startable {
     public synchronized void start(@NonNull PolicyController controller) {
         logger.info("lifecycle event: start controller: {}", controller.getName());
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
-            policyTypesMap.put(id, controller);
+            if (isToscaPolicyType(id.getName())) {
+                policyTypesMap.put(id, controller);
+            }
         }
     }
 
@@ -342,7 +341,6 @@ public class LifecycleFsm implements Startable {
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType("drools");
-        status.setSupportedPolicyTypes(getCapabilities());
         status.setPolicies(new ArrayList<>(policiesMap.keySet()));
         return status;
     }
@@ -379,23 +377,13 @@ public class LifecycleFsm implements Startable {
         return this.client.getSink().start();
     }
 
-    private List<ToscaPolicyTypeIdentifier> getCapabilities() {
-        List<ToscaPolicyTypeIdentifier> capabilities = new ArrayList<>();
-        for (DroolsController dc : DroolsControllerConstants.getFactory().inventory()) {
-            if (!dc.isBrained()) {
-                continue;
-            }
+    protected List<ToscaPolicyTypeIdentifier> getCapabilities() {
+        return new ArrayList<>(policyTypesMap.keySet());
+    }
 
-            for (String domain : dc.getBaseDomainNames()) {
-                // HACK: until legacy controllers are removed
-                if (StringUtils.countMatches(domain, ".") > 1) {
-                    capabilities.add(new ToscaPolicyTypeIdentifier(domain, POLICY_TYPE_VERSION));
-                } else {
-                    logger.info("legacy controller {} with domain {}", dc.getCanonicalSessionNames(), domain);
-                }
-            }
-        }
-        return capabilities;
+    protected boolean isToscaPolicyType(String domain) {
+        // HACK: until legacy controllers support is removed
+        return StringUtils.countMatches(domain, ".") > 1;
     }
 
     protected boolean isItMe(String name, String group, String subgroup) {
