@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0609108_b4564420",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-01-07T21:08:26Z",
+      "side": 1,
+      "message": "should probably synchronize this so that the map cannot be modified while the copy is being made",
+      "revId": "4e74569d6542fa57b0e42d2b619cfe540c29bbf7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
