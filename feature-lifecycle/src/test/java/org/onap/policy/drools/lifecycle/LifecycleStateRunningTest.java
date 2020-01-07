@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
+import org.onap.policy.models.pdp.concepts.PdpStatus;
+import org.onap.policy.models.pdp.enums.PdpMessageType;
+import org.onap.policy.models.pdp.enums.PdpState;
 
 public abstract class LifecycleStateRunningTest {
 
@@ -83,5 +87,26 @@ public abstract class LifecycleStateRunningTest {
 
     public void waitUntil(long twait, TimeUnit units, Callable<Boolean> condition) {
         time.waitUntil(twait, units, condition);
+    }
+
+    protected Callable<Boolean> isStatus(PdpState state, int count) {
+        return () -> {
+            if (fsm.client.getSink().getRecentEvents().length != count) {
+                return false;
+            }
+
+            String[] events = fsm.client.getSink().getRecentEvents();
+            PdpStatus status = new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
+
+            if (status.getSupportedPolicyTypes() != null) {
+                return false;
+            }
+
+            return status.getMessageName() == PdpMessageType.PDP_STATUS && state == status.getState();
+        };
+    }
+
+    protected Callable<Boolean> isStatus(PdpState state) {
+        return isStatus(state, fsm.client.getSink().getRecentEvents().length);
     }
 }

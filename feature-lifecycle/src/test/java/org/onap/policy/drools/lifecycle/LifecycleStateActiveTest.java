@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +43,6 @@ import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
-import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 
@@ -127,28 +125,19 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertTrue(fsm.statusTask.isDone());
     }
 
-    private Callable<Boolean> isStatus(PdpState state) {
-        return () -> {
-            if (fsm.client.getSink().getRecentEvents().length == 0) {
-                return false;
-            }
-
-            List<String> events = Arrays.asList(fsm.client.getSink().getRecentEvents());
-            PdpStatus status =
-                new StandardCoder().decode(events.get(events.size() - 1), PdpStatus.class);
-
-            return status.getMessageName() == PdpMessageType.PDP_STATUS && state == status.getState();
-        };
-    }
-
     @Test
     public void status() {
         waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
         int preCount = fsm.client.getSink().getRecentEvents().length;
 
         assertTrue(fsm.status());
+        assertEquals(preCount, fsm.client.getSink().getRecentEvents().length);
+
+        fsm.start(controllerSupport.getController());
+        assertTrue(fsm.status());
         assertEquals(preCount + 1, fsm.client.getSink().getRecentEvents().length);
 
+        fsm.stop(controllerSupport.getController());
         fsm.shutdown();
     }
 
