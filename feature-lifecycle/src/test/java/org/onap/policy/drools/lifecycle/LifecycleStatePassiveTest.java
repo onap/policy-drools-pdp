@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,23 +93,6 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm.shutdown();
     }
 
-    private Callable<Boolean> isStatus(PdpState state, int count) {
-        return () -> {
-            if (!fsm.client.getSink().isAlive()) {
-                return false;
-            }
-
-            if (fsm.client.getSink().getRecentEvents().length != count) {
-                return false;
-            }
-
-            String[] events = fsm.client.getSink().getRecentEvents();
-            PdpStatus status = new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
-
-            return status.getMessageName() == PdpMessageType.PDP_STATUS && state == status.getState();
-        };
-    }
-
     @Test
     public void stop() {
         simpleStop();
@@ -137,19 +119,23 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
     @Test
     public void status() {
-        status(PdpState.PASSIVE);
+        assertTrue(fsm.client.getSink().isAlive());
+        assertTrue(fsm.status());
+        assertSame(0, fsm.client.getSink().getRecentEvents().length);
+
+
+        fsm.start(controllerSupport.getController());
+        status(PdpState.PASSIVE, 1);
+        fsm.stop(controllerSupport.getController());
         fsm.shutdown();
     }
 
-    private void status(PdpState state) {
-        waitUntil(5, TimeUnit.SECONDS, isStatus(state, 1));
-
-        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, 2));
-
-        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, 3));
-
+    private void status(PdpState state, int initial) {
+        waitUntil(5, TimeUnit.SECONDS, isStatus(state, initial));
+        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, initial + 1));
+        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, initial + 2));
         assertTrue(fsm.status());
-        waitUntil(200, TimeUnit.MILLISECONDS, isStatus(state, 4));
+        waitUntil(200, TimeUnit.MILLISECONDS, isStatus(state, initial + 3));
     }
 
     @Test
