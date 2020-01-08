@@ -16,6 +16,24 @@
       "revId": "38919c45aafa99d950eddf879b2bc25e95529378",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9160674a_8f1f5ee0",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2020-01-08T14:30:17Z",
+      "side": 1,
+      "message": "Got it, thanks :)",
+      "parentUuid": "56b76f6b_b2a85472",
+      "revId": "38919c45aafa99d950eddf879b2bc25e95529378",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
