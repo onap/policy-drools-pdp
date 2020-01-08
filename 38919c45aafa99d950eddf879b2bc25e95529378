@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56b76f6b_b2a85472",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-08T14:13:42Z",
+      "side": 1,
+      "message": "Ram - wrt you question, lines: 222-242 below handles PdpStatus message creation and sending.",
+      "revId": "38919c45aafa99d950eddf879b2bc25e95529378",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
