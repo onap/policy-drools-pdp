@@ -4,6 +4,7 @@
 # ONAP
 # ================================================================================
 # Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+# Modifications Copyright (C) 2020 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -67,6 +68,11 @@ fi
 
 if [[ -f config/policy-truststore ]]; then
     cp -f config/policy-truststore ${POLICY_HOME}/etc/ssl
+fi
+
+if [[ -f config/logback.xml ]]; then
+    echo "overriding logback.xml"
+    cp -f config/logback.xml "${POLICY_HOME}"/config/
 fi
 
 # allow user to override all or some aaf configuration
