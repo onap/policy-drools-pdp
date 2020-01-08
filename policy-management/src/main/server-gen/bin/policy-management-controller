@@ -5,6 +5,7 @@
 # ONAP POLICY
 # ================================================================================
 # Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+# Modifications Copyright (C) 2020 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ function start() {
 		update_monitor off
 	else
 		update_monitor on
-	fi	
+	fi
 }
 
 # unmonitored start, does not change monitor status (immutable)
@@ -72,7 +73,7 @@ function um_start() {
 	    # to subprocesses
 	    exec {cfg}>&-
 	fi
-	nohup $JAVA_HOME/bin/java "${JVM_OPTS[@]}" -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
+	nohup $JAVA_HOME/bin/java -Dlogback.configurationFile=$POLICY_HOME/config/logback.xml "${JVM_OPTS[@]}" -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.out) 2> >( while read line; do echo "$(date): ${line}"; done > $_LOGS/$PNAME.err) &
 
 	_PID=$!
 	echo $_PID > $_PIDFILE
@@ -165,7 +166,7 @@ function update_monitor() {
 	if [[ -f ${POLICY_HOME}/etc/monitor/monitor.cfg ]]; then
 		/bin/sed -i.bak \
 			-e "s/^${CONTROLLER}=.*/${CONTROLLER}=${STATUS}/g" \
-			${POLICY_HOME}/etc/monitor/monitor.cfg	
+			${POLICY_HOME}/etc/monitor/monitor.cfg
 	fi
 }
 
