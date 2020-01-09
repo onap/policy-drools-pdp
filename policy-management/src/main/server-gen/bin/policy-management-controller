@@ -31,7 +31,7 @@ function start() {
 		update_monitor off
 	else
 		update_monitor on
-	fi	
+	fi
 }
 
 # unmonitored start, does not change monitor status (immutable)
@@ -165,7 +165,7 @@ function update_monitor() {
 	if [[ -f ${POLICY_HOME}/etc/monitor/monitor.cfg ]]; then
 		/bin/sed -i.bak \
 			-e "s/^${CONTROLLER}=.*/${CONTROLLER}=${STATUS}/g" \
-			${POLICY_HOME}/etc/monitor/monitor.cfg	
+			${POLICY_HOME}/etc/monitor/monitor.cfg
 	fi
 }
 
