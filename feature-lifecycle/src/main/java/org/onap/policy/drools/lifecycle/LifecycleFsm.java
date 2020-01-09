@@ -82,7 +82,7 @@ public class LifecycleFsm implements Startable {
     @Getter
     protected final String name = NetworkUtil.getHostname();
 
-    protected volatile LifecycleState state = new LifecycleStateTerminated(this);
+    protected LifecycleState state = new LifecycleStateTerminated(this);
 
     @GsonJsonIgnore
     protected ScheduledExecutorService scheduler = makeExecutor();
@@ -164,7 +164,7 @@ public class LifecycleFsm implements Startable {
      * Stop a controller event.
      */
     public synchronized void stop(@NonNull PolicyController controller) {
-        logger.info("lifecycle event: stop controller: {}" + controller.getName());
+        logger.info("lifecycle event: stop controller: {}", controller.getName());
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
             policyTypesMap.remove(id);
         }
@@ -245,7 +245,7 @@ public class LifecycleFsm implements Startable {
         this.subgroup = subgroup;
     }
 
-    protected void transitionToAction(@NonNull LifecycleState newState) {
+    protected synchronized void transitionToAction(@NonNull LifecycleState newState) {
         state = newState;
     }
 

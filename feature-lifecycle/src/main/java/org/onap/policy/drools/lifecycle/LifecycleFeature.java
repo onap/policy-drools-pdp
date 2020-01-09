@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,26 +43,22 @@ public class LifecycleFeature
 
     @Override
     public boolean afterStart(PolicyEngine engine) {
-        fsm.start();
-        return false;
+        return fsmStart();
     }
 
     @Override
     public boolean afterStart(PolicyController controller) {
-        fsm.start(controller);
-        return false;
+        return fsmStart(controller);
     }
 
     @Override
     public boolean beforeStop(PolicyEngine engine) {
-        fsm.stop();
-        return false;
+        return fsmStop();
     }
 
     @Override
     public boolean beforeStop(PolicyController controller) {
-        fsm.stop(controller);
-        return false;
+        return fsmStop(controller);
     }
 
     @Override
@@ -73,19 +69,36 @@ public class LifecycleFeature
 
     @Override
     public boolean beforeHalt(PolicyController controller) {
-        fsm.stop(controller);
-        return false;
+        return fsmStop(controller);
     }
 
     @Override
     public boolean beforeLock(PolicyController controller) {
-        fsm.stop(controller);
-        return false;
+        return fsmStop(controller);
     }
 
     @Override
     public boolean afterUnlock(PolicyController controller) {
+        return fsmStart(controller);
+    }
+
+    private boolean fsmStart() {
+        fsm.start();
+        return false;
+    }
+
+    private boolean fsmStart(PolicyController controller) {
         fsm.start(controller);
+        return false;
+    }
+
+    private boolean fsmStop() {
+        fsm.stop();
+        return false;
+    }
+
+    private boolean fsmStop(PolicyController controller) {
+        fsm.stop(controller);
         return false;
     }
 }

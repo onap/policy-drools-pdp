@@ -22,7 +22,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import lombok.NonNull;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
@@ -158,7 +158,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     }
 
     protected boolean syncPolicies(List<ToscaPolicy> policies,
-                                   BiFunction<PolicyController, ToscaPolicy, Boolean> sync) {
+                                   BiPredicate<PolicyController, ToscaPolicy> sync) {
         boolean success = true;
         for (ToscaPolicy policy : policies) {
             ToscaPolicyTypeIdentifier policyType = policy.getTypeIdentifier();
@@ -169,7 +169,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
                 continue;
             }
 
-            success = sync.apply(controller, policy) && success;
+            success = sync.test(controller, policy) && success;
         }
 
         return success;
