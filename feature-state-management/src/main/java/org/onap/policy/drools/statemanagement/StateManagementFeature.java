@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@
 package org.onap.policy.drools.statemanagement;
 
 import java.io.IOException;
-import java.util.Observer;
 import java.util.Properties;
-
 import org.onap.policy.common.im.AllSeemsWellException;
+import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -94,7 +93,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
      * {@inheritDoc}.
      */
     @Override
-    public void addObserver(Observer stateChangeObserver) {
+    public void addObserver(StateChangeNotifier stateChangeObserver) {
         logger.debug("StateManagementFeature.addObserver() entry\n"
                 + "StateManagementFeature.addObserver(): "
                 + "stateManagement.getAdminState(): {}", stateManagement.getAdminState());

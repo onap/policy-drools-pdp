@@ -98,10 +98,6 @@ public abstract class LifecycleStateRunningTest {
             String[] events = fsm.client.getSink().getRecentEvents();
             PdpStatus status = new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
 
-            if (status.getSupportedPolicyTypes() != null) {
-                return false;
-            }
-
             return status.getMessageName() == PdpMessageType.PDP_STATUS && state == status.getState();
         };
     }
