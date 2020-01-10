@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@
 
 package org.onap.policy.drools.statemanagement;
 
-import java.util.Observer;
 import javax.validation.constraints.NotNull;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.im.AllSeemsWellException;
+import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.utils.services.OrderedService;
 
 /**
@@ -61,7 +61,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @param stateChangeObserver observer
      */
-    void addObserver(Observer stateChangeObserver);
+    void addObserver(StateChangeNotifier stateChangeObserver);
 
     /**
      * Returns the X.731 Administrative State for this resource.
