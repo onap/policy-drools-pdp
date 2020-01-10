@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "faeb31af_3a5ab915",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleStateRunningTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-10T16:36:39Z",
+      "side": 0,
+      "message": "thanks!",
+      "revId": "f5cd84316856905a3206f715de958c875fef98d0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
