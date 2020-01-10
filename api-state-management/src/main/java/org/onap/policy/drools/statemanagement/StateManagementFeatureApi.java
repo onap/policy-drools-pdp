@@ -24,6 +24,7 @@ import java.util.Observer;
 import javax.validation.constraints.NotNull;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.im.AllSeemsWellException;
+import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.utils.services.OrderedService;
 
 /**
@@ -61,7 +62,7 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      *
      * @param stateChangeObserver observer
      */
-    void addObserver(Observer stateChangeObserver);
+    void addObserver(StateChangeNotifier stateChangeObserver);
 
     /**
      * Returns the X.731 Administrative State for this resource.

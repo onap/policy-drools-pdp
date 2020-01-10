@@ -25,6 +25,7 @@ import java.util.Observer;
 import java.util.Properties;
 
 import org.onap.policy.common.im.AllSeemsWellException;
+import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -94,7 +95,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
      * {@inheritDoc}.
      */
     @Override
-    public void addObserver(Observer stateChangeObserver) {
+    public void addObserver(StateChangeNotifier stateChangeObserver) {
         logger.debug("StateManagementFeature.addObserver() entry\n"
                 + "StateManagementFeature.addObserver(): "
                 + "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
