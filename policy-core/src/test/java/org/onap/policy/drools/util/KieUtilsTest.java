@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void installArtifact() throws IOException {
+    public void testInstallArtifact() throws IOException {
         ReleaseId releaseId =
             KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -77,7 +77,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void installArtifactList() throws IOException {
+    public void testInstallArtifactList() throws IOException {
         ReleaseId releaseId =
             KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -124,7 +124,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void resourceToPackagesTests() {
+    public void testResourceToPackages() {
         // Some minimal logging -- it would be nice to verify the 'KieUtils' logger messages
         StringBuffer log;
 

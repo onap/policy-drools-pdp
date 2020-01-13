@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void constructor() {
+    public void testConstructor() {
         assertThatIllegalArgumentException().isThrownBy(() -> new LifecycleStateTerminated(null));
 
         LifecycleState state = new LifecycleStateTerminated(new LifecycleFsm());
@@ -71,7 +71,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void stop() {
+    public void testStop() {
         assertEquals(PdpState.TERMINATED, fsm.state.state());
         assertFalse(fsm.isAlive());
 
@@ -89,7 +89,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void bounce() {
+    public void testBounce() {
         assertBasicTerminated();
         simpleStart();
         simpleStop();
@@ -101,12 +101,12 @@ public class LifecycleStateTerminatedTest {
 
     @Test
     public void doubleBounce() {
-        bounce();
-        bounce();
+        testBounce();
+        testBounce();
     }
 
     @Test
-    public void doubleStartBounce() {
+    public void testDoubleStartBounce() {
         simpleStart();
         assertFalse(fsm.start());
         assertBasicPassive();
@@ -114,7 +114,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void shutdown() {
+    public void testShutdown() {
         assertBasicTerminated();
         fsm.shutdown();
         assertBasicTerminated();
@@ -123,7 +123,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void status() {
+    public void testStatus() {
         assertBasicTerminated();
         assertFalse(fsm.status());
         assertBasicTerminated();
@@ -136,7 +136,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void update() {
+    public void testUpdate() {
         PdpUpdate update = new PdpUpdate();
         update.setName(NetworkUtil.getHostname());
         update.setPdpGroup("A");
@@ -151,7 +151,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void stateChange() {
+    public void testStateChange() {
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");

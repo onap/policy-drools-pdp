@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-eelf
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class EElfTest {
     }
 
     @Test
-    public void slf4jLog() {
+    public void testSlf4jLog() {
 
         /* standard slf4j using defaults */
 

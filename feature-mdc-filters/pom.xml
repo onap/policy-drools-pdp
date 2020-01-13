@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   feature-mdc-filters
   ================================================================================
-  Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -31,11 +31,6 @@
 
     <name>feature-mdc-filters</name>
     <description>Loadable module that marks key fields in messages through logback mdc.</description>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
 
     <build>
         <plugins>
@@ -105,7 +100,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.13.0</version>
             <scope>test</scope>
         </dependency>
 

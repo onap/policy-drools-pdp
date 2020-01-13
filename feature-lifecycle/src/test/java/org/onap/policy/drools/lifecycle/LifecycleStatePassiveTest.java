@@ -71,7 +71,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void controller() {
+    public void testController() {
         fsm.start(controllerSupport.getController());
         assertSame(controllerSupport.getController(),
                         fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
@@ -85,7 +85,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void start() {
+    public void testStart() {
         assertEquals(0, fsm.client.getSink().getRecentEvents().length);
         assertFalse(fsm.start());
         assertBasicPassive();
@@ -110,7 +110,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void shutdown() throws Exception {
+    public void testShutdown() throws Exception {
         simpleStop();
 
         fsm.shutdown();
@@ -118,7 +118,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void status() {
+    public void testStatus() {
         assertTrue(fsm.client.getSink().isAlive());
         assertTrue(fsm.status());
         assertSame(0, fsm.client.getSink().getRecentEvents().length);
@@ -139,7 +139,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void update() throws IOException, CoderException {
+    public void testUpdate() throws IOException, CoderException {
         controllerSupport.getController().getDrools().delete(ToscaPolicy.class);
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
@@ -240,7 +240,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void stateChange() throws CoderException, IOException {
+    public void testStateChange() throws CoderException, IOException {
         /* no name */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");

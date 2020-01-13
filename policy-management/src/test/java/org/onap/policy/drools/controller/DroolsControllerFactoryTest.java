@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class DroolsControllerFactoryTest {
 
     @Test
-    public void buildNullController() {
+    public void testBuildNullController() {
         Properties droolsProps = new Properties();
         DroolsController droolsController = DroolsControllerConstants.getFactory().build(droolsProps, null, null);
 
@@ -42,7 +42,7 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void getNullController() {
+    public void testGetNullController() {
         DroolsController controller =
             DroolsControllerConstants.getFactory().get(DroolsControllerConstants.NO_GROUP_ID,
                 DroolsControllerConstants.NO_ARTIFACT_ID, DroolsControllerConstants.NO_VERSION);
@@ -54,7 +54,7 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void inventory() {
+    public void testInventory() {
         List<DroolsController> controllers = DroolsControllerConstants.getFactory().inventory();
         assertNotNull(controllers);
 
@@ -66,14 +66,14 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void shutdown() {
+    public void testShutdown() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         droolsFactory.shutdown();
         assertTrue(droolsFactory.inventory().isEmpty());
     }
 
     @Test
-    public void destroy() {
+    public void testDestroy() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         droolsFactory.destroy();
         assertTrue(droolsFactory.inventory().isEmpty());

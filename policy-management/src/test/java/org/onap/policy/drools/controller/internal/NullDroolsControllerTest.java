@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.onap.policy.drools.controller.DroolsControllerConstants;
 public class NullDroolsControllerTest {
 
     @Test
-    public void start() {
+    public void testStart() {
         DroolsController controller = new NullDroolsController();
         controller.start();
         Assert.assertFalse(controller.isAlive());
@@ -47,7 +47,7 @@ public class NullDroolsControllerTest {
     }
 
     @Test
-    public void lock() {
+    public void testLock() {
         DroolsController controller = new NullDroolsController();
         controller.lock();
         Assert.assertFalse(controller.isLocked());

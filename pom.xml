@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.onap.policy.parent</groupId>
         <artifactId>integration</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1-SNAPSHOT</version>
         <relativePath />
     </parent>
 
@@ -39,10 +39,6 @@
     <description>The ONAP Policy Engine drools-based PDP Project</description>
 
     <properties>
-        <!-- Project common build settings -->
-        <project.source.version>1.8</project.source.version>
-        <project.target.version>1.8</project.target.version>
-
         <!-- Project path properties -->
         <nexusproxy>https://nexus.onap.org</nexusproxy>
         <sitePath>/content/sites/site/${project.groupId}/${project.artifactId}/${project.version}</sitePath>
@@ -63,8 +59,8 @@
         <hibernate.commons.annotations.version>5.0.1.Final</hibernate.commons.annotations.version>
         <commons.io.version>2.5</commons.io.version>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <policy.common.version>1.6.1</policy.common.version>
-        <policy.models.version>2.2.0</policy.models.version>
+        <policy.common.version>1.6.2-SNAPSHOT</policy.common.version>
+        <policy.models.version>2.2.1-SNAPSHOT</policy.models.version>
     </properties>
 
     <modules>
@@ -171,7 +167,7 @@
                                     with minor changes -->
                                 <configLocation>onap-checkstyle/onap-java-style.xml</configLocation>
                                 <!-- <sourceDirectory> is needed so that checkstyle ignores the generated sources directory -->
-                                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                                <sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
                                 <includeResources>true</includeResources>
                                 <includeTestSourceDirectory>true</includeTestSourceDirectory>
                                 <includeTestResources>true</includeTestResources>

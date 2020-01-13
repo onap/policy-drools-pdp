@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-mdc-filters
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -310,7 +310,7 @@ public class MdcTopicFilterTest {
     }
 
     @Test
-    public void modifyFilterRuleMultiPathExceptionTest() {
+    public void testModifyFilterRuleMultiPathException() {
         MdcTopicFilter filter = new MdcTopicFilter("abc=$a.value");
         assertThatIllegalArgumentException()
                         .isThrownBy(() -> filter.modifyFilterRule("def", "abc", Arrays.asList("$.b", "$.c")))
@@ -562,7 +562,7 @@ public class MdcTopicFilterTest {
     }
 
     @Test
-    public void findAllNotFoundTest() {
+    public void testFindAllNotFound() {
         String message = "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\","
                         + "\"controllers\":[{\"name\":\"test-controller\","
                         + "\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","
@@ -593,7 +593,7 @@ public class MdcTopicFilterTest {
     }
 
     @Test
-    public void findNotFoundTest() {
+    public void testFindNotFound() {
         String message = "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\","
                 + "\"controllers\":[{\"name\":\"test-controller\","
                 + "\"drools\":{\"groupId\":\"org.onap.policy.drools.test\","

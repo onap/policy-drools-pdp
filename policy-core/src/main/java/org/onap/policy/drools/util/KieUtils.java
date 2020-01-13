@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.NonNull;
+
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -74,7 +73,7 @@ public class KieUtils {
      * Installs a rules artifact in the local maven repository.
      */
     public static ReleaseId installArtifact(File kmodule, File pom, String drlKJarPath, @NonNull List<File> drls)
-    throws IOException {
+        throws IOException {
         KieModuleModel kieModule = KieModuleModelImpl.fromXML(kmodule);
 
         final KieFileSystem kieFileSystem = KieServices.Factory.get().newKieFileSystem();
@@ -92,7 +91,7 @@ public class KieUtils {
      * Installs a rules artifact in the local maven repository.
      */
     public static ReleaseId installArtifact(File kmodule, File pom, String drlKJarPath, File drl)
-    throws IOException {
+        throws IOException {
         return installArtifact(kmodule, pom, drlKJarPath, Collections.singletonList(drl));
     }
 

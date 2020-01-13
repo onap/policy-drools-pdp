@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-drools-init
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ package org.onap.policy.drools.droolsinit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,7 +85,7 @@ public class DroolsInitFeatureTest {
     }
 
     @Test
-    public void initTest() {
+    public void testInit() {
         FactHandle factHandle = mock(FactHandle.class);
         when(kieSession.insert(any())).thenReturn(factHandle);
         when(kieSession.getObject(factHandle)).thenReturn(new Object());

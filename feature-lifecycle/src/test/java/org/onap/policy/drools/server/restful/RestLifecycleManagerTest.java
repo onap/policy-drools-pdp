@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class RestLifecycleManagerTest {
     }
 
     @Test
-    public void fsm() {
+    public void testFsm() {
         Response response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm");
         assertNotNull(HttpClient.getBody(response, String.class));
         assertEquals(Status.OK.getStatusCode(), response.getStatus());

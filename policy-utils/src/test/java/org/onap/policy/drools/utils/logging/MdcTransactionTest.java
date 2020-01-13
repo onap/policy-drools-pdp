@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.slf4j.MDC;
 public class MdcTransactionTest {
 
     @Test
-    public void resetSubTransaction() {
+    public void testResetSubTransaction() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, null).resetSubTransaction();
 
@@ -115,7 +115,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void flush() {
+    public void testFlush() {
         MdcTransaction trans =
                         MdcTransaction.newTransaction()
                 .setRequestId(null)
@@ -194,7 +194,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void metric() {
+    public void testMetric() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, null).metric();
 
@@ -202,7 +202,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void transaction() {
+    public void testTransaction() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, null).transaction();
 
@@ -210,7 +210,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void subTransaction() {
+    public void testSubTransaction() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, "partner");
 
