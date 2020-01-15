@@ -1,4 +1,4 @@
-FROM onap/policy-common-alpine:1.4.0
+FROM onap/policy-jdk-debian
 
 LABEL maintainer="Policy Team"
 
@@ -14,12 +14,10 @@ ENV POLICY_CONFIG $POLICY_HOME/config
 ENV POLICY_LOGBACK $POLICY_CONFIG/logback.xml
 ENV POLICY_DOCKER true
 
-RUN apk add --no-cache \
+RUN apt-get install -y \
     mariadb-client \
     file \
     bash-completion \
-    openssl \
-    less \
     vim \
     && pip install http-prompt
 
