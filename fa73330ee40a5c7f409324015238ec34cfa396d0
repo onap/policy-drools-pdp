@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91e0b4ac_c638b212",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-15T23:31:17Z",
+      "side": 1,
+      "message": "should the tag be made explicit to avoid ambiguities in the future?",
+      "revId": "fa73330ee40a5c7f409324015238ec34cfa396d0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
