@@ -62,46 +62,6 @@ function POLICY_HOME() {
 	fi
 }
 
-function check_java() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
-	
-	local TARGET_JAVA_VERSION INSTALLED_JAVA_VERSION
-	
-	TARGET_JAVA_VERSION=$1
-	
-	if [[ -z ${JAVA_HOME} ]]; then
-		echo "error: ${JAVA_HOME} is not set"
-		return 1
-	fi
-	
-	if ! check_x_file "${JAVA_HOME}/bin/java"; then
-		echo "error: ${JAVA_HOME}/bin/java is not accessible"
-		return 1
-	fi
-	
-	INSTALLED_JAVA_VERSION=$("${JAVA_HOME}/bin/java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-	if [[ -z $INSTALLED_JAVA_VERSION ]]; then
-		echo "error: ${JAVA_HOME}/bin/java is invalid"
-		return 1
-	fi
-	
-	if [[ "${INSTALLED_JAVA_VERSION}" != ${TARGET_JAVA_VERSION}* ]]; then
-		echo "error: java version (${INSTALLED_JAVA_VERSION}) does not"\
-			 "march desired version ${TARGET_JAVA_VERSION}"
-		return 1
-	fi 
-	
-	echo "OK: java ${INSTALLED_JAVA_VERSION} installed"
-	
-	if ! type -p "${JAVA_HOME}/bin/keytool" > /dev/null 2>&1; then
-		echo "error: {JAVA_HOME}/bin/keytool is not installed"
-		return 1
-	fi
-}
-
 function process_configuration() {
 	if [[ $DEBUG == y ]]; then
 		echo "-- ${FUNCNAME[0]} $@ --"
@@ -290,12 +250,6 @@ function install_prereqs() {
 		exit 1
 	fi
 	
-	if ! check_java "1.8"; then
-		echo "error: aborting ${COMPONENT_TYPE} installation: invalid java version"
-		exit 1
-	fi
-	
-
 	if [[ -z ${POLICY_HOME} ]]; then
 		echo "error: aborting ${COMPONENT_TYPE} installation: ${POLICY_HOME} is not set"
 		exit 1	
