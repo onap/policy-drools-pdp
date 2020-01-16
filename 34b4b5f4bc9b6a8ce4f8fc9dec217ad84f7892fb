@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "465ba545_6384e3ef",
+        "filename": "packages/docker/src/main/docker/docker-install.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-01-16T22:42:55Z",
+      "side": 1,
+      "message": "20",
+      "range": {
+        "startLine": 7,
+        "startChar": 23,
+        "endLine": 7,
+        "endChar": 25
+      },
+      "revId": "34b4b5f4bc9b6a8ce4f8fc9dec217ad84f7892fb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
