@@ -16,6 +16,24 @@
       "revId": "fa73330ee40a5c7f409324015238ec34cfa396d0",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c190e7e_4db3af09",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-01-16T01:13:48Z",
+      "side": 1,
+      "message": "For the moment - we are using \"latest\" until we are ready to release the base images. Then we can make it explicit.",
+      "parentUuid": "91e0b4ac_c638b212",
+      "revId": "fa73330ee40a5c7f409324015238ec34cfa396d0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
