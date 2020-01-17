@@ -4,14 +4,14 @@
 # ============LICENSE_START=======================================================
 # Installation Package
 # ================================================================================
-# Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,560 +20,552 @@
 # ============LICENSE_END=========================================================
 ###
 
-
 function JAVA_HOME() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
-		
-	if [[ -z ${JAVA_HOME} ]]; then
-		echo "error: aborting installation: JAVA_HOME variable must be present in base.conf"
-		exit 1;
-	fi
-	
-	echo "JAVA_HOME is ${JAVA_HOME}"
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
+
+    if [[ -z ${JAVA_HOME} ]]; then
+        echo "error: aborting installation: JAVA_HOME variable must be present in base.conf"
+        exit 1
+    fi
+
+    echo "JAVA_HOME is ${JAVA_HOME}"
 }
 
 function POLICY_HOME() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
-	
-	local POLICY_HOME_ABS
-	
-	if [[ -z ${POLICY_HOME} ]]; then
-		echo "error: aborting installation: the installation directory POLICY_HOME must be set"
-		exit 1
-	fi
-	
-	POLICY_HOME_ABS=$(readlink -f "${POLICY_HOME}")
-	if [[ -n ${POLICY_HOME_ABS} ]]; then
-		export POLICY_HOME=${POLICY_HOME_ABS}
-	fi
-	
-	echo "POLICY_HOME is ${POLICY_HOME}"
-	
-	# Do not allow installations from within POLICY_HOME dir or sub-dirs
-	if [[ "$(pwd)/" == ${POLICY_HOME}/* ]]; then
-	 	echo "error: aborting installation: cannot be executed from '${POLICY_HOME}' or sub-directories. "
-	 	exit 1
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
+
+    local POLICY_HOME_ABS
+
+    if [[ -z ${POLICY_HOME} ]]; then
+        echo "error: aborting installation: the installation directory POLICY_HOME must be set"
+        exit 1
+    fi
+
+    POLICY_HOME_ABS=$(readlink -f "${POLICY_HOME}")
+    if [[ -n ${POLICY_HOME_ABS} ]]; then
+        export POLICY_HOME=${POLICY_HOME_ABS}
+    fi
+
+    echo "POLICY_HOME is ${POLICY_HOME}"
+
+    # Do not allow installations from within POLICY_HOME dir or sub-dirs
+    if [[ "$(pwd)/" == ${POLICY_HOME}/* ]]; then
+        echo "error: aborting installation: cannot be executed from '${POLICY_HOME}' or sub-directories. "
+        exit 1
+    fi
 }
 
 function process_configuration() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local CONF_FILE name value
-	
-	CONF_FILE=$1
-	while read line || [ -n "${line}" ]; do
+    local CONF_FILE name value
+
+    CONF_FILE=$1
+    while read line || [ -n "${line}" ]; do
         if [[ -n ${line} ]] && [[ ${line} != *#* ]]; then
-	        name=$(echo "${line%%=*}")
-	        value=$(echo "${line#*=}")
-	        # escape ampersand so that sed does not replace it with the search string
+            name=$(echo "${line%%=*}")
+            value=$(echo "${line#*=}")
+            # escape ampersand so that sed does not replace it with the search string
             value=${value//&/\\&}
-	        if [[ -z ${name} ]] || [[ -z $value ]]; then
-	        	echo "WARNING: ${line} missing name or value"
-	    	fi
-	    	export ${name}="${value}"
-	        eval "${name}" "${value}" 2> /dev/null
+            if [[ -z ${name} ]] || [[ -z $value ]]; then
+                echo "WARNING: ${line} missing name or value"
+            fi
+            export ${name}="${value}"
+            eval "${name}" "${value}" 2>/dev/null
         fi
-	done < "${CONF_FILE}"
-	return 0
+    done <"${CONF_FILE}"
+    return 0
 }
 
 function component_preinstall() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	/bin/sed -i -e 's!${{POLICY_HOME}}!'"${POLICY_HOME}!g" \
-		-e 's!${{FQDN}}!'"${FQDN}!g" \
-		*.conf > /dev/null 2>&1
+    /bin/sed -i -e 's!${{POLICY_HOME}}!'"${POLICY_HOME}!g" \
+        -e 's!${{FQDN}}!'"${FQDN}!g" \
+        *.conf >/dev/null 2>&1
 }
 
 function configure_component() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local CONF_FILE COMPONENT_ROOT_DIR SED_LINE SED_FILES name value
-		
-	CONF_FILE=$1
-	COMPONENT_ROOT_DIR=$2
-	
-	SED_LINE="sed -i"
-	SED_LINE+=" -e 's!\${{POLICY_HOME}}!${POLICY_HOME}!g' "
-	SED_LINE+=" -e 's!\${{POLICY_USER}}!${POLICY_USER}!g' "
-	SED_LINE+=" -e 's!\${{POLICY_GROUP}}!${POLICY_GROUP}!g' "
-	SED_LINE+=" -e 's!\${{KEYSTORE_PASSWD}}!${KEYSTORE_PASSWD}!g' "
-	SED_LINE+=" -e 's!\${{TRUSTSTORE_PASSWD}}!${TRUSTSTORE_PASSWD}!g' "
-	SED_LINE+=" -e 's!\${{JAVA_HOME}}!${JAVA_HOME}!g' "
-		
-	while read line || [ -n "${line}" ]; do
-		if [[ -n ${line} ]] && [[ ${line:0:1} != \# ]]; then
-			name=$(echo "${line%%=*}")
-			value=$(echo "${line#*=}")
-			# escape ampersand so that sed does not replace it with the search string
-			value=$(echo "${value}" | sed -e 's/[\/&]/\\&/g')
-	    	if [[ -z ${name} ]] || [[ -z ${value} ]]; then
-	        	echo "WARNING: ${line} missing name or value"
-	    	fi
-	    	SED_LINE+=" -e 's/\${{${name}}}/${value}/g' "
+    local CONF_FILE COMPONENT_ROOT_DIR SED_LINE SED_FILES name value
+
+    CONF_FILE=$1
+    COMPONENT_ROOT_DIR=$2
+
+    SED_LINE="sed -i"
+    SED_LINE+=" -e 's!\${{POLICY_HOME}}!${POLICY_HOME}!g' "
+    SED_LINE+=" -e 's!\${{POLICY_USER}}!${POLICY_USER}!g' "
+    SED_LINE+=" -e 's!\${{POLICY_GROUP}}!${POLICY_GROUP}!g' "
+    SED_LINE+=" -e 's!\${{KEYSTORE_PASSWD}}!${KEYSTORE_PASSWD}!g' "
+    SED_LINE+=" -e 's!\${{TRUSTSTORE_PASSWD}}!${TRUSTSTORE_PASSWD}!g' "
+    SED_LINE+=" -e 's!\${{JAVA_HOME}}!${JAVA_HOME}!g' "
+
+    while read line || [ -n "${line}" ]; do
+        if [[ -n ${line} ]] && [[ ${line:0:1} != \# ]]; then
+            name=$(echo "${line%%=*}")
+            value=$(echo "${line#*=}")
+            # escape ampersand so that sed does not replace it with the search string
+            value=$(echo "${value}" | sed -e 's/[\/&]/\\&/g')
+            if [[ -z ${name} ]] || [[ -z ${value} ]]; then
+                echo "WARNING: ${line} missing name or value"
+            fi
+            SED_LINE+=" -e 's/\${{${name}}}/${value}/g' "
         fi
-	done < "$CONF_FILE"
-	
-	SED_FILES=""
-	for sed_file in $(find "${COMPONENT_ROOT_DIR}" -type f -exec grep -Iq . {} \; -print 2> /dev/null); do
-		if fgrep -l '${{' ${sed_file} > /dev/null 2>&1; then
-			SED_FILES+="${sed_file} "
-		fi
-	done
+    done <"$CONF_FILE"
 
-	if [[ -z ${SED_FILES} ]]; then
-		echo "WARNING: no files to perform variable expansion"
-	else
-		SED_LINE+=${SED_FILES}
-		eval "${SED_LINE}"
-	fi
+    SED_FILES=""
+    for sed_file in $(find "${COMPONENT_ROOT_DIR}" -type f -exec grep -Iq . {} \; -print 2>/dev/null); do
+        if fgrep -l '${{' ${sed_file} >/dev/null 2>&1; then
+            SED_FILES+="${sed_file} "
+        fi
+    done
+
+    if [[ -z ${SED_FILES} ]]; then
+        echo "WARNING: no files to perform variable expansion"
+    else
+        SED_LINE+=${SED_FILES}
+        eval "${SED_LINE}"
+    fi
 }
 
 function configure_settings() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	# The goal is to have repositories for both 'release' and 'snapshot'
-	# artifacts. These may either be remote (e.g. Nexus) repositories, or
-	# a local file-based repository. 
-	local fileRepoID=file-repository
-	local fileRepoUrl=file:$HOME_M2/file-repository
-	mkdir -p "${fileRepoUrl#file:}"
-		
-	# The following parameters are also used outside of this function.
-	# if SNAPSHOT_REPOSITORY_URL and/or RELEASE_REPOSITORY_URL is defined,
-	# the corresponding ID and url will be updated below
-	releaseRepoID=${fileRepoID}
-	releaseRepoUrl=${fileRepoUrl}
-	snapshotRepoID=${fileRepoID}
-	snapshotRepoUrl=${fileRepoUrl}
+    # The goal is to have repositories for both 'release' and 'snapshot'
+    # artifacts. These may either be remote (e.g. Nexus) repositories, or
+    # a local file-based repository.
+    local fileRepoID=file-repository
+    local fileRepoUrl=file:$HOME_M2/file-repository
+    mkdir -p "${fileRepoUrl#file:}"
 
-	# if both SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL are null,
-	# use standalone-settings.xml that just defines the file-based repo.
-	# if only one of them is specified, use file-based repo for the other.
+    # The following parameters are also used outside of this function.
+    # if SNAPSHOT_REPOSITORY_URL and/or RELEASE_REPOSITORY_URL is defined,
+    # the corresponding ID and url will be updated below
+    releaseRepoID=${fileRepoID}
+    releaseRepoUrl=${fileRepoUrl}
+    snapshotRepoID=${fileRepoID}
+    snapshotRepoUrl=${fileRepoUrl}
 
-	${POLICY_HOME}/bin/configure-maven
+    # if both SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL are null,
+    # use standalone-settings.xml that just defines the file-based repo.
+    # if only one of them is specified, use file-based repo for the other.
 
-	if [[ -n "${SNAPSHOT_REPOSITORY_URL}" ]] ; then
-		snapshotRepoID=${SNAPSHOT_REPOSITORY_ID}
-		snapshotRepoUrl=${SNAPSHOT_REPOSITORY_URL}
-	fi
+    ${POLICY_HOME}/bin/configure-maven
 
-	if [[ -n "${RELEASE_REPOSITORY_URL}" ]] ; then
-		releaseRepoID=${RELEASE_REPOSITORY_ID}
-		releaseRepoUrl=${RELEASE_REPOSITORY_URL}
-	fi
+    if [[ -n "${SNAPSHOT_REPOSITORY_URL}" ]]; then
+        snapshotRepoID=${SNAPSHOT_REPOSITORY_ID}
+        snapshotRepoUrl=${SNAPSHOT_REPOSITORY_URL}
+    fi
+
+    if [[ -n "${RELEASE_REPOSITORY_URL}" ]]; then
+        releaseRepoID=${RELEASE_REPOSITORY_ID}
+        releaseRepoUrl=${RELEASE_REPOSITORY_URL}
+    fi
 }
 
 function configure_keystore() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
     local DEFAULT_TRUSTSTORE_PASSWORD='Pol1cy_0nap'
     local DEFAULT_KEYSTORE_PASSWORD='Pol1cy_0nap'
 
-	if [[ -n ${TRUSTSTORE_PASSWD} ]]; then
-	    keytool -storepasswd -storepass "${DEFAULT_TRUSTSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-truststore" -new "${TRUSTSTORE_PASSWD}"
-	fi
+    if [[ -n ${TRUSTSTORE_PASSWD} ]]; then
+        keytool -storepasswd -storepass "${DEFAULT_TRUSTSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-truststore" -new "${TRUSTSTORE_PASSWD}"
+    fi
 
-	if [[ -n ${KEYSTORE_PASSWD} ]]; then
-	    keytool -storepasswd -storepass "${DEFAULT_KEYSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-keystore" -new "${KEYSTORE_PASSWD}"
-	fi
+    if [[ -n ${KEYSTORE_PASSWD} ]]; then
+        keytool -storepasswd -storepass "${DEFAULT_KEYSTORE_PASSWORD}" -keystore "${POLICY_HOME}/etc/ssl/policy-keystore" -new "${KEYSTORE_PASSWD}"
+    fi
 }
-
 
 function check_r_file() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	FILE=$1
-	if [[ ! -f ${FILE} || ! -r ${FILE} ]]; then
+    FILE=$1
+    if [[ ! -f ${FILE} || ! -r ${FILE} ]]; then
         return 1
-	fi
+    fi
 
-	return 0
+    return 0
 }
 
-function check_x_file() {	
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+function check_x_file() {
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	FILE=$1
-	if [[ ! -f ${FILE} || ! -x ${FILE} ]]; then
+    FILE=$1
+    if [[ ! -f ${FILE} || ! -x ${FILE} ]]; then
         return 1
-	fi
+    fi
 
-	return 0
+    return 0
 }
 
 function install_prereqs() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local CONF_FILE HOME_OWNER
-	
-	CONF_FILE=$1
-	
-	if ! check_r_file "${CONF_FILE}"; then
-		echo "error: aborting ${COMPONENT_TYPE} installation: ${CONF_FILE} is not accessible"
-		exit 1
-	fi
-	
-	if ! process_configuration "${CONF_FILE}"; then
-		echo "error: aborting ${COMPONENT_TYPE} installation: cannot process configuration ${CONF_FILE}"
-		exit 1
-	fi
-	
-	if [[ -z ${POLICY_HOME} ]]; then
-		echo "error: aborting ${COMPONENT_TYPE} installation: ${POLICY_HOME} is not set"
-		exit 1	
-	fi
+    local CONF_FILE HOME_OWNER
 
-	HOME_OWNER=$(ls -ld "${POLICY_HOME}" | awk '{print $3}')
-	if [[ ${HOME_OWNER} != ${POLICY_USER} ]]; then
-		echo "error: aborting ${COMPONENT_TYPE} installation: ${POLICY_USER} does not own ${POLICY_HOME} directory"
-		exit 1
-	fi
-	
-	echo -n "Starting ${OPERATION} of ${COMPONENT_TYPE} under ${POLICY_USER}:${POLICY_GROUP} "
-	echo "ownership with umask $(umask)."
+    CONF_FILE=$1
+
+    if ! check_r_file "${CONF_FILE}"; then
+        echo "error: aborting ${COMPONENT_TYPE} installation: ${CONF_FILE} is not accessible"
+        exit 1
+    fi
+
+    if ! process_configuration "${CONF_FILE}"; then
+        echo "error: aborting ${COMPONENT_TYPE} installation: cannot process configuration ${CONF_FILE}"
+        exit 1
+    fi
+
+    if [[ -z ${POLICY_HOME} ]]; then
+        echo "error: aborting ${COMPONENT_TYPE} installation: ${POLICY_HOME} is not set"
+        exit 1
+    fi
+
+    HOME_OWNER=$(ls -ld "${POLICY_HOME}" | awk '{print $3}')
+    if [[ ${HOME_OWNER} != ${POLICY_USER} ]]; then
+        echo "error: aborting ${COMPONENT_TYPE} installation: ${POLICY_USER} does not own ${POLICY_HOME} directory"
+        exit 1
+    fi
+
+    echo -n "Starting ${OPERATION} of ${COMPONENT_TYPE} under ${POLICY_USER}:${POLICY_GROUP} "
+    echo "ownership with umask $(umask)."
 }
 
 function configure_base() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local BASH_PROFILE_LINE PROFILE_LINE
-	
-	# check if fqdn is set in base.conf and use that value if set
-	if [[ -z ${INSTALL_FQDN} ]]
-	then
-		echo "FQDN not set in config...using the default FQDN ${FQDN}"
-	else
-		echo "Using FQDN ${INSTALL_FQDN} from config"
-		FQDN=${INSTALL_FQDN}
-	fi
+    local BASH_PROFILE_LINE PROFILE_LINE
 
-	configure_component "${BASE_CONF}" "${POLICY_HOME}"
-	
-	configure_settings
-	configure_keystore
+    # check if fqdn is set in base.conf and use that value if set
+    if [[ -z ${INSTALL_FQDN} ]]; then
+        echo "FQDN not set in config...using the default FQDN ${FQDN}"
+    else
+        echo "Using FQDN ${INSTALL_FQDN} from config"
+        FQDN=${INSTALL_FQDN}
+    fi
 
-	BASH_PROFILE_LINE=". ${POLICY_HOME}/etc/profile.d/env.sh"
-	PROFILE_LINE="ps -p \$\$ | grep -q bash || . ${POLICY_HOME}/etc/profile.d/env.sh"
+    configure_component "${BASE_CONF}" "${POLICY_HOME}"
 
-	# Note: adding to .bashrc instead of .bash_profile
-	if ! fgrep -x "${BASH_PROFILE_LINE}" "${HOME}/.bashrc" >/dev/null 2>&1; then
-		echo "${BASH_PROFILE_LINE}" >> "${HOME}/.bashrc"
-	fi
+    configure_settings
+    configure_keystore
 
-	if ! fgrep -x "${PROFILE_LINE}" "${HOME}/.profile" >/dev/null 2>&1; then
-		echo "${PROFILE_LINE}" >> "${HOME}/.profile"
-	fi
+    BASH_PROFILE_LINE=". ${POLICY_HOME}/etc/profile.d/env.sh"
+    PROFILE_LINE="ps -p \$\$ | grep -q bash || . ${POLICY_HOME}/etc/profile.d/env.sh"
 
-	source "${POLICY_HOME}/etc/profile.d/env.sh"
-	
-	cat "${POLICY_HOME}"/etc/cron.d/* | crontab
+    # Note: adding to .bashrc instead of .bash_profile
+    if ! fgrep -x "${BASH_PROFILE_LINE}" "${HOME}/.bashrc" >/dev/null 2>&1; then
+        echo "${BASH_PROFILE_LINE}" >>"${HOME}/.bashrc"
+    fi
+
+    if ! fgrep -x "${PROFILE_LINE}" "${HOME}/.profile" >/dev/null 2>&1; then
+        echo "${PROFILE_LINE}" >>"${HOME}/.profile"
+    fi
+
+    source "${POLICY_HOME}/etc/profile.d/env.sh"
+
+    cat "${POLICY_HOME}"/etc/cron.d/* | crontab
 }
 
 function install_base() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local POLICY_HOME_CONTENTS BASE_TGZ BASEX_TGZ BASH_PROFILE_LINE
-	
-	install_prereqs "${BASE_CONF}"
+    local POLICY_HOME_CONTENTS BASE_TGZ BASEX_TGZ BASH_PROFILE_LINE
 
-	# following properties must be set:
-	# POLICY_HOME - installation directory, must exist and be writable
+    install_prereqs "${BASE_CONF}"
 
-	# test that all required properties are set
-	for var in POLICY_HOME JAVA_HOME
-	do
-		if [[ -z $(eval echo \$$var) ]]; then
-			echo "ERROR: $var must be set in $BASE_CONF"
-			exit 1
-		fi
-	done
+    # following properties must be set:
+    # POLICY_HOME - installation directory, must exist and be writable
 
-	/bin/mkdir -p "${POLICY_HOME}/logs/" > /dev/null 2>&1
+    # test that all required properties are set
+    for var in POLICY_HOME JAVA_HOME; do
+        if [[ -z $(eval echo \$$var) ]]; then
+            echo "ERROR: $var must be set in $BASE_CONF"
+            exit 1
+        fi
+    done
 
-	if [[ ! ( -d "$POLICY_HOME" && -w "$POLICY_HOME" ) ]]; then
-		echo "ERROR: Installation directory $POLICY_HOME does not exist or not writable"
-		exit 1
-	fi
+    /bin/mkdir -p "${POLICY_HOME}/logs/" >/dev/null 2>&1
 
-	if [[ -z ${POLICY_DOCKER} ]]; then
-		if ! /bin/rm -fr "${POLICY_HOME}"/* > /dev/null 2>&1; then
-			echo "error: aborting base installation: cannot delete the underlying ${POLICY_HOME} files"
-			exit 1
-		fi
-	
-		POLICY_HOME_CONTENTS=$(ls -A "${POLICY_HOME}" 2> /dev/null)
-		if [[ -n ${POLICY_HOME_CONTENTS} ]]; then
-			echo "error: aborting base installation: ${POLICY_HOME} directory is not empty"
-			exit 1
-		fi
-	
-		if [[ -n ${POLICY_LOGS} ]]; then
-			if ! /bin/mkdir -p "${POLICY_LOGS}" > /dev/null 2>&1; then	
-				echo "error: aborting base installation: cannot create ${POLICY_LOGS}"
-				exit 1
-			fi	
-		fi
-	fi
-	
-	BASE_TGZ=$(ls base-*.tar.gz)
-	if [ ! -r ${BASE_TGZ} ]; then
-		echo "error: aborting: base package is not accessible"
-		exit 1			
-	fi
-	
-	tar -tzf ${BASE_TGZ} > /dev/null 2>&1
-	if [[ $? != 0 ]]; then
-		echo >&2 "error: aborting installation: invalid base package file: ${BASE_TGZ}"
-		exit 1
-	fi
-	
-	BASEX_TGZ=$(ls basex-*.tar.gz 2> /dev/null)
-	if [ -z ${BASEX_TGZ} ]; then
-		echo "warning: no basex application package present"
-		BASEX_TGZ=
-	else
-		tar -tzf ${BASEX_TGZ} > /dev/null 2>&1
-		if [[ $? != 0 ]]; then
-			echo >&2 "warning: invalid basex application package tar file: ${BASEX_TGZ}"
-			BASEX_TGZ=
-		fi			
-	fi
-	
-	# Undo any changes in the $HOME directory if any
-	
-	BASH_PROFILE_LINE=". ${POLICY_HOME}/etc/profile.d/env.sh"
+    if [[ ! (-d "$POLICY_HOME" && -w "$POLICY_HOME") ]]; then
+        echo "ERROR: Installation directory $POLICY_HOME does not exist or not writable"
+        exit 1
+    fi
 
-	# Note: using .bashrc instead of .bash_profile
-	if [[ -f ${HOME}/.bashrc ]]; then
-		/bin/sed -i "\:${BASH_PROFILE_LINE}:d" "${HOME}/.bashrc"
-	fi
+    if [[ -z ${POLICY_DOCKER} ]]; then
+        if ! /bin/rm -fr "${POLICY_HOME}"/* >/dev/null 2>&1; then
+            echo "error: aborting base installation: cannot delete the underlying ${POLICY_HOME} files"
+            exit 1
+        fi
 
-	tar -C ${POLICY_HOME} -xf ${BASE_TGZ} --no-same-owner
-	if [[ $? != 0 ]]; then
-		# this should not happened
-		echo "error: aborting base installation: base package cannot be unpacked: ${BASE_TGZ}"
-		exit 1
-	fi
-	
-	if [ ! -z ${BASEX_TGZ} ]; then
-		tar -C ${POLICY_HOME} -xf ${BASEX_TGZ} --no-same-owner
-		if [[ $? != 0 ]]; then
-			# this should not happened
-			echo "warning: basex package cannot be unpacked: ${BASEX_TGZ}"
-		fi
-	fi
+        POLICY_HOME_CONTENTS=$(ls -A "${POLICY_HOME}" 2>/dev/null)
+        if [[ -n ${POLICY_HOME_CONTENTS} ]]; then
+            echo "error: aborting base installation: ${POLICY_HOME} directory is not empty"
+            exit 1
+        fi
 
-	if [[ -d $HOME_M2 ]]; then
-		echo "Renaming existing $HOME_M2 to $HOME/m2.$TIMESTAMP"
-		mv $HOME_M2 $HOME/m2.$TIMESTAMP
-		if [[ $? != 0 ]]; then
-			echo "WARNING: Failed to rename $HOME_M2 directory; will use old directory"
-		fi
-	fi
+        if [[ -n ${POLICY_LOGS} ]]; then
+            if ! /bin/mkdir -p "${POLICY_LOGS}" >/dev/null 2>&1; then
+                echo "error: aborting base installation: cannot create ${POLICY_LOGS}"
+                exit 1
+            fi
+        fi
+    fi
 
-	mkdir -p ${HOME_M2}
-	if [[ $? != 0 ]]; then
-		echo "ERROR: Cannot create ${HOME_M2} directory"
-		exit 1
-	fi
+    BASE_TGZ=$(ls base-*.tar.gz)
+    if [ ! -r ${BASE_TGZ} ]; then
+        echo "error: aborting: base package is not accessible"
+        exit 1
+    fi
+
+    tar -tzf ${BASE_TGZ} >/dev/null 2>&1
+    if [[ $? != 0 ]]; then
+        echo >&2 "error: aborting installation: invalid base package file: ${BASE_TGZ}"
+        exit 1
+    fi
+
+    BASEX_TGZ=$(ls basex-*.tar.gz 2>/dev/null)
+    if [ -z ${BASEX_TGZ} ]; then
+        echo "warning: no basex application package present"
+        BASEX_TGZ=
+    else
+        tar -tzf ${BASEX_TGZ} >/dev/null 2>&1
+        if [[ $? != 0 ]]; then
+            echo >&2 "warning: invalid basex application package tar file: ${BASEX_TGZ}"
+            BASEX_TGZ=
+        fi
+    fi
+
+    # Undo any changes in the $HOME directory if any
+
+    BASH_PROFILE_LINE=". ${POLICY_HOME}/etc/profile.d/env.sh"
+
+    # Note: using .bashrc instead of .bash_profile
+    if [[ -f ${HOME}/.bashrc ]]; then
+        /bin/sed -i "\:${BASH_PROFILE_LINE}:d" "${HOME}/.bashrc"
+    fi
+
+    tar -C ${POLICY_HOME} -xf ${BASE_TGZ} --no-same-owner
+    if [[ $? != 0 ]]; then
+        # this should not happened
+        echo "error: aborting base installation: base package cannot be unpacked: ${BASE_TGZ}"
+        exit 1
+    fi
+
+    if [ ! -z ${BASEX_TGZ} ]; then
+        tar -C ${POLICY_HOME} -xf ${BASEX_TGZ} --no-same-owner
+        if [[ $? != 0 ]]; then
+            # this should not happened
+            echo "warning: basex package cannot be unpacked: ${BASEX_TGZ}"
+        fi
+    fi
+
+    if [[ -d $HOME_M2 ]]; then
+        echo "Renaming existing $HOME_M2 to $HOME/m2.$TIMESTAMP"
+        mv $HOME_M2 $HOME/m2.$TIMESTAMP
+        if [[ $? != 0 ]]; then
+            echo "WARNING: Failed to rename $HOME_M2 directory; will use old directory"
+        fi
+    fi
+
+    mkdir -p ${HOME_M2}
+    if [[ $? != 0 ]]; then
+        echo "ERROR: Cannot create ${HOME_M2} directory"
+        exit 1
+    fi
 
     # base.conf properties may have characters with special meaning to bash,
     # so wrap all the values in quotes in the profile.d version so it can
     # be sourced into scripts that need the values. Also remove any blanks
     # that may be present around the = sign.
-	# save ${BASE_CONF} in PDP-D installation
-	cp "${BASE_CONF}" "${POLICY_HOME}"/etc/profile.d
+    # save ${BASE_CONF} in PDP-D installation
+    cp "${BASE_CONF}" "${POLICY_HOME}"/etc/profile.d
     sed -i -e "s/ *= */=/" -e "s/=\(.*$\)/='\1'/" ${POLICY_HOME}/etc/profile.d/base.conf
 
-	configure_base
+    configure_base
 }
 
-function install_controller()
-{
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+function install_controller() {
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
-	
-	if [[ -f "${HOME}/.bashrc" ]]; then
-		source "${HOME}/.bashrc"
-	fi
-	
-	if [[ -z ${POLICY_HOME} ]]; then
-		echo "error: aborting installation: POLICY_HOME environment variable is not set."
-		exit 1	
-	fi
-	
-	if ! check_r_file ${POLICY_HOME}/etc/profile.d/env.sh; then
-		echo "error: aborting installation: ${POLICY_HOME}/etc/profile.d/env.sh is not accessible"
-		exit 1	
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local CONTROLLER_CONF CONTROLLER_ZIP RULES_JAR SOURCE_DIR CONTROLLER_DIR AAAA BBBB PORT UTOPIC ARTIFACT_VERSION
-	
-	CONTROLLER_CONF=$COMPONENT_TYPE.conf
-	install_prereqs "${CONTROLLER_CONF}"
+    if [[ -f "${HOME}/.bashrc" ]]; then
+        source "${HOME}/.bashrc"
+    fi
 
-	# following properties must be set in conf file:
-	# CONTROLLER_ARTIFACT_ID - Maven artifactId for controller
-	# CONTROLLER_NAME - directory name for the controller; controller will be installed to
-	#                   $POLICY_HOME/controllers/$CONTROLLER_NAME
-	# CONTROLLER_PORT - port number for the controller REST interface
-	# RULES_ARTIFACT -  rules artifact specifier: groupId:artifactId:version
-	
-	# test that all required properties are set
-	for var in CONTROLLER_ARTIFACT_ID CONTROLLER_NAME CONTROLLER_PORT RULES_ARTIFACT UEB_TOPIC
-	do
-		if [[ -z $(eval echo \$$var) ]]; then
-			echo "ERROR: $var must be set in $CONTROLLER_CONF"
-			exit 1
-		fi
-	done
-	
-	CONTROLLER_ZIP=$(ls $CONTROLLER_ARTIFACT_ID*.zip 2>&-)
-	if [[ -z $CONTROLLER_ZIP ]]; then
-		echo "ERROR: Cannot find controller zip file ($CONTROLLER_ARTIFACT_ID*.zip)"
-		exit 1
-	fi
+    if [[ -z ${POLICY_HOME} ]]; then
+        echo "error: aborting installation: POLICY_HOME environment variable is not set."
+        exit 1
+    fi
 
-	if [[ ! "$CONTROLLER_NAME" =~ ^[A-Za-z0-9_-]+$ ]]; then
-		echo "ERROR: CONTROLLER_NAME may only contain alphanumeric, underscore, and dash characters"
-		exit 1
-	fi
+    if ! check_r_file ${POLICY_HOME}/etc/profile.d/env.sh; then
+        echo "error: aborting installation: ${POLICY_HOME}/etc/profile.d/env.sh is not accessible"
+        exit 1
+    fi
 
-	if [[ ! "$CONTROLLER_PORT" =~ ^[0-9]+$ ]]; then
-		echo "ERROR: CONTROLLER_PORT is not a valid integer"
-		exit 1
-	fi
+    local CONTROLLER_CONF CONTROLLER_ZIP RULES_JAR SOURCE_DIR CONTROLLER_DIR AAAA BBBB PORT UTOPIC ARTIFACT_VERSION
 
-	# split artifact string into parts
-	IFS=: read RULES_GROUPID RULES_ARTIFACTID RULES_VERSION <<<$RULES_ARTIFACT
-	if [[ -z $RULES_GROUPID || -z $RULES_ARTIFACTID || -z $RULES_VERSION ]]; then
-		echo "ERROR: Invalid setting for RULES_ARTIFACT property"
-		exit 1
-	fi
+    CONTROLLER_CONF=$COMPONENT_TYPE.conf
+    install_prereqs "${CONTROLLER_CONF}"
 
-	#RULES_JAR=$RULES_ARTIFACTID-$RULES_VERSION.jar
-	RULES_JAR=$(echo ${RULES_ARTIFACTID}-*.jar)
-	if ! check_r_file $RULES_JAR; then
-		echo "WARNING: Rules jar file $RULES_JAR not found in installer package, must be installed manually"
-		RULES_JAR=
-	fi
+    # following properties must be set in conf file:
+    # CONTROLLER_ARTIFACT_ID - Maven artifactId for controller
+    # CONTROLLER_NAME - directory name for the controller; controller will be installed to
+    #                   $POLICY_HOME/controllers/$CONTROLLER_NAME
+    # CONTROLLER_PORT - port number for the controller REST interface
+    # RULES_ARTIFACT -  rules artifact specifier: groupId:artifactId:version
 
+    # test that all required properties are set
+    for var in CONTROLLER_ARTIFACT_ID CONTROLLER_NAME CONTROLLER_PORT RULES_ARTIFACT UEB_TOPIC; do
+        if [[ -z $(eval echo \$$var) ]]; then
+            echo "ERROR: $var must be set in $CONTROLLER_CONF"
+            exit 1
+        fi
+    done
 
-	SOURCE_DIR=$PWD
-	CONTROLLER_DIR=$POLICY_HOME
+    CONTROLLER_ZIP=$(ls $CONTROLLER_ARTIFACT_ID*.zip 2>&-)
+    if [[ -z $CONTROLLER_ZIP ]]; then
+        echo "ERROR: Cannot find controller zip file ($CONTROLLER_ARTIFACT_ID*.zip)"
+        exit 1
+    fi
 
-	cd $CONTROLLER_DIR
+    if [[ ! "$CONTROLLER_NAME" =~ ^[A-Za-z0-9_-]+$ ]]; then
+        echo "ERROR: CONTROLLER_NAME may only contain alphanumeric, underscore, and dash characters"
+        exit 1
+    fi
 
-	echo "Unpacking controller zip file"
-	# use jar command in case unzip not present on system
-	jar xf $SOURCE_DIR/$CONTROLLER_ZIP
-	if [[ $? != 0 ]]; then
-		echo "ERROR: unpack of controller zip file failed, install aborted"
-		exit 1
-	fi
+    if [[ ! "$CONTROLLER_PORT" =~ ^[0-9]+$ ]]; then
+        echo "ERROR: CONTROLLER_PORT is not a valid integer"
+        exit 1
+    fi
 
-	chmod +x bin/*
+    # split artifact string into parts
+    IFS=: read RULES_GROUPID RULES_ARTIFACTID RULES_VERSION <<<$RULES_ARTIFACT
+    if [[ -z $RULES_GROUPID || -z $RULES_ARTIFACTID || -z $RULES_VERSION ]]; then
+        echo "ERROR: Invalid setting for RULES_ARTIFACT property"
+        exit 1
+    fi
 
-	# Perform base variable replacement in controller config file
-	configure_component "${SOURCE_DIR}/${BASE_CONF}" "${CONTROLLER_DIR}"
-	
-	# Perform variable replacements in config files.
-	# config files may contain the following strings that need to be replaced with
-	# real values:
-	#	AAAA - artifactId
-	#	BBBB - Substring of AAAA after first dash (stripping initial "ncomp-" or "policy-")
-	#	PORT - Port number for REST server
+    #RULES_JAR=$RULES_ARTIFACTID-$RULES_VERSION.jar
+    RULES_JAR=$(echo ${RULES_ARTIFACTID}-*.jar)
+    if ! check_r_file $RULES_JAR; then
+        echo "WARNING: Rules jar file $RULES_JAR not found in installer package, must be installed manually"
+        RULES_JAR=
+    fi
 
-	echo "Performing variable replacement in config files"
-	AAAA=$CONTROLLER_ARTIFACT_ID
-	BBBB=${AAAA#[a-z]*-}
-	PORT=$CONTROLLER_PORT
-	UTOPIC=${UEB_TOPIC}
+    SOURCE_DIR=$PWD
+    CONTROLLER_DIR=$POLICY_HOME
 
-	for file in config/*
-	do
-		sed -i -e "s/AAAA/$AAAA/" -e "s/BBBB/$BBBB/" -e "s/PORT/$PORT/" -e "s!\${{UEB_TOPIC}}!${UTOPIC}!" $file
-		if [[ $? != 0 ]]; then
-			echo "ERROR: variable replacement failed for file $file, install aborted"
-			exit 1
-		fi
-	done
+    cd $CONTROLLER_DIR
 
-	# append properties for rules artifact to server properties
-	cat >>config/server.properties <<EOF
+    echo "Unpacking controller zip file"
+    # use jar command in case unzip not present on system
+    jar xf $SOURCE_DIR/$CONTROLLER_ZIP
+    if [[ $? != 0 ]]; then
+        echo "ERROR: unpack of controller zip file failed, install aborted"
+        exit 1
+    fi
+
+    chmod +x bin/*
+
+    # Perform base variable replacement in controller config file
+    configure_component "${SOURCE_DIR}/${BASE_CONF}" "${CONTROLLER_DIR}"
+
+    # Perform variable replacements in config files.
+    # config files may contain the following strings that need to be replaced with
+    # real values:
+    #	AAAA - artifactId
+    #	BBBB - Substring of AAAA after first dash (stripping initial "ncomp-" or "policy-")
+    #	PORT - Port number for REST server
+
+    echo "Performing variable replacement in config files"
+    AAAA=$CONTROLLER_ARTIFACT_ID
+    BBBB=${AAAA#[a-z]*-}
+    PORT=$CONTROLLER_PORT
+    UTOPIC=${UEB_TOPIC}
+
+    for file in config/*; do
+        sed -i -e "s/AAAA/$AAAA/" -e "s/BBBB/$BBBB/" -e "s/PORT/$PORT/" -e "s!\${{UEB_TOPIC}}!${UTOPIC}!" $file
+        if [[ $? != 0 ]]; then
+            echo "ERROR: variable replacement failed for file $file, install aborted"
+            exit 1
+        fi
+    done
+
+    # append properties for rules artifact to server properties
+    cat >>config/server.properties <<EOF
 
 rules.groupId=$RULES_GROUPID
 rules.artifactId=$RULES_ARTIFACTID
 rules.version=$RULES_VERSION
 EOF
 
-	# TODO: run pw.sh script to set passwords
+    # TODO: run pw.sh script to set passwords
 
-	# return to directory where we started
-	cd $SOURCE_DIR
-	
-	# install rules jar into repository if present
-	if [[ -n $RULES_JAR ]]; then
-		# can't use RULES_VERSION because may be set to "LATEST",
-		# so extract version from the jar filename
-		ARTIFACT_VERSION=$(sed -e "s/${RULES_ARTIFACTID}-//" -e "s/\.jar//" <<<${RULES_JAR})
-		if [[ -n $repositoryUrl ]]; then
-			echo "Deploying rules artifact to Policy Repository"
-			mvn deploy:deploy-file -Dfile=$RULES_JAR \
-				-DgroupId=$RULES_GROUPID -DartifactId=$RULES_ARTIFACTID -Dversion=$ARTIFACT_VERSION \
-				-DrepositoryId=${repositoryID} -Durl=${repositoryUrl} \
-				-DgeneratePom=true -DupdateReleaseInfo=true
-		else
-			echo "Installing rules artifact into local .m2 repository"
-			mvn --offline org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file \
-				-Dfile=$RULES_JAR -DgeneratePom=true -DupdateReleaseInfo=true
-		fi
-	fi
+    # return to directory where we started
+    cd $SOURCE_DIR
+
+    # install rules jar into repository if present
+    if [[ -n $RULES_JAR ]]; then
+        # can't use RULES_VERSION because may be set to "LATEST",
+        # so extract version from the jar filename
+        ARTIFACT_VERSION=$(sed -e "s/${RULES_ARTIFACTID}-//" -e "s/\.jar//" <<<${RULES_JAR})
+        if [[ -n $repositoryUrl ]]; then
+            echo "Deploying rules artifact to Policy Repository"
+            mvn deploy:deploy-file -Dfile=$RULES_JAR \
+                -DgroupId=$RULES_GROUPID -DartifactId=$RULES_ARTIFACTID -Dversion=$ARTIFACT_VERSION \
+                -DrepositoryId=${repositoryID} -Durl=${repositoryUrl} \
+                -DgeneratePom=true -DupdateReleaseInfo=true
+        else
+            echo "Installing rules artifact into local .m2 repository"
+            mvn --offline org.apache.maven.plugins:maven-install-plugin:2.5.2:install-file \
+                -Dfile=$RULES_JAR -DgeneratePom=true -DupdateReleaseInfo=true
+        fi
+    fi
 }
 
 # Usage: getPomAttributes <pom-file> <attribute> ...
@@ -582,74 +574,71 @@ EOF
 # the specified attributes (e.g. 'groupId', 'artifactId', 'version'). The
 # attributes are returned as environment variables with the associated name.
 
-function getPomAttributes
-{
-	local tab=$'\t'
-	local rval=0
-	local file="$1"
-	local attr
-	local value
-	shift
-	for attr in "$@" ; do
-		# Try to fetch the parameter associated with the 'pom.xml' file.
-		# Initially, the 'parent' element is excluded. If the desired
-		# parameter is not found, the 'parent' element is included in the
-		# second attempt.
-		value=$(sed -n \
-			-e '/<parent>/,/<\/parent>/d' \
-			-e '/<dependencies>/,/<\/dependencies>/d' \
-			-e '/<build>/,/<\/build>/d' \
-			-e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
-			<"${file}")
+function getPomAttributes() {
+    local tab=$'\t'
+    local rval=0
+    local file="$1"
+    local attr
+    local value
+    shift
+    for attr in "$@"; do
+        # Try to fetch the parameter associated with the 'pom.xml' file.
+        # Initially, the 'parent' element is excluded. If the desired
+        # parameter is not found, the 'parent' element is included in the
+        # second attempt.
+        value=$(sed -n \
+            -e '/<parent>/,/<\/parent>/d' \
+            -e '/<dependencies>/,/<\/dependencies>/d' \
+            -e '/<build>/,/<\/build>/d' \
+            -e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
+            <"${file}")
 
-		if [[ "${value}" == "" ]] ; then
-			# need to check parent for parameter
-			value=$(sed -n \
-				-e '/<dependencies>/,/<\/dependencies>/d' \
-				-e '/<build>/,/<\/build>/d' \
-				-e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
-				<"${file}")
-			if [[ "${value}" == "" ]] ; then
-				echo "${file}: Can't determine ${attr}" >&2
-				rval=1
-			fi
-		fi
-		# the following sets an environment variable with the name referred
-		# to by ${attr}
-		read ${attr} <<<"${value}"
-	done
-	return ${rval}
+        if [[ "${value}" == "" ]]; then
+            # need to check parent for parameter
+            value=$(sed -n \
+                -e '/<dependencies>/,/<\/dependencies>/d' \
+                -e '/<build>/,/<\/build>/d' \
+                -e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
+                <"${file}")
+            if [[ "${value}" == "" ]]; then
+                echo "${file}: Can't determine ${attr}" >&2
+                rval=1
+            fi
+        fi
+        # the following sets an environment variable with the name referred
+        # to by ${attr}
+        read ${attr} <<<"${value}"
+    done
+    return ${rval}
 }
-
 
 # Usage: installPom <pom-file>
 #
 # This function installs a 'pom.xml' file in the local repository
 
-function installPom
-{
-	# need to extract attributes from POM file
-	if getPomAttributes "${1}" artifactId groupId version ; then
-		local repoID repoUrl
-		if [[ "${version}" =~ SNAPSHOT ]] ; then
-			repoID=${snapshotRepoID}
-			repoUrl=${snapshotRepoUrl}
-		else
-			repoID=${releaseRepoID}
-			repoUrl=${releaseRepoUrl}
-		fi
-		echo "${1}: Deploying POM artifact to remote repository"
-		mvn deploy:deploy-file -Dfile="$1" \
-			-Dpackaging=pom -DgeneratePom=false \
-			-DgroupId=${groupId} \
-			-DartifactId=${artifactId} \
-			-Dversion=${version} \
-			-DrepositoryId=${repoID} -Durl=${repoUrl} \
-			-DupdateReleaseInfo=true
-	else
-		echo "${1}: Can't install pom due to missing attributes" >&2
-		return 1
-	fi
+function installPom() {
+    # need to extract attributes from POM file
+    if getPomAttributes "${1}" artifactId groupId version; then
+        local repoID repoUrl
+        if [[ "${version}" =~ SNAPSHOT ]]; then
+            repoID=${snapshotRepoID}
+            repoUrl=${snapshotRepoUrl}
+        else
+            repoID=${releaseRepoID}
+            repoUrl=${releaseRepoUrl}
+        fi
+        echo "${1}: Deploying POM artifact to remote repository"
+        mvn deploy:deploy-file -Dfile="$1" \
+            -Dpackaging=pom -DgeneratePom=false \
+            -DgroupId=${groupId} \
+            -DartifactId=${artifactId} \
+            -Dversion=${version} \
+            -DrepositoryId=${repoID} -Durl=${repoUrl} \
+            -DupdateReleaseInfo=true
+    else
+        echo "${1}: Can't install pom due to missing attributes" >&2
+        return 1
+    fi
 }
 
 # Usage: installJar <jar-file>
@@ -657,148 +646,147 @@ function installPom
 # This function installs a JAR file in the local repository, as well as
 # the 'pom.xml' member it contains.
 
-function installJar
-{
-	local dir=$(mktemp -d)
-	local jar="${1##*/}"
-	cp -p "${1}" "${dir}/${jar}"
+function installJar() {
+    local dir=$(mktemp -d)
+    local jar="${1##*/}"
+    cp -p "${1}" "${dir}/${jar}"
 
-	(
-		local rval=0
-		cd "${dir}"
-		# determine name of 'pom' file within JAR
-		local pom=$(jar tf ${jar} META-INF | grep '/pom\.xml$' | head -1)
-		if [[ "${pom}" ]] ; then
-			# extract pom file
-			jar xf ${jar} "${pom}"
+    (
+        local rval=0
+        cd "${dir}"
+        # determine name of 'pom' file within JAR
+        local pom=$(jar tf ${jar} META-INF | grep '/pom\.xml$' | head -1)
+        if [[ "${pom}" ]]; then
+            # extract pom file
+            jar xf ${jar} "${pom}"
 
-			# determine version from pom file
-			if getPomAttributes "${pom}" version ; then
-				local repoID repoUrl
-				if [[ "${version}" =~ SNAPSHOT ]] ; then
-					repoID=${snapshotRepoID}
-					repoUrl=${snapshotRepoUrl}
-				else
-					repoID=${releaseRepoID}
-					repoUrl=${releaseRepoUrl}
-				fi
-				echo "${1}: Deploying JAR artifact to remote repository"
-				mvn deploy:deploy-file \
-					-Dfile=${jar} \
-					-Dversion=${version} \
-					-Dpackaging=jar -DgeneratePom=false -DpomFile=${pom} \
-					-DrepositoryId=${repoID} -Durl=${repoUrl} \
-					-DupdateReleaseInfo=true
-			else
-				echo "${1}: Can't determine version from 'pom.xml'" >&2
-				rval=1
-			fi
-		else
-			echo "${1}: Can't find 'pom.xml'" >&2
-			rval=1
-		fi
-		rm -rf ${dir}
-		return ${rval}
-	)
+            # determine version from pom file
+            if getPomAttributes "${pom}" version; then
+                local repoID repoUrl
+                if [[ "${version}" =~ SNAPSHOT ]]; then
+                    repoID=${snapshotRepoID}
+                    repoUrl=${snapshotRepoUrl}
+                else
+                    repoID=${releaseRepoID}
+                    repoUrl=${releaseRepoUrl}
+                fi
+                echo "${1}: Deploying JAR artifact to remote repository"
+                mvn deploy:deploy-file \
+                    -Dfile=${jar} \
+                    -Dversion=${version} \
+                    -Dpackaging=jar -DgeneratePom=false -DpomFile=${pom} \
+                    -DrepositoryId=${repoID} -Durl=${repoUrl} \
+                    -DupdateReleaseInfo=true
+            else
+                echo "${1}: Can't determine version from 'pom.xml'" >&2
+                rval=1
+            fi
+        else
+            echo "${1}: Can't find 'pom.xml'" >&2
+            rval=1
+        fi
+        rm -rf ${dir}
+        return ${rval}
+    )
 }
 
 # Unzip the 'artifacts-*.zip' file, and install all of the associated
 # artifacts into the local repository.
 
-function installArtifacts
-{
-	local file
-	if [[ -f $(echo artifacts-*.zip) ]] ; then
-		# use jar command in case unzip not present on system
-		jar xf artifacts-*.zip
-		for file in artifacts/* ; do
-			case "${file}" in
-				*pom.xml|*.pom) installPom "${file}";;
-				*.jar) installJar "${file}";;
-				*) echo "${file}: Don't know how to install artifact" >&2;;
-			esac
-		done
-	fi
+function installArtifacts() {
+    local file
+    if [[ -f $(echo artifacts-*.zip) ]]; then
+        # use jar command in case unzip not present on system
+        jar xf artifacts-*.zip
+        for file in artifacts/*; do
+            case "${file}" in
+            *pom.xml | *.pom) installPom "${file}" ;;
+            *.jar) installJar "${file}" ;;
+            *) echo "${file}: Don't know how to install artifact" >&2 ;;
+            esac
+        done
+    fi
 }
 
-function installFeatures
-{
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+function installFeatures() {
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	local name featureConf
-	export FEATURES_HOME="${POLICY_HOME}/${FEATURES_DIR}"
-	echo "FEATURES_HOME is ${FEATURES_HOME}"
-	
-	mkdir -p "${FEATURES_HOME}" > /dev/null 2>&1
-	if [[ -d "${FEATURES_HOME}" && -x "${FEATURES_HOME}" ]]; then
-		SOURCE_DIR=$PWD
-		for feature in feature-*.zip ; do
-			name="${feature#feature-}"
-			name="${name%%-[0-9]*\.zip}"
-			mkdir -p "${FEATURES_HOME}/${name}" > /dev/null 2>&1
-			(cd "${FEATURES_HOME}/${name}"; jar xf ${SOURCE_DIR}/${feature})
-			featureConf="feature-${name}.conf"
-			if [[ -r "${featureConf}" ]]; then
-				configure_component "${featureConf}" "${FEATURES_HOME}"
-				cp "${featureConf}" "${POLICY_HOME}"/etc/profile.d
-				sed -i -e "s/ *= */=/" -e "s/=\(.*$\)/='\1'/" "${POLICY_HOME}/etc/profile.d/${featureConf}"
-				echo "feature ${name} has been installed (configuration present)"
-			else
-				echo "feature ${name} has been installed (no configuration present)"
-			fi
-		done
-		
-		echo "applying base configuration to features"
-		configure_component "${BASE_CONF}" "${FEATURES_HOME}"
-	else
-		echo "error: aborting ${FEATURES_HOME} is not accessible"
-		exit 1
-	fi
+    local name featureConf
+    export FEATURES_HOME="${POLICY_HOME}/${FEATURES_DIR}"
+    echo "FEATURES_HOME is ${FEATURES_HOME}"
+
+    mkdir -p "${FEATURES_HOME}" >/dev/null 2>&1
+    if [[ -d "${FEATURES_HOME}" && -x "${FEATURES_HOME}" ]]; then
+        SOURCE_DIR=$PWD
+        for feature in feature-*.zip; do
+            name="${feature#feature-}"
+            name="${name%%-[0-9]*\.zip}"
+            mkdir -p "${FEATURES_HOME}/${name}" >/dev/null 2>&1
+            (
+                cd "${FEATURES_HOME}/${name}"
+                jar xf ${SOURCE_DIR}/${feature}
+            )
+            featureConf="feature-${name}.conf"
+            if [[ -r "${featureConf}" ]]; then
+                configure_component "${featureConf}" "${FEATURES_HOME}"
+                cp "${featureConf}" "${POLICY_HOME}"/etc/profile.d
+                sed -i -e "s/ *= */=/" -e "s/=\(.*$\)/='\1'/" "${POLICY_HOME}/etc/profile.d/${featureConf}"
+                echo "feature ${name} has been installed (configuration present)"
+            else
+                echo "feature ${name} has been installed (no configuration present)"
+            fi
+        done
+
+        echo "applying base configuration to features"
+        configure_component "${BASE_CONF}" "${FEATURES_HOME}"
+    else
+        echo "error: aborting ${FEATURES_HOME} is not accessible"
+        exit 1
+    fi
 }
 
-function do_install()
-{
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} $@ --"
-		set -x
-	fi
+function do_install() {
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} $@ --"
+        set -x
+    fi
 
-	echo "Starting installation at $(date) at ${PWD}"
-	echo
-	
-	COMPONENT_TYPE=base
-	BASE_CONF=base.conf
-	install_base
-	component_preinstall
+    echo "Starting installation at $(date) at ${PWD}"
+    echo
 
-	COMPONENT_TYPE=policy-management
-	install_controller
-	
-	installFeatures
-	installArtifacts
+    COMPONENT_TYPE=base
+    BASE_CONF=base.conf
+    install_base
+    component_preinstall
 
-    appInstallers=$(ls apps*installer 2> /dev/null)
+    COMPONENT_TYPE=policy-management
+    install_controller
+
+    installFeatures
+    installArtifacts
+
+    appInstallers=$(ls apps*installer 2>/dev/null)
     for appInstaller in ${appInstallers}; do
         echo "Executing application installer ${appInstaller} .."
         source ${appInstaller}
     done
 
-	echo
-	echo "Installation complete"
-	echo "Please logoff and login again to update shell environment"
-	
+    echo
+    echo "Installation complete"
+    echo "Please logoff and login again to update shell environment"
+
 }
 
 export POLICY_USER=$(/usr/bin/id -un)
 export POLICY_GROUP=$POLICY_USER
-	
-FQDN=$(hostname -f 2> /dev/null)
+
+FQDN=$(hostname -f 2>/dev/null)
 if [[ $? != 0 || -z ${FQDN} ]]; then
-	echo "error: cannot determine the FQDN for this host $(hostname)."
-	exit 1
+    echo "error: cannot determine the FQDN for this host $(hostname)."
+    exit 1
 fi
 
 TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
