@@ -5,6 +5,7 @@
 # ONAP
 # ================================================================================
 # Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+# Modifications Copyright (C) 2020 Bell Canada.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -205,6 +206,46 @@ function getPomAttributes
 }
 
 ##############################################################################
+# Usage: getMavenProxyArgs
+#
+# This function performs parsing of http proxy environment variable if provided,
+# extracting the attributes such as proxy host, port, username and password.
+# These proxy attributes are returned as maven proxy settings to be used
+# as build arguments with maven commands.
+##############################################################################
+
+function getMavenProxyArgs
+{
+    if [[ ${DEBUG} == y ]]; then
+        echo "-- ${FUNCNAME[0]} $* --"
+        set -x
+    fi
+
+    proxyUrl=
+    mvnProxyArgs=
+    if [[ -n ${HTTP_PROXY} ]]; then
+        proxyUrl=$(echo ${HTTP_PROXY} | cut -d'/' -f3)
+    elif [[ -n ${http_proxy} ]]; then
+        proxyUrl=$(echo ${http_proxy} | cut -d'/' -f3)
+    fi
+
+    if [[ -n ${proxyUrl} && "$proxyUrl" == *"@"* ]]; then
+        proxyHost=$(echo ${proxyUrl} | cut -d'@' -f2 | cut -d':' -f1)
+        proxyPort=$(echo ${proxyUrl} | cut -d'@' -f2 | cut -d':' -f2)
+        proxyUsername=$(echo ${proxyUrl} | cut -d'@' -f1 | cut -d':' -f1)
+        proxyPassword=$(echo ${proxyUrl} | cut -d'@' -f1 | cut -d':' -f2)
+        mvnProxyArgs="-DproxyHost=${proxyHost} -DproxyPort=${proxyPort}
+                      -DproxyUsername=${proxyUsername}
+                      -DproxyPassword=${proxyPassword}"
+    else
+        proxyHost=$(echo ${proxyUrl} | cut -d':' -f1)
+        proxyPort=$(echo ${proxyUrl} | cut -d':' -f2)
+        mvnProxyArgs="-DproxyHost=${proxyHost} -DproxyPort=${proxyPort}"
+    fi
+    echo ${mvnProxyArgs}
+}
+
+##############################################################################
 # Usage: deployJar <jar-file>
 #
 # This function deploys a JAR file in a repository, as well as
@@ -241,7 +282,7 @@ function deployJar
     echo "${file}: deploying jar artifact to repository ${repoId}: ${repoUrl}"
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-    mvn ${CUSTOM_SETTINGS} deploy:deploy-file \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} deploy:deploy-file \
         -Dfile="${file}" \
         -Dversion="${version}" \
         -Dpackaging=jar \
@@ -290,7 +331,7 @@ function deployPom
     echo "${file}: deploying pom artifact to repository ${repoId}: ${repoUrl}"
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-    mvn ${CUSTOM_SETTINGS} deploy:deploy-file \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} deploy:deploy-file \
         -Dfile="${file}" \
         -Dpackaging=pom \
         -DgeneratePom=false \
@@ -362,8 +403,8 @@ function installJar
         return 1
     fi
 
-    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
-        -Dfile="${file}"
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
+    org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile="${file}"
 
     return $?
 }
@@ -387,7 +428,8 @@ function installPom
         return 1
     fi
 
-    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
+        org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
         -Dpackaging=pom \
         -Dfile="${file}" \
         -DpomFile="${file}"
@@ -462,7 +504,8 @@ function installDependencies
     echo "${file}: deploying dependencies from repository ${DEPENDENCY_REPO_URL}"
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
+        org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
         -DartifactId="${artifactId}" \
         -DgroupId="${groupId}" \
         -Dversion="${version}" \
@@ -492,6 +535,7 @@ unset WORKING_POM_PROPERTIES
 unset DEPENDENCY_REPO_URL
 unset SETTINGS_FILE
 unset CUSTOM_SETTINGS
+unset MVN_PROXY_SETTINGS
 
 # process input
 
@@ -525,6 +569,9 @@ fi
 if [[ -n ${SETTINGS_FILE} ]]; then
     CUSTOM_SETTINGS="--settings=${SETTINGS_FILE}"
 fi
+
+# Fetch proxy attributes to mvn if provided
+MVN_PROXY_SETTINGS=$( getMavenProxyArgs )
 
 # retval has the count of failed operations
 

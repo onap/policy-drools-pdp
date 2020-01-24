@@ -3,7 +3,7 @@
   ONAP Policy Engine - Docker files
   ================================================================================
   Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
-  Modifications Copyright (C) 2019 Bell Canada.
+  Modifications Copyright (C) 2019-2020 Bell Canada.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -45,6 +45,8 @@
         <docker.push.registry>nexus3.onap.org:10003</docker.push.registry>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
         <docker.buildArg.BUILD_VERSION_DROOLS>${project.version}</docker.buildArg.BUILD_VERSION_DROOLS>
+        <docker.buildArg.MVN_SNAPSHOT_REPO_URL>${nexusproxy}/${snapshots.path}</docker.buildArg.MVN_SNAPSHOT_REPO_URL>
+        <docker.buildArg.MVN_RELEASE_REPO_URL>${nexusproxy}/${releases.path}</docker.buildArg.MVN_RELEASE_REPO_URL>
     </properties>
 
     <build>
