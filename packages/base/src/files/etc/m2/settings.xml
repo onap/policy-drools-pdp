@@ -4,11 +4,12 @@
   Base Package
   ================================================================================
   Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+  Modifications Copyright (C) 2020 Bell Canada.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
        http://www.apache.org/licenses/LICENSE-2.0
   
   Unless required by applicable law or agreed to in writing, software
@@ -19,18 +20,13 @@
   ============LICENSE_END=========================================================
 -->
 
-
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-
     <offline>false</offline>
-
     <profiles>
-
         <profile>
             <id>policy-local</id>
-
             <repositories>
                 <repository>
                     <id>file-repository</id>
@@ -45,12 +41,9 @@
                     </snapshots>
                 </repository>
             </repositories>
-
         </profile>
-
         <profile>
             <id>policy-releases</id>
-
             <repositories>
                 <repository>
                     <id>${env.RELEASE_REPOSITORY_ID}</id>
@@ -64,12 +57,9 @@
                     </snapshots>
                 </repository>
             </repositories>
-
         </profile>
-
         <profile>
             <id>policy-snapshots</id>
-
             <repositories>
                 <repository>
                     <id>${env.SNAPSHOT_REPOSITORY_ID}</id>
@@ -83,17 +73,14 @@
                     </snapshots>
                 </repository>
             </repositories>
-
         </profile>
-
         <profile>
-            <id>onap-releases</id>
-
+            <id>releases</id>
             <repositories>
                 <repository>
-                    <id>onap-releases</id>
-                    <name>onap-releases</name>
-                    <url>https://nexus.onap.org/content/repositories/releases/</url>
+                    <id>releases</id>
+                    <name>releases</name>
+                    <url>${env.MVN_RELEASE_REPO_URL}</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
@@ -102,18 +89,14 @@
                     </snapshots>
                 </repository>
             </repositories>
-
         </profile>
-
         <profile>
-
-            <id>onap-snapshots</id>
-
+            <id>snapshots</id>
             <repositories>
                 <repository>
-                    <id>onap-snapshots</id>
-                    <name>onap-snapshots</name>
-                    <url>https://nexus.onap.org/content/repositories/snapshots/</url>
+                    <id>snapshots</id>
+                    <name>snapshots</name>
+                    <url>${env.MVN_SNAPSHOT_REPO_URL}</url>
                     <releases>
                         <enabled>false</enabled>
                     </releases>
@@ -122,19 +105,15 @@
                     </snapshots>
                 </repository>
             </repositories>
-
         </profile>
-
     </profiles>
-
     <activeProfiles>
         <activeProfile>policy-local</activeProfile>
         <activeProfile>policy-releases</activeProfile>
         <activeProfile>policy-snapshots</activeProfile>
-        <activeProfile>onap-releases</activeProfile>
-        <activeProfile>onap-snapshots</activeProfile>
+        <activeProfile>releases</activeProfile>
+        <activeProfile>snapshots</activeProfile>
     </activeProfiles>
-
     <servers>
         <server>
             <id>${env.SNAPSHOT_REPOSITORY_ID}</id>
@@ -147,5 +126,4 @@
             <password>${env.REPOSITORY_PASSWORD}</password>
         </server>
     </servers>
-
 </settings>
