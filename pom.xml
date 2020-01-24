@@ -54,6 +54,10 @@
         <xml.apis.version>1.4.01</xml.apis.version>
         <policy.common.version>1.6.2-SNAPSHOT</policy.common.version>
         <policy.models.version>2.2.1-SNAPSHOT</policy.models.version>
+
+        <!-- HTTP proxy settings if needed -->
+        <http.proxy.host/>
+        <http.proxy.port/>
     </properties>
 
     <modules>

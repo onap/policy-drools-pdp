@@ -241,7 +241,7 @@ function deployJar
     echo "${file}: deploying jar artifact to repository ${repoId}: ${repoUrl}"
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-    mvn ${CUSTOM_SETTINGS} deploy:deploy-file \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} deploy:deploy-file \
         -Dfile="${file}" \
         -Dversion="${version}" \
         -Dpackaging=jar \
@@ -290,7 +290,7 @@ function deployPom
     echo "${file}: deploying pom artifact to repository ${repoId}: ${repoUrl}"
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-    mvn ${CUSTOM_SETTINGS} deploy:deploy-file \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} deploy:deploy-file \
         -Dfile="${file}" \
         -Dpackaging=pom \
         -DgeneratePom=false \
@@ -362,8 +362,8 @@ function installJar
         return 1
     fi
 
-    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
-        -Dfile="${file}"
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
+    org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile="${file}"
 
     return $?
 }
@@ -387,7 +387,8 @@ function installPom
         return 1
     fi
 
-    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
+        org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
         -Dpackaging=pom \
         -Dfile="${file}" \
         -DpomFile="${file}"
@@ -462,7 +463,8 @@ function installDependencies
     echo "${file}: deploying dependencies from repository ${DEPENDENCY_REPO_URL}"
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
-    mvn ${CUSTOM_SETTINGS} org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
+    mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
+        org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
         -DartifactId="${artifactId}" \
         -DgroupId="${groupId}" \
         -Dversion="${version}" \
@@ -492,6 +494,7 @@ unset WORKING_POM_PROPERTIES
 unset DEPENDENCY_REPO_URL
 unset SETTINGS_FILE
 unset CUSTOM_SETTINGS
+unset MVN_PROXY_SETTINGS
 
 # process input
 
@@ -524,6 +527,12 @@ fi
 
 if [[ -n ${SETTINGS_FILE} ]]; then
     CUSTOM_SETTINGS="--settings=${SETTINGS_FILE}"
+fi
+
+# HTTP_PROXY_HOST and HTTP_PROXY_PORT are
+# environmental variables (from docker build property overrides)
+if [[ -n ${HTTP_PROXY_HOST} ]] && [[ -n ${HTTP_PROXY_PORT} ]]; then
+    MVN_PROXY_SETTINGS="-DproxyHost=${HTTP_PROXY_HOST} -DproxyPort=${HTTP_PROXY_PORT}"
 fi
 
 # retval has the count of failed operations
