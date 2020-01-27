@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c007c29_013f4e89",
+        "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-27T13:40:51Z",
+      "side": 1,
+      "message": "We also need to do it in the \"settings.xml\" counterpart when the nexus container is part of the installation to support all cases.   This is just for the standalone drools case (no other component needed)",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1eeecd25_6c721171",
+        "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-27T13:40:51Z",
+      "side": 1,
+      "message": "should change \u003cid\u003e to something more generic since may not be onap.   It will need to modify the activeprofiles below too.   If you can grep the repo also, I don\u0027t think there are other references but will need to change them as well if there are (don\u0027t think there are though).",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "020e62dd_6e2b06d0",
+        "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-27T13:40:51Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71139d40_3798aada",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-27T13:40:51Z",
+      "side": 1,
+      "message": "I think a better name for this would be http_proxy, as the OS env. var.   Linux OS apps typically honor the system variables with this name, so if a proxy is used, this would also solve problems within the Linux OS.   Note that the syntax would be a little different, there would be no http port as the http_proxy would include the port.   In drools tooling downstream would need to be aware of that to separate host and port to pass in to mvn.",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33debece_a74f06dc",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-27T13:40:51Z",
+      "side": 1,
+      "message": "If you can add a note preceeded with \"#\" in packages/../base.conf specifying these variables and a comment specifying that if they want to override default build settings for the image, those values would need to be overriden.   If that could also be done in policy/docker/../base.conf.   In OOM I could add it myself to the release in progress review once we merge this review.",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb15f1e1_5f18d225",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 2
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-27T13:40:51Z",
+      "side": 1,
+      "message": "Note my comment on Dockerfile to use the \"*nix\" default OS proxy env vars.",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
