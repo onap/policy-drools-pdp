@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "913b771b_59a68a8f",
+        "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-27T14:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c007c29_013f4e89",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1eeecd25_6c721171",
         "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2020-01-27T13:40:51Z",
       "side": 1,
       "message": "should change \u003cid\u003e to something more generic since may not be onap.   It will need to modify the activeprofiles below too.   If you can grep the repo also, I don\u0027t think there are other references but will need to change them as well if there are (don\u0027t think there are though).",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c51cf7c4_2512ec10",
+        "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-27T14:57:35Z",
+      "side": 1,
+      "message": "Sure will fix the IDs for releases and snapshots to make it more generic",
+      "parentUuid": "1eeecd25_6c721171",
       "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "d9930a68_5aa95b36",
+        "filename": "packages/base/src/files/etc/m2/standalone-settings.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-27T14:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "020e62dd_6e2b06d0",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "71139d40_3798aada",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 2
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "4a81c7bb_fddad3e8",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-27T14:57:35Z",
+      "side": 1,
+      "message": "I was initially thinking of this but refrained from doing so since i\u0027d have to parse for hostname and port to supply as mvn args. But yes it is much cleaner to export the proxy setting, will fix this up.",
+      "parentUuid": "71139d40_3798aada",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "33debece_a74f06dc",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 2
@@ -81,6 +153,24 @@
       "writtenOn": "2020-01-27T13:40:51Z",
       "side": 1,
       "message": "If you can add a note preceeded with \"#\" in packages/../base.conf specifying these variables and a comment specifying that if they want to override default build settings for the image, those values would need to be overriden.   If that could also be done in policy/docker/../base.conf.   In OOM I could add it myself to the release in progress review once we merge this review.",
+      "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51d61c8a_1d3da97b",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-27T14:57:35Z",
+      "side": 1,
+      "message": "Sure will update the base.conf files with the details.",
+      "parentUuid": "33debece_a74f06dc",
       "revId": "f4804d6bee7fe19339a0fac152ac57dd5beb772f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
