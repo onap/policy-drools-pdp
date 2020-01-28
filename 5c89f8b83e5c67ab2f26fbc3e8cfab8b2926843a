@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d2a8740_19103e29",
+        "filename": "packages/base/src/files/etc/m2/settings.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5658
+      },
+      "writtenOn": "2020-01-28T22:48:33Z",
+      "side": 1,
+      "message": "License update",
+      "revId": "5c89f8b83e5c67ab2f26fbc3e8cfab8b2926843a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "120c7581_90e538e0",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5658
+      },
+      "writtenOn": "2020-01-28T22:48:33Z",
+      "side": 1,
+      "message": "License update",
+      "revId": "5c89f8b83e5c67ab2f26fbc3e8cfab8b2926843a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
