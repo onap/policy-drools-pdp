@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91b518da_e0cd3e4c",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 5
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-29T21:12:39Z",
+      "side": 1,
+      "message": "maybe there is a better way to incorporate this using parameter expansion, i tried the possible pattern matching options but wasn\u0027t successful for cases with and without credentials being passed in http_proxy.",
+      "range": {
+        "startLine": 234,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 42
+      },
+      "revId": "bb03caf94de4ad884e308dbce4992e370638d629",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
