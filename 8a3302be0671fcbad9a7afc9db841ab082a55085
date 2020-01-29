@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f1275802_36c96e80",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "I think in Debian/Ubuntu lower case http_proxy is the one honored by the OS.   I don\u0027t think we need the upper case version.  The format honored by the OS is:\n\nexport http_proxy\u003dhttp://\u003cusername\u003e:\u003cpassword\u003e@\u003cproxy-server\u003e:\u003cproxy-port\u003e",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f03d139_ab58f7b5",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "I think we could remove the upper case version .. and we probably should leave them commented out, ie., it would be just an indication for the installer on what to change if they want to use a proxy, ie.\n\n#http_proxy\u003d\n#https_proxy\u003d",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bfd392b0_415b8bf3",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "I think we can leave these commented out as well, we want to indicate the installer what variables to change to override current \"onap nexus\" repos.   As an example you could place the actual onap nexus urls that were replaced,\nie.\n\n# MVN_SNAPSHOT_REPO_URL\u003dhttp..onap..nexus..release\n# MVN_RELEASE_REPO_URL\u003dhttp..onap..nexus..snapshot",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad1d7640_7dde5780",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "Add check here:\n\nif [[ -z ${http_proxy} ]]; then\n    return 0\nfi",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2f769206_728d44dd",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "If these variables are only used within the function mark them local, ie. \n\nlocal proxyUrl\n\nIn any way don\u0027t think they are needed, see below.",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "34340473_74059a4e",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "no need the code below, see next comment.",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d198cd7_a9b7b34f",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "delete echo line below",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27791e50_035b9d8c",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "I think you can simplify using param expansion in bash, this I believe these 4 lines below will do it:\n\nproxy_cred\u003d${http_proxy#*//}\nproxy\u003d${proxy_cred##*@}\nhost\u003d${proxy%%:*}\nport\u003d${proxy##*:}\n\nSee example below, works for the 2 url formats (including the credentials one):\n\n[~] \n[~] http_proxy\u003dhttp://a.proxy.com:8080\n[~] proxy_cred\u003d${http_proxy#*//}\n[~] proxy\u003d${proxy_cred##*@}\n[~] host\u003d${proxy%%:*}\n[~] port\u003d${proxy##*:}\n[~] \n[~] echo \"http_proxy\u003d$http_proxy  proxy\u003d$proxy  host\u003d$host  port\u003d$port\"\nhttp_proxy\u003dhttp://a.proxy.com:8080  proxy\u003da.proxy.com:8080  host\u003da.proxy.com  port\u003d8080\n[~] \n[~] \n[~] http_proxy\u003dhttp://jhh:abcd@a.proxy.com:8080\n[~] proxy_cred\u003d${http_proxy#*//}\n[~] proxy\u003d${proxy_cred##*@}\n[~] host\u003d${proxy%%:*}\n[~] port\u003d${proxy##*:}\n[~]\n\nIn the final version of the script mark them local, ie:\nlocal proxy_cred proxy host port\n\nYou can also set MVN_PROXY_SETTINGS directly in this function:\n\nMVN_PROXY_SETTINGS\u003d\"-DproxyHost\u003d${host} -DproxyPort\u003d${port}\"\n\nso it is globally visible in this shell",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ac6e571_a5e82c60",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T17:15:08Z",
+      "side": 1,
+      "message": "see my previous comment, simply call here:\n\ngetMavenProxyArgs",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
