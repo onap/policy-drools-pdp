@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "51e6a70d_feeba72d",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2020-01-29T15:23:52Z",
+      "side": 1,
+      "message": "Yeah a license header can be added to Dockerfile. I\u0027m just not sure what copyrights should be added however. if someone can share this info I can update the file",
+      "parentUuid": "d017adcc_b354eaca",
+      "revId": "5c89f8b83e5c67ab2f26fbc3e8cfab8b2926843a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "120c7581_90e538e0",
         "filename": "packages/install/src/files/base.conf",
         "patchSetId": 3
