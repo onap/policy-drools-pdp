@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "d017adcc_b354eaca",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-01-29T14:27:59Z",
+      "side": 1,
+      "message": "We probably should have a license header on this file as well. I think comments with hash characters are allowed on Docker files.",
+      "revId": "5c89f8b83e5c67ab2f26fbc3e8cfab8b2926843a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "120c7581_90e538e0",
         "filename": "packages/install/src/files/base.conf",
         "patchSetId": 3
