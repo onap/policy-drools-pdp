@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "7b2dcdab_69c46de8",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T18:17:07Z",
+      "side": 1,
+      "message": "oh ok, in my set up things seem to work ok with all the tooling with http_proxy and https_proxy lower case set up.   In any case, if you don\u0027t need the HTTPS one for your CI toolchain, you could leave them commented out.   In a regular lab install, the user could always go to the base.conf and set them up so they are avaiable at runtime at container initialization if they need to.",
+      "parentUuid": "bf681168_e9eb7010",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bfd392b0_415b8bf3",
         "filename": "packages/install/src/files/base.conf",
         "patchSetId": 4
@@ -276,6 +294,24 @@
       "side": 1,
       "message": "Thank you Jorge for your feedback and detailed explanation. I am not very good at bash scripting, so this is very helpful. It is way more concise and cleaner to use parameter expansion. I will make the changes and test it out.",
       "parentUuid": "27791e50_035b9d8c",
+      "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6548ef5_aedb88d1",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 4
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-29T18:17:07Z",
+      "side": 1,
+      "message": "Not a problem!  bash shell scripting is not the most intuitive.   After this you\u0027d be an expert ;).",
+      "parentUuid": "b98891e7_ccafc89b",
       "revId": "8a3302be0671fcbad9a7afc9db841ab082a55085",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
