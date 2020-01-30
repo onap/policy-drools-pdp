@@ -22,6 +22,30 @@
       "revId": "bb03caf94de4ad884e308dbce4992e370638d629",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01cd066f_4c597204",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 5
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-30T15:26:31Z",
+      "side": 1,
+      "message": "I dont think the block is needed, it seems to be working for me at least, see below:\n\n--------  Execution -----------\n\n[~/tmp] ./a.sh\ntrying with http_proxy\u003dhttp://a.proxy.com:8080\n-DproxyHost\u003da.proxy.com -DproxyPort\u003d8080\n\n\ntrying with http_proxy\u003dhttp://jhh:abcd@a.proxy.com:8080\n-DproxyHost\u003da.proxy.com -DproxyPort\u003d8080\n\n--------------------- script -------------\n\n[~/tmp] cat a.sh\n#!/bin/bash\n\nfunction hostPort() {\n\techo \"trying with http_proxy\u003d$http_proxy\"\n\n\tlocal proxy_cred\u003d${http_proxy#*//}\n\tlocal proxy\u003d${proxy_cred##*@}\n\tlocal host\u003d${proxy%%:*}\n\tlocal port\u003d${proxy##*:}\n\n\tMVN_PROXY_SETTINGS\u003d\"-DproxyHost\u003d${host} -DproxyPort\u003d${port}\"\n\techo \"$MVN_PROXY_SETTINGS\"\n}\n\nhttp_proxy\u003dhttp://a.proxy.com:8080\nhostPort\n\necho\necho\n\nhttp_proxy\u003dhttp://jhh:abcd@a.proxy.com:8080\nhostPort\n\necho\necho\n\n[~/tmp]",
+      "parentUuid": "91b518da_e0cd3e4c",
+      "range": {
+        "startLine": 234,
+        "startChar": 4,
+        "endLine": 234,
+        "endChar": 42
+      },
+      "revId": "bb03caf94de4ad884e308dbce4992e370638d629",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
