@@ -1,0 +1,315 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://www.onap.org/policy/models/schemas/onap.policies.controlloop.operational.common.Drools.schema.json",
+    "type": "object",
+    "title": "The Root Schema",
+    "required": [
+        "type",
+        "type_version",
+        "version",
+        "metadata",
+        "properties"
+    ],
+    "properties": {
+        "type": {
+            "$id": "#/properties/type",
+            "type": "string",
+            "title": "Policy Type",
+            "default": "onap.policies.controlloop.operational.common.Drools",
+            "examples": [
+                "onap.policies.controlloop.operational.common.Drools"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "type_version": {
+            "$id": "#/properties/type_version",
+            "type": "string",
+            "title": "Policy Type Version",
+            "default": "1.0.0",
+            "examples": [
+                "1.0.0"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "name": {
+            "$id": "#/properties/name",
+            "type": "string",
+            "title": "Policy Name",
+            "default": "",
+            "examples": [
+                "example"
+            ],
+            "pattern": "^(.*)$"
+        },
+        "version": {
+            "$id": "#/properties/version",
+            "type": "string",
+            "title": "Policy Version",
+            "default": "1.0.0",
+            "examples": [
+                "1.0.0"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "metadata": {
+            "$id": "#/properties/metadata",
+            "type": "object",
+            "title": "Metadata",
+            "required": [
+                "policy-id"
+            ],
+            "properties": {
+                "policy-id": {
+                    "$id": "#/properties/metadata/properties/policy-id",
+                    "type": "string",
+                    "title": "Policy ID",
+                    "examples": [
+                        "operational.restart"
+                    ],
+                    "pattern": "^(.+)$"
+                }
+            }
+        },
+        "properties": {
+            "$id": "#/properties/properties",
+            "type": "object",
+            "title": "Properties",
+            "required": [
+                "id",
+                "timeout",
+                "abatement",
+                "trigger",
+                "operations",
+                "controllerName"
+            ],
+            "properties": {
+                "id": {
+                    "$id": "#/properties/properties/properties/id",
+                    "type": "string",
+                    "title": "Control Loop Name",
+                    "examples": [
+                        "ControlLoop-vCPE-48f0c2c3-a172-4192-9ae3-052274181b6e"
+                    ],
+                    "pattern": "^(.+)$"
+                },
+                "timeout": {
+                    "$id": "#/properties/properties/properties/timeout",
+                    "type": "integer",
+                    "title": "Timeout in seconds",
+                    "minimum": 1,
+                    "default": 30,
+                    "examples": [
+                        3600
+                    ]
+                },
+                "abatement": {
+                    "$id": "#/properties/properties/properties/abatement",
+                    "type": "boolean",
+                    "title": "Abatement",
+                    "default": false,
+                    "examples": [
+                        true
+                    ]
+                },
+                "trigger": {
+                    "$id": "#/properties/properties/properties/trigger",
+                    "type": "string",
+                    "title": "Trigger Operation",
+                    "examples": [
+                        "unique-policy-id-1-restart"
+                    ],
+                    "pattern": "^(.+)$"
+                },
+                "operations": {
+                    "$id": "#/properties/properties/properties/operations",
+                    "type": "array",
+                    "title": "Operations",
+                    "items": {
+                        "$id": "#/properties/properties/properties/operations/items",
+                        "type": "object",
+                        "title": "Items",
+                        "uniqueItems": true,
+                        "required": [
+                            "id",
+                            "description",
+                            "operation",
+                            "timeout",
+                            "retries",
+                            "success",
+                            "failure",
+                            "failure_timeout",
+                            "failure_retries",
+                            "failure_exception",
+                            "failure_guard"
+                        ],
+                        "properties": {
+                            "id": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/id",
+                                "type": "string",
+                                "title": "Operation Identifier",
+                                "examples": [
+                                    "unique-policy-id-1-restart"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "description": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/description",
+                                "type": "string",
+                                "title": "Description",
+                                "examples": [
+                                    "Restart the VM"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "operation": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/operation",
+                                "type": "object",
+                                "title": "Operation",
+                                "required": [
+                                    "actor",
+                                    "recipe",
+                                    "target"
+                                ],
+                                "properties": {
+                                    "actor": {
+                                        "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/actor",
+                                        "type": "string",
+                                        "title": "Actor",
+                                        "examples": [
+                                            "APPC"
+                                        ],
+                                        "pattern": "^(.+)$"
+                                    },
+                                    "recipe": {
+                                        "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/recipe",
+                                        "type": "string",
+                                        "title": "Recipe",
+                                        "examples": [
+                                            "Restart"
+                                        ],
+                                        "pattern": "^(.+)$"
+                                    },
+                                    "target": {
+                                        "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/target",
+                                        "type": "object",
+                                        "title": "Target",
+                                        "required": [
+                                            "type"
+                                        ],
+                                        "properties": {
+                                            "type": {
+                                                "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/target/properties/type",
+                                                "type": "string",
+                                                "title": "Target Type",
+                                                "examples": [
+                                                    "VNF"
+                                                ],
+                                                "pattern": "^(.+)$"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "timeout": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/timeout",
+                                "type": "integer",
+                                "title": "Operation Timeout in seconds",
+                                "default": 10,
+                                "minimum": 1,
+                                "examples": [
+                                    1200
+                                ]
+                            },
+                            "retries": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/retries",
+                                "type": "integer",
+                                "title": "Number of Retries",
+                                "default": 0,
+                                "examples": [
+                                    3
+                                ]
+                            },
+                            "success": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/success",
+                                "type": "string",
+                                "title": "Success Treatment",
+                                "default": "final_success",
+                                "examples": [
+                                    "final_success",
+                                    "unique-policy-id-2"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "failure": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/failure",
+                                "type": "string",
+                                "title": "Failure Treatment",
+                                "default": "final_failure",
+                                "examples": [
+                                    "final_failure",
+                                    "unique-policy-id-2"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "failure_timeout": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/failure_timeout",
+                                "type": "string",
+                                "title": "Failure Timeout Treatment",
+                                "default": "final_failure_timeout",
+                                "examples": [
+                                    "final_failure_timeout",
+                                    "unique-policy-id-2"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "failure_retries": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/failure_retries",
+                                "type": "string",
+                                "title": "Failure Retries Treatment",
+                                "default": "final_failure_retries",
+                                "examples": [
+                                    "final_failure_retries",
+                                    "unique-policy-id-2"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "failure_exception": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/failure_exception",
+                                "type": "string",
+                                "title": "Failure Exception Treatment",
+                                "default": "",
+                                "examples": [
+                                    "final_failure_exception",
+                                    "unique-policy-id-2"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "failure_guard": {
+                                "$id": "#/properties/properties/properties/operations/items/properties/failure_guard",
+                                "type": "string",
+                                "title": "Failure Guard Treatment",
+                                "default": "final_failure_guard",
+                                "examples": [
+                                    "final_failure_guard",
+                                    "unique-policy-id-2"
+                                ],
+                                "pattern": "^(.+)$"
+                            }
+                        }
+                    }
+                },
+                "controllerName": {
+                    "$id": "#/properties/properties/properties/controllerName",
+                    "type": "string",
+                    "title": "Controller Name",
+                    "default": "",
+                    "examples": [
+                        "usecases"
+                    ],
+                    "pattern": "^(.+)$"
+                }
+            }
+        }
+    }
+}
