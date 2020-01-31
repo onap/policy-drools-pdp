@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba197349_6a8bba72",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-01-31T16:52:19Z",
+      "side": 1,
+      "message": "This is the correct import right? Just checking.",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 44
+      },
+      "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d56a4965_512ddf24",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
         "patchSetId": 1
