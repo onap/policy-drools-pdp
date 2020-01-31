@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e4fee796_d5e5cac2",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-31T17:20:04Z",
+      "side": 1,
+      "message": "yep, doublechecked.",
+      "parentUuid": "ba197349_6a8bba72",
+      "range": {
+        "startLine": 28,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 44
+      },
+      "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d56a4965_512ddf24",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2020-01-31T15:27:43Z",
       "side": 1,
       "message": "should probably declare it as a plain \"Map\"",
+      "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a78d3bc1_314d5ef2",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-31T17:20:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d56a4965_512ddf24",
       "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "30193b00_d8a40ccb",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Controller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-31T17:20:04Z",
+      "side": 1,
+      "message": "removed, just wanted to have it as a placeholder if wanted to change direction serialization/deserialization.   But, yes is better to remove it all together until such need arise if ever.",
+      "parentUuid": "d6bd8294_bd1f9010",
+      "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d19f65b4_3d2b053d",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Controller.java",
         "patchSetId": 1
@@ -70,6 +130,24 @@
       "writtenOn": "2020-01-31T15:27:43Z",
       "side": 1,
       "message": "I would suggest using @Builder instead of adding withXxx methods\n\nsame comment in other files",
+      "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "70c80024_021267b5",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Controller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-01-31T17:20:04Z",
+      "side": 1,
+      "message": "great, thanks.",
+      "parentUuid": "d19f65b4_3d2b053d",
       "revId": "c1a25396c2e27e8203f9e88af87074a15fab5d77",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
