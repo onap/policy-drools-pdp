@@ -225,16 +225,16 @@ function setMavenProxyArgs
         return 0
     fi
 
-    local proxy_creds=${http_proxy#*//}
-    local proxy=${proxy_creds#*@}
-    local host=${proxy%:*}
-    local port=${proxy#*:}
+    local proxy_creds="${http_proxy#*//}"
+    local proxy="${proxy_creds#*@}"
+    local host="${proxy%:*}"
+    local port="${proxy#*:}"
     MVN_PROXY_SETTINGS="-DproxyHost=${host} -DproxyPort=${port}"
 
     if [[ "$proxy_creds" == *"@"* ]]; then
-        local creds=${proxy_creds%%@*}
-        local username=${creds%:*}
-        local password=${creds#*:}
+        local creds="${proxy_creds%%@*}"
+        local username="${creds%:*}"
+        local password="${creds#*:}"
         MVN_PROXY_SETTINGS+=" -DproxyUsername=${username} -DproxyPassword=${password}"
     fi
 }
