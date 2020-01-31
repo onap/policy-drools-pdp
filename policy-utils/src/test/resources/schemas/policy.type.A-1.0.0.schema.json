@@ -1,0 +1,89 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://www.onap.org/policy/models/schemas/policy.type.A",
+    "type": "object",
+    "title": "Domain policy.type.A Policy root schema",
+    "required": [
+        "type",
+        "type_version",
+        "version",
+        "metadata",
+        "properties"
+    ],
+    "properties": {
+        "type": {
+            "$id": "#/properties/type",
+            "type": "string",
+            "pattern": "^(.+)$"
+        },
+        "type_version": {
+            "$id": "#/properties/type_version",
+            "type": "string",
+            "pattern": "^(.+)$"
+        },
+        "version": {
+            "$id": "#/properties/version",
+            "type": "string",
+            "title": "Version",
+            "pattern": "^(.+)$"
+        },
+        "name": {
+            "$id": "#/properties/name",
+            "type": "string",
+            "pattern": "^(.+)$"
+        },
+        "metadata": {
+            "$id": "#/properties/metadata",
+            "type": "object",
+            "title": "Metadata",
+            "required": [
+                "policy-id"
+            ],
+            "properties": {
+                "policy-id": {
+                    "$id": "#/properties/metadata/properties/policy-id",
+                    "type": "string",
+                    "pattern": "^(.+)$"
+                }
+            }
+        },
+        "properties": {
+            "$id": "#/properties/properties",
+            "type": "object",
+            "required": [
+                "nested"
+            ],
+            "properties": {
+                "nested": {
+                    "$id": "#/properties/properties/properties/nested",
+                    "type": "object",
+                    "required": [
+                        "nested1",
+                        "nested2",
+                        "nested3"
+                    ],
+                    "properties": {
+                        "nested1": {
+                            "$id": "#/properties/properties/properties/nested/properties/nested1",
+                            "type": "string",
+                            "pattern": "^(.+)$"
+                        },
+                        "nested2": {
+                            "$id": "#/properties/properties/properties/nested/properties/nested2",
+                            "type": "boolean",
+                            "default": true
+                        },
+                        "nested3": {
+                            "$id": "#/properties/properties/properties/nested/properties/nested3",
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 100,
+                            "default": 30
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
