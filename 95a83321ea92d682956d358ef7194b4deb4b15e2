@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "2d05d850_912e2c83",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/NativeDroolsPolicy.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T17:46:52Z",
+      "side": 1,
+      "message": "Not sure Liam, I don\u0027t think I can reuse much from the tosca policy.  ToscaPolicy handles generic structures such as maps of string to objects, strings to strings, and list of these maps.   For example ToscaPolicy contains:\n\nprivate Map\u003cString, Object\u003e properties;  \nprivate Map\u003cString, String\u003e metadata;\n\nand \"Map\u003cString, Object\u003e properties\" at the same time contains nested lists of List\u003cMap\u003cString, Object\u003e\u003e for example, besides inconvenience on dealing with these objects, and lack of validation, easy to make programmatic mistakes as it bypasses much of the compile time type validation that will be more strict with these domain objects.",
+      "parentUuid": "3e03b7fd_da26bb8c",
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aa3efb02_724fc667",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Properties.java",
         "patchSetId": 3
