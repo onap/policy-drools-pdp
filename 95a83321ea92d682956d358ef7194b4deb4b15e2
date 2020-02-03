@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "49b22ab2_a246d6e1",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1441
+      },
+      "writtenOn": "2020-02-03T19:39:03Z",
+      "side": 1,
+      "message": "if no schema is provided, then isConformant will always return false. Maybe we need to log a message or throw an exception to indicate \"schema file is missing for xxx policy type\"?",
+      "range": {
+        "startLine": 70,
+        "startChar": 8,
+        "endLine": 72,
+        "endChar": 9
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5829f61b_df38f7da",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
         "patchSetId": 3
@@ -64,6 +87,52 @@
         "startChar": 16,
         "endLine": 125,
         "endChar": 23
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "50825382_9bf86f54",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1441
+      },
+      "writtenOn": "2020-02-03T19:39:03Z",
+      "side": 1,
+      "message": "a",
+      "range": {
+        "startLine": 162,
+        "startChar": 29,
+        "endLine": 162,
+        "endChar": 31
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bfeecd9d_cccd7a75",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1441
+      },
+      "writtenOn": "2020-02-03T19:39:03Z",
+      "side": 1,
+      "message": ".json?",
+      "range": {
+        "startLine": 162,
+        "startChar": 53,
+        "endLine": 162,
+        "endChar": 57
       },
       "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
@@ -201,6 +270,23 @@
       "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e818d13_7b592061",
+        "filename": "feature-lifecycle/src/main/resources/schemas/onap.policies.native.Drools-1.0.0.schema.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1441
+      },
+      "writtenOn": "2020-02-03T19:39:03Z",
+      "side": 1,
+      "message": "for each different policy type which we want to validate on a field basis, we always need a separate such schema file? If no schema file is provided, can we fall back to use general tosca policy vs. policy type validation that Liam is considering to build? This sort of overlaps with that general validation",
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
