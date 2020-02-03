@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "6d7cd6a0_af6d1423",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T19:54:10Z",
+      "side": 1,
+      "message": "T is any arbitrary root object.   See junits (and NativeDroolsPolicy class) for example:\n\nNativeDroolsPolicy domainDroolsPolicy;\ndomainMaker.isDomainConformant(policyTypeId, domainDroolsPolicy)",
+      "parentUuid": "5829f61b_df38f7da",
+      "range": {
+        "startLine": 92,
+        "startChar": 98,
+        "endLine": 92,
+        "endChar": 99
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e758bbe_428f0639",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
         "patchSetId": 3
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "88c682b2_19d5f9bb",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T19:54:10Z",
+      "side": 1,
+      "message": "isConformance does not force the user to deal with exceptions, or list of errors.   This one will give you the list of errors in your json, ie. missing required field, non integer value, value greather than max, etc ..",
+      "parentUuid": "7e758bbe_428f0639",
+      "range": {
+        "startLine": 109,
+        "startChar": 19,
+        "endLine": 109,
+        "endChar": 30
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8f2838c7_58681566",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
         "patchSetId": 3
@@ -82,6 +130,30 @@
       "writtenOn": "2020-02-03T18:59:51Z",
       "side": 1,
       "message": "in this case, it has been logged and re-thrown. Does sonar complain about it?",
+      "range": {
+        "startLine": 125,
+        "startChar": 16,
+        "endLine": 125,
+        "endChar": 23
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "711c5c6e_4f702966",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/DomainMaker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T19:54:10Z",
+      "side": 1,
+      "message": "there could be some unexpected non VAlidationFailedException that is hit, so is logged, I think sonar will more than likely complain about it too, as only cares about VAlidationException.    This exception contains a list of json violations against the schema, that may be of interest in some cases for the user.",
+      "parentUuid": "8f2838c7_58681566",
       "range": {
         "startLine": 125,
         "startChar": 16,
@@ -163,6 +235,30 @@
     },
     {
       "key": {
+        "uuid": "560ac5e6_8f84d98f",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Controller.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T19:54:10Z",
+      "side": 1,
+      "message": "\"native\" is forbidded in package name, java does not allow keywords to be part of the package name.",
+      "parentUuid": "3b6bb503_68b3644d",
+      "range": {
+        "startLine": 21,
+        "startChar": 45,
+        "endLine": 21,
+        "endChar": 50
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "893b9be1_fc166913",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Metadata.java",
         "patchSetId": 3
@@ -191,6 +287,30 @@
       "writtenOn": "2020-02-03T18:59:51Z",
       "side": 1,
       "message": "Why do we need to re-define Metadata pojo?",
+      "range": {
+        "startLine": 34,
+        "startChar": 13,
+        "endLine": 34,
+        "endChar": 21
+      },
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a32507c8_a0131d21",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Metadata.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T19:54:10Z",
+      "side": 1,
+      "message": "This object is not redefined, there is no such POJO.  There is a generic field in ToscaEntity called \"    private Map\u003cString, String\u003e metadata;\" if that\u0027s what you\u0027re referring to, that I am not interested in using when dealing with drools specific data.",
+      "parentUuid": "b7c39945_6c0e93de",
       "range": {
         "startLine": 34,
         "startChar": 13,
@@ -250,6 +370,24 @@
       "side": 1,
       "message": "have the same comment as Liam. Perhaps ToscaPolicy can be reused in theory but parsing the native drools specific property fields would need additional steps, like calling StandardCoder\u0027s toStandard() method to convert the nested Object to JsonElement then call get(\"rulesArtifact\") to extract its value. Getting every nested field could be easily kept at the JsonElement level. Nonetheless, I am fine with this re-definition too.",
       "parentUuid": "2d05d850_912e2c83",
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1dbb1c4c_a38e89bc",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/NativeDroolsPolicy.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-03T19:54:10Z",
+      "side": 1,
+      "message": "From junits:\n\n NativeDroolsPolicy domainDroolsPolicy \u003d domainMaker.convertTo(\u003ca-tosca-policy\u003e, NativeDroolsPolicy.class);\n\nOne call and you have the data in your own domain specific set of classes that you can reuse downstream with all your pdp apps.  For example:  \n\ndomainDroolsPolicy.getProperties().getRulesArtifact().getVersion();\n\nThis is in contrast that just stole from models junit I wrote to navigate from tosca policy, need to deal with maps, having size of lists right, the name of fields, etc ..  The difference is obvious to me .. \n\n        Map\u003cString, Object\u003e props \u003d\n                toscaVcpeSt.getToscaTopologyTemplate().getPolicies().get(0).get(OP_POLICY_NAME_VCPE).getProperties();\n        assertNotNull(props);\n\n        List\u003cObject\u003e operations \u003d (List\u003cObject\u003e) props.get(\"operations\");\n        assertEquals(1, operations.size());\n        assertEquals(props.get(\"trigger\"), ((Map\u003cString, Object\u003e) operations.get(0)).get(\"id\"));\n\n        Map\u003cString, Object\u003e operation \u003d\n                (Map\u003cString, Object\u003e) ((Map\u003cString, Object\u003e) operations.get(0)).get(\"operation\");\n        assertEquals(\"APPC\", operation.get(\"actor\"));\n        assertEquals(\"Restart\", operation.get(\"recipe\"));",
+      "parentUuid": "8f218b16_4941ebe5",
       "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
