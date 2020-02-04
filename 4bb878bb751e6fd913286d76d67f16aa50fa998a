@@ -1,0 +1,293 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eb602105_1876149f",
+        "filename": "feature-server-pool/config/TestController-controller.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "This file seems for dev. testing, remove.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7d668f54_487ae7db",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Need license headers- general comment.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8cc70012_ef465119",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Should use ${env.VARX} instead of ${{VARX}}.   For installs should provide a feature-server-pool.conf.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b9b4c56e_f327faee",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 732,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "log e, rethrow or reinterrupt (sonar)",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b5c159b_240060d2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 892,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Wny not to reuse the HttpClient policy-endpoints from policy-endpoints in policy/common?   I think they cover same functionality and if missing could extend it so all can benefit from the work.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2a5a8ab5_8f21f5bf",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Can adjunct functionality (I think exists in some other places), be placed in policy-utils as a generic library?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3cc9fd18_1c767712",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "This does not apply - remove.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7125da8b_f8e3baaf",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Seems dup code, and only supports ueb, why not reuse policy policy-endpoints?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a53a044_2a41ae39",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "not applicable - general",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e30f54a_9f2994be",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "sleep give sonars.   policy-endpoints would handle this and allow configuration of values.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5e27526_8a64ef48",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "log e2, and either throw or re-interrupt (sonars).",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "784314ee_2fede263",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "policy-endpoints.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8416fbd2_948461a0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "use standardcoder ?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc7478ed_62968ded",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/RestServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Use swagger api to annotate it and placing this class under  package org.onap.policy.drools.server.restful (still under this project) would make telemetry expose it externally to users.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb437a82_632f06ae",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "Can the generic methods be added to PropertyUtil in policy-utils ?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "78b2be42_db3f9043",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Util.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "can it use timer facility in PolicyEngine ?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac8dd709_7cb77c2f",
+        "filename": "feature-server-pool/src/test/resources/drools-artifact-1.1/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-04T22:17:16Z",
+      "side": 1,
+      "message": "\"policy-core\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
