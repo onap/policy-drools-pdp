@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b1f32e77_353f5b5f",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/controller/ControllerSourceTopic.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-04T12:22:08Z",
+      "side": 1,
+      "message": "these are not needed unless the name is to be different than the field name\n\nsame comment elsewhere",
+      "revId": "baa4e928207f5930fcd620bddddcd493aa7a4122",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "12f6b496_91d6bd3c",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/domain/models/DroolsPolicyModelsTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-04T12:22:08Z",
+      "side": 1,
+      "message": "doesn\u0027t sonar complain that there are no assertions?\n\nsame comment below",
+      "revId": "baa4e928207f5930fcd620bddddcd493aa7a4122",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
