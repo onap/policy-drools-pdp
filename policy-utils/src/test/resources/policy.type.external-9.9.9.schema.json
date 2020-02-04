@@ -1,0 +1,7 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://www.onap.org/policy/models/schemas/policy.type.external",
+    "type": "object",
+    "title": "Domain policy.type.external Policy root schema"
+}

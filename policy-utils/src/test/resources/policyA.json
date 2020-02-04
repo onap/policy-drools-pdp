@@ -1,0 +1,16 @@
+{
+  "type": "policy.type.A",
+  "type_version": "1.0.0",
+  "version": "1.0.0",
+  "metadata": {
+    "policy-id": "A"
+  },
+  "properties": {
+    "nested": {
+      "nested1": "nested1",
+      "nested2": true,
+      "nested3": 50
+    }
+  },
+  "name": "A"
+}
