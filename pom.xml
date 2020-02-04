@@ -75,6 +75,8 @@
         <module>feature-mdc-filters</module>
         <module>feature-lifecycle</module>
         <module>feature-drools-init</module>
+        <module>drools-pdp-state-control-api</module>
+        <module>feature-server-pool</module>
         <module>packages</module>
     </modules>
 

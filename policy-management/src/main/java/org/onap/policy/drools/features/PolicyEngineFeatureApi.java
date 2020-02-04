@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.features;
 
+import java.io.IOException;
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
