@@ -466,6 +466,24 @@
     },
     {
       "key": {
+        "uuid": "6d851585_c1a420ac",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/NativeDroolsPolicy.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-02-04T10:34:56Z",
+      "side": 1,
+      "message": "The main issue for me is having code working on the same model in two places, it double the maintenance cost. If there is no way of adding to the Authorative concepts, maybe the extra cost is justified but I would prefer if it was possible to amend or add to the existing classes.",
+      "parentUuid": "1dbb1c4c_a38e89bc",
+      "revId": "95a83321ea92d682956d358ef7194b4deb4b15e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "aa3efb02_724fc667",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/domain/models/nativ/rules/Properties.java",
         "patchSetId": 3
