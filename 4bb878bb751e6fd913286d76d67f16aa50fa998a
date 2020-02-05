@@ -87,6 +87,24 @@
     },
     {
       "key": {
+        "uuid": "61bd97b1_917154b6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 892,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-05T12:10:59Z",
+      "side": 1,
+      "message": "\u0027webTarget\u0027 was derived from \u0027HttpClient\u0027 -- see \u0027Server.getTarget(HttpClient client)\u0027. The idea was to build \u0027HttpClient\u0027 just once for each remote \u0027Server\u0027 instance, and then build on top of that to construct the specific query. I didn\u0027t see an efficient way to do that with the current API.",
+      "parentUuid": "7b5c159b_240060d2",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2a5a8ab5_8f21f5bf",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -101,6 +119,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "772652c0_a0f936de",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-05T12:10:59Z",
+      "side": 1,
+      "message": "There is a similar capability in class \u0027Transaction\u0027 in the m2 model, and a slightly different capability in \u0027PolicyContainer\u0027 and \u0027PolicySession\u0027 in \u0027core\u0027. It might be a good idea to try to come up with something generic that could be used everywhere. It gets a bit challenging to do this cleanly, because these are template methods.",
+      "parentUuid": "2a5a8ab5_8f21f5bf",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     },
     {
       "key": {
