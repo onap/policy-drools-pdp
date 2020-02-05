@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
-import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
@@ -36,9 +35,6 @@ import lombok.experimental.SuperBuilder;
 public class ControllerSourceTopic implements Serializable {
     private static final long serialVersionUID = -1732598566914643612L;
 
-    @SerializedName("topicName")
     protected String topicName;
-
-    @SerializedName("serialization")
     protected List<ControllerSerialization> serialization;
 }

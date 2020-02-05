@@ -159,8 +159,8 @@ public class DomainMaker {
      */
     public boolean registerValidator(@NonNull ToscaPolicyTypeIdentifier policyType) {
         //
-        // A known schema is an schema embedded in a .jar in the classpath under the schemas/
-        // resource directory matching the following syntax: schemas/<policy-type>.schema.json.
+        // A known schema is one that embedded in a .jar in the classpath as a resource
+        // matching the following syntax: <policy-type-name>-<policy-type-version>.schema.json.
         //
         String schema =
                 ResourceUtils

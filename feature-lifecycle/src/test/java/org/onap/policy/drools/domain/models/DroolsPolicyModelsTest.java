@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.domain.models;
 
+import static org.junit.Assert.assertNotNull;
+
 import com.openpojo.reflection.PojoClass;
 import com.openpojo.reflection.filters.FilterChain;
 import com.openpojo.reflection.filters.FilterClassName;
@@ -58,7 +60,8 @@ public class DroolsPolicyModelsTest {
     @Test
     public void testBuildDomainPolicyNativeDrools() {
         /* manually create a native drools policy */
-        NativeDroolsPolicy.builder().metadata(Metadata.builder().policyId("policy-id").build()).name("example")
+        assertNotNull(NativeDroolsPolicy.builder().metadata(Metadata.builder().policyId("policy-id").build())
+            .name("example")
             .type("onap.policies.native.Drools")
             .typeVersion("1.0.0")
             .version("1.0.0")
@@ -68,19 +71,20 @@ public class DroolsPolicyModelsTest {
                         .rulesArtifact(
                                 NativeDroolsRulesArtifact.builder().groupId("org.onap.policy.controlloop")
                                         .artifactId("example").version("example").build()).build())
-            .build();
+            .build());
     }
 
     @Test
     public void testBuildDomainPolicyController() {
         /* manually create a controller policy */
-        ControllerPolicy.builder().metadata(Metadata.builder().policyId("policy-id").build()).name("example")
+        assertNotNull(ControllerPolicy.builder().metadata(Metadata.builder().policyId("policy-id").build())
+            .name("example")
             .version("1.0.0")
             .type("onap.policies.drools.Controller")
             .typeVersion("1.0.0")
             .properties(ControllerProperties.builder().controllerName("example").sourceTopics(
                     new ArrayList<>()).sinkTopics(new ArrayList<>()).build())
-            .build();
+            .build());
     }
 
 }
