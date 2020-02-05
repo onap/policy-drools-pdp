@@ -24,7 +24,6 @@ package org.onap.policy.drools.lifecycle;
 import java.util.List;
 import java.util.function.BiPredicate;
 import lombok.NonNull;
-import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -50,9 +49,9 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
     protected abstract boolean stateChangeToActive(@NonNull PdpStateChange change);
 
-    protected abstract boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy);
+    protected abstract boolean deployPolicy(@NonNull PolicyTypeController controller, @NonNull ToscaPolicy policy);
 
-    protected abstract boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy);
+    protected abstract boolean undeployPolicy(@NonNull PolicyTypeController controller, @NonNull ToscaPolicy policy);
 
     @Override
     public boolean start() {
@@ -143,7 +142,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         // running but are not present in this list.  This will include
         // policies that are overridden by a different version.   Second,
         // we will deploy those policies that are not installed but
-        // resent in this list.
+        // included in this list.
 
         boolean success = undeployPolicies(policies);
         return deployPolicies(policies) && success;
@@ -158,11 +157,11 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     }
 
     protected boolean syncPolicies(List<ToscaPolicy> policies,
-                                   BiPredicate<PolicyController, ToscaPolicy> sync) {
+                                   BiPredicate<PolicyTypeController, ToscaPolicy> sync) {
         boolean success = true;
         for (ToscaPolicy policy : policies) {
             ToscaPolicyTypeIdentifier policyType = policy.getTypeIdentifier();
-            PolicyController controller = fsm.getController(policyType);
+            PolicyTypeController controller = fsm.getController(policyType);
             if (controller == null) {
                 logger.warn("no controller found for {}", policyType);
                 success = false;

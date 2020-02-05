@@ -22,21 +22,16 @@ package org.onap.policy.drools.lifecycle;
 
 import lombok.NonNull;
 import lombok.ToString;
-import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle Passive State.
  */
 @ToString
 public class LifecycleStatePassive extends LifecycleStateRunning {
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleStatePassive.class);
-
     protected LifecycleStatePassive(LifecycleFsm manager) {
         super(manager);
     }
@@ -59,15 +54,13 @@ public class LifecycleStatePassive extends LifecycleStateRunning {
     }
 
     @Override
-    protected boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
-        logger.info("{}: deploy {} to {}", this, policy.getIdentifier(), controller.getName());
+    protected boolean deployPolicy(@NonNull PolicyTypeController controller, @NonNull ToscaPolicy policy) {
         fsm.deployedPolicyAction(policy);
         return true;
     }
 
     @Override
-    protected boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
-        logger.info("{}: undeploy {} from {}", this, policy.getIdentifier(), controller.getName());
+    protected boolean undeployPolicy(@NonNull PolicyTypeController controller, @NonNull ToscaPolicy policy) {
         fsm.undeployedPolicyAction(policy);
         return true;
     }

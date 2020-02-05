@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,21 +24,16 @@ package org.onap.policy.drools.lifecycle;
 import java.util.Collections;
 import lombok.NonNull;
 import lombok.ToString;
-import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Lifecycle Active State.
  */
 @ToString
 public class LifecycleStateActive extends LifecycleStateRunning {
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleStateActive.class);
-
     protected LifecycleStateActive(LifecycleFsm manager) {
         super(manager);
     }
@@ -61,10 +56,8 @@ public class LifecycleStateActive extends LifecycleStateRunning {
     }
 
     @Override
-    protected boolean deployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
-        logger.info("{}: deploy {} into {}", this, policy.getIdentifier(), controller.getName());
-
-        if (!controller.offer(policy)) {
+    protected boolean deployPolicy(@NonNull PolicyTypeController controller, @NonNull ToscaPolicy policy) {
+        if (!controller.deploy(policy)) {
             return false;
         }
 
@@ -73,14 +66,8 @@ public class LifecycleStateActive extends LifecycleStateRunning {
     }
 
     @Override
-    protected boolean undeployPolicy(@NonNull PolicyController controller, @NonNull ToscaPolicy policy) {
-        logger.info("{}: undeploy {} from {}", this, policy.getIdentifier(), controller.getName());
-
-        if (!controller.getDrools().delete(policy)) {
-            logger.warn("Policy {}:{}:{}:{} was not deployed.",
-                policy.getType(), policy.getTypeVersion(), policy.getName(), policy.getVersion());
-        }
-
+    protected boolean undeployPolicy(@NonNull PolicyTypeController controller, @NonNull ToscaPolicy policy) {
+        controller.undeploy(policy);
         fsm.undeployedPolicyAction(policy);
         return true;
     }

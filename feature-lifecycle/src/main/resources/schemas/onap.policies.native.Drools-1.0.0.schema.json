@@ -60,7 +60,7 @@
                 "policy-id": {
                     "$id": "#/properties/metadata/properties/policy-id",
                     "type": "string",
-                    "title": "The Policy-id Schema",
+                    "title": "Policy Name",
                     "examples": [
                         "example"
                     ],

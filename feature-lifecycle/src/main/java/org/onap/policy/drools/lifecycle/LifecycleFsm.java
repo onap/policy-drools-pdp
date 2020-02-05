@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -46,6 +47,7 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
@@ -65,6 +67,8 @@ import org.slf4j.LoggerFactory;
  */
 public class LifecycleFsm implements Startable {
 
+    private static final Logger logger = LoggerFactory.getLogger(LifecycleFsm.class);
+
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String GROUP_NAME = "lifecycle.pdp.group";
     protected static final String DEFAULT_PDP_GROUP = "defaultGroup";
@@ -72,9 +76,16 @@ public class LifecycleFsm implements Startable {
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
 
-    private static final Logger logger = LoggerFactory.getLogger(LifecycleFsm.class);
+    protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_NATIVE_RULES =
+            new ToscaPolicyTypeIdentifier("onap.policies.native.Drools", "1.0.0");
+
+    protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_CONTROLLER =
+            new ToscaPolicyTypeIdentifier("onap.policies.drools.Controller", "1.0.0");
 
     protected final Properties properties;
+
+    @Getter(AccessLevel.PACKAGE)
+    protected final DomainMaker domainMaker = new DomainMaker();
 
     protected TopicSource source;
     protected TopicSinkClient client;
@@ -110,7 +121,7 @@ public class LifecycleFsm implements Startable {
     protected String subgroup;
 
     @Getter
-    protected final Map<ToscaPolicyTypeIdentifier, PolicyController> policyTypesMap = new HashMap<>();
+    protected final Map<ToscaPolicyTypeIdentifier, PolicyTypeController> policyTypesMap = new HashMap<>();
 
     protected final Map<ToscaPolicyIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
 
@@ -120,6 +131,13 @@ public class LifecycleFsm implements Startable {
     public LifecycleFsm() {
         this.properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
         this.group = this.properties.getProperty(GROUP_NAME, DEFAULT_PDP_GROUP);
+
+        this.policyTypesMap.put(
+                POLICY_TYPE_DROOLS_CONTROLLER,
+                new PolicyTypeNativeController(this, POLICY_TYPE_DROOLS_CONTROLLER));
+        this.policyTypesMap.put(
+                POLICY_TYPE_DROOLS_NATIVE_RULES,
+                 new PolicyTypeRulesController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
     }
 
     @Override
@@ -149,7 +167,7 @@ public class LifecycleFsm implements Startable {
         logger.info("lifecycle event: start controller: {}", controller.getName());
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
             if (isToscaPolicyType(id.getName())) {
-                policyTypesMap.put(id, controller);
+                policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
             }
         }
     }
@@ -263,7 +281,7 @@ public class LifecycleFsm implements Startable {
         return stopTimers() && startTimers();
     }
 
-    protected PolicyController getController(ToscaPolicyTypeIdentifier policyType) {
+    protected PolicyTypeController getController(ToscaPolicyTypeIdentifier policyType) {
         return policyTypesMap.get(policyType);
     }
 

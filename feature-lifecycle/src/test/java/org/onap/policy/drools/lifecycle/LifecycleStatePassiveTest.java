@@ -74,8 +74,10 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     public void testController() {
         fsm.start(controllerSupport.getController());
         assertSame(controllerSupport.getController(),
-                        fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
-                                        ControllerSupport.POLICY_TYPE_VERSION)));
+            ((PolicyTypeDroolsController) fsm.getController(
+                    new ToscaPolicyTypeIdentifier(
+                            ControllerSupport.POLICY_TYPE, ControllerSupport.POLICY_TYPE_VERSION)))
+                .getController());
 
         fsm.stop(controllerSupport.getController());
         assertNull(fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,
@@ -121,7 +123,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     public void testStatus() {
         assertTrue(fsm.client.getSink().isAlive());
         assertTrue(fsm.status());
-        assertSame(0, fsm.client.getSink().getRecentEvents().length);
+        assertSame(1, fsm.client.getSink().getRecentEvents().length);
 
 
         fsm.start(controllerSupport.getController());
@@ -179,7 +181,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("z", fsm.getSubgroup());
         assertBasicPassive();
 
-        assertTrue(fsm.policyTypesMap.isEmpty());
+        assertEquals(2, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         update.setPdpGroup(null);
@@ -192,7 +194,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertNull(fsm.getSubgroup());
         assertBasicPassive();
-        assertTrue(fsm.policyTypesMap.isEmpty());
+        assertEquals(2, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         update.setPdpGroup("A");
@@ -205,15 +207,15 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("a", fsm.getSubgroup());
         assertBasicPassive();
-        assertTrue(fsm.policyTypesMap.isEmpty());
+        assertEquals(2, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         fsm.start(controllerSupport.getController());
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         assertTrue(fsm.update(update));
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(1, fsm.policiesMap.size());
         assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
         assertEquals(PdpState.PASSIVE, fsm.state());
@@ -227,7 +229,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         update.setPdpSubgroup(null);
         update.setPolicies(Collections.emptyList());
         assertTrue(fsm.update(update));
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(0, fsm.policiesMap.size());
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
@@ -267,11 +269,11 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         controllerSupport.getController().start();
         fsm.start(controllerSupport.getController());
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         assertTrue(fsm.update(update));
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(1, fsm.policiesMap.size());
         assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
         assertEquals(PdpState.PASSIVE, fsm.state());

@@ -131,11 +131,11 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         int preCount = fsm.client.getSink().getRecentEvents().length;
 
         assertTrue(fsm.status());
-        assertEquals(preCount, fsm.client.getSink().getRecentEvents().length);
+        assertEquals(preCount + 1, fsm.client.getSink().getRecentEvents().length);
 
         fsm.start(controllerSupport.getController());
         assertTrue(fsm.status());
-        assertEquals(preCount + 1, fsm.client.getSink().getRecentEvents().length);
+        assertEquals(preCount + 2, fsm.client.getSink().getRecentEvents().length);
 
         fsm.stop(controllerSupport.getController());
         fsm.shutdown();
@@ -207,7 +207,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertTrue(fsm.update(update));
         assertEquals(qlength + 1, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         PdpStatus cachedStatus = new StandardCoder()
                                     .decode(fsm.client.getSink().getRecentEvents()[qlength], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -221,7 +221,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertTrue(fsm.update(update));
         assertEquals(qlength + 2, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 1], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -237,7 +237,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         update.setPolicies(Collections.emptyList());
         assertTrue(fsm.update(update));
         assertEquals(qlength + 3, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 2], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -251,7 +251,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 4, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 3], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -269,7 +269,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         update.setPolicies(Arrays.asList(toscaPolicyRestartV2));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 5, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 4], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -288,7 +288,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         update.setPolicies(Arrays.asList(toscaPolicyRestartV2, toscaPolicyFirewall));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 6, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(1, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 5], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
