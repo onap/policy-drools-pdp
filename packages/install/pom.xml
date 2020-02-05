@@ -3,6 +3,7 @@
   Policy Packages
   ================================================================================
   Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Modifications Copyright (C) 2020 Bell Canada.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -26,7 +27,7 @@
 
     <parent>
         <groupId>org.onap.policy.drools-pdp</groupId>
-        <artifactId>packages</artifactId>
+        <artifactId>drools-packages</artifactId>
         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
