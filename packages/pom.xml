@@ -27,7 +27,7 @@
         <artifactId>drools-pdp</artifactId>
         <version>1.6.0-SNAPSHOT</version>
     </parent>
-    <artifactId>packages</artifactId>
+    <artifactId>drools-packages</artifactId>
     <packaging>pom</packaging>
     <name>Policy Packages</name>
     <description>ONAP Policy Drools PDP Installation Packages</description>
