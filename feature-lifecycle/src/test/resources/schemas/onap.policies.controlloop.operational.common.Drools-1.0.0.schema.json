@@ -132,16 +132,11 @@
                         "uniqueItems": true,
                         "required": [
                             "id",
-                            "description",
                             "operation",
                             "timeout",
                             "retries",
                             "success",
-                            "failure",
-                            "failure_timeout",
-                            "failure_retries",
-                            "failure_exception",
-                            "failure_guard"
+                            "failure"
                         ],
                         "properties": {
                             "id": {
@@ -168,7 +163,7 @@
                                 "title": "Operation",
                                 "required": [
                                     "actor",
-                                    "recipe",
+                                    "operation",
                                     "target"
                                 ],
                                 "properties": {
@@ -181,10 +176,10 @@
                                         ],
                                         "pattern": "^(.+)$"
                                     },
-                                    "recipe": {
-                                        "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/recipe",
+                                    "operation": {
+                                        "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/operation",
                                         "type": "string",
-                                        "title": "Recipe",
+                                        "title": "Operation Name",
                                         "examples": [
                                             "Restart"
                                         ],
@@ -207,6 +202,14 @@
                                                 ],
                                                 "pattern": "^(.+)$"
                                             }
+                                        }
+                                    },
+                                    "payload": {
+                                        "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/payload",
+                                        "type": "object",
+                                        "title": "Payload",
+                                        "additionalProperties": {
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -266,7 +269,7 @@
                             "failure_retries": {
                                 "$id": "#/properties/properties/properties/operations/items/properties/failure_retries",
                                 "type": "string",
-                                "title": "Failure Retries Treatment",
+                                "title": "Failure Retry Treatment",
                                 "default": "final_failure_retries",
                                 "examples": [
                                     "final_failure_retries",

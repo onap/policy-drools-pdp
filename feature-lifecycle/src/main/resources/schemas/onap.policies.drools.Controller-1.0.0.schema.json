@@ -266,7 +266,10 @@
                 "customConfig": {
                     "$id": "#/properties/properties/properties/customConfig",
                     "type": "object",
-                    "title": "other Configuration"
+                    "title": "other Configuration",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         }
