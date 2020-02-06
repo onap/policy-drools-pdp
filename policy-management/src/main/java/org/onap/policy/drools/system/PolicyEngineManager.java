@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApiConstants;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
@@ -154,6 +155,8 @@ class PolicyEngineManager implements PolicyEngine {
     @Getter(AccessLevel.PROTECTED)
     private PolicyResourceLockManager lockManager = null;
 
+    private DomainMaker domainMaker = new DomainMaker();
+
     /**
      * gson parser to decode configuration requests.
      */
@@ -192,6 +195,13 @@ class PolicyEngineManager implements PolicyEngine {
     @Override
     public synchronized Properties getEnvironment() {
         return this.environment;
+    }
+
+    @JsonIgnore
+    @GsonJsonIgnore
+    @Override
+    public DomainMaker getDomainMaker() {
+        return this.domainMaker;
     }
 
     @Override

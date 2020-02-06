@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
+import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 
@@ -232,6 +233,14 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @return list of features
      */
     List<String> getFeatures();
+
+
+    /**
+     * get domain maker.
+     *
+     * @return the domain maker.
+     */
+    DomainMaker getDomainMaker();
 
     /**
      * Attempts the dispatching of an "event" object.
