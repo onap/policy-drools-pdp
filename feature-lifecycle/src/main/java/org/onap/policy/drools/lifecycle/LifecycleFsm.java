@@ -49,6 +49,7 @@ import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
@@ -85,7 +86,7 @@ public class LifecycleFsm implements Startable {
     protected final Properties properties;
 
     @Getter(AccessLevel.PACKAGE)
-    protected final DomainMaker domainMaker = new DomainMaker();
+    protected final DomainMaker domainMaker = PolicyEngineConstants.getManager().getDomainMaker();
 
     protected TopicSource source;
     protected TopicSinkClient client;
