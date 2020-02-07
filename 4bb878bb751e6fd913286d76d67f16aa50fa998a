@@ -122,6 +122,24 @@
     },
     {
       "key": {
+        "uuid": "81de4fa5_cd1a99eb",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "same comment in most of the other classes",
+      "parentUuid": "04dc8632_a09a3694",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "518eb75e_b947268a",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -960,6 +978,57 @@
     },
     {
       "key": {
+        "uuid": "5657667f_1bba0e88",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "I would prefer to see this class re-written to use TopicEndpoint",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f7ebce5_c3a4771a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "FYI: should not assume that StandardCoder is thread-safe",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e32accb_66d41378",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "same comments as with Bucket: put statics into some kind of context object that this can use",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3cc9fd18_1c767712",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
         "patchSetId": 2
@@ -1011,6 +1080,23 @@
     },
     {
       "key": {
+        "uuid": "b8baa4d5_6c8f4704",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "need separate catch for InterruptedException",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1e30f54a_9f2994be",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
         "patchSetId": 2
@@ -1045,6 +1131,24 @@
     },
     {
       "key": {
+        "uuid": "5161916c_da086c1a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "should also drop out of the \"run\" loop",
+      "parentUuid": "b5e27526_8a64ef48",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "784314ee_2fede263",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
         "patchSetId": 2
@@ -1059,6 +1163,57 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e7fc16fb_f656e9e3",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "handle InterruptedException differently",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13650806_93762c0f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "drop out of run()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41194143_7625d468",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Events.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-07T22:27:25Z",
+      "side": 1,
+      "message": "declare as Queue\n\n\"final\"\n\nif expecting lots of Events being added and removed over time, then maybe use a Map instead",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     },
     {
       "key": {
