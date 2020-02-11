@@ -20,25 +20,33 @@
 
 package org.onap.policy.drools.domain.models;
 
-import com.google.gson.annotations.SerializedName;
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
+import java.io.Serializable;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.junit.Test;
 
-@Data
-@SuperBuilder
-public abstract class DroolsPolicy {
-    @SerializedName("type")
-    protected String type;
+public class DroolsPolicyTest {
 
-    @SerializedName("type_version")
-    protected String typeVersion;
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    public static class DerivedDomainPolicy extends DroolsPolicy implements Serializable {
+        private static final long serialVersionUID = -1027974819756498893L;
+    }
 
-    @SerializedName("version")
-    protected String version;
+    @Test
+    public void testPackage() {
+        /* validate model pojos */
+        Validator validator = ValidatorBuilder.create()
+                                      .with(new SetterTester(), new GetterTester()).build();
 
-    @SerializedName("name")
-    protected String name;
+        validator.validate(PojoClassFactory.getPojoClass(DerivedDomainPolicy.class));
+    }
 
-    @SerializedName("metadata")
-    protected Metadata metadata;
 }

@@ -24,8 +24,8 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 
 /**
@@ -33,7 +33,7 @@ import lombok.experimental.SuperBuilder;
  */
 
 @Data
-@SuperBuilder
+@Builder
 public class ControllerProperties implements Serializable {
     private static final long serialVersionUID = 1259434187110418986L;
 

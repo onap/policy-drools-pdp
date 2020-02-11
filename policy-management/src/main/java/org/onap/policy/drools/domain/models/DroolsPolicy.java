@@ -18,23 +18,29 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.domain.models.controller;
+package org.onap.policy.drools.domain.models;
 
-import java.io.Serializable;
-import java.util.List;
-import lombok.Builder;
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
-
-
-/**
- * Source Topics.
- */
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
-public class ControllerSourceTopic implements Serializable {
-    private static final long serialVersionUID = -1732598566914643612L;
+@SuperBuilder
+@NoArgsConstructor
+public abstract class DroolsPolicy {
+    @SerializedName("type")
+    protected String type;
 
-    protected String topicName;
-    protected List<ControllerSerialization> serialization;
+    @SerializedName("type_version")
+    protected String typeVersion;
+
+    @SerializedName("version")
+    protected String version;
+
+    @SerializedName("name")
+    protected String name;
+
+    @SerializedName("metadata")
+    protected Metadata metadata;
 }

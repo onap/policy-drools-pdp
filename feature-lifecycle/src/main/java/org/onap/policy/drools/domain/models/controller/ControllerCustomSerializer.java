@@ -22,12 +22,12 @@ package org.onap.policy.drools.domain.models.controller;
 
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
 
 
 @Data
-@SuperBuilder
+@Builder
 public class ControllerCustomSerializer implements Serializable {
     private static final long serialVersionUID = 1505345574249332514L;
 
