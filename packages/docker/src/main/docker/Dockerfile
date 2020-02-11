@@ -20,7 +20,8 @@ ENV MVN_SNAPSHOT_REPO_URL $MVN_SNAPSHOT_REPO_URL
 ENV MVN_RELEASE_REPO_URL $MVN_RELEASE_REPO_URL
 ENV http_proxy $http_proxy
 
-RUN apt-get install -y \
+RUN apt-get update \
+    && apt-get install -y \
     mariadb-client \
     file \
     bash-completion \
