@@ -209,6 +209,24 @@
     },
     {
       "key": {
+        "uuid": "ecb1bc2a_4f7de7aa",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "seems like a perfect opportunity for some object abstraction, where the \"subtle differences\" would be captured in subclasses",
+      "parentUuid": "f17d343f_70bbfac8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1f05b77d_f1cc7f66",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -623,6 +641,24 @@
     },
     {
       "key": {
+        "uuid": "427013c3_bc0fa1d7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "can\u0027t just generate a random number that\u0027s one less than the number of servers?  if count\u003dcurrent server then set count\u003dlast server",
+      "parentUuid": "995dbf3f_d6ca396a",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7b5c159b_240060d2",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -792,6 +828,24 @@
       "side": 1,
       "message": "Is there a benefit to making it \u0027final\u0027? At present, we aren\u0027t reassigning this anywhere, but you could envision an algorithm where you end up generating a new TreeSet, rather than incrementally updating \u0027buckets\u0027.",
       "parentUuid": "b45bc4d9_3adb39a5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "738e7cd2_cfef7342",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1269,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "the benefit is that it prevents something else from changing it\u0027s value.  If the code changes later so that it intentionally changes its value, then \"final\" can be removed at that time.  Basically, it provides a safety check for things you don\u0027t expect to change.  I don\u0027t frequently use it within the body of a method, but I often use it in class definitions, if it\u0027s something that shouldn\u0027t be changed",
+      "parentUuid": "dc7d23d9_0f2aac44",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -990,6 +1044,24 @@
     },
     {
       "key": {
+        "uuid": "ee79b2be_47bddd89",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1523,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "got it - didn\u0027t realize the setOwner() might change it.  Perhaps add a comment to that effect so folks in the future don\u0027t wonder the same thing",
+      "parentUuid": "616e0d71_f50961cd",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "313596fb_52aa07fe",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1129,6 +1201,24 @@
     },
     {
       "key": {
+        "uuid": "e336b17f_211d8c90",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1975,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "I assume there won\u0027t be many backup items?  Otherwise, could use a Set, which is still more efficient than a List.",
+      "parentUuid": "d318f878_6fc9342d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "58af0505_d4031aa0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1181,6 +1271,24 @@
     },
     {
       "key": {
+        "uuid": "975720d6_37cecdb3",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2114,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "Got it.",
+      "parentUuid": "f899d3fc_0d218294",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "09f8e027_739d525f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1210,6 +1318,24 @@
       "side": 1,
       "message": "No, this is correct -- if \u0027this.data !\u003d null\u0027, we have previously received backup data, and are presumably acting on it. I suppose we could consider logging an error message if we get redundant backup data, although it may be that retransmissions are not unusual -- I wrote this stuff back in 2017, and I don\u0027t remember all of the details.",
       "parentUuid": "09f8e027_739d525f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ff3d481_5e3f24c9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2173,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "Oh, duh, I was reading it as \"data \u003d\u003d null\"",
+      "parentUuid": "2a07b2d8_d8fc2380",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -1300,6 +1426,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9be65839_c4484960",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2357,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-13T18:51:41Z",
+      "side": 1,
+      "message": "Sounds good.",
+      "parentUuid": "f45974ea_8cd0be38",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
