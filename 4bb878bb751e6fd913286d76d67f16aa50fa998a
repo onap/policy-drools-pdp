@@ -191,6 +191,24 @@
     },
     {
       "key": {
+        "uuid": "f17d343f_70bbfac8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "There are subtle differences between primary and secondary backup, and more significant differences between either of these and owner. My gut feeling is that accessing all of these through an array would lead to a few opportunities for reuse, but many more opportunities for confusion.\n\nA less disruptive approach would be to define a method \u0027Server getBucketServer(int index)\u0027 and \u0027void setBucketServer(Server server, int index)\u0027, where index has the range 0-2, and these could be used any place where all three are treated the same (I don\u0027t know exactly where at this point).",
+      "parentUuid": "1635f1cd_68481258",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1f05b77d_f1cc7f66",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -344,6 +362,24 @@
     },
     {
       "key": {
+        "uuid": "4da1a92b_0043b45c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "It would mean that the data is corrupted -- one of those \"this should never happen\" things, like \u0027IOException\u0027. If it does happen, the caller logs an error message, and the update operation is aborted.",
+      "parentUuid": "1e5acb74_c0e26223",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "741858ca_f0675ba0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -412,6 +448,24 @@
     },
     {
       "key": {
+        "uuid": "09dc0b3d_7d91aa41",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 646,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "Most of \u0027copyData\u0027 runs in the \u0027MainLoop\u0027 thread, which is also the only thread where bucket updates occur.",
+      "parentUuid": "fd5c6eb5_0b465260",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "19369991_2470412d",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -423,6 +477,24 @@
       "writtenOn": "2020-02-07T22:09:51Z",
       "side": 1,
       "message": "will this be invoked even if the connection cannot be established?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78318b48_ec2c78d2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 716,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "Actually, it looks like the callback would be missed if an exception occurs -- good catch!\n\nI think the best fix would be to add a new method to interface \u0027Server.PostResponse\u0027 that is called if an exception occurs, and give it a default implementation that generates an appropriate \u0027Response\u0027 object, and calls \u0027response(Response)\u0027. That way, callers who want to explicitly see exceptions can, and those that just want the failure response don\u0027t need to do anything different.",
+      "parentUuid": "19369991_2470412d",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -498,6 +570,24 @@
     },
     {
       "key": {
+        "uuid": "851a5eca_7e9e02a0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "The actual updates only occur in the \u0027MainLoop\u0027 thread, so there shouldn\u0027t be any synchronization issues. I suppose it is possible that an automatic rebalance and a rebalance from a REST command could be interleaved, but the end result would be two rebalances in quick succession -- there shouldn\u0027t be any corruption, because the \u0027Rebalance.copyData()\u0027 and update operations are both \"atomic\", as both run in the MainLoop thread.",
+      "parentUuid": "851b9b3a_2551e7a6",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4f69fb66_e53e1dd9",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -512,6 +602,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "995dbf3f_d6ca396a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "The key needs to be that of an existing active host, other than the current host.",
+      "parentUuid": "4f69fb66_e53e1dd9",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -672,6 +780,24 @@
     },
     {
       "key": {
+        "uuid": "dc7d23d9_0f2aac44",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1269,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "Is there a benefit to making it \u0027final\u0027? At present, we aren\u0027t reassigning this anywhere, but you could envision an algorithm where you end up generating a new TreeSet, rather than incrementally updating \u0027buckets\u0027.",
+      "parentUuid": "b45bc4d9_3adb39a5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "14a5154c_0e5a17c6",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -706,6 +832,24 @@
     },
     {
       "key": {
+        "uuid": "6a7e8ac7_15e03855",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "Updates to \u0027owner\u0027, \u0027primaryBackup\u0027, and \u0027secondaryBackup\u0027 always occur within the \u0027MainLoop\u0027 thread.",
+      "parentUuid": "4e5d49b0_3fcde4f8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c012c8ba_d1e2b277",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -720,6 +864,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "704d7c2b_87a62e5e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1470,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "It shouldn\u0027t be -- the \u0027testServers\u0027 table should be an atomic snapshot of the \u0027Servers\u0027 table. As long as the \u0027Servers\u0027 table isn\u0027t corrupted, the \u0027testServers\u0027 table won\u0027t be either. \n\nIf the \u0027Servers\u0027 table somehow did get corrupted, a \u0027null\u0027 return from \u0027get\u0027 would be interpreted as an unassigned \u0027owner\u0027 (or \u0027primaryBackup\u0027 or \u0027secondaryBackup\u0027), and the rebalance algorithm would assign one.",
+      "parentUuid": "c012c8ba_d1e2b277",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -740,6 +902,24 @@
     },
     {
       "key": {
+        "uuid": "34aed033_f63110df",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1478,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "See the previous response.",
+      "parentUuid": "88349283_d9e7c316",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bf3e4298_5ce49d9f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -754,6 +934,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0d9613e_17ee637f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1486,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "See the previous response.",
+      "parentUuid": "bf3e4298_5ce49d9f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -774,6 +972,24 @@
     },
     {
       "key": {
+        "uuid": "616e0d71_f50961cd",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1523,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "The \u0027bucket.setOwner(ts)\u0027 operation (below) removes the bucket from it\u0027s current \"Server\" (which is nullServer), and adds it to the newly-assigned server \u0027ts\u0027. This means that \u0027nullServer.buckets\u0027 is being changed as we iterate through the loop, which would result in a \u0027ConcurrentModificationException\u0027, unless we iterate over a copy.",
+      "parentUuid": "4053f846_5b8eabce",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "313596fb_52aa07fe",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -788,6 +1004,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d435efe6_e61f2ff7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1553,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "Yes - \u0027setOwner\u0027 updates the old and new owner\u0027s bucket set (\u0027setPrimaryBackup\u0027 and \u0027setSecondaryBackup\u0027 behave in a similar manner). At this point in the code, \u0027last\u0027 has at least two more buckets than \u0027first\u0027, so one bucket is moved from \u0027last\u0027 to \u0027first\u0027 to bring them closer in balance.",
+      "parentUuid": "313596fb_52aa07fe",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -842,6 +1076,24 @@
     },
     {
       "key": {
+        "uuid": "b4954c88_385a0ffc",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1819,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "\u0027/cmd/dumpBuckets\u0027 is a test/debugging command. It is most often invoked by a human running \u0027curl\u0027, but should still display correctly if you use a browser. I find it more readable than HTML or JSON (with or without pretty-printing).",
+      "parentUuid": "0a453b21_e2df6610",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6c8a2de3_96f96161",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -856,6 +1108,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d318f878_6fc9342d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1975,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "\u0027register\u0027 is only called at initialization time -- \u0027backupList\u0027 doesn\u0027t change after that point.\n\nIf a bucket migrates from one server to another, \u0027Backup.generate(int bucketNumber)\u0027 is called on every entry on the list, the resulting objects are serialized, sent to the new host, deserialized, and \u0027Restore.restore(int bucketNumber)\u0027 is called for each entry on the destination host.",
+      "parentUuid": "6c8a2de3_96f96161",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -893,6 +1163,24 @@
     },
     {
       "key": {
+        "uuid": "f899d3fc_0d218294",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2114,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "This is not the overall wait time -- there is a polling loop (lines 2193-2198) that checks the state at 1 second intervals. An actual error time-out occurs when \u0027endTime\u0027 is reached, which is typically something like 30 seconds after start.",
+      "parentUuid": "daf45582_ce87a187",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "09f8e027_739d525f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -907,6 +1195,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a07b2d8_d8fc2380",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2173,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "No, this is correct -- if \u0027this.data !\u003d null\u0027, we have previously received backup data, and are presumably acting on it. I suppose we could consider logging an error message if we get redundant backup data, although it may be that retransmissions are not unusual -- I wrote this stuff back in 2017, and I don\u0027t remember all of the details.",
+      "parentUuid": "09f8e027_739d525f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -944,6 +1250,24 @@
     },
     {
       "key": {
+        "uuid": "ff5adc70_348a6bea",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2274,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "OK - this is one of those fuzzy 2017 memories I alluded to earlier :-)\n\nWhen bucket migration is occurring, we want to queue incoming messages until all of the associated data has been restored, and then process messages in order, continuing to queue them until we catch up.\n\nI believe there was a situation where the \u0027process()\u0027 method associated with incoming UEB/DMAAP messages acted just like a new incoming message, and it wound up back in the queue. I will need to do some more digging to see what this was about, and verify that it was fixed.",
+      "parentUuid": "84a63cc7_dcf0bd7d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "16df8ae9_737caea7",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -955,6 +1279,24 @@
       "writtenOn": "2020-02-07T22:09:51Z",
       "side": 1,
       "message": "should it be forwarded to the new owner?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f45974ea_8cd0be38",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2357,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-13T18:05:47Z",
+      "side": 1,
+      "message": "At this point, I don\u0027t know what would happen if a bucket is moved from server 1 to server 2 and then to server 3 in quick succession. It seems safer to just discard the data, and log an error.",
+      "parentUuid": "16df8ae9_737caea7",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
