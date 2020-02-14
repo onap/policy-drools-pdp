@@ -677,6 +677,24 @@
     },
     {
       "key": {
+        "uuid": "4fea622a_65af74c5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-14T13:40:43Z",
+      "side": 1,
+      "message": "Oh, I see.  The code has to start with a \"key\" and then adjust the key as it goes from one server to the next.  Can\u0027t just jump straight to the last server, based on the count, and invoke higherKey().",
+      "parentUuid": "12384fa0_115c8c4f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b5c159b_240060d2",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
