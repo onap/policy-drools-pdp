@@ -659,6 +659,24 @@
     },
     {
       "key": {
+        "uuid": "12384fa0_115c8c4f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-14T09:59:51Z",
+      "side": 1,
+      "message": "The servers are in a TreeMap -- it seems that some kind of stepping is required in order to get a random distribution. This is in a REST command used for testing, so performance isn\u0027t an issue.",
+      "parentUuid": "427013c3_bc0fa1d7",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b5c159b_240060d2",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1720,6 +1738,24 @@
     },
     {
       "key": {
+        "uuid": "8d2bbbcb_7f39e89a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-14T09:59:51Z",
+      "side": 1,
+      "message": "StandardCoder (line 59) is being used to convert a JSON message to a JsonObject, which is then used to locate the keyword that ultimately determines where the message is routed. See the \u0027beforeOffer\u0027 method on line 275.",
+      "parentUuid": "8416fbd2_948461a0",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cc7478ed_62968ded",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/RestServerPool.java",
         "patchSetId": 2
@@ -1751,6 +1787,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "355ddd1e_f134b088",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-02-14T09:59:51Z",
+      "side": 1,
+      "message": "Not in this form -- they all operate on the static \u0027properties\u0027 variable containing the server pool properties. You could define a new class, perhaps a subclass of \u0027Properties\u0027, and add these methods as instance methods.",
+      "parentUuid": "bb437a82_632f06ae",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     },
     {
       "key": {
