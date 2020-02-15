@@ -1739,6 +1739,23 @@
     },
     {
       "key": {
+        "uuid": "2855af4c_5c3afad1",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "looks like most of these classes can be moved to their own file\n\nsame comment for several files",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8416fbd2_948461a0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -1771,6 +1788,601 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f1f921d9_22b6ceb1",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "might want to use html mark-up (i.e., \"dl\") to preserve the appearance of this comment, in case someone ever does source-\u003eformat on the file",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0aa8ee63_507b9637",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "maybe add Ms, Millis, or Sec to make it clear which it is",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8876e675_a9400bc2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "definitely seems odd to directly access a method within a nested class",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1787bea1_6c4753ba",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "utf-8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "adbe99bc_57fe32fd",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "use StandardCoderObject instead.  Then lines 296-332 can be replaced with:\n\n  object.getString(path-without-conversion-function)\n\nThat would be the strong preference; we can add support for conversion functions, if need be.  At the least, just use a HashMap\u003cString,Object\u003e instead of JsonObject.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6df096c_7bd6b98e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "add @formatter:off to preserve formatting of these lines\n\nsame comment elsewhere",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4581560f_4ac896c2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "sonar: this method probably exceeds the cyclomatic complexity, though I\u0027m unsure",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fc3d319_61299c7d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "sonar: nesting is too deep",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b9b5b58_89d1ece0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "utf-8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55122f90_8be35621",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "replace lines 505-511 with:\n\n  for(String name: prop.stringPropertyNames()) {",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "668911dd_c3f6feac",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "add \"private final\" as an indicator that the methods won\u0027t be changing these values\n\nsame comment below",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "282701b8_2db81871",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "use @AllArgsConstructor",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6eb4e7a7_b15a1f37",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "maybe change \"TBD\" to \"TODO\" so it\u0027s flagged by sonar and not forgotten - Pam may have a different opinion.\n\nsame comment elsewhere",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3acfa31_c7cd14b9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 731,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "\"private final List\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ca4f1ab_f380b51a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "method seems a bit long; maybe break into two methods",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "515042fa_1b8cd401",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 757,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "too bad we can\u0027t build this list for all the buckets at once and avoid looping through all objects for every bucket",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e194d72_c0b7a035",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 764,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "probably more efficient to loop over the fact handles and avoid the extra look-up.  Could also avoid the test on line 765.\n\nwonder if the handles should be accumulated and then deleted after the loop? i.e., does delete() interfere with getObjects()?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3ce684b_7f2dda74",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 767,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "do we re-insert these later? Or are we moving them to another server?  Perhaps add a comment to explain",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d24a8a3_efa80f52",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 902,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "need to check session\u003d\u003dnull?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e936a5f8_263f96e6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "we prefer the following, as it requires less indentation and makes it more apparent what\u0027s happening:\n\n  if(lu !\u003d null) {\n    return lu.getKeyword(obj);\n  }",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af222acf_f43234d8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "I like this approach to finding the \"best\" match - nice!",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04280486_4a1bc6f2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "sonar: iterate over the entrySet to avoid the look-up on line 80",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d2eef57_cd1fad6f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "\"is\" \u003d\u003e \"are\"\n\"object\u0027s\" \u003d\u003e \"objects\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebd3889e_405409de",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "sonar: cyclomatic complexity; break this into separate methods",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82170123_2dcb1ba6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "looks like this could be done via a on demand holder idiom: https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ded658c_7a1ec10e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "replace lines 160-166 with:\n\n  for(String name: prop.stringPropertyNames()) {",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbee1c56_6464e493",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "any way to make use of the \"best match\" approach from before?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4bc97da8_2bdf015f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "technically, interfaces can have superinterfaces",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f99a0599_0e4556ed",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "leave off \",error\u003d{}\" so that the stacktrace will be logged",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74b8fb59_c6ea817a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "don\u0027t we need to change access permissions on the field? Or do we depend on it being public?\n\nof course, java 11 won\u0027t be happy if we change access permissions",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7db5bb6_6e1d9eb3",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "leave off \", error\u003d{}\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "458150cd_031c0a1c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "remove \", error\u003d{}\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3379b612_bd540a78",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "this stuff below could be reused in other places (e.g., StandardCoderObject) if it were a full-fledged object, without the static data/methods",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "034db355_0c78203d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "\"private final\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f52ff0c_beeb9de7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-15T17:59:46Z",
+      "side": 1,
+      "message": "use @AllArgsConstructor",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     },
     {
       "key": {
