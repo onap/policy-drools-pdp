@@ -1876,6 +1876,24 @@
     },
     {
       "key": {
+        "uuid": "5bbc7daa_87951f56",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-16T04:48:12Z",
+      "side": 1,
+      "message": "Let\u0027s just stick with StandardCoderObject; it does the path loop already, just need to deal with the conversion function.  You might have a better idea, but here are the three that I see:\n1) server pool:\n     copies path, stripping the \":xxx\" suffix from the last component\n     invokes object.getString(copied path)\n     invokes the conversion function with the result\n2) StandardCoderObject:\n     add a new method getConvertedString(converter, path)\n         converter takes the value and the function name (i.e., the suffix of the last\n         path component) and returns the converted value\n   server pool:\n     invokes object.getConvertedString(converter, path)\n3) StandardCoderObject:\n     modify getString(path) to strip any \":xxx\" suffix from the last component\n   server pool:\n     invokes object.getString(path)\n     invokes the conversion function on the result\n\nI like #1, because it seems like this conversion stuff is ancillary to StandardCoderObject.  On the other hand, I could see that the conversion stuff might be useful, so #2 may actually be the better answer.  I can also do #3, though that seems the least favorable of these options.",
+      "parentUuid": "adbe99bc_57fe32fd",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e6df096c_7bd6b98e",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
