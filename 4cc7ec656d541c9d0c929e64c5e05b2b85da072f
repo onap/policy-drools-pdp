@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d4c79602_88887372",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-17T14:50:36Z",
+      "side": 1,
+      "message": "nvm - I see it was removed in a related review",
+      "parentUuid": "3325211c_bab04b03",
+      "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "377c6dc7_63e3fb6e",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2020-02-17T14:43:55Z",
       "side": 1,
       "message": "I think python3 is included in the base image, though probably not python3-pip.  The base image also includes\npython and python-pip.  Wonder if we should just change the base image?",
+      "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "85788cb2_7dbeb6bc",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-17T14:50:36Z",
+      "side": 1,
+      "message": "nvm - I see it was removed in a related review\n\nI think python3 is part of the base debian-slim image",
+      "parentUuid": "377c6dc7_63e3fb6e",
       "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
