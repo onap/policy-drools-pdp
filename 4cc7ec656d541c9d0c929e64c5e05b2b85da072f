@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "f5c9f88d_c045a7f6",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-17T15:52:48Z",
+      "side": 1,
+      "message": "With the previous set up, http and telemetry were not working properly.",
+      "parentUuid": "85788cb2_7dbeb6bc",
+      "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c488ad5e_315d3ae4",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 1
@@ -83,6 +101,24 @@
       "writtenOn": "2020-02-17T14:43:55Z",
       "side": 1,
       "message": "seems dangerous.  No other way around this?",
+      "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77cc8c39_ff2e6b02",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-17T15:52:48Z",
+      "side": 1,
+      "message": "My plan is to remove before releasing.  This one resolves one issue from the maven image, there is a warning, which I need to understand better.   At the same time it is very convenient while debugging issues.  So my plan is to leave it there temporarily until I think the image is solid and then remove (POLICY-2370 will track this).",
+      "parentUuid": "c488ad5e_315d3ae4",
       "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -106,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "4e4daa3d_05411ff7",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-17T15:52:48Z",
+      "side": 1,
+      "message": "This is correct, moved under install dir with others, and then moved to POLICY_HOME/bin when created.",
+      "parentUuid": "ed264dbc_2098ba92",
+      "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dcb87407_d6e206fd",
         "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
         "patchSetId": 1
@@ -117,6 +171,24 @@
       "writtenOn": "2020-02-17T14:43:55Z",
       "side": 1,
       "message": "should this be \"bash\" instead of \"source\"? (i.e., do we want variables exported by the script to be exported into this shell?)",
+      "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b16bec8a_e4b22e19",
+        "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-17T15:52:48Z",
+      "side": 1,
+      "message": "I think it is ok, since this is to allow arbitrary customizations.",
+      "parentUuid": "dcb87407_d6e206fd",
       "revId": "4cc7ec656d541c9d0c929e64c5e05b2b85da072f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
