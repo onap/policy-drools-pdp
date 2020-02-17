@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +31,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -85,9 +85,6 @@ public class LifecycleFsm implements Startable {
 
     protected final Properties properties;
 
-    @Getter(AccessLevel.PACKAGE)
-    protected final DomainMaker domainMaker = PolicyEngineConstants.getManager().getDomainMaker();
-
     protected TopicSource source;
     protected TopicSinkClient client;
 
@@ -139,6 +136,12 @@ public class LifecycleFsm implements Startable {
         this.policyTypesMap.put(
                 POLICY_TYPE_DROOLS_NATIVE_RULES,
                  new PolicyTypeRulesController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
+    }
+
+    @JsonIgnore
+    @GsonJsonIgnore
+    public DomainMaker getDomainMaker() {
+        return PolicyEngineConstants.getManager().getDomainMaker();
     }
 
     @Override

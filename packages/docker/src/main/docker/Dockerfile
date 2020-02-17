@@ -22,29 +22,44 @@ ENV http_proxy $http_proxy
 
 RUN apt-get update \
     && apt-get install -y \
+    httpie \
+    python3 python3-pip \
     mariadb-client \
-    file \
-    bash-completion \
-    vim \
+    file bash-completion \
+    net-tools sudo \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
+    && adduser policy sudo \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && pip install http-prompt
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
-    chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL && \
-    rmdir $POLICY_HOME/etc/ssl && \
-    rmdir $POLICY_HOME/etc
+    chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL
+
+COPY --chown=policy:policy /maven/install-drools.zip pdpd-entrypoint.sh $POLICY_INSTALL/
 
 WORKDIR $POLICY_INSTALL
-COPY /maven/install-drools.zip docker-install.sh do-start.sh wait-for-port.sh ./
+USER policy:policy
 
-VOLUME [ "$POLICY_INSTALL_INIT" ]
-
+SHELL ["/bin/bash", "-c"]
 RUN unzip -o install-drools.zip && \
     rm install-drools.zip && \
     chown -R policy:policy * && \
-    chmod +x *.sh
+    mkdir -p $POLICY_HOME/logs $POLICY_HOME/config $HOME/.m2 && \
+    tar -C $POLICY_HOME -xvf base-${BUILD_VERSION_DROOLS}.tar.gz --no-same-owner && \
+    unzip policy-management-${BUILD_VERSION_DROOLS}.zip -d $POLICY_HOME && \
+    echo "source $POLICY_HOME/etc/profile.d/env.sh" >> "$HOME/.bashrc" && \
+    mv pdpd-entrypoint.sh $POLICY_HOME/bin/ && \
+    chmod 700 $POLICY_HOME/bin/* && \
+    chmod 600 $POLICY_HOME/config/* && \
+    rm -f $POLICY_INSTALL/*.conf && \
+    . $POLICY_HOME/etc/profile.d/env.sh && \
+    $POLICY_HOME/bin/features install healthcheck distributed-locking lifecycle && \
+    $POLICY_HOME/bin/features enable lifecycle && \
+    find $HOME/.m2/ -name _maven.repositories -exec rm -v {} \; && \
+    find $HOME/.m2/ -name _remote.repositories -exec rm -v {} \; && \
+    rm $POLICY_INSTALL/policy-management-${BUILD_VERSION_DROOLS}.zip \
+       $POLICY_INSTALL/base-${BUILD_VERSION_DROOLS}.tar.gz 2> /dev/null
 
 EXPOSE 9696 6969
-
-USER policy
-
-CMD ./do-start.sh
+ENTRYPOINT ["/opt/app/policy/bin/pdpd-entrypoint.sh"]
+CMD ["boot"]

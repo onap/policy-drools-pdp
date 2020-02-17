@@ -143,9 +143,6 @@
                             <goal>build</goal>
                             <goal>push</goal>
                         </goals>
-                        <configuration>
-                            <image>onap/policy-drools</image>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
