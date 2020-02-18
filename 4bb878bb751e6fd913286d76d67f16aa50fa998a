@@ -2404,6 +2404,108 @@
     },
     {
       "key": {
+        "uuid": "ee9eb94d_49888f08",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T02:06:24Z",
+      "side": 1,
+      "message": "\"private\" or \"private final\" as appropriate",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f79c38b3_718911d7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T02:06:24Z",
+      "side": 1,
+      "message": "maybe name \"count\" something more meaningful",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "241a18cd_b8986935",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T02:06:24Z",
+      "side": 1,
+      "message": "sonar: use compute() instead of get()/put()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "824e5743_dee67a77",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T02:06:24Z",
+      "side": 1,
+      "message": "sonar: use compute() or putIfAbsent() instead of get()/put()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d92c9bd5_83fd5d3d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T02:06:24Z",
+      "side": 1,
+      "message": "utf-8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "910fd4f9_a40ce31e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T02:06:24Z",
+      "side": 1,
+      "message": "\"private\"\n\nsame comment elsewhere",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cc7478ed_62968ded",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/RestServerPool.java",
         "patchSetId": 2
