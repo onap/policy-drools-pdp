@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0625aa1e_e29b2604",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/RepositoryAudit.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T12:57:28Z",
+      "side": 1,
+      "message": "hmm.  Looks like this should do getProperty AND THEN do getValue",
+      "revId": "be214da8cd824d3bc4837dd2daedf105bbd0f831",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
