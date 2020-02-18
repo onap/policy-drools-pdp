@@ -26,7 +26,7 @@ RUN apt-get update \
     python3 python3-pip \
     mariadb-client \
     file bash-completion \
-    net-tools sudo \
+    net-tools netcat sudo \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && adduser policy sudo \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
