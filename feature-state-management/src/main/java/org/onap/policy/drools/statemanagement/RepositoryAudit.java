@@ -281,6 +281,9 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             if (rval == null && index != 0 && useDefault) {
                 rval = StateManagementProperties.getProperty("repository." + property);
             }
+            if (rval != null && rval.matches("[$][{].*[}]$")) {
+                rval = System.getenv(rval.substring(2, rval.length() - 1));
+            }
             return rval;
         }
 
