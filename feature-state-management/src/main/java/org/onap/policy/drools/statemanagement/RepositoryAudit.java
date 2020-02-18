@@ -276,20 +276,24 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         }
 
 
-            private String getProperty(String property, boolean useDefault) {
-            String fullProperty = (index == 0 ? "repository." + property : "repository" + index + "." + property);
-            String rval = StateManagementProperties.getProperty(fullProperty);
-            if (rval == null && index != 0 && useDefault) {
-                rval = StateManagementProperties.getProperty("repository." + property);
-            }
-            return rval;
-        }
-
         private String getValue(final String value) {
             if (value != null && value.matches("[$][{].*[}]$")) {
                 return System.getenv(value.substring(2, value.length() - 1));
             }
             return value;
+        }
+
+        private String getProperty(String property, boolean useDefault) {
+            String value = property;
+            if (value != null && value.matches("[$][{].*[}]$")) {
+                value = System.getenv(value.substring(2, value.length() - 1));
+            }
+            String fullProperty = (index == 0 ? "repository." + value : "repository" + index + "." + value);
+            String rval = StateManagementProperties.getProperty(fullProperty);
+            if (rval == null && index != 0 && useDefault) {
+                rval = StateManagementProperties.getProperty("repository." + value);
+            }
+            return rval;
         }
 
         public void initIsActive() {
