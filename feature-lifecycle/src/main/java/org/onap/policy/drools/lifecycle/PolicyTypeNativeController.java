@@ -20,15 +20,20 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
-@Getter
 public class PolicyTypeNativeController implements PolicyTypeController {
 
+    @Getter
     protected final ToscaPolicyTypeIdentifier policyType;
-    protected final LifecycleFsm fsm;
+
+    @GsonJsonIgnore
+    @JsonIgnore
+    protected final transient LifecycleFsm fsm;
 
     public PolicyTypeNativeController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {
         this.policyType = policyType;
