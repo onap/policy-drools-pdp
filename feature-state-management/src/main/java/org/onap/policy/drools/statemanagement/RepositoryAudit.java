@@ -264,8 +264,8 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             // Fetch repository information from 'IntegrityMonitorProperties'
             repositoryId = getProperty("audit.id", false);
             repositoryUrl = getProperty("audit.url", false);
-            repositoryUsername = getProperty("audit.username", true);
-            repositoryPassword = getProperty("audit.password", true);
+            repositoryUsername = getProperty(getValue("audit.username"), true);
+            repositoryPassword = getProperty(getValue("audit.password"), true);
 
             logger.debug("Nexus Repository Information retrieved from 'IntegrityMonitorProperties':");
             logger.debug("repositoryId: " + repositoryId);
@@ -275,11 +275,23 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             upload = false;
         }
 
+
+        private String getValue(final String value) {
+            if (value != null && value.matches("[$][{].*[}]$")) {
+                return System.getenv(value.substring(2, value.length() - 1));
+            }
+            return value;
+        }
+
         private String getProperty(String property, boolean useDefault) {
-            String fullProperty = (index == 0 ? "repository." + property : "repository" + index + "." + property);
+            String value = property;
+            if (value != null && value.matches("[$][{].*[}]$")) {
+                value = System.getenv(value.substring(2, value.length() - 1));
+            }
+            String fullProperty = (index == 0 ? "repository." + value : "repository" + index + "." + value);
             String rval = StateManagementProperties.getProperty(fullProperty);
             if (rval == null && index != 0 && useDefault) {
-                rval = StateManagementProperties.getProperty("repository." + property);
+                rval = StateManagementProperties.getProperty("repository." + value);
             }
             return rval;
         }
