@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b07275f0_508ccfdf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-18T16:49:00Z",
+      "side": 1,
+      "message": "Great! I meant to ask you yesterday if you\u0027d figured this out, but obviously forgot.",
+      "revId": "6aad6f374b8e239e7cd4a468fce0d85d90637857",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
