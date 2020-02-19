@@ -2523,6 +2523,397 @@
     },
     {
       "key": {
+        "uuid": "0b414d47_6e23d245",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/RestServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "utf-8\n\nsame comment below",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d19f7f78_720d38f6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/RestServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "since media type is TEXT_PLAIN, perhaps this should return a String\n\nsame comment below",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8cffda07_a860c3be",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "sonar: move variables before functions",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d04b26e8_748e177d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "should this continue, or should it throw an exception?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76bb955d_9f5cae19",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "bummer.  All of these properties could have been loaded using the @Property annotation, if they weren\u0027t static.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf51095c_07624e7b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "reverse the equals",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62aea414_8ec7b400",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "sonar: log the exception",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31564dc5_0fd598d9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "reduce nesting by changing to:\n\n  if(...) {\n    return;\n  }\n\nsame comment elsewhere",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b09fc838_298f0afc",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "compare the values directly instead of using subtraction.  Or should this be \"-\u003d\" instead?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50dbb713_f225ef39",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "sonar: log at trace or debug level",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "132402d5_7c54d72d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 884,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "seems like the code should be modified to use the existing HttpClient; still unclear to me why it needs access to the WebTarget.  Perhaps it was because HttpClient was missing support for asynchronous calls?  If so, they\u0027ve been added.",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b017e370_6d8168d0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 890,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "no way to set these values when the client is created? if not, we should add it",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea298f83_004f4aa8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "use initialization-on-demand-holder idiom",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57092ef0_3644c40a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1042,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "perhaps use \"\u003c\u003d 0\" instead?  Or does it matter if the count goes negative?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0270681c_9cb60620",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "utf-8\n\nneed to do this anywhere \"new String()\" is used",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e5b5ce4_1df7b01d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1088,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "can this test be eliminated?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44c291a2_99885be0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "replace \"new Integer()\" with \"Integer.valueOf()\", if an Integer is actually needed.  Otherwise, use Integer.parseInt() if only an \"int\" is needed\n\nsame comment everywhere this appears",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "668d3a5e_76a9fd49",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1127,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "log \"e\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3d465f3_a735ab58",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1130,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "log \"e\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "704f4f8d_a83e61e5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1172,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "add:\n\n  client \u003d null;",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe5145d2_116105d4",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1174,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "need logger calls in each \"catch\"",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f47f4e7_7830924e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1243,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "add @formatter:off to preserve formatting",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29bc41b2_91b2c730",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolApi.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "sonar: no static data in an interface",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bb437a82_632f06ae",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
         "patchSetId": 2
@@ -2552,6 +2943,125 @@
       "side": 1,
       "message": "Not in this form -- they all operate on the static \u0027properties\u0027 variable containing the server pool properties. You could define a new class, perhaps a subclass of \u0027Properties\u0027, and add these methods as instance methods.",
       "parentUuid": "bb437a82_632f06ae",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "239f43e9_190dfd77",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "use StringUtils.isBlank()\n\nsame comment below",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1b43ab0_cc80b226",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "use Long.parseLong()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b0afbf0_d20a3714",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "use Integer.parseInt()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38ab717a_50c9dfbd",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "use Boolean.parseBoolean​()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0cf6a18_cdf25c95",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "never thrown",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "402b5076_61f193ca",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "method is too large - break it apart",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "642a4c2b_7c8de391",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-19T19:10:28Z",
+      "side": 1,
+      "message": "use @NonNull instead of these checks",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
