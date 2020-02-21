@@ -63,7 +63,6 @@ public class RestLifecycleManagerTest {
         HttpServletServer server =
             HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/", true, true);
         server.addServletClass("/*", RestLifecycleManager.class.getName());
-        server.setSerializationProvider("org.onap.policy.common.gson.JacksonHandler");
         server.waitedStart(5000L);
 
         Assert.assertTrue(NetworkUtil.isTcpPortOpen("localhost", 8765, 5, 10000L));
