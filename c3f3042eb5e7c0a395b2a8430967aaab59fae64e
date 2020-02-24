@@ -1,0 +1,378 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7292f66_700c0585",
+        "filename": "drools-pdp-state-control-api/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "feature apis are named with \"api-\" prefix, see other api projects in the repo as a reference.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f844d26b_88bdaab6",
+        "filename": "drools-pdp-state-control-api/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Since this seems to be only paired with the feature-server-pooling, a name that relates the 2 will be more easy to see the relationship for folks looking at the code (something like api-server-pool-state-control).",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93a916e6_0f810986",
+        "filename": "drools-pdp-state-control-api/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "delete if not used",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f451c089_78ccfcf5",
+        "filename": "drools-pdp-state-control-api/src/main/java/org/onap/policy/drools/control/api/DroolsPdpStateControlApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Api interfaces have the OrderedService* portion separated with *Api and *Constants.   See other projects in this repo for reference.   It would be best to be consistent across all projects.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b706f8b_bb589041",
+        "filename": "drools-pdp-state-control-api/src/main/java/org/onap/policy/drools/control/api/DroolsPdpStateControlApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "delete \"public\" from methods signatures (sonar).",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27332988_eec6f3af",
+        "filename": "feature-server-pool/config/TestController-controller.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Delete file",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e8d199a_256cd99b",
+        "filename": "feature-server-pool/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Don\u0027t specify versions, look at other projects in this repo for reference, note that the versions are not specified and picked up instead from parent poms.   General comment.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b51da042_a157df65",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "2020 license (Global)",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48d157a8_0dfdd879",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "delete trailing spaces",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e796797c_17fde370",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Invalid syntax: use ${envd:SERVER_POOL_PORT} instead.   See other properties files in other projects in this repo for reference.   This is a global comment.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d707d506_3eb63ba4",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "In general prefix with \"server.pool\", to follow convention we are trying to follow in other modules to be representative that is exclusive to server-pooling.  \"server\" prefix is too generic.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "210947a0_a6c60e3e",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "most of the properties below do no exist in ONAP, ie. \"org.onap.carson.city\", \"com.att.ecomp\" ..",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66f08ec2_4c1172c9",
+        "filename": "feature-server-pool/src/test/resources/TestController-controller.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "This file would not work in ONAP.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46d7e978_661e8665",
+        "filename": "feature-server-pool/src/test/resources/drools-artifact-1.1/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "This is the same as under policy/core.  Not sure it will be better to distinguish it via coordinates (ie. there will be a version of the snapshot with the same coordinates already in the local repo).\n\nI think in general we are moving to fix versions, ie. \"1.0.0\" for test artifacts (see under policy-management), there were some limitations, or maintenance issues, I can remember right now about using the snapshot version).",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "548ff533_3cfeb507",
+        "filename": "feature-server-pool/src/test/resources/drools-artifact-1.1/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "\"policy-core\" in the description",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "119dec40_0ca8812a",
+        "filename": "feature-server-pool/src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "license header missing",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "642b47b4_5afab91d",
+        "filename": "feature-server-pool/src/test/resources/drools-artifact-1.1/src/main/resources/rules.drl",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "\"policy-core\" - replace with \"ONAP\"",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee117a29_73e033ca",
+        "filename": "packages/install/src/files/feature-server-pool.conf",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Consider removing POLICY.   I usually see ONAP, or the \"project\" name.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71bb7f95_b6f31ea3",
+        "filename": "packages/install/src/files/feature-server-pool.conf",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "2020",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eb913513_6d6f1f8d",
+        "filename": "packages/install/src/files/feature-server-pool.conf",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9545615f_8f053f12",
+        "filename": "packages/install/src/files/feature-server-pool.conf",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "if there are any suitable default values that are recommended ahead of testing, populate for easy reference.   For example:\n\nSERVER_POOL_HTTPS\u003dtrue\n\nwould be mandatory in a production environment.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48aa68f1_6e963f61",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/features/PolicyEngineFeatureApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-24T17:04:45Z",
+      "side": 1,
+      "message": "Delete",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
