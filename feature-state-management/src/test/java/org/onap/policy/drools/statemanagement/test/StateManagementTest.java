@@ -239,7 +239,7 @@ public class StateManagementTest {
 
         Properties cleanProperties = new Properties();
         cleanProperties.put(StateManagementProperties.DB_DRIVER,"org.h2.Driver");
-        cleanProperties.put(StateManagementProperties.DB_URL, "jdbc:h2:file:./sql/statemanagement");
+        cleanProperties.put(StateManagementProperties.DB_URL, "jdbc:h2:mem:statemanagement");
         cleanProperties.put(StateManagementProperties.DB_USER, "sa");
         cleanProperties.put(StateManagementProperties.DB_PWD, "");
 

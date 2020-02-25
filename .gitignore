@@ -12,7 +12,6 @@
 target/
 */config/
 */logs/
-*/sql/
 */testingLogs/
 **/*.iml
 .checkstyle
