@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,12 +24,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.drools.core.WorkingMemory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.util.KieUtils;
@@ -41,7 +45,7 @@ import org.onap.policy.drools.util.KieUtils;
  *     PolicySessionFeatureAPI
  */
 public class DroolsContainerTest {
-    
+
     private static final long TIMEOUT_SEC = 5;
 
     /**
@@ -159,24 +163,35 @@ public class DroolsContainerTest {
                     session.getFullName());
 
             // the updated rules should now multiply 3 * 8 * 2, and return 48
-            
+
             result = new LinkedBlockingQueue<>();
             container.insert("session1", Arrays.asList(3, 8, 2));
             container.insert("session1", result);
 
             assertEquals(48, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
 
-            // verify that default KiePackages have been added by testing
-            // that 'DroolsRunnable' is functioning
+            /*
+             * verify that default KiePackages have been added by testing that
+             * 'DroolsRunnable' is functioning. Also verifies that DroolsExecutor works by
+             * using it to inject the runnable, though we have to mock the WorkingMemory
+             * object since I don't know how to obtain it from the kieSession
+             */
+
+            WorkingMemory wm = mock(WorkingMemory.class);
+            when(wm.insert(any())).thenAnswer(ans -> {
+                Object object = ans.getArgument(0);
+                return container.getPolicySession("session1").getKieSession().insert(object);
+            });
+
+            DroolsExecutor executor = new DroolsExecutor(wm);
 
             final LinkedBlockingQueue<String> lbq = new LinkedBlockingQueue<>();
-            container.insert("session1", new DroolsRunnable() {
-                    @Override
-                    public void run() {
-                        lbq.add("DroolsRunnable String");
-                    }
-                });
+            executor.execute(() -> lbq.add("DroolsRunnable String"));
+            executor.execute(() -> lbq.add("another DroolsRunnable String"));
+
             assertEquals("DroolsRunnable String", lbq.poll(TIMEOUT_SEC, TimeUnit.SECONDS));
+            assertEquals("another DroolsRunnable String", lbq.poll(TIMEOUT_SEC, TimeUnit.SECONDS));
+
         } finally {
             container.shutdown();
             assertFalse(container.isAlive());
