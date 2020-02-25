@@ -206,6 +206,856 @@
     },
     {
       "key": {
+        "uuid": "ecd4cceb_07f7636b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/server/restful/RestServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "do all of the methods produce JSON?  YAML?  If not, may want to remove this and add appropriate @Produces to each method",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f9b8c30_920939c2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/server/restful/RestServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "I\u0027m not sure the content of the annotations for all of these methods makes sense.  The \"value\" doesn\u0027t seem right.  In addition, the \"notes\" probably should be more descriptive - for example, what does \"/test\" do?\n\nsame for other methods",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "609d2da9_5ee59a6d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "method can be deleted",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28f64be1_98140793",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use a single \"*\" since this is a plain comment and not a javadoc\n\nsame comment below",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "755c2658_fcd65c71",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "need to use getOwner(), instead, because it\u0027s synchronized",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5daa8ad8_5906a8c9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d50801d_57c48066",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "assuming all Bucket updates occur in the same thread, these fields could be made volatile and then use @Getter \u0026 @Setter, eliminating the need for most of these getter and setter methods",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70239a5c_94992708",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "don\u0027t need to wrap it in a Thread",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "feb4e993_8c68ede1",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "still need to synchronize bucket since updating more than one field at a time?",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf4bf21c_3c0a28ea",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 819,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "sonar: either log \"e\" or wrap it in IOException, but don\u0027t do both",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "18af8fc0_9a6bb4d2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use a LinkedHashMap (or TreeMap) or define a POJO instead of using JsonObject",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4ad99b4_9e7c8620",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "prefer to use a Map instead of JsonObject",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "feec3e4e_ee1b89c0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/DroolsSessionBackup.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "combine lines 48 \u0026 49",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8897364_1e59feb0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/DroolsSessionRestore.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c26b6efb_a9a46fcf",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/DroolsSessionRestore.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "iterate over fact handles instead of objects. That will avoid the second lookup on line 93. It will also avoid the need for lines 94 \u0026 101-105",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef1b9368_948df0f5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/DroolsSessionRestore.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d973d71a_d1ad5ede",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/DroolsSessionRestore.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "does delete interfere with getObjects()?",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79d8c4c0_3e6e4ee0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "I believe \"li\" applies to numbered and unordered lists, but not \"dl\".  Use \"dt\" \u0026 \"dd\" with \"dl\", where \"dt\" is the term and \"dd\" is the description",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86a049a1_6c1955c6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "I don\u0027t think html formatting will work with a plain comment\n\nsame issue with various other comments below",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec501990_28fd5dc7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f85f8aa7_7dbc8ee9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing space.  Configure your eclipse so it removes trailing spaces when saving",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2dfa1a6c_a8632b71",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "905e08e2_878e67a5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "technically, recursion is needed to find them all",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6945a631_9976072e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "I think this should be computeIfAbsent, then the \"val \u003d\u003d null\" check is no longer needed",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e164df5_c2912109",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "lines 389-392 can be deleted",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6bc6a2a_20a10fad",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "need to combine lines 406-409 using computeIfAbsent",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "707c50b2_97ed2244",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/NewOwner.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "33c1c4fe_c98f6f95",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/OldOwner.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6574e84d_efea09d1",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "sonar: log or re-throw, not both",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0456c0fb_b6edc264",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1046,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "don\u0027t need to wrap this in a Thread",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfa5653b_026bd6ce",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "never thrown - no need to catch anything as parseBoolean will always succeed",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e4deb53_3bff2e09",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "this file is too big - need to break it into pieces",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c788ad3e_9d88b99a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TestServer.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "since these are not \"final\", I assume they can be changed",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30cd3d82_a9cd613a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Util.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "replace this with apache IOUtils.toString(input)",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79eb388f_01d2e5ba",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "should these values be restored during shutdown()?",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85374fb4_27386708",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "sonar: avoid sleep in junit tests; use a latch or some other mechanism instead\n\nsame comment below",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "437f6c14_d53c3997",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "sonar: log the exception (trace level is fine)",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61b1e94b_6108c5c6",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/ServerWrapperImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use computeIfAbsent (or putIfAbsent) to combine lines 56-61",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4191aa3_38297001",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/ServerWrapperImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "is getServers() a Collection (if it\u0027s an array, then this doesn\u0027t apply)?  If so, replace lines 142-147 with:\n\n  return new ArrayList\u003c\u003e(Server.getServers());",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63401ce2_a9007fab",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use NetworkUtil.isTcpPortOpen() instead",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "794d1b1c_1af92784",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "just use File.pathSeparator",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5aa467ee_bb2d1e84",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/SimDmaap.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "seems like this should always throw an exception if stop() is invoked to shut down the server\n\nis there even a reason for this to join() rather than simply returning?",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "782d0ccf_1b1b50bd",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "invert test and return",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef7545b5_52909793",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "sonar: avoid sleep in junit tests",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7063a114_499e9536",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use assertj instead of try/catch/fail",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85f35924_9d4afabe",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "or could just throw an AssertionError",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67e1d224_ce204181",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 423,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "sonar: avoid sleep in junits\n\nsame comment through-out",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0747452_c9164eec",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/TestDroolsObject.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use @Getter \u0026 @Setter",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d85d3bf_14e81e53",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/TestDroolsObject.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "could use @ToString, though it might give a different output",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "115661c4_5a476863",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/TestDroolsObject.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "use @EqualsAndHashCode",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "66f08ec2_4c1172c9",
         "filename": "feature-server-pool/src/test/resources/TestController-controller.properties",
         "patchSetId": 3
