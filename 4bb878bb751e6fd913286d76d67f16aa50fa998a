@@ -157,6 +157,24 @@
     },
     {
       "key": {
+        "uuid": "9f5bd1f7_ff3f59d5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not fixed",
+      "parentUuid": "518eb75e_b947268a",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "511ae000_bc86fd29",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -432,6 +450,24 @@
     },
     {
       "key": {
+        "uuid": "76edd51f_9f9a9da4",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "still have this problem",
+      "parentUuid": "1fe5b22b_3012498d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "87e8c361_8760be31",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -513,6 +549,24 @@
       "side": 1,
       "message": "Actually, it looks like the callback would be missed if an exception occurs -- good catch!\n\nI think the best fix would be to add a new method to interface \u0027Server.PostResponse\u0027 that is called if an exception occurs, and give it a default implementation that generates an appropriate \u0027Response\u0027 object, and calls \u0027response(Response)\u0027. That way, callers who want to explicitly see exceptions can, and those that just want the failure response don\u0027t need to do anything different.",
       "parentUuid": "19369991_2470412d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8778d297_c77d6cda",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 716,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "has this been implemented?",
+      "parentUuid": "78318b48_ec2c78d2",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -748,6 +802,24 @@
     },
     {
       "key": {
+        "uuid": "c695dbdc_1d0ead53",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 892,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "I\u0027m still unclear why HttpClient wouldn\u0027t work.  Can build the HttpClient once, and then call any of the HTTP methods on it, passing appropriate query parameters or entity data",
+      "parentUuid": "043b1e68_e593e56c",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2d5efd0f_d2a314f5",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -762,6 +834,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b52cb73b_73db83bc",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 896,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d5efd0f_d2a314f5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1534,6 +1624,24 @@
     },
     {
       "key": {
+        "uuid": "a0590974_e254eb2e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "We agreed to make it thread safe",
+      "parentUuid": "0f7ebce5_c3a4771a",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0e32accb_66d41378",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
         "patchSetId": 2
@@ -1705,6 +1813,24 @@
     },
     {
       "key": {
+        "uuid": "f8bb52bb_025d84bd",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not done",
+      "parentUuid": "e7fc16fb_f656e9e3",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "13650806_93762c0f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
         "patchSetId": 2
@@ -1716,6 +1842,24 @@
       "writtenOn": "2020-02-07T22:27:25Z",
       "side": 1,
       "message": "drop out of run()",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e41296ff_4745947b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not done",
+      "parentUuid": "13650806_93762c0f",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -1939,6 +2083,24 @@
       "writtenOn": "2020-02-15T17:59:46Z",
       "side": 1,
       "message": "sonar: nesting is too deep",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d208ab58_4f79ba6c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not fixed",
+      "parentUuid": "5fc3d319_61299c7d",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -2489,6 +2651,24 @@
     },
     {
       "key": {
+        "uuid": "446858a0_af84523e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d92c9bd5_83fd5d3d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "910fd4f9_a40ce31e",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
         "patchSetId": 2
@@ -2503,6 +2683,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61086b23_450d23ed",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 522,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "910fd4f9_a40ce31e",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2744,6 +2942,24 @@
     },
     {
       "key": {
+        "uuid": "7fe78bc4_6d9f285d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not fixed",
+      "parentUuid": "ea298f83_004f4aa8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "57092ef0_3644c40a",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -2755,6 +2971,24 @@
       "writtenOn": "2020-02-19T19:10:28Z",
       "side": 1,
       "message": "perhaps use \"\u003c\u003d 0\" instead?  Or does it matter if the count goes negative?",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f12c0fa0_eac07265",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1042,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "57092ef0_3644c40a",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -3051,6 +3285,24 @@
     },
     {
       "key": {
+        "uuid": "977c91d3_92ff8f38",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not fixed",
+      "parentUuid": "402b5076_61f193ca",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "642a4c2b_7c8de391",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 2
@@ -3062,6 +3314,24 @@
       "writtenOn": "2020-02-19T19:10:28Z",
       "side": 1,
       "message": "use @NonNull instead of these checks",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "102cca26_665d19db",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-25T21:46:54Z",
+      "side": 1,
+      "message": "not fixed",
+      "parentUuid": "642a4c2b_7c8de391",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
