@@ -31,6 +31,7 @@
         <class>org.onap.policy.common.im.jpa.ForwardProgressEntity</class>
         <class>org.onap.policy.common.im.jpa.ResourceRegistrationEntity</class>
         <class>org.onap.policy.drools.statemanagement.test.Audit</class>
+        <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
             <property
                 name="javax.persistence.schema-generation.database.action"
@@ -40,10 +41,10 @@
                 value="drop-and-create" />
             <property
                 name="javax.persistence.schema-generation.scripts.create-target"
-                value="target/classes/META-INF/generatedCreateStateManagement.ddl" />
+                value="file:/tmp/generatedCreateStateManagement.ddl" />
             <property
                 name="javax.persistence.schema-generation.scripts.drop-target"
-                value="target/classes/META-INF/generatedDropStateManagement.ddl" />
+                value="file:/tmp/generatedDropStateManagement.ddl" />
         </properties>
     </persistence-unit>
 
