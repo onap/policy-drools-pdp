@@ -31,6 +31,7 @@
         <class>org.onap.policy.common.im.jpa.ForwardProgressEntity</class>
         <class>org.onap.policy.common.im.jpa.ResourceRegistrationEntity</class>
         <class>org.onap.policy.drools.statemanagement.test.Audit</class>
+        <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
             <property
                 name="javax.persistence.schema-generation.database.action"
