@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-persistence
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,9 @@ public class StateManagementTest {
     // get an instance of logger
     private static Logger  logger = LoggerFactory.getLogger(StateManagementTest.class);
 
+    private static EntityManagerFactory emf;
+    private static EntityManager em;
+
     StateManagementFeatureApi stateManagementFeature;
 
     /**
@@ -80,7 +83,8 @@ public class StateManagementTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-
+        em.close();
+        emf.close();
     }
 
     @Before
@@ -239,13 +243,13 @@ public class StateManagementTest {
 
         Properties cleanProperties = new Properties();
         cleanProperties.put(StateManagementProperties.DB_DRIVER,"org.h2.Driver");
-        cleanProperties.put(StateManagementProperties.DB_URL, "jdbc:h2:file:./sql/statemanagement");
+        cleanProperties.put(StateManagementProperties.DB_URL, "jdbc:h2:mem:statemanagement");
         cleanProperties.put(StateManagementProperties.DB_USER, "sa");
         cleanProperties.put(StateManagementProperties.DB_PWD, "");
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("junitPU", cleanProperties);
+        emf = Persistence.createEntityManagerFactory("junitPU", cleanProperties);
 
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         // Start a transaction
         EntityTransaction et = em.getTransaction();
 
@@ -258,7 +262,6 @@ public class StateManagementTest {
 
         // commit transaction
         et.commit();
-        em.close();
 
         logger.debug("initializeDb: Exiting");
     }
