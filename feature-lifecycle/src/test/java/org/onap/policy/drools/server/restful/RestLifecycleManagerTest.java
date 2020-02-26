@@ -19,7 +19,6 @@
 package org.onap.policy.drools.server.restful;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -33,6 +32,7 @@ import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.utils.network.NetworkUtil;
+import org.onap.policy.drools.lifecycle.LifecycleFeature;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.models.pdp.enums.PdpState;
 
@@ -80,8 +80,12 @@ public class RestLifecycleManagerTest {
 
     @Test
     public void testFsm() {
-        Response response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm");
-        assertNotNull(HttpClient.getBody(response, String.class));
+        Response response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/group");
+        assertEquals(LifecycleFeature.fsm.getGroup(), HttpClient.getBody(response, String.class));
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+
+        response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/subgroup");
+        assertEquals("", HttpClient.getBody(response, String.class));
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
         response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/state");

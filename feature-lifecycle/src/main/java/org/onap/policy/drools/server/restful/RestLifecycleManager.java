@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,19 @@ import org.onap.policy.drools.lifecycle.LifecycleFsm;
 public class RestLifecycleManager {
 
     @GET
-    @Path("engine/lifecycle/fsm")
+    @Path("engine/lifecycle/fsm/group")
     @ApiOperation(value = "Retrieves the Lifecycle FSM",
         notes = "Lifecycle FSM", response = LifecycleFsm.class)
-    public Response fsm() {
-        return Response.status(Response.Status.OK).entity(LifecycleFeature.fsm).build();
+    public Response group() {
+        return Response.status(Response.Status.OK).entity(LifecycleFeature.fsm.getGroup()).build();
+    }
+
+    @GET
+    @Path("engine/lifecycle/fsm/subgroup")
+    @ApiOperation(value = "Retrieves the Lifecycle FSM",
+            notes = "Lifecycle FSM", response = LifecycleFsm.class)
+    public Response subgroup() {
+        return Response.status(Response.Status.OK).entity(LifecycleFeature.fsm.getSubgroup()).build();
     }
 
     @GET
@@ -55,5 +63,4 @@ public class RestLifecycleManager {
     public Response state() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.fsm.state()).build();
     }
-
 }
