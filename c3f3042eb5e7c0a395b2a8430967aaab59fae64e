@@ -580,6 +580,23 @@
     },
     {
       "key": {
+        "uuid": "2a99d3e3_ca821ba5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-27T16:17:18Z",
+      "side": 1,
+      "message": "testClass is no longer a class, it\u0027s an Entry.\n\nBy the time this loop exits, \"lu\" should be set to the Lookup associated with the \"matchingClass\", if there is one.  Otherwise, it should be null.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2dfa1a6c_a8632b71",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 3
@@ -591,6 +608,74 @@
       "writtenOn": "2020-02-25T21:46:54Z",
       "side": 1,
       "message": "trailing space",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be00aa9e_af8a7f9e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-27T16:17:18Z",
+      "side": 1,
+      "message": "\"testClass.getClass()\" is now \"entry.getLeft()\"",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d52351a9_b16589e8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-27T16:17:18Z",
+      "side": 1,
+      "message": "\"testClass.getClass()\" is now \"entry.getLeft()\"\n\nalso add:\n  lu \u003d entry.getRight();",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cdce31a8_2c2e275f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-27T16:17:18Z",
+      "side": 1,
+      "message": "change \"matchingClass\" to \"lu\"\n\ncan combine lines 99 and 104 into a single \"if\"",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ffdc4cb_01ddc324",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-27T16:17:18Z",
+      "side": 1,
+      "message": "delete lines 107-108",
       "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
