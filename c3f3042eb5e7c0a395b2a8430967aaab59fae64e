@@ -206,6 +206,23 @@
     },
     {
       "key": {
+        "uuid": "6b8069bb_041b9ca7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/server/restful/RestServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-02-27T03:49:08Z",
+      "side": 1,
+      "message": "In general, fyi, if this is for a standalone jax-rs servlet, for example for protocol communication between components, it does not need to be in this package.   If this class is for diagnostics and \"user\" interaction, not machine to machine protocols, this should be in this package to integrate cleanly under telemetry.  Not sure here, if for \"user\" consumption, it should integrate under telemetry under \"policy/pdp/engine\" root context paths, as the other features do.   So, the comment here, for user commands (and only user commands), place url access under \"policy/pdp/engine/..\" similar to all the other existing telemetry apis.    For machine to machine communication, they can be in its own http-server object, whereever you want to place them under a different package.",
+      "revId": "c3f3042eb5e7c0a395b2a8430967aaab59fae64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ecd4cceb_07f7636b",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/server/restful/RestServerPool.java",
         "patchSetId": 3
