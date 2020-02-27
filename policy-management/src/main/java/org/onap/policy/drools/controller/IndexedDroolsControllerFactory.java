@@ -95,7 +95,6 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         }
 
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = codersAndFilters(properties, eventSources);
-
         List<TopicCoderFilterConfiguration> topics2EncodedClasses2Filters = codersAndFilters(properties, eventSinks);
 
         return this.build(groupId, artifactId, version, topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);

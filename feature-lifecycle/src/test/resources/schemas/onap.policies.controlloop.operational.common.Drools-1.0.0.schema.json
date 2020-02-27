@@ -201,6 +201,18 @@
                                                     "VNF"
                                                 ],
                                                 "pattern": "^(.+)$"
+                                            },
+                                            "entityIds": {
+                                                "$id": "#/properties/properties/properties/operations/items/properties/operation/properties/target/properties/entityIds",
+                                                "type": "object",
+                                                "title": "Arbitrary Resource Identities",
+                                                "examples": [
+                                                    "Eace933104d443b496b8.nodes.heat.vpg"
+                                                ],
+                                                "additionalProperties": {
+                                                    "type": "string",
+                                                    "pattern": "^(.+)$"
+                                                }
                                             }
                                         }
                                     },
@@ -209,7 +221,8 @@
                                         "type": "object",
                                         "title": "Payload",
                                         "additionalProperties": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "pattern": "^(.+)$"
                                         }
                                     }
                                 }
