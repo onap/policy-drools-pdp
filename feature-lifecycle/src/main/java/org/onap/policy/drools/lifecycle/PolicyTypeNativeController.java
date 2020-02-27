@@ -26,9 +26,9 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
-@Getter
 public class PolicyTypeNativeController implements PolicyTypeController {
 
+    @Getter
     protected final ToscaPolicyTypeIdentifier policyType;
 
     @GsonJsonIgnore

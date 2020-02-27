@@ -13,12 +13,12 @@
                     },
                     "properties": {
                         "rulesArtifact": {
-                            "groupId": "org.onap.policy.controlloop",
-                            "artifactId": "example",
+                            "groupId": "org.onap.policy.drools.test",
+                            "artifactId": "lifecycle",
                             "version": "1.0.0"
                         },
                         "controller": {
-                            "name": "example",
+                            "name": "lifecycle",
                             "version": "1.0.0"
                         }
                     }

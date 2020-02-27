@@ -61,6 +61,7 @@ public abstract class LifecycleStateRunningTest {
      */
     @AfterClass
     public static void tearDown() {
+        controllerSupport.destroyController();
         try {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));

@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -223,7 +223,7 @@ public class PolicyEngineTest {
                         .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
 
         assertTrue(PolicyEngineConstants.getManager().deliver(NOOP_TOPIC,
-                new DroolsConfiguration(ENCODER_GROUP, ENCODER_ARTIFACT, ENCODER_VERSION)));
+                new DroolsConfiguration(ENCODER_ARTIFACT, ENCODER_GROUP, ENCODER_VERSION)));
 
         final TopicSink sink = NoopTopicFactories.getSinkFactory().get(NOOP_TOPIC);
         assertTrue(sink.getRecentEvents()[0].contains(ENCODER_GROUP));

@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,6 +224,12 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             logger.warn("{}: cannot update-drools: identical configuration {} vs {}", this, oldDroolsConfiguration,
                     newDroolsConfiguration);
             return true;
+        }
+
+        if (droolsController.isBrained()
+            && (newDroolsConfiguration.getArtifactId() == null
+                || DroolsControllerConstants.NO_ARTIFACT_ID.equals(newDroolsConfiguration.getArtifactId()))) {
+            DroolsControllerConstants.getFactory().destroy(this.droolsController);
         }
 
         try {

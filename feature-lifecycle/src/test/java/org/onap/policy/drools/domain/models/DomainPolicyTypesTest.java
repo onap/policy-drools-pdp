@@ -140,8 +140,8 @@ public class DomainPolicyTypesTest {
 
         assertTrue(domainMaker.isConformant(toscaPolicy));
         NativeDroolsPolicy domainDroolsPolicy = domainMaker.convertTo(toscaPolicy, NativeDroolsPolicy.class);
-        assertEquals("org.onap.policy.controlloop", domainDroolsPolicy.getProperties().getRulesArtifact().getGroupId());
-        assertEquals("example", domainDroolsPolicy.getProperties().getRulesArtifact().getArtifactId());
+        assertEquals("org.onap.policy.drools.test", domainDroolsPolicy.getProperties().getRulesArtifact().getGroupId());
+        assertEquals("lifecycle", domainDroolsPolicy.getProperties().getRulesArtifact().getArtifactId());
         assertEquals("1.0.0", domainDroolsPolicy.getProperties().getRulesArtifact().getVersion());
 
         String policyId = toscaPolicy.getMetadata().remove("policy-id");

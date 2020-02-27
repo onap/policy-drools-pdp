@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +122,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
      * {@inheritDoc}.
      */
     @Override
-    public void patch(PolicyController controller, DroolsConfiguration droolsConfig) {
+    public synchronized void patch(PolicyController controller, DroolsConfiguration droolsConfig) {
 
         if (controller == null) {
             throw new IllegalArgumentException("Not a valid controller:  null");
@@ -132,20 +132,22 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
             throw new IllegalArgumentException("Invalid Drools Configuration");
         }
 
+        if (controller.getDrools().isBrained()) {
+            this.coordinates2Controller.remove(
+                    toKey(controller.getDrools().getGroupId(), controller.getDrools().getArtifactId()));
+        }
+
         if (!controller.updateDrools(droolsConfig)) {
             logger.warn("Cannot update drools configuration: {} on {}", droolsConfig, this);
             throw new IllegalArgumentException("Cannot update drools configuration Drools Configuration");
         }
 
         logger.info("UPDATED drools configuration: {} on {}", droolsConfig, this);
-
-        String coordinates = toKey(controller.getDrools().getGroupId(),
-                                   controller.getDrools().getArtifactId());
+        String coordinates = toKey(controller.getDrools().getGroupId(), controller.getDrools().getArtifactId());
 
         if (controller.getDrools().isBrained()) {
             this.coordinates2Controller.put(coordinates, controller);
         }
-
     }
 
     /**
