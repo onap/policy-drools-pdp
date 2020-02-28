@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ae8c9ae_19067b0b",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeRulesController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-02-28T01:41:37Z",
+      "side": 1,
+      "message": "could cache nativePolicy.getProperties().getRulesArtifact() so it\u0027s only performed once",
+      "revId": "7f1a0e6e142513087aa9385786212455a1ea0f22",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
