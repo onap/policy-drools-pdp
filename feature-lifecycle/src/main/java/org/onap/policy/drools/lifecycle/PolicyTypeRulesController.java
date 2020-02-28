@@ -26,7 +26,6 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.domain.models.nativ.rules.NativeDroolsPolicy;
-import org.onap.policy.drools.domain.models.nativ.rules.NativeDroolsRulesArtifact;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
@@ -52,16 +51,34 @@ public class PolicyTypeRulesController implements PolicyTypeController {
 
     @Override
     public boolean deploy(ToscaPolicy policy) {
-        // TODO
-        return fsm.getDomainMaker().isConformant(policy);
+        NativeDroolsPolicy nativePolicy;
+        PolicyController controller;
+        try {
+            nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeDroolsPolicy.class);
+            controller =
+                    PolicyControllerConstants.getFactory().get(nativePolicy.getProperties().getController().getName());
+        } catch (CoderException e) {
+            logger.warn("Invalid Policy: {}", policy);
+            return false;
+        }
+
+        DroolsConfiguration newConfig =
+                new DroolsConfiguration(
+                        nativePolicy.getProperties().getRulesArtifact().getArtifactId(),
+                        nativePolicy.getProperties().getRulesArtifact().getGroupId(),
+                        nativePolicy.getProperties().getRulesArtifact().getVersion());
+
+        PolicyControllerConstants.getFactory().patch(controller, newConfig);
+        return true;
     }
 
     @Override
     public boolean undeploy(ToscaPolicy policy) {
         PolicyController controller;
         try {
-            controller = getPolicyController(
-                    fsm.getDomainMaker().convertTo(policy, NativeDroolsPolicy.class));
+            NativeDroolsPolicy nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeDroolsPolicy.class);
+            controller =
+                    PolicyControllerConstants.getFactory().get(nativePolicy.getProperties().getController().getName());
         } catch (RuntimeException | CoderException e) {
             logger.warn("Invalid Policy: {}", policy);
             return false;
@@ -75,22 +92,5 @@ public class PolicyTypeRulesController implements PolicyTypeController {
 
         PolicyControllerConstants.getFactory().patch(controller, noConfig);
         return true;
-    }
-
-    private PolicyController getPolicyController(NativeDroolsPolicy domainPolicy) {
-        /*
-         * If the controller is present, it must have a name (schema validated) and as such, the
-         * controller must exist (via previously deployed controller policy).
-         */
-        if (domainPolicy.getProperties().getController() != null) {
-            return PolicyControllerConstants.getFactory().get(domainPolicy.getProperties().getController().getName());
-        }
-
-        /*
-         * Attempt to get the controller from the rules coordinates (excluding the version).
-         * The rules coordinates are mandatory (per schema validation).
-         */
-        NativeDroolsRulesArtifact rules = domainPolicy.getProperties().getRulesArtifact();
-        return PolicyControllerConstants.getFactory().get(rules.getGroupId(), rules.getArtifactId());
     }
 }

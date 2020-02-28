@@ -73,7 +73,8 @@
             "type": "object",
             "title": "Properties",
             "required": [
-                "rulesArtifact"
+                "rulesArtifact",
+                "controller"
             ],
             "properties": {
                 "rulesArtifact": {
@@ -93,7 +94,7 @@
                             "examples": [
                                 "org.onap.policy.controlloop"
                             ],
-                            "pattern": "^(.*)$"
+                            "pattern": "^(.+)$"
                         },
                         "artifactId": {
                             "$id": "#/properties/properties/properties/rulesArtifact/properties/artifactId",
@@ -102,7 +103,7 @@
                             "examples": [
                                 "example"
                             ],
-                            "pattern": "^(.*)$"
+                            "pattern": "^(.+)$"
                         },
                         "version": {
                             "$id": "#/properties/properties/properties/rulesArtifact/properties/version",
@@ -111,7 +112,7 @@
                             "examples": [
                                 "1.0.0"
                             ],
-                            "pattern": "^(.*)$"
+                            "pattern": "^(.+)$"
                         }
                     }
                 },
@@ -120,8 +121,7 @@
                     "type": "object",
                     "title": "Controller",
                     "required": [
-                        "name",
-                        "version"
+                        "name"
                     ],
                     "properties": {
                         "name": {
@@ -132,15 +132,6 @@
                                 "example"
                             ],
                             "pattern": "^(.+)$"
-                        },
-                        "version": {
-                            "$id": "#/properties/properties/properties/controller/properties/version",
-                            "type": "string",
-                            "title": "Version",
-                            "examples": [
-                                "1.0.0"
-                            ],
-                            "pattern": "^(.*)$"
                         }
                     }
                 }

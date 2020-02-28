@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
+import org.onap.policy.drools.controller.internal.MavenDroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
 import org.onap.policy.drools.domain.models.nativ.rules.NativeDroolsPolicy;
 import org.onap.policy.drools.system.PolicyControllerConstants;
@@ -52,40 +53,28 @@ public class PolicyTypeRulesControllerTest extends LifecycleStateRunningTest {
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
             "src/test/resources/example.policy.native.drools.tosca.json";
 
+    private ToscaPolicy policy;
+    private NativeDroolsPolicy nativePolicy;
+    private PolicyTypeRulesController controller;
+
     /**
      * Test Set initialization.
      */
     @Before
-    public void init() {
+    public void init() throws IOException, CoderException {
         fsm = makeFsmWithPseudoTime();
-    }
+        policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
+        nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeDroolsPolicy.class);
+        controller =
+                new PolicyTypeRulesController(fsm,
+                        new ToscaPolicyTypeIdentifier("onap.policies.native.Drools", "1.0.0"));
 
-    @Test
-    public void testDeploy() {
-        // TODO
-    }
-
-    @Test
-    public void testUndeploy() throws IOException, CoderException {
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().isAlive());
         assertFalse(controllerSupport.getController().getDrools().isAlive());
         assertSame(controllerSupport.getController(), PolicyControllerConstants.getFactory().get("lifecycle"));
 
-        ToscaPolicy policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
-        NativeDroolsPolicy nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeDroolsPolicy.class);
-
-        assertSame(controllerSupport.getController(),
-                PolicyControllerConstants.getFactory().get(
-                        nativePolicy.getProperties().getRulesArtifact().getGroupId(),
-                        nativePolicy.getProperties().getRulesArtifact().getArtifactId()));
-        assertEquals(controllerSupport.getController().getDrools().getGroupId(),
-                nativePolicy.getProperties().getRulesArtifact().getGroupId());
-        assertEquals(controllerSupport.getController().getDrools().getArtifactId(),
-                nativePolicy.getProperties().getRulesArtifact().getArtifactId());
-        assertEquals(controllerSupport.getController().getDrools().getVersion(),
-                nativePolicy.getProperties().getRulesArtifact().getVersion());
-
+        /* start controller */
         assertTrue(controllerSupport.getController().start());
 
         assertTrue(controllerSupport.getController().isAlive());
@@ -102,33 +91,66 @@ public class PolicyTypeRulesControllerTest extends LifecycleStateRunningTest {
                 nativePolicy.getProperties().getRulesArtifact().getArtifactId());
         assertEquals(controllerSupport.getController().getDrools().getVersion(),
                 nativePolicy.getProperties().getRulesArtifact().getVersion());
+    }
 
-        PolicyTypeRulesController controller =
-                new PolicyTypeRulesController(makeFsmWithPseudoTime(),
-                        new ToscaPolicyTypeIdentifier("onap.policies.native.Drools", "1.0.0"));
+    @Test
+    public void testUndeployDeploy() {
+        undeploy();
+        deploy();
+
+        PolicyControllerConstants.getFactory().destroy("lifecycle");
+        assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
+    }
+
+    private void undeploy() {
         assertTrue(controller.undeploy(policy));
+        assertUndeployed();
 
+        /* idempotence */
+        assertTrue(controller.undeploy(policy));
+        assertUndeployed();
+    }
+
+
+    private void deploy() {
+        assertTrue(controller.deploy(policy));
+        assertDeployed();
+
+        /* idempotence */
+        assertTrue(controller.deploy(policy));
+        assertDeployed();
+
+        // TODO: test a point version upgrade
+    }
+
+    private void assertUndeployed() {
         assertFalse(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().getDrools().isAlive());
         assertTrue(controllerSupport.getController().isAlive());
         assertSame(controllerSupport.getController(), PolicyControllerConstants.getFactory().get("lifecycle"));
-        assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get(
-                        nativePolicy.getProperties().getRulesArtifact().getGroupId(),
-                        nativePolicy.getProperties().getRulesArtifact().getArtifactId()));
+        assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory()
+                                                                      .get(nativePolicy.getProperties()
+                                                                                   .getRulesArtifact().getGroupId(),
+                                                                              nativePolicy.getProperties()
+                                                                                      .getRulesArtifact()
+                                                                                      .getArtifactId()));
         assertTrue(controllerSupport.getController().getDrools() instanceof NullDroolsController);
         assertEquals(DroolsControllerConstants.NO_GROUP_ID, controllerSupport.getController().getDrools().getGroupId());
         assertEquals(DroolsControllerConstants.NO_ARTIFACT_ID,
                 controllerSupport.getController().getDrools().getArtifactId());
         assertEquals(DroolsControllerConstants.NO_VERSION, controllerSupport.getController().getDrools().getVersion());
-
-        assertTrue(controller.undeploy(policy));
-        PolicyControllerConstants.getFactory().destroy("lifecycle");
-        assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
     }
 
-    @Test
-    public void testGetPolicyType() {
-        // TODO
+    private void assertDeployed() {
+        assertTrue(controllerSupport.getController().getDrools().isBrained());
+        assertTrue(controllerSupport.getController().getDrools().isAlive());
+        assertTrue(controllerSupport.getController().isAlive());
+        assertSame(controllerSupport.getController(), PolicyControllerConstants.getFactory().get("lifecycle"));
+        assertSame(controllerSupport.getController(),
+                PolicyControllerConstants.getFactory().get(
+                        nativePolicy.getProperties().getRulesArtifact().getGroupId(),
+                        nativePolicy.getProperties().getRulesArtifact().getArtifactId()));
+        assertTrue(controllerSupport.getController().getDrools() instanceof MavenDroolsController);
     }
 
     private ToscaPolicy getPolicyFromFile(String filePath, String policyName) throws CoderException, IOException {
