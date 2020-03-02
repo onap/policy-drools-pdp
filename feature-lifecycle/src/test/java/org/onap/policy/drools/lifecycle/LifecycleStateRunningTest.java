@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
@@ -36,8 +37,11 @@ import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
 public abstract class LifecycleStateRunningTest {
+    private static final StandardCoder coder = new StandardCoder();
 
     private static final String CONTROLLER_NAME = "lifecycle";
     protected static ControllerSupport controllerSupport = new ControllerSupport(CONTROLLER_NAME);
@@ -105,5 +109,11 @@ public abstract class LifecycleStateRunningTest {
 
     protected Callable<Boolean> isStatus(PdpState state) {
         return isStatus(state, fsm.client.getSink().getRecentEvents().length);
+    }
+
+    protected ToscaPolicy getPolicyFromFile(String filePath, String policyName) throws CoderException, IOException {
+        String policyJson = new String(Files.readAllBytes(Paths.get(filePath)));
+        ToscaServiceTemplate serviceTemplate = coder.decode(policyJson, ToscaServiceTemplate.class);
+        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
     }
 }
