@@ -105,6 +105,24 @@
     },
     {
       "key": {
+        "uuid": "b49fe35e_4a829de7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1bfbeaf3_f0cb7218",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "04dc8632_a09a3694",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -175,6 +193,24 @@
     },
     {
       "key": {
+        "uuid": "18705f35_3fc3849b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9f5bd1f7_ff3f59d5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "511ae000_bc86fd29",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -189,6 +225,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58687063_bec394f3",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "511ae000_bc86fd29",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -245,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "9cbb2fff_2328bc1c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ecb1bc2a_4f7de7aa",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1f05b77d_f1cc7f66",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -259,6 +331,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c913641_516dd57a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f05b77d_f1cc7f66",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -313,6 +403,24 @@
     },
     {
       "key": {
+        "uuid": "037031c1_99b28fbb",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f03ef21d_64e8f705",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "01243691_ce3dbd96",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -327,6 +435,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12230f5c_2e080a8a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01243691_ce3dbd96",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -364,6 +490,24 @@
     },
     {
       "key": {
+        "uuid": "e0a94c59_31942149",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3c901b88_c9924be2",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4fca3eba_d22526c5",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -378,6 +522,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76d0d33c_7b4ecd70",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4fca3eba_d22526c5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -416,6 +578,24 @@
     },
     {
       "key": {
+        "uuid": "e3d50eb8_3563ea66",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4da1a92b_0043b45c",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "741858ca_f0675ba0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -430,6 +610,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e4ed127_17143496",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "741858ca_f0675ba0",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -468,6 +666,24 @@
     },
     {
       "key": {
+        "uuid": "d373a249_1cc99acf",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76edd51f_9f9a9da4",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "87e8c361_8760be31",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -482,6 +698,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1688c7d1_ee5df667",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87e8c361_8760be31",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -514,6 +748,24 @@
       "side": 1,
       "message": "Most of \u0027copyData\u0027 runs in the \u0027MainLoop\u0027 thread, which is also the only thread where bucket updates occur.",
       "parentUuid": "fd5c6eb5_0b465260",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "64e46552_1844746c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 646,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "09dc0b3d_7d91aa41",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -573,6 +825,24 @@
     },
     {
       "key": {
+        "uuid": "324656be_6397fe75",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 716,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8778d297_c77d6cda",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b9b4c56e_f327faee",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -608,6 +878,24 @@
     },
     {
       "key": {
+        "uuid": "5590a41b_ab37d7da",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 732,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "397b132a_08e74de2",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f52e3116_9b09295c",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -622,6 +910,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee78d167_755dcd24",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f52e3116_9b09295c",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -654,6 +960,24 @@
       "side": 1,
       "message": "The actual updates only occur in the \u0027MainLoop\u0027 thread, so there shouldn\u0027t be any synchronization issues. I suppose it is possible that an automatic rebalance and a rebalance from a REST command could be interleaved, but the end result would be two rebalances in quick succession -- there shouldn\u0027t be any corruption, because the \u0027Rebalance.copyData()\u0027 and update operations are both \"atomic\", as both run in the MainLoop thread.",
       "parentUuid": "851b9b3a_2551e7a6",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c8c1938f_8b535928",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "851a5eca_7e9e02a0",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -743,6 +1067,24 @@
       "side": 1,
       "message": "Oh, I see.  The code has to start with a \"key\" and then adjust the key as it goes from one server to the next.  Can\u0027t just jump straight to the last server, based on the count, and invoke higherKey().",
       "parentUuid": "12384fa0_115c8c4f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f7cec81c_d3974c6f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 820,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4fea622a_65af74c5",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -872,6 +1214,24 @@
     },
     {
       "key": {
+        "uuid": "aad17f1b_29d68053",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2c75f8ec_fe749c83",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2a5a8ab5_8f21f5bf",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -922,6 +1282,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e22e816f_3d8978e0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 949,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af3bbefa_61a27bd9",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -978,6 +1356,24 @@
     },
     {
       "key": {
+        "uuid": "9c807522_c7b05d69",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1269,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "738e7cd2_cfef7342",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "14a5154c_0e5a17c6",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -992,6 +1388,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f04a4ad3_fcd1c286",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1416,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "14a5154c_0e5a17c6",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1024,6 +1438,24 @@
       "side": 1,
       "message": "Updates to \u0027owner\u0027, \u0027primaryBackup\u0027, and \u0027secondaryBackup\u0027 always occur within the \u0027MainLoop\u0027 thread.",
       "parentUuid": "4e5d49b0_3fcde4f8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "075466b2_4ac9ae06",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1434,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a7e8ac7_15e03855",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -1065,6 +1497,24 @@
     },
     {
       "key": {
+        "uuid": "9b638df7_baab2eb1",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1470,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "704d7c2b_87a62e5e",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "88349283_d9e7c316",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1100,6 +1550,24 @@
     },
     {
       "key": {
+        "uuid": "390ec218_11ed3265",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1478,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "34aed033_f63110df",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bf3e4298_5ce49d9f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1129,6 +1597,24 @@
       "side": 1,
       "message": "See the previous response.",
       "parentUuid": "bf3e4298_5ce49d9f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d1784db_d1dafab3",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1486,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0d9613e_17ee637f",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -1188,6 +1674,24 @@
     },
     {
       "key": {
+        "uuid": "9d437b4f_d07566db",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1523,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee79b2be_47bddd89",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "313596fb_52aa07fe",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1223,6 +1727,24 @@
     },
     {
       "key": {
+        "uuid": "858972fe_c6a08ee2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1553,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d435efe6_e61f2ff7",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7d29ca72_3d3d77a8",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1240,6 +1762,24 @@
     },
     {
       "key": {
+        "uuid": "ab20dd10_32629711",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1578,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7d29ca72_3d3d77a8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3784b2eb_7dd96017",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1254,6 +1794,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08522fde_ba18c150",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1787,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3784b2eb_7dd96017",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1286,6 +1844,24 @@
       "side": 1,
       "message": "\u0027/cmd/dumpBuckets\u0027 is a test/debugging command. It is most often invoked by a human running \u0027curl\u0027, but should still display correctly if you use a browser. I find it more readable than HTML or JSON (with or without pretty-printing).",
       "parentUuid": "0a453b21_e2df6610",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb258b89_66f1c7ad",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1819,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4954c88_385a0ffc",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -1345,6 +1921,24 @@
     },
     {
       "key": {
+        "uuid": "e53dc201_1eecfb15",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1975,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e336b17f_211d8c90",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "58af0505_d4031aa0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1359,6 +1953,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f237501_691105a7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2058,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "58af0505_d4031aa0",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1409,6 +2021,24 @@
       "side": 1,
       "message": "Got it.",
       "parentUuid": "f899d3fc_0d218294",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77382301_ee75012c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2114,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "975720d6_37cecdb3",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -1468,6 +2098,24 @@
     },
     {
       "key": {
+        "uuid": "0d3af7b6_47a86944",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2173,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1ff3d481_5e3f24c9",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ea74184f_cd556ab5",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1482,6 +2130,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "405cdd6d_52a28684",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2226,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea74184f_cd556ab5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1517,6 +2183,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a035894_8518ba6d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2274,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff5adc70_348a6bea",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1573,6 +2257,24 @@
     },
     {
       "key": {
+        "uuid": "f6adf7de_aea6f0b8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2357,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9be65839_c4484960",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6acf444d_6ebeaae4",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 2
@@ -1587,6 +2289,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b402c14_ee3b4005",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2372,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6acf444d_6ebeaae4",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1636,6 +2356,24 @@
       "side": 1,
       "message": "We agreed to make it thread safe",
       "parentUuid": "0f7ebce5_c3a4771a",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7e06f43_1e00a53a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0590974_e254eb2e",
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -1831,6 +2569,24 @@
     },
     {
       "key": {
+        "uuid": "e557f291_b9d5784f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8bb52bb_025d84bd",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "13650806_93762c0f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
         "patchSetId": 2
@@ -1863,6 +2619,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98da9e39_979dbec8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Discovery.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e41296ff_4745947b",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -1952,6 +2726,24 @@
     },
     {
       "key": {
+        "uuid": "9a0bf5d4_be2f58db",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1f921d9_22b6ceb1",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0aa8ee63_507b9637",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -1966,6 +2758,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6945a2fa_89561732",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0aa8ee63_507b9637",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2000,6 +2810,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9babbab3_1fcf9b39",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1787bea1_6c4753ba",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2038,6 +2866,24 @@
     },
     {
       "key": {
+        "uuid": "1987baaf_d39fd8cb",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bbc7daa_87951f56",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e6df096c_7bd6b98e",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2055,6 +2901,24 @@
     },
     {
       "key": {
+        "uuid": "6678cee8_74b9f23c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e6df096c_7bd6b98e",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4581560f_4ac896c2",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2069,6 +2933,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "835e21d0_005b1ab2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 428,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4581560f_4ac896c2",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2107,6 +2989,24 @@
     },
     {
       "key": {
+        "uuid": "a646a4a9_2514639c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 446,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d208ab58_4f79ba6c",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5b9b5b58_89d1ece0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2121,6 +3021,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0aee28fe_246d8492",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 484,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b9b5b58_89d1ece0",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2141,6 +3059,24 @@
     },
     {
       "key": {
+        "uuid": "c76bdc83_f09b0886",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 505,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "55122f90_8be35621",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "668911dd_c3f6feac",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2155,6 +3091,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e2a30e4_539064ca",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "668911dd_c3f6feac",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2175,6 +3129,24 @@
     },
     {
       "key": {
+        "uuid": "90923e50_d2536a0b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "282701b8_2db81871",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6eb4e7a7_b15a1f37",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2189,6 +3161,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88eed228_ed5e6838",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 698,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6eb4e7a7_b15a1f37",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2209,6 +3199,24 @@
     },
     {
       "key": {
+        "uuid": "373eaf6e_a17c942d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 731,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3acfa31_c7cd14b9",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ca4f1ab_f380b51a",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2223,6 +3231,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04a84469_4ca865af",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5ca4f1ab_f380b51a",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2260,6 +3286,24 @@
     },
     {
       "key": {
+        "uuid": "1b190683_6e9b23c3",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 764,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e194d72_c0b7a035",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3ce684b_7f2dda74",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
         "patchSetId": 2
@@ -2274,6 +3318,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d68bb283_2989cbe9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 767,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3ce684b_7f2dda74",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2311,6 +3373,24 @@
     },
     {
       "key": {
+        "uuid": "5a7a5017_ebf2fe8d",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e936a5f8_263f96e6",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "af222acf_f43234d8",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 2
@@ -2325,6 +3405,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abd71a78_3c3847ce",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af222acf_f43234d8",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2345,6 +3443,24 @@
     },
     {
       "key": {
+        "uuid": "5923014f_a4c40494",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04280486_4a1bc6f2",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9d2eef57_cd1fad6f",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 2
@@ -2359,6 +3475,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0836addc_cb7f303f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9d2eef57_cd1fad6f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2393,6 +3527,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3051c2d5_e00bd706",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82170123_2dcb1ba6",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2447,6 +3599,24 @@
     },
     {
       "key": {
+        "uuid": "7a4b96d0_b8ff997f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4bc97da8_2bdf015f",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f99a0599_0e4556ed",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 2
@@ -2461,6 +3631,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "340d9adc_68df5317",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f99a0599_0e4556ed",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2481,6 +3669,24 @@
     },
     {
       "key": {
+        "uuid": "e4be4083_059c0595",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74b8fb59_c6ea817a",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a7db5bb6_6e1d9eb3",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 2
@@ -2495,6 +3701,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "687ab6cf_0d168814",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7db5bb6_6e1d9eb3",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2515,6 +3739,24 @@
     },
     {
       "key": {
+        "uuid": "56fcd5ff_ffbc8589",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "458150cd_031c0a1c",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3379b612_bd540a78",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 2
@@ -2529,6 +3771,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7f7f338_ca6118ac",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3379b612_bd540a78",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2549,6 +3809,24 @@
     },
     {
       "key": {
+        "uuid": "a5198432_16df9aea",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "034db355_0c78203d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f52ff0c_beeb9de7",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 2
@@ -2566,6 +3844,24 @@
     },
     {
       "key": {
+        "uuid": "514600de_0d16960f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 490,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9f52ff0c_beeb9de7",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ee9eb94d_49888f08",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
         "patchSetId": 2
@@ -2580,6 +3876,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "556af456_d7cdccda",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ee9eb94d_49888f08",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2614,6 +3928,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "417deef2_c97b55cc",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "241a18cd_b8986935",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2772,6 +4104,24 @@
     },
     {
       "key": {
+        "uuid": "0e086d58_9c870c5b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8cffda07_a860c3be",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d04b26e8_748e177d",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -2786,6 +4136,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4bd34c6_bf8d7be5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d04b26e8_748e177d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2806,6 +4174,24 @@
     },
     {
       "key": {
+        "uuid": "d041fab3_707ad4a9",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76bb955d_9f5cae19",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cf51095c_07624e7b",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -2820,6 +4206,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "acaa17e8_fbc39639",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf51095c_07624e7b",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2840,6 +4244,24 @@
     },
     {
       "key": {
+        "uuid": "c8d68ae7_76bb72a4",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "62aea414_8ec7b400",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31564dc5_0fd598d9",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -2854,6 +4276,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "250faf57_60ad920a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31564dc5_0fd598d9",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2874,6 +4314,24 @@
     },
     {
       "key": {
+        "uuid": "595ab4ac_8afa33b8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b09fc838_298f0afc",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "50dbb713_f225ef39",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -2888,6 +4346,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a5f27a6_9ccc32cd",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 845,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "50dbb713_f225ef39",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2908,6 +4384,24 @@
     },
     {
       "key": {
+        "uuid": "16352370_1b037c1e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 884,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "132402d5_7c54d72d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b017e370_6d8168d0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -2922,6 +4416,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69c15234_c36a8f6f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 890,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b017e370_6d8168d0",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -2957,6 +4469,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a693373d_3b7989a8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 976,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7fe78bc4_6d9f285d",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -3012,6 +4542,24 @@
     },
     {
       "key": {
+        "uuid": "78a3d10e_8f5f1799",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1059,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0270681c_9cb60620",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e5b5ce4_1df7b01d",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -3046,6 +4594,24 @@
     },
     {
       "key": {
+        "uuid": "13a41314_b62ad9f8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "44c291a2_99885be0",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "668d3a5e_76a9fd49",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -3060,6 +4626,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "059cebf1_99e1d749",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1127,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "668d3a5e_76a9fd49",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -3080,6 +4664,24 @@
     },
     {
       "key": {
+        "uuid": "00d9243d_01aeb77e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1130,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e3d465f3_a735ab58",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "704f4f8d_a83e61e5",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -3094,6 +4696,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7937cfa_138bdeb4",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1172,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "704f4f8d_a83e61e5",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -3114,6 +4734,24 @@
     },
     {
       "key": {
+        "uuid": "fd2248e8_b127d6f8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1174,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fe5145d2_116105d4",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f47f4e7_7830924e",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 2
@@ -3128,6 +4766,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a5a5d07_5a856c4c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1243,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5f47f4e7_7830924e",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -3217,6 +4873,24 @@
     },
     {
       "key": {
+        "uuid": "5c5c08e0_6e663ac8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1b43ab0_cc80b226",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3b0afbf0_d20a3714",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
         "patchSetId": 2
@@ -3231,6 +4905,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a579021_72f919ef",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b0afbf0_d20a3714",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -3251,6 +4943,24 @@
     },
     {
       "key": {
+        "uuid": "7166338c_7fb6bf33",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38ab717a_50c9dfbd",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0cf6a18_cdf25c95",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
         "patchSetId": 2
@@ -3265,6 +4975,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "541a8b50_0f056fc6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/ServerPoolProperties.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0cf6a18_cdf25c95",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -3303,6 +5031,24 @@
     },
     {
       "key": {
+        "uuid": "7074cfb5_2cb5741b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "977c91d3_92ff8f38",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "642a4c2b_7c8de391",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 2
@@ -3335,6 +5081,24 @@
       "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db392ef0_b9e61657",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-02T13:07:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "102cca26_665d19db",
+      "revId": "4bb878bb751e6fd913286d76d67f16aa50fa998a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
