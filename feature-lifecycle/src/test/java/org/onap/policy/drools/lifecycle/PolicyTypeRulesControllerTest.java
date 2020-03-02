@@ -27,12 +27,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
-import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.internal.MavenDroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
@@ -40,14 +37,11 @@ import org.onap.policy.drools.domain.models.nativ.rules.NativeDroolsPolicy;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
 /**
  * Rules Controller Test.
  */
 public class PolicyTypeRulesControllerTest extends LifecycleStateRunningTest {
-    private static final StandardCoder coder = new StandardCoder();
-
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
@@ -151,12 +145,6 @@ public class PolicyTypeRulesControllerTest extends LifecycleStateRunningTest {
                         nativePolicy.getProperties().getRulesArtifact().getGroupId(),
                         nativePolicy.getProperties().getRulesArtifact().getArtifactId()));
         assertTrue(controllerSupport.getController().getDrools() instanceof MavenDroolsController);
-    }
-
-    private ToscaPolicy getPolicyFromFile(String filePath, String policyName) throws CoderException, IOException {
-        String policyJson = new String(Files.readAllBytes(Paths.get(filePath)));
-        ToscaServiceTemplate serviceTemplate = coder.decode(policyJson, ToscaServiceTemplate.class);
-        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
     }
 
 }

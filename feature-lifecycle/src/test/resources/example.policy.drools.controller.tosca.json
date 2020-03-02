@@ -12,7 +12,7 @@
                         "policy-id": "example"
                     },
                     "properties": {
-                        "controllerName": "example",
+                        "controllerName": "lifecycle",
                         "sourceTopics": [
                             {
                                 "topicName": "DCAE_TOPIC",
