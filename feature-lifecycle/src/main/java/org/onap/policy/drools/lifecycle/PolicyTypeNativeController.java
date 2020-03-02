@@ -23,10 +23,16 @@ package org.onap.policy.drools.lifecycle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
+import org.onap.policy.common.utils.coder.CoderException;
+import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
+import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PolicyTypeNativeController implements PolicyTypeController {
+    private static final Logger logger = LoggerFactory.getLogger(PolicyTypeNativeController.class);
 
     @Getter
     protected final ToscaPolicyTypeIdentifier policyType;
@@ -48,7 +54,13 @@ public class PolicyTypeNativeController implements PolicyTypeController {
 
     @Override
     public boolean undeploy(ToscaPolicy policy) {
-        // TODO
-        return true;
+        try {
+            ControllerPolicy nativePolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
+            PolicyControllerConstants.getFactory().destroy(nativePolicy.getProperties().getControllerName());
+            return true;
+        } catch (RuntimeException | CoderException e) {
+            logger.warn("failed undeploy of policy: {}", policy);
+            return false;
+        }
     }
 }

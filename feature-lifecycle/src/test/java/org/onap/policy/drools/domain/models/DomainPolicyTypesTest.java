@@ -188,7 +188,7 @@ public class DomainPolicyTypesTest {
         assertEquals("onap.policies.drools.Controller", controllerPolicy.getType());
         assertEquals("1.0.0", controllerPolicy.getTypeVersion());
         assertEquals("example", controllerPolicy.getMetadata().getPolicyId());
-        assertEquals("example", controllerPolicy.getProperties().getControllerName());
+        assertEquals("lifecycle", controllerPolicy.getProperties().getControllerName());
         assertEquals("DCAE_TOPIC", controllerPolicy.getProperties().getSourceTopics().get(0).getTopicName());
         assertEquals("org.onap.policy.controlloop.CanonicalOnset",
             controllerPolicy.getProperties().getSourceTopics().get(0).getSerialization().get(0).getEventClass());
