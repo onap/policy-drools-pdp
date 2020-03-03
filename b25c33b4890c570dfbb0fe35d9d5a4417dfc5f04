@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d9865e4_44dd4a8b",
+        "filename": "feature-server-pool/config/TestController-controller.properties",
+        "patchSetId": 12
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-03T17:34:20Z",
+      "side": 1,
+      "message": "Remove this file, it does not apply in ONAP",
+      "revId": "b25c33b4890c570dfbb0fe35d9d5a4417dfc5f04",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "925f810f_1c038aa1",
+        "filename": "feature-server-pool/src/test/resources/TestController-controller.properties",
+        "patchSetId": 12
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-03T17:34:20Z",
+      "side": 1,
+      "message": "clean up this file, it does not apply to ONAP.",
+      "revId": "b25c33b4890c570dfbb0fe35d9d5a4417dfc5f04",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
