@@ -67,6 +67,23 @@
       "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b7b1c573_112ac717",
+        "filename": "feature-server-pool/src/test/resources/drools-artifact-1.1/pom.xml",
+        "patchSetId": 10
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-03T12:53:17Z",
+      "side": 1,
+      "message": "This version also needs to match the value in the properties file -- this is why the tests are failing. I\u0027m not sure why it was changed, but I think it would be better to use a SNAPSHOT version in any case.",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
