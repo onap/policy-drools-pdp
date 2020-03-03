@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,26 +71,22 @@ public class FileSystemPersistence implements SystemPersistence {
     public static final String TOPIC_SUFFIX_IDENTIFIER = "-topic";
 
     /**
-     * Policy controller properties file suffix.
+     * Topic properties file suffix.
      */
     public static final String PROPERTIES_FILE_TOPIC_SUFFIX = TOPIC_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION;
-
-    /**
-     * Policy topic properties file suffix.
-     */
-    public static final String PROPERTIES_FILE_TOPIC_BACKUP_SUFFIX =
-        TOPIC_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION + ".bak";
-
-    /**
-     * Policy controller properties file suffix.
-     */
-    public static final String PROPERTIES_FILE_CONTROLLER_BACKUP_SUFFIX =
-            CONTROLLER_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION + ".bak";
 
     /**
      * Policy engine properties file name.
      */
     public static final String PROPERTIES_FILE_ENGINE = "engine" + PROPERTIES_FILE_EXTENSION;
+
+    public static final String HTTP_SERVER_SUFFIX_IDENTIFIER = "-http-server";
+    public static final String PROPERTIES_FILE_HTTP_SERVER_SUFFIX =
+            HTTP_SERVER_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION;
+
+    public static final String HTTP_CLIENT_SUFFIX_IDENTIFIER = "-http-client";
+    public static final String PROPERTIES_FILE_HTTP_CLIENT_SUFFIX =
+            HTTP_CLIENT_SUFFIX_IDENTIFIER + PROPERTIES_FILE_EXTENSION;
 
     /**
      * Installation environment suffix for files.
@@ -260,6 +256,26 @@ public class FileSystemPersistence implements SystemPersistence {
         return getPropertiesList(PROPERTIES_FILE_TOPIC_SUFFIX);
     }
 
+    @Override
+    public Properties getHttpServerProperties(String serverName) {
+        return this.getProperties(serverName + HTTP_SERVER_SUFFIX_IDENTIFIER);
+    }
+
+    @Override
+    public List<Properties> getHttpServerProperties() {
+        return getPropertiesList(PROPERTIES_FILE_HTTP_SERVER_SUFFIX);
+    }
+
+    @Override
+    public Properties getHttpClientProperties(String clientName) {
+        return this.getProperties(clientName + HTTP_CLIENT_SUFFIX_IDENTIFIER);
+    }
+
+    @Override
+    public List<Properties> getHttpClientProperties() {
+        return getPropertiesList(PROPERTIES_FILE_HTTP_CLIENT_SUFFIX);
+    }
+
     private boolean testControllerName(String controllerFilename, Properties controllerProperties) {
         String controllerName = controllerFilename
                 .substring(0, controllerFilename.length() - PROPERTIES_FILE_CONTROLLER_SUFFIX.length());
@@ -283,6 +299,16 @@ public class FileSystemPersistence implements SystemPersistence {
     @Override
     public boolean backupTopic(String topicName) {
         return backup(topicName, PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
+
+    @Override
+    public boolean backupHttpServer(String serverName) {
+        return backup(serverName, PROPERTIES_FILE_HTTP_SERVER_SUFFIX);
+    }
+
+    @Override
+    public boolean backupHttpClient(String clientName) {
+        return backup(clientName, PROPERTIES_FILE_HTTP_CLIENT_SUFFIX);
     }
 
     protected boolean backup(String name, String fileSuffix) {
@@ -311,6 +337,18 @@ public class FileSystemPersistence implements SystemPersistence {
     public boolean storeTopic(String topicName, Object configuration) {
         checkPropertiesParam(configuration);
         return store(topicName, (Properties) configuration, PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
+
+    @Override
+    public boolean storeHttpServer(String serverName, Object configuration) {
+        checkPropertiesParam(configuration);
+        return store(serverName, (Properties) configuration, PROPERTIES_FILE_HTTP_SERVER_SUFFIX);
+    }
+
+    @Override
+    public boolean storeHttpClient(String clientName, Object configuration) {
+        checkPropertiesParam(configuration);
+        return store(clientName, (Properties) configuration, PROPERTIES_FILE_HTTP_CLIENT_SUFFIX);
     }
 
     private boolean store(String name, Properties properties, String fileSuffix) {
@@ -358,6 +396,16 @@ public class FileSystemPersistence implements SystemPersistence {
     @Override
     public boolean deleteTopic(String topicName) {
         return delete(topicName, PROPERTIES_FILE_TOPIC_SUFFIX);
+    }
+
+    @Override
+    public boolean deleteHttpServer(String serverName) {
+        return delete(serverName, PROPERTIES_FILE_HTTP_SERVER_SUFFIX);
+    }
+
+    @Override
+    public boolean deleteHttpClient(String clientName) {
+        return delete(clientName, PROPERTIES_FILE_HTTP_CLIENT_SUFFIX);
     }
 
     protected boolean delete(String name, String fileSuffix) {

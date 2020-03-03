@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,10 +54,21 @@ public class SystemPersistenceTest {
      */
     private static final String TEST_CONTROLLER_NAME = "foo";
 
+
     /**
      * Test JUnit Topic Name.
      */
     private static final String TEST_TOPIC_NAME = TEST_CONTROLLER_NAME;
+
+    /**
+     * Test JUnit HTTP Server Name.
+     */
+    private static final String TEST_HTTP_SERVER_NAME = TEST_CONTROLLER_NAME;
+
+    /**
+     * Test JUnit HTTP Client Name.
+     */
+    private static final String TEST_HTTP_CLIENT_NAME = TEST_CONTROLLER_NAME;
 
     /**
      * Test JUnit Controller File.
@@ -78,6 +89,28 @@ public class SystemPersistenceTest {
      * Test JUnit Controller Name Backup.
      */
     private static final String TEST_TOPIC_FILE_BAK = TEST_TOPIC_FILE + ".bak";
+
+    /**
+     * Test JUnit Http Server File.
+     */
+    private static final String TEST_HTTP_SERVER_FILE = TEST_CONTROLLER_NAME
+                            + FileSystemPersistence.PROPERTIES_FILE_HTTP_SERVER_SUFFIX;
+
+    /**
+     * Test JUnit Backup Http Server File.
+     */
+    private static final String TEST_HTTP_SERVER_FILE_BAK = TEST_HTTP_SERVER_FILE + ".bak";
+
+    /**
+     * Test JUnit Http Client File.
+     */
+    private static final String TEST_HTTP_CLIENT_FILE = TEST_CONTROLLER_NAME
+                            + FileSystemPersistence.PROPERTIES_FILE_HTTP_CLIENT_SUFFIX;
+
+    /**
+     * Test JUnit Backup Http Server File.
+     */
+    private static final String TEST_HTTP_CLIENT_FILE_BAK = TEST_HTTP_CLIENT_FILE + ".bak";
 
     /**
      * Test JUnit Environment/Engine properties.
@@ -188,7 +221,67 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test4Controller() {
+    public void test4HttpServer() {
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
+
+        Path httpServerPath = Paths
+            .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_HTTP_SERVER_FILE);
+
+        Path httpServerBakPath = Paths
+            .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_HTTP_SERVER_FILE_BAK);
+
+        assertTrue(Files.notExists(httpServerPath));
+        assertTrue(Files.notExists(httpServerBakPath));
+
+        SystemPersistenceConstants.getManager().storeHttpServer(TEST_HTTP_SERVER_NAME, new Properties());
+
+        assertTrue(Files.exists(httpServerPath));
+
+        Properties properties = SystemPersistenceConstants.getManager().getHttpServerProperties(TEST_HTTP_SERVER_NAME);
+        assertNotNull(properties);
+
+        List<Properties> httpServerPropsList = SystemPersistenceConstants.getManager().getHttpServerProperties();
+        assertEquals(1,  httpServerPropsList.size());
+
+        SystemPersistenceConstants.getManager().backupHttpServer(TEST_HTTP_SERVER_NAME);
+        assertTrue(Files.exists(httpServerBakPath));
+
+        SystemPersistenceConstants.getManager().deleteHttpServer(TEST_HTTP_SERVER_NAME);
+        assertTrue(Files.notExists(httpServerPath));
+    }
+
+    @Test
+    public void test5HttpClient() {
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
+
+        Path httpClientPath = Paths
+            .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_HTTP_CLIENT_FILE);
+
+        Path httpClientBakPath = Paths
+            .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_HTTP_CLIENT_FILE_BAK);
+
+        assertTrue(Files.notExists(httpClientPath));
+        assertTrue(Files.notExists(httpClientBakPath));
+
+        SystemPersistenceConstants.getManager().storeHttpClient(TEST_HTTP_CLIENT_NAME, new Properties());
+
+        assertTrue(Files.exists(httpClientPath));
+
+        Properties properties = SystemPersistenceConstants.getManager().getHttpClientProperties(TEST_HTTP_CLIENT_NAME);
+        assertNotNull(properties);
+
+        List<Properties> httpClientPropsList = SystemPersistenceConstants.getManager().getHttpClientProperties();
+        assertEquals(1,  httpClientPropsList.size());
+
+        SystemPersistenceConstants.getManager().backupHttpClient(TEST_HTTP_CLIENT_NAME);
+        assertTrue(Files.exists(httpClientBakPath));
+
+        SystemPersistenceConstants.getManager().deleteHttpClient(TEST_HTTP_CLIENT_NAME);
+        assertTrue(Files.notExists(httpClientPath));
+    }
+
+    @Test
+    public void test6Controller() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
         Path controllerPath = Paths
@@ -233,6 +326,8 @@ public class SystemPersistenceTest {
         }
 
         SystemPersistenceConstants.getManager().deleteTopic(TEST_TOPIC_NAME);
+        SystemPersistenceConstants.getManager().deleteHttpServer(TEST_HTTP_SERVER_NAME);
+        SystemPersistenceConstants.getManager().deleteHttpClient(TEST_HTTP_CLIENT_NAME);
 
         final Path testControllerBakPath =
                         Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
@@ -240,6 +335,10 @@ public class SystemPersistenceTest {
 
         final Path testTopicBakPath = Paths
             .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_TOPIC_FILE_BAK);
+        final Path testHttpServerBakPath = Paths
+            .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_HTTP_SERVER_FILE_BAK);
+        final Path testHttpClientBakPath = Paths
+            .get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(), TEST_HTTP_CLIENT_FILE_BAK);
 
         final Path policyEnginePath = Paths.get(OTHER_CONFIG_DIR, FileSystemPersistence.PROPERTIES_FILE_ENGINE);
         final Path environmentPath = Paths.get(OTHER_CONFIG_DIR, ENV_PROPS_FILE);
@@ -247,6 +346,8 @@ public class SystemPersistenceTest {
 
         Files.deleteIfExists(testControllerBakPath);
         Files.deleteIfExists(testTopicBakPath);
+        Files.deleteIfExists(testHttpServerBakPath);
+        Files.deleteIfExists(testHttpClientBakPath);
         Files.deleteIfExists(policyEnginePath);
         Files.deleteIfExists(environmentPath);
         Files.deleteIfExists(systemPath);

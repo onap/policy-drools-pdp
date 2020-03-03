@@ -52,6 +52,8 @@ import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.http.client.HttpClient;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
@@ -109,6 +111,10 @@ public class PolicyEngineManagerTest {
     private HttpServletServer server2;
     private List<HttpServletServer> servers;
     private HttpServletServerFactory serverFactory;
+    private HttpClientFactory clientFactory;
+    private HttpClient client1;
+    private HttpClient client2;
+    private List<HttpClient> clients;
     private TopicEndpoint endpoint;
     private PolicyController controller;
     private PolicyController controller2;
@@ -163,6 +169,10 @@ public class PolicyEngineManagerTest {
         server2 = mock(HttpServletServer.class);
         servers = Arrays.asList(server1, server2);
         serverFactory = mock(HttpServletServerFactory.class);
+        client1 = mock(HttpClient.class);
+        client2 = mock(HttpClient.class);
+        clients = Arrays.asList(client1, client2);
+        clientFactory = mock(HttpClientFactory.class);
         endpoint = mock(TopicEndpoint.class);
         controller = mock(PolicyController.class);
         controller2 = mock(PolicyController.class);
@@ -215,6 +225,16 @@ public class PolicyEngineManagerTest {
         when(server2.stop()).thenReturn(true);
 
         when(serverFactory.build(any())).thenReturn(servers);
+
+        when(client1.getPort()).thenReturn(2001);
+        when(client1.start()).thenReturn(true);
+        when(client1.stop()).thenReturn(true);
+
+        when(client2.getPort()).thenReturn(2002);
+        when(client2.start()).thenReturn(true);
+        when(client2.stop()).thenReturn(true);
+
+        when(clientFactory.inventory()).thenReturn(clients);
 
         when(source1.getTopic()).thenReturn("source1-topic");
         when(source1.start()).thenReturn(true);
@@ -515,6 +535,7 @@ public class PolicyEngineManagerTest {
         when(endpoint.addTopicSources(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
         when(endpoint.addTopicSinks(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
         when(serverFactory.build(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
+        when(clientFactory.build(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
         mgr.configure(properties);
         verify(prov2).afterConfigure(mgr);
 
@@ -763,6 +784,7 @@ public class PolicyEngineManagerTest {
             when(prov1.beforeStart(mgr)).thenThrow(new RuntimeException(EXPECTED));
             when(prov1.afterStart(mgr)).thenThrow(new RuntimeException(EXPECTED));
             when(server1.waitedStart(anyLong())).thenThrow(new RuntimeException(EXPECTED));
+            when(client1.start()).thenThrow(new RuntimeException(EXPECTED));
             when(source1.start()).thenThrow(new RuntimeException(EXPECTED));
             when(sink1.start()).thenThrow(new RuntimeException(EXPECTED));
         });
@@ -775,6 +797,9 @@ public class PolicyEngineManagerTest {
 
         // servlet wait fails - still does everything
         testStart(false, () -> when(server1.waitedStart(anyLong())).thenReturn(false));
+
+        // client fails - still does everything
+        testStart(false, () -> when(client1.start()).thenReturn(false));
 
         // topic source is not started with start
         testStart(true, () -> when(source1.start()).thenReturn(false));
@@ -841,6 +866,9 @@ public class PolicyEngineManagerTest {
         verify(server1).waitedStart(anyLong());
         verify(server2).waitedStart(anyLong());
 
+        verify(client1).start();
+        verify(client2).start();
+
         verify(source1, never()).start();
         verify(source2, never()).start();
 
@@ -866,6 +894,7 @@ public class PolicyEngineManagerTest {
             when(prov1.beforeStop(mgr)).thenThrow(new RuntimeException(EXPECTED));
             when(prov1.afterStop(mgr)).thenThrow(new RuntimeException(EXPECTED));
             when(server1.stop()).thenThrow(new RuntimeException(EXPECTED));
+            when(client1.stop()).thenThrow(new RuntimeException(EXPECTED));
             when(source1.stop()).thenThrow(new RuntimeException(EXPECTED));
             when(sink1.stop()).thenThrow(new RuntimeException(EXPECTED));
         });
@@ -881,6 +910,7 @@ public class PolicyEngineManagerTest {
         verify(sink1, never()).stop();
         verify(endpoint, never()).stop();
         verify(server1, never()).stop();
+        verify(client1, never()).stop();
         verify(prov1, never()).afterStop(mgr);
         verify(prov2, never()).afterStop(mgr);
 
@@ -901,6 +931,9 @@ public class PolicyEngineManagerTest {
 
         // servlet fails to stop - still does everything
         testStop(false, () -> when(server1.stop()).thenReturn(false));
+
+        // client fails to stop - still does everything
+        testStop(false, () -> when(client1.stop()).thenReturn(false));
 
         // lock manager fails to stop - still does everything
         testStop(false, () -> when(lockmgr.stop()).thenReturn(false));
@@ -953,6 +986,9 @@ public class PolicyEngineManagerTest {
 
         verify(server1).stop();
         verify(server2).stop();
+
+        verify(client1).stop();
+        verify(client2).stop();
 
         verify(prov1).afterStop(mgr);
         verify(prov2).afterStop(mgr);
@@ -1017,6 +1053,7 @@ public class PolicyEngineManagerTest {
         verify(controllerFactory).shutdown();
         verify(endpoint).shutdown();
         verify(serverFactory).destroy();
+        verify(clientFactory).destroy();
 
         assertTrue(jmxStopped);
 
@@ -1058,6 +1095,8 @@ public class PolicyEngineManagerTest {
 
         verify(server1).shutdown();
         verify(server2).shutdown();
+
+        verify(clientFactory).destroy();
     }
 
     @Test
@@ -1907,6 +1946,11 @@ public class PolicyEngineManagerTest {
         @Override
         protected HttpServletServerFactory getServletFactory() {
             return serverFactory;
+        }
+
+        @Override
+        protected HttpClientFactory getHttpClientFactory() {
+            return clientFactory;
         }
 
         @Override

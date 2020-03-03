@@ -36,6 +36,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,6 +48,9 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.endpoints.http.client.HttpClient;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactory;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
@@ -588,12 +592,21 @@ class PolicyEngineManager implements PolicyEngine {
             success.set(false);
         }
 
-        /* Start Policy Engine exclusively-owned (unmanaged) http servers */
+        /* Start managed and unmanaged http servers */
 
-        attempt(success, this.httpServers,
+        attempt(success,
+            Stream.concat(getServletFactory().inventory().stream(), this.httpServers.stream())
+                .collect(Collectors.toList()),
             httpServer -> httpServer.waitedStart(10 * 1000L),
-            (item, ex) -> logger.error("{}: cannot start http-server {} because of {}",
-                            this, item, ex.getMessage(), ex));
+            (item, ex) -> logger.error("{}: cannot start http-server {} because of {}", this, item,
+                ex.getMessage(), ex));
+
+        /* Start managed Http Clients */
+
+        attempt(success, getHttpClientFactory().inventory(),
+            HttpClient::start,
+            (item, ex) -> logger.error("{}: cannot start http-client {} because of {}",
+                this, item, ex.getMessage(), ex));
 
         /* Start Policy Controllers */
 
@@ -614,7 +627,6 @@ class PolicyEngineManager implements PolicyEngine {
         } catch (final IllegalStateException e) {
             logger.warn("{}: Topic Endpoint Manager is in an invalid state because of {}", this, e.getMessage(), e);
         }
-
 
         // Start the JMX listener
 
@@ -722,11 +734,20 @@ class PolicyEngineManager implements PolicyEngine {
             success.set(false);
         }
 
-        /* stop all unmanaged http servers */
-        attempt(success, this.httpServers,
+        /* stop all managed and unmanaged http servers */
+        attempt(success,
+            Stream.concat(getServletFactory().inventory().stream(), this.httpServers.stream())
+                    .collect(Collectors.toList()),
             HttpServletServer::stop,
             (item, ex) -> logger.error("{}: cannot stop http-server {} because of {}", this, item,
-                            ex.getMessage(), ex));
+                ex.getMessage(), ex));
+
+        /* stop all managed http clients */
+        attempt(success,
+            getHttpClientFactory().inventory(),
+            HttpClient::stop,
+            (item, ex) -> logger.error("{}: cannot stop http-client {} because of {}", this, item,
+                ex.getMessage(), ex));
 
         try {
             success.compareAndSet(true, this.lockManager.stop());
@@ -783,6 +804,7 @@ class PolicyEngineManager implements PolicyEngine {
         getControllerFactory().shutdown();
         getTopicEndpointManager().shutdown();
         getServletFactory().destroy();
+        getHttpClientFactory().destroy();
 
         try {
             this.lockManager.shutdown();
@@ -1339,6 +1361,10 @@ class PolicyEngineManager implements PolicyEngine {
 
     protected HttpServletServerFactory getServletFactory() {
         return HttpServletServerFactoryInstance.getServerFactory();
+    }
+
+    protected HttpClientFactory getHttpClientFactory() {
+        return HttpClientFactoryInstance.getClientFactory();
     }
 
     protected PolicyControllerFactory getControllerFactory() {
