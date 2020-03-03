@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c42ec1c_ebdd39f7",
+        "filename": "feature-server-pool/src/test/resources/TestController-controller.properties",
+        "patchSetId": 14
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-03T21:06:37Z",
+      "side": 1,
+      "message": "Remove this line if you have a chance",
+      "revId": "ff5dc332d14f284f9c9ae589d38b8598c38126e8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
