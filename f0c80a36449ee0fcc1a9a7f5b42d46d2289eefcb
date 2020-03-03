@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2d02807_43dcac24",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-03T10:45:03Z",
+      "side": 1,
+      "message": "Lines 526 through 538 used to be:\n\nassertArrayEquals(new Object[] {\"lockAvailable\", tl2},\n   owner.poll(5, TimeUnit.SECONDS));\n\nWhat\u0027s wrong with that? How did this end up so messy?",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12d66da5_e1cc463c",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-03T10:45:03Z",
+      "side": 1,
+      "message": "This \u0027await\u0027 is completely unnecessary -- the \u0027KieSession\u0027 should exist by the time the @BeforeClass method completes.",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bbb8251_27b9922a",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-03T10:45:03Z",
+      "side": 1,
+      "message": "This \u0027await\u0027 is completely unnecessary -- the \u0027KieSession\u0027 should exist by the time the @BeforeClass method completes.",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31f4caee_2a895ee5",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 816,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-03T10:45:03Z",
+      "side": 1,
+      "message": "This isn\u0027t going to do what you want -- the \u0027KieSession\u0027 already exists by the time the @BeforeClass method completes. However, there may be a delay before the object insert completes -- that is the condition you need to wait for.",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
