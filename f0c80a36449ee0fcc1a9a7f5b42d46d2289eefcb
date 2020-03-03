@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "76296fe2_965f2722",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-03T14:06:16Z",
+      "side": 1,
+      "message": "that\u0027s a good point - this old code should work just fine",
+      "parentUuid": "f2d02807_43dcac24",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "12d66da5_e1cc463c",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 10
