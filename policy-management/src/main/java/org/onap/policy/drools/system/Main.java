@@ -23,7 +23,11 @@ package org.onap.policy.drools.system;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
+import org.onap.policy.common.endpoints.http.client.HttpClientConfigException;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.utils.security.CryptoUtils;
+import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -87,10 +91,26 @@ public class Main {
             PolicyEngineConstants.getManager().setEnvironment(env);
         }
 
-        /* 2. Add topics */
+        /* 2.a Add topics */
 
         for (Properties topicProperties : SystemPersistenceConstants.getManager().getTopicProperties()) {
             TopicEndpointManager.getManager().addTopics(topicProperties);
+        }
+
+        /* 2.b Add HTTP Servers */
+
+        for (Properties serverProperties : SystemPersistenceConstants.getManager().getHttpServerProperties()) {
+            HttpServletServerFactoryInstance.getServerFactory().build(serverProperties);
+        }
+
+        /* 2.c Add HTTP Clients */
+
+        for (Properties clientProperties : SystemPersistenceConstants.getManager().getHttpClientProperties()) {
+            try {
+                HttpClientFactoryInstance.getClientFactory().build(clientProperties);
+            } catch (HttpClientConfigException e) {
+                logger.warn("Main: http client properties errors found.  Using default configuration.", e);
+            }
         }
 
         /* 3. Start the Engine with the basic services only (no Policy Controllers) */

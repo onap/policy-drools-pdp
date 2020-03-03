@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,12 +65,28 @@ public interface SystemPersistence {
     boolean backupTopic(String topicName);
 
     /**
+     * backs up an http server configuration.
+     *
+     * @param serverName the HTTP server name
+     * @return true if the configuration is backed up
+     */
+    boolean backupHttpServer(String serverName);
+
+    /**
+     * backs up an http client configuration.
+     *
+     * @param clientName the HTTP client name
+     * @return true if the configuration is backed up
+     */
+    boolean backupHttpClient(String clientName);
+
+    /**
      * persists controller configuration.
      *
      * @param controllerName the controller name
      * @param configuration object containing the configuration
      *
-     * @return true if storage is succesful, false otherwise
+     * @return true if storage is successful, false otherwise
      * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
      *         manager
      */
@@ -82,17 +98,41 @@ public interface SystemPersistence {
      * @param topicName the controller name
      * @param configuration object containing the configuration
      *
-     * @return true if storage is succesful, false otherwise
+     * @return true if storage is successful, false otherwise
      * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
      *         manager
      */
     boolean storeTopic(String topicName, Object configuration);
 
     /**
+     * persists http server configuration.
+     *
+     * @param serverName the server name
+     * @param configuration object containing the configuration
+     *
+     * @return true if storage is successful, false otherwise
+     * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
+     *         manager
+     */
+    boolean storeHttpServer(String serverName, Object configuration);
+
+    /**
+     * persists http client configuration.
+     *
+     * @param clientName the client name
+     * @param configuration object containing the configuration
+     *
+     * @return true if storage is successful, false otherwise
+     * @throws IllegalArgumentException if the configuration cannot be handled by the persistence
+     *         manager
+     */
+    boolean storeHttpClient(String clientName, Object configuration);
+
+    /**
      * delete controller configuration.
      *
      * @param controllerName the controller name
-     * @return true if storage is succesful, false otherwise
+     * @return true if storage is successful, false otherwise
      */
     boolean deleteController(String controllerName);
 
@@ -100,9 +140,25 @@ public interface SystemPersistence {
      * delete topic configuration.
      *
      * @param topicName the topic name
-     * @return true if storage is succesful, false otherwise
+     * @return true if storage is successful, false otherwise
      */
     boolean deleteTopic(String topicName);
+
+    /**
+     * deletes an http server configuration.
+     *
+     * @param serverName the HTTP server name
+     * @return true if storage is successful, false otherwise
+     */
+    boolean deleteHttpServer(String serverName);
+
+    /**
+     * deletes an http client configuration.
+     *
+     * @param clientName the HTTP client name
+     * @return true if storage is successful, false otherwise
+     */
+    boolean deleteHttpClient(String clientName);
 
     /**
      * get controllers configuration.
@@ -138,6 +194,40 @@ public interface SystemPersistence {
      * @throws IllegalArgumentException if topicName is invalid
      */
     Properties getTopicProperties(String topicName);
+
+    /**
+     * get HTTP Servers configuration.
+     *
+     * @return list of HTTP server properties
+     */
+    List<Properties> getHttpServerProperties();
+
+    /**
+     * get HTTP Server properties.
+     *
+     * @param serverName name
+     * @return properties for this server
+     *
+     * @throws IllegalArgumentException if topicName is invalid
+     */
+    Properties getHttpServerProperties(String serverName);
+
+    /**
+     * get HTTP Client configuration.
+     *
+     * @return list of HTTP client properties
+     */
+    List<Properties> getHttpClientProperties();
+
+    /**
+     * get HTTP Client properties.
+     *
+     * @param clientName name
+     * @return properties for this client
+     *
+     * @throws IllegalArgumentException if topicName is invalid
+     */
+    Properties getHttpClientProperties(String clientName);
 
     /**
      * get environments.
