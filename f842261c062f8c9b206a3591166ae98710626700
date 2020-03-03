@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d670e838_a56e8efc",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleStateRunningTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-03T01:32:58Z",
+      "side": 1,
+      "message": "utf-8.  As an alternative, I believe there\u0027s an IOUtils to read a file as a string",
+      "revId": "f842261c062f8c9b206a3591166ae98710626700",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
