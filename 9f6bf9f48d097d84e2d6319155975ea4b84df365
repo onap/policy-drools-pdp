@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9996ab9e_2e1f8f81",
+        "filename": "feature-server-pool/pom.xml",
+        "patchSetId": 15
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-04T00:25:20Z",
+      "side": 1,
+      "message": "Please remove version - we just set this in policy/parent today.",
+      "range": {
+        "startLine": 174,
+        "startChar": 7,
+        "endLine": 174,
+        "endChar": 31
+      },
+      "revId": "9f6bf9f48d097d84e2d6319155975ea4b84df365",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
