@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "f1b16989_1f2ac550",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 1761
+      },
+      "writtenOn": "2020-03-04T13:36:23Z",
+      "side": 1,
+      "message": "This is necessary as owner.poll returned null if it polled only once",
+      "parentUuid": "76296fe2_965f2722",
+      "revId": "f0c80a36449ee0fcc1a9a7f5b42d46d2289eefcb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "12d66da5_e1cc463c",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 10
