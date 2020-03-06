@@ -59,6 +59,7 @@
     <modules>
         <module>policy-utils</module>
         <module>policy-core</module>
+        <module>policy-domains</module>
         <module>policy-management</module>
         <module>feature-healthcheck</module>
         <module>feature-eelf</module>
@@ -166,18 +167,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <encoding>${project.encoding}</encoding>
-                    <source>${project.source.version}</source>
-                    <target>${project.target.version}</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <encoding>${project.encoding}</encoding>
-                </configuration>
             </plugin>
 
             <plugin>

@@ -1,0 +1,274 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://www.onap.org/policy/models/schemas/onap.policies.native.drools.Controller.schema.json",
+    "type": "object",
+    "title": "Domain onap.policies.native.drools.Controller Policy root schema",
+    "required": [
+        "type",
+        "type_version",
+        "version",
+        "metadata",
+        "properties"
+    ],
+    "properties": {
+        "type": {
+            "$id": "#/properties/type",
+            "type": "string",
+            "title": "Policy Type",
+            "default": "onap.policies.native.drools.Controller",
+            "examples": [
+                "onap.policies.native.drools.Controller"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "type_version": {
+            "$id": "#/properties/type_version",
+            "type": "string",
+            "title": "Policy Type Version",
+            "examples": [
+                "1.0.0"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "version": {
+            "$id": "#/properties/version",
+            "type": "string",
+            "title": "Version",
+            "examples": [
+                "1.0.0"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "name": {
+            "$id": "#/properties/name",
+            "type": "string",
+            "title": "Name",
+            "examples": [
+                "example"
+            ],
+            "pattern": "^(.+)$"
+        },
+        "metadata": {
+            "$id": "#/properties/metadata",
+            "type": "object",
+            "title": "Metadata",
+            "required": [
+                "policy-id"
+            ],
+            "properties": {
+                "policy-id": {
+                    "$id": "#/properties/metadata/properties/policy-id",
+                    "type": "string",
+                    "title": "The policy-id Schema",
+                    "examples": [
+                        "example"
+                    ],
+                    "pattern": "^(.+)$"
+                }
+            }
+        },
+        "properties": {
+            "$id": "#/properties/properties",
+            "type": "object",
+            "title": "Policy Domain Properties",
+            "required": [
+                "controllerName"
+            ],
+            "properties": {
+                "controllerName": {
+                    "$id": "#/properties/properties/properties/controllerName",
+                    "type": "string",
+                    "title": "Controller Name",
+                    "examples": [
+                        "example"
+                    ],
+                    "pattern": "^(.+)$"
+                },
+                "sourceTopics": {
+                    "$id": "#/properties/properties/properties/sourceTopics",
+                    "type": "array",
+                    "title": "Source Topics",
+                    "items": {
+                        "$id": "#/properties/properties/properties/sourceTopics/items",
+                        "type": "object",
+                        "title": "Topic Sources",
+                        "required": [
+                            "topicName",
+                            "events"
+                        ],
+                        "properties": {
+                            "topicName": {
+                                "$id": "#/properties/properties/properties/sourceTopics/items/properties/topicName",
+                                "type": "string",
+                                "title": "Topic Name",
+                                "examples": [
+                                    "DCAE_TOPIC"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "events": {
+                                "$id": "#/properties/properties/properties/sourceTopics/items/properties/events",
+                                "type": "array",
+                                "title": "Source Events",
+                                "items": {
+                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items",
+                                    "type": "object",
+                                    "title": "Event Information",
+                                    "required": [
+                                        "eventClass"
+                                    ],
+                                    "properties": {
+                                        "eventClass": {
+                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/eventClass",
+                                            "type": "string",
+                                            "title": "Event Class",
+                                            "examples": [
+                                                "org.onap.policy.controlloop.CanonicalOnset"
+                                            ],
+                                            "pattern": "^(.+)$"
+                                        },
+                                        "eventFilter": {
+                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/eventFilter",
+                                            "type": "string",
+                                            "title": "Event Filter",
+                                            "examples": [
+                                                "[?($.closedLoopEventStatus == 'ONSET')]"
+                                            ],
+                                            "pattern": "^(.+)$"
+                                        },
+                                        "customSerialization": {
+                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/customSerialization",
+                                            "type": "object",
+                                            "title": "Custom Serialization",
+                                            "required": [
+                                                "customSerializerClass",
+                                                "jsonParser"
+                                            ],
+                                            "properties": {
+                                                "customSerializerClass": {
+                                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/customSerialization/properties/customSerializerClass",
+                                                    "type": "string",
+                                                    "title": "Custom Serializer Class for customized JSON parsing",
+                                                    "examples": [
+                                                        "org.onap.policy.controlloop.util.Serialization"
+                                                    ],
+                                                    "pattern": "^(.+)$"
+                                                },
+                                                "jsonParser": {
+                                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/customSerialization/properties/jsonParser",
+                                                    "type": "string",
+                                                    "title": "JSON Parser Static Field (currently only GSON is supported)",
+                                                    "examples": [
+                                                        "gson"
+                                                    ],
+                                                    "pattern": "^(.+)$"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "sinkTopics": {
+                    "$id": "#/properties/properties/properties/sinkTopics",
+                    "type": "array",
+                    "title": "Sink Topics",
+                    "items": {
+                        "$id": "#/properties/properties/properties/sinkTopics/items",
+                        "type": "object",
+                        "title": "Sink Topic Data",
+                        "required": [
+                            "topicName",
+                            "events"
+                        ],
+                        "properties": {
+                            "topicName": {
+                                "$id": "#/properties/properties/properties/sinkTopics/items/properties/topicName",
+                                "type": "string",
+                                "title": "Topic Name",
+                                "default": "",
+                                "examples": [
+                                    "APPC-CL"
+                                ],
+                                "pattern": "^(.+)$"
+                            },
+                            "events": {
+                                "$id": "#/properties/properties/properties/sinkTopics/items/properties/events",
+                                "type": "array",
+                                "title": "Source Events",
+                                "items": {
+                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items",
+                                    "type": "object",
+                                    "title": "Event Information",
+                                    "required": [
+                                        "eventClass"
+                                    ],
+                                    "properties": {
+                                        "eventClass": {
+                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/eventClass",
+                                            "type": "string",
+                                            "title": "Event Class",
+                                            "examples": [
+                                                "org.onap.policy.appc.Response"
+                                            ],
+                                            "pattern": "^(.+)$"
+                                        },
+                                        "eventFilter": {
+                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/eventFilter",
+                                            "type": "string",
+                                            "title": "Event Filter",
+                                            "examples": [
+                                                "[?($.CommonHeader && $.Status)]"
+                                            ],
+                                            "pattern": "^(.+)$"
+                                        },
+                                        "customSerialization": {
+                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/customSerialization",
+                                            "type": "object",
+                                            "title": "Custom Serialization",
+                                            "required": [
+                                                "customSerializerClass",
+                                                "jsonParser"
+                                            ],
+                                            "properties": {
+                                                "customSerializerClass": {
+                                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/customSerialization/properties/customSerializerClass",
+                                                    "type": "string",
+                                                    "title": "Custom Serializer Class for customized JSON parsing",
+                                                    "examples": [
+                                                        "org.onap.policy.controlloop.util.Serialization"
+                                                    ],
+                                                    "pattern": "^(.+)$"
+                                                },
+                                                "jsonParser": {
+                                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/customSerialization/properties/jsonParser",
+                                                    "type": "string",
+                                                    "title": "JSON Parser Static Field (currently only GSON is supported)",
+                                                    "examples": [
+                                                        "gson"
+                                                    ],
+                                                    "pattern": "^(.+)$"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "customConfig": {
+                    "$id": "#/properties/properties/properties/customConfig",
+                    "type": "object",
+                    "title": "other Configuration",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

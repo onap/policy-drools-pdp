@@ -77,7 +77,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
             ((PolicyTypeDroolsController) fsm.getController(
                     new ToscaPolicyTypeIdentifier(
                             ControllerSupport.POLICY_TYPE, ControllerSupport.POLICY_TYPE_VERSION)))
-                .getController());
+                .controllers().get(0));
 
         fsm.stop(controllerSupport.getController());
         assertNull(fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE,

@@ -45,6 +45,7 @@ import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,7 +142,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         /* persist new properties */
         getPersistenceManager().storeController(name, properties);
-        this.properties = properties;
+        this.properties = PropertyUtil.getInterpolatedProperties(properties);
 
         this.policyTypes = getPolicyTypesFromProperties();
     }
