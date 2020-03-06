@@ -434,9 +434,10 @@ public class Test1 {
             newReceiver.getServerStatic().getThisServer().getUuid().toString());
         logger.info(bos.toString());
 
-        // poll up to 10 seconds for the bucket to be updated
+        // poll up to 5 minutes for the bucket to be updated
         TestDroolsObject matchingObject = new TestDroolsObject(message);
-        await().atMost(50000L, TimeUnit.MILLISECONDS)
+        await().atMost(5, TimeUnit.MINUTES)
+            .with().pollInterval(Durations.ONE_SECOND)
             .until(() -> (new ArrayList<Object>(newReceiver.getKieSession().getObjects())
             .contains(matchingObject)));
 
