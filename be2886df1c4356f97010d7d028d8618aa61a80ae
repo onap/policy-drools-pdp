@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f80f8e68_3785e7f6",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-06T16:39:28Z",
+      "side": 1,
+      "message": "5 minutes is a very long time -- is this really necessary? If it is, something is wrong.",
+      "revId": "be2886df1c4356f97010d7d028d8618aa61a80ae",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
