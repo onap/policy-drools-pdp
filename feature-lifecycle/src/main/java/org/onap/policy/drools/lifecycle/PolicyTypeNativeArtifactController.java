@@ -34,17 +34,17 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PolicyTypeRulesController implements PolicyTypeController {
-    private static final Logger logger = LoggerFactory.getLogger(PolicyTypeRulesController.class);
+public class PolicyTypeNativeArtifactController implements PolicyTypeController {
+    private static final Logger logger = LoggerFactory.getLogger(PolicyTypeNativeArtifactController.class);
 
     @Getter
     protected final ToscaPolicyTypeIdentifier policyType;
 
     @GsonJsonIgnore
     @JsonIgnore
-    protected final LifecycleFsm fsm;
+    protected final transient LifecycleFsm fsm;
 
-    public PolicyTypeRulesController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {
+    public PolicyTypeNativeArtifactController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {
         this.policyType = policyType;
         this.fsm = fsm;
     }

@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
-import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
@@ -28,12 +27,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ControllerCustomSerializer implements Serializable {
+public class ControllerCustomSerialization implements Serializable {
     private static final long serialVersionUID = 1505345574249332514L;
 
-    @SerializedName("customSerializerClass")
     protected String customSerializerClass;
-
-    @SerializedName("jsonParser")
     protected String jsonParser;
 }

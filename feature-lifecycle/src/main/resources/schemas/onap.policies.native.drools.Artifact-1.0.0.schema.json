@@ -1,9 +1,9 @@
 {
     "definitions": {},
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://www.onap.org/policy/models/schemas/onap.policies.controlloop.native.Drools.schema.json",
+    "$id": "http://www.onap.org/policy/models/schemas/onap.policies.native.drools.Artifact.schema.json",
     "type": "object",
-    "title": "Domain onap.policies.controlloop.native.Drools Policy root schema",
+    "title": "Domain onap.policies.native.drools.Artifact Policy root schema",
     "required": [
         "type",
         "type_version",
@@ -16,9 +16,9 @@
             "$id": "#/properties/type",
             "type": "string",
             "title": "Policy Type",
-            "default": "onap.policies.native.Drools",
+            "default": "onap.policies.native.drools.Artifact",
             "examples": [
-                "onap.policies.native.Drools"
+                "onap.policies.native.drools.Artifact"
             ],
             "pattern": "^(.+)$"
         },

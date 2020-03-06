@@ -36,5 +36,5 @@ public class ControllerSourceTopic implements Serializable {
     private static final long serialVersionUID = -1732598566914643612L;
 
     protected String topicName;
-    protected List<ControllerSerialization> serialization;
+    protected List<ControllerEvent> events;
 }

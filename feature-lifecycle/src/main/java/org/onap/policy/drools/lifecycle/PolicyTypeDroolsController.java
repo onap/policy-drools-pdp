@@ -20,8 +20,10 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
+import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
@@ -31,12 +33,17 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
  * PolicyController that supports this policy type.
  */
 
-@Getter
 public class PolicyTypeDroolsController implements PolicyTypeController {
 
+    @Getter
     protected final PolicyController controller;
+
+    @Getter
     protected final ToscaPolicyTypeIdentifier policyType;
-    protected final LifecycleFsm fsm;
+
+    @GsonJsonIgnore
+    @JsonIgnore
+    protected final transient LifecycleFsm fsm;
 
     /**
      * Creates a Policy Type Drools Controller.

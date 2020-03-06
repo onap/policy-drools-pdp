@@ -4,7 +4,7 @@
         "policies": [
             {
                 "example": {
-                    "type": "onap.policies.drools.Controller",
+                    "type": "onap.policies.native.drools.Controller",
                     "type_version": "1.0.0",
                     "version": "1.0.0",
                     "name": "example",
@@ -16,14 +16,18 @@
                         "sourceTopics": [
                             {
                                 "topicName": "DCAE_TOPIC",
-                                "serialization": [
+                                "events": [
                                     {
                                         "eventClass": "org.onap.policy.controlloop.CanonicalOnset",
                                         "eventFilter": "[?($.closedLoopEventStatus == 'ONSET')]",
-                                        "customSerializer": {
+                                        "customSerialization": {
                                             "customSerializerClass": "org.onap.policy.controlloop.util.Serialization",
                                             "jsonParser": "gson"
                                         }
+                                    },
+                                    {
+                                        "eventClass": "org.onap.policy.controlloop.CanonicalAbated",
+                                        "eventFilter": "[?($.closedLoopEventStatus == 'ABATED')]"
                                     }
                                 ]
                             }
@@ -31,11 +35,11 @@
                         "sinkTopics": [
                             {
                                 "topicName": "APPC-CL",
-                                "serialization": [
+                                "events": [
                                     {
                                         "eventClass": "org.onap.policy.appc.Response",
                                         "eventFilter": "[?($.CommonHeader && $.Status)]",
-                                        "customSerializer": {
+                                        "customSerialization": {
                                             "customSerializerClass": "org.onap.policy.appc.util.Serialization",
                                             "jsonParser": "gsonPretty"
                                         }

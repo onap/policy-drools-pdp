@@ -38,4 +38,5 @@ public class ControllerPolicy extends DroolsPolicy implements Serializable {
 
     @SerializedName("properties")
     protected ControllerProperties properties;
+
 }

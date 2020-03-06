@@ -1,9 +1,9 @@
 {
     "definitions": {},
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://www.onap.org/policy/models/schemas/onap.policies.drools.Controller.schema.json",
+    "$id": "http://www.onap.org/policy/models/schemas/onap.policies.native.drools.Controller.schema.json",
     "type": "object",
-    "title": "Domain onap.policies.drools.Controller Policy root schema",
+    "title": "Domain onap.policies.native.drools.Controller Policy root schema",
     "required": [
         "type",
         "type_version",
@@ -16,9 +16,9 @@
             "$id": "#/properties/type",
             "type": "string",
             "title": "Policy Type",
-            "default": "onap.policies.native.Drools",
+            "default": "onap.policies.native.drools.Controller",
             "examples": [
-                "onap.policies.native.Drools"
+                "onap.policies.native.drools.Controller"
             ],
             "pattern": "^(.+)$"
         },
@@ -92,10 +92,10 @@
                     "items": {
                         "$id": "#/properties/properties/properties/sourceTopics/items",
                         "type": "object",
-                        "title": "Topic Data",
+                        "title": "Topic Sources",
                         "required": [
                             "topicName",
-                            "serialization"
+                            "events"
                         ],
                         "properties": {
                             "topicName": {
@@ -107,22 +107,20 @@
                                 ],
                                 "pattern": "^(.+)$"
                             },
-                            "serialization": {
-                                "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization",
+                            "events": {
+                                "$id": "#/properties/properties/properties/sourceTopics/items/properties/events",
                                 "type": "array",
-                                "title": "Serialization",
+                                "title": "Source Events",
                                 "items": {
-                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization/items",
+                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items",
                                     "type": "object",
-                                    "title": "Serialization  Data",
+                                    "title": "Event Information",
                                     "required": [
-                                        "eventClass",
-                                        "eventFilter",
-                                        "customSerializer"
+                                        "eventClass"
                                     ],
                                     "properties": {
                                         "eventClass": {
-                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization/items/properties/eventClass",
+                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/eventClass",
                                             "type": "string",
                                             "title": "Event Class",
                                             "examples": [
@@ -131,7 +129,7 @@
                                             "pattern": "^(.+)$"
                                         },
                                         "eventFilter": {
-                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization/items/properties/eventFilter",
+                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/eventFilter",
                                             "type": "string",
                                             "title": "Event Filter",
                                             "examples": [
@@ -139,28 +137,28 @@
                                             ],
                                             "pattern": "^(.+)$"
                                         },
-                                        "customSerializer": {
-                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization/items/properties/customSerializer",
+                                        "customSerialization": {
+                                            "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/customSerialization",
                                             "type": "object",
-                                            "title": "Custom Serializer",
+                                            "title": "Custom Serialization",
                                             "required": [
                                                 "customSerializerClass",
                                                 "jsonParser"
                                             ],
                                             "properties": {
                                                 "customSerializerClass": {
-                                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization/items/properties/customSerializer/properties/customSerializerClass",
+                                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/customSerialization/properties/customSerializerClass",
                                                     "type": "string",
-                                                    "title": "Custom Serializer Class",
+                                                    "title": "Custom Serializer Class for customized JSON parsing",
                                                     "examples": [
                                                         "org.onap.policy.controlloop.util.Serialization"
                                                     ],
-                                                    "pattern": "^(.*)$"
+                                                    "pattern": "^(.+)$"
                                                 },
                                                 "jsonParser": {
-                                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/serialization/items/properties/customSerializer/properties/jsonParser",
+                                                    "$id": "#/properties/properties/properties/sourceTopics/items/properties/events/items/properties/customSerialization/properties/jsonParser",
                                                     "type": "string",
-                                                    "title": "JSON Parser reference",
+                                                    "title": "JSON Parser Static Field (currently only GSON is supported)",
                                                     "examples": [
                                                         "gson"
                                                     ],
@@ -184,7 +182,7 @@
                         "title": "Sink Topic Data",
                         "required": [
                             "topicName",
-                            "serialization"
+                            "events"
                         ],
                         "properties": {
                             "topicName": {
@@ -197,21 +195,20 @@
                                 ],
                                 "pattern": "^(.+)$"
                             },
-                            "serialization": {
-                                "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization",
+                            "events": {
+                                "$id": "#/properties/properties/properties/sinkTopics/items/properties/events",
                                 "type": "array",
-                                "title": "The Serialization Schema",
+                                "title": "Source Events",
                                 "items": {
-                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization/items",
+                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items",
                                     "type": "object",
-                                    "title": "Serialization Data",
+                                    "title": "Event Information",
                                     "required": [
-                                        "eventClass",
-                                        "eventFilter"
+                                        "eventClass"
                                     ],
                                     "properties": {
                                         "eventClass": {
-                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization/items/properties/eventClass",
+                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/eventClass",
                                             "type": "string",
                                             "title": "Event Class",
                                             "examples": [
@@ -220,38 +217,38 @@
                                             "pattern": "^(.+)$"
                                         },
                                         "eventFilter": {
-                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization/items/properties/eventFilter",
+                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/eventFilter",
                                             "type": "string",
-                                            "title": "The Eventfilter Schema",
+                                            "title": "Event Filter",
                                             "examples": [
                                                 "[?($.CommonHeader && $.Status)]"
                                             ],
                                             "pattern": "^(.+)$"
                                         },
-                                        "customSerializer": {
-                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization/items/properties/customSerializer",
+                                        "customSerialization": {
+                                            "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/customSerialization",
                                             "type": "object",
-                                            "title": "The Customserializer Schema",
+                                            "title": "Custom Serialization",
                                             "required": [
                                                 "customSerializerClass",
                                                 "jsonParser"
                                             ],
                                             "properties": {
                                                 "customSerializerClass": {
-                                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization/items/properties/customSerializer/properties/customSerializerClass",
+                                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/customSerialization/properties/customSerializerClass",
                                                     "type": "string",
-                                                    "title": "The Customserializerclass Schema",
+                                                    "title": "Custom Serializer Class for customized JSON parsing",
                                                     "examples": [
-                                                        "org.onap.policy.appc.util.Serialization"
+                                                        "org.onap.policy.controlloop.util.Serialization"
                                                     ],
                                                     "pattern": "^(.+)$"
                                                 },
                                                 "jsonParser": {
-                                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/serialization/items/properties/customSerializer/properties/jsonParser",
+                                                    "$id": "#/properties/properties/properties/sinkTopics/items/properties/events/items/properties/customSerialization/properties/jsonParser",
                                                     "type": "string",
-                                                    "title": "The Jsonparser Schema",
+                                                    "title": "JSON Parser Static Field (currently only GSON is supported)",
                                                     "examples": [
-                                                        "gsonPretty"
+                                                        "gson"
                                                     ],
                                                     "pattern": "^(.+)$"
                                                 }

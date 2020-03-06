@@ -41,15 +41,15 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
 /**
  * Rules Controller Test.
  */
-public class PolicyTypeRulesControllerTest extends LifecycleStateRunningTest {
+public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunningTest {
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
-            "src/test/resources/example.policy.native.drools.tosca.json";
+            "src/test/resources/tosca-policy-native-artifact-example.json";
 
     private ToscaPolicy policy;
     private NativeDroolsPolicy nativePolicy;
-    private PolicyTypeRulesController controller;
+    private PolicyTypeNativeArtifactController controller;
 
     /**
      * Test Set initialization.
@@ -60,8 +60,8 @@ public class PolicyTypeRulesControllerTest extends LifecycleStateRunningTest {
         policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
         nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeDroolsPolicy.class);
         controller =
-                new PolicyTypeRulesController(fsm,
-                        new ToscaPolicyTypeIdentifier("onap.policies.native.Drools", "1.0.0"));
+                new PolicyTypeNativeArtifactController(fsm,
+                        new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Artifact", "1.0.0"));
 
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().isAlive());

@@ -26,26 +26,28 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
+import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
 /**
  * Native Controller Policy Test.
  */
-public class PolicyTypeNativeControllerTest extends LifecycleStateRunningTest {
+public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
-            "src/test/resources/example.policy.drools.controller.tosca.json";
+            "src/test/resources/tosca-policy-native-controller-example.json";
 
     private ToscaPolicy policy;
     private ControllerPolicy controllerPolicy;
-    private PolicyTypeNativeController controller;
+    private PolicyTypeNativeDroolsController controller;
 
     /**
      * Test initialization.
@@ -55,9 +57,7 @@ public class PolicyTypeNativeControllerTest extends LifecycleStateRunningTest {
         fsm = makeFsmWithPseudoTime();
         policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
         controllerPolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
-        controller =
-                new PolicyTypeNativeController(fsm,
-                        new ToscaPolicyTypeIdentifier("onap.policies.drools.Controller", "1.0.0"));
+        controller = new PolicyTypeNativeDroolsController(fsm, policy.getTypeIdentifier());
 
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().isAlive());
@@ -74,9 +74,20 @@ public class PolicyTypeNativeControllerTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testUndeploy() {
+    public void testUndeployDeploy() {
         assertTrue(controller.undeploy(policy));
         assertThatIllegalArgumentException().isThrownBy(
             () -> PolicyControllerConstants.getFactory().get(controllerPolicy.getName()));
+
+        assertFalse(controller.deploy(policy));
+
+        Properties noopTopicProperties = new Properties();
+        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, "DCAE_TOPIC");
+        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, "APPC-CL");
+        TopicEndpointManager.getManager().addTopics(noopTopicProperties);
+
+        controller.deploy(policy);
+
+        return;
     }
 }

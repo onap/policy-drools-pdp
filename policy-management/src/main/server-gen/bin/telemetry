@@ -1,10 +1,9 @@
 #! /bin/bash
 
-###
 # ============LICENSE_START=======================================================
-# ONAP POLICY
+# ONAP
 # ================================================================================
-# Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +17,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============LICENSE_END=========================================================
-##
+
+source ${POLICY_HOME}/etc/profile.d/env.sh
 
 REST_TOOL="http-prompt"
 TELEMETRY_SPEC="${POLICY_HOME}/config/telemetry-spec.json"
@@ -37,6 +37,7 @@ if [[ ! -r ${TELEMETRY_SPEC} ]]; then
 	echo "generating new spec .."
 	if ! http --verify=no -a "${TELEMETRY_USER}:${TELEMETRY_PASSWORD}" https://localhost:9696/swagger.json > ${TELEMETRY_SPEC} 2> /dev/null; then
 		echo "error: cannot generate telemetry spec"
+		rm -f ${TELEMETRY_SPEC} 2> /dev/null
 		exit 3
 	fi
 fi

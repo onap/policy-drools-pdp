@@ -48,7 +48,7 @@ public class DomainPolicyTypesTest {
 
     // Policy Types
     private static final String OPERATIONAL_DROOLS_POLICY_TYPE = "onap.policies.controlloop.operational.common.Drools";
-    private static final String NATIVE_DROOLS_POLICY_TYPE = "onap.policies.native.Drools";
+    private static final String NATIVE_DROOLS_POLICY_TYPE = "onap.policies.native.drools.Artifact";
 
     // Operational vCPE Policy
     private static final String OP_POLICY_NAME_VCPE = "operational.restart";
@@ -60,12 +60,12 @@ public class DomainPolicyTypesTest {
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
-            "src/test/resources/example.policy.native.drools.tosca.json";
+            "src/test/resources/tosca-policy-native-artifact-example.json";
 
     // Controller Drools Policy
     private static final String EXAMPLE_CONTROLLER_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_CONTROLLER_DROOLS_POLICY_JSON =
-            "src/test/resources/example.policy.drools.controller.tosca.json";
+            "src/test/resources/tosca-policy-native-controller-example.json";
 
     private DomainMaker domainMaker;
     private StandardCoder nonValCoder;
@@ -167,7 +167,7 @@ public class DomainPolicyTypesTest {
                         .rulesArtifact(
                                 NativeDroolsRulesArtifact.builder().groupId("org.onap.policy.controlloop")
                                         .artifactId("example").version("example").build()).build())
-            .type("onap.policies.native.Drools")
+            .type("onap.policies.native.drools.Artifact")
             .typeVersion("1.0.0").build();
         assertTrue(domainMaker
             .isDomainConformant(
@@ -185,37 +185,37 @@ public class DomainPolicyTypesTest {
 
         assertEquals("example", controllerPolicy.getName());
         assertEquals("1.0.0", controllerPolicy.getVersion());
-        assertEquals("onap.policies.drools.Controller", controllerPolicy.getType());
+        assertEquals("onap.policies.native.drools.Controller", controllerPolicy.getType());
         assertEquals("1.0.0", controllerPolicy.getTypeVersion());
         assertEquals("example", controllerPolicy.getMetadata().getPolicyId());
         assertEquals("lifecycle", controllerPolicy.getProperties().getControllerName());
         assertEquals("DCAE_TOPIC", controllerPolicy.getProperties().getSourceTopics().get(0).getTopicName());
         assertEquals("org.onap.policy.controlloop.CanonicalOnset",
-            controllerPolicy.getProperties().getSourceTopics().get(0).getSerialization().get(0).getEventClass());
+            controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0).getEventClass());
         assertEquals("[?($.closedLoopEventStatus == 'ONSET')]",
-                controllerPolicy.getProperties().getSourceTopics().get(0).getSerialization().get(0).getEventFilter());
+                controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0).getEventFilter());
         assertEquals("org.onap.policy.controlloop.util.Serialization",
-                controllerPolicy.getProperties().getSourceTopics().get(0).getSerialization().get(0)
-                        .getCustomSerializer().getCustomSerializerClass());
+                controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
+                        .getCustomSerialization().getCustomSerializerClass());
         assertEquals("gson",
-                controllerPolicy.getProperties().getSourceTopics().get(0).getSerialization().get(0)
-                        .getCustomSerializer().getJsonParser());
+                controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
+                        .getCustomSerialization().getJsonParser());
         assertEquals("APPC-CL", controllerPolicy.getProperties().getSinkTopics().get(0).getTopicName());
         assertEquals("org.onap.policy.appc.Response",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getSerialization().get(0).getEventClass());
+                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventClass());
         assertEquals("[?($.CommonHeader && $.Status)]",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getSerialization().get(0).getEventFilter());
+                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventFilter());
         assertEquals("org.onap.policy.appc.util.Serialization",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getSerialization().get(0)
-                        .getCustomSerializer().getCustomSerializerClass());
+                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0)
+                        .getCustomSerialization().getCustomSerializerClass());
         assertEquals("gsonPretty",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getSerialization().get(0)
-                        .getCustomSerializer().getJsonParser());
+                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0)
+                        .getCustomSerialization().getJsonParser());
         assertEquals("value1", controllerPolicy.getProperties().getCustomConfig().get("field1"));
     }
 
     private String getJsonFromFile(String filePath) throws IOException {
-        return new String(Files.readAllBytes(Paths.get(filePath)));
+        return Files.readString(Paths.get(filePath));
     }
 
     private String getJsonFromResource(String resourcePath) {

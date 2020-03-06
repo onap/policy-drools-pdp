@@ -4,7 +4,7 @@
         "policies": [
             {
                 "example": {
-                    "type": "onap.policies.native.Drools",
+                    "type": "onap.policies.native.drools.Artifact",
                     "type_version": "1.0.0",
                     "version": "1.0.0",
                     "name": "example",
