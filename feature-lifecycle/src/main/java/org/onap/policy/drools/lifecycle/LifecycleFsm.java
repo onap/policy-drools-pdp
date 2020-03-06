@@ -132,10 +132,10 @@ public class LifecycleFsm implements Startable {
 
         this.policyTypesMap.put(
                 POLICY_TYPE_DROOLS_CONTROLLER,
-                new PolicyTypeNativeController(this, POLICY_TYPE_DROOLS_CONTROLLER));
+                new PolicyTypeNativeDroolsController(this, POLICY_TYPE_DROOLS_CONTROLLER));
         this.policyTypesMap.put(
                 POLICY_TYPE_DROOLS_NATIVE_RULES,
-                 new PolicyTypeRulesController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
+                 new PolicyTypeNativeArtifactController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
     }
 
     @JsonIgnore
