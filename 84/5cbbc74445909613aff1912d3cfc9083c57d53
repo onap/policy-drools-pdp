@@ -1,0 +1,13 @@
+Code-Review+1: Ralph Straubs <rs8887@att.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Jorge Hernandez <jorge.hernandez-herrero@att.com>
+Code-Review+1: Jim Hahn <jrh3@att.com>
+Code-Review+1: Daniel Cruz <dc443y@att.com>
+Code-Review+1: Ram Krishna Verma <ram_krishna.verma@bell.ca>
+Code-Review+1: Liam Fallon <liam.fallon@est.tech>
+Code-Review+2: Pamela Dragosh <pdragosh@research.att.com>
+Submitted-by: Pamela Dragosh <pdragosh@research.att.com>
+Submitted-at: Mon, 09 Mar 2020 18:11:52 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/policy/drools-pdp/+/103286
+Project: policy/drools-pdp
+Branch: refs/heads/master
