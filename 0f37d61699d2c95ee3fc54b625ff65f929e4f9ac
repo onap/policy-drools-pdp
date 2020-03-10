@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "29300939_af03eb85",
+        "filename": "policy-domains/src/test/java/org/onap/policy/drools/domain/models/DomainPolicyTypesTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-03-10T09:14:23Z",
+      "side": 1,
+      "message": "I think the formatter is already on by default?",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 2
+      },
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
