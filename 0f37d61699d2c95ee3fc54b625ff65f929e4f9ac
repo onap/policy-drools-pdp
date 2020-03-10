@@ -2,6 +2,46 @@
   "comments": [
     {
       "key": {
+        "uuid": "afad20c0_2ffe586d",
+        "filename": "policy-domains/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-10T12:24:26Z",
+      "side": 1,
+      "message": "As an overall observation, a lot of dependencies declared here and provided only as test could simply be in the root pom.xml for the whole repo. Since most of the sub-modules use them anyway. It would go a long way to clean up the pom.xml so all you see are really the most obvious dependencies required by the sub-module. Perhaps a todo for G release clean up.",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04fa4df7_d9281e3f",
+        "filename": "policy-domains/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-10T12:24:26Z",
+      "side": 1,
+      "message": "new file no need for 2019 - unless its a gerrit thing",
+      "range": {
+        "startLine": 5,
+        "startChar": 16,
+        "endLine": 5,
+        "endChar": 22
+      },
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "29300939_af03eb85",
         "filename": "policy-domains/src/test/java/org/onap/policy/drools/domain/models/DomainPolicyTypesTest.java",
         "patchSetId": 3
