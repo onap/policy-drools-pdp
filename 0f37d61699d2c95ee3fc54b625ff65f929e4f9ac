@@ -2,6 +2,91 @@
   "comments": [
     {
       "key": {
+        "uuid": "f3ccad24_8b7e8abd",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeDroolsController.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "this only invokes apply() for the first controller - is that the intention?  Or should it be modified to END with \"\u0026\u0026 success\"?",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7ac1812_e7225f88",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeDroolsController.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "perhaps rename \"sources\" to \"sinks\"",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "974b6cb5_29972c0a",
+        "filename": "feature-lifecycle/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "also need custom serialization?",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e00e3416_f60d5d46",
+        "filename": "feature-lifecycle/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "since this topic contains both requests and responses, should it also have a decoder for requests so that it doesn\u0027t generate errors in the log when it sees a request?  (If it\u0027s silently ignored, then never mind, but I\u0027m thinking it logs an error for unrecognized classes.)\n\nsomewhere we need to list the custom serialization for the Request?",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ea421929_b32e25bf",
+        "filename": "packages/base/src/files/bin/policy",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "afad20c0_2ffe586d",
         "filename": "policy-domains/pom.xml",
         "patchSetId": 3
@@ -42,6 +127,23 @@
     },
     {
       "key": {
+        "uuid": "12927304_d1b266b4",
+        "filename": "policy-domains/src/main/java/org/onap/policy/drools/domain/models/controller/ControllerEvent.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "these have to be public?  I think sonar will complain thath publics should be final",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "29300939_af03eb85",
         "filename": "policy-domains/src/test/java/org/onap/policy/drools/domain/models/DomainPolicyTypesTest.java",
         "patchSetId": 3
@@ -59,6 +161,115 @@
         "endLine": 162,
         "endChar": 2
       },
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2098920_cf6cf5db",
+        "filename": "policy-domains/src/test/java/org/onap/policy/drools/domain/models/DomainPolicyTypesTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "right - probably swap lines 162 and 174",
+      "parentUuid": "29300939_af03eb85",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 2
+      },
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d28967b3_27c6a4e5",
+        "filename": "policy-domains/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "same comments about \"Request\" as before",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2dfd8ce_c6b8e277",
+        "filename": "policy-management/src/main/server-gen/bin/rest-delete-controller",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "trailing spaces\n\nsame comment below",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc2aa60f_b26d7131",
+        "filename": "policy-management/src/main/server-gen/bin/rest-delete-controller",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "tabs \u003d\u003e spaces",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c4a48cb9_fa84edda",
+        "filename": "policy-management/src/main/server-gen/bin/telemetry",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4233d4d3_a24d3c30",
+        "filename": "policy-management/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-10T13:48:30Z",
+      "side": 1,
+      "message": "same comment as before",
       "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
