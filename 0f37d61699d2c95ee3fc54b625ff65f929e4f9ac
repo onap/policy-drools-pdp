@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "36bbdd0f_d08a2675",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeDroolsController.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "thank you, great catch!",
+      "parentUuid": "f3ccad24_8b7e8abd",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7ac1812_e7225f88",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeDroolsController.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2020-03-10T13:48:30Z",
       "side": 1,
       "message": "perhaps rename \"sources\" to \"sinks\"",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ecbe0023_ac886b81",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeDroolsController.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7ac1812_e7225f88",
       "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a73c5a7_32a50f1b",
+        "filename": "feature-lifecycle/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "It\u0027s declared optional.",
+      "parentUuid": "974b6cb5_29972c0a",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e00e3416_f60d5d46",
         "filename": "feature-lifecycle/src/test/resources/tosca-policy-native-controller-example.json",
         "patchSetId": 3
@@ -64,6 +118,24 @@
       "writtenOn": "2020-03-10T13:48:30Z",
       "side": 1,
       "message": "since this topic contains both requests and responses, should it also have a decoder for requests so that it doesn\u0027t generate errors in the log when it sees a request?  (If it\u0027s silently ignored, then never mind, but I\u0027m thinking it logs an error for unrecognized classes.)\n\nsomewhere we need to list the custom serialization for the Request?",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ccd965d7_89d1949d",
+        "filename": "feature-lifecycle/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "This is just an example for junit testing for parsing and generating the corresponding controller.  In theory in drools-pdp we are agnostic about concrete drools applications.  I could use non control loop topic names instead in my next iteration to make it clear.",
+      "parentUuid": "e00e3416_f60d5d46",
       "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "edf67376_3c5337bb",
+        "filename": "policy-domains/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "Yes, let\u0027s leave it for later, this would be an enhancement to the whole repository, and will require changes in all projects\u0027 pom files.",
+      "parentUuid": "afad20c0_2ffe586d",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "04fa4df7_d9281e3f",
         "filename": "policy-domains/pom.xml",
         "patchSetId": 3
@@ -127,6 +217,30 @@
     },
     {
       "key": {
+        "uuid": "c929c6f2_94c48fa3",
+        "filename": "policy-domains/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04fa4df7_d9281e3f",
+      "range": {
+        "startLine": 5,
+        "startChar": 16,
+        "endLine": 5,
+        "endChar": 22
+      },
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "12927304_d1b266b4",
         "filename": "policy-domains/src/main/java/org/onap/policy/drools/domain/models/controller/ControllerEvent.java",
         "patchSetId": 3
@@ -138,6 +252,24 @@
       "writtenOn": "2020-03-10T13:48:30Z",
       "side": 1,
       "message": "these have to be public?  I think sonar will complain thath publics should be final",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e93d7b2a_0adeda0f",
+        "filename": "policy-domains/src/main/java/org/onap/policy/drools/domain/models/controller/ControllerEvent.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12927304_d1b266b4",
       "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -191,6 +323,30 @@
     },
     {
       "key": {
+        "uuid": "83c10fe0_63dd18fc",
+        "filename": "policy-domains/src/test/java/org/onap/policy/drools/domain/models/DomainPolicyTypesTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f2098920_cf6cf5db",
+      "range": {
+        "startLine": 162,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 2
+      },
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d28967b3_27c6a4e5",
         "filename": "policy-domains/src/test/resources/tosca-policy-native-controller-example.json",
         "patchSetId": 3
@@ -202,6 +358,24 @@
       "writtenOn": "2020-03-10T13:48:30Z",
       "side": 1,
       "message": "same comments about \"Request\" as before",
+      "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12508ba1_756c032a",
+        "filename": "policy-domains/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-10T15:58:43Z",
+      "side": 1,
+      "message": "This is an example for junits, we cannot access drools-applications software.  I could change these samples to use other dummy values that don\u0027t have references to drools applications configuration in another review, if that helps ?",
+      "parentUuid": "d28967b3_27c6a4e5",
       "revId": "0f37d61699d2c95ee3fc54b625ff65f929e4f9ac",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
