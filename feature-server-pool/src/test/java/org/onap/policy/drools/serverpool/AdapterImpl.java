@@ -27,27 +27,21 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
 import org.kie.api.runtime.KieSession;
-
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
-
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.PolicySessionFeatureApiConstants;
-
 import org.onap.policy.drools.serverpooltest.Adapter;
 import org.onap.policy.drools.serverpooltest.BucketWrapper;
 import org.onap.policy.drools.serverpooltest.ServerWrapper;
 import org.onap.policy.drools.serverpooltest.TargetLockWrapper;
-
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.util.KieUtils;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.powermock.reflect.Whitebox;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +51,11 @@ import org.slf4j.LoggerFactory;
  */
 public class AdapterImpl extends Adapter {
     private static Logger logger = LoggerFactory.getLogger(AdapterImpl.class);
-
-    // Each 'AdapterImpl' instance has it's own class object, making it a
-    // singleton. There is only a single 'Adapter' class object, and all
-    // 'AdapterImpl' classes are derived from it.
+    /*
+     * Each 'AdapterImpl' instance has it's own class object, making it a
+     * singleton. There is only a single 'Adapter' class object, and all
+     * 'AdapterImpl' classes are derived from it.
+     */
     private static AdapterImpl adapter = null;
 
     // this is the adapter index
@@ -94,29 +89,19 @@ public class AdapterImpl extends Adapter {
 
         PolicyEngineConstants.getManager().configure(new Properties());
         PolicyEngineConstants.getManager().start();
-
-        // Note that this method does basically what
-        // 'FeatureServerPool.afterStart(PolicyEngine)' does, but allows us to
-        // specify different properties for each of the 6 simulated hosts
+        /*
+         * Note that this method does basically what
+         * 'FeatureServerPool.afterStart(PolicyEngine)' does, but allows us to
+         * specify different properties for each of the 6 simulated hosts
+         */
         logger.info("{}: Running: AdapterImpl.init({}), class hash code = {}",
                     this, index, AdapterImpl.class.hashCode());
-
-        Properties prop = new Properties();
-        prop.setProperty("server.pool.discovery.servers", "127.0.63.250");
-        prop.setProperty("server.pool.discovery.topic", "DISCOVERY-TOPIC");
-        prop.setProperty("server.pool.server.ipAddress", "127.0.63." + index);
-        prop.setProperty("server.pool.server.port", "20000");
-
-        prop.setProperty("keyword.path", "requestID,CommonHeader.RequestID,key");
-
-        prop.setProperty("keyword.org.onap.policy.m2.base.Transaction.lookup",
-                      "getRequestID()");
-        prop.setProperty("keyword.org.onap.policy.controlloop.ControlLoopEvent.lookup", "requestID");
-        prop.setProperty("keyword.org.onap.policy.drools.serverpool.TargetLock.lookup", "getOwnerKey()");
-        prop.setProperty("keyword.java.lang.String.lookup", "toString()");
-        prop.setProperty("keyword.org.onap.policy.drools.serverpooltest.TestDroolsObject.lookup",
-                      "getKey()");
-        prop.setProperty("keyword.org.onap.policy.drools.serverpooltest.Test1$KeywordWrapper.lookup", "key");
+        final String propertyFile = "src/main/feature/config/feature-server-pool.properties";
+        Properties prop = PropertyUtil.getProperties(propertyFile);
+        String[] ipComponent = prop.getProperty("server.pool.server.ipAddress").split("[.]");
+        prop.setProperty("server.pool.server.ipAddress",
+            ipComponent[0] + "." + ipComponent[1] + "." + ipComponent[2] + "."
+            + Integer.parseInt(ipComponent[3]) + index);
 
         TargetLock.startup();
         Server.startup(prop);
@@ -181,8 +166,6 @@ public class AdapterImpl extends Adapter {
                 while (bucket.getOwner() == null) {
                     Thread.sleep(Math.min(endTime - System.currentTimeMillis(), 100L));
                 }
-                //await().atMost(endTime - System.currentTimeMillis(),
-                //TimeUnit.MILLISECONDS).until(() -> bucket.getOwner() != null);
             }
         } catch (IllegalArgumentException e) {
             // 'Thread.sleep()' was passed a negative time-out value --
@@ -253,10 +236,11 @@ public class AdapterImpl extends Adapter {
     @Override
     public String createController() {
         Properties properties;
-
-        // set the thread class loader to be the same as the one associated
-        // with the 'AdapterImpl' instance, so it will be inherited by any
-        // new threads created (the Drools session thread, in particular)
+        /*
+         * set the thread class loader to be the same as the one associated
+         * with the 'AdapterImpl' instance, so it will be inherited by any
+         * new threads created (the Drools session thread, in particular)
+         */
         ClassLoader saveClassLoader =
             Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(AdapterImpl.class.getClassLoader());
