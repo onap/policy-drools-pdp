@@ -33,11 +33,13 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.kie.api.runtime.KieSession;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.serverpool.Util;
+import org.onap.policy.drools.utils.PropertyUtil;
 
 /**
  * This is a common base class for 6 'AdapterImpl' instances, all running
@@ -53,11 +55,12 @@ import org.onap.policy.drools.serverpool.Util;
 public abstract class Adapter {
     // 'true' indicates that initialization is still needed
     private static boolean initNeeded = true;
-
-    // Each 'Adapter' instance is implemented by 'AdapterImpl', but loaded
-    // with a different class loader that provides each with a different copy
-    // of the set of classes with packages in the list below (see references to
-    // 'BlockingClassLoader').
+    /*
+     * Each 'Adapter' instance is implemented by 'AdapterImpl', but loaded
+     * with a different class loader that provides each with a different copy
+     * of the set of classes with packages in the list below (see references to
+     * 'BlockingClassLoader').
+     */
     public static Adapter[] adapters = new Adapter[6];
 
     /**
@@ -77,7 +80,10 @@ public abstract class Adapter {
                 }, "DMAAP Simulator").start();
 
                 // wait 1 second to allow time for the port 3904 listener
-                assertTrue(NetworkUtil.isTcpPortOpen(SimDmaap.HOSTNAME, 3904, 50, 1000));
+                final String propertyFile = "src/main/feature/config/feature-server-pool.properties";
+                Properties prop = PropertyUtil.getProperties(propertyFile);
+                assertTrue(NetworkUtil.isTcpPortOpen(prop.getProperty("server.pool.discovery.servers"),
+                    Integer.parseInt(prop.getProperty("server.pool.discovery.port")), 50, 1000));
 
                 // build 'BlockingClassLoader'
                 BlockingClassLoader bcl = new BlockingClassLoader(
@@ -113,18 +119,21 @@ public abstract class Adapter {
                 }
                 try {
                     for (int i = 0 ; i < adapters.length ; i += 1) {
-                        // Build a new 'ClassLoader' for this adapter. The
-                        // 'ClassLoader' hierarchy is:
-                        //
-                        // AdapterClassLoader(one copy per Adapter) ->
-                        // BlockingClassLoader ->
-                        // base ClassLoader (with the complete URL list)
+                        /*
+                         * Build a new 'ClassLoader' for this adapter. The
+                         * 'ClassLoader' hierarchy is:
+                         *
+                         * AdapterClassLoader(one copy per Adapter) ->
+                         * BlockingClassLoader ->
+                         * base ClassLoader (with the complete URL list)
+                         */
                         ClassLoader classLoader =
                             new AdapterClassLoader(i, urls, bcl);
-
-                        // set the current thread class loader, which should be
-                        // inherited by any child threads created during
-                        // the initialization of the adapter
+                        /*
+                         * set the current thread class loader, which should be
+                         * inherited by any child threads created during
+                         * the initialization of the adapter
+                         */
                         Thread.currentThread().setContextClassLoader(classLoader);
 
                         // now, build the adapter -- it is not just a new instance,
