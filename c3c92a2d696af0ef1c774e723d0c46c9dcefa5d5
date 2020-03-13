@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8d6f3ee_9d5c34d3",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-13T19:56:03Z",
+      "side": 1,
+      "message": "maybe use 127.0.0.1 instead, as this IP is problematic on other OSs",
+      "revId": "c3c92a2d696af0ef1c774e723d0c46c9dcefa5d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "010c8223_6fd5e9d4",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-13T19:56:03Z",
+      "side": 1,
+      "message": "just use string concatenation as it\u0027s probably a bit clearer",
+      "revId": "c3c92a2d696af0ef1c774e723d0c46c9dcefa5d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e92a17a_5ffbd0c4",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-13T19:56:03Z",
+      "side": 1,
+      "message": "maybe change 1000 to 200 so it checks more frequently",
+      "revId": "c3c92a2d696af0ef1c774e723d0c46c9dcefa5d5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
