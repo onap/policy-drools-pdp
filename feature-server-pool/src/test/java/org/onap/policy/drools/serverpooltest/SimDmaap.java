@@ -21,6 +21,7 @@
 package org.onap.policy.drools.serverpooltest;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,7 +40,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
+import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,6 @@ import org.slf4j.LoggerFactory;
 @Path("/")
 public class SimDmaap {
     private static Logger logger = LoggerFactory.getLogger(SimDmaap.class);
-    public static final String HOSTNAME = "127.0.63.250";
 
     // miscellaneous Jetty/Servlet parameters
     private static ServletContextHandler context;
@@ -73,8 +73,10 @@ public class SimDmaap {
             connector = new ServerConnector(jettyServer);
             connector.setName("simdmaap");
             connector.setReuseAddress(true);
-            connector.setPort(3904);
-            connector.setHost("127.0.63.250");
+            final String propertyFile = "src/test/resources/feature-server-pool-test.properties";
+            Properties prop = PropertyUtil.getProperties(propertyFile);
+            connector.setPort(Integer.parseInt(prop.getProperty("server.pool.discovery.port")));
+            connector.setHost(prop.getProperty("server.pool.discovery.servers"));
 
             jettyServer.addConnector(connector);
             jettyServer.setHandler(context);
@@ -166,11 +168,12 @@ public class SimDmaap {
             int messageCount = 0;
 
             while (cur < end) {
-                // The body of the message may consist of multiple JSON messages,
-                // each preceded by 3 integers separated by '.'. The second one
-                // is the length, in bytes (the third seems to be some kind of
-                // channel identifier).
-
+                /*
+                 * The body of the message may consist of multiple JSON messages,
+                 * each preceded by 3 integers separated by '.'. The second one
+                 * is the length, in bytes (the third seems to be some kind of
+                 * channel identifier).
+                 */
                 int leftBrace = data.indexOf('{', cur);
                 if (leftBrace < 0) {
                     // no more messages
@@ -182,11 +185,12 @@ public class SimDmaap {
                         // determine length of message, and advance current position
                         int length = Integer.valueOf(prefix[1]);
                         cur = leftBrace + length;
-
-                        // extract message, and update count -- each double quote
-                        // has a '\' character placed before it, so the overall
-                        // message can be placed in double quotes, and parsed as
-                        // a literal string
+                        /*
+                         * extract message, and update count -- each double quote
+                         * has a '\' character placed before it, so the overall
+                         * message can be placed in double quotes, and parsed as
+                         * a literal string
+                         */
                         String message = data.substring(leftBrace, cur)
                                          .replace("\\", "\\\\").replace("\"", "\\\"")
                                          .replace("\n", "\\n");
