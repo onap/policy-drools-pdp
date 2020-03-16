@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2df10854_5e03b57f",
+        "filename": "feature-server-pool/src/main/feature/config/feature-server-pool.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-16T18:57:03Z",
+      "side": 1,
+      "message": "This does not seem right to me that in a production environment it will take the the loopback address (127..) if the environment variable does not exist.  It will make more sense to me that the feature does not bind to anything if there\u0027s no value.   If these values only make sense for junits are they are only to be used for test only, they should be in its own config file under \"src/test\" and not reused the one that is packaged with the feature.",
+      "revId": "c0f0cfebad6059182acdcb22c7c36857e368c995",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f7097297_a65372f2",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-16T18:57:03Z",
+      "side": 1,
+      "message": "For tests, have a copy of this file above under \"src/test\" unless they values that are used are the production values as well.",
+      "revId": "c0f0cfebad6059182acdcb22c7c36857e368c995",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0dd97ad_73feddbd",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-16T18:57:03Z",
+      "side": 1,
+      "message": "Not sure if generating the server ips with 127.0.0.X (X is index) addresses would resolve the problem that mac folks have (not sure how different it is than the 127.0.63.x) used earlier.",
+      "revId": "c0f0cfebad6059182acdcb22c7c36857e368c995",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
