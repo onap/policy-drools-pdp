@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5bc465ae_6820bf6a",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-16T08:23:36Z",
+      "side": 1,
+      "message": "Note that this is using 127.0.63.250 through 127.0.63.255 for the IP addresses of the 6 servers -- adapter[0] is sharing an IP address with SimDmaap, and had there been a 7th server, it\u0027s IP address would be 127.0.63.256, which is invalid.\n\nI think it would be better to remove the \u0027Integer.parseInt(ipComponent[3]) + \u0027 from line 104, so IP adresses 127.0.63.0 through 127.0.63.5 would be used (by default).",
+      "revId": "026d84b438d5ffa8f8530e6f7e9f2337e3fc555e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2772e836_d52cb24d",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-16T08:23:36Z",
+      "side": 1,
+      "message": "It looks like you have reduced the maximum wait time from 1 second to 200 ms. Is that always going to be enough? In any case, the comment on line 75 refers to 1 second, which no longer matches the value of this parameter.",
+      "revId": "026d84b438d5ffa8f8530e6f7e9f2337e3fc555e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
