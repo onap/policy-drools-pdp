@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "87f35af0_8a606c43",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-16T12:33:56Z",
+      "side": 1,
+      "message": "probably need parentheses around these two items so they aren\u0027t added to the string as separate items",
+      "revId": "026d84b438d5ffa8f8530e6f7e9f2337e3fc555e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2772e836_d52cb24d",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
         "patchSetId": 2
@@ -30,6 +47,24 @@
       "writtenOn": "2020-03-16T08:23:36Z",
       "side": 1,
       "message": "It looks like you have reduced the maximum wait time from 1 second to 200 ms. Is that always going to be enough? In any case, the comment on line 75 refers to 1 second, which no longer matches the value of this parameter.",
+      "revId": "026d84b438d5ffa8f8530e6f7e9f2337e3fc555e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6fe1271_2a647036",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-16T12:33:56Z",
+      "side": 1,
+      "message": "the \"200\" is the intercheck timer.  This will wait 50x200ms \u003d 10seconds.  However, if that isn\u0027t enough, then the first number can be increased, to 250, for instance, which would yield the same wait total time as before",
+      "parentUuid": "2772e836_d52cb24d",
       "revId": "026d84b438d5ffa8f8530e6f7e9f2337e3fc555e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
