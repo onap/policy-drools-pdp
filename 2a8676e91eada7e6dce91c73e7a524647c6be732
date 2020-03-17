@@ -52,6 +52,24 @@
       "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dab8128d_613bb398",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-17T17:18:00Z",
+      "side": 1,
+      "message": "The standard configuration will have a common port and separate IP addresses, since they will be on separate machines, so that configuration is preferable. The use of a single IP address and separate ports is just a workaround for the Macintosh.",
+      "parentUuid": "5fa57901_417c45e1",
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
