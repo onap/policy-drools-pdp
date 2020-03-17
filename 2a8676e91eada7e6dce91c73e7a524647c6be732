@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8e044ddd_7354d476",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-03-17T14:42:08Z",
+      "side": 1,
+      "message": "why not use this for all OSs?",
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
