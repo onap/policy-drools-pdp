@@ -16,6 +16,24 @@
       "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f2848f6_4c50d179",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-17T14:51:45Z",
+      "side": 1,
+      "message": "Pretty sure I saw this in my Ubuntu VM (16.04) - when I get 18.04 configured I\u0027ll try again. Note that our VM\u0027s in Research are more protected. So it isn\u0027t necessary mac vs windows issue.",
+      "parentUuid": "8e044ddd_7354d476",
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
