@@ -34,6 +34,24 @@
       "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fa57901_417c45e1",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-17T16:32:37Z",
+      "side": 1,
+      "message": "Ok works on ubuntu 18.04 VM - but I think Jim\u0027s question is valid.",
+      "parentUuid": "8f2848f6_4c50d179",
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
