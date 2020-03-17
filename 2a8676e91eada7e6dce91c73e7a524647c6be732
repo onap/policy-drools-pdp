@@ -70,6 +70,23 @@
       "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7e2f803f_00e1d705",
+        "filename": "feature-server-pool/src/test/resources/feature-server-pool-test.properties",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-17T20:46:06Z",
+      "side": 1,
+      "message": "for junits configuration you can put directly the address you want to use, ie. server.pool.server.ipAddress\u003d127.0.0.1 - as junits would not have those environment variables set up previous to their execution, so you can omit them in general.  It would be more clear if you skip the envd as they will not be set up (unless you do something special with maven previous running junit tests).",
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
