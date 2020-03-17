@@ -50,6 +50,24 @@
       "revId": "c0f0cfebad6059182acdcb22c7c36857e368c995",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "58fd4004_4e7c9a3a",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-17T08:04:26Z",
+      "side": 1,
+      "message": "This is now trying to use 127.0.0.0 (not valid anywhere), 127.0.0.1 (valid everywhere), 127.0.0.2 (still doesn\u0027t work on the Mac), ...\n\nThe issue is that we are trying to use 7 IP addresses -- one for SimDmaap, and 6 for the servers. Without reconfiguration, the Mac doesn\u0027t have 7 IP addresses.",
+      "parentUuid": "c0dd97ad_73feddbd",
+      "revId": "c0f0cfebad6059182acdcb22c7c36857e368c995",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
