@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "98f464c0_c60b5f1a",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-03-18T09:36:42Z",
+      "side": 1,
+      "message": "Thanks for the explanation!",
+      "parentUuid": "28543bad_2d0b7fc8",
+      "range": {
+        "startLine": 115,
+        "startChar": 1,
+        "endLine": 138,
+        "endChar": 49
+      },
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e2f803f_00e1d705",
         "filename": "feature-server-pool/src/test/resources/feature-server-pool-test.properties",
         "patchSetId": 4
