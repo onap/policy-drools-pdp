@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "28543bad_2d0b7fc8",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Adapter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-03-18T09:33:21Z",
+      "side": 1,
+      "message": "This is only for the Junit tests -- \u0027BlockingClassLoader\u0027 is providing separate namespaces, so it is possible to have 6 servers run within the same JVM. Classes in packages whose names begin with \u0027org.onap.policy.\u0027 are replicated, with the exception of classes in package \u0027org.onap.policy.drools.serverpooltest\u0027, and class \u0027org.onap.policy.drools.core.DroolsRunnable\u0027. As a result, there are not only 6 server pools running, but each one is running under a separate \u0027PolicyEngine\u0027.\n\nAn alternative way of doing this would have been to have the Junit test start 6 other JVMs, but then there would need to be some mechanism where the test could drive the behavior of code in the other JVMs, and then verify the results. The coding would have been more difficult, although it might be easier to understand, conceptually.",
+      "parentUuid": "800eb040_506d3fbc",
+      "range": {
+        "startLine": 115,
+        "startChar": 1,
+        "endLine": 138,
+        "endChar": 49
+      },
+      "revId": "2a8676e91eada7e6dce91c73e7a524647c6be732",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e2f803f_00e1d705",
         "filename": "feature-server-pool/src/test/resources/feature-server-pool-test.properties",
         "patchSetId": 4
