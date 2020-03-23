@@ -68,24 +68,32 @@ import org.slf4j.LoggerFactory;
  */
 public class LifecycleFsm implements Startable {
 
+    /**
+     * Default Status Timer in seconds.
+     */
+    public static final long DEFAULT_STATUS_TIMER_SECONDS = 120L;
+
     private static final Logger logger = LoggerFactory.getLogger(LifecycleFsm.class);
 
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String GROUP_NAME = "lifecycle.pdp.group";
     protected static final String DEFAULT_PDP_GROUP = "defaultGroup";
-    protected static final long DEFAULT_STATUS_TIMER_SECONDS = 120L;
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
 
     protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_NATIVE_RULES =
-            new ToscaPolicyTypeIdentifier("onap.policies.native.Drools", "1.0.0");
+            new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Artifact", "1.0.0");
 
-    protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_CONTROLLER =
-            new ToscaPolicyTypeIdentifier("onap.policies.drools.Controller", "1.0.0");
+    protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_NATIVE_CONTROLLER =
+            new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Controller", "1.0.0");
 
+    @Getter
     protected final Properties properties;
 
+    @Getter
     protected TopicSource source;
+
+    @Getter
     protected TopicSinkClient client;
 
     @Getter
@@ -113,14 +121,17 @@ public class LifecycleFsm implements Startable {
     protected long statusTimerSeconds = DEFAULT_STATUS_TIMER_SECONDS;
 
     @Getter
-    private final String group;
+    @Setter
+    private String group;
 
     @Getter
+    @Setter
     protected String subgroup;
 
     @Getter
     protected final Map<ToscaPolicyTypeIdentifier, PolicyTypeController> policyTypesMap = new HashMap<>();
 
+    @Getter
     protected final Map<ToscaPolicyIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
 
     /**
@@ -130,9 +141,8 @@ public class LifecycleFsm implements Startable {
         this.properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
         this.group = this.properties.getProperty(GROUP_NAME, DEFAULT_PDP_GROUP);
 
-        this.policyTypesMap.put(
-                POLICY_TYPE_DROOLS_CONTROLLER,
-                new PolicyTypeNativeDroolsController(this, POLICY_TYPE_DROOLS_CONTROLLER));
+        this.policyTypesMap.put(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER,
+                new PolicyTypeNativeDroolsController(this, POLICY_TYPE_DROOLS_NATIVE_CONTROLLER));
         this.policyTypesMap.put(
                 POLICY_TYPE_DROOLS_NATIVE_RULES,
                  new PolicyTypeNativeArtifactController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
@@ -171,7 +181,12 @@ public class LifecycleFsm implements Startable {
         logger.info("lifecycle event: start controller: {}", controller.getName());
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
             if (isToscaPolicyType(id.getName())) {
-                policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
+                PolicyTypeDroolsController ptDroolsController = (PolicyTypeDroolsController) policyTypesMap.get(id);
+                if (ptDroolsController == null) {
+                    policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
+                } else {
+                    ptDroolsController.add(controller);
+                }
             }
         }
     }
@@ -188,7 +203,14 @@ public class LifecycleFsm implements Startable {
     public synchronized void stop(@NonNull PolicyController controller) {
         logger.info("lifecycle event: stop controller: {}", controller.getName());
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
-            policyTypesMap.remove(id);
+            if (!policyTypesMap.containsKey(id)) {
+                continue;
+            }
+            PolicyTypeDroolsController ptDroolsController = (PolicyTypeDroolsController) policyTypesMap.get(id);
+            ptDroolsController.remove(controller);
+            if (ptDroolsController.controllers().isEmpty()) {
+                policyTypesMap.remove(id);
+            }
         }
     }
 

@@ -3,13 +3,13 @@
     "topology_template": {
         "policies": [
             {
-                "example": {
+                "example.artifact": {
                     "type": "onap.policies.native.drools.Artifact",
                     "type_version": "1.0.0",
                     "version": "1.0.0",
-                    "name": "example",
+                    "name": "example.artifact",
                     "metadata": {
-                        "policy-id": "example"
+                        "policy-id": "example.artifact"
                     },
                     "properties": {
                         "rulesArtifact": {
@@ -18,8 +18,7 @@
                             "version": "1.0.0"
                         },
                         "controller": {
-                            "name": "lifecycle",
-                            "version": "1.0.0"
+                            "name": "lifecycle"
                         }
                     }
                 }

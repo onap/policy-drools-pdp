@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import lombok.Getter;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.CoderException;
@@ -71,13 +72,51 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
     }
 
     @Override
-    public boolean deploy(ToscaPolicy policy) {
+    public boolean deploy(@NonNull ToscaPolicy policy) {
         return perform(policy, (PolicyController controller) -> controller.offer(policy));
     }
 
+    /**
+     * Adds a controller to support this policy type.
+     */
+    public void add(@NonNull PolicyController controller) {
+        if (!controller.getPolicyTypes().contains(this.policyType)) {
+            throw new IllegalArgumentException(
+                "controller " + controller.getName() + " does not support " + this.policyType);
+        }
+        controllers.put(controller.getName(), controller);
+    }
+
+    /**
+     * Removes a controller from this policy type.
+     */
+    public void remove(@NonNull PolicyController controller) {
+        controllers.remove(controller.getName());
+    }
+
     @Override
-    public boolean undeploy(ToscaPolicy policy) {
+    public boolean undeploy(@NonNull ToscaPolicy policy) {
         return perform(policy, (PolicyController controller) -> controller.getDrools().delete(policy));
+    }
+
+    /**
+     * Get all controllers that support the policy type.
+     */
+    public List<PolicyController> controllers() {
+        return List.copyOf(controllers.values());
+    }
+
+    private List<PolicyController> controllers(String controllerName) {
+        if (StringUtils.isBlank(controllerName)) {
+            /* this policy applies to all controllers */
+            return controllers();
+        }
+
+        if (!this.controllers.containsKey(controllerName)) {
+            return List.of();
+        }
+
+        return List.of(this.controllers.get(controllerName));
     }
 
     private boolean perform(ToscaPolicy policy, Function<PolicyController, Boolean> operation) {
@@ -115,25 +154,5 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
             selected = List.copyOf(controllers.values());
         }
         return selected;
-    }
-
-    private List<PolicyController> controllers(String controllerName) {
-        if (StringUtils.isBlank(controllerName)) {
-            /* this policy applies to all controllers */
-            return controllers();
-        }
-
-        if (!this.controllers.containsKey(controllerName)) {
-            return List.of();
-        }
-
-        return List.of(this.controllers.get(controllerName));
-    }
-
-    /**
-     * Get all controllers that support the policy type.
-     */
-    public List<PolicyController> controllers() {
-        return List.copyOf(controllers.values());
     }
 }
