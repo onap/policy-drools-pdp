@@ -19,7 +19,12 @@
 package org.onap.policy.drools.server.restful;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.junit.After;
@@ -80,16 +85,82 @@ public class RestLifecycleManagerTest {
 
     @Test
     public void testFsm() {
-        Response response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/group");
+
+        HttpClient client = HttpClientFactoryInstance.getClientFactory().get("lifecycle");
+        Response response;
+
+        /* group */
+
+        response = client.put("group/GG", Entity.json(""), Collections.emptyMap());
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals("GG", HttpClient.getBody(response, String.class));
+
+        response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("group");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
         assertEquals(LifecycleFeature.fsm.getGroup(), HttpClient.getBody(response, String.class));
-        assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
-        response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/subgroup");
-        assertEquals("", HttpClient.getBody(response, String.class));
-        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        /* subgroup */
 
-        response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("fsm/state");
+        response = client.put("subgroup/YY", Entity.json(""), Collections.emptyMap());
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals("YY", HttpClient.getBody(response, String.class));
+
+        response = client.get("subgroup");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(LifecycleFeature.fsm.getSubgroup(), HttpClient.getBody(response, String.class));
+
+        /* properties */
+
+        response = client.get("properties");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(LifecycleFeature.fsm.getProperties(), HttpClient.getBody(response, Properties.class));
+
+        /* state (disallowed state change as has not been started) */
+
+        response = client.put("state/PASSIVE", Entity.json(""), Collections.emptyMap());
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Boolean.FALSE, HttpClient.getBody(response, Boolean.class));
+
+        response = client.get("state");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
         assertEquals(PdpState.TERMINATED, HttpClient.getBody(response, PdpState.class));
+
+        /* topics */
+
+        assertEquals(Status.OK.getStatusCode(), client.get("topic/source").getStatus());
+        assertEquals(Status.OK.getStatusCode(), client.get("topic/sink").getStatus());
+
+        /* status interval */
+
+        response = client.put("status/interval/1000", Entity.json(""), Collections.emptyMap());
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Long.valueOf(1000L), HttpClient.getBody(response, Long.class));
+
+        response = client.get("status/interval");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Long.valueOf(1000L), HttpClient.getBody(response, Long.class));
+
+        /* policy types */
+
+        response = client.get("policyTypes");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(2, HttpClient.getBody(response, List.class).size());
+
+        response = client.get("policyTypes/onap.policies.native.drools.Artifact/1.0.0");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertNotNull(HttpClient.getBody(response, String.class));
+
+        response = client.get("policyTypes/onap.policies.native.drools.Controller/1.0.0");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertNotNull(HttpClient.getBody(response, String.class));
+
+        /* policies */
+
+        response = client.get("policies");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(0, HttpClient.getBody(response, List.class).size());
+
+        response = client.get("policies/onap.policies.controlloop.Operational");
+        assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 }

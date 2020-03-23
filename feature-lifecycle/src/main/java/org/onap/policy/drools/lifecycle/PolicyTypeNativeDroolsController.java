@@ -21,6 +21,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -142,6 +143,10 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
     }
 
     private boolean configControllerSources(ControllerProperties controllerConfig, Properties controllerProps) {
+        if (controllerConfig.getSourceTopics() == null) {
+            return true;
+        }
+
         for (ControllerSourceTopic configSourceTopic : controllerConfig.getSourceTopics()) {
             List<TopicSource> sources =
                     TopicEndpointManager.getManager().getTopicSources(List.of(configSourceTopic.getTopicName()));
@@ -161,6 +166,10 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
     }
 
     private boolean configControllerSinks(ControllerProperties controllerConfig, Properties controllerProps) {
+        if (controllerConfig.getSinkTopics() == null) {
+            return true;
+        }
+
         for (ControllerSinkTopic configSinkTopic : controllerConfig.getSinkTopics()) {
             List<TopicSink> sinks =
                     TopicEndpointManager.getManager().getTopicSinks(List.of(configSinkTopic.getTopicName()));
@@ -236,13 +245,21 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
     }
 
     private List<String> sourceTopics(List<ControllerSourceTopic> sourceTopics) {
+        if (sourceTopics == null) {
+            return Collections.EMPTY_LIST;
+        }
+
         return sourceTopics.stream()
                        .map(ControllerSourceTopic::getTopicName)
                        .collect(Collectors.toList());
     }
 
-    private List<String> sinkTopics(List<ControllerSinkTopic> sourceTopics) {
-        return sourceTopics.stream()
+    private List<String> sinkTopics(List<ControllerSinkTopic> sinkTopics) {
+        if (sinkTopics == null) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return sinkTopics.stream()
                        .map(ControllerSinkTopic::getTopicName)
                        .collect(Collectors.toList());
     }

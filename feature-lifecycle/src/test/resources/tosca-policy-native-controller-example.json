@@ -3,13 +3,13 @@
     "topology_template": {
         "policies": [
             {
-                "example": {
+                "example.controller": {
                     "type": "onap.policies.native.drools.Controller",
                     "type_version": "1.0.0",
                     "version": "1.0.0",
-                    "name": "example",
+                    "name": "example.controller",
                     "metadata": {
-                        "policy-id": "example"
+                        "policy-id": "example.controller"
                     },
                     "properties": {
                         "controllerName": "lifecycle",

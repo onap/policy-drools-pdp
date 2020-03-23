@@ -57,7 +57,7 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
             nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
             controller =
                     PolicyControllerConstants.getFactory().get(nativePolicy.getProperties().getController().getName());
-        } catch (CoderException e) {
+        } catch (CoderException | RuntimeException e) {
             logger.warn("Invalid Policy: {}", policy);
             return false;
         }
