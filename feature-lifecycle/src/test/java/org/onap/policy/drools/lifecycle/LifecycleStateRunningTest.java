@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
@@ -66,6 +67,8 @@ public abstract class LifecycleStateRunningTest {
     @AfterClass
     public static void tearDown() {
         controllerSupport.destroyController();
+        NoopTopicFactories.getSourceFactory().destroy();
+        NoopTopicFactories.getSinkFactory().destroy();
         try {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));

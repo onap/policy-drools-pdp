@@ -241,6 +241,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm.shutdown();
     }
 
+
     @Test
     public void testStateChange() throws CoderException, IOException {
         /* no name */

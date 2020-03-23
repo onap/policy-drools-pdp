@@ -43,7 +43,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
  */
 public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunningTest {
     // Native Drools Policy
-    private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
+    private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example.artifact";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
             "src/test/resources/tosca-policy-native-artifact-example.json";
 

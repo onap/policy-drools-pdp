@@ -41,7 +41,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
  */
 public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
     // Native Drools Policy
-    private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
+    private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
             "src/test/resources/tosca-policy-native-controller-example.json";
 
@@ -86,8 +86,6 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
         noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, "APPC-CL");
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
-        controller.deploy(policy);
-
-        return;
+        assertTrue(controller.deploy(policy));
     }
 }
