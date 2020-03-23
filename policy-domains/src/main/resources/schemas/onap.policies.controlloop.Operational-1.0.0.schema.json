@@ -53,9 +53,7 @@
             "$id": "#/properties/metadata",
             "type": "object",
             "title": "Metadata",
-            "required": [
-                "policy-id"
-            ],
+            "required": [],
             "properties": {
                 "policy-id": {
                     "$id": "#/properties/metadata/properties/policy-id",
