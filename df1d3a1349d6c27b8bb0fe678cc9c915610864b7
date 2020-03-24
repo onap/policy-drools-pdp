@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "92cbb32a_83e778aa",
+        "filename": "releases/1.6.0-container.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-24T18:22:41Z",
+      "side": 1,
+      "message": "I think this is policy-drools",
+      "revId": "df1d3a1349d6c27b8bb0fe678cc9c915610864b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a1b1ee8_019148ec",
         "filename": "releases/1.6.0-container.yaml",
         "patchSetId": 1
@@ -43,6 +60,23 @@
         "endLine": 8,
         "endChar": 20
       },
+      "revId": "df1d3a1349d6c27b8bb0fe678cc9c915610864b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4006f06f_63d5b01c",
+        "filename": "releases/1.6.0-container.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-24T18:22:41Z",
+      "side": 1,
+      "message": "1.6.0-20200324T1729",
       "revId": "df1d3a1349d6c27b8bb0fe678cc9c915610864b7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
