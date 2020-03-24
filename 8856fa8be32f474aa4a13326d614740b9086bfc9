@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fae44361_4909f44f",
+        "filename": "policy-domains/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-03-24T15:49:25Z",
+      "side": 1,
+      "message": "great catch Peyton!",
+      "revId": "8856fa8be32f474aa4a13326d614740b9086bfc9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
