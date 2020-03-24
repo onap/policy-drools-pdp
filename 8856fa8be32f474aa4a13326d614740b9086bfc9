@@ -63,6 +63,30 @@
       "revId": "8856fa8be32f474aa4a13326d614740b9086bfc9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "296c3090_3c625f4b",
+        "filename": "policy-domains/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-24T16:05:12Z",
+      "side": 1,
+      "message": "ok I see - but you should use project.version then - hardcoding no one will ever know this is set here.",
+      "parentUuid": "07fdb8cf_dedc6492",
+      "range": {
+        "startLine": 83,
+        "startChar": 21,
+        "endLine": 83,
+        "endChar": 36
+      },
+      "revId": "8856fa8be32f474aa4a13326d614740b9086bfc9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
