@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a1b1ee8_019148ec",
+        "filename": "releases/1.6.0-container.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-03-24T18:15:14Z",
+      "side": 1,
+      "message": "oops",
+      "range": {
+        "startLine": 8,
+        "startChar": 16,
+        "endLine": 8,
+        "endChar": 20
+      },
+      "revId": "df1d3a1349d6c27b8bb0fe678cc9c915610864b7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
