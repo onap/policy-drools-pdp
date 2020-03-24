@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils</artifactId>
-            <version>1.6.2-SNAPSHOT</version>
+            <version>${policy.common.version}</version>
             <scope>test</scope>
         </dependency>
 
