@@ -29,8 +29,6 @@ RUN apt-get update \
     net-tools netcat sudo \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
-    && adduser policy sudo \
-    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && pip install http-prompt
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
