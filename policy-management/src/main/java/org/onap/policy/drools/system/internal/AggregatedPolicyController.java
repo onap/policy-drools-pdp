@@ -222,20 +222,31 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         if (oldDroolsConfiguration.getGroupId().equalsIgnoreCase(newDroolsConfiguration.getGroupId())
                 && oldDroolsConfiguration.getArtifactId().equalsIgnoreCase(newDroolsConfiguration.getArtifactId())
                 && oldDroolsConfiguration.getVersion().equalsIgnoreCase(newDroolsConfiguration.getVersion())) {
+            // identical
             logger.warn("{}: cannot update-drools: identical configuration {} vs {}", this, oldDroolsConfiguration,
                     newDroolsConfiguration);
             return true;
         }
 
+        if (FeatureApiUtils.apply(getProviders(),
+                feature -> feature.beforePatch(this, newDroolsConfiguration),
+                (feature, ex) -> logger.error("{}: feature {} before-patch failure because of {}", this,
+                        feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
+        }
+
+
         if (droolsController.isBrained()
             && (newDroolsConfiguration.getArtifactId() == null
                 || DroolsControllerConstants.NO_ARTIFACT_ID.equals(newDroolsConfiguration.getArtifactId()))) {
+            // detach maven artifact
             DroolsControllerConstants.getFactory().destroy(this.droolsController);
         }
 
+        boolean success = true;
         try {
-            /* Drools Controller created, update initialization properties for restarts */
 
+            // persist the new configuration
             this.properties.setProperty(DroolsPropertyConstants.RULES_GROUPID, newDroolsConfiguration.getGroupId());
             this.properties.setProperty(DroolsPropertyConstants.RULES_ARTIFACTID,
                             newDroolsConfiguration.getArtifactId());
@@ -243,30 +254,36 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
             getPersistenceManager().storeController(name, this.properties);
 
+            // upgrade existing to new coordinates or get a null-controller (no coordinates)
             this.initDrools(this.properties);
 
-            /* set drools controller to current locked status */
 
+            // lock if applicable
             if (this.isLocked()) {
-                this.droolsController.lock();
+                success = this.droolsController.lock() || success;
             } else {
-                this.droolsController.unlock();
+                success = this.droolsController.unlock() || success;
             }
 
-            /* set drools controller to current alive status */
-
+            // start if applicable
             if (this.isAlive()) {
-                this.droolsController.start();
+                success = this.droolsController.start() || success;
             } else {
-                this.droolsController.stop();
+                success = this.droolsController.stop() || success;
             }
 
         } catch (IllegalArgumentException e) {
             logger.error("{}: cannot update-drools because of {}", this, e.getMessage(), e);
-            return false;
+            success = false;
         }
 
-        return true;
+        final boolean finalSuccess = success;
+        FeatureApiUtils.apply(getProviders(),
+                feature -> feature.afterPatch(this, finalSuccess),
+                (feature, ex) -> logger.error("{}: feature {} after-patch failure because of {}", this,
+                        feature.getClass().getName(), ex.getMessage(), ex));
+
+        return finalSuccess;
     }
 
     /**
