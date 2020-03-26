@@ -43,6 +43,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.12</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
             <!--
@@ -55,6 +61,10 @@
                 <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-utils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.ant</groupId>
+                    <artifactId>ant</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
