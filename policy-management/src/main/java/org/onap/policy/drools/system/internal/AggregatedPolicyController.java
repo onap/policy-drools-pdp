@@ -227,46 +227,45 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return true;
         }
 
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforePatch(this, newDroolsConfiguration),
+            (feature, ex) -> logger.error("{}: feature {} before-patch failure because of {}", this,
+                        feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
+        }
+
         if (droolsController.isBrained()
             && (newDroolsConfiguration.getArtifactId() == null
                 || DroolsControllerConstants.NO_ARTIFACT_ID.equals(newDroolsConfiguration.getArtifactId()))) {
+            // detach maven artifact
             DroolsControllerConstants.getFactory().destroy(this.droolsController);
         }
 
+        boolean success = true;
         try {
-            /* Drools Controller created, update initialization properties for restarts */
 
+            // persist the new configuration
             this.properties.setProperty(DroolsPropertyConstants.RULES_GROUPID, newDroolsConfiguration.getGroupId());
             this.properties.setProperty(DroolsPropertyConstants.RULES_ARTIFACTID,
                             newDroolsConfiguration.getArtifactId());
             this.properties.setProperty(DroolsPropertyConstants.RULES_VERSION, newDroolsConfiguration.getVersion());
-
             getPersistenceManager().storeController(name, this.properties);
 
             this.initDrools(this.properties);
-
-            /* set drools controller to current locked status */
-
-            if (this.isLocked()) {
-                this.droolsController.lock();
-            } else {
-                this.droolsController.unlock();
-            }
-
-            /* set drools controller to current alive status */
-
-            if (this.isAlive()) {
-                this.droolsController.start();
-            } else {
-                this.droolsController.stop();
-            }
-
+            success = ((isLocked()) ? droolsController.lock() : droolsController.unlock()) && success;
+            success = ((isAlive()) ? droolsController.start() : droolsController.stop()) && success;
         } catch (IllegalArgumentException e) {
             logger.error("{}: cannot update-drools because of {}", this, e.getMessage(), e);
-            return false;
+            success = false;
         }
 
-        return true;
+        final boolean finalSuccess = success;
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterPatch(this, finalSuccess),
+            (feature, ex) -> logger.error("{}: feature {} after-patch failure because of {}", this,
+                        feature.getClass().getName(), ex.getMessage(), ex));
+
+        return finalSuccess;
     }
 
     /**
