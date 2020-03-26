@@ -26,9 +26,11 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.domain.models.artifact.NativeArtifactPolicy;
+import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
@@ -55,42 +57,47 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
         PolicyController controller;
         try {
             nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
+            DroolsConfiguration droolsConfig =
+                    new DroolsConfiguration(
+                            nativePolicy.getProperties().getRulesArtifact().getArtifactId(),
+                            nativePolicy.getProperties().getRulesArtifact().getGroupId(),
+                            nativePolicy.getProperties().getRulesArtifact().getVersion());
+
             controller =
                     PolicyControllerConstants.getFactory().get(nativePolicy.getProperties().getController().getName());
+            if (controller.getDrools().isBrained()) {
+                logger.warn("upgrade of a live controller is strongly discouraged (undeploy first): {} -> {}",
+                        controller, droolsConfig);
+            }
+
+            return update(nativePolicy, droolsConfig);
         } catch (CoderException | RuntimeException e) {
             logger.warn("Invalid Policy: {}", policy);
             return false;
         }
-
-        DroolsConfiguration newConfig =
-                new DroolsConfiguration(
-                        nativePolicy.getProperties().getRulesArtifact().getArtifactId(),
-                        nativePolicy.getProperties().getRulesArtifact().getGroupId(),
-                        nativePolicy.getProperties().getRulesArtifact().getVersion());
-
-        PolicyControllerConstants.getFactory().patch(controller, newConfig);
-        return true;
     }
 
     @Override
     public boolean undeploy(ToscaPolicy policy) {
-        PolicyController controller;
         try {
             NativeArtifactPolicy nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
-            controller =
-                    PolicyControllerConstants.getFactory().get(nativePolicy.getProperties().getController().getName());
+            DroolsConfiguration noConfig =
+                    new DroolsConfiguration(
+                            DroolsControllerConstants.NO_ARTIFACT_ID,
+                            DroolsControllerConstants.NO_GROUP_ID,
+                            DroolsControllerConstants.NO_VERSION);
+
+            return update(nativePolicy, noConfig);
         } catch (RuntimeException | CoderException e) {
             logger.warn("Invalid Policy: {}", policy);
             return false;
         }
+    }
 
-        DroolsConfiguration noConfig =
-                new DroolsConfiguration(
-                        DroolsControllerConstants.NO_ARTIFACT_ID,
-                        DroolsControllerConstants.NO_GROUP_ID,
-                        DroolsControllerConstants.NO_VERSION);
-
-        PolicyControllerConstants.getFactory().patch(controller, noConfig);
-        return true;
+    private boolean update(NativeArtifactPolicy nativePolicy, DroolsConfiguration droolsConfig) {
+        ControllerConfiguration controllerConfig =
+                new ControllerConfiguration(nativePolicy.getProperties().getController().getName(),
+                        ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_UPDATE, droolsConfig);
+        return PolicyEngineConstants.getManager().updatePolicyController(controllerConfig) != null;
     }
 }

@@ -41,6 +41,7 @@ import org.onap.policy.drools.domain.models.controller.ControllerSourceTopic;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
@@ -83,9 +84,8 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
         PolicyController controller;
         try {
-            controller =
-                PolicyControllerConstants.getFactory().build(
-                    controllerConfig.getControllerName(), controllerProps);
+            controller = PolicyEngineConstants.getManager()
+                                 .createPolicyController(controllerConfig.getControllerName(), controllerProps);
         } catch (RuntimeException e) {
             logger.warn("failed deploy (cannot create controller) for policy: {}", policy);
             return false;
@@ -98,8 +98,8 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
     public boolean undeploy(ToscaPolicy policy) {
         try {
             ControllerPolicy nativePolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
-            PolicyControllerConstants.getFactory()
-                    .destroy(nativePolicy.getProperties().getControllerName());
+            PolicyEngineConstants.getManager()
+                    .removePolicyController(nativePolicy.getProperties().getControllerName());
             return true;
         } catch (RuntimeException | CoderException e) {
             logger.warn("failed undeploy of policy: {}", policy);
