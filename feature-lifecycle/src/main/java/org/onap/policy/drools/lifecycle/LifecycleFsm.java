@@ -179,6 +179,11 @@ public class LifecycleFsm implements Startable {
      */
     public synchronized void start(@NonNull PolicyController controller) {
         logger.info("lifecycle event: start controller: {}", controller.getName());
+        if (!controller.getDrools().isBrained()) {
+            logger.warn("ignoring lifecycle event: start controller: {}", controller);
+            return;
+        }
+
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
             if (isToscaPolicyType(id.getName())) {
                 PolicyTypeDroolsController ptDroolsController = (PolicyTypeDroolsController) policyTypesMap.get(id);
@@ -188,6 +193,18 @@ public class LifecycleFsm implements Startable {
                     ptDroolsController.add(controller);
                 }
             }
+        }
+    }
+
+    /**
+     * Patch a controller event.
+     */
+    public synchronized void patch(@NonNull PolicyController controller) {
+        logger.info("lifecycle event: patch controller: {}", controller.getName());
+        if (controller.getDrools().isBrained()) {
+            this.start(controller);
+        } else {
+            this.stop(controller);
         }
     }
 
