@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "75d9d27e_12f892b2",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-03-26T15:01:30Z",
+      "side": 1,
+      "message": "drools-pdp is using 5.2.10, we probably should pull this in as a managed version in policy parent.",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 6
+      },
+      "revId": "db12e7cd46a0e02d12a33f3d2be1f1941db9ff95",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
