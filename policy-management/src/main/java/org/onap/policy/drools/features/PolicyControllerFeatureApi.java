@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ package org.onap.policy.drools.features;
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.utils.services.OrderedService;
+import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 
 public interface PolicyControllerFeatureApi extends OrderedService {
@@ -83,7 +84,7 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise..
+     *     lower priority features.   False, otherwise.
      */
     default boolean beforeStop(PolicyController controller) {
         return false;
@@ -97,6 +98,28 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *     lower priority features.   False, otherwise.d.
      */
     default boolean afterStop(PolicyController controller) {
+        return false;
+    }
+
+    /**
+     * intercept before the Policy Controller is patched.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean beforePatch(PolicyController controller, DroolsConfiguration configuration) {
+        return false;
+    }
+
+    /**
+     * intercept after the Policy Controller is patched.
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterPatch(PolicyController controller, boolean success) {
         return false;
     }
 
