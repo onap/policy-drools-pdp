@@ -38,7 +38,7 @@ public class LifecycleFeature
 
     @Override
     public int getSequenceNumber() {
-        return 10;
+        return 1;
     }
 
     @Override
@@ -49,6 +49,11 @@ public class LifecycleFeature
     @Override
     public boolean afterStart(PolicyController controller) {
         return fsmStart(controller);
+    }
+
+    @Override
+    public boolean afterPatch(PolicyController controller, boolean success) {
+        return fsmPatch(controller);
     }
 
     @Override
@@ -63,8 +68,7 @@ public class LifecycleFeature
 
     @Override
     public boolean beforeShutdown(PolicyEngine engine) {
-        fsm.shutdown();
-        return false;
+        return fsmShutdown(engine);
     }
 
     @Override
@@ -99,6 +103,16 @@ public class LifecycleFeature
 
     private boolean fsmStop(PolicyController controller) {
         fsm.stop(controller);
+        return false;
+    }
+
+    private boolean fsmPatch(PolicyController controller) {
+        fsm.patch(controller);
+        return false;
+    }
+
+    private boolean fsmShutdown(PolicyEngine engine) {
+        fsm.shutdown();
         return false;
     }
 }

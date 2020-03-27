@@ -215,7 +215,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      */
     @Override
     public boolean updateDrools(DroolsConfiguration newDroolsConfiguration) {
-
         DroolsConfiguration oldDroolsConfiguration = new DroolsConfiguration(this.droolsController.getArtifactId(),
                 this.droolsController.getGroupId(), this.droolsController.getVersion());
 
@@ -227,46 +226,53 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return true;
         }
 
+        if (FeatureApiUtils.apply(getProviders(),
+            feature -> feature.beforePatch(this, newDroolsConfiguration),
+            (feature, ex) -> logger.error("{}: feature {} before-patch failure because of {}", this,
+                        feature.getClass().getName(), ex.getMessage(), ex))) {
+            return true;
+        }
+
         if (droolsController.isBrained()
             && (newDroolsConfiguration.getArtifactId() == null
                 || DroolsControllerConstants.NO_ARTIFACT_ID.equals(newDroolsConfiguration.getArtifactId()))) {
+            // detach maven artifact
             DroolsControllerConstants.getFactory().destroy(this.droolsController);
         }
 
+        boolean success = true;
         try {
-            /* Drools Controller created, update initialization properties for restarts */
-
             this.properties.setProperty(DroolsPropertyConstants.RULES_GROUPID, newDroolsConfiguration.getGroupId());
             this.properties.setProperty(DroolsPropertyConstants.RULES_ARTIFACTID,
                             newDroolsConfiguration.getArtifactId());
             this.properties.setProperty(DroolsPropertyConstants.RULES_VERSION, newDroolsConfiguration.getVersion());
-
             getPersistenceManager().storeController(name, this.properties);
 
             this.initDrools(this.properties);
 
-            /* set drools controller to current locked status */
-
-            if (this.isLocked()) {
-                this.droolsController.lock();
+            if (isLocked()) {
+                droolsController.lock();
             } else {
-                this.droolsController.unlock();
+                droolsController.unlock();
             }
 
-            /* set drools controller to current alive status */
-
-            if (this.isAlive()) {
-                this.droolsController.start();
+            if (isAlive()) {
+                droolsController.start();
             } else {
-                this.droolsController.stop();
+                droolsController.stop();
             }
-
-        } catch (IllegalArgumentException e) {
+        } catch (RuntimeException e) {
             logger.error("{}: cannot update-drools because of {}", this, e.getMessage(), e);
-            return false;
+            success = false;
         }
 
-        return true;
+        boolean finalSuccess = success;
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterPatch(this, finalSuccess),
+            (feature, ex) -> logger.error("{}: feature {} after-patch failure because of {}", this,
+                        feature.getClass().getName(), ex.getMessage(), ex));
+
+        return finalSuccess;
     }
 
     /**
