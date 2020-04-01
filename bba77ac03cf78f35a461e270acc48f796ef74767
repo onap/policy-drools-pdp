@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "df14c37b_60df1256",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-04-01T15:56:12Z",
+      "side": 1,
+      "message": "Yeah, I think is safer to do it as you suggest.   I didn\u0027t anticipate any issues in the start as the underlying droolscontroller will be the \"null\" one, but I agree is better to separate the 2 commands out and be conservative here.",
+      "parentUuid": "c5b46cf0_5dde08b9",
+      "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b4b1c6a1_2f99df73",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/server/restful/RestLifecycleManager.java",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c1ba876e_f52d0206",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/server/restful/RestLifecycleManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-04-01T15:56:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4b1c6a1_2f99df73",
+      "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
