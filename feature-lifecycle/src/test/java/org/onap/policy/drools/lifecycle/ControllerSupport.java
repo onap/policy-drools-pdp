@@ -69,12 +69,7 @@ public class ControllerSupport {
             ;
         }
 
-        ReleaseId coordinates =
-            KieUtils.installArtifact(Paths.get(JUNIT_KMODULE_PATH).toFile(),
-                Paths.get(JUNIT_KMODULE_POM_PATH).toFile(),
-                JUNIT_KJAR_DRL_PATH,
-                Paths.get(JUNIT_KMODULE_DRL_PATH).toFile());
-
+        ReleaseId coordinates = installArtifact();
 
         Properties controllerProps = new Properties();
         controllerProps.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, name);
@@ -84,6 +79,17 @@ public class ControllerSupport {
         controllerProps.put(DroolsPropertyConstants.RULES_VERSION, coordinates.getVersion());
 
         return PolicyControllerConstants.getFactory().build(name, controllerProps);
+    }
+
+    /**
+     * install artifact.
+     */
+    public ReleaseId installArtifact() throws IOException {
+        return
+            KieUtils.installArtifact(Paths.get(JUNIT_KMODULE_PATH).toFile(),
+                Paths.get(JUNIT_KMODULE_POM_PATH).toFile(),
+                        JUNIT_KJAR_DRL_PATH,
+                        Paths.get(JUNIT_KMODULE_DRL_PATH).toFile());
     }
 
     /**

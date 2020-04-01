@@ -20,7 +20,10 @@
   -->
 
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="onap.policies.type1.type2">
+    <kbase name="onap.policies.controlloop.Operational" default="false" equalsBehavior="equality"/>
+    <kbase name="onap.policies.controlloop.operational.common.Drools" default="false" equalsBehavior="equality"
+           includes="onap.policies.controlloop.Operational"/>
+    <kbase name="onap.policies.type1.type2" includes="onap.policies.controlloop.operational.common.Drools">
         <ksession name="junits" />
     </kbase>
 </kmodule>

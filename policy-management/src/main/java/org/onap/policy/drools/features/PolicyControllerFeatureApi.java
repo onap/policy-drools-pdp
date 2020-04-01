@@ -108,7 +108,8 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    default boolean beforePatch(PolicyController controller, DroolsConfiguration configuration) {
+    default boolean beforePatch(
+        PolicyController controller, DroolsConfiguration oldConfiguration, DroolsConfiguration newConfiguration) {
         return false;
     }
 
@@ -119,7 +120,9 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      *     of the operation preventing the invocation of
      *     lower priority features.   False, otherwise.
      */
-    default boolean afterPatch(PolicyController controller, boolean success) {
+    default boolean afterPatch(
+        PolicyController controller, DroolsConfiguration oldConfiguration,
+        DroolsConfiguration newConfiguration, boolean success) {
         return false;
     }
 
