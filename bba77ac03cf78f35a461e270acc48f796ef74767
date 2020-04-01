@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "02c47276_3821b212",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-04-01T16:06:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df14c37b_60df1256",
+      "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b4b1c6a1_2f99df73",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/server/restful/RestLifecycleManager.java",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "b4b1c6a1_2f99df73",
+      "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9eb8a91e_54fb19ea",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/server/restful/RestLifecycleManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-04-01T16:06:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1ba876e_f52d0206",
       "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
