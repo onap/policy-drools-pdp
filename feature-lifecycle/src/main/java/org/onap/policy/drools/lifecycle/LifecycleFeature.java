@@ -23,6 +23,7 @@ package org.onap.policy.drools.lifecycle;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
+import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 
@@ -52,7 +53,9 @@ public class LifecycleFeature
     }
 
     @Override
-    public boolean afterPatch(PolicyController controller, boolean success) {
+    public boolean afterPatch(
+        PolicyController controller, DroolsConfiguration oldConfiguration,
+        DroolsConfiguration newConfiguration, boolean success) {
         return fsmPatch(controller);
     }
 

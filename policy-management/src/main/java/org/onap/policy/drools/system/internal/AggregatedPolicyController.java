@@ -227,7 +227,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         }
 
         if (FeatureApiUtils.apply(getProviders(),
-            feature -> feature.beforePatch(this, newDroolsConfiguration),
+            feature -> feature.beforePatch(this, oldDroolsConfiguration, newDroolsConfiguration),
             (feature, ex) -> logger.error("{}: feature {} before-patch failure because of {}", this,
                         feature.getClass().getName(), ex.getMessage(), ex))) {
             return true;
@@ -268,7 +268,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         boolean finalSuccess = success;
         FeatureApiUtils.apply(getProviders(),
-            feature -> feature.afterPatch(this, finalSuccess),
+            feature -> feature.afterPatch(this, oldDroolsConfiguration, newDroolsConfiguration, finalSuccess),
             (feature, ex) -> logger.error("{}: feature {} after-patch failure because of {}", this,
                         feature.getClass().getName(), ex.getMessage(), ex));
 

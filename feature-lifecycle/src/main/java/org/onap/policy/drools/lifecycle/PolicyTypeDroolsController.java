@@ -52,6 +52,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
 
     private static final Logger logger = LoggerFactory.getLogger(PolicyTypeController.class);
 
+    @Getter
     protected final Map<String, PolicyController> controllers = new ConcurrentHashMap<>();
 
     @Getter
