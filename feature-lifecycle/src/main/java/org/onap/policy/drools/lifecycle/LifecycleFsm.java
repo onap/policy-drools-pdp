@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -189,6 +190,7 @@ public class LifecycleFsm implements Startable {
                 PolicyTypeDroolsController ptDroolsController = (PolicyTypeDroolsController) policyTypesMap.get(id);
                 if (ptDroolsController == null) {
                     policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
+                    logger.info("policy-type {} added", id);
                 } else {
                     ptDroolsController.add(controller);
                 }
@@ -219,14 +221,19 @@ public class LifecycleFsm implements Startable {
      */
     public synchronized void stop(@NonNull PolicyController controller) {
         logger.info("lifecycle event: stop controller: {}", controller.getName());
-        for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
-            if (!policyTypesMap.containsKey(id)) {
-                continue;
-            }
-            PolicyTypeDroolsController ptDroolsController = (PolicyTypeDroolsController) policyTypesMap.get(id);
-            ptDroolsController.remove(controller);
-            if (ptDroolsController.controllers().isEmpty()) {
-                policyTypesMap.remove(id);
+
+        List<PolicyTypeDroolsController> opControllers =
+            policyTypesMap.values().stream()
+                .filter(typeController -> typeController instanceof PolicyTypeDroolsController)
+                .map(typeController -> (PolicyTypeDroolsController) typeController)
+                .filter(opController -> opController.getControllers().containsKey(controller.getName()))
+                .collect(Collectors.toList());
+
+        for (PolicyTypeDroolsController opController : opControllers) {
+            opController.remove(controller);
+            if (opController.controllers().isEmpty()) {
+                policyTypesMap.remove(opController.getPolicyType());
+                logger.info("policy-type {} removed", opController.getPolicyType());
             }
         }
     }

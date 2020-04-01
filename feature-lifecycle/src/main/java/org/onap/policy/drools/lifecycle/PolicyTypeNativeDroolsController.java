@@ -39,7 +39,6 @@ import org.onap.policy.drools.domain.models.controller.ControllerProperties;
 import org.onap.policy.drools.domain.models.controller.ControllerSinkTopic;
 import org.onap.policy.drools.domain.models.controller.ControllerSourceTopic;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
-import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
@@ -82,16 +81,16 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
             return false;
         }
 
-        PolicyController controller;
         try {
-            controller = PolicyEngineConstants.getManager()
-                                 .createPolicyController(controllerConfig.getControllerName(), controllerProps);
+            PolicyEngineConstants.getManager()
+                        .createPolicyController(controllerConfig.getControllerName(), controllerProps)
+                        .start();
         } catch (RuntimeException e) {
             logger.warn("failed deploy (cannot create controller) for policy: {}", policy);
             return false;
         }
 
-        return controller != null;
+        return true;
     }
 
     @Override
