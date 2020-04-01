@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5b46cf0_5dde08b9",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-04-01T15:20:05Z",
+      "side": 1,
+      "message": "need to delete the controller if start() throws an exception?",
+      "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4b1c6a1_2f99df73",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/server/restful/RestLifecycleManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-04-01T15:20:05Z",
+      "side": 1,
+      "message": "sonar: log the exception\n\nsame comment below",
+      "revId": "bba77ac03cf78f35a461e270acc48f796ef74767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
