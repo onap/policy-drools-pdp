@@ -84,14 +84,23 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
         PolicyController controller;
         try {
-            controller = PolicyEngineConstants.getManager()
-                                 .createPolicyController(controllerConfig.getControllerName(), controllerProps);
+            controller =
+                PolicyEngineConstants.getManager()
+                    .createPolicyController(controllerConfig.getControllerName(), controllerProps);
         } catch (RuntimeException e) {
-            logger.warn("failed deploy (cannot create controller) for policy: {}", policy);
+            logger.warn("failed deploy (cannot create controller) for policy: {}", policy, e);
             return false;
         }
 
-        return controller != null;
+        try {
+            controller.start();
+        } catch (RuntimeException e) {
+            logger.warn("failed deploy (cannot start ontroller) for policy: {}", policy, e);
+            PolicyEngineConstants.getManager().removePolicyController(controller);
+            return false;
+        }
+
+        return true;
     }
 
     @Override
