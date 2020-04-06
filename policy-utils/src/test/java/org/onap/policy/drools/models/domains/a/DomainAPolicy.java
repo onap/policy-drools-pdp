@@ -27,8 +27,6 @@ import lombok.Data;
 @Data
 @Builder
 public class DomainAPolicy {
-    private static final long serialVersionUID = -8942432000554391455L;
-
     @SerializedName("type")
     public String type;
 

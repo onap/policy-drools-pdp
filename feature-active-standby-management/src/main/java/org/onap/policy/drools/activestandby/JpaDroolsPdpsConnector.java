@@ -566,7 +566,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 try {
                     em.getTransaction().rollback();
                 } catch (Exception e) {
-                    logger.error(method + ": Caught Exception attempting to rollback EntityTransaction,", e);
+                    logger.error("{}: Caught Exception attempting to rollback EntityTransaction", method, e);
                 }
             }
 
@@ -574,7 +574,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             try {
                 em.close();
             } catch (Exception e) {
-                logger.error(method + ": Caught Exception attempting to close EntityManager, ", e);
+                logger.error("{}: Caught Exception attempting to close EntityManager", method, e);
             }
         }
     }

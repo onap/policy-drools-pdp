@@ -106,7 +106,7 @@ public class DomainMaker {
      * Check policy conformance to its specification providing a list of errors
      * in a ValidationFailedException.
      */
-    public boolean conformance(@NonNull ToscaPolicy policy) throws ValidationFailedException {
+    public boolean conformance(@NonNull ToscaPolicy policy) {
         if (!isRegistered(policy.getTypeIdentifier())) {
             return false;
         }
@@ -134,8 +134,7 @@ public class DomainMaker {
      * Checks a domain policy conformance to its specification providing a list of errors
      * in a ValidationFailedException.
      */
-    public <T> boolean conformance(@NonNull ToscaPolicyTypeIdentifier policyType, T domainPolicy)
-        throws ValidationFailedException {
+    public <T> boolean conformance(@NonNull ToscaPolicyTypeIdentifier policyType, T domainPolicy) {
 
         if (!isRegistered(policyType)) {
             return false;
@@ -144,7 +143,7 @@ public class DomainMaker {
         try {
             validators.get(policyType).encode(domainPolicy);
         } catch (CoderException e) {
-            logger.info("policy {}:{}:{} is not conformant", policyType, domainPolicy.getClass().getName(), e);
+            logger.info("policy {}:{} is not conformant", policyType, domainPolicy.getClass().getName(), e);
             if (e.getCause() instanceof ValidationFailedException) {
                 throw (ValidationFailedException) e.getCause();
             }

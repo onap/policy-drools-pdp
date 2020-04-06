@@ -44,11 +44,13 @@ public class OperationalProperties implements Serializable {
     /**
      * Timeout in seconds.
      */
+    @Builder.Default
     private int timeout = 30;
 
     /**
      * Abatement.
      */
+    @Builder.Default
     private boolean abatement = false;
 
     /**

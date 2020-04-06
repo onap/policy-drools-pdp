@@ -149,15 +149,14 @@ public class PolicySession
                     break;
                 }
             } catch (Exception e) {
-                logger.error("ERROR: Feature API: "
-                        + feature.getClass().getName(), e);
+                logger.error("ERROR: Feature API: {}", feature.getClass().getName(), e);
             }
         }
         if (threadModel == null) {
             // no feature created a ThreadModel -- select the default
             threadModel = new DefaultThreadModel(this);
         }
-        logger.info("starting ThreadModel for session " + getFullName());
+        logger.info("starting ThreadModel for session {}", getFullName());
         threadModel.start();
     }
 

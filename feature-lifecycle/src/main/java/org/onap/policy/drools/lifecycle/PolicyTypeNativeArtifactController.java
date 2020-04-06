@@ -44,7 +44,7 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
 
     @GsonJsonIgnore
     @JsonIgnore
-    protected final transient LifecycleFsm fsm;
+    protected final LifecycleFsm fsm;
 
     public PolicyTypeNativeArtifactController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {
         this.policyType = policyType;

@@ -129,7 +129,7 @@ public class DMaaPSimulatorJaxRs {
     @Consumes(MediaType.TEXT_PLAIN)
     public String publish(@PathParam("topicName") String topicName, String body) {
         BlockingQueue<String> queue = queues.computeIfAbsent(topicName, entry -> new LinkedBlockingQueue<>());
-        queue.offer(body);
+        queue.add(body);
 
         return "";
     }

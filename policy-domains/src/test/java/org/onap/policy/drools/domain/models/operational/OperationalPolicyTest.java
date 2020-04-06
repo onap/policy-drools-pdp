@@ -22,10 +22,6 @@ package org.onap.policy.drools.domain.models.operational;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,10 +96,6 @@ public class OperationalPolicyTest {
         // @formatter:on
 
         assertNotNull(policy);
-    }
-
-    private String getJsonFromFile(String filePath) throws IOException {
-        return Files.readString(Paths.get(filePath));
     }
 
     private String getJsonFromResource(String resourcePath) {

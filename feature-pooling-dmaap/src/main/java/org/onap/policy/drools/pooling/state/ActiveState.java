@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -67,7 +67,7 @@ public class ActiveState extends ProcessingState {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mgr pooling manager
      */
     public ActiveState(PoolingManager mgr) {
@@ -97,7 +97,7 @@ public class ActiveState extends ProcessingState {
             // wrapped around - successor is the first host in the set
             succHost = assigned.first();
         }
-        logger.info("this host's successor is {} on topic {}", succHost, getTopic());        
+        logger.info("this host's successor is {} on topic {}", succHost, getTopic());
 
         if ((predHost = assigned.lower(getHost())) == null) {
             // wrapped around - predecessor is the last host in the set
@@ -185,7 +185,6 @@ public class ActiveState extends ProcessingState {
 
         if (src == null) {
             logger.warn("Heartbeat message has no source on topic {}", getTopic());
-            return null;
 
         } else if (src.equals(getHost())) {
             logger.info("saw my heartbeat on topic {}", getTopic());
@@ -194,7 +193,7 @@ public class ActiveState extends ProcessingState {
         } else if (src.equals(predHost)) {
             logger.info("saw heartbeat from {} on topic {}", src, getTopic());
             predHeartbeatSeen = true;
-            
+
         } else {
             logger.info("ignored heartbeat message from {} on topic {}", src, getTopic());
         }
@@ -239,10 +238,10 @@ public class ActiveState extends ProcessingState {
         } else if (isLeader() || (predHost.equals(src) && predHost.equals(assigned.first()))) {
             /*
              * Case 1: We are the leader.
-             * 
+             *
              * Case 2: Our predecessor was the leader and it has gone offline - we should
              * become the leader.
-             * 
+             *
              * In either case, we are now the leader and we must re-balance the buckets
              * since one of the hosts has gone offline.
              */

@@ -341,7 +341,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
             DistributedLock lock = lockref.get();
             if (lock != null) {
                 logger.debug("removed lock from map {}", lock);
-                lock.deny(DistributedLock.LOCK_LOST_MSG);
+                lock.deny(FeatureLockImpl.LOCK_LOST_MSG);
             }
         }
     }

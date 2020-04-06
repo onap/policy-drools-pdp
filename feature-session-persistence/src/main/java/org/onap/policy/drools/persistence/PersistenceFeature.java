@@ -38,6 +38,7 @@ import javax.transaction.UserTransaction;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
+import org.hibernate.cfg.AvailableSettings;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -94,7 +95,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
 
         Object rval = policyContainer.getAdjunct(this);
 
-        if (rval == null || !(rval instanceof ContainerAdjunct)) {
+        if (!(rval instanceof ContainerAdjunct)) {
             // adjunct does not exist, or has the wrong type (should never
             // happen)
             rval = new ContainerAdjunct(policyContainer);
@@ -199,11 +200,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
      **/
     @Override
     public boolean beforeStart(PolicyEngine engine) {
-        synchronized (cleanupLock) {
-            sessInfoCleaned = false;
-        }
-
-        return false;
+        return cleanup();
     }
 
     /**
@@ -211,6 +208,10 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
      **/
     @Override
     public boolean beforeActivate(PolicyEngine engine) {
+        return cleanup();
+    }
+
+    private boolean cleanup() {
         synchronized (cleanupLock) {
             sessInfoCleaned = false;
         }
@@ -641,7 +642,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
                 try {
                     minSleepTime = Math.max(1, Integer.valueOf(sleepTimeString));
                 } catch (Exception e) {
-                    logger.error(sleepTimeString + ": Illegal value for 'minSleepTime'", e);
+                    logger.error("{}: Illegal value for 'minSleepTime'", sleepTimeString, e);
                 }
             }
 
@@ -652,18 +653,14 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
                 try {
                     maxSleepTime = Math.max(1, Integer.valueOf(sleepTimeString));
                 } catch (Exception e) {
-                    logger.error(sleepTimeString + ": Illegal value for 'maxSleepTime'", e);
+                    logger.error("{}: Illegal value for 'maxSleepTime'", sleepTimeString, e);
                 }
             }
 
             // swap values if needed
             if (minSleepTime > maxSleepTime) {
-                logger.error(
-                        "minSleepTime("
-                                + minSleepTime
-                                + ") is greater than maxSleepTime("
-                                + maxSleepTime
-                                + ") -- swapping");
+                logger.error("minSleepTime({}) is greater than maxSleepTime({}) -- swapping", minSleepTime,
+                                maxSleepTime);
                 long tmp = minSleepTime;
                 minSleepTime = maxSleepTime;
                 maxSleepTime = tmp;
@@ -791,7 +788,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         public DsEmf(BasicDataSource bds) {
             try {
                 Map<String, Object> props = new HashMap<>();
-                props.put(org.hibernate.cfg.Environment.JPA_JTA_DATASOURCE, bds);
+                props.put(AvailableSettings.JPA_JTA_DATASOURCE, bds);
 
                 this.bds = bds;
                 this.emf = makeEntMgrFact(props);

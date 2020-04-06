@@ -74,7 +74,7 @@ public class PolicyContainer implements Startable {
     // (it can block for a long time)
     private boolean scannerStarted = false;
 
-    private static final String ERROR_STRING = "ERROR: Feature API: ";
+    private static final String ERROR_STRING = "ERROR: Feature API: {}";
 
     // packages that are included in all 'KieContainer' instances
     private static Collection<KiePackage> commonPackages = null;
@@ -260,50 +260,52 @@ public class PolicyContainer implements Startable {
     private PolicySession activatePolicySession(String name, String kieBaseName) {
         synchronized (sessions) {
             logger.info("activatePolicySession:name :{}", name);
-            PolicySession session = sessions.get(name);
-            if (session != null) {
-                logger.info("activatePolicySession:session - {} is returned.", session.getFullName());
-                return session;
-            }
-            KieSession kieSession = null;
+            PolicySession session = sessions.computeIfAbsent(name, key -> makeSession(name, kieBaseName));
 
-            // loop through all of the features, and give each one
-            // a chance to create the 'KieSession'
-            for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
-                try {
-                    if ((kieSession = feature.activatePolicySession(this, name, kieBaseName)) != null) {
-                        break;
-                    }
-                } catch (Exception e) {
-                    logger.error(ERROR_STRING + feature.getClass().getName(), e);
-                }
-            }
-
-            // if none of the features created the session, create one now
-            if (kieSession == null) {
-                kieSession = kieContainer.newKieSession(name);
-            }
-
-            if (kieSession != null) {
-                // creation of 'KieSession' was successful - build
-                // a PolicySession
-                session = new PolicySession(name, this, kieSession);
-                sessions.put(name, session);
-
-                // notify features
-                for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
-                    try {
-                        feature.newPolicySession(session);
-                    } catch (Exception e) {
-                        logger.error(ERROR_STRING + feature.getClass().getName(), e);
-                    }
-                }
-                logger.info("activatePolicySession:new session was added in sessions with name {}", name);
-            }
             logger.info("activatePolicySession:session - {} is returned.",
-                    session == null ? "null" : session.getFullName());
+                            session == null ? "null" : session.getFullName());
             return session;
         }
+    }
+
+    private PolicySession makeSession(String name, String kieBaseName) {
+        PolicySession session = null;
+        KieSession kieSession = null;
+
+        // loop through all of the features, and give each one
+        // a chance to create the 'KieSession'
+        for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
+            try {
+                if ((kieSession = feature.activatePolicySession(this, name, kieBaseName)) != null) {
+                    break;
+                }
+            } catch (Exception e) {
+                logger.error(ERROR_STRING, feature.getClass().getName(), e);
+            }
+        }
+
+        // if none of the features created the session, create one now
+        if (kieSession == null) {
+            kieSession = kieContainer.newKieSession(name);
+        }
+
+        if (kieSession != null) {
+            // creation of 'KieSession' was successful - build
+            // a PolicySession
+            session = new PolicySession(name, this, kieSession);
+
+            // notify features
+            for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
+                try {
+                    feature.newPolicySession(session);
+                } catch (Exception e) {
+                    logger.error(ERROR_STRING, feature.getClass().getName(), e);
+                }
+            }
+            logger.info("activatePolicySession:new session was added in sessions with name {}", name);
+        }
+
+        return session;
     }
 
     /**
@@ -365,7 +367,7 @@ public class PolicyContainer implements Startable {
                 try {
                     feature.newPolicySession(policySession);
                 } catch (Exception e) {
-                    logger.error(ERROR_STRING + feature.getClass().getName(), e);
+                    logger.error(ERROR_STRING, feature.getClass().getName(), e);
                 }
             }
             return policySession;
@@ -562,10 +564,10 @@ public class PolicyContainer implements Startable {
      */
     @Override
     public synchronized boolean stop() {
-        if (!isStarted) {
-            return true;
-        }
+        return (!isStarted || doStop());
+    }
 
+    private boolean doStop() {
         Collection<PolicySession> localSessions;
 
         synchronized (sessions) {
@@ -587,7 +589,7 @@ public class PolicyContainer implements Startable {
                 try {
                     feature.disposeKieSession(session);
                 } catch (Exception e) {
-                    logger.error(ERROR_STRING + feature.getClass().getName(), e);
+                    logger.error(ERROR_STRING, feature.getClass().getName(), e);
                 }
             }
         }
@@ -650,7 +652,7 @@ public class PolicyContainer implements Startable {
                 try {
                     feature.destroyKieSession(session);
                 } catch (Exception e) {
-                    logger.error(ERROR_STRING + feature.getClass().getName(), e);
+                    logger.error(ERROR_STRING, feature.getClass().getName(), e);
                 }
             }
         }
@@ -710,7 +712,7 @@ public class PolicyContainer implements Startable {
             try {
                 feature.globalInit(args, configDir);
             } catch (Exception e) {
-                logger.error(ERROR_STRING + feature.getClass().getName(), e);
+                logger.error(ERROR_STRING, feature.getClass().getName(), e);
             }
         }
     }
@@ -751,7 +753,7 @@ public class PolicyContainer implements Startable {
         synchronized (PolicyContainer.class) {
             if (commonPackages == null) {
                 commonPackages = KieUtils.resourceToPackages(
-                    PolicyContainer.class.getClassLoader(), COMMON_PACKAGES_RESOURCE_NAME);
+                    PolicyContainer.class.getClassLoader(), COMMON_PACKAGES_RESOURCE_NAME).orElse(null);
                 if (commonPackages == null) {
                     // a problem occurred, which has already been logged --
                     // just store an empty collection, so we don't keep doing

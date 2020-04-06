@@ -45,12 +45,10 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
 public class DomainMakerTest {
 
     private DomainMaker domainMaker;
-    private StandardCoder nonValCoder;
 
     @Before
     public void setUp() throws Exception {
         domainMaker = new DomainMaker();
-        nonValCoder = new StandardCoder();
     }
 
     @Test

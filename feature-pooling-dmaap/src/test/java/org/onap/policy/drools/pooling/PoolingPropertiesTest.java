@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.pooling;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.onap.policy.drools.pooling.PoolingProperties.ACTIVE_HEARTBEAT_MS;
 import static org.onap.policy.drools.pooling.PoolingProperties.FEATURE_ENABLED;
@@ -60,7 +61,7 @@ public class PoolingPropertiesTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception throws an exception
      */
     @Before
@@ -73,7 +74,7 @@ public class PoolingPropertiesTest {
     @Test
     public void testPoolingProperties() throws PropertyException {
         // ensure no exceptions
-        new PoolingProperties(CONTROLLER, plain);
+        assertThatCode(() -> new PoolingProperties(CONTROLLER, plain)).doesNotThrowAnyException();
     }
 
     @Test
@@ -130,7 +131,7 @@ public class PoolingPropertiesTest {
      * Tests a particular property. Verifies that the correct value is returned if the
      * specialized property has a value or the property has no value. Also verifies that
      * the property name can be generalized.
-     * 
+     *
      * @param propnm name of the property of interest
      * @param specValue expected specialized value
      * @param dfltValue expected default value
@@ -156,7 +157,7 @@ public class PoolingPropertiesTest {
     /**
      * Makes a set of properties, where all of the properties are specialized for the
      * controller.
-     * 
+     *
      * @return a new property set
      */
     private Properties makeProperties() {
@@ -178,7 +179,7 @@ public class PoolingPropertiesTest {
 
     /**
      * Embeds a specializer within a property name, after the prefix.
-     * 
+     *
      * @param propnm property name into which it should be embedded
      * @param spec specializer to be embedded
      * @return the property name, with the specializer embedded within it

@@ -122,7 +122,7 @@ public class HealthCheckManager implements HealthCheck {
                 startServer(server);
             }
         } catch (Exception e) {
-            logger.warn("{}: cannot start {}", this, e);
+            logger.warn("{}: cannot start", this, e);
             return false;
         }
 

@@ -52,7 +52,7 @@ public class AlwaysFailLock extends LockImpl {
      * Always returns false.
      */
     @Override
-    public boolean free() {
+    public synchronized boolean free() {
         return false;
     }
 

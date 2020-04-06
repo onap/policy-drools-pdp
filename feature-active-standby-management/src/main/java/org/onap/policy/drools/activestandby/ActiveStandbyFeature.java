@@ -151,10 +151,8 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
          */
         DroolsPdp existingPdp = conn.getPdp(resourceName);
         if (existingPdp != null) {
-            logger.info("Found existing PDP record, pdpId="
-                    + existingPdp.getPdpId() + ", isDesignated="
-                    + existingPdp.isDesignated() + ", updatedDate="
-                    + existingPdp.getUpdatedDate());
+            logger.info("Found existing PDP record, pdpId={} isDesignated={}, updatedDate={}",
+                     existingPdp.getPdpId(), existingPdp.isDesignated(), existingPdp.getUpdatedDate());
             myPdp = existingPdp;
         }
 

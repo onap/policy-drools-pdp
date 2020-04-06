@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.core;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doAnswer;
@@ -97,7 +98,7 @@ public class PolicySessionTest {
         // re-start
         session.startThread();
 
-        session.stopThread();
+        assertThatCode(() -> session.stopThread()).doesNotThrowAnyException();
     }
 
     @Test
@@ -140,7 +141,7 @@ public class PolicySessionTest {
             }
         };
 
-        model.updated();
+        assertThatCode(() -> model.updated()).doesNotThrowAnyException();
     }
 
     @Test
@@ -156,7 +157,7 @@ public class PolicySessionTest {
     /**
      * Starts a thread and then invokes a function to generate an exception within the
      * fireUntilHalt() method.
-     * 
+     *
      * @param genEx function to generate an exception
      * @throws Exception if an error occurs
      */

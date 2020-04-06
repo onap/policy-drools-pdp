@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.NonNull;
@@ -183,19 +184,19 @@ public class KieUtils {
      * @return a collection of 'KiePackage' instances, or 'null' in case of
      *     failure
      */
-    public static Collection<KiePackage> resourceToPackages(ClassLoader classLoader, String resourceName) {
+    public static Optional<Collection<KiePackage>> resourceToPackages(ClassLoader classLoader, String resourceName) {
 
         // find all resources matching 'resourceName'
         Enumeration<URL> resources;
         try {
             resources = classLoader.getResources(resourceName);
         } catch (IOException e) {
-            logger.error("Exception fetching resources: " + resourceName, e);
-            return null;
+            logger.error("Exception fetching resources: {}", resourceName, e);
+            return Optional.empty();
         }
         if (!resources.hasMoreElements()) {
             // no resources found
-            return null;
+            return Optional.empty();
         }
 
         // generate a 'KieFileSystem' from these resources
@@ -211,8 +212,8 @@ public class KieUtils {
                 // add a new '.drl' entry to the KieFileSystem
                 kfs.write(RESOURCE_PREFIX + index++ + RESOURCE_SUFFIX, drl);
             } catch (IOException e) {
-                logger.error("Couldn't read in " + url, e);
-                return null;
+                logger.error("Couldn't read in {}", url, e);
+                return Optional.empty();
             }
         }
 
@@ -221,13 +222,13 @@ public class KieUtils {
         builder.buildAll();
         List<Message> results = builder.getResults().getMessages();
         if (!results.isEmpty()) {
-            logger.error("Kie build failed:\n" + results);
-            return null;
+            logger.error("Kie build failed:\n{}", results);
+            return Optional.empty();
         }
 
         // generate a KieContainer, and extract the package list
-        return kieServices.newKieContainer(builder.getKieModule().getReleaseId(), classLoader)
-               .getKieBase().getKiePackages();
+        return Optional.of(kieServices.newKieContainer(builder.getKieModule().getReleaseId(), classLoader)
+               .getKieBase().getKiePackages());
     }
 
     /**
