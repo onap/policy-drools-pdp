@@ -130,15 +130,15 @@ public class KieUtilsTest {
 
         // test IOException from ClassLoader
         log = new StringBuffer();
-        assertNull(KieUtils.resourceToPackages(new BogusClassLoader(log), "BogusClassLoader"));
+        assertNull(KieUtils.resourceToPackages(new BogusClassLoader(log), "BogusClassLoader").orElse(null));
         assertEquals("IOException(BogusClassLoader)", log.toString());
 
         // test 'null' return when no resources are found
-        assertNull(KieUtils.resourceToPackages(ClassLoader.getSystemClassLoader(), "no/such/url"));
+        assertNull(KieUtils.resourceToPackages(ClassLoader.getSystemClassLoader(), "no/such/url").orElse(null));
 
         // test IOException in 'IOUtils.toByteArray()' -> 'InputStream.read()'
         log = new StringBuffer();
-        assertNull(KieUtils.resourceToPackages(new BogusClassLoader(log), "BogusUrl"));
+        assertNull(KieUtils.resourceToPackages(new BogusClassLoader(log), "BogusUrl").orElse(null));
         assertEquals("", log.toString());
 
         // don't know how to test 'KieBuilder' errors at this point

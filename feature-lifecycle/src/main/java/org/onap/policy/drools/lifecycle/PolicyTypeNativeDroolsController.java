@@ -55,7 +55,7 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     @GsonJsonIgnore
     @JsonIgnore
-    protected final transient LifecycleFsm fsm;
+    protected final LifecycleFsm fsm;
 
     public PolicyTypeNativeDroolsController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {
         this.policyType = policyType;
@@ -72,9 +72,10 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
         ControllerProperties controllerConfig = controllerPolicy.getProperties();
 
+        configControllerName(controllerConfig, controllerProps);
+
         boolean success =
-            configControllerName(controllerConfig, controllerProps)
-            && configControllerSources(controllerConfig, controllerProps)
+            configControllerSources(controllerConfig, controllerProps)
             && configControllerSinks(controllerConfig, controllerProps)
             && configControllerCustom(controllerConfig, controllerProps);
 
@@ -145,10 +146,9 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
         return nativePolicy;
     }
 
-    private boolean configControllerName(ControllerProperties controllerConfig, Properties controllerProps)  {
+    private void configControllerName(ControllerProperties controllerConfig, Properties controllerProps)  {
         controllerProps
                 .setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, controllerConfig.getControllerName());
-        return true;
     }
 
     private boolean configControllerSources(ControllerProperties controllerConfig, Properties controllerProps) {
@@ -241,11 +241,10 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     private boolean configControllerCustom(ControllerProperties controllerConfig, Properties controllerProps) {
         Map<String, String> configCustom = controllerConfig.getCustomConfig();
-        if (configCustom == null || configCustom.isEmpty()) {
-            return true;
+        if (configCustom != null && !configCustom.isEmpty()) {
+            controllerProps.putAll(configCustom);
         }
 
-        controllerProps.putAll(configCustom);
         return true;
     }
 
@@ -255,7 +254,7 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     private List<String> sourceTopics(List<ControllerSourceTopic> sourceTopics) {
         if (sourceTopics == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         return sourceTopics.stream()
@@ -265,7 +264,7 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     private List<String> sinkTopics(List<ControllerSinkTopic> sinkTopics) {
         if (sinkTopics == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         return sinkTopics.stream()

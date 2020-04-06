@@ -155,7 +155,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
-        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());;
+        assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertNotEquals("b", fsm.getSubgroup());
 
         change.setName(fsm.getName());

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.core.lock;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -77,7 +78,7 @@ public class AlwaysFailLockTest {
     @Test
     public void testAlwaysFailLockNoArgs() {
         // verify that no-arg constructor doesn't throw an exception
-        new AlwaysFailLock();
+        assertThatCode(() -> new AlwaysFailLock()).doesNotThrowAnyException();
     }
 
     @Test

@@ -71,7 +71,7 @@ public class LifecycleFeature
 
     @Override
     public boolean beforeShutdown(PolicyEngine engine) {
-        return fsmShutdown(engine);
+        return fsmShutdown();
     }
 
     @Override
@@ -114,7 +114,7 @@ public class LifecycleFeature
         return false;
     }
 
-    private boolean fsmShutdown(PolicyEngine engine) {
+    private boolean fsmShutdown() {
         fsm.shutdown();
         return false;
     }

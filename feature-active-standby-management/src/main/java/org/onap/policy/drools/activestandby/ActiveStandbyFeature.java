@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,10 +151,8 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
          */
         DroolsPdp existingPdp = conn.getPdp(resourceName);
         if (existingPdp != null) {
-            logger.info("Found existing PDP record, pdpId="
-                    + existingPdp.getPdpId() + ", isDesignated="
-                    + existingPdp.isDesignated() + ", updatedDate="
-                    + existingPdp.getUpdatedDate());
+            logger.info("Found existing PDP record, pdpId={} isDesignated={}, updatedDate={}",
+                     existingPdp.getPdpId(), existingPdp.isDesignated(), existingPdp.getUpdatedDate());
             myPdp = existingPdp;
         }
 

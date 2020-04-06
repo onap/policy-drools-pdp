@@ -194,7 +194,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
         try {
             stateManagement.lock();
         } catch (Exception e) {
-            logger.error("StateManagementFeature.lock() failed with exception: {}", e);
+            logger.error("StateManagementFeature.lock() failed with exception", e);
             return false;
         }
         return true;
@@ -210,7 +210,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
         try {
             stateManagement.unlock();
         } catch (Exception e) {
-            logger.error("StateManagementFeature.unlock() failed with exception: {}", e);
+            logger.error("StateManagementFeature.unlock() failed with exception", e);
             return false;
         }
         return true;

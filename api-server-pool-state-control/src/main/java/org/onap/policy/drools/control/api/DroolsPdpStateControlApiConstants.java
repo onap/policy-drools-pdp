@@ -28,7 +28,7 @@ public class DroolsPdpStateControlApiConstants {
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects
      * implementing the 'FeatureAPI' interface.
      */
-    public static OrderedServiceImpl<DroolsPdpStateControlApi> impl =
+    public static final OrderedServiceImpl<DroolsPdpStateControlApi> impl =
         new OrderedServiceImpl<>(DroolsPdpStateControlApi.class);
 
     private DroolsPdpStateControlApiConstants() {

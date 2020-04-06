@@ -21,6 +21,7 @@
 package org.onap.policy.drools.core.lock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -193,7 +194,7 @@ public class LockImplTest {
         doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockUnavailable(any());
 
         // should not throw an exception
-        lock.notifyAvailable();
+        assertThatCode(() -> lock.notifyAvailable()).doesNotThrowAnyException();
     }
 
     @Test
@@ -210,7 +211,7 @@ public class LockImplTest {
         doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockUnavailable(any());
 
         // should not throw an exception
-        lock.notifyUnavailable();
+        assertThatCode(() -> lock.notifyUnavailable()).doesNotThrowAnyException();
     }
 
     @Test

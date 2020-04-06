@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -268,8 +268,8 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             repositoryPassword = getProperty("audit.password", true);
 
             logger.debug("Nexus Repository Information retrieved from 'IntegrityMonitorProperties':");
-            logger.debug("repositoryId: " + repositoryId);
-            logger.debug("repositoryUrl: " + repositoryUrl);
+            logger.debug("repositoryId: {}", repositoryId);
+            logger.debug("repositoryUrl: {}", repositoryUrl);
 
             // Setting upload to be false so that files can no longer be created/deleted
             upload = false;
@@ -419,10 +419,10 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
                         .resolve(artifact.artifactId + "-" + artifact.version + "." + artifact.type).toFile()
                         .exists()) {
                     // artifact exists, as expected
-                    logger.info("RepositoryAudit: {} : exists", artifact.toString());
+                    logger.info("RepositoryAudit: {} : exists", artifact);
                 } else {
                     // Audit ERROR: artifact download failed for some reason
-                    logger.error("RepositoryAudit: {}: does not exist", artifact.toString());
+                    logger.error("RepositoryAudit: {}: does not exist", artifact);
                     if (!ignoreErrors) {
                         response.append("Failed to download artifact: ").append(artifact).append('\n');
                         setResponse(response.toString());
@@ -470,12 +470,16 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             if (fileContents.regionMatches(index, "loading: ", 0, 9)) {
                 index += 9;
                 int endIndex = fileContents.indexOf('\n', index);
-                logger.info("RepositoryAudit: Attempted download: '{}'", fileContents.substring(index, endIndex));
+                if (logger.isInfoEnabled()) {
+                    logger.info("RepositoryAudit: Attempted download: '{}'", fileContents.substring(index, endIndex));
+                }
                 index = endIndex;
             } else if (fileContents.regionMatches(index, "loaded: ", 0, 8)) {
                 index += 8;
                 int endIndex = fileContents.indexOf(' ', index);
-                logger.info("RepositoryAudit: Successful download: '{}'", fileContents.substring(index, endIndex));
+                if (logger.isInfoEnabled()) {
+                    logger.info("RepositoryAudit: Successful download: '{}'", fileContents.substring(index, endIndex));
+                }
                 index = endIndex;
             }
         }

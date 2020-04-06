@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,11 +172,10 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
         try {
             logger.info("init: Starting HTTP server, addr= {}:{}", testHost, testPort);
 
-            IntegrityMonitorRestServer server = new IntegrityMonitorRestServer();
-            server.init(properties);
+            new IntegrityMonitorRestServer(properties);
 
         } catch (Exception e) {
-            logger.error("init: Caught Exception attempting to start server on testPort= {} message:", testPort, e);
+            logger.error("init: Caught Exception attempting to start server on testPort={}", testPort);
             throw new IntegrityMonitorException(e);
         }
     }
@@ -360,10 +359,10 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
     }
 
     public static class IntegrityMonitorRestServer implements Startable {
-        protected volatile HttpServletServer server = null;
-        protected volatile Properties integrityMonitorRestServerProperties = null;
+        protected HttpServletServer server = null;
+        protected final Properties integrityMonitorRestServerProperties;
 
-        public void init(Properties props) {
+        public IntegrityMonitorRestServer(Properties props) {
             this.integrityMonitorRestServerProperties = props;
             this.start();
         }
