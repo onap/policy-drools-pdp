@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 package org.onap.policy.distributed.locking;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -348,7 +349,7 @@ public class DistributedLockManagerTest {
         // use a data source that throws an exception when closed
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
-        shutdownFeature();
+        assertThatCode(() -> shutdownFeature()).doesNotThrowAnyException();
     }
 
     @Test
@@ -1438,7 +1439,7 @@ public class DistributedLockManagerTest {
         feature.beforeCreateLockManager(engine, new Properties());
         feature.afterStart(engine);
 
-        shutdownFeature();
+        assertThatCode(() -> shutdownFeature()).doesNotThrowAnyException();
     }
 
     /**

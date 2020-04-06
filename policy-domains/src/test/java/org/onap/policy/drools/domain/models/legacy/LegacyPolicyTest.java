@@ -38,7 +38,7 @@ public class LegacyPolicyTest {
     private static final String OPERATIONAL_LEGACY_POLICY_TYPE = "onap.policies.controlloop.Operational";
 
     // Operational vCPE Legacy Policy
-    private static final String OP_POLICY_NAME_VCPE = "operational.restart";
+    public static final String OP_POLICY_NAME_VCPE = "operational.restart";
     public static final String VCPE_OPERATIONAL_LEGACY_POLICY_JSON = "src/test/resources/tosca-legacy-vcpe.json";
 
     @Test

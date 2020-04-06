@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.pooling;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -48,7 +49,7 @@ public class DmaapManagerTest {
     private static final String MY_TOPIC = "my.topic";
     private static final String MSG = "a message";
     private static final String FILTER = "a filter";
-    
+
     private TopicListener listener;
     private FilterableTopicSource source;
     private boolean gotSources;
@@ -58,7 +59,7 @@ public class DmaapManagerTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception throws an exception
      */
     @Before
@@ -116,11 +117,6 @@ public class DmaapManagerTest {
         assertEquals(MY_TOPIC, mgr.getTopic());
     }
 
-    @Test
-    public void testFindTopicSource() {
-        // getting here means it worked
-    }
-
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSource_NotFilterableTopicSource() throws PoolingFeatureException {
 
@@ -158,11 +154,6 @@ public class DmaapManagerTest {
         };
     }
 
-    @Test
-    public void testFindTopicSink() {
-        // getting here means it worked
-    }
-
     @Test(expected = PoolingFeatureException.class)
     public void testFindTopicSink_NotFound() throws PoolingFeatureException {
         // one item in list, and its topic doesn't match
@@ -187,7 +178,7 @@ public class DmaapManagerTest {
 
     @Test
     public void testStartPublisher() throws PoolingFeatureException {
-        
+
         mgr.startPublisher();
 
         // restart should have no effect
@@ -210,7 +201,7 @@ public class DmaapManagerTest {
         mgr.stopPublisher(0);
 
         // re-stopping should have no effect
-        mgr.stopPublisher(0);
+        assertThatCode(() -> mgr.stopPublisher(0)).doesNotThrowAnyException();
     }
 
     @Test
@@ -285,7 +276,7 @@ public class DmaapManagerTest {
 
     @Test
     public void testSetFilter() throws PoolingFeatureException {
-        mgr.setFilter(FILTER);
+        assertThatCode(() -> mgr.setFilter(FILTER)).doesNotThrowAnyException();
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -337,7 +328,7 @@ public class DmaapManagerTest {
 
         mgr.publish(MSG);
     }
-    
+
     /**
      * Manager with overrides.
      */
@@ -350,7 +341,7 @@ public class DmaapManagerTest {
         @Override
         protected List<TopicSource> getTopicSources() {
             gotSources = true;
-            
+
             // three sources, with the desired one in the middle
             return Arrays.asList(mock(TopicSource.class), source, mock(TopicSource.class));
         }
@@ -358,7 +349,7 @@ public class DmaapManagerTest {
         @Override
         protected List<TopicSink> getTopicSinks() {
             gotSinks = true;
-            
+
             // three sinks, with the desired one in the middle
             return Arrays.asList(mock(TopicSink.class), sink, mock(TopicSink.class));
         }

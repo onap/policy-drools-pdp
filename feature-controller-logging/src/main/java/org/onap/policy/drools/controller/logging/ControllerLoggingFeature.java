@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-controller-logging
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,8 @@ import org.slf4j.LoggerFactory;
 public class ControllerLoggingFeature
                 implements PolicyEngineFeatureApi, DroolsControllerFeatureApi, PolicyControllerFeatureApi {
 
+    private static final String LINE_SEP = System.lineSeparator();
+
     @Override
     public int getSequenceNumber() {
         return 1000;
@@ -63,7 +65,7 @@ public class ControllerLoggingFeature
     @Override
     public boolean beforeOffer(PolicyController controller, CommInfrastructure protocol, String topic, String event) {
         Logger controllerLogger = LoggerFactory.getLogger(controller.getName());
-        controllerLogger.info("[IN|{}|{}]{}{}", protocol, topic, System.lineSeparator(), event);
+        controllerLogger.info("[IN|{}|{}]{}{}", protocol, topic, LINE_SEP, event);
         return false;
     }
 
@@ -78,7 +80,7 @@ public class ControllerLoggingFeature
             Logger controllerLogger = LoggerFactory
                             .getLogger(PolicyControllerConstants.getFactory().get(controller).getName());
             controllerLogger.info("[OUT|{}|{}]{}{}", sink.getTopicCommInfrastructure(), sink.getTopic(),
-                            System.lineSeparator(), json);
+                            LINE_SEP, json);
         }
         return false;
     }
@@ -92,7 +94,7 @@ public class ControllerLoggingFeature
                     String topic, String event) {
         for (ControllerConfiguration controller : configuration.getControllers()) {
             Logger controllerLogger = LoggerFactory.getLogger(controller.getName());
-            controllerLogger.info("[IN|{}|{}]{}{}", commType, topic, System.lineSeparator(), event);
+            controllerLogger.info("[IN|{}|{}]{}{}", commType, topic, LINE_SEP, event);
         }
         return false;
     }

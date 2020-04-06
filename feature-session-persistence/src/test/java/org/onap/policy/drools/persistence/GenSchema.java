@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,7 @@ package org.onap.policy.drools.persistence;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

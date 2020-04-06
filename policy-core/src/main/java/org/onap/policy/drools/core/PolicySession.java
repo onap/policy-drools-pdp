@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -149,15 +149,14 @@ public class PolicySession
                     break;
                 }
             } catch (Exception e) {
-                logger.error("ERROR: Feature API: "
-                        + feature.getClass().getName(), e);
+                logger.error("ERROR: Feature API: {}", feature.getClass().getName(), e);
             }
         }
         if (threadModel == null) {
             // no feature created a ThreadModel -- select the default
             threadModel = new DefaultThreadModel(this);
         }
-        logger.info("starting ThreadModel for session " + getFullName());
+        logger.info("starting ThreadModel for session {}", getFullName());
         threadModel.start();
     }
 

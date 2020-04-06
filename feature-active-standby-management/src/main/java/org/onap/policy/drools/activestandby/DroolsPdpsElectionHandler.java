@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         pdpdNowActive = null;
         pdpdLastActive = null;
         this.pdpsConnector = pdps;
-        DroolsPdpsElectionHandler.myPdp = myPdp;
+        setMyPdp(myPdp);
         this.isDesignated = false;
 
         // The interval between checks of the DesignationWaiter to be sure it is running.
@@ -150,6 +150,10 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                     + "Unable to get instance of StateManagementFeatureApi "
                     + "with resourceID: {}", myPdp.getPdpId());
         }
+    }
+
+    private static void setMyPdp(DroolsPdp myPdp) {
+        DroolsPdpsElectionHandler.myPdp = myPdp;
     }
 
     public static void setIsUnitTesting(boolean val) {
@@ -403,9 +407,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         }
 
         private void demoteMyPdp(DroolsPdp pdp, String standbyStatus) throws Exception {
-            //Keep the order like this.  StateManagement is last since it
-            //triggers controller shutdown
-            //This will change isDesignated and it can enter another if(combination) below
+            /*
+             * Keep the order like this. StateManagement is last since it triggers
+             * controller shutdown. This will change isDesignated and it can enter another
+             * if-combination below
+             */
             pdpsConnector.standDownPdp(pdp.getPdpId());
             myPdp.setDesignated(false);
             isDesignated = false;
@@ -422,8 +428,8 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
         private void pdpDesignatedNotCurrent(DroolsPdp pdp) {
             /*
-             * Changes designated to 0 but it is still potentially providing service
-             * Will affect isDesignated, so, it can enter an if(combination) below
+             * Changes designated to 0 but it is still potentially providing service.
+             * Will affect isDesignated, so, it can enter an if-combination below
              */
             pdpsConnector.standDownPdp(pdp.getPdpId());
 
@@ -614,7 +620,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             }
             waitTimerLastRunDate = currentTime.getDate();
             logger.debug("DesignatedWaiter.run (designatedPdp.getPdpId().equals(myPdp.getPdpId())) "
-                            + "waitTimerLastRunDate = " + waitTimerLastRunDate);
+                            + "waitTimerLastRunDate = {}", waitTimerLastRunDate);
             myPdp.setUpdatedDate(waitTimerLastRunDate);
             pdpsConnector.update(myPdp);
         }
@@ -786,7 +792,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 // So, we must demote it
                 demoteMyPdp();
             }
-        } //end: for(DroolsPdp pdp : listOfDesignated)
+        }
 
         DroolsPdp lowestPriorityPdp = data.getLowestPriority();
 

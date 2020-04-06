@@ -125,6 +125,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         ToscaPolicy policyNativeArtifact =
                 getPolicyFromFile(EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_ARTIFACT_POLICY_NAME);
 
+        @SuppressWarnings("unchecked")
         Map<String, String> controllerMap =
                 (Map<String, String>) policyNativeArtifact.getProperties().get("controller");
         controllerMap.put("name", "xyz987");
@@ -239,7 +240,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         assertEquals(policyNativeController, fsm.getPoliciesMap().get(policyNativeController.getIdentifier()));
         assertEquals(policyNativeFooController, fsm.getPoliciesMap().get(policyNativeFooController.getIdentifier()));
 
-        update.setPolicies(Collections.EMPTY_LIST);
+        update.setPolicies(Collections.emptyList());
         assertTrue(fsm.update(update));
         assertThatIllegalArgumentException().isThrownBy(() -> controllerSupport.getController().getDrools());
         assertNull(fsm.getPoliciesMap().get(policyNativeController.getIdentifier()));

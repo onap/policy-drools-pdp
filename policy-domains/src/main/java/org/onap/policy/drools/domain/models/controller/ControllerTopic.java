@@ -22,6 +22,7 @@ package org.onap.policy.drools.domain.models.controller;
 
 import java.util.List;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 
@@ -31,6 +32,7 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder
+@NoArgsConstructor
 public abstract class ControllerTopic {
     protected String topicName;
     protected List<ControllerEvent> events;

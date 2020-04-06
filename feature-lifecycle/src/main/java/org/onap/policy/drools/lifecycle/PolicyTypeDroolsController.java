@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +50,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
     protected static final ToscaPolicyTypeIdentifier compliantType =
         new ToscaPolicyTypeIdentifier("onap.policies.controlloop.operational.common.Drools", "1.0.0");
 
-    private static final Logger logger = LoggerFactory.getLogger(PolicyTypeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PolicyTypeDroolsController.class);
 
     @Getter
     protected final Map<String, PolicyController> controllers = new ConcurrentHashMap<>();
@@ -60,7 +60,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
 
     @GsonJsonIgnore
     @JsonIgnore
-    protected final transient LifecycleFsm fsm;
+    protected final LifecycleFsm fsm;
 
     /**
      * Creates a Policy Type Drools Controller.
@@ -120,21 +120,25 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
         return List.of(this.controllers.get(controllerName));
     }
 
-    private boolean perform(ToscaPolicy policy, Function<PolicyController, Boolean> operation) {
+    private boolean perform(ToscaPolicy policy, Predicate<PolicyController> operation) {
         try {
             List<PolicyController> selected = selectControllers(policy);
             boolean success = true;
             for (PolicyController controller : selected) {
-                try {
-                    success = operation.apply(controller) && success;
-                } catch (RuntimeException r) {
-                    logger.warn("invalid offer to controller: {}", controller);
-                    success = false;
-                }
+                success = modifyController(operation, controller) && success;
             }
             return success && !selected.isEmpty();
         } catch (CoderException e) {
             logger.warn("perform: invalid formatted policy: {}", policy, e);
+            return false;
+        }
+    }
+
+    private boolean modifyController(Predicate<PolicyController> operation, PolicyController controller) {
+        try {
+            return operation.test(controller);
+        } catch (RuntimeException r) {
+            logger.warn("invalid offer to controller: {}", controller);
             return false;
         }
     }

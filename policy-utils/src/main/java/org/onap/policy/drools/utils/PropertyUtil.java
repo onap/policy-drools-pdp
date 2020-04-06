@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.configuration2.SystemConfiguration;
@@ -54,13 +55,13 @@ public class PropertyUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyUtil.class.getName());
 
-    private static volatile CryptoCoder cryptoCoder;
+    private static final AtomicReference<CryptoCoder> cryptoCoder = new AtomicReference<>();
 
     /**
      * Sets a default Crypto Coder.
      */
     public static void setDefaultCryptoCoder(CryptoCoder cryptoCoder) {
-        PropertyUtil.cryptoCoder = cryptoCoder;
+        PropertyUtil.cryptoCoder.set(cryptoCoder);
     }
 
     /**
@@ -186,7 +187,7 @@ public class PropertyUtil {
      * @return Properties - interpolated properties object
      */
     public static Properties getInterpolatedProperties(Properties properties) {
-        return getInterpolatedProperties(properties, cryptoCoder);
+        return getInterpolatedProperties(properties, cryptoCoder.get());
     }
 
     /**

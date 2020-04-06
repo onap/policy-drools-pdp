@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.pooling;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -286,7 +287,7 @@ public class PoolingManagerImplTest {
         Forward msg = new Forward(mgr.getHost(), CommInfrastructure.UEB, TOPIC2, THE_EVENT, REQUEST_ID);
         mgr.handle(msg);
         verify(dmaap, times(START_PUB + 1)).publish(any());
-        
+
         mgr.beforeStop();
 
         verify(dmaap).stopConsumer(mgr);
@@ -453,7 +454,7 @@ public class PoolingManagerImplTest {
         doThrow(new PoolingFeatureException()).when(dmaap).setFilter(any());
 
         // start should invoke setFilter()
-        startMgr();
+        assertThatCode(() -> startMgr()).doesNotThrowAnyException();
 
         // no exception, means success
     }
@@ -552,7 +553,7 @@ public class PoolingManagerImplTest {
         // generate exception
         doThrow(new PoolingFeatureException()).when(dmaap).publish(any());
 
-        mgr.publish(Message.ADMIN, new Offline(mgr.getHost()));
+        assertThatCode(() -> mgr.publish(Message.ADMIN, new Offline(mgr.getHost()))).doesNotThrowAnyException();
     }
 
     @Test
@@ -578,7 +579,7 @@ public class PoolingManagerImplTest {
     public void testOnTopicEvent_NullEvent() throws Exception {
         startMgr();
 
-        mgr.onTopicEvent(CommInfrastructure.UEB, TOPIC2, null);
+        assertThatCode(() -> mgr.onTopicEvent(CommInfrastructure.UEB, TOPIC2, null)).doesNotThrowAnyException();
     }
 
     @Test
@@ -780,7 +781,7 @@ public class PoolingManagerImplTest {
                 return false;
             }
         };
-        
+
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
@@ -801,7 +802,7 @@ public class PoolingManagerImplTest {
                 throw new UnsupportedOperationException();
             }
         };
-        
+
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
@@ -821,7 +822,7 @@ public class PoolingManagerImplTest {
                 throw new IllegalArgumentException();
             }
         };
-        
+
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
@@ -841,7 +842,7 @@ public class PoolingManagerImplTest {
                 throw new IllegalStateException();
             }
         };
-        
+
         startMgr();
 
         when(controller.isLocked()).thenReturn(true);
@@ -867,19 +868,19 @@ public class PoolingManagerImplTest {
     @Test
     public void testMakeForward() throws Exception {
         startMgr();
-        
+
         // route the message to another host
         mgr.startDistributing(makeAssignments(false));
 
         assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        
+
         verify(dmaap, times(START_PUB + 1)).publish(any());
     }
 
     @Test
     public void testMakeForward_InvalidMsg() throws Exception {
         startMgr();
-        
+
         // route the message to another host
         mgr.startDistributing(makeAssignments(false));
 
@@ -1136,10 +1137,10 @@ public class PoolingManagerImplTest {
      * Configure the mock controller to act like a real controller, invoking beforeOffer
      * and then beforeInsert, so we can make sure they pass through. We'll keep count to
      * ensure we don't get into infinite recursion.
-     * 
+     *
      * @param invokeBeforeInsert {@code true} if beforeInsert() should be invoked,
      *        {@code false} if it should be skipped
-     * 
+     *
      * @return a latch that will be counted down if both beforeXxx() methods return false
      */
     private CountDownLatch catchRecursion(boolean invokeBeforeInsert) {
@@ -1176,7 +1177,7 @@ public class PoolingManagerImplTest {
 
     /**
      * Makes an assignment with two buckets.
-     * 
+     *
      * @param sameHost {@code true} if the {@link #REQUEST_ID} should hash to the
      *        manager's bucket, {@code false} if it should hash to the other host's bucket
      * @return a new bucket assignment
@@ -1198,7 +1199,7 @@ public class PoolingManagerImplTest {
 
     /**
      * Invokes methods necessary to start the manager.
-     * 
+     *
      * @throws PoolingFeatureException if an error occurs
      */
     private void startMgr() throws PoolingFeatureException {

@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.pooling.message;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,7 +38,7 @@ public class BucketAssignmentsTest {
 
     @Test
     public void testBucketAssignments() {
-        new BucketAssignments();
+        assertThatCode(() -> new BucketAssignments()).doesNotThrowAnyException();
     }
 
     @Test
@@ -172,7 +173,7 @@ public class BucketAssignmentsTest {
 
     /**
      * Gets the hosts, sorted, so that the order is predictable.
-     * 
+     *
      * @param asgn assignment whose hosts are to be retrieved
      * @return a new, sorted set of hosts
      */
@@ -201,7 +202,7 @@ public class BucketAssignmentsTest {
         /*
          * get assignments for consecutive integers, including negative numbers and
          * numbers extending past the length of the array.
-         * 
+         *
          */
         TreeSet<String> seen = new TreeSet<>();
         for (int x = -1; x < arr.length + 2; ++x) {
@@ -342,7 +343,7 @@ public class BucketAssignmentsTest {
 
     /**
      * Expects an exception when checkValidity() is called.
-     * 
+     *
      * @param asgn assignments to be checked
      */
     private void expectException(BucketAssignments asgn) {

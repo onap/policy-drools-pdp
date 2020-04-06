@@ -32,6 +32,7 @@ import com.openpojo.validation.test.impl.SetterTester;
 import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.junit.Test;
@@ -41,6 +42,7 @@ public class DroolsPolicyTest {
     @Data
     @SuperBuilder
     @NoArgsConstructor
+    @EqualsAndHashCode(callSuper = true)
     public static class DerivedDomainPolicy extends DroolsPolicy implements Serializable {
         private static final long serialVersionUID = -1027974819756498893L;
     }

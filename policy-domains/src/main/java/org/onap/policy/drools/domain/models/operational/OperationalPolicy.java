@@ -22,6 +22,7 @@ package org.onap.policy.drools.domain.models.operational;
 
 import java.io.Serializable;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 import org.onap.policy.drools.domain.models.DroolsPolicy;
 
@@ -32,6 +33,7 @@ import org.onap.policy.drools.domain.models.DroolsPolicy;
 
 @Data
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 public class OperationalPolicy extends DroolsPolicy implements Serializable {
     private static final long serialVersionUID = 4100092564657497713L;
 

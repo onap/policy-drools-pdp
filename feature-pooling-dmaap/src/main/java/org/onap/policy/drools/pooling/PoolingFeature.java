@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,7 +158,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
                 ctlr2pool.computeIfAbsent(name, xxx -> makeManager(host, controller, props, activeLatch));
 
             } catch (PropertyException e) {
-                logger.error("pooling disabled due to exception for {}", name, e);
+                logger.error("pooling disabled due to exception for {}", name);
                 throw new PoolingFeatureRtException(e);
             }
 
@@ -196,12 +196,15 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
 
     @Override
     public boolean afterShutdown(PolicyController controller) {
-        deleteManager(controller);
-        return false;
+        return commonShutdown(controller);
     }
 
     @Override
     public boolean afterHalt(PolicyController controller) {
+        return commonShutdown(controller);
+    }
+
+    private boolean commonShutdown(PolicyController controller) {
         deleteManager(controller);
         return false;
     }
@@ -284,7 +287,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
             boolean success) {
 
         // clear any stored arguments
-        offerArgs.set(null);
+        offerArgs.remove();
 
         return false;
     }

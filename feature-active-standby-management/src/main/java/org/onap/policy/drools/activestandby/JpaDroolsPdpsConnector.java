@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -566,7 +566,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 try {
                     em.getTransaction().rollback();
                 } catch (Exception e) {
-                    logger.error(method + ": Caught Exception attempting to rollback EntityTransaction,", e);
+                    logger.error("{}: Caught Exception attempting to rollback EntityTransaction", method, e);
                 }
             }
 
@@ -574,7 +574,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             try {
                 em.close();
             } catch (Exception e) {
-                logger.error(method + ": Caught Exception attempting to close EntityManager, ", e);
+                logger.error("{}: Caught Exception attempting to close EntityManager", method, e);
             }
         }
     }

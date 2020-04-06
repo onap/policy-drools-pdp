@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,7 +52,7 @@ public class FilterUtils {
 
     /**
      * Makes a filter that verifies that a field equals a value.
-     * 
+     *
      * @param field name of the field to check
      * @param value desired value
      * @return a map representing an "equals" filter
@@ -68,11 +68,11 @@ public class FilterUtils {
 
     /**
      * Makes an "and" filter, where all of the items must be true.
-     * 
+     *
      * @param items items to be checked
      * @return an "and" filter
      */
-    public static Map<String, Object> makeAnd(Map<String, Object>... items) {
+    public static Map<String, Object> makeAnd(@SuppressWarnings("unchecked") Map<String, Object>... items) {
         Map<String, Object> map = new TreeMap<>();
         map.put(JSON_CLASS, CLASS_AND);
         map.put(JSON_FILTERS, items);
@@ -82,11 +82,11 @@ public class FilterUtils {
 
     /**
      * Makes an "or" filter, where at least one of the items must be true.
-     * 
+     *
      * @param items items to be checked
      * @return an "or" filter
      */
-    public static Map<String, Object> makeOr(Map<String, Object>... items) {
+    public static Map<String, Object> makeOr(@SuppressWarnings("unchecked") Map<String, Object>... items) {
         Map<String, Object> map = new TreeMap<>();
         map.put(JSON_CLASS, CLASS_OR);
         map.put(JSON_FILTERS, items);
