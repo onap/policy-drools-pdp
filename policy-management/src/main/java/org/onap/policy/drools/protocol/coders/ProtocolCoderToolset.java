@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -64,11 +63,6 @@ public abstract class ProtocolCoderToolset {
      * Protocols and associated Filters.
      */
     protected final List<CoderFilters> coders = new CopyOnWriteArrayList<>();
-
-    /**
-     * Tree model (instead of class model) generic parsing to be able to inspect elements.
-     */
-    protected JsonParser filteringParser = new JsonParser();
 
     /**
      * custom coder.
@@ -287,8 +281,7 @@ public abstract class ProtocolCoderToolset {
         builder.append("ProtocolCoderToolset [topic=").append(this.topic).append(", controllerId=")
         .append(this.controllerId).append(", groupId=").append(this.groupId).append(", artifactId=")
         .append(this.artifactId).append(", coders=").append(this.coders)
-        .append(", filteringParser=").append(this.filteringParser).append(", customCoder=")
-        .append(this.customCoder).append("]");
+        .append(", customCoder=").append(this.customCoder).append("]");
         return builder.toString();
     }
 }

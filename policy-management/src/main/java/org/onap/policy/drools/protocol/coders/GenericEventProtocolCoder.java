@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,9 +150,7 @@ abstract class GenericEventProtocolCoder {
                 }
             }
 
-            if (present) {
-                return;
-            } else {
+            if (!present) {
                 logger.info("{}: adding coder set for {}: {} ", this, reverseKey, coderTools);
                 toolsets.add(coderTools);
             }
