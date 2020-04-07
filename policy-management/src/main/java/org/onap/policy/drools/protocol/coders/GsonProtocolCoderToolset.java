@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
  * Tools used for encoding/decoding using GSON.
  */
 class GsonProtocolCoderToolset extends ProtocolCoderToolset {
+    private static final String CANNOT_FETCH_CLASS = "{}: cannot fetch application class {}";
     private static final String FETCH_CLASS_EX_MSG = "cannot fetch application class ";
 
     /**
@@ -174,13 +175,12 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
         try {
             decoderClass = droolsController.fetchModelClass(decoderFilter.getCodedClass());
             if (decoderClass == null) {
-                logger.warn("{}: cannot fetch application class {}", this, decoderFilter.getCodedClass());
+                logger.warn(CANNOT_FETCH_CLASS, this, decoderFilter.getCodedClass());
                 throw new IllegalStateException(
                         FETCH_CLASS_EX_MSG + decoderFilter.getCodedClass());
             }
         } catch (final Exception e) {
-            logger.warn("{}: cannot fetch application class {} because of {}", this,
-                    decoderFilter.getCodedClass(), e.getMessage());
+            logger.warn(CANNOT_FETCH_CLASS, this, decoderFilter.getCodedClass());
             throw new UnsupportedOperationException(
                     FETCH_CLASS_EX_MSG + decoderFilter.getCodedClass(), e);
         }
@@ -192,11 +192,10 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
                 final Field gsonField = gsonClassContainer.getField(this.customCoder.staticCoderField);
                 final Object gsonObject = gsonField.get(null);
                 final Method fromJsonMethod = gsonObject.getClass().getDeclaredMethod("fromJson",
-                        new Class[] {String.class, Class.class});
+                        String.class, Class.class);
                 return fromJsonMethod.invoke(gsonObject, json, decoderClass);
             } catch (final Exception e) {
-                logger.warn("{}: cannot fetch application class {} because of {}", this,
-                        decoderFilter.getCodedClass(), e.getMessage());
+                logger.warn(CANNOT_FETCH_CLASS, this, decoderFilter.getCodedClass());
                 throw new UnsupportedOperationException(
                         FETCH_CLASS_EX_MSG + decoderFilter.getCodedClass(), e);
             }
@@ -204,8 +203,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
             try {
                 return this.decoder.fromJson(json, decoderClass);
             } catch (final Exception e) {
-                logger.warn("{} cannot decode {} into {} because of {}", this, json, decoderClass.getName(),
-                        e.getMessage(), e);
+                logger.warn("{} cannot decode {} into {}", this, json, decoderClass.getName());
                 throw new UnsupportedOperationException(
                         "cannont decode into " + decoderFilter.getCodedClass(), e);
             }
@@ -227,17 +225,17 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
                 final Field gsonField = gsonClassContainer.getField(this.customCoder.staticCoderField);
                 final Object gsonObject = gsonField.get(null);
                 final Method toJsonMethod =
-                        gsonObject.getClass().getDeclaredMethod("toJson", new Class[] {Object.class});
+                        gsonObject.getClass().getDeclaredMethod("toJson", Object.class);
                 return (String) toJsonMethod.invoke(gsonObject, event);
             } catch (final Exception e) {
-                logger.warn("{} cannot custom-encode {} because of {}", this, event, e.getMessage(), e);
+                logger.warn("{} cannot custom-encode {}", this, event);
                 throw new UnsupportedOperationException("event cannot be encoded", e);
             }
         } else {
             try {
                 return this.encoder.toJson(event);
             } catch (final Exception e) {
-                logger.warn("{} cannot encode {} because of {}", this, event, e.getMessage(), e);
+                logger.warn("{} cannot encode {}", this, event);
                 throw new UnsupportedOperationException("event cannot be encoded", e);
             }
         }

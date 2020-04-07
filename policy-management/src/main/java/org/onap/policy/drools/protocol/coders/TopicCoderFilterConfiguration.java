@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,23 +44,23 @@ public class TopicCoderFilterConfiguration {
         public CustomCoder(String rawCustomCoder) {
             if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
 
-                this.className = rawCustomCoder.substring(0, rawCustomCoder.indexOf(","));
+                this.className = rawCustomCoder.substring(0, rawCustomCoder.indexOf(','));
                 if (this.className == null || this.className.isEmpty()) {
                     throw new IllegalArgumentException(
                             "No classname to create CustomCoder cannot be created");
                 }
 
-                this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(",") + 1);
+                this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(',') + 1);
                 if (this.staticCoderField == null || this.staticCoderField.isEmpty()) {
                     throw new IllegalArgumentException(
                             "No staticCoderField to create CustomCoder cannot be created for class " + className);
                 }
             }
         }
-        
+
         /**
          * Constructor.
-         * 
+         *
          * @param className class name
          * @param staticCoderField static coder field
          */
@@ -78,37 +78,37 @@ public class TopicCoderFilterConfiguration {
             this.staticCoderField = staticCoderField;
         }
 
-        /** 
+        /**
          * Get class container.
-         * 
-         * @return the className 
+         *
+         * @return the className
          **/
         public String getClassContainer() {
             return className;
         }
 
-        /** 
+        /**
          * Set class container.
-         * 
-         * @param className the className to set 
+         *
+         * @param className the className to set
          **/
         public void setClassContainer(String className) {
             this.className = className;
         }
 
-        /** 
+        /**
          * Get static coder field.
-         * 
-         * @return the staticCoderField 
+         *
+         * @return the staticCoderField
          **/
         public String getStaticCoderField() {
             return staticCoderField;
         }
 
-        /** 
+        /**
          * Set static coder field.
-         * 
-         * @param staticCoderField the staticGson to set 
+         *
+         * @param staticCoderField the staticGson to set
          **/
         public void setStaticCoderField(String staticCoderField) {
             this.staticCoderField = staticCoderField;
@@ -154,7 +154,7 @@ public class TopicCoderFilterConfiguration {
         /* decoder class (pending from being able to be fetched and found in some class loader) */
         protected String codedClass;
 
-        /* filters to apply to the selection of the decodedClass; */
+        /* filters to apply to the selection of the decodedClass */
         protected JsonProtocolFilter filter;
 
         /**
@@ -168,36 +168,36 @@ public class TopicCoderFilterConfiguration {
             this.filter = filter;
         }
 
-        /** 
+        /**
          * Get coded class.
-         * 
-         * @return the decodedClass 
+         *
+         * @return the decodedClass
          **/
         public String getCodedClass() {
             return codedClass;
         }
 
         /** Set coded class.
-         * 
-         * @param decodedClass the decodedClass to set 
+         *
+         * @param decodedClass the decodedClass to set
          **/
         public void setCodedClass(String decodedClass) {
             this.codedClass = decodedClass;
         }
 
-        /** 
+        /**
          * Get filter.
-         * 
-         * @return the filter 
+         *
+         * @return the filter
          **/
         public JsonProtocolFilter getFilter() {
             return filter;
         }
 
-        /** 
+        /**
          * Set filter.
-         * 
-         * @param filter the filter to set 
+         *
+         * @param filter the filter to set
          **/
         public void setFilter(JsonProtocolFilter filter) {
             this.filter = filter;
@@ -241,35 +241,35 @@ public class TopicCoderFilterConfiguration {
         this.customGsonCoder = customGsonCoder;
     }
 
-    /** 
+    /**
      * Get topic.
-     * @return the topic 
+     * @return the topic
      **/
     public String getTopic() {
         return topic;
     }
 
     /** Get coder filters.
-     * 
-     * @return the decoderFilters 
+     *
+     * @return the decoderFilters
      **/
     public List<PotentialCoderFilter> getCoderFilters() {
         return coderFilters;
     }
 
-    /** 
+    /**
      * Get custom gson coder.
-     * 
-     * @return the customGsonCoder 
+     *
+     * @return the customGsonCoder
      **/
     public CustomGsonCoder getCustomGsonCoder() {
         return customGsonCoder;
     }
 
-    /** 
+    /**
      * Set custom gson coder.
-     * 
-     * @param customGsonCoder the customGsonCoder to set 
+     *
+     * @param customGsonCoder the customGsonCoder to set
      **/
     public void setCustomGsonCoder(CustomGsonCoder customGsonCoder) {
         this.customGsonCoder = customGsonCoder;

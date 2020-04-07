@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.system;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -315,7 +316,7 @@ public class PolicyEngineManagerTest {
     @Test
     public void testSerialize() {
         mgr.configure(properties);
-        gson.compareGson(mgr, PolicyEngineManagerTest.class);
+        assertThatCode(() -> gson.compareGson(mgr, PolicyEngineManagerTest.class)).doesNotThrowAnyException();
     }
 
     @Test

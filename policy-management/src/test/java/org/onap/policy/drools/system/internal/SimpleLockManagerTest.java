@@ -21,6 +21,7 @@
 package org.onap.policy.drools.system.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -398,7 +399,7 @@ public class SimpleLockManagerTest {
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
 
         // should shut down thread pool
-        feature.stop();
+        assertThatCode(() -> feature.stop()).doesNotThrowAnyException();
     }
 
     @Test

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,7 +260,7 @@ public class ControllerConfiguration {
      */
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, (Object) value);
+            getAdditionalProperties().put(name, value);
         }
     }
 
@@ -273,7 +273,7 @@ public class ControllerConfiguration {
      */
     public ControllerConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, (Object) value);
+            getAdditionalProperties().put(name, value);
         }
         return this;
     }
