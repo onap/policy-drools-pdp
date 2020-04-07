@@ -74,9 +74,9 @@ public class ControllerConfigurationTest {
         controllerConfig2.setOperation(OPERATION2);
         controllerConfig2.setDrools(DROOLS_CONFIG2);
 
-        assertEquals(controllerConfig2.getName(), NAME2);
-        assertEquals(controllerConfig2.getOperation(), OPERATION2);
-        assertEquals(controllerConfig2.getDrools(), DROOLS_CONFIG2);
+        assertEquals(NAME2, controllerConfig2.getName());
+        assertEquals(OPERATION2, controllerConfig2.getOperation());
+        assertEquals(DROOLS_CONFIG2, controllerConfig2.getDrools());
 
         assertEquals(controllerConfig2, controllerConfig2.withName(NAME2));
         assertEquals(controllerConfig2, controllerConfig2.withOperation(OPERATION2));
@@ -94,10 +94,10 @@ public class ControllerConfigurationTest {
         assertFalse(controllerConfig2.declaredProperty("dummy", NAME));
 
 
-        assertEquals(controllerConfig2.declaredPropertyOrNotFound(NAME, NAME2), NAME2);
-        assertEquals(controllerConfig2.declaredPropertyOrNotFound(OPERATION, OPERATION2), OPERATION2);
-        assertEquals(controllerConfig2.declaredPropertyOrNotFound(DROOLS_STRING, DROOLS_CONFIG2), DROOLS_CONFIG2);
-        assertEquals(controllerConfig2.declaredPropertyOrNotFound("dummy", NAME), NAME);
+        assertEquals(NAME2, controllerConfig2.declaredPropertyOrNotFound(NAME, NAME2));
+        assertEquals(OPERATION2, controllerConfig2.declaredPropertyOrNotFound(OPERATION, OPERATION2));
+        assertEquals(DROOLS_CONFIG2, controllerConfig2.declaredPropertyOrNotFound(DROOLS_STRING, DROOLS_CONFIG2));
+        assertEquals(NAME, controllerConfig2.declaredPropertyOrNotFound("dummy", NAME));
 
         int hashCode = new HashCodeBuilder().append(NAME2).append(OPERATION2).append(DROOLS_CONFIG2)
                 .append(additionalProperties).toHashCode();

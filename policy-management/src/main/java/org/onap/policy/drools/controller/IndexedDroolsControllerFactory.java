@@ -48,7 +48,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     /**
      * logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(MavenDroolsController.class);
+    private static Logger logger = LoggerFactory.getLogger(IndexedDroolsControllerFactory.class);
 
     /**
      * Policy Controller Name Index.

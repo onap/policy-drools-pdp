@@ -150,9 +150,7 @@ abstract class GenericEventProtocolCoder {
                 }
             }
 
-            if (present) {
-                return;
-            } else {
+            if (!present) {
                 logger.info("{}: adding coder set for {}: {} ", this, reverseKey, coderTools);
                 toolsets.add(coderTools);
             }

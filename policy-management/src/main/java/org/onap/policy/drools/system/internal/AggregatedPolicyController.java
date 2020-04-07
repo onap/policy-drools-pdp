@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
@@ -101,7 +102,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Policy Drools Controller.
      */
-    private volatile DroolsController droolsController;
+    private final AtomicReference<DroolsController> droolsController = new AtomicReference<>();
 
     /**
      * Properties used to initialize controller.
@@ -154,6 +155,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         }
 
         return droolsController
+                .get()
                 .getBaseDomainNames()
                 .stream()
                 .map(d -> new ToscaPolicyTypeIdentifier(d,
@@ -191,9 +193,9 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     private void initDrools(Properties properties) {
         try {
             // Register with drools infrastructure
-            this.droolsController = getDroolsFactory().build(properties, sources, sinks);
+            this.droolsController.set(getDroolsFactory().build(properties, sources, sinks));
         } catch (Exception | LinkageError e) {
-            logger.error("{}: cannot init-drools because of {}", this, e.getMessage(), e);
+            logger.error("{}: cannot init-drools", this);
             throw new IllegalArgumentException(e);
         }
     }
@@ -215,8 +217,9 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      */
     @Override
     public boolean updateDrools(DroolsConfiguration newDroolsConfiguration) {
-        DroolsConfiguration oldDroolsConfiguration = new DroolsConfiguration(this.droolsController.getArtifactId(),
-                this.droolsController.getGroupId(), this.droolsController.getVersion());
+        DroolsController controller = this.droolsController.get();
+        DroolsConfiguration oldDroolsConfiguration = new DroolsConfiguration(controller.getArtifactId(),
+                controller.getGroupId(), controller.getVersion());
 
         if (oldDroolsConfiguration.getGroupId().equalsIgnoreCase(newDroolsConfiguration.getGroupId())
                 && oldDroolsConfiguration.getArtifactId().equalsIgnoreCase(newDroolsConfiguration.getArtifactId())
@@ -233,11 +236,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return true;
         }
 
-        if (droolsController.isBrained()
+        if (controller.isBrained()
             && (newDroolsConfiguration.getArtifactId() == null
                 || DroolsControllerConstants.NO_ARTIFACT_ID.equals(newDroolsConfiguration.getArtifactId()))) {
             // detach maven artifact
-            DroolsControllerConstants.getFactory().destroy(this.droolsController);
+            DroolsControllerConstants.getFactory().destroy(controller);
         }
 
         boolean success = true;
@@ -251,15 +254,15 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             this.initDrools(this.properties);
 
             if (isLocked()) {
-                droolsController.lock();
+                controller.lock();
             } else {
-                droolsController.unlock();
+                controller.unlock();
             }
 
             if (isAlive()) {
-                droolsController.start();
+                controller.start();
             } else {
-                droolsController.stop();
+                controller.stop();
             }
         } catch (RuntimeException e) {
             logger.error("{}: cannot update-drools because of {}", this, e.getMessage(), e);
@@ -309,7 +312,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             this.alive = true;
         }
 
-        final boolean success = this.droolsController.start();
+        final boolean success = this.droolsController.get().start();
 
         // register for events
 
@@ -363,7 +366,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             source.unregister(this);
         }
 
-        boolean success = this.droolsController.stop();
+        boolean success = this.droolsController.get().stop();
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterStop(this),
@@ -389,7 +392,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         this.stop();
 
-        getDroolsFactory().shutdown(this.droolsController);
+        getDroolsFactory().shutdown(this.droolsController.get());
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterShutdown(this),
@@ -412,7 +415,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         }
 
         this.stop();
-        getDroolsFactory().destroy(this.droolsController);
+        getDroolsFactory().destroy(this.droolsController.get());
         getPersistenceManager().deleteController(this.name);
 
         FeatureApiUtils.apply(getProviders(),
@@ -439,7 +442,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return;
         }
 
-        boolean success = this.droolsController.offer(topic, event);
+        boolean success = this.droolsController.get().offer(topic, event);
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterOffer(this, commType, topic, event, success),
@@ -462,7 +465,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return true;
         }
 
-        boolean success = this.droolsController.offer(event);
+        boolean success = this.droolsController.get().offer(event);
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterOffer(this, event, success),
@@ -513,7 +516,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             throw new IllegalArgumentException("Unsupported topic " + topic + " for delivery");
         }
 
-        boolean success = this.droolsController.deliver(this.topic2Sinks.get(topic), event);
+        boolean success = this.droolsController.get().deliver(this.topic2Sinks.get(topic), event);
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterDeliver(this, commType, topic, event, success),
@@ -556,7 +559,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         // it does not affect associated sources/sinks, they are
         // autonomous entities
 
-        boolean success = this.droolsController.lock();
+        boolean success = this.droolsController.get().lock();
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterLock(this),
@@ -589,7 +592,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             this.locked = false;
         }
 
-        boolean success = this.droolsController.unlock();
+        boolean success = this.droolsController.get().unlock();
 
         FeatureApiUtils.apply(getProviders(),
             feature -> feature.afterUnlock(this),
@@ -628,7 +631,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      */
     @Override
     public DroolsController getDrools() {
-        return this.droolsController;
+        return this.droolsController.get();
     }
 
 

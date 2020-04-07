@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.controller.internal;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
@@ -613,7 +614,7 @@ public class MavenDroolsController2Test {
             }
         };
 
-        drools.updateToVersion(GROUP, ARTIFACT, VERSION2, null, null);
+        assertThatCode(() -> drools.updateToVersion(GROUP, ARTIFACT, VERSION2, null, null)).doesNotThrowAnyException();
     }
 
     @Test

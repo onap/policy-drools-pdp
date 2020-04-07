@@ -114,13 +114,6 @@ public abstract class FeatureLockImpl extends LockImpl {
     }
 
     /**
-     * The subclass should make use of {@link #freeAllowed()} in its implementation of
-     * {@link #free()}.
-     */
-    @Override
-    public abstract boolean free();
-
-    /**
      * Determines if the lock can be freed.
      *
      * @return {@code true} if the lock can be freed, {@code false} if the lock is

@@ -260,7 +260,7 @@ public class ControllerConfiguration {
      */
     public void set(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, (Object) value);
+            getAdditionalProperties().put(name, value);
         }
     }
 
@@ -273,7 +273,7 @@ public class ControllerConfiguration {
      */
     public ControllerConfiguration with(String name, Object value) {
         if (!declaredProperty(name, value)) {
-            getAdditionalProperties().put(name, (Object) value);
+            getAdditionalProperties().put(name, value);
         }
         return this;
     }

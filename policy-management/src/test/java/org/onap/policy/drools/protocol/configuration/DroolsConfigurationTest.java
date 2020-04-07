@@ -59,7 +59,7 @@ public class DroolsConfigurationTest {
         assertTrue(droolsConfig.equals(droolsConfig));
 
         droolsConfig.set(ARTIFACT_ID_STRING, "foobar");
-        assertEquals(droolsConfig.get(ARTIFACT_ID_STRING), "foobar");
+        assertEquals("foobar", droolsConfig.get(ARTIFACT_ID_STRING));
 
         assertEquals(droolsConfig.with(ARTIFACT_ID_STRING, "foobar2"), droolsConfig);
 
@@ -68,9 +68,9 @@ public class DroolsConfigurationTest {
         droolsConfig2.setGroupId(GROUPID2);
         droolsConfig2.setVersion(VERSION2);
 
-        assertEquals(droolsConfig2.getArtifactId(), ARTIFACT2);
-        assertEquals(droolsConfig2.getGroupId(), GROUPID2);
-        assertEquals(droolsConfig2.getVersion(), VERSION2);
+        assertEquals(ARTIFACT2, droolsConfig2.getArtifactId());
+        assertEquals(GROUPID2, droolsConfig2.getGroupId());
+        assertEquals(VERSION2, droolsConfig2.getVersion());
 
         assertEquals(droolsConfig2.withArtifactId(ARTIFACT2), droolsConfig2);
         assertEquals(droolsConfig2.withGroupId(GROUPID2), droolsConfig2);
@@ -87,11 +87,10 @@ public class DroolsConfigurationTest {
         assertTrue(droolsConfig2.declaredProperty(VERSION_STRING, VERSION2));
         assertFalse(droolsConfig2.declaredProperty("dummy", NAME));
 
-        assertEquals(droolsConfig2.declaredPropertyOrNotFound(ARTIFACT_ID_STRING, ARTIFACT2),
-                ARTIFACT2);
-        assertEquals(droolsConfig2.declaredPropertyOrNotFound(GROUP_ID_STRING, GROUPID2), GROUPID2);
-        assertEquals(droolsConfig2.declaredPropertyOrNotFound(VERSION_STRING, VERSION2), VERSION2);
-        assertEquals(droolsConfig2.declaredPropertyOrNotFound("dummy", ARTIFACT2), ARTIFACT2);
+        assertEquals(ARTIFACT2, droolsConfig2.declaredPropertyOrNotFound(ARTIFACT_ID_STRING, ARTIFACT2));
+        assertEquals(GROUPID2, droolsConfig2.declaredPropertyOrNotFound(GROUP_ID_STRING, GROUPID2));
+        assertEquals(VERSION2, droolsConfig2.declaredPropertyOrNotFound(VERSION_STRING, VERSION2));
+        assertEquals(ARTIFACT2, droolsConfig2.declaredPropertyOrNotFound("dummy", ARTIFACT2));
 
         final int hashCode = new HashCodeBuilder().append(ARTIFACT2).append(GROUPID2).append(VERSION2)
                 .append(additionalProperties).toHashCode();

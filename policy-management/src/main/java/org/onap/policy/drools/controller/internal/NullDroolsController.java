@@ -49,12 +49,12 @@ public class NullDroolsController implements DroolsController {
 
     @Override
     public void shutdown() {
-        return;
+        // do nothing
     }
 
     @Override
     public void halt() {
-        return;
+        // do nothing
     }
 
     @Override
