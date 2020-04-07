@@ -484,10 +484,10 @@ class PolicyEngineManager implements PolicyEngine {
 
             return policyController;
         } catch (final Exception e) {
-            logger.error("{}: cannot update-policy-controller because of {}", this, e.getMessage(), e);
+            logger.error("{}: cannot update-policy-controller", this);
             throw e;
         } catch (final LinkageError e) {
-            logger.error("{}: cannot update-policy-controllers (rules) because of {}", this, e.getMessage(), e);
+            logger.error("{}: cannot update-policy-controllers (rules)", this);
             throw new IllegalStateException(e);
         }
     }
@@ -498,7 +498,7 @@ class PolicyEngineManager implements PolicyEngine {
             policyController = getControllerFactory().get(controllerName);
         } catch (final IllegalArgumentException e) {
             // not found
-            logger.warn("Policy Controller " + controllerName + " not found", e);
+            logger.warn("Policy Controller {} not found", controllerName, e);
         }
         return policyController;
     }
@@ -875,6 +875,7 @@ class PolicyEngineManager implements PolicyEngine {
             } catch (final InterruptedException e) {
                 synchronized (PolicyEngineManager.this) {
                     /* courtesy to shutdown() to allow it to return */
+                    Thread.currentThread().interrupt();
                 }
                 logger.info("{}: finishing a graceful shutdown ", PolicyEngineManager.this, e);
             } finally {
@@ -1204,8 +1205,7 @@ class PolicyEngineManager implements PolicyEngine {
             return this.deliver(busType, topic, json);
 
         } catch (final Exception e) {
-            logger.warn("{}: cannot deliver {} over {}:{} because of {}", this, event, busType, topic, e.getMessage(),
-                    e);
+            logger.warn("{}: cannot deliver {} over {}:{}", this, event, busType, topic);
             throw e;
         }
     }
@@ -1239,8 +1239,7 @@ class PolicyEngineManager implements PolicyEngine {
             return sink.send(event);
 
         } catch (final Exception e) {
-            logger.warn("{}: cannot deliver {} over {}:{} because of {}", this, event, busType, topic, e.getMessage(),
-                    e);
+            logger.warn("{}: cannot deliver {} over {}:{}", this, event, busType, topic);
             throw e;
         }
     }

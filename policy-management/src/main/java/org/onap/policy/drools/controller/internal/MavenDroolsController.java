@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -195,9 +195,8 @@ public class MavenDroolsController implements DroolsController {
 
         if (newGroupId.equalsIgnoreCase(this.getGroupId())
                 && newArtifactId.equalsIgnoreCase(this.getArtifactId())
-                && newVersion.equalsIgnoreCase(this.getVersion())) {
-            logger.warn("All in the right version: " + newGroupId + ":"
-                    + newArtifactId + ":" +  newVersion + " vs. " + this);
+                        && newVersion.equalsIgnoreCase(this.getVersion())) {
+            logger.warn("All in the right version: {}:{}:{} vs. {}", newGroupId, newArtifactId, newVersion, this);
             return;
         }
 
@@ -516,8 +515,13 @@ public class MavenDroolsController implements DroolsController {
 
     }
 
+    /*
+     * This method always returns "true", which causes a sonar complaint. However,
+     * refactoring or restructuring it would unnecessarily complicate it, thus we'll just
+     * disable the sonar complaint.
+     */
     @Override
-    public <T> boolean offer(T event) {
+    public <T> boolean offer(T event) {     // NOSONAR
         logger.debug("{}: OFFER event", this);
 
         if (this.locked || !this.alive || this.policyContainer.getPolicySessions().isEmpty()) {
@@ -541,7 +545,7 @@ public class MavenDroolsController implements DroolsController {
 
         boolean successInject = this.policyContainer.insertAll(event);
         if (!successInject) {
-            logger.warn(this + "Failed to inject into PolicyContainer {}", this.getSessionNames());
+            logger.warn("{} Failed to inject into PolicyContainer {}", this, this.getSessionNames());
         }
 
         FeatureApiUtils.apply(getDroolsProviders().getList(),
@@ -687,7 +691,7 @@ public class MavenDroolsController implements DroolsController {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Can't retrieve CORE sessions: " + e.getMessage(), e);
+            logger.warn("Can't retrieve CORE sessions", e);
             sessionNames.add(e.getMessage());
         }
         return sessionNames;

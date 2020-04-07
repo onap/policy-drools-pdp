@@ -704,7 +704,7 @@ public class RestManager {
                     required = true) ControllerConfiguration controllerConfiguration) {
 
         if (controllerName == null || controllerName.isEmpty() || controllerConfiguration == null
-                || controllerConfiguration.getName().intern() != controllerName) {
+                || !controllerName.equals(controllerConfiguration.getName())) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("A valid or matching controller names must be provided").build();
         }

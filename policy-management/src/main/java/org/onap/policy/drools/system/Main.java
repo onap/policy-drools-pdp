@@ -27,7 +27,6 @@ import org.onap.policy.common.endpoints.http.client.HttpClientConfigException;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
 import org.onap.policy.common.utils.security.CryptoUtils;
-import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -57,54 +56,33 @@ public class Main {
     public static void main(String[] args) {
 
         /* start logger */
-
         Logger logger = LoggerFactory.getLogger(Main.class);
 
         /* system properties */
-
-        for (Properties systemProperties : SystemPersistenceConstants.getManager().getSystemProperties()) {
-            if (!StringUtils.isBlank(systemProperties.getProperty(SYSTEM_SYMM_KEY))) {
-                PropertyUtil.setDefaultCryptoCoder(new CryptoUtils(systemProperties.getProperty(SYSTEM_SYMM_KEY)));
-            }
-            PropertyUtil.setSystemProperties(systemProperties);
-        }
+        setSystemProperties();
 
         /* 0. boot */
-
         PolicyEngineConstants.getManager().boot(args);
 
         /* 1.a. Configure Engine */
-
-        Properties engineProperties;
-        try {
-            engineProperties = SystemPersistenceConstants.getManager().getEngineProperties();
-        } catch (IllegalArgumentException iae) {
-            logger.warn("Main: engine properties not found.  Using default configuration.", iae);
-            engineProperties = PolicyEngineConstants.getManager().defaultTelemetryConfig();
-        }
-
-        PolicyEngineConstants.getManager().configure(engineProperties);
+        configureEngine(logger);
 
         /* 1.b. Load Installation Environment(s) */
-
         for (Properties env : SystemPersistenceConstants.getManager().getEnvironmentProperties()) {
             PolicyEngineConstants.getManager().setEnvironment(env);
         }
 
         /* 2.a Add topics */
-
         for (Properties topicProperties : SystemPersistenceConstants.getManager().getTopicProperties()) {
             TopicEndpointManager.getManager().addTopics(topicProperties);
         }
 
         /* 2.b Add HTTP Servers */
-
         for (Properties serverProperties : SystemPersistenceConstants.getManager().getHttpServerProperties()) {
             HttpServletServerFactoryInstance.getServerFactory().build(serverProperties);
         }
 
         /* 2.c Add HTTP Clients */
-
         for (Properties clientProperties : SystemPersistenceConstants.getManager().getHttpClientProperties()) {
             try {
                 HttpClientFactoryInstance.getClientFactory().build(clientProperties);
@@ -114,7 +92,36 @@ public class Main {
         }
 
         /* 3. Start the Engine with the basic services only (no Policy Controllers) */
+        MdcTransaction trans = startEngineOnly(logger);
 
+        /* 4. Create and start the controllers */
+        createAndStartControllers(logger, trans);
+
+        PolicyEngineConstants.getManager().open();
+    }
+
+    private static void setSystemProperties() {
+        for (Properties systemProperties : SystemPersistenceConstants.getManager().getSystemProperties()) {
+            if (!StringUtils.isBlank(systemProperties.getProperty(SYSTEM_SYMM_KEY))) {
+                PropertyUtil.setDefaultCryptoCoder(new CryptoUtils(systemProperties.getProperty(SYSTEM_SYMM_KEY)));
+            }
+            PropertyUtil.setSystemProperties(systemProperties);
+        }
+    }
+
+    private static void configureEngine(Logger logger) {
+        Properties engineProperties;
+        try {
+            engineProperties = SystemPersistenceConstants.getManager().getEngineProperties();
+        } catch (IllegalArgumentException iae) {
+            logger.warn("Main: engine properties not found.  Using default configuration.", iae);
+            engineProperties = PolicyEngineConstants.getManager().defaultTelemetryConfig();
+        }
+
+        PolicyEngineConstants.getManager().configure(engineProperties);
+    }
+
+    private static MdcTransaction startEngineOnly(Logger logger) {
         MdcTransaction trans =
                 MdcTransaction.newTransaction(null, null)
                 .setServiceName(Main.class.getSimpleName())
@@ -157,9 +164,10 @@ public class Main {
                     e);
             System.exit(1);
         }
+        return trans;
+    }
 
-        /* 4. Create and start the controllers */
-
+    private static void createAndStartControllers(Logger logger, MdcTransaction trans) {
         for (final Properties controllerProperties :
             SystemPersistenceConstants.getManager().getControllerProperties()) {
             final String controllerName =
@@ -205,7 +213,5 @@ public class Main {
                         e);
             }
         }
-
-        PolicyEngineConstants.getManager().open();
     }
 }

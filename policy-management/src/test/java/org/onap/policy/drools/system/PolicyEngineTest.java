@@ -305,5 +305,6 @@ public class PolicyEngineTest {
         PolicyEngineConstants.getManager().stop();
 
         await().atMost(10, TimeUnit.SECONDS).until(() -> !PolicyEngineConstants.getManager().isAlive());
+        assertFalse(PolicyEngineConstants.getManager().isAlive());
     }
 }

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * Configuration Test
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public class PdpdConfigurationTest {
         //
         // Test get additional properties
         //
-        assertEquals(drools.getAdditionalProperties().size(), 1);
+        assertEquals(1, drools.getAdditionalProperties().size());
 
         //
         // Test Not found
@@ -165,7 +165,7 @@ public class PdpdConfigurationTest {
         //
         // Test additional properties
         //
-        assertEquals(controller.getAdditionalProperties().size(), 1);
+        assertEquals(1, controller.getAdditionalProperties().size());
 
         //
         // Not found
@@ -230,7 +230,7 @@ public class PdpdConfigurationTest {
         // Test additional properties
         //
 
-        assertEquals(config.getAdditionalProperties().size(), 1);
+        assertEquals(1, config.getAdditionalProperties().size());
 
         //
         // Test NOT FOUND
@@ -249,8 +249,8 @@ public class PdpdConfigurationTest {
     @Test
     public void testConstructor() {
         PdpdConfiguration config = new PdpdConfiguration(REQUEST_ID, ENTITY, null);
-        assertEquals(config.getRequestId(), REQUEST_ID);
-        assertEquals(config.getEntity(), ENTITY);
+        assertEquals(REQUEST_ID, config.getRequestId());
+        assertEquals(ENTITY, config.getEntity());
     }
 
     @Test

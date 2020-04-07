@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.system.internal;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -44,6 +45,7 @@ import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerFactory;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
@@ -262,8 +264,9 @@ public class AggregatedPolicyControllerTest {
 
     @Test
     public void testSerialize() {
-        new GsonMgmtTestBuilder().addDroolsControllerMock().addTopicSinkMock().addTopicSourceMock().build()
-                        .compareGson(apc, AggregatedPolicyControllerTest.class);
+        GsonTestUtils gson = new GsonMgmtTestBuilder().addDroolsControllerMock().addTopicSinkMock().addTopicSourceMock()
+                        .build();
+        assertThatCode(() -> gson.compareGson(apc, AggregatedPolicyControllerTest.class)).doesNotThrowAnyException();
     }
 
     @Test

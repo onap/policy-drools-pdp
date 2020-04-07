@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     // get an instance of logger
-    private static final Logger  logger = LoggerFactory.getLogger(PolicyControllerFactory.class);
+    private static final Logger  logger = LoggerFactory.getLogger(IndexedPolicyControllerFactory.class);
 
     /**
      * Policy Controller Name Index.
