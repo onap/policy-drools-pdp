@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71dd7c3d_d18e0f4f",
+        "filename": "feature-active-standby-management/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-04-07T11:49:03Z",
+      "side": 1,
+      "message": "IMO - I think that these are common throughout every sub-module and should just be declared in the root pom.xml. But that\u0027s a cleanup I was saving for post-Frankfurt for both drools repos.",
+      "range": {
+        "startLine": 161,
+        "startChar": 1,
+        "endLine": 176,
+        "endChar": 1
+      },
+      "revId": "15014b8ca386a8bfd5c26435f45de94ca06e95e8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
