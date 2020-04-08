@@ -16,6 +16,24 @@
       "revId": "18c81f810f26f57196c0a2ebcbd911a2f822c1db",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "001f0a80_1ef83b2c",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-04-08T18:17:15Z",
+      "side": 1,
+      "message": "thought about it, but would prefer the message be logged before the change is actually made so the output in the log remains consistent with what actually happened.  In addition:\n- it is unlikely that two different threads will try to manipulate the same lock\n  at the same time\n- the loggers typically use asynchronous appenders, which I believe avoid blocking",
+      "parentUuid": "dcf11093_df0cfc84",
+      "revId": "18c81f810f26f57196c0a2ebcbd911a2f822c1db",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
