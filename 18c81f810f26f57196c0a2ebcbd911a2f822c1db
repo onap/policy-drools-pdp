@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dcf11093_df0cfc84",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/LockImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-04-08T17:56:34Z",
+      "side": 1,
+      "message": "perhaps move the logger statement out to avoid IO within a synchronized block.",
+      "revId": "18c81f810f26f57196c0a2ebcbd911a2f822c1db",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
