@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.controller.internal;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
@@ -43,7 +45,8 @@ public class NullDroolsControllerTest {
 
     @Test
     public void testSerialize() {
-        new GsonTestUtils().compareGson(new NullDroolsController(), NullDroolsControllerTest.class);
+        assertThatCode(() -> new GsonTestUtils().compareGson(new NullDroolsController(),
+                        NullDroolsControllerTest.class)).doesNotThrowAnyException();
     }
 
     @Test
@@ -57,17 +60,17 @@ public class NullDroolsControllerTest {
 
     @Test
     public void getGroupId() {
-        Assert.assertEquals(new NullDroolsController().getGroupId(), DroolsControllerConstants.NO_GROUP_ID);
+        Assert.assertEquals(DroolsControllerConstants.NO_GROUP_ID, new NullDroolsController().getGroupId());
     }
 
     @Test
     public void getArtifactId() {
-        Assert.assertEquals(new NullDroolsController().getArtifactId(), DroolsControllerConstants.NO_ARTIFACT_ID);
+        Assert.assertEquals(DroolsControllerConstants.NO_ARTIFACT_ID, new NullDroolsController().getArtifactId());
     }
 
     @Test
     public void getVersion() {
-        Assert.assertEquals(new NullDroolsController().getVersion(), DroolsControllerConstants.NO_VERSION);
+        Assert.assertEquals(DroolsControllerConstants.NO_VERSION, new NullDroolsController().getVersion());
     }
 
     @Test

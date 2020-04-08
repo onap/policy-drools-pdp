@@ -21,6 +21,7 @@
 package org.onap.policy.drools.system.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -347,7 +348,7 @@ public class FeatureLockImplTest {
         MyLockStdSession lock = new MyLockStdSession(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         // this should invoke the real policy session without throwing an exception
-        lock.grant();
+        assertThatCode(() -> lock.grant()).doesNotThrowAnyException();
     }
 
     @Test
