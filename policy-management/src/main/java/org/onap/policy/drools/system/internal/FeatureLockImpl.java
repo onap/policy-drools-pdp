@@ -119,7 +119,7 @@ public abstract class FeatureLockImpl extends LockImpl {
      * @return {@code true} if the lock can be freed, {@code false} if the lock is
      *         unavailable
      */
-    protected boolean freeAllowed() {
+    protected synchronized boolean freeAllowed() {
         // do a quick check of the state
         if (isUnavailable()) {
             return false;
@@ -150,7 +150,7 @@ public abstract class FeatureLockImpl extends LockImpl {
      * @return {@code true} if the lock can be extended, {@code false} if the lock is
      *         unavailable
      */
-    protected boolean extendAllowed(int holdSec, LockCallback callback) {
+    protected synchronized boolean extendAllowed(int holdSec, LockCallback callback) {
         if (holdSec < 0) {
             throw new IllegalArgumentException("holdSec is negative");
         }

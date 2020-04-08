@@ -100,13 +100,15 @@ public class LockImpl implements Lock, Serializable {
      * This method always succeeds, unless the lock is already unavailable.
      */
     @Override
-    public synchronized boolean free() {
-        if (isUnavailable()) {
-            return false;
-        }
+    public boolean free() {
+        synchronized (this) {
+            if (isUnavailable()) {
+                return false;
+            }
 
-        logger.info("releasing lock: {}", this);
-        setState(LockState.UNAVAILABLE);
+            logger.info("releasing lock: {}", this);
+            setState(LockState.UNAVAILABLE);
+        }
 
         return true;
     }

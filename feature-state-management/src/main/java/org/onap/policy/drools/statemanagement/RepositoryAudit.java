@@ -522,18 +522,25 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     private final class RecursivelyDeleteDirectory extends SimpleFileVisitor<Path> {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-            file.toFile().delete();
-            return FileVisitResult.CONTINUE;
+            return deletePath("file", file);
         }
 
         @Override
         public FileVisitResult postVisitDirectory(Path file, IOException ex) throws IOException {
             if (ex == null) {
-                file.toFile().delete();
-                return FileVisitResult.CONTINUE;
+                return deletePath("directory", file);
             } else {
                 throw ex;
             }
+        }
+
+        private FileVisitResult deletePath(String type, Path file) {
+            try {
+                Files.delete(file);
+            } catch (IOException e) {
+                logger.warn("failed to delete {} {}", type, file, e);
+            }
+            return FileVisitResult.CONTINUE;
         }
     }
 

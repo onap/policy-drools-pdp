@@ -227,7 +227,7 @@ public class SimpleLockManager extends LockManager<SimpleLockManager.SimpleLock>
         }
 
         @Override
-        public synchronized boolean free() {
+        public boolean free() {
             if (!freeAllowed()) {
                 return false;
             }
