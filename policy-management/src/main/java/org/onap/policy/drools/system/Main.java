@@ -53,7 +53,12 @@ public class Main {
      *
      * @param args program arguments.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) {    // NOSONAR
+        /*
+         * NOTE: it is up to the individual features to perform argument validation.
+         * However, it doesn't appear that any of the features actually use the arguments,
+         * so no validation is necessary, thus sonar is disabled.
+         */
 
         /* start logger */
         Logger logger = LoggerFactory.getLogger(Main.class);
