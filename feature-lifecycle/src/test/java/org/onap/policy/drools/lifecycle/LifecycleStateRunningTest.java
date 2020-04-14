@@ -34,6 +34,7 @@ import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
@@ -69,6 +70,7 @@ public abstract class LifecycleStateRunningTest {
         controllerSupport.destroyController();
         NoopTopicFactories.getSourceFactory().destroy();
         NoopTopicFactories.getSinkFactory().destroy();
+        PolicyControllerConstants.getFactory().destroy();
         try {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));

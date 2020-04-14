@@ -21,7 +21,9 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -32,22 +34,20 @@ import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
+import org.onap.policy.common.utils.coder.StandardCoder;
+import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
 /**
  * Native Controller Policy Test.
  */
 public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
-    // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
             "src/test/resources/tosca-policy-native-controller-example.json";
-
-    private ToscaPolicy policy;
-    private ControllerPolicy controllerPolicy;
-    private PolicyTypeNativeDroolsController controller;
 
     /**
      * Test initialization.
@@ -55,31 +55,31 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
     @Before
     public void init() throws IOException, CoderException {
         fsm = makeFsmWithPseudoTime();
-        policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
-        controllerPolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
-        controller = new PolicyTypeNativeDroolsController(fsm, policy.getTypeIdentifier());
+    }
+
+    @Test
+    public void testDeployUndeploy() throws IOException, CoderException {
+        fsm = makeFsmWithPseudoTime();
 
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().isAlive());
         assertFalse(controllerSupport.getController().getDrools().isAlive());
         assertSame(controllerSupport.getController(), PolicyControllerConstants.getFactory().get("lifecycle"));
 
-        /* start controller */
         assertTrue(controllerSupport.getController().start());
 
         assertTrue(controllerSupport.getController().isAlive());
         assertTrue(controllerSupport.getController().getDrools().isAlive());
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertSame(controllerSupport.getController(), PolicyControllerConstants.getFactory().get("lifecycle"));
-    }
 
-    @Test
-    public void testUndeployDeploy() {
+        ToscaPolicy policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
+        ControllerPolicy controllerPolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
+        PolicyTypeNativeDroolsController controller =
+                new PolicyTypeNativeDroolsController(fsm, policy.getTypeIdentifier());
         assertTrue(controller.undeploy(policy));
         assertThatIllegalArgumentException().isThrownBy(
             () -> PolicyControllerConstants.getFactory().get(controllerPolicy.getName()));
-
-        assertFalse(controller.deploy(policy));
 
         Properties noopTopicProperties = new Properties();
         noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, "DCAE_TOPIC");
@@ -87,5 +87,102 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
         assertTrue(controller.deploy(policy));
+        /* this should be ok too */
+        assertTrue(controller.deploy(policy));
+    }
+
+    @Test
+    public void testControllerProperties() throws CoderException {
+        Properties noopTopicProperties = new Properties();
+        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS,
+                "DCAE_TOPIC,APPC-CL,APPC-LCM-WRITE,SDNR-CL-RSP");
+        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS,
+                "APPC-CL,APPC-LCM-READ,POLICY-CL-MGT,DCAE_CL_RSP");
+        TopicEndpointManager.getManager().addTopics(noopTopicProperties);
+
+        ToscaPolicy nativeControllerPolicy =
+                getExamplesPolicy("policies/usecases.native.controller.policy.input.tosca.json", "usecases");
+        PolicyTypeNativeDroolsController controller =
+                new PolicyTypeNativeDroolsController(fsm, nativeControllerPolicy.getTypeIdentifier());
+        assertTrue(controller.deploy(nativeControllerPolicy));
+        Properties properties = PolicyControllerConstants.getFactory().get("usecases").getProperties();
+
+        assertEquals("usecases", properties.getProperty("controller.name"));
+
+        assertNull(properties.getProperty("rules.groupId"));
+        assertNull(properties.getProperty("rules.artifactId"));
+        assertNull(properties.getProperty("rules.version"));
+
+        assertEquals("DCAE_TOPIC,APPC-CL,APPC-LCM-WRITE,SDNR-CL-RSP",
+                properties.getProperty("noop.source.topics"));
+        assertEquals("APPC-CL,APPC-LCM-READ,POLICY-CL-MGT,DCAE_CL_RSP",
+                properties.getProperty("noop.sink.topics"));
+
+        assertEquals("org.onap.policy.controlloop.CanonicalOnset,org.onap.policy.controlloop.CanonicalAbated",
+                properties.getProperty("noop.source.topics.DCAE_TOPIC.events"));
+        assertEquals("[?($.closedLoopEventStatus == 'ONSET')]",
+            properties
+                .getProperty("noop.source.topics.DCAE_TOPIC.events.org.onap.policy.controlloop.CanonicalOnset.filter"));
+        assertEquals("[?($.closedLoopEventStatus == 'ABATED')]",
+            properties
+                .getProperty("noop.source.topics.DCAE_TOPIC.events."
+                                     + "org.onap.policy.controlloop.CanonicalAbated.filter"));
+        assertEquals("org.onap.policy.controlloop.util.Serialization,gson",
+                properties.getProperty("noop.source.topics.DCAE_TOPIC.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appc.Response", properties.getProperty("noop.source.topics.APPC-CL.events"));
+        assertEquals("[?($.CommonHeader && $.Status)]",
+                properties
+                        .getProperty("noop.source.topics.APPC-CL.events.org.onap.policy.appc.Response.filter"));
+        assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
+                properties.getProperty("noop.source.topics.APPC-CL.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appclcm.AppcLcmDmaapWrapper",
+                properties.getProperty("noop.source.topics.APPC-LCM-WRITE.events"));
+        assertEquals("[?($.type == 'response')]",
+            properties
+                .getProperty("noop.source.topics.APPC-LCM-WRITE.events."
+                        + "org.onap.policy.appclcm.AppcLcmDmaapWrapper.filter"));
+        assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
+                properties.getProperty("noop.source.topics.APPC-LCM-WRITE.events.custom.gson"));
+
+        assertEquals("org.onap.policy.sdnr.PciResponseWrapper",
+                properties.getProperty("noop.source.topics.SDNR-CL-RSP.events"));
+        assertEquals("[?($.type == 'response')]",
+                properties
+                        .getProperty("noop.source.topics.SDNR-CL-RSP.events."
+                                             + "org.onap.policy.sdnr.PciResponseWrapper.filter"));
+        assertEquals("org.onap.policy.sdnr.util.Serialization,gson",
+                properties.getProperty("noop.source.topics.SDNR-CL-RSP.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appc.Request", properties.getProperty("noop.sink.topics.APPC-CL.events"));
+        assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
+                properties.getProperty("noop.sink.topics.APPC-CL.events.custom.gson"));
+
+        assertEquals("org.onap.policy.appclcm.AppcLcmDmaapWrapper",
+                properties.getProperty("noop.sink.topics.APPC-LCM-READ.events"));
+        assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
+                properties.getProperty("noop.sink.topics.APPC-LCM-READ.events.custom.gson"));
+
+        assertEquals("org.onap.policy.controlloop.VirtualControlLoopNotification",
+                properties.getProperty("noop.sink.topics.POLICY-CL-MGT.events"));
+        assertEquals("org.onap.policy.controlloop.util.Serialization,gsonPretty",
+                properties.getProperty("noop.sink.topics.POLICY-CL-MGT.events.custom.gson"));
+
+        assertEquals("org.onap.policy.controlloop.ControlLoopResponse",
+                properties.getProperty("noop.sink.topics.DCAE_CL_RSP.events"));
+        assertEquals("org.onap.policy.controlloop.util.Serialization,gsonPretty",
+                properties.getProperty("noop.sink.topics.DCAE_CL_RSP.events.custom.gson"));
+
+        assertEquals("test", properties.getProperty("notes"));
+        assertEquals("auto", properties.getProperty("persistence.type"));
+
+        assertTrue(controller.undeploy(nativeControllerPolicy));
+    }
+
+    private ToscaPolicy getExamplesPolicy(String resourcePath, String policyName) throws CoderException {
+        String policyJson = ResourceUtils.getResourceAsString(resourcePath);
+        ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
+        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
     }
 }

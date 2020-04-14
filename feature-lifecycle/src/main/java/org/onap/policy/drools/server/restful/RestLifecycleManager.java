@@ -18,9 +18,11 @@
 
 package org.onap.policy.drools.server.restful;
 
+import com.worldturner.medeia.api.ValidationFailedException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -356,7 +358,7 @@ public class RestLifecycleManager {
     @Path("policies/operations")
     @ApiOperation(value = "Gets Policy Operations", responseContainer = "List")
     public Response policiesOperations() {
-        return Response.status(Response.Status.OK).entity(List.of("deployment", "undeployment")).build();
+        return Response.status(Response.Status.OK).entity(List.of("deployment", "undeployment", "validation")).build();
     }
 
     /**
@@ -379,6 +381,29 @@ public class RestLifecycleManager {
     @ApiOperation(value = "Undeploys a policy", response = Boolean.class)
     public Response undeployOperation(@ApiParam(value = "Tosca Policy", required = true) String policy) {
         return deployUndeployOperation(policy, false);
+    }
+
+    /**
+     * POST a policy for validation.
+     */
+
+    @POST
+    @Path("policies/operations/validation")
+    @ApiOperation(value = "Validates a policy", responseContainer = "List")
+    public Response validateOperation(@ApiParam(value = "Tosca Policy", required = true) String policy) {
+        ToscaPolicy toscaPolicy = getToscaPolicy(policy);
+        if (toscaPolicy == null) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+
+        try {
+            LifecycleFeature.fsm.getDomainMaker().conformance(toscaPolicy);
+        } catch (ValidationFailedException v) {
+            logger.trace("policy {} validation errors: {}", toscaPolicy, v.getMessage(), v);
+            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(v.getFailures()).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(Collections.emptyList()).build();
     }
 
     private Response deployUndeployOperation(String policy, boolean deploy) {

@@ -119,8 +119,10 @@ public class RestLifecycleManagerTest {
         controllerSupport.installArtifact();
 
         Properties noopTopicProperties = new Properties();
-        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS, "DCAE_TOPIC");
-        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, "APPC-CL");
+        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS,
+                "DCAE_TOPIC,APPC-CL,APPC-LCM-WRITE,SDNR-CL-RSP");
+        noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS,
+                "APPC-CL,APPC-LCM-READ,POLICY-CL-MGT,SDNR-CL,DCAE_CL_RSP");
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
         client = HttpClientFactoryInstance.getClientFactory().get("lifecycle");
@@ -227,6 +229,8 @@ public class RestLifecycleManagerTest {
         if (StringUtils.isBlank(opPolicy.getName())) {
             opPolicy.setName(opPolicy.getMetadata().get("policy-id"));
         }
+        assertTrue(
+            listPost("policies/operations/validation", toString(opPolicy), Status.OK.getStatusCode()).isEmpty());
 
         booleanPost("policies", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
@@ -253,7 +257,7 @@ public class RestLifecycleManagerTest {
 
         /* individual deploy/undeploy operations */
 
-        resourceLists("policies/operations", 2);
+        resourceLists("policies/operations", 3);
 
         booleanPost("policies/operations/deployment", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(1,
@@ -311,6 +315,10 @@ public class RestLifecycleManagerTest {
         get("policies/example.controller/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
+        opPolicy.getMetadata().remove("policy-id");
+        assertFalse(
+            listPost("policies/operations/validation", toString(opPolicy),
+                    Status.NOT_ACCEPTABLE.getStatusCode()).isEmpty());
     }
 
     private Response get(String contextPath, int statusCode) {
@@ -327,6 +335,12 @@ public class RestLifecycleManagerTest {
     private void booleanPut(String contextPath, String body, int statusCode, Boolean bool) {
         Response response = client.put(contextPath, Entity.json(body), Collections.emptyMap());
         booleanResponse(response, statusCode, bool);
+    }
+
+    private List<?> listPost(String contextPath, String body, int statusCode) {
+        Response response = client.post(contextPath, Entity.json(body), Collections.emptyMap());
+        assertEquals(statusCode, response.getStatus());
+        return HttpClient.getBody(response, List.class);
     }
 
     private void booleanPost(String contextPath, String body, int statusCode, Boolean bool) {
