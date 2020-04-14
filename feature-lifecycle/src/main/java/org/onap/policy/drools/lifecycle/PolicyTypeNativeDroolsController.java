@@ -96,7 +96,7 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
         try {
             controller.start();
         } catch (RuntimeException e) {
-            logger.warn("failed deploy (cannot start ontroller) for policy: {}", policy, e);
+            logger.warn("failed deploy (cannot start controller) for policy: {}", policy, e);
             PolicyEngineConstants.getManager().removePolicyController(controller);
             return false;
         }
@@ -199,7 +199,7 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     private void configTopic(
             String configCommPrefix, String topicName, List<ControllerEvent> events, Properties controllerProps) {
-        String configTopicPrefix = configCommPrefix + "." + topicName;
+        String configTopicPrefix = configCommPrefix + ".topics." + topicName;
         configTopics(configCommPrefix, topicName, controllerProps);
         for (ControllerEvent configEvent : events) {
             configEvent(configTopicPrefix, configEvent, controllerProps);
@@ -213,7 +213,6 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     private void configEvent(String propPrefix, ControllerEvent configEvent, Properties controllerProps) {
         String eventPropPrefix = propPrefix + ".events";
-        controllerProps.setProperty(eventPropPrefix, configEvent.getEventClass());
         if (configEvent.getEventFilter() != null) {
             controllerProps.setProperty(
                 eventPropPrefix + "." + configEvent.getEventClass() + ".filter", configEvent.getEventFilter());
@@ -225,10 +224,11 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
     }
 
     private void configTopicItemList(String itemPrefix, String item, Properties controllerProps) {
-        if (controllerProps.getProperty(itemPrefix) == null) {
+        String itemValue = controllerProps.getProperty(itemPrefix);
+        if (itemValue == null) {
             controllerProps.setProperty(itemPrefix, item);
         } else {
-            controllerProps.setProperty(itemPrefix, "," + item);
+            controllerProps.setProperty(itemPrefix, itemValue + "," + item);
         }
     }
 
