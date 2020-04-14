@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61bb7e70_c438d195",
+        "filename": "feature-lifecycle/src/test/resources/tosca-policy-native-controller-example.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-04-14T18:04:58Z",
+      "side": 1,
+      "message": "interesting change.  Sure you don\u0027t want a LinkedHashMap, to keep the fields in order?",
+      "revId": "09f593ae4faca45070f26a5eaafd765eadb08801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
