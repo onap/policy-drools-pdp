@@ -1,0 +1,4 @@
+distribution_type: 'maven'
+version: '1.6.1'
+project: 'policy-drools-pdp'
+log_dir: 'policy-drools-pdp-maven-stage-master/302/'
