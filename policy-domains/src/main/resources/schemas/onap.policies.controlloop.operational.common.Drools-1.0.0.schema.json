@@ -153,8 +153,7 @@
                                 "title": "Description",
                                 "examples": [
                                     "Restart the VM"
-                                ],
-                                "pattern": "^(.+)$"
+                                ]
                             },
                             "operation": {
                                 "$id": "#/properties/properties/properties/operations/items/properties/operation",
