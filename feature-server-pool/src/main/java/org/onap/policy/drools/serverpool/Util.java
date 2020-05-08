@@ -43,6 +43,13 @@ public class Util {
     public static final Timer timer = new Timer("Server Pool Timer", true);
 
     /**
+     * Hide implicit public constructor.
+     */
+    private Util() {
+        // everything here is static -- no instances of this class are created
+    }
+
+    /**
      * Internally, UUID objects use two 'long' variables, and the default
      * comparison is signed, which means the order for the first and 16th digit
      * is: '89abcdef01234567', while the order for the rest is
@@ -50,21 +57,18 @@ public class Util {
      * The following comparator uses the ordering '0123456789abcdef' for all
      * digits.
      */
-    public static final Comparator<UUID> uuidComparator =
-        new Comparator<UUID>() {
-            public int compare(UUID u1, UUID u2) {
-                // compare most significant portion
-                int rval = Long.compareUnsigned(u1.getMostSignificantBits(),
-                                                u2.getMostSignificantBits());
-                if (rval == 0) {
-                    // most significant portion matches --
-                    // compare least significant portion
-                    rval = Long.compareUnsigned(u1.getLeastSignificantBits(),
-                                                u2.getLeastSignificantBits());
-                }
-                return rval;
-            }
-        };
+    public static final Comparator<UUID> uuidComparator = (UUID u1, UUID u2) -> {
+        // compare most significant portion
+        int rval = Long.compareUnsigned(u1.getMostSignificantBits(),
+                                        u2.getMostSignificantBits());
+        if (rval == 0) {
+            // most significant portion matches --
+            // compare least significant portion
+            rval = Long.compareUnsigned(u1.getLeastSignificantBits(),
+                                        u2.getLeastSignificantBits());
+        }
+        return rval;
+    };
 
     /* ============================================================ */
 
@@ -104,7 +108,6 @@ public class Util {
         try {
             return IOUtils.toString(input, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             logger.error("Util.inputStreamToString error", e);
             return "";
         }

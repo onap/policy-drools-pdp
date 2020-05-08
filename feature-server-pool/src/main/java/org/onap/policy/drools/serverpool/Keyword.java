@@ -47,16 +47,11 @@ public class Keyword {
 
     // this table can be used to map an object class into the method
     // to invoke to do the lookup
-    private static ConcurrentHashMap<Class, Lookup> classToLookup =
+    private static ConcurrentHashMap<Class<?>, Lookup> classToLookup =
         new ConcurrentHashMap<>();
 
     // this is a pre-defined 'Lookup' instance that always returns 'null'
-    private static Lookup nullLookup = new Lookup() {
-        @Override
-        public String getKeyword(Object obj) {
-            return null;
-        }
-    };
+    private static Lookup nullLookup = (Object obj) -> (String) null;
 
     /**
      * This method takes the object's class, looks it up in the 'classToLookup'
@@ -78,7 +73,7 @@ public class Keyword {
         // try to locate a matching entry using 'inheritance' rules
         Class<?> thisClass = obj.getClass();
         Class<?> matchingClass = null;
-        for (Map.Entry<Class, Lookup> entry : classToLookup.entrySet()) {
+        for (Map.Entry<Class<?>, Lookup> entry : classToLookup.entrySet()) {
             if (entry.getKey().isAssignableFrom(thisClass)
                     && (matchingClass == null
                        || matchingClass.isAssignableFrom(entry.getKey()))) {
@@ -173,7 +168,14 @@ public class Keyword {
             }
         }
 
-        return lookupClassByName(classNameToSequence, clazz);
+        Class<?> keyClass = buildReflectiveLookup_findKeyClass(clazz);
+
+        if (keyClass == null) {
+            // no matching class name found
+            return null;
+        }
+
+        return buildReflectiveLookup_build(clazz, keyClass);
     }
 
     /**
@@ -182,8 +184,7 @@ public class Keyword {
      * interfaces. If no match is found, repeat with the superclass,
      * and all the way up the superclass chain.
      */
-    private static Lookup lookupClassByName(Map<String, String> classNameToSequence,
-        Class<?> clazz) {
+    private static Class<?> buildReflectiveLookup_findKeyClass(Class<?> clazz) {
         Class<?> keyClass = null;
         for (Class<?> cl = clazz ; cl != null ; cl = cl.getSuperclass()) {
             if (classNameToSequence.containsKey(cl.getName())) {
@@ -210,11 +211,10 @@ public class Keyword {
                 break;
             }
         }
+        return keyClass;
+    }
 
-        if (keyClass == null) {
-            // no matching class name found
-            return null;
-        }
+    private static Lookup buildReflectiveLookup_build(Class<?> clazz, Class<?> keyClass) {
         // we found a matching key in the table -- now, process the values
         Class<?> currentClass = keyClass;
 
@@ -443,13 +443,10 @@ public class Keyword {
     static final int UUID_LENGTH = 36;
 
     static {
-        conversionFunction.put("uuid", new Function<String, String>() {
-            @Override
-            public String apply(String value) {
-                // truncate strings to 36 characters
-                return value != null && value.length() > UUID_LENGTH
-                    ? value.substring(0, UUID_LENGTH) : value;
-            }
+        conversionFunction.put("uuid", value -> {
+            // truncate strings to 36 characters
+            return value != null && value.length() > UUID_LENGTH
+                ? value.substring(0, UUID_LENGTH) : value;
         });
     }
 

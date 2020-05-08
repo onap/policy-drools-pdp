@@ -121,6 +121,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.onap.policy.drools-pdp</groupId>
       <artifactId>api-server-pool-state-control</artifactId>
       <version>${project.version}</version>
