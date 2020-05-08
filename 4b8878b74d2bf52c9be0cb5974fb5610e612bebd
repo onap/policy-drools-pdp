@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7fca5f48_7c05bb5c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1480,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "return ?",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "376ae084_6b5b5a5a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1956,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "sonar complain about this?  surprising.  FYI: sonar would have been ok with this, too:\n\n  if(--count \u003c\u003d 0)",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "73de9625_f5cb1f3b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "I\u0027m surprised this passes checkstyle - didn\u0027t think it liked the \"_\", preferring camel-case instead\n\nsame comment for \"xxx_build()\"",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0beb1296_6a776eb2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "this will still have a sonar issue - nesting is too deep",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68bc9214_d434fb53",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "fyi: another way to satisfy sonar is to just add \"final\"",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7062caf6_f2891171",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1729,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "sonar: nesting too deep?  may want to extract this \"for\" loop into its own method, too",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7531c487_f3492630",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2725,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "sonar: only one continue/break allowed within a \"for\" loop",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0ab97e1e_37cc8a47",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2754,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "apparently a lot of this code is a duplicate of the lines starting on line 2683.  Perhaps extract a common function? (sonar may or may not complain about it)",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0220d2e6_4d884ad0",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "checkstyle issue with function name??",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "23ce8f4b_1ad418da",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-08T14:31:18Z",
+      "side": 1,
+      "message": "checkstyle issue with name??",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
