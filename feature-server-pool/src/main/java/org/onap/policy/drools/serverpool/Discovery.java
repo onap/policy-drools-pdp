@@ -37,7 +37,6 @@ import static org.onap.policy.drools.serverpool.ServerPoolProperties.DISCOVER_PU
 import static org.onap.policy.drools.serverpool.ServerPoolProperties.getProperty;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

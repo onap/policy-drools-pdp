@@ -41,12 +41,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.onap.policy.drools.serverpool.Bucket;
-import org.onap.policy.drools.serverpool.FeatureServerPool;
-import org.onap.policy.drools.serverpool.Leader;
-import org.onap.policy.drools.serverpool.Server;
-import org.onap.policy.drools.serverpool.TargetLock;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

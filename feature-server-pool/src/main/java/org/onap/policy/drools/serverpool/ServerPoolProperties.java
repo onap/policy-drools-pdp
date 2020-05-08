@@ -235,6 +235,13 @@ public class ServerPoolProperties {
     private static Properties properties = new Properties();
 
     /**
+     * Hide implicit public constructor.
+     */
+    private ServerPoolProperties() {
+        // everything here is static -- no instances of this class are created
+    }
+
+    /**
      * Store the application properties values.
      *
      * @param properties the properties to save
