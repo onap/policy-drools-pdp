@@ -159,8 +159,8 @@ class MainLoop extends Thread {
     /**
      * Poll for and process incoming messages for up to 1 second.
      */
-    static void handleIncomingWork() throws InterruptedException {
-        long currentTime = System.currentTimeMillis();;
+    static void handleIncomingWork() {
+        long currentTime = System.currentTimeMillis();
         long wakeUpTime = currentTime + cycleTime;
         long timeDiff;
 
@@ -176,7 +176,8 @@ class MainLoop extends Thread {
                 work.run();
             } catch (InterruptedException e) {
                 logger.error("Interrupted in MainLoop");
-                throw(e);
+                Thread.currentThread().interrupt();
+                return;
             } catch (Exception e) {
                 logger.error("Exception in MainLoop incoming work", e);
             }
