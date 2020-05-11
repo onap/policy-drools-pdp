@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "dde6fc9e_84aa0db2",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1480,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "Good catch -- I will fix it.",
+      "parentUuid": "7fca5f48_7c05bb5c",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "376ae084_6b5b5a5a",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "05335c16_420f47be",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1956,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "That\u0027s surprising, given that they are equivalent. I am not a big fan of Sonar -- does it show?",
+      "parentUuid": "376ae084_6b5b5a5a",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "73de9625_f5cb1f3b",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
         "patchSetId": 1
@@ -50,6 +86,24 @@
       "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bce13d86_15300d1c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "Clearly, it did pass checkstyle -- maybe it allows \u0027_\u0027 if you have camel-case as well. This code used to be part of \u0027buildReflectiveLookup\u0027, and the method name \u0027lookupClassByName\u0027 doesn\u0027t describe what it does. I am using the \u0027_\u0027 notation to indicate that this method is logically part of \u0027buildReflectiveLookup\u0027, and wouldn\u0027t exist as a separate method if we didn\u0027t have this Sonar !@#$% to deal with.",
+      "parentUuid": "73de9625_f5cb1f3b",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "b111e2b0_31d392b1",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "I wonder what the logic is behind that? \u0027final\u0027 does keep the intermediate code from reassigning an object, but it doesn\u0027t prevent it from mucking around with the object.",
+      "parentUuid": "68bc9214_d434fb53",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7062caf6_f2891171",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 1
@@ -121,6 +193,24 @@
     },
     {
       "key": {
+        "uuid": "7c24ff43_ee4231f7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2725,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "I know -- that constraint doesn\u0027t make any sense to me. I was planning on ignoring that one. Aren\u0027t multiple breaks/continues within a loop comparable to having multiple return points in a method?\n\nAt one point, structured programming advocates were claiming that you should only have one return per function or method. I did get into the habit of doing this, where possible -- code like:\n\nif (condition)\n  {\n     error leg ...\n  }\nelse\n  {\n     success leg ...\n  }\n\nrather than:\n\nif (condition)\n  {\n     error leg ...\n     return\n  }\nsuccess leg ...\n\nAs you have indicated, ONAP now prefers the latter, because \u0027success leg\u0027 has one less level of nesting, and sonar doesn\u0027t like nesting.",
+      "parentUuid": "7531c487_f3492630",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ab97e1e_37cc8a47",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 1
@@ -132,6 +222,24 @@
       "writtenOn": "2020-05-08T14:31:18Z",
       "side": 1,
       "message": "apparently a lot of this code is a duplicate of the lines starting on line 2683.  Perhaps extract a common function? (sonar may or may not complain about it)",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc58f3b3_9b418631",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2754,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "I don\u0027t see the common code you are referring to -- there are other \u0027Server.PostResponse\u0027 instances with \u0027webTarget\u0027 and \u0027response\u0027 methods, but the contents are quite different.",
+      "parentUuid": "0ab97e1e_37cc8a47",
       "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -155,6 +263,24 @@
     },
     {
       "key": {
+        "uuid": "f34707b0_1e306870",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "Checkstyle is OK with it -- I would like to continue using this notation to indicate that this is logically part of \u0027restoreBucket\u0027, and this functionality is too specific to be called anywhere else.",
+      "parentUuid": "0220d2e6_4d884ad0",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23ce8f4b_1ad418da",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
         "patchSetId": 1
@@ -169,6 +295,24 @@
       "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9eb33ac0_44c79520",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-11T12:44:06Z",
+      "side": 1,
+      "message": "Checkstyle is OK with it.",
+      "parentUuid": "23ce8f4b_1ad418da",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
