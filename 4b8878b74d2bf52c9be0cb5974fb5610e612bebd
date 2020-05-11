@@ -211,6 +211,24 @@
     },
     {
       "key": {
+        "uuid": "b104847d_4216b2a8",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2725,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-11T13:09:12Z",
+      "side": 1,
+      "message": "I agree, seems almost contradictory.  Nevertheless, since it allows more than one \"return\", I will sometimes address this by extracting the body of the \"for\" loop into a method and then replacing the \"continue\" with \"return\" and having the method return true/false to indicate \"continue\" versus \"break\".  Other times it can be managed by simply turning some \"if\" statements into \"else if\" statements.",
+      "parentUuid": "7c24ff43_ee4231f7",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0ab97e1e_37cc8a47",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 1
@@ -246,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "f9dbabe5_68c671ae",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2754,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-11T13:09:12Z",
+      "side": 1,
+      "message": "2756-2830 looks similar to 2666-2733, but maybe not similar enough - not sure.  I only noticed it, because gerrit\u0027s code diff incorrectly identified a chunk of these lines as being the same, even though they are from completely separate blocks.  That caused me to examine them a bit more closely and found that, not only were those particular lines the same, but in fact much of the lines surrounding the duplicates were similar, too.\n\nBasically, it looks like an AuditPostResponse object could be used to replace much of the body of the \"for\" loop in the send() method, because its response() method looks very similar.",
+      "parentUuid": "bc58f3b3_9b418631",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0220d2e6_4d884ad0",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
         "patchSetId": 1
@@ -275,6 +311,24 @@
       "side": 1,
       "message": "Checkstyle is OK with it -- I would like to continue using this notation to indicate that this is logically part of \u0027restoreBucket\u0027, and this functionality is too specific to be called anywhere else.",
       "parentUuid": "0220d2e6_4d884ad0",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b48c8980_872acf02",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/persistence/Persistence.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 689,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-11T13:09:12Z",
+      "side": 1,
+      "message": "Fine with me since checkstyle seems to be happy.  Maybe the cases in which I\u0027ve seen it complain are when the letter after the \"_\" is capitalized.",
+      "parentUuid": "f34707b0_1e306870",
       "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
