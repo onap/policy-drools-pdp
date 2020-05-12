@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "507c05b2_b4dd1066",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-12T16:57:59Z",
+      "side": 1,
+      "message": "I think we\u0027ll still have a sonar nesting issue, but not sure.  The \"for\" is at level 3, which makes the \"if\" a level 4.",
+      "revId": "de3ef6e83fb236f51e7361d1bb31cc50f5697804",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb5a54ea_6eb3e804",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1725,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-05-12T16:57:59Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "de3ef6e83fb236f51e7361d1bb31cc50f5697804",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
