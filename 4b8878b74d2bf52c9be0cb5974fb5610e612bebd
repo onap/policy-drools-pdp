@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "83c9aceb_deebc1ed",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1480,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-12T12:51:56Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "dde6fc9e_84aa0db2",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "376ae084_6b5b5a5a",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Bucket.java",
         "patchSetId": 1
@@ -124,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "d1c64730_cf81dd76",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-12T12:51:56Z",
+      "side": 1,
+      "message": "I will add a \u0027continue\u0027 after line 333 -- that way, the \u0027else\u0027 can be removed, and the rest of the code will have one less level of indentation. The code becomes less readable, but it may make Sonar happy -- is this really progress?",
+      "parentUuid": "0beb1296_6a776eb2",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "68bc9214_d434fb53",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 1
@@ -173,6 +209,24 @@
       "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f0f5606_7f696d3e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1729,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-12T12:51:56Z",
+      "side": 1,
+      "message": "I have decided that it is better to extract around an object (e.g. \u0027waiting\u0027), rather than a block of code. I also went back, and split the \u0027client\u0027 and \u0027server\u0027 loops in the same way.",
+      "parentUuid": "7062caf6_f2891171",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -229,6 +283,24 @@
     },
     {
       "key": {
+        "uuid": "b4045840_18b1398f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2725,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-12T12:51:56Z",
+      "side": 1,
+      "message": "I moved the operations that correspond to a single Server into a separate method -- the \u0027continue\u0027 statements get changed to \u0027return\u0027.",
+      "parentUuid": "b104847d_4216b2a8",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ab97e1e_37cc8a47",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 1
@@ -279,6 +351,24 @@
       "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7ca19ca_3c8bde8f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2754,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-05-12T12:51:56Z",
+      "side": 1,
+      "message": "OK - I see what you are referring to. I moved that piece into a separate method, but it is difficult to describe what that method does -- it is just a chunk of code that does multiple things that appeared in more than one place.",
+      "parentUuid": "f9dbabe5_68c671ae",
+      "revId": "4b8878b74d2bf52c9be0cb5974fb5610e612bebd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
