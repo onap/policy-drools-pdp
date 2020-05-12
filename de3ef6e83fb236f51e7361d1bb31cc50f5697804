@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f237de37_4dfa15c4",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-12T18:10:10Z",
+      "side": 1,
+      "message": "coud return in the top if clause, delete the else, and reduce the nested levels",
+      "parentUuid": "507c05b2_b4dd1066",
+      "revId": "de3ef6e83fb236f51e7361d1bb31cc50f5697804",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bb5a54ea_6eb3e804",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 2
