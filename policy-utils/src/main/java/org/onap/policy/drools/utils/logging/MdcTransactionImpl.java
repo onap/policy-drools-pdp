@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.utils.logging;
 
+import org.reflections.util.Utils;
+
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.BEGIN_TIMESTAMP;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CLIENT_IP_ADDRESS;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTIP;
@@ -126,6 +128,7 @@ class MdcTransactionImpl implements MdcTransaction {
         this.setServerFqdn(DEFAULT_HOSTNAME);
         this.setVirtualServerName(DEFAULT_HOSTNAME);
 
+        this.setInvocationId(invocationId);
         this.setStartTime(Instant.now());
     }
 
@@ -644,5 +647,4 @@ class MdcTransactionImpl implements MdcTransaction {
         sb.append('}');
         return sb.toString();
     }
-
 }

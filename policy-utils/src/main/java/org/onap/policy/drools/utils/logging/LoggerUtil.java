@@ -48,12 +48,12 @@ public class LoggerUtil {
     /**
      * Metric Log Marker Name.
      */
-    public static final String METRIC_LOG_MARKER_NAME = "metric";
+    public static final String METRIC_LOG_MARKER_NAME = "INVOKE-RETURN";
 
     /**
      * Transaction Log Marker Name.
      */
-    public static final String TRANSACTION_LOG_MARKER_NAME = "transaction";
+    public static final String TRANSACTION_LOG_MARKER_NAME = "ENTRY";
 
     /**
      * Marks a logging record as a metric.
