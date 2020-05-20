@@ -168,7 +168,6 @@ public class MdcTransactionConstants {
      */
     public static final String STATUS_CODE_FAILURE = "ERROR";
 
-
     private MdcTransactionConstants() {
         // do nothing
     }
