@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,6 +197,26 @@ public interface MdcTransaction {
     MdcTransaction setRemoteHost(String remoteHost);
 
     /**
+     * sets CustomField1 data.
+     */
+    MdcTransaction setCustomField1(String customField1);
+
+    /**
+     * sets CustomField2 data.
+     */
+    MdcTransaction setCustomField2(String customField2);
+
+    /**
+     * sets CustomField3 data.
+     */
+    MdcTransaction setCustomField3(String customField3);
+
+    /**
+     * sets CustomField4 data.
+     */
+    MdcTransaction setCustomField4(String customField4);
+
+    /**
      * get start time.
      */
     Instant getStartTime();
@@ -310,6 +330,26 @@ public interface MdcTransaction {
      * get server ip.
      */
     String getServerIpAddress();
+
+    /**
+     * get customer field1.
+     */
+    String getCustomField1();
+
+    /**
+     * get customer field2.
+     */
+    String getCustomField2();
+
+    /**
+     * get customer field3 which contains notification info.
+     */
+    String getCustomField3();
+
+    /**
+     * get customer field4.
+     */
+    String getCustomField4();
 
     /**
      * generate timestamp used for logging.

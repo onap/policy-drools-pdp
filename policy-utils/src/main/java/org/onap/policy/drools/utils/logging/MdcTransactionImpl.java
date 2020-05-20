@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ package org.onap.policy.drools.utils.logging;
 
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.BEGIN_TIMESTAMP;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CLIENT_IP_ADDRESS;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD1;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD2;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD3;
+import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD4;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTIP;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTNAME;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_SERVICE_NAME;
@@ -100,6 +104,10 @@ class MdcTransactionImpl implements MdcTransaction {
     private String targetVirtualEntity;
     private String clientIpAddress;
     private String remoteHost;
+    private String customField1;
+    private String customField2;
+    private String customField3;
+    private String customField4;
 
     /**
      * Transaction with no information set.
@@ -145,8 +153,8 @@ class MdcTransactionImpl implements MdcTransaction {
         this.setServerFqdn(MDC.get(SERVER_FQDN));
         this.setVirtualServerName(MDC.get(VIRTUAL_SERVER_NAME));
 
-        this.setStartTime(Instant.now());
         this.setInvocationId(invocationId);
+        this.setStartTime(Instant.now());
     }
 
     /**
@@ -179,6 +187,10 @@ class MdcTransactionImpl implements MdcTransaction {
         this.setTargetServiceName(transaction.getTargetServiceName());
         this.setTargetVirtualEntity(transaction.getTargetVirtualEntity());
         this.setVirtualServerName(transaction.getVirtualServerName());
+        this.setCustomField1(transaction.getCustomField1());
+        this.setCustomField2(transaction.getCustomField2());
+        this.setCustomField3(transaction.getCustomField3());
+        this.setCustomField4(transaction.getCustomField4());
     }
 
     /**
@@ -248,6 +260,10 @@ class MdcTransactionImpl implements MdcTransaction {
         setMdc(TARGET_VIRTUAL_ENTITY, this.targetVirtualEntity);
         setMdc(CLIENT_IP_ADDRESS, this.clientIpAddress);
         setMdc(REMOTE_HOST, this.remoteHost);
+        setMdc(CUSTOM_FIELD1, this.customField1);
+        setMdc(CUSTOM_FIELD2, this.customField2);
+        setMdc(CUSTOM_FIELD3, this.customField3);
+        setMdc(CUSTOM_FIELD4, this.customField4);
 
         return this;
     }
@@ -352,6 +368,26 @@ class MdcTransactionImpl implements MdcTransaction {
         return this.serviceInstanceId;
     }
 
+    @Override
+    public String getCustomField1() {
+        return this.customField1;
+    }
+
+    @Override
+    public String getCustomField2() {
+        return this.customField2;
+    }
+
+    @Override
+    public String getCustomField3() {
+        return this.customField3;
+    }
+
+    @Override
+    public String getCustomField4() {
+        return this.customField4;
+    }
+
     /* transaction and subtransaction fields */
 
     @Override
@@ -454,6 +490,30 @@ class MdcTransactionImpl implements MdcTransaction {
     @Override
     public MdcTransaction setTargetVirtualEntity(String targetVirtualEntity) {
         this.targetVirtualEntity = targetVirtualEntity;
+        return this;
+    }
+
+    @Override
+    public MdcTransaction setCustomField1(String customField1) {
+        this.customField1 = customField1;
+        return this;
+    }
+
+    @Override
+    public MdcTransaction setCustomField2(String customField2) {
+        this.customField2 = customField2;
+        return this;
+    }
+
+    @Override
+    public MdcTransaction setCustomField3(String customField3) {
+        this.customField3 = customField3;
+        return this;
+    }
+
+    @Override
+    public MdcTransaction setCustomField4(String customField4) {
+        this.customField4 = customField4;
         return this;
     }
 
@@ -641,8 +701,11 @@ class MdcTransactionImpl implements MdcTransaction {
         sb.append(", targetVirtualEntity='").append(targetVirtualEntity).append('\'');
         sb.append(", clientIpAddress='").append(clientIpAddress).append('\'');
         sb.append(", remoteHost='").append(remoteHost).append('\'');
+        sb.append(", customField1='").append(customField1).append('\'');
+        sb.append(", customField2='").append(customField2).append('\'');
+        sb.append(", customField3='").append(customField3).append('\'');
+        sb.append(", customField4='").append(customField4).append('\'');
         sb.append('}');
         return sb.toString();
     }
-
 }
