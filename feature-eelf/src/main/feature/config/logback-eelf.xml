@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   feature-eelf
   ================================================================================
-  Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,132 +18,73 @@
   ============LICENSE_END=========================================================
   -->
 
-<configuration scan="true" scanPeriod="60 seconds" debug="false">
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
 
-    <property name="errorLogName" value="error" />
-    <property name="metricsLogName" value="metrics" />
-    <property name="auditLogName" value="audit" />
-    <property name="debugLogName" value="debug" />
-    <property name="networkLogName" value="network" />
+    <property name="logDir" value="${POLICY_LOGS}" />
 
-    <property name="defaultPattern"
-        value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
-    <property name="defaultMetricPattern"
-        value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{TargetVirtualEntity}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
-    <property name="defaultAuditPattern"
-        value="%X{BeginTimestamp}|%X{EndTimestamp}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%X{ClassName}||%X{ProcessKey}|%X{CustomField1}|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
-    <property name="defaultErrorPattern"
-        value="%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%X{RequestID}|%thread|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity}|%X{TargetServiceName}|%X{ErrorCategory}|%X{ErrorCode}|%X{ErrorDescription}|%msg%replace(%xException){'\n',' - '}%nopex%n" />
+    <property name="errorLog" value="error" />
+    <property name="debugLog" value="debug" />
+    <property name="networkLog" value="network" />
 
-    <property name="networkPattern" value="[%d|%t]%m%n" />
+    <property name="metricLog" value="metric" />
+    <property name="transactionLog" value="audit" />
+
+    <property name="debugPattern"
+        value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%level|%logger{0}|%thread] %msg%n" />
+    <property name="errorPattern" value="${debugPattern}" />
+    <property name="networkPattern" value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%t]%m%n" />
     <property name="abstractNetworkPattern"
-        value="[%d] [%X{networkEventType:-NULL}|%X{networkProtocol:-NULL}|%X{networkTopic:-NULL}|%X{requestID:-NULL}]%n" />
-    <property name="debugPattern" value="[%date|%level|%logger{0}|%thread] %replace(%msg){'\n', ' '}%n" />
+        value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}] [%X{networkEventType:-NULL}|%X{networkProtocol:-NULL}|%X{networkTopic:-NULL}|%X{requestID:-NULL}]%n" />
+    <property name="metricPattern"
+        value="%X{BeginTimestamp}|%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX,UTC}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity:-NA}|%X{TargetServiceName:-NA}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%class||%X{ProcessKey}|%X{TargetVirtualEntity}|%marker|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
+    <property name="transactionPattern"
+        value="%X{BeginTimestamp}|%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX,UTC}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%class||%X{ProcessKey}|%marker|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
 
-    <property name="logDirectory" value="logs/Policy" />
-    <property name="debugLogDirectory" value="logs/Policy" />
-
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${defaultPattern}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="EELFAudit" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDirectory}/${auditLogName}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${logDirectory}/${auditLogName}.%i.log.zip
-            </fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>${defaultAuditPattern}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="asyncEELFAudit" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="EELFAudit" />
-    </appender>
-
-    <appender name="EELFMetrics" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDirectory}/${metricsLogName}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${logDirectory}/${metricsLogName}.%i.log.zip
-            </fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>15MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>${defaultMetricPattern}</pattern>
-        </encoder>
-    </appender>
-
-
-    <appender name="asyncEELFMetrics" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="EELFMetrics" />
-    </appender>
-
-    <appender name="EELFError" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDirectory}/${errorLogName}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${logDirectory}/${errorLogName}.%i.log.zip
-            </fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
+    <appender name="ErrorOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/${errorLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/${errorLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
+            <level>WARN</level>
         </filter>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>20MB</maxFileSize>
-        </triggeringPolicy>
         <encoder>
-            <pattern>${defaultErrorPattern}</pattern>
+            <pattern>${errorPattern}</pattern>
         </encoder>
     </appender>
 
-    <appender name="asyncEELFError" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="EELFError" />
+    <appender name="AsyncErrorOut" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ErrorOut" />
     </appender>
 
-    <appender name="EELFDebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${debugLogDirectory}/${debugLogName}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${debugLogDirectory}/${debugLogName}.%i.log.zip
-            </fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
+    <appender name="DebugOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/${debugLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/${debugLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>20MB</maxFileSize>
-        </triggeringPolicy>
         <encoder>
             <pattern>${debugPattern}</pattern>
         </encoder>
     </appender>
 
-    <appender name="asyncEELFDebug" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="EELFDebug" />
+    <appender name="AsyncDebugOut" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="DebugOut" />
     </appender>
 
     <appender name="NetworkOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logDirectory}/${networkLogName}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${logDirectory}/${networkLogName}.%i.log.zip
-            </fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>5</maxIndex>
+        <file>${logDir}/${networkLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/${networkLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>15MB</maxFileSize>
-        </triggeringPolicy>
         <encoder>
             <pattern>${networkPattern}</pattern>
         </encoder>
@@ -153,21 +94,41 @@
         <appender-ref ref="NetworkOut" />
     </appender>
 
-    <logger name="com.att.eelf.audit" level="info" additivity="false">
-        <appender-ref ref="asyncEELFAudit" />
-    </logger>
+    <appender name="MetricOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/${metricLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/${metricLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <filter class="org.onap.policy.drools.utils.logging.LoggerMarkerFilter$MetricLoggerMarkerFilter" />
+        <encoder>
+            <pattern>${metricPattern}</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="com.att.eelf.metrics" level="info" additivity="false">
-        <appender-ref ref="asyncEELFMetrics" />
-    </logger>
+    <appender name="AsyncMetricOut" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="MetricOut" />
+    </appender>
 
-    <logger name="com.att.eelf.error" level="error" additivity="false">
-        <appender-ref ref="asyncEELFError" />
-    </logger>
+    <appender name="TransactionOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/${transactionLog}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/${transactionLog}.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <filter class="org.onap.policy.drools.utils.logging.LoggerMarkerFilter$TransactionLoggerMarkerFilter" />
+        <encoder>
+            <pattern>${transactionPattern}</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="com.att.eelf.debug" level="info">
-        <appender-ref ref="asyncEELFDebug" />
-    </logger>
+    <appender name="AsyncTransactionOut" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="TransactionOut" />
+    </appender>
 
     <logger name="network" level="INFO" additivity="false">
         <appender-ref ref="AsyncNetworkOut" />
@@ -178,8 +139,10 @@
     </logger>
 
     <root level="INFO">
-        <appender-ref ref="asyncEELFDebug" />
-        <appender-ref ref="asyncEELFError" />
+        <appender-ref ref="AsyncDebugOut" />
+        <appender-ref ref="AsyncErrorOut" />
+        <appender-ref ref="AsyncMetricOut" />
+        <appender-ref ref="AsyncTransactionOut" />
     </root>
 
 </configuration>

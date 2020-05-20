@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   policy-management
   ================================================================================
-  Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@
     <property name="networkPattern" value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}|%t]%m%n" />
     <property name="abstractNetworkPattern"
         value="[%d{yyyy-MM-dd'T'HH:mm:ss.SSS+00:00, UTC}] [%X{networkEventType:-NULL}|%X{networkProtocol:-NULL}|%X{networkTopic:-NULL}|%X{requestID:-NULL}]%n" />
-
     <property name="metricPattern"
-        value="%X{RequestID}|%X{InvocationID}|%X{ServiceName}|%X{PartnerName}|%X{BeginTimestamp}|%X{EndTimestamp}|%X{ElapsedTime}|%X{ServiceInstanceID}|%X{VirtualServerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%X{Severity}|%X{TargetEntity}|%X{TargetServiceName}|%X{Server}|%X{ServerIPAddress}|%X{ServerFQDN}|%X{ClientIPAddress}|%X{ProcessKey}|%X{RemoteHost}||%X{TargetVirtualEntity}|%level|%thread| %msg%n" />
-    <property name="transactionPattern" value="${metricPattern}" />
+        value="%X{BeginTimestamp}|%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX,UTC}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{TargetEntity:-NA}|%X{TargetServiceName:-NA}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%class||%X{ProcessKey}|%X{TargetVirtualEntity}|%marker|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
+    <property name="transactionPattern"
+        value="%X{BeginTimestamp}|%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX,UTC}|%X{RequestID}|%X{ServiceInstanceId}|%thread|%X{ServerName}|%X{ServiceName}|%X{PartnerName}|%X{StatusCode}|%X{ResponseCode}|%X{ResponseDescription}|%X{InstanceUUID}|%.-5level|%X{Severity}|%X{ServerIPAddress}|%X{ElapsedTime}|%X{ServerFQDN}|%X{RemoteHost}|%class||%X{ProcessKey}|%marker|%X{CustomField2}|%X{CustomField3}|%X{CustomField4}|%msg%n" />
 
     <appender name="ErrorOut" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/${errorLog}.log</file>
