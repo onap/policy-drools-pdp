@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,6 +144,16 @@ public class MdcTransactionConstants {
     public static final String TARGET_VIRTUAL_ENTITY = "TargetVirtualEntity";
 
     /**
+     * Custom Field2.
+     */
+    public static final String CUSTOM_FIELD2 = "CustomField2";
+
+    /**
+     * Custom Field3.
+     */
+    public static final String CUSTOM_FIELD3 = "CustomField3";
+
+    /**
      * Default Service Name.
      */
     public static final String DEFAULT_SERVICE_NAME = "PDP-D";
@@ -167,7 +177,6 @@ public class MdcTransactionConstants {
      * Status Code Error.
      */
     public static final String STATUS_CODE_FAILURE = "ERROR";
-
 
     private MdcTransactionConstants() {
         // do nothing
