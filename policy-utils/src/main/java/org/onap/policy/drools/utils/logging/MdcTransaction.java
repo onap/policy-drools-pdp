@@ -197,6 +197,11 @@ public interface MdcTransaction {
     MdcTransaction setRemoteHost(String remoteHost);
 
     /**
+     * sets CustomField3 data.
+     */
+    MdcTransaction setCustomField3(String customField3);
+
+    /**
      * get start time.
      */
     Instant getStartTime();
@@ -310,6 +315,11 @@ public interface MdcTransaction {
      * get server ip.
      */
     String getServerIpAddress();
+
+    /**
+     * get customer field3 which contains notification info.
+     */
+    String getCustomField3();
 
     /**
      * generate timestamp used for logging.
