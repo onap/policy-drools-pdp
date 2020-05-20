@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,7 +142,11 @@ public class MdcTransactionConstants {
      * Target Virtual Entity Both transactions and subtransactions will have its own copy.
      */
     public static final String TARGET_VIRTUAL_ENTITY = "TargetVirtualEntity";
-
+    
+    /**
+     * CustomField3 is used to store notification.getNotification() info.
+     */
+    public static final String CUSTOM_FIELD3 = "CustomField3";
     /**
      * Default Service Name.
      */
@@ -167,7 +171,6 @@ public class MdcTransactionConstants {
      * Status Code Error.
      */
     public static final String STATUS_CODE_FAILURE = "ERROR";
-
 
     private MdcTransactionConstants() {
         // do nothing
