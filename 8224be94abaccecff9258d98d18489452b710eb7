@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a57a32c_7e3e0d4b",
+        "filename": ".gitreview",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-21T17:19:15Z",
+      "side": 1,
+      "message": "This is being submitted to master brach so should stay as it is.\nThe change should be submitted to \"frankfurt\" branch instead.",
+      "revId": "8224be94abaccecff9258d98d18489452b710eb7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
