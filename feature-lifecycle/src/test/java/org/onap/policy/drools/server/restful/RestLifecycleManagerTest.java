@@ -45,7 +45,9 @@ import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
+import org.onap.policy.common.endpoints.http.server.YamlJacksonHandler;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.gson.JacksonHandler;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.network.NetworkUtil;
@@ -110,7 +112,10 @@ public class RestLifecycleManagerTest {
                 .build());
 
         HttpServletServer server =
-            HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/", true, true);
+                        HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/",
+                                        true, true);
+        server.setSerializationProvider(
+                        String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
         server.addServletClass("/*", RestLifecycleManager.class.getName());
         server.waitedStart(5000L);
 

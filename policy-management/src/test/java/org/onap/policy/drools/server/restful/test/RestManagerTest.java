@@ -46,7 +46,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
+import org.onap.policy.common.endpoints.http.server.YamlJacksonHandler;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.gson.JacksonHandler;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
@@ -126,6 +128,10 @@ public class RestManagerTest {
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
                 TELEMETRY_PASSWORD);
+        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
+                + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
+                + PolicyEndPointProperties.PROPERTY_HTTP_SERIALIZATION_PROVIDER,
+                String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
 
         /* other properties */
         engineProps.put(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS, UEB_TOPIC);
