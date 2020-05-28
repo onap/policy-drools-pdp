@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cd273abe_91dfdc60",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/LoggerUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T15:30:10Z",
+      "side": 1,
+      "message": "this file is not modified, so undo this change, it should be 2019",
+      "revId": "9f1d5bcbb13f456aa9ecb036f837d74da7f4b4fc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa149c05_e2064556",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T15:30:10Z",
+      "side": 1,
+      "message": "same comment here about license header",
+      "revId": "9f1d5bcbb13f456aa9ecb036f837d74da7f4b4fc",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
