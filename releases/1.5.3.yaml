@@ -1,0 +1,4 @@
+distribution_type: 'maven'
+version: '1.5.3'
+project: 'policy-drools-pdp'
+log_dir: 'policy-drools-pdp-maven-stage-elalto/9/'
