@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b71058bf_fb838af4",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-05-28T19:30:00Z",
+      "side": 1,
+      "message": "I\u0027m still wondering if EELF is going to be deprecated? Does drools use it?",
+      "revId": "2c9e6aa363ff7a8e5220fc4f53434032e584721e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
