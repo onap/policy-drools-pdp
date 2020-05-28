@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "090cdfaa_1d7dfbe2",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-05-28T13:08:57Z",
+      "side": 1,
+      "message": "aren\u0027t we going to deprecate eelf?",
+      "revId": "39c3ada82fe69bf217653eda607e813e412f7326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
