@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c6424623_4d4d6b49",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T17:12:28Z",
+      "side": 1,
+      "message": "delete this line, it is too generic as the subject.  \n\nMake this subject line instead more specific and try to describe what you are doing in the code, for example this would be better:\n\nchange metrics and transactions layout in logback.xml",
+      "revId": "ce2e25ccdd99477e13259108a05dd5c96d7b6482",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
