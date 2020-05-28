@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2409bec6_57b1eaa9",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T16:38:41Z",
+      "side": 1,
+      "message": "license header 2020",
+      "revId": "6d7475172847d4a661ac9beb7381ef12aa5d3421",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afacc8a0_26edc06e",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T16:38:41Z",
+      "side": 1,
+      "message": "license header 2020",
+      "revId": "6d7475172847d4a661ac9beb7381ef12aa5d3421",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "184fc873_c24b8332",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T16:38:41Z",
+      "side": 1,
+      "message": "license header 2020",
+      "revId": "6d7475172847d4a661ac9beb7381ef12aa5d3421",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5b3148e_bbecc792",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-05-28T16:38:41Z",
+      "side": 1,
+      "message": "license header \"2019-2020\"",
+      "revId": "6d7475172847d4a661ac9beb7381ef12aa5d3421",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
