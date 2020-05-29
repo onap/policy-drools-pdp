@@ -16,6 +16,23 @@
       "revId": "2c9e6aa363ff7a8e5220fc4f53434032e584721e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d9aef81_2ab1126c",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-05-29T13:49:15Z",
+      "side": 1,
+      "message": "There are no real changes in this file except removal of an empty line.",
+      "revId": "2c9e6aa363ff7a8e5220fc4f53434032e584721e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
