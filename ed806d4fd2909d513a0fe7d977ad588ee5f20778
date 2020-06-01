@@ -101,6 +101,24 @@
       "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4202fde_ec130345",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-01T15:19:12Z",
+      "side": 1,
+      "message": "prefer to use lombok so this method doesn\u0027t have to be updated when fields are added/removed",
+      "parentUuid": "e6f4ca46_d950d9fc",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
