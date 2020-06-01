@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "24cb24b3_b7a2ce77",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 11
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-01T12:00:52Z",
+      "side": 1,
+      "message": "Comments:\n\n1. Why is transaction pattern different than metric pattern?\n2. %X{class} is incorrect - it is %class, refer to table in logback documentation:  http://logback.qos.ch/manual/layouts.html\n3. Why %marker is logged, are there requirements?",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba3d454e_46b9f3a4",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-01T12:00:52Z",
+      "side": 1,
+      "message": "remove tab",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "677c5683_58950f8d",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-01T12:00:52Z",
+      "side": 1,
+      "message": "This class knows nothing about notifications - Just say it is a Custom Field 3.",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "905227d7_fdc20240",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-01T12:00:52Z",
+      "side": 1,
+      "message": "add line separating field",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "076cc1be_46baf559",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-01T12:00:52Z",
+      "side": 1,
+      "message": "In the logback.xml there was CustomField4.   Either delete from logback.xml or if necessary, add support here for CustomField4 so it can be retrieved from the MDC.",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6f4ca46_d950d9fc",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 658,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-01T12:00:52Z",
+      "side": 1,
+      "message": "Add to String for new fields, CustomField3, CustomField4, etc .. or use lombok to do it with annotation.",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
