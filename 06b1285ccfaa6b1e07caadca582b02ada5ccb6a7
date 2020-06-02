@@ -115,6 +115,24 @@
       "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1187bce1_5ab01f48",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransaction.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T21:27:11Z",
+      "side": 1,
+      "message": "what about getters and setters for custom field 1 \u0026 4?",
+      "parentUuid": "9f296d0c_f1b4ad8c",
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }

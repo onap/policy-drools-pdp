@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df95afd7_ba259d33",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionConstants.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T21:27:11Z",
+      "side": 1,
+      "message": "what about custom field 1 \u0026 4?",
+      "revId": "898efe3ce89fba8ca47ea1750d9b5496f1e11633",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64673a21_920a3cdb",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T21:27:11Z",
+      "side": 1,
+      "message": "what about custom field 1 \u0026 4?",
+      "revId": "898efe3ce89fba8ca47ea1750d9b5496f1e11633",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
