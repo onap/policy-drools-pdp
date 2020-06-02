@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb04da0f_31fea27f",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T17:42:47Z",
+      "side": 1,
+      "message": "Using marker now instead of CustomField1?  Is this correct?",
+      "range": {
+        "startLine": 39,
+        "startChar": 422,
+        "endLine": 39,
+        "endChar": 428
+      },
+      "revId": "4c7efb80209fb2daff73f1c0b20890782642e73e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf7831d5_60bac13a",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T17:42:47Z",
+      "side": 1,
+      "message": "Using marker now instead of CustomField1?  Is this correct?",
+      "range": {
+        "startLine": 41,
+        "startChar": 351,
+        "endLine": 41,
+        "endChar": 357
+      },
+      "revId": "4c7efb80209fb2daff73f1c0b20890782642e73e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b1c3f27_571cd8db",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T17:42:47Z",
+      "side": 1,
+      "message": "Is this correct?  Quite a change from the previous patch, which only kept 5x20MB altogether\n\nsame question/comment for the other output files",
+      "revId": "4c7efb80209fb2daff73f1c0b20890782642e73e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}

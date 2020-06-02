@@ -87,6 +87,24 @@
     },
     {
       "key": {
+        "uuid": "3f2d97a2_9597bd0e",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T17:42:47Z",
+      "side": 1,
+      "message": "Still not addressed",
+      "parentUuid": "076cc1be_46baf559",
+      "revId": "ed806d4fd2909d513a0fe7d977ad588ee5f20778",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e6f4ca46_d950d9fc",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
         "patchSetId": 11
