@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "81991f72_3161211a",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-02T18:38:27Z",
+      "side": 1,
+      "message": "Is this intended, there is no CustomField1 but there is CustomField2 and CustomField3?   General",
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ca7a44b_6cea26ad",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransaction.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-02T18:38:27Z",
+      "side": 1,
+      "message": "I think we are missing set/get for CustomeField2 if it could be added.\nFor the getters, if you could use the Lombok (@Getter) annotation and for the toString() .. (there are examples in the source code for it - for example search for lombok (package name) or @Getter in the java files)",
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
