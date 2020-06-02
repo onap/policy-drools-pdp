@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "b40159d8_d128b0ef",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T18:48:53Z",
+      "side": 1,
+      "message": "2020",
+      "range": {
+        "startLine": 5,
+        "startChar": 21,
+        "endLine": 5,
+        "endChar": 25
+      },
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "81991f72_3161211a",
         "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
         "patchSetId": 13
@@ -19,6 +42,47 @@
     },
     {
       "key": {
+        "uuid": "22b14093_b6b1a710",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 13
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T18:48:53Z",
+      "side": 1,
+      "message": "and still has %marker",
+      "parentUuid": "81991f72_3161211a",
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29974cee_ecb7a2d0",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransaction.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T18:48:53Z",
+      "side": 1,
+      "message": "2020",
+      "range": {
+        "startLine": 5,
+        "startChar": 22,
+        "endLine": 5,
+        "endChar": 26
+      },
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4ca7a44b_6cea26ad",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransaction.java",
         "patchSetId": 13
@@ -30,6 +94,24 @@
       "writtenOn": "2020-06-02T18:38:27Z",
       "side": 1,
       "message": "I think we are missing set/get for CustomeField2 if it could be added.\nFor the getters, if you could use the Lombok (@Getter) annotation and for the toString() .. (there are examples in the source code for it - for example search for lombok (package name) or @Getter in the java files)",
+      "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f296d0c_f1b4ad8c",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransaction.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-02T18:48:53Z",
+      "side": 1,
+      "message": "need setters and getters for custom fields",
+      "parentUuid": "4ca7a44b_6cea26ad",
       "revId": "06b1285ccfaa6b1e07caadca582b02ada5ccb6a7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
