@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ac9cc65_85272001",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 509,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T12:34:48Z",
+      "side": 1,
+      "message": "Not sure why you deleted all the changes in the logback.xml files.\n\nIn general, if you add fields here, it make sense that they are somehow reflected in the metricPattern and auditPattern in the logback.xml.   Otherwise, there is not a whole lot of value on adding them, and I thought you needed them, and I think in the feature-controlloop-trans there was a reference on using one this custom fields.\n\nThe default values that you had in the metricPattern and auditPattern, the ones with \":-\" notation they were also good, and I think you needed them too.\n\nThe issue that was raised earlier in the comments had to more with significant changes for example changing log sizes on disks, etc .. which may be disrupting in some deployments.\n\nThe changes I just mentioned should be straighforward and not invasive.  In summary, these are:\n\n1. have in sync, fields here with fields in the metricPattern or auditPattern in logback.xml as appropriate.   Each field added, should\nbe used somewhere.\n\n2. add default values for the logback.xml fields ( with syntax \":-\u003cdefault\u003e\" )where appropriate in auditPattern and metricPattern.\n\nFeel free to contact me directly if there is something that does not make sense.",
+      "revId": "9e3142758fdddab21c6afb4c7cc6d88928d74b7c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
