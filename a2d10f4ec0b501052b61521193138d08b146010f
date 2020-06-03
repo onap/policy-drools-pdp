@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b11b3a63_48954035",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T15:28:55Z",
+      "side": 1,
+      "message": "Missing:\n\nthis.setCustomField1(transaction.getCustomField31());\nthis.setCustomField2(transaction.getCustomField2());\nthis.setCustomField4(transaction.getCustomField4());",
+      "revId": "a2d10f4ec0b501052b61521193138d08b146010f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9597c7b_c729be8f",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T15:28:55Z",
+      "side": 1,
+      "message": "Missing:\n\nsetMdc(CUSTOM_FIELD1, this.customField1);\nsetMdc(CUSTOM_FIELD2, this.customField2);\nsetMdc(CUSTOM_FIELD4, this.customField4);",
+      "revId": "a2d10f4ec0b501052b61521193138d08b146010f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
