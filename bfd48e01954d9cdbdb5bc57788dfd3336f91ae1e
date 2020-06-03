@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72442533_3edddec2",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T23:57:42Z",
+      "side": 1,
+      "message": "Change \"%class||%X{ProcessKey}\" to \"%class|%X{ProcessKey}\" (one \"|\")",
+      "revId": "bfd48e01954d9cdbdb5bc57788dfd3336f91ae1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "031601ac_cc71360c",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T23:57:42Z",
+      "side": 1,
+      "message": "if line 32 is identical to line 30 do this here:\n\nvalue\u003d\"${defaultPattern}\"",
+      "revId": "bfd48e01954d9cdbdb5bc57788dfd3336f91ae1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d1e419e_cc36a859",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 19
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T23:57:42Z",
+      "side": 1,
+      "message": "Change \"%class||%X{ProcessKey}\" to \"%class|%X{ProcessKey}\" (one \"|\")",
+      "revId": "bfd48e01954d9cdbdb5bc57788dfd3336f91ae1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
