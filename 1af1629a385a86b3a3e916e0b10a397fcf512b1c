@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c0e1a49_12ae1597",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 18
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T16:59:25Z",
+      "side": 1,
+      "message": "%X{BeginTimestamp}|%date{yyyy-MM-dd\u0027T\u0027HH:mm:ss.SSSXXX,UTC}\n\nI suppose the %date{yyyy-MM-dd\u0027T\u0027HH:mm:ss.SSSXXX,UTC} is a replacement of the %X{EndTimestamp}, which seems have go away.   The problem is that the supposed to be end-time is in UTC format, which is inconsistent with BeginTimestamp.\n\nThe comment is to keep both timestamps consistent.\n\nQuestion: What is the reason that the \"metricPattern\" is different than the transactionPattern?\n\nThe same question and comment would apply to the logback.xml in the feature-eelf project.",
+      "revId": "1af1629a385a86b3a3e916e0b10a397fcf512b1c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
