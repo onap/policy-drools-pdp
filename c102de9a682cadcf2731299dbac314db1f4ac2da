@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7fad7e9_e82a3f84",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 16
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T14:39:11Z",
+      "side": 1,
+      "message": "This is %class as you have it below.\nIt would also make more sense to have TargetEntity:-NA and TargetServiceName:-NA as you have it below to keep them consistent.",
+      "revId": "c102de9a682cadcf2731299dbac314db1f4ac2da",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a536f737_ba1bc708",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 16
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T14:39:11Z",
+      "side": 1,
+      "message": "Can you make it \"|\" instead of \"||\" in  \"%class||%X{ProcessKey}\" ?",
+      "revId": "c102de9a682cadcf2731299dbac314db1f4ac2da",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71e95f39_dcaa45f9",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-03T14:39:11Z",
+      "side": 1,
+      "message": "Add customField1 and customField4 - it would be preferable to use lombok, but I guess that can be done at a later time.",
+      "revId": "c102de9a682cadcf2731299dbac314db1f4ac2da",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
