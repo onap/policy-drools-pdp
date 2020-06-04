@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6ed6657_6da8dc31",
+        "filename": "feature-eelf/src/main/feature/config/logback-eelf.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-04T16:08:29Z",
+      "side": 1,
+      "message": "Almost there, I think you missed on your last patch in this line:\n\n\u003e Change \"%class||%X{ProcessKey}\" to \"%class|%X{ProcessKey}\" (one \"|\")",
+      "revId": "2dc92defa7b5323740bd65b9cac21a83986b76e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5b88f32d_f818b1ab",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-04T16:08:29Z",
+      "side": 1,
+      "message": "Why did you add the \"||\" here in \"%class||%X{ProcessKey\" ?",
+      "revId": "2dc92defa7b5323740bd65b9cac21a83986b76e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "20f40685_4dd49c32",
+        "filename": "policy-management/src/main/server/config/logback.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-04T16:08:29Z",
+      "side": 1,
+      "message": "Why did you add the \"||\" here in \"%class||%X{ProcessKey\" ?",
+      "revId": "2dc92defa7b5323740bd65b9cac21a83986b76e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
