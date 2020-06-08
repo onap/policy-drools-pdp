@@ -142,7 +142,7 @@ public class HealthCheckTest {
         reports.setDetails(lst);
         reports.setHealthy(true);
 
-        assertTrue(lst == reports.getDetails());
+        assertSame(lst, reports.getDetails());
         assertEquals(true, reports.isHealthy());
 
         // flip the flag
