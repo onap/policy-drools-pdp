@@ -20,8 +20,10 @@
 
 package org.onap.policy.drools.activestandby;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -261,55 +263,55 @@ public class StandbyStateManagementTest {
 
         //At this point the standbystatus = 'null'
         sm.lock();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(StateManagement.NULL_VALUE));
+        assertEquals(StateManagement.NULL_VALUE, pmNotifier.getPreviousStandbyStatus());
 
         sm.unlock();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(StateManagement.NULL_VALUE));
+        assertEquals(StateManagement.NULL_VALUE, pmNotifier.getPreviousStandbyStatus());
 
         //Adding standbystatus=hotstandby
         sm.demote();
         System.out.println(pmNotifier.getPreviousStandbyStatus());
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
 
         //Now making standbystatus=coldstandby
         sm.lock();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
 
         //standbystatus = hotstandby
         sm.unlock();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
 
         //standbystatus = providingservice
         sm.promote();
         //The previousStandbyStatus is not updated until after the delay activation expires
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
 
         //Sleep long enough for the delayActivationTimer to run
         sleep(5000);
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(StateManagement.PROVIDING_SERVICE));
+        assertEquals(StateManagement.PROVIDING_SERVICE, pmNotifier.getPreviousStandbyStatus());
 
         //standbystatus = providingservice
         sm.promote();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(StateManagement.PROVIDING_SERVICE));
+        assertEquals(StateManagement.PROVIDING_SERVICE, pmNotifier.getPreviousStandbyStatus());
 
         //standbystatus = coldstandby
         sm.lock();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
 
         //standbystatus = hotstandby
         sm.unlock();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
 
         //standbystatus = hotstandby
         sm.demote();
-        assertTrue(pmNotifier.getPreviousStandbyStatus().equals(
-                PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY));
+        assertEquals(PmStandbyStateChangeNotifier.HOTSTANDBY_OR_COLDSTANDBY,
+                pmNotifier.getPreviousStandbyStatus());
     }
 
     /**
@@ -359,7 +361,7 @@ public class StandbyStateManagementTest {
 
         logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size = {}\n\n",listOfDesignated.size());
 
-        assertTrue(listOfDesignated.size() == 4);
+        assertEquals(4, listOfDesignated.size());
 
         // Now make 2 designated
 
@@ -371,7 +373,7 @@ public class StandbyStateManagementTest {
         logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after 2 designated = {}\n\n",
                 listOfDesignated.size());
 
-        assertTrue(listOfDesignated.size() == 2);
+        assertEquals(2, listOfDesignated.size());
         assertTrue(listOfDesignated.contains(pdp1));
         assertTrue(listOfDesignated.contains(pdp2));
 
@@ -388,7 +390,7 @@ public class StandbyStateManagementTest {
         logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size after all designated = {}\n\n",
                 listOfDesignated.size());
 
-        assertTrue(listOfDesignated.size() == 4);
+        assertEquals(4, listOfDesignated.size());
 
     }
 
@@ -465,7 +467,7 @@ public class StandbyStateManagementTest {
         // the one which has the most recent designated date.
 
 
-        assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+        assertEquals("pdp4", mostRecentPrimary.getPdpId());
 
 
         // Now let's designate all of those on the listOfDesignated.  It will choose the first one designated
@@ -487,7 +489,7 @@ public class StandbyStateManagementTest {
         // the one which was designated first
 
 
-        assertTrue(mostRecentPrimary.getPdpId().equals("pdp2"));
+        assertEquals("pdp2", mostRecentPrimary.getPdpId());
 
 
         // Now we will designate only 2 and put just them in the listOfDesignated.  The algorithm will now
@@ -505,7 +507,7 @@ public class StandbyStateManagementTest {
         logger.debug("\n\ntestComputeMostRecentPrimary: mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
-        assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+        assertEquals("pdp4", mostRecentPrimary.getPdpId());
 
 
 
@@ -521,7 +523,7 @@ public class StandbyStateManagementTest {
         logger.debug("\n\ntestComputeMostRecentPrimary: 2 on list mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
-        assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+        assertEquals("pdp4", mostRecentPrimary.getPdpId());
 
 
         // If we have only one pdp on in the listOfDesignated,
@@ -536,7 +538,7 @@ public class StandbyStateManagementTest {
         logger.debug("\n\ntestComputeMostRecentPrimary: 1 on list mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
-        assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+        assertEquals("pdp4", mostRecentPrimary.getPdpId());
 
 
         // Finally, if none are on the listOfDesignated, it will again choose the most recently designated pdp.
@@ -549,7 +551,7 @@ public class StandbyStateManagementTest {
         logger.debug("\n\ntestComputeMostRecentPrimary: 0 on list mostRecentPrimary.getPdpId() = {}\n\n",
                 mostRecentPrimary.getPdpId());
 
-        assertTrue(mostRecentPrimary.getPdpId().equals("pdp4"));
+        assertEquals("pdp4", mostRecentPrimary.getPdpId());
 
     }
 
@@ -624,7 +626,7 @@ public class StandbyStateManagementTest {
 
         // The designatedPdp should be null
 
-        assertTrue(designatedPdp == null);
+        assertNull(designatedPdp);
 
 
         // Now let's try having only one pdp in listOfDesignated, but not in the same site as the most recent primary
@@ -637,7 +639,7 @@ public class StandbyStateManagementTest {
         // Now the designatedPdp should be the one and only selection in the listOfDesignated
 
 
-        assertTrue(designatedPdp.getPdpId().equals(pdp2.getPdpId()));
+        assertEquals(designatedPdp.getPdpId(), pdp2.getPdpId());
 
 
         // Now let's put 2 pdps in the listOfDesignated, neither in the same site as the mostRecentPrimary
@@ -651,7 +653,7 @@ public class StandbyStateManagementTest {
         // The designatedPdp should now be the one with the lowest lexiographic score - pdp1
 
 
-        assertTrue(designatedPdp.getPdpId().equals(pdp1.getPdpId()));
+        assertEquals(designatedPdp.getPdpId(), pdp1.getPdpId());
 
 
         // Finally, we will have 2 pdps in the listOfDesignated, one in the same site with the mostRecentPrimary
@@ -666,7 +668,7 @@ public class StandbyStateManagementTest {
         // The designatedPdp should now be the one on the same site as the mostRecentPrimary
 
 
-        assertTrue(designatedPdp.getPdpId().equals(pdp3.getPdpId()));
+        assertEquals(designatedPdp.getPdpId(), pdp3.getPdpId());
     }
 
     /**

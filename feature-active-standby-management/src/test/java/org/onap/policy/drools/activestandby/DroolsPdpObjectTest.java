@@ -22,7 +22,7 @@ package org.onap.policy.drools.activestandby;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.Date;
 import lombok.Getter;
@@ -50,19 +50,19 @@ public class DroolsPdpObjectTest {
     @Test
     public void testEqualsObject() {
         // self
-        assertTrue(pdp.equals(pdp));
+        assertEquals(pdp,pdp);
 
         // same id
         MyPdp pdp2 = new MyPdp();
         pdp2.setPdpId(PDP_ID);
-        assertTrue(pdp.equals(pdp2));
+        assertEquals(pdp,pdp2);
 
         // different id
         pdp2.setPdpId(PDP_ID2);
-        assertFalse(pdp.equals(pdp2));
+        assertNotEquals(pdp,pdp2);
 
         // different type of object
-        assertFalse(pdp.equals(""));
+        assertNotEquals(pdp,"");
     }
 
     @Test
@@ -74,7 +74,7 @@ public class DroolsPdpObjectTest {
         assertEquals(hc, makePdp(PDP_ID, SITE, PRIORITY).hashCode());
 
         // different data should yield different hash code
-        assertTrue(makePdp(PDP_ID2, SITE, PRIORITY).hashCode() != hc);
+        assertNotEquals(hc, makePdp(PDP_ID2, SITE, PRIORITY).hashCode());
 
         // these fields have no impact on hash code
         assertEquals(hc, makePdp(PDP_ID, SITE, PRIORITY2).hashCode());
