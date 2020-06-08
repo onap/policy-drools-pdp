@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fbe78f65_02bfbd3e",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/activestandby/StandbyStateManagementTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-08T17:46:00Z",
+      "side": 1,
+      "message": "space between , and 4",
+      "revId": "117fbfb25d75540a240d2e2151aa60e641166d92",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8580b411_d2a80b8a",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/activestandby/StandbyStateManagementTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-08T17:46:00Z",
+      "side": 1,
+      "message": "space between args , I think that\u0027s a checkstyle thing may be does not show for junits or not enabled here",
+      "revId": "117fbfb25d75540a240d2e2151aa60e641166d92",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
