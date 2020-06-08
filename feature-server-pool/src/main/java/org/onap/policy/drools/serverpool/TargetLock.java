@@ -2576,14 +2576,14 @@ public class TargetLock implements Lock, Serializable {
                 Bucket bucket = Bucket.getBucket(i);
 
                 // client data
-                build_clientData(bucket);
+                buildClientData(bucket);
 
                 // server data
-                build_serverData(bucket);
+                buildServerData(bucket);
             }
         }
 
-        private void build_clientData(Bucket bucket) {
+        private void buildClientData(Bucket bucket) {
             // client data
             LocalLocks localLocks =
                 bucket.getAdjunctDontCreate(LocalLocks.class);
@@ -2603,7 +2603,7 @@ public class TargetLock implements Lock, Serializable {
             }
         }
 
-        private void build_serverData(Bucket bucket) {
+        private void buildServerData(Bucket bucket) {
             // server data
             GlobalLocks globalLocks =
                 bucket.getAdjunctDontCreate(GlobalLocks.class);

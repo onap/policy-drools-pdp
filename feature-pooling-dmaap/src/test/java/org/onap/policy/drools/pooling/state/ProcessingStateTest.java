@@ -23,6 +23,7 @@ package org.onap.policy.drools.pooling.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -268,7 +269,7 @@ public class ProcessingStateTest extends SupportBasicStateTester {
 
         String[] arr = captureHostArray();
 
-        assertTrue(arr != HOST_ARR3);
+        assertNotSame(arr, HOST_ARR3);
         assertEquals(Arrays.asList(HOST_ARR3), Arrays.asList(arr));
     }
 
