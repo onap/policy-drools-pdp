@@ -667,10 +667,10 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
             // one entry for each Drools session being restored --
             // indicates when the restore is complete (restore runs within
             // the Drools session thread)
-            List<CountDownLatch> sessionLatches = restoreBucket_droolsSessions();
+            List<CountDownLatch> sessionLatches = restoreBucketDroolsSessions();
 
             // restore lock data
-            restoreBucket_locks(bucket);
+            restoreBucketLocks(bucket);
 
             // wait for all of the sessions to update
             try {
@@ -686,7 +686,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
             }
         }
 
-        private List<CountDownLatch> restoreBucket_droolsSessions() {
+        private List<CountDownLatch> restoreBucketDroolsSessions() {
             List<CountDownLatch> sessionLatches = new LinkedList<>();
             for (Map.Entry<String, ReceiverSessionBucketData> entry : sessionData.entrySet()) {
                 String sessionName = entry.getKey();
@@ -769,7 +769,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
             return sessionLatches;
         }
 
-        private void restoreBucket_locks(Bucket bucket) {
+        private void restoreBucketLocks(Bucket bucket) {
             if (lockData != null) {
                 Object obj = null;
                 try {
