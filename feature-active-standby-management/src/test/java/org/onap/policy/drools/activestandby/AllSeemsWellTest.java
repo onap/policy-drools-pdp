@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.activestandby;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -337,8 +338,7 @@ public class AllSeemsWellTest {
 
         logger.debug("testAllSeemsWell: After isStalled=true, PDP= {} "
                 + "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
-
-        assertTrue(smf.getStandbyStatus().equals(StateManagement.COLD_STANDBY));
+        assertEquals(smf.getStandbyStatus(), StateManagement.COLD_STANDBY);
 
         //Now lets resume the election handler
         DroolsPdpsElectionHandler.setIsStalled(false);
@@ -349,7 +349,7 @@ public class AllSeemsWellTest {
         logger.debug("testAllSeemsWell: After isStalled=false, PDP= {} "
                 + "has standbyStatus= {}", thisPdpId, smf.getStandbyStatus(thisPdpId));
 
-        assertTrue(smf.getStandbyStatus().equals(StateManagement.PROVIDING_SERVICE));
+        assertEquals(smf.getStandbyStatus(), StateManagement.PROVIDING_SERVICE);
 
         //resumedElectionHandlerSleepTime = 5000;
         logger.debug("\n\ntestAllSeemsWell: Exiting\n\n");
