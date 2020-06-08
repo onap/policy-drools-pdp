@@ -23,6 +23,7 @@ package org.onap.policy.drools.healthcheck;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -142,7 +143,7 @@ public class HealthCheckTest {
         reports.setDetails(lst);
         reports.setHealthy(true);
 
-        assertTrue(lst == reports.getDetails());
+        assertSame(lst, reports.getDetails());
         assertEquals(true, reports.isHealthy());
 
         // flip the flag

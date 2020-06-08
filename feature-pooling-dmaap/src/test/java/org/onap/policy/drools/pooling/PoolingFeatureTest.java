@@ -22,6 +22,7 @@ package org.onap.policy.drools.pooling;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -131,7 +132,7 @@ public class PoolingFeatureTest {
         String host2 = pool.getHost();
         assertNotNull(host2);
 
-        assertTrue(!host.equals(host2));
+        assertNotEquals(host, host2);
     }
 
     @Test
