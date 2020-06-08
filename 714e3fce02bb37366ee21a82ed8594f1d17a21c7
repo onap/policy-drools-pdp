@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4746fd20_5f3d896e",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/activestandby/AllSeemsWellTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-08T20:50:40Z",
+      "side": 1,
+      "message": "swap arguments - the \"expected\" value should be on the left\n\nsame comment below",
+      "revId": "714e3fce02bb37366ee21a82ed8594f1d17a21c7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05c3c0d4_4b784472",
+        "filename": "feature-active-standby-management/src/test/java/org/onap/policy/drools/activestandby/StandbyStateManagementTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-08T20:50:40Z",
+      "side": 1,
+      "message": "swap arguments\n\nsame comment below",
+      "revId": "714e3fce02bb37366ee21a82ed8594f1d17a21c7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
