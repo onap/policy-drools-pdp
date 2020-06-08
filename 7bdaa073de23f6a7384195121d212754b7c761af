@@ -16,6 +16,24 @@
       "revId": "7bdaa073de23f6a7384195121d212754b7c761af",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36902441_3447906c",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-08T20:08:17Z",
+      "side": 1,
+      "message": "sonarcloud did not alert this line needs to be changed to assertTrue...",
+      "parentUuid": "ffce4afa_d0188f0d",
+      "revId": "7bdaa073de23f6a7384195121d212754b7c761af",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
