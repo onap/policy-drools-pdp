@@ -53,6 +53,15 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifi
  */
 public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
+    private static final String POLICY_COMPLIANT_VCPE_BAD_INTEGER_JSON =
+            "src/test/resources/tosca-policy-compliant-vcpe-bad-integer.json";
+    private static final String POLICY_OPERATIONAL_FIREWALL_JSON =
+            "src/test/resources/tosca-policy-operational-firewall.json";
+    private static final String POLICY_OPERATIONAL_RESTART_V_2_JSON =
+            "src/test/resources/tosca-policy-operational-restart.v2.json";
+    private static final String POLICY_OPERATIONAL_RESTART_JSON =
+            "src/test/resources/tosca-policy-operational-restart.json";
+
     /**
      * Start tests in the Active state.
      */
@@ -199,7 +208,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals("w", fsm.getSubgroup());
 
         String restartV1 =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
+            new String(Files.readAllBytes(Paths.get(POLICY_OPERATIONAL_RESTART_JSON)));
         ToscaPolicy toscaPolicyRestartV1 = new StandardCoder().decode(restartV1, ToscaPolicy.class);
         update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
 
@@ -236,7 +245,6 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 1], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
-
 
         factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
         assertEquals(1, factPolicies.size());
@@ -275,7 +283,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         // deploy a new version of the operational.restart policy
 
         String restartV2 =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.v2.json")));
+            new String(Files.readAllBytes(Paths.get(POLICY_OPERATIONAL_RESTART_V_2_JSON)));
         ToscaPolicy toscaPolicyRestartV2 = new StandardCoder().decode(restartV2, ToscaPolicy.class);
         update.setPolicies(Arrays.asList(toscaPolicyRestartV2));
         assertTrue(fsm.update(update));
@@ -294,7 +302,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         // deploy another policy : firewall
 
         String firewall =
-            new String(Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-firewall.json")));
+            new String(Files.readAllBytes(Paths.get(POLICY_OPERATIONAL_FIREWALL_JSON)));
         ToscaPolicy toscaPolicyFirewall = new StandardCoder().decode(firewall, ToscaPolicy.class);
         update.setPolicies(Arrays.asList(toscaPolicyRestartV2, toscaPolicyFirewall));
         assertTrue(fsm.update(update));
@@ -319,6 +327,14 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
+
+        // bad policy deployment
+
+        String badIntegerPolicy =
+                new String(Files.readAllBytes(Paths.get(POLICY_COMPLIANT_VCPE_BAD_INTEGER_JSON)));
+        ToscaPolicy toscaPolicyRestartBad = new StandardCoder().decode(badIntegerPolicy, ToscaPolicy.class);
+        update.setPolicies(Arrays.asList(toscaPolicyRestartBad));
+        assertFalse(fsm.update(update));
 
         assertTrue(controllerSupport.getController().getDrools().delete(ToscaPolicy.class));
 
