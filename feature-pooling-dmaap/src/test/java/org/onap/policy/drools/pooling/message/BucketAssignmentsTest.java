@@ -23,6 +23,7 @@ package org.onap.policy.drools.pooling.message;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -298,47 +299,43 @@ public class BucketAssignmentsTest {
 
         // slightly different values (i.e., changed "def" to "eef")
         asgn = new BucketAssignments(new String[] {"abc", null, "eef"});
-        assertTrue(code != asgn.hashCode());
+        assertNotEquals(code, asgn.hashCode());
     }
 
     @Test
     public void testEquals() {
         // null object
         BucketAssignments asgn = new BucketAssignments();
-        assertFalse(asgn.equals(null));
+        assertNotEquals(asgn, null);
 
         // same object
         asgn = new BucketAssignments();
-        assertTrue(asgn.equals(asgn));
+        assertEquals(asgn, asgn);
 
         // different class of object
         asgn = new BucketAssignments();
-        assertFalse(asgn.equals("not an assignment object"));
+        assertNotEquals(asgn, "not an assignment object");
 
-        // with null assignments
-        asgn = new BucketAssignments();
-        assertTrue(asgn.equals(new BucketAssignments()));
-
-        assertFalse(asgn.equals(new BucketAssignments(new String[] {"abc"})));
+        assertNotEquals(asgn, (new BucketAssignments(new String[] {"abc"})));
 
         // with empty array
         asgn = new BucketAssignments(new String[0]);
-        assertTrue(asgn.equals(asgn));
+        assertEquals(asgn, asgn);
 
-        assertFalse(asgn.equals(new BucketAssignments()));
-        assertFalse(asgn.equals(new BucketAssignments(new String[] {"abc"})));
+        assertNotEquals(asgn, (new BucketAssignments()));
+        assertNotEquals(asgn, (new BucketAssignments(new String[] {"abc"})));
 
         // with null items
         String[] arr = {"abc", null, "def"};
         asgn = new BucketAssignments(arr);
-        assertTrue(asgn.equals(asgn));
-        assertTrue(asgn.equals(new BucketAssignments(arr)));
-        assertTrue(asgn.equals(new BucketAssignments(new String[] {"abc", null, "def"})));
+        assertEquals(asgn, asgn);
+        assertEquals(asgn, (new BucketAssignments(arr)));
+        assertEquals(asgn, (new BucketAssignments(new String[] {"abc", null, "def"})));
 
-        assertFalse(asgn.equals(new BucketAssignments()));
-        assertFalse(asgn.equals(new BucketAssignments(new String[] {"abc", null, "XYZ"})));
+        assertNotEquals(asgn, (new BucketAssignments()));
+        assertNotEquals(asgn, (new BucketAssignments(new String[] {"abc", null, "XYZ"})));
 
-        assertFalse(asgn.equals(new BucketAssignments()));
+        assertNotEquals(asgn, (new BucketAssignments()));
     }
 
     /**
