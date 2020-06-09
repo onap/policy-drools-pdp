@@ -36,6 +36,29 @@
     },
     {
       "key": {
+        "uuid": "f1ab5fc6_a553a3da",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/BucketAssignmentsTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-06-09T13:23:33Z",
+      "side": 1,
+      "message": "You can probably remove this test, you\u0027re comparing something with itself so it\u0027ll always be true.",
+      "range": {
+        "startLine": 335,
+        "startChar": 0,
+        "endLine": 335,
+        "endChar": 3
+      },
+      "revId": "d8b84c2d4d4be8c7d596a5b3fc48a4ba07aa5045",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6087a513_7100e235",
         "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/BucketAssignmentsTest.java",
         "patchSetId": 3
