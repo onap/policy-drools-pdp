@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c4dfc5a_0de49fb0",
+        "filename": "feature-lifecycle/src/test/resources/tosca-policy-compliant-vcpe-bad-integer.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-06-10T17:01:36Z",
+      "side": 1,
+      "message": "I usually change the name/id also so someone doesn\u0027t get confused that its a test bad policy. Even though the filename is obvious.",
+      "revId": "84cfe202dc36e0e3b005521ebf2ec24d7aae170e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
