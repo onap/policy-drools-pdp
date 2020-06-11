@@ -168,7 +168,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
                 continue;
             }
 
-            success = sync.test(controller, policy) && success;
+            success = fsm.getDomainMaker().isConformant(policy) && sync.test(controller, policy) && success;
         }
 
         return success;
