@@ -166,6 +166,30 @@
       "revId": "f614eb07e2b5f2bf304ec09f47653912c595e0e9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "24eb2ebe_5e95e1ce",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/BucketAssignmentsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-15T15:51:07Z",
+      "side": 1,
+      "message": "depends if it\u0027s coded correctly - that\u0027s what this test verifies\n\nmay want to remove the extra parentheses",
+      "parentUuid": "769db0bf_61ea7f8a",
+      "range": {
+        "startLine": 321,
+        "startChar": 27,
+        "endLine": 321,
+        "endChar": 52
+      },
+      "revId": "f614eb07e2b5f2bf304ec09f47653912c595e0e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
