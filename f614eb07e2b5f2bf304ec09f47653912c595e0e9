@@ -94,6 +94,30 @@
       "revId": "f614eb07e2b5f2bf304ec09f47653912c595e0e9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51c0d9ca_8360940e",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/BucketAssignmentsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-15T15:17:49Z",
+      "side": 1,
+      "message": "no. only those AssetEquals... I pushed 2nd patch",
+      "parentUuid": "b3c06c66_65084f5a",
+      "range": {
+        "startLine": 321,
+        "startChar": 27,
+        "endLine": 321,
+        "endChar": 52
+      },
+      "revId": "f614eb07e2b5f2bf304ec09f47653912c595e0e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
