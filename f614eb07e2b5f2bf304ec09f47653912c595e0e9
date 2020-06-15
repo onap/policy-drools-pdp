@@ -46,6 +46,30 @@
       "revId": "f614eb07e2b5f2bf304ec09f47653912c595e0e9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14bfb4f8_f7f96ef5",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/message/BucketAssignmentsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-15T14:42:14Z",
+      "side": 1,
+      "message": "i am getting more confuse here. line 320, 321 is very trial comparison. I would suggest remove those two lines.",
+      "parentUuid": "37cd1058_b7143853",
+      "range": {
+        "startLine": 321,
+        "startChar": 27,
+        "endLine": 321,
+        "endChar": 52
+      },
+      "revId": "f614eb07e2b5f2bf304ec09f47653912c595e0e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
