@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.eelf.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -76,11 +77,11 @@ public class EElfTest {
      * @param slf4jLogger SLF4J Logger
      */
     protected void assertLogLevels(EELFLogger eelfLogger, Logger slf4jLogger) {
-        assertTrue(slf4jLogger.isDebugEnabled() == eelfLogger.isDebugEnabled());
-        assertTrue(slf4jLogger.isInfoEnabled() == eelfLogger.isInfoEnabled());
-        assertTrue(slf4jLogger.isErrorEnabled() == eelfLogger.isErrorEnabled());
-        assertTrue(slf4jLogger.isWarnEnabled() == eelfLogger.isWarnEnabled());
-        assertTrue(slf4jLogger.isTraceEnabled() == eelfLogger.isTraceEnabled());
+        assertEquals(slf4jLogger.isDebugEnabled(), eelfLogger.isDebugEnabled());
+        assertEquals(slf4jLogger.isInfoEnabled(), eelfLogger.isInfoEnabled());
+        assertEquals(slf4jLogger.isErrorEnabled(), eelfLogger.isErrorEnabled());
+        assertEquals(slf4jLogger.isWarnEnabled(), eelfLogger.isWarnEnabled());
+        assertEquals(slf4jLogger.isTraceEnabled(), eelfLogger.isTraceEnabled());
     }
 
     @Test
