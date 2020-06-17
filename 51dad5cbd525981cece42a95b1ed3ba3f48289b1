@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63a46eb4_ba90b38b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 971,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-17T21:41:08Z",
+      "side": 1,
+      "message": "let eclipse (or intellij) generate the hashcode method",
+      "revId": "51dad5cbd525981cece42a95b1ed3ba3f48289b1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
