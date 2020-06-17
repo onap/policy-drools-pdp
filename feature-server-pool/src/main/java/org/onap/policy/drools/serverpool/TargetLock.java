@@ -962,6 +962,22 @@ public class TargetLock implements Lock, Serializable {
             }
             return false;
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+            Integer sum = 0;
+            for (int i = 0 ; i < key.length() ; i++) {
+                for (int j = 0 ; j < ownerKey.length() ; j++) {
+                    sum = sum + key.charAt(i) + ownerKey.charAt(j);
+                }
+            }
+            sum = sum + uuid.hashCode();
+            return sum;
+
+        }
     }
 
     /* ============================================================ */
