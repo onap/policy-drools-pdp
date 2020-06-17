@@ -59,6 +59,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.onap.policy.drools.core.DroolsRunnable;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -832,6 +833,7 @@ public class TargetLock implements Lock, Serializable {
      * This class usually has a one-to-one correspondence with a 'TargetLock'
      * instance, unless the 'TargetLock' has been abandoned.
      */
+    @EqualsAndHashCode
     private static class Identity implements Serializable {
         // this is the key associated with the lock
         String key;
@@ -943,24 +945,6 @@ public class TargetLock implements Lock, Serializable {
                 wr.clear();
             }
             return true;
-        }
-
-        /***************************/
-        /* 'Object' class override */
-        /***************************/
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(Object other) {
-            if (other instanceof Identity) {
-                Identity identity = (Identity)other;
-                return uuid.equals(identity.uuid)
-                       && key.equals(identity.key)
-                       && ownerKey.equals(identity.ownerKey);
-            }
-            return false;
         }
     }
 
