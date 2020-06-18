@@ -159,17 +159,17 @@ public class ProtocolCoderToolsetTest {
         }
 
         CoderFilters coderFilters = coderToolset.getCoder(Triple.class.getName());
-        Assert.assertTrue(coderFilters.getCodedClass() == Triple.class.getName());
-        Assert.assertTrue(coderFilters.getFilter() == protocolFilter);
-        Assert.assertTrue(coderFilters.getFilter().getRule() != null);
+        Assert.assertSame(coderFilters.getCodedClass(), Triple.class.getName());
+        Assert.assertSame(coderFilters.getFilter(), protocolFilter);
+        Assert.assertNotNull(coderFilters.getFilter().getRule());
 
         coderFilters.getFilter().setRule("[?($.second =~ /^v2$/ && $.third =~ /.*v3.*/)]");
 
         tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
 
-        Assert.assertTrue(tripleDecoded.first().equals(triple.first()));
-        Assert.assertTrue(tripleDecoded.second().equals(triple.second()));
-        Assert.assertTrue(tripleDecoded.third().equals(triple.third()));
+        Assert.assertEquals(triple.first(), tripleDecoded.first());
+        Assert.assertEquals(triple.second(), tripleDecoded.second());
+        Assert.assertEquals(triple.third(), tripleDecoded.third());
 
         coderFilters.getFilter().setRule(null);
         Assert.assertEquals("[?($ =~ /.*/)]", coderFilters.getFilter().getRule());
@@ -192,37 +192,37 @@ public class ProtocolCoderToolsetTest {
     private void addRemoveCoder(ProtocolCoderToolset coderToolset) {
         coderToolset.addCoder(this.getClass().getName(),
                 new JsonProtocolFilter("[?($.second =~ /.*/)]"), 654321);
-        Assert.assertTrue(coderToolset.getCoders().size() == 2);
+        Assert.assertEquals(2, coderToolset.getCoders().size());
 
         coderToolset.removeCoders(this.getClass().getName());
-        Assert.assertTrue(coderToolset.getCoders().size() == 1);
+        Assert.assertEquals(1, coderToolset.getCoders().size());
     }
 
     private void updateCoderFilterRule(ProtocolCoderToolset coderToolset) {
         coderToolset.addCoder(Triple.class.getName(), new JsonProtocolFilter("[?($.third =~ /.*/)]"), 654321);
 
-        Assert.assertTrue(coderToolset.getCoders().size() == 1);
+        Assert.assertEquals(1, coderToolset.getCoders().size());
 
-        Assert.assertTrue(coderToolset.getCoder(Triple.class.getName()).getModelClassLoaderHash() == 654321);
+        Assert.assertEquals(654321, coderToolset.getCoder(Triple.class.getName()).getModelClassLoaderHash());
 
-        Assert.assertTrue(
+        Assert.assertNotNull(
                 coderToolset.getCoder(
-                        Triple.class.getName()).getFilter().getRule() != null);
+                        Triple.class.getName()).getFilter().getRule());
 
-        Assert.assertTrue("[?($.third =~ /.*/)]".equals(coderToolset.getCoder(Triple.class.getName())
-                .getFilter().getRule()));
+        Assert.assertEquals("[?($.third =~ /.*/)]", coderToolset.getCoder(Triple.class.getName())
+                .getFilter().getRule());
     }
 
     private void validateInitialization(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
-        Assert.assertTrue(CONTROLLER_ID.equals(coderToolset.getControllerId()));
-        Assert.assertTrue(releaseId.getGroupId().equals(coderToolset.getGroupId()));
-        Assert.assertTrue(releaseId.getArtifactId().equals(coderToolset.getArtifactId()));
+        Assert.assertEquals(CONTROLLER_ID, coderToolset.getControllerId());
+        Assert.assertEquals(releaseId.getGroupId(), coderToolset.getGroupId());
+        Assert.assertEquals(releaseId.getArtifactId(), coderToolset.getArtifactId());
         Assert.assertNull(coderToolset.getCustomCoder());
 
-        Assert.assertTrue(coderToolset.getCoders().size() == 1);
+        Assert.assertEquals(1, coderToolset.getCoders().size());
 
         CoderFilters coderFilters = coderToolset.getCoder(CONTROLLER_ID);
-        Assert.assertTrue(coderFilters == null);
+        Assert.assertNull(coderFilters);
 
         coderFilters = coderToolset.getCoder(Triple.class.getName());
         Assert.assertNotNull(coderFilters);

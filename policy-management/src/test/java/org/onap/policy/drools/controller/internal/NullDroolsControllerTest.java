@@ -95,12 +95,12 @@ public class NullDroolsControllerTest {
 
     @Test
     public void getRecentSourceEvents() {
-        Assert.assertTrue(new NullDroolsController().getRecentSourceEvents().length == 0);
+        Assert.assertEquals(0, new NullDroolsController().getRecentSourceEvents().length);
     }
 
     @Test
     public void getRecentSinkEvents() {
-        Assert.assertTrue(new NullDroolsController().getRecentSinkEvents().length == 0);
+        Assert.assertEquals(0, new NullDroolsController().getRecentSinkEvents().length);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class NullDroolsControllerTest {
 
     @Test
     public void factCount() {
-        Assert.assertTrue(new NullDroolsController().factCount(null) == 0);
+        Assert.assertEquals(0, new NullDroolsController().factCount(null));
     }
 
     @Test

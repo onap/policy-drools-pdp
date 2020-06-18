@@ -21,8 +21,7 @@
 package org.onap.policy.drools.protocol.configuration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,8 +74,8 @@ public class PdpdConfigurationTest {
         drools.set("version", VERSION);
         drools.set(PROPERTY1, VALUE1);
 
-        assertTrue(drools.equals(drools));
-        assertFalse(drools.equals(new Object()));
+        assertEquals(drools, drools);
+        assertNotEquals(drools, new Object());
 
         logger.info("Drools HashCode {}", drools.hashCode());
 
@@ -94,7 +93,7 @@ public class PdpdConfigurationTest {
 
         drools2.set(PROPERTY1, drools.get(PROPERTY1));
 
-        assertTrue(drools.equals(drools2));
+        assertEquals(drools, drools2);
 
         //
         // with methods
@@ -102,7 +101,7 @@ public class PdpdConfigurationTest {
         drools2.withArtifactId(ARTIFACT2).withGroupId(GROUPID2).withVersion(VERSION2)
             .withAdditionalProperty(PROPERTY2, VALUE2);
 
-        assertFalse(drools.equals(drools2));
+        assertNotEquals(drools, drools2);
 
         //
         // Test get additional properties
@@ -132,8 +131,8 @@ public class PdpdConfigurationTest {
         controller.set("drools", drools);
         controller.set(PROPERTY1, VALUE1);
 
-        assertTrue(controller.equals(controller));
-        assertFalse(controller.equals(new Object()));
+        assertEquals(controller, controller);
+        assertNotEquals(controller, new Object());
 
         logger.info("Controller HashCode {}", controller.hashCode());
 
@@ -151,7 +150,7 @@ public class PdpdConfigurationTest {
 
         controller2.set(PROPERTY1, controller.get(PROPERTY1));
 
-        assertTrue(controller.equals(controller2));
+        assertEquals(controller, controller2);
 
         //
         // test with methods
@@ -160,7 +159,7 @@ public class PdpdConfigurationTest {
         controller2.withDrools(drools2).withName(NAME2)
             .withOperation(OPERATION2).withAdditionalProperty(PROPERTY2, VALUE2);
 
-        assertFalse(controller.equals(controller2));
+        assertNotEquals(controller, controller2);
 
         //
         // Test additional properties
@@ -195,8 +194,8 @@ public class PdpdConfigurationTest {
         config.set("controllers", controllers);
         config.set(PROPERTY1, VALUE1);
 
-        assertTrue(config.equals(config));
-        assertFalse(config.equals(new Object()));
+        assertEquals(config, config);
+        assertNotEquals(config, new Object());
 
         logger.info("Config HashCode {}", config.hashCode());
 
@@ -215,7 +214,7 @@ public class PdpdConfigurationTest {
 
         config2.set(PROPERTY1, config.get(PROPERTY1));
 
-        assertTrue(config.equals(config2));
+        assertEquals(config, config2);
 
         //
         // Test with methods
@@ -224,7 +223,7 @@ public class PdpdConfigurationTest {
         controllers2.add(controller2);
         config2.withRequestId(REQUEST_ID2).withEntity(ENTITY2).withController(controllers2);
 
-        assertFalse(config.equals(config2));
+        assertNotEquals(config, config2);
 
         //
         // Test additional properties
