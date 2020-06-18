@@ -21,6 +21,7 @@
 package org.onap.policy.drools.system;
 
 import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -240,7 +241,7 @@ public class PolicyEngineTest {
         controllerProperties.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
         PolicyEngineConstants.getManager().createPolicyController(TEST_CONTROLLER_NAME, controllerProperties);
 
-        assertTrue(PolicyControllerConstants.getFactory().inventory().size() == 1);
+        assertEquals(1, PolicyControllerConstants.getFactory().inventory().size());
 
         gson.compareGson(PolicyEngineConstants.getManager(),
                         new File(PolicyEngineTest.class.getSimpleName() + "Add.json"));
