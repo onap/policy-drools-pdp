@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
@@ -44,7 +46,6 @@ import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
-import org.onap.policy.drools.utils.Pair;
 import org.onap.policy.drools.utils.Triple;
 
 public class ActiveStateTest extends SupportBasicStateTester {
@@ -54,6 +55,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
     /**
      * Setup.
      */
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -70,7 +72,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
 
         // ensure a heart beat was generated
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
-        assertEquals(MY_HOST, msg.second().getSource());
+        assertEquals(MY_HOST, msg.getRight().getSource());
     }
 
     @Test
@@ -187,7 +189,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
         state = new ActiveState(mgr);
 
         /*
-         * 
+         *
          * PREV_HOST2 has buckets and is my predecessor, but it isn't the leader thus
          * should be ignored.
          */
@@ -360,8 +362,8 @@ public class ActiveStateTest extends SupportBasicStateTester {
         verify(mgr, times(2)).publish(anyString(), any(Heartbeat.class));
 
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
-        assertEquals(MY_HOST, msg.first());
-        assertEquals(MY_HOST, msg.second().getSource());
+        assertEquals(MY_HOST, msg.getLeft());
+        assertEquals(MY_HOST, msg.getRight().getSource());
     }
 
     @Test
@@ -454,8 +456,8 @@ public class ActiveStateTest extends SupportBasicStateTester {
         verify(mgr, times(1)).publish(any(), any());
 
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
-        assertEquals(MY_HOST, msg.first());
-        assertEquals(MY_HOST, msg.second().getSource());
+        assertEquals(MY_HOST, msg.getLeft());
+        assertEquals(MY_HOST, msg.getRight().getSource());
     }
 
     @Test
@@ -469,13 +471,13 @@ public class ActiveStateTest extends SupportBasicStateTester {
 
         // this message should go to itself
         msg = capturePublishedMessage(Heartbeat.class, index++);
-        assertEquals(MY_HOST, msg.first());
-        assertEquals(MY_HOST, msg.second().getSource());
+        assertEquals(MY_HOST, msg.getLeft());
+        assertEquals(MY_HOST, msg.getRight().getSource());
 
         // this message should go to its successor
         msg = capturePublishedMessage(Heartbeat.class, index++);
-        assertEquals(HOST1, msg.first());
-        assertEquals(MY_HOST, msg.second().getSource());
+        assertEquals(HOST1, msg.getLeft());
+        assertEquals(MY_HOST, msg.getRight().getSource());
     }
 
 }
