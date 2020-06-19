@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.Forward;
@@ -40,7 +42,6 @@ import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
-import org.onap.policy.drools.utils.Pair;
 import org.onap.policy.drools.utils.Triple;
 
 public class StartStateTest extends SupportBasicStateTester {
@@ -50,6 +51,7 @@ public class StartStateTest extends SupportBasicStateTester {
     /**
      * Setup.
      */
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -81,8 +83,8 @@ public class StartStateTest extends SupportBasicStateTester {
 
         Pair<String, Heartbeat> msg = capturePublishedMessage(Heartbeat.class);
 
-        assertEquals(MY_HOST, msg.first());
-        assertEquals(state.getHbTimestampMs(), msg.second().getTimestampMs());
+        assertEquals(MY_HOST, msg.getLeft());
+        assertEquals(state.getHbTimestampMs(), msg.getRight().getTimestampMs());
 
 
         /*
@@ -95,11 +97,11 @@ public class StartStateTest extends SupportBasicStateTester {
 
         // invoke the task - it should generate another heartbeat
         assertEquals(null, generator.third().fire());
-        verify(mgr, times(2)).publish(MY_HOST, msg.second());
+        verify(mgr, times(2)).publish(MY_HOST, msg.getRight());
 
         // and again
         assertEquals(null, generator.third().fire());
-        verify(mgr, times(3)).publish(MY_HOST, msg.second());
+        verify(mgr, times(3)).publish(MY_HOST, msg.getRight());
 
 
         /*
@@ -107,13 +109,13 @@ public class StartStateTest extends SupportBasicStateTester {
          */
         Pair<Long, StateTimerTask> checker = onceTasks.removeFirst();
 
-        assertEquals(STD_HEARTBEAT_WAIT_MS, checker.first().longValue());
+        assertEquals(STD_HEARTBEAT_WAIT_MS, checker.getLeft().longValue());
 
         // invoke the task - it should go to the state returned by the mgr
         State next = mock(State.class);
         when(mgr.goInactive()).thenReturn(next);
 
-        assertEquals(next, checker.second().fire());
+        assertEquals(next, checker.getRight().fire());
 
         verify(mgr).startDistributing(null);
     }
