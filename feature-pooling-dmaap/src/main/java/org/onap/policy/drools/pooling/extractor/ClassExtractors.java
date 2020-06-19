@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2019-2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
-import org.onap.policy.drools.utils.Pair;
+import org.onap.policy.common.utils.resources.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +35,11 @@ import org.slf4j.LoggerFactory;
  * Extractors for each object class. Properties define how the data is to be
  * extracted for a given class, where the properties are similar to the
  * following:
- * 
+ *
  * <pre>
  * <code>&lt;a.prefix>.&lt;class.name> = ${event.reqid}</code>
  * </pre>
- * 
+ *
  * <p>For any given field name (e.g., "reqid"), it first looks for a public "getXxx()"
  * method to extract the specified field. If that fails, then it looks for a public field
  * by the given name. If that also fails, and the object is a <i>Map</i> subclass, then it
@@ -71,7 +72,7 @@ public class ClassExtractors {
 
     /**
      * Constructor.
-     * 
+     *
      * @param props properties that specify how the data is to be extracted from
      *        a given class
      * @param prefix property name prefix, prepended before the class name
@@ -85,7 +86,7 @@ public class ClassExtractors {
 
     /**
      * Gets the number of extractors in the map.
-     * 
+     *
      * @return gets the number of extractors in the map
      */
     protected int size() {
@@ -94,7 +95,7 @@ public class ClassExtractors {
 
     /**
      * Extracts the desired data item from an object.
-     * 
+     *
      * @param object object from which to extract the data item
      * @return the extracted item, or {@code null} if it could not be extracted
      */
@@ -111,7 +112,7 @@ public class ClassExtractors {
     /**
      * Gets the extractor for the given type of object, creating one if it
      * doesn't exist yet.
-     * 
+     *
      * @param object object whose extracted is desired
      * @return an extractor for the object
      */
@@ -129,9 +130,9 @@ public class ClassExtractors {
 
     /**
      * Builds an extractor for the class.
-     * 
+     *
      * @param clazz class for which the extractor should be built
-     * 
+     *
      * @return a new extractor
      */
     private Extractor buildExtractor(Class<?> clazz) {
@@ -162,7 +163,7 @@ public class ClassExtractors {
     /**
      * Builds an extractor for the class, based on the config value extracted
      * from the corresponding property.
-     * 
+     *
      * @param clazz class for which the extractor should be built
      * @param value config value (e.g., "${event.request.id}"
      * @return a new extractor
@@ -209,7 +210,7 @@ public class ClassExtractors {
     /**
      * Gets the extractor for a class, examining all super classes and
      * interfaces.
-     * 
+     *
      * @param clazz class whose extractor is desired
      * @param addOk {@code true} if the extractor may be added, provided the
      *        property is defined, {@code false} otherwise
@@ -268,7 +269,7 @@ public class ClassExtractors {
      * hierarchically, where each name identifies a particular component within
      * the hierarchy. Supports retrieval from {@link Map} objects, as well as
      * via getXxx() methods, or by direct field retrieval.
-     * 
+     *
      * <p>Note: this will <i>not</i> work if POJOs are contained within a Map.
      */
     private class ComponetizedExtractor implements Extractor {
@@ -280,7 +281,7 @@ public class ClassExtractors {
 
         /**
          * Constructor.
-         * 
+         *
          * @param clazz the class associated with the object at the root of the
          *        hierarchy
          * @param names name associated with each component
@@ -303,7 +304,7 @@ public class ClassExtractors {
 
         /**
          * Builds an extractor for the given component of an object.
-         * 
+         *
          * @param clazz type of object from which the component will be
          *        extracted
          * @param comp name of the component to extract
@@ -312,9 +313,9 @@ public class ClassExtractors {
          * @throws ExtractorException extrator exception
          */
         private Pair<Extractor, Class<?>> buildExtractor(Class<?> clazz, String comp) throws ExtractorException {
-            
+
             Pair<Extractor, Class<?>> pair = getMethodExtractor(clazz, comp);
- 
+
             if (pair == null) {
                 pair = getFieldExtractor(clazz, comp);
             }
@@ -350,7 +351,7 @@ public class ClassExtractors {
         /**
          * Gets an extractor that invokes a getXxx() method to retrieve the
          * object.
-         * 
+         *
          * @param clazz container's class
          * @param name name of the property to be retrieved
          * @return a new extractor, or {@code null} if the class does not
@@ -385,7 +386,7 @@ public class ClassExtractors {
 
         /**
          * Gets an extractor for a field within the object.
-         * 
+         *
          * @param clazz container's class
          * @param name name of the field whose value is to be extracted
          * @return a new extractor, or {@code null} if the class does not
@@ -404,7 +405,7 @@ public class ClassExtractors {
 
         /**
          * Gets an extractor for an item within a Map object.
-         * 
+         *
          * @param clazz container's class
          * @param key item key within the map
          * @return a new extractor, or {@code null} if the class is not a Map
@@ -429,7 +430,7 @@ public class ClassExtractors {
         /**
          * Gets field within a class, examining all super classes and
          * interfaces.
-         * 
+         *
          * @param clazz class whose field is desired
          * @param name name of the desired field
          * @return the field within the class, or {@code null} if the field does
