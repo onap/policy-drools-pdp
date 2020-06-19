@@ -27,7 +27,6 @@ import static org.onap.policy.drools.serverpool.ServerPoolProperties.getProperty
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

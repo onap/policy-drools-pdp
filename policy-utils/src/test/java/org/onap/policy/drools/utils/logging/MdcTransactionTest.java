@@ -169,7 +169,7 @@ public class MdcTransactionTest {
             MDC.get(MdcTransactionConstants.ELAPSED_TIME));
         assertEquals(trans.getServiceInstanceId(), MDC.get(MdcTransactionConstants.SERVICE_INSTANCE_ID));
         assertEquals(trans.getInstanceUuid(), MDC.get(MdcTransactionConstants.INSTANCE_UUID));
-        assertEquals(trans.getProcessKey(),MDC.get(MdcTransactionConstants.PROCESS_KEY));
+        assertEquals(trans.getProcessKey(), MDC.get(MdcTransactionConstants.PROCESS_KEY));
         assertEquals(trans.getStatusCode(), MDC.get(MdcTransactionConstants.STATUS_CODE));
         assertEquals(trans.getResponseCode(), MDC.get(MdcTransactionConstants.RESPONSE_CODE));
         assertEquals(trans.getResponseDescription(), MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));

@@ -344,7 +344,7 @@ public class RestLifecycleManager {
 
         List<ToscaPolicy> policies =
                 LifecycleFeature.fsm.getPoliciesMap().values().stream().collect(Collectors.toList());
-        policies.removeIf(aPolicy -> policy.getIdentifier().equals(aPolicy.getIdentifier()));
+        policies.removeIf(otherPolicy -> policy.getIdentifier().equals(otherPolicy.getIdentifier()));
         return Response.status(Response.Status.OK)
                        .entity(LifecycleFeature.fsm.update(getPolicyUpdate(policies)))
                        .build();

@@ -26,13 +26,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Response;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -74,7 +72,7 @@ public class StateManagementTest {
         String userDir = System.getProperty("user.dir");
         logger.debug("setUpClass: userDir=" + userDir);
         System.setProperty("com.sun.management.jmxremote.port", "9980");
-        System.setProperty("com.sun.management.jmxremote.authenticate","false");
+        System.setProperty("com.sun.management.jmxremote.authenticate", "false");
 
         initializeDb();
 
@@ -189,7 +187,7 @@ public class StateManagementTest {
 
         assertTrue("Standby status not coldstandby after promote()", standby.equals(StateManagement.COLD_STANDBY));
 
-        /**************Repository Audit Test. **************/
+        /* *************Repository Audit Test. ************* */
         logger.debug("\n\ntestStateManagementOperation: Repository Audit\n\n");
         try {
             StateManagementProperties.initProperties(fsmProperties);
@@ -207,7 +205,7 @@ public class StateManagementTest {
             logger.debug("testSubsytemTest RepositoryAudit InterruptedException", e);
         }
 
-        /*****************Db Audit Test. ***************/
+        /* ****************Db Audit Test. ************** */
         logger.debug("\n\ntestStateManagementOperation: DB Audit\n\n");
 
         try {
@@ -220,7 +218,7 @@ public class StateManagementTest {
             logger.debug("testSubsytemTest DbAudit exception", e);
         }
 
-        /*************IntegrityMonitorRestManager Test. *************/
+        /* ************IntegrityMonitorRestManager Test. ************ */
         logger.debug("\n\ntestStateManagementOperation: IntegrityMonitorRestManager\n\n");
         IntegrityMonitorRestManager integrityMonitorRestManager = new IntegrityMonitorRestManager();
 
@@ -242,7 +240,7 @@ public class StateManagementTest {
         logger.debug("initializeDb: Entering");
 
         Properties cleanProperties = new Properties();
-        cleanProperties.put(StateManagementProperties.DB_DRIVER,"org.h2.Driver");
+        cleanProperties.put(StateManagementProperties.DB_DRIVER, "org.h2.Driver");
         cleanProperties.put(StateManagementProperties.DB_URL, "jdbc:h2:mem:statemanagement");
         cleanProperties.put(StateManagementProperties.DB_USER, "sa");
         cleanProperties.put(StateManagementProperties.DB_PWD, "");

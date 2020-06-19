@@ -162,7 +162,7 @@ public class BlockingClassLoader extends ClassLoader {
         // being blocked
         int index = name.lastIndexOf('.');
         if (index >= 0) {
-            if (packages.contains(name.substring(0,index))) {
+            if (packages.contains(name.substring(0, index))) {
                 throw(new ClassNotFoundException(name));
             }
 

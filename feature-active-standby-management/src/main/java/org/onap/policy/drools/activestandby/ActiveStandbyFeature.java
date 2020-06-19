@@ -159,7 +159,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
         synchronized (myPdpSync) {
             if (myPdp == null) {
 
-                myPdp = new DroolsPdpImpl(resourceName,false,4,MonitorTime.getInstance().getDate());
+                myPdp = new DroolsPdpImpl(resourceName, false, 4, MonitorTime.getInstance().getDate());
             }
             String siteName = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.SITE_NAME);
             if (siteName == null) {
@@ -169,7 +169,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
             }
             myPdp.setSite(siteName);
             if (electionHandler == null) {
-                electionHandler = new DroolsPdpsElectionHandler(conn,myPdp);
+                electionHandler = new DroolsPdpsElectionHandler(conn, myPdp);
             }
         }
         logger.info("\n\nThis controller is a standby, waiting to be chosen as primary...\n\n");

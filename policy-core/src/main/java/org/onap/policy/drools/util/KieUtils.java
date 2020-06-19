@@ -33,9 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.NonNull;
-
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -246,7 +244,7 @@ public class KieUtils {
         if (!stillNeeded.isEmpty()) {
             // there are still packages we need to add --
             // this code makes use of an internal class and method
-            ((KnowledgeBaseImpl)kieBase).addPackages(stillNeeded);
+            ((KnowledgeBaseImpl) kieBase).addPackages(stillNeeded);
         }
     }
 }

@@ -76,8 +76,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
 
             if (stateManagement == null) {
                 logger.debug("StateManagementFeature.globalInit(): stateManagement is NULL!");
-            }
-            else {
+            } else {
                 logger.debug("StateManagementFeature.globalInit(): "
                         + "stateManagement.getAdminState(): {}", stateManagement.getAdminState());
             }

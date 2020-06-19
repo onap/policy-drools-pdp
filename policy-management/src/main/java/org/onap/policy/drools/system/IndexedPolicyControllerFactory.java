@@ -21,7 +21,6 @@
 package org.onap.policy.drools.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +44,13 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     /**
      * Policy Controller Name Index.
      */
-    private final HashMap<String,PolicyController> policyControllers =
+    private final HashMap<String, PolicyController> policyControllers =
             new HashMap<>();
 
     /**
      * Group/Artifact Ids Index.
      */
-    private final HashMap<String,PolicyController> coordinates2Controller =
+    private final HashMap<String, PolicyController> coordinates2Controller =
             new HashMap<>();
 
     /**
@@ -295,7 +294,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
         }
 
         synchronized (this) {
-            String key = toKey(groupId,artifactId);
+            String key = toKey(groupId, artifactId);
             if (this.coordinates2Controller.containsKey(key)) {
                 return this.coordinates2Controller.get(key);
             } else {

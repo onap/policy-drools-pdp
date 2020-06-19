@@ -119,7 +119,7 @@ public class AllSeemsWellTest {
         String userDir = System.getProperty("user.dir");
         logger.debug("setUpClass: userDir={}", userDir);
         System.setProperty("com.sun.management.jmxremote.port", "9980");
-        System.setProperty("com.sun.management.jmxremote.authenticate","false");
+        System.setProperty("com.sun.management.jmxremote.authenticate", "false");
 
         DroolsPdpsElectionHandler.setIsUnitTesting(true);
 

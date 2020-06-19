@@ -127,7 +127,7 @@ public class StandbyStateManagementTest {
         String userDir = System.getProperty("user.dir");
         logger.debug("setUpClass: userDir={}", userDir);
         System.setProperty("com.sun.management.jmxremote.port", "9980");
-        System.setProperty("com.sun.management.jmxremote.authenticate","false");
+        System.setProperty("com.sun.management.jmxremote.authenticate", "false");
 
         saveTime = Whitebox.getInternalState(MonitorTime.class, MONITOR_FIELD_NAME);
         saveFactory = Factory.getInstance();
@@ -359,7 +359,7 @@ public class StandbyStateManagementTest {
 
         listOfDesignated = droolsPdpsElectionHandler.santizeDesignatedList(listOfDesignated);
 
-        logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size = {}\n\n",listOfDesignated.size());
+        logger.debug("\n\ntestSanitizeDesignatedList: listOfDesignated.size = {}\n\n", listOfDesignated.size());
 
         assertEquals(4, listOfDesignated.size());
 
@@ -901,7 +901,7 @@ public class StandbyStateManagementTest {
         sm.deleteAllStateManagementEntities();
 
 
-        sm = new StateManagement(emfx, activePdpId);//pdp2
+        sm = new StateManagement(emfx, activePdpId);    //pdp2
 
         // Artificially putting a PDP into service is really a two step process, 1)
         // inserting it as designated and 2) promoting it so that its standbyStatus
@@ -955,16 +955,16 @@ public class StandbyStateManagementTest {
         //At this point, the newly created pdp will have set the state to disabled/failed/cold standby
         //because it is stale. So, it cannot be promoted.  We need to call sm.enableNotFailed() so we
         //can promote it and demote the other pdp - else the other pdp will just spring back to providingservice
-        sm.enableNotFailed();//pdp2
+        sm.enableNotFailed();   //pdp2
         sm.promote();
         String standbyStatus = sm.getStandbyStatus(activePdpId);
         logger.info("testHotStandby2: After promoting, PDP= {} has standbyStatus= {}", activePdpId, standbyStatus);
 
         // demoting PDP should ensure that state transits to hotstandby
         logger.info("testHotStandby2: Runner started; demoting PDP= {}", thisPdpId);
-        sm2.demote();//pdp1
+        sm2.demote();   //pdp1
         standbyStatus = sm.getStandbyStatus(thisPdpId);
-        logger.info("testHotStandby2: After demoting, PDP={} has standbyStatus= {}",thisPdpId , standbyStatus);
+        logger.info("testHotStandby2: After demoting, PDP={} has standbyStatus= {}", thisPdpId, standbyStatus);
 
         logger.info("testHotStandby2: Sleeping {} ms, to allow JpaDroolsPdpsConnector "
                 + "time to check droolspdpentity table", SLEEP_TIME);
@@ -1079,7 +1079,7 @@ public class StandbyStateManagementTest {
         sleep(SLEEP_TIME);
 
         logger.debug("testLocking1: Waking up and invoking startTransaction on active PDP={}"
-                + ", designated= {}",thisPdpId, conn.getPdp(thisPdpId).isDesignated());
+                + ", designated= {}", thisPdpId, conn.getPdp(thisPdpId).isDesignated());
 
 
         IntegrityMonitor droolsPdpIntegrityMonitor = IntegrityMonitor.getInstance();
@@ -1133,7 +1133,7 @@ public class StandbyStateManagementTest {
         sleep(100);
 
         logger.debug("testLocking1: Invoking startTransaction on locked PDP= {}"
-                + ", designated= {}",thisPdpId, conn.getPdp(thisPdpId).isDesignated());
+                + ", designated= {}", thisPdpId, conn.getPdp(thisPdpId).isDesignated());
         try {
             droolsPdpIntegrityMonitor.startTransaction();
             logger.error("testLocking1: startTransaction unexpectedly successful");

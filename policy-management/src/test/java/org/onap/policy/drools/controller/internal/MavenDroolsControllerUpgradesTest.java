@@ -187,7 +187,7 @@ public class MavenDroolsControllerUpgradesTest {
         controller.getContainer()
             .getPolicySession(KBSESSION_RULES)
             .getKieSession()
-            .addEventListener( new RuleRuntimeEventListener() {
+                .addEventListener(new RuleRuntimeEventListener() {
                     @Override
                     public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
                         logger.info("RULE {}: inserting {}",
@@ -205,7 +205,7 @@ public class MavenDroolsControllerUpgradesTest {
                         logger.info("RULE {}: deleting {}",
                             objectDeletedEvent.getRule().getName(), objectDeletedEvent.getOldObject());
                     }
-                } );
+                });
 
         controller.getContainer()
             .getPolicySession(KBSESSION_RULES)
@@ -265,6 +265,6 @@ public class MavenDroolsControllerUpgradesTest {
                 public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent ruleFlowGroupDeactivatedEvent) {
                     /* do nothing */
                 }
-            } );
+            });
     }
 }

@@ -567,8 +567,7 @@ public class MavenDroolsController implements DroolsController {
                 if (feature.beforeDeliver(this, sink, event)) {
                     return true;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("{}: feature {} before-deliver failure because of {}", this, feature.getClass().getName(),
                         e.getMessage(), e);
             }
@@ -604,8 +603,7 @@ public class MavenDroolsController implements DroolsController {
                 if (feature.afterDeliver(this, sink, event, json, success)) {
                     return true;
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("{}: feature {} after-deliver failure because of {}", this, feature.getClass().getName(),
                         e.getMessage(), e);
             }
@@ -748,10 +746,10 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @Override
-    public Map<String,Integer> factClassNames(String sessionName) {
+    public Map<String, Integer> factClassNames(String sessionName) {
         validateSessionName(sessionName);
 
-        Map<String,Integer> classNames = new HashMap<>();
+        Map<String, Integer> classNames = new HashMap<>();
 
         PolicySession session = getSession(sessionName);
         KieSession kieSession = session.getKieSession();

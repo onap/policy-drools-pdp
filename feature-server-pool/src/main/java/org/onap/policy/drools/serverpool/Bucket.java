@@ -62,12 +62,10 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -142,7 +140,7 @@ public class Bucket {
 
     static {
         // create hash bucket entries, but there are no assignments yet
-        for (int i = 0 ; i < indexToBucket.length ; i += 1) {
+        for (int i = 0; i < indexToBucket.length; i += 1) {
             Bucket bucket = new Bucket(i);
             indexToBucket[i] = bucket;
         }
@@ -756,8 +754,7 @@ public class Bucket {
              * current host.
              */
             UUID key = oldHost.uuid;
-            for (int count = new Random().nextInt(rb.testServers.size() - 1) ;
-                    count >= 0 ; count -= 1) {
+            for (int count = new Random().nextInt(rb.testServers.size() - 1); count >= 0; count -= 1) {
                 key = rb.testServers.higherKey(key);
                 if (key == null) {
                     // wrap to the beginning of the list
@@ -1379,9 +1376,9 @@ public class Bucket {
             }
         }
 
-        /********************************************/
-        /* Comparable<AdjustedTestServer> interface */
-        /********************************************/
+        /* ****************************************** */
+        /* Comparable<AdjustedTestServer> interface   */
+        /* ****************************************** */
 
         /**
          * {@inheritDoc}
@@ -1421,7 +1418,7 @@ public class Bucket {
         TestBucket[] buckets = new TestBucket[indexToBucket.length];
 
         // this table resembles the 'Server.servers' table
-        TreeMap<UUID,TestServer> testServers = new TreeMap<>(Util.uuidComparator);
+        TreeMap<UUID, TestServer> testServers = new TreeMap<>(Util.uuidComparator);
 
         /* this is a special server instance, which is allocated any
          * owned, primary, or secondary buckets that haven't been allocated to
@@ -1448,7 +1445,7 @@ public class Bucket {
              */
             Callable<Integer> callable = () -> {
                 // copy the 'Bucket' table
-                for (int i = 0 ; i < indexToBucket.length; i += 1) {
+                for (int i = 0; i < indexToBucket.length; i += 1) {
                     // makes a snapshot of the bucket information
                     Bucket bucket = indexToBucket[i];
 
@@ -1619,7 +1616,7 @@ public class Bucket {
             if (primaryBackup != null
                     && !Objects.equals(siteSocketAddress,
                                        primaryBackup.siteSocketAddress)) {
-                /**
+                /*
                  * primary backup is from the wrong site -- see if we can
                  *  use the secondary.
                  */
@@ -1769,7 +1766,7 @@ public class Bucket {
             DataOutputStream dos = new DataOutputStream(bos);
 
             // go through the entire 'buckets' table
-            for (int i = 0 ; i < buckets.length ; i += 1) {
+            for (int i = 0; i < buckets.length; i += 1) {
                 // fetch the 'TestBucket' associated with index 'i'
                 TestBucket testBucket = buckets[i];
 
@@ -1831,7 +1828,7 @@ public class Bucket {
             final Entity<String> entity =
                 Entity.entity(new String(Base64.getEncoder().encode(packet),
                     StandardCharsets.UTF_8), MediaType.APPLICATION_OCTET_STREAM_TYPE);
-            /**
+            /*
              * This method is running within the 'MainLoop' thread.
              */
             Runnable task = () -> {
@@ -2179,9 +2176,9 @@ public class Bucket {
             }
         }
 
-        /*********************/
-        /* 'State' interface */
-        /*********************/
+        /* ******************* */
+        /* 'State' interface   */
+        /* ******************* */
 
         /**
          * {@inheritDoc}
@@ -2232,9 +2229,9 @@ public class Bucket {
             }
         }
 
-        /**********************/
-        /* 'Thread' interface */
-        /**********************/
+        /* ******************** */
+        /* 'Thread' interface   */
+        /* ******************** */
 
         /**
          * {@inheritDoc}
@@ -2367,10 +2364,10 @@ public class Bucket {
          */
         private void restoreBucketData(Object obj) {
             if (obj instanceof List) {
-                for (Object entry : (List<?>)obj) {
+                for (Object entry : (List<?>) obj) {
                     if (entry instanceof Restore) {
                         // entry-specific 'restore' operation
-                        ((Restore)entry).restore(Bucket.this.index);
+                        ((Restore) entry).restore(Bucket.this.index);
                     } else {
                         logger.error("{}: Expected '{}' but got '{}'",
                                      this, Restore.class.getName(),
@@ -2401,9 +2398,9 @@ public class Bucket {
             start();
         }
 
-        /*********************/
-        /* 'State' interface */
-        /*********************/
+        /* ******************* */
+        /* 'State' interface   */
+        /* ******************* */
 
         /**
          * {@inheritDoc}
@@ -2433,9 +2430,9 @@ public class Bucket {
             logger.error("{}: 'bulkSerializedData()' shouldn't be called in this state", this);
         }
 
-        /**********************/
-        /* 'Thread' interface */
-        /**********************/
+        /* ******************** */
+        /* 'Thread' interface   */
+        /* ******************** */
 
         /**
          * {@inheritDoc}

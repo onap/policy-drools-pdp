@@ -21,7 +21,6 @@
 package org.onap.policy.drools.serverpool;
 
 import java.util.Collection;
-
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 

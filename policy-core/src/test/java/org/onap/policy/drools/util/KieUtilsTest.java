@@ -97,7 +97,7 @@ public class KieUtilsTest {
     @Test
     public void getPackages() {
         assertEquals(Arrays.asList("java.util", "java.util.concurrent", "org.onap.policy.drools.core.test"),
-            KieUtils.getPackages(container) .stream().map(KiePackage::getName).collect(Collectors.toList()));
+                        KieUtils.getPackages(container).stream().map(KiePackage::getName).collect(Collectors.toList()));
     }
 
     @Test

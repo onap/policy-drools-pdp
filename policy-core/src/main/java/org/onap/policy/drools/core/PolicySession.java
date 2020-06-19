@@ -22,7 +22,6 @@
 package org.onap.policy.drools.core;
 
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;

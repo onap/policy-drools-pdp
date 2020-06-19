@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.UUID;
-
 import org.onap.policy.drools.serverpooltest.ServerWrapper;
 
 /**

@@ -242,7 +242,7 @@ public class RestLifecycleManagerTest {
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
         assertEquals(1,
             PolicyControllerConstants
-                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class) .size());
+                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
 
         resourceLists("policies", 3);
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.OK.getStatusCode());
@@ -253,7 +253,7 @@ public class RestLifecycleManagerTest {
                 Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(0,
             PolicyControllerConstants
-                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class) .size());
+                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
 
         resourceLists("policies", 2);
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
@@ -267,7 +267,7 @@ public class RestLifecycleManagerTest {
         booleanPost("policies/operations/deployment", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(1,
             PolicyControllerConstants
-                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class) .size());
+                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
 
         resourceLists("policies", 2);
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
@@ -278,7 +278,7 @@ public class RestLifecycleManagerTest {
                 "policies/operations/undeployment", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(0,
             PolicyControllerConstants
-                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class) .size());
+                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
 
         resourceLists("policies", 2);
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
@@ -411,7 +411,7 @@ public class RestLifecycleManagerTest {
 
         Field modifiers = Field.class.getDeclaredField("modifiers");
         modifiers.setAccessible(true);
-        modifiers.setInt(fsmField, fsmField.getModifiers() & ~Modifier.FINAL );
+        modifiers.setInt(fsmField, fsmField.getModifiers() & ~Modifier.FINAL);
 
         LifecycleFsm fsm = new LifecycleFsm();
         fsmField.set(null, fsm);

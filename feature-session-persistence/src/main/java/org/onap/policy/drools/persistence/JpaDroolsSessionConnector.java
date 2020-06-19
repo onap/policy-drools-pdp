@@ -22,7 +22,6 @@ package org.onap.policy.drools.persistence;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,7 +26,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,7 +34,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -111,7 +109,7 @@ public class SimDmaap {
     /* ============================================================ */
 
     // maps topic name to 'Topic' instance
-    static Map<String,Topic> topicTable = new ConcurrentHashMap<>();
+    static Map<String, Topic> topicTable = new ConcurrentHashMap<>();
 
     /**
      * Each instance of this class corresponds to a DMAAP or UEB topic.
@@ -121,7 +119,7 @@ public class SimDmaap {
         String topic;
 
         // maps group name into group instance
-        Map<String,Group> groupTable = new ConcurrentHashMap<>();
+        Map<String, Group> groupTable = new ConcurrentHashMap<>();
 
         /**
          * Create or get a Topic.
@@ -179,7 +177,7 @@ public class SimDmaap {
                     // no more messages
                     break;
                 }
-                String[] prefix = data.substring(cur,leftBrace).split("\\.");
+                String[] prefix = data.substring(cur, leftBrace).split("\\.");
                 if (prefix.length == 3) {
                     try {
                         // determine length of message, and advance current position
@@ -281,7 +279,7 @@ public class SimDmaap {
             builder.append("[\"").append(message);
 
             // add up to '<limit>-1' more messages
-            for (int i = 1 ; i < limit ; i += 1) {
+            for (int i = 1; i < limit; i += 1) {
                 // fetch the next message -- don't wait if it isn't currently there
                 message = messages.poll();
                 if (message == null) {

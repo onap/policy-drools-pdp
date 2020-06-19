@@ -26,7 +26,7 @@ public abstract class DroolsPdpObject implements DroolsPdp {
     @Override
     public boolean equals(Object other) {
         if (other instanceof DroolsPdp) {
-            return this.getPdpId().equals(((DroolsPdp)other).getPdpId());
+            return this.getPdpId().equals(((DroolsPdp) other).getPdpId());
         } else {
             return false;
         }
@@ -71,13 +71,13 @@ public abstract class DroolsPdpObject implements DroolsPdp {
     }
 
     private int commonCompare(DroolsPdp other) {
-        if (nullSafeCompare(this.getSite(),other.getSite()) == 0) {
+        if (nullSafeCompare(this.getSite(), other.getSite()) == 0) {
             if (this.getPriority() != other.getPriority()) {
                 return this.getPriority() - other.getPriority();
             }
             return this.getPdpId().compareTo(other.getPdpId());
         } else {
-            return nullSafeCompare(this.getSite(),other.getSite());
+            return nullSafeCompare(this.getSite(), other.getSite());
         }
     }
 }

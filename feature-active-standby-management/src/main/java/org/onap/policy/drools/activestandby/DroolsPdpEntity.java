@@ -58,7 +58,7 @@ public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
     private Date updatedDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "designatedDate",nullable = false)
+    @Column(name = "designatedDate", nullable = false)
     private Date designatedDate;
 
     @Column(name = "site", nullable = true, length = 50)

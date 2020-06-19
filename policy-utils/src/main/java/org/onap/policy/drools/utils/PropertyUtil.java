@@ -330,8 +330,7 @@ public class PropertyUtil {
                 public void run() {
                     try {
                         poll();
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         logger.warn("Polling for property changes", e);
                     }
                 }
@@ -347,7 +346,7 @@ public class PropertyUtil {
          */
         synchronized Properties addListener(Listener listener) {
             listeners.add(listener);
-            return (Properties)properties.clone();
+            return (Properties) properties.clone();
         }
 
         /**
@@ -420,7 +419,7 @@ public class PropertyUtil {
                         // Copy 'properties' and 'changedProperties', so it doesn't
                         // cause problems if the recipient makes changes.
                         final Properties tmpProperties =
-                                (Properties)(properties.clone());
+                                (Properties) properties.clone();
                         final HashSet<String> tmpChangedProperties =
                                 new HashSet<>(changedProperties);
 

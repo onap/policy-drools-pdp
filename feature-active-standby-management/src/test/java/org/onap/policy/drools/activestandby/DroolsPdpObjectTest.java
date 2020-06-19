@@ -21,7 +21,6 @@
 package org.onap.policy.drools.activestandby;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.Date;
@@ -29,8 +28,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.policy.drools.activestandby.DroolsPdp;
-import org.onap.policy.drools.activestandby.DroolsPdpObject;
 
 public class DroolsPdpObjectTest {
     private static final String PDP_ID = "my-id";
@@ -50,19 +47,19 @@ public class DroolsPdpObjectTest {
     @Test
     public void testEqualsObject() {
         // self
-        assertEquals(pdp,pdp);
+        assertEquals(pdp, pdp);
 
         // same id
         MyPdp pdp2 = new MyPdp();
         pdp2.setPdpId(PDP_ID);
-        assertEquals(pdp,pdp2);
+        assertEquals(pdp, pdp2);
 
         // different id
         pdp2.setPdpId(PDP_ID2);
-        assertNotEquals(pdp,pdp2);
+        assertNotEquals(pdp, pdp2);
 
         // different type of object
-        assertNotEquals(pdp,"");
+        assertNotEquals(pdp, "");
     }
 
     @Test
