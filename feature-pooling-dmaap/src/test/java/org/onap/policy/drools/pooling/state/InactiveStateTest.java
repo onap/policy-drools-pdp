@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
@@ -36,7 +38,6 @@ import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Query;
-import org.onap.policy.drools.utils.Pair;
 
 public class InactiveStateTest extends SupportBasicStateTester {
 
@@ -44,8 +45,9 @@ public class InactiveStateTest extends SupportBasicStateTester {
 
     /**
      * Setup.
-     * 
+     *
      */
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -111,13 +113,13 @@ public class InactiveStateTest extends SupportBasicStateTester {
 
         Pair<Long, StateTimerTask> timer = onceTasks.remove();
 
-        assertEquals(STD_REACTIVATE_WAIT_MS, timer.first().longValue());
+        assertEquals(STD_REACTIVATE_WAIT_MS, timer.getLeft().longValue());
 
         // invoke the task - it should go to the state returned by the mgr
         State next = mock(State.class);
         when(mgr.goStart()).thenReturn(next);
 
-        assertEquals(next, timer.second().fire());
+        assertEquals(next, timer.getRight().fire());
     }
 
     @Test
