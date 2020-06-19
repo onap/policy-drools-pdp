@@ -1,7 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * Configuration Test
- * ================================================================================
+ * Configuration Test * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +21,7 @@ package org.onap.policy.drools.protocol.configuration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -66,8 +66,8 @@ public class ControllerConfigurationTest {
 
         ControllerConfiguration controllerConfig = new ControllerConfiguration(NAME, OPERATION, DROOLS_CONFIG);
 
-        assertTrue(controllerConfig.equals(controllerConfig));
-        assertFalse(controllerConfig.equals(new Object()));
+        assertEquals(controllerConfig, controllerConfig);
+        assertNotEquals(controllerConfig, new Object());
 
         ControllerConfiguration controllerConfig2 = new ControllerConfiguration();
         controllerConfig2.setName(NAME2);

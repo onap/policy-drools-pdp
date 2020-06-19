@@ -347,7 +347,7 @@ public class PolicyEngineManagerTest {
         verify(prov1).beforeBoot(mgr, args);
         verify(prov2).beforeBoot(mgr, args);
 
-        assertTrue(globalInitArgs == args);
+        assertSame(globalInitArgs, args);
 
         verify(prov1).afterBoot(mgr);
         verify(prov2).afterBoot(mgr);
@@ -369,7 +369,7 @@ public class PolicyEngineManagerTest {
             (prov, flag) -> when(prov.afterBoot(mgr)).thenReturn(flag),
             () -> mgr.boot(args),
             prov -> verify(prov).beforeBoot(mgr, args),
-            () -> assertTrue(globalInitArgs == args),
+            () -> assertSame(globalInitArgs, args),
             prov -> verify(prov).afterBoot(mgr));
     }
 
@@ -392,7 +392,7 @@ public class PolicyEngineManagerTest {
 
         mgr.setEnvironment(props2);
 
-        assertTrue(mgr.getEnvironment() == env);
+        assertSame(mgr.getEnvironment(), env);
 
         // new env should have a union of the properties
         props1.putAll(props2);
