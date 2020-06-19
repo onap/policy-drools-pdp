@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,10 +44,10 @@ import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.utils.resources.Pair;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
-import org.onap.policy.drools.utils.Pair;
 
 public class PoolingFeatureTest {
 
@@ -83,7 +84,7 @@ public class PoolingFeatureTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception exception
      */
     @Before
@@ -245,7 +246,7 @@ public class PoolingFeatureTest {
         verify(mgr1).afterStop();
 
         assertFalse(pool.afterStop(controllerDisabled));
-        
+
         // count should be unchanged
         verify(mgr1).afterStop();
     }
@@ -254,7 +255,7 @@ public class PoolingFeatureTest {
     public void testAfterHalt() {
         assertFalse(pool.afterHalt(controller1));
         assertFalse(pool.afterHalt(controller1));
-        
+
         verify(mgr1, never()).afterStop();
 
         assertFalse(pool.afterStop(controllerDisabled));
@@ -264,7 +265,7 @@ public class PoolingFeatureTest {
     public void testAfterShutdown() {
         assertFalse(pool.afterShutdown(controller1));
         assertFalse(pool.afterShutdown(controller1));
-        
+
         verify(mgr1, never()).afterStop();
 
         assertFalse(pool.afterStop(controllerDisabled));
