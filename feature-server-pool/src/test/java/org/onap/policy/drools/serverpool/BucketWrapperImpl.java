@@ -22,7 +22,6 @@ package org.onap.policy.drools.serverpool;
 
 import java.io.PrintStream;
 import java.util.IdentityHashMap;
-
 import org.onap.policy.drools.serverpooltest.BucketWrapper;
 import org.onap.policy.drools.serverpooltest.ServerWrapper;
 

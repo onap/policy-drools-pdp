@@ -21,7 +21,6 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.List;
-
 import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;

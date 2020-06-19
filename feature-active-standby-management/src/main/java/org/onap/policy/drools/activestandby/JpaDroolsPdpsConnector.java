@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
@@ -68,7 +67,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                     continue;
                 }
                 //Make sure it is not a cached version
-                DroolsPdp droolsPdp = (DroolsPdp)o;
+                DroolsPdp droolsPdp = (DroolsPdp) o;
                 em.refresh(droolsPdp);
                 droolsPdpsReturnList.add(droolsPdp);
                 if (logger.isDebugEnabled()) {
@@ -115,7 +114,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                     .setFlushMode(FlushModeType.COMMIT).getResultList();
             DroolsPdpEntity droolsPdpEntity;
             if (droolsPdpsList.size() == 1 && (droolsPdpsList.get(0) instanceof DroolsPdpEntity)) {
-                droolsPdpEntity = (DroolsPdpEntity)droolsPdpsList.get(0);
+                droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
                 em.refresh(droolsPdpEntity); //Make sure we have current values
                 Date currentDate = currentTime.getDate();
                 long difference = currentDate.getTime() - droolsPdpEntity.getUpdatedDate().getTime();
@@ -145,7 +144,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
             if (!droolsPdpEntity.getUpdatedDate().equals(pdp.getUpdatedDate())) {
                 droolsPdpEntity.setUpdatedDate(pdp.getUpdatedDate());
             }
-            if (!nullSafeEquals(droolsPdpEntity.getSite(),pdp.getSite())) {
+            if (!nullSafeEquals(droolsPdpEntity.getSite(), pdp.getSite())) {
                 droolsPdpEntity.setSite(pdp.getSite());
             }
 
@@ -192,7 +191,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 if (droolsPdpsList.size() == 1 && droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
                     logger.debug("isPdpCurrent: PDP={}  designated but not current; setting designated to false",
                                     pdp.getPdpId());
-                    DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity)droolsPdpsList.get(0);
+                    DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
                     droolsPdpEntity.setDesignated(false);
                     em.getTransaction().commit();
                 } else {
@@ -292,7 +291,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
                 droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
                 droolsPdpEntity.setDesignated(false);
                 em.persist(droolsPdpEntity);
-                logger.debug("standDownPdp: PDP={} persisted as non-designated.", pdpId );
+                logger.debug("standDownPdp: PDP={} persisted as non-designated.", pdpId);
             } else {
                 logger.error("standDownPdp: Missing record in droolspdpentity for pdpId={}"
                         + "; cannot stand down PDP", pdpId);

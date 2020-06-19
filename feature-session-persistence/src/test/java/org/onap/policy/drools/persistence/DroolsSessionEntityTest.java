@@ -25,9 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
-
 import org.junit.Test;
-import org.onap.policy.drools.persistence.DroolsSessionEntity;
 
 public class DroolsSessionEntityTest {
 
@@ -103,7 +101,7 @@ public class DroolsSessionEntityTest {
     @Test
     public void testEqualsObject() {
         DroolsSessionEntity entity = makeEnt("mynameA", 1);
-        
+
         // diff object type
         assertFalse(entity.equals("hello"));
 

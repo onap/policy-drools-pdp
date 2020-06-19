@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.serverpool;
 
-import static org.junit.Assert.assertTrue;
 import static org.onap.policy.drools.serverpool.ServerPoolProperties.DEFAULT_LOCK_AUDIT_GRACE_PERIOD;
 import static org.onap.policy.drools.serverpool.ServerPoolProperties.DEFAULT_LOCK_AUDIT_PERIOD;
 import static org.onap.policy.drools.serverpool.ServerPoolProperties.DEFAULT_LOCK_AUDIT_RETRY_DELAY;
@@ -58,9 +57,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import org.onap.policy.drools.core.DroolsRunnable;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.PolicySession;
@@ -86,6 +83,8 @@ import org.slf4j.LoggerFactory;
  *     owned by the host containing the entry.
  */
 public class TargetLock implements Lock, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static Logger logger = LoggerFactory.getLogger(TargetLock.class);
 
     // Listener class to handle state changes that require restarting the audit
@@ -234,7 +233,7 @@ public class TargetLock implements Lock, Serializable {
                 context = new PolicySessionContext(session);
                 session.setAdjunct(PolicySessionContext.class, context);
             } else {
-                context = (LockCallback)lcontext;
+                context = (LockCallback) lcontext;
             }
         } else {
             // no context to deliver through -- call back directly to owner
@@ -325,7 +324,7 @@ public class TargetLock implements Lock, Serializable {
                         logger.info("Lock response={} (code={})",
                                     response, response.getStatus());
 
-                        /**
+                        /*
                          * there are three possible responses:
                          * 204 No Content - operation was successful
                          * 202 Accepted - operation is still in progress
@@ -362,9 +361,9 @@ public class TargetLock implements Lock, Serializable {
         });
     }
 
-    /********************/
-    /* 'Lock' Interface */
-    /********************/
+    /* ****************** */
+    /* 'Lock' Interface   */
+    /* ****************** */
 
     /**
      * This method will free the current lock, or remove it from the waiting
@@ -444,7 +443,7 @@ public class TargetLock implements Lock, Serializable {
         // not implemented yet
     }
 
-    /********************/
+    /* ****************** */
 
     /**
      * Update the state.
@@ -690,9 +689,9 @@ public class TargetLock implements Lock, Serializable {
                + ", state=" + state + ")";
     }
 
-    /*****************/
-    /* Serialization */
-    /*****************/
+    /* *************** */
+    /* Serialization   */
+    /* *************** */
 
     /**
      * This method modifies the behavior of 'TargetLock' deserialization by
@@ -715,9 +714,9 @@ public class TargetLock implements Lock, Serializable {
     /* ============================================================ */
 
     private static class LockFactory implements PolicyResourceLockManager {
-        /*****************************************/
-        /* 'PolicyResourceLockManager' interface */
-        /*****************************************/
+        /* *************************************** */
+        /* 'PolicyResourceLockManager' interface   */
+        /* *************************************** */
 
         /**
          * {@inheritDoc}
@@ -730,9 +729,9 @@ public class TargetLock implements Lock, Serializable {
             return new TargetLock(resourceId, ownerKey, callback, waitForLock);
         }
 
-        /*************************/
-        /* 'Startable' interface */
-        /*************************/
+        /* *********************** */
+        /* 'Startable' interface   */
+        /* *********************** */
 
         /**
          * {@inheritDoc}
@@ -766,9 +765,9 @@ public class TargetLock implements Lock, Serializable {
             return true;
         }
 
-        /************************/
-        /* 'Lockable' interface */
-        /************************/
+        /* ********************** */
+        /* 'Lockable' interface   */
+        /* ********************** */
 
         /**
          * {@inheritDoc}
@@ -835,6 +834,8 @@ public class TargetLock implements Lock, Serializable {
      */
     @EqualsAndHashCode
     private static class Identity implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // this is the key associated with the lock
         String key;
 
@@ -956,6 +957,8 @@ public class TargetLock implements Lock, Serializable {
      * the callback to 'TargetLock.owner' runs within the Drools thread.
      */
     private static class PolicySessionContext implements LockCallback, Serializable {
+        private static final long serialVersionUID = 1L;
+
         // the 'PolicySession' instance in question
         PolicySession policySession;
 
@@ -968,9 +971,9 @@ public class TargetLock implements Lock, Serializable {
             this.policySession = policySession;
         }
 
-        /*********************/
-        /* 'Owner' interface */
-        /*********************/
+        /* ******************* */
+        /* 'Owner' interface   */
+        /* ******************* */
 
         /**
          * {@inheritDoc}
@@ -980,7 +983,7 @@ public class TargetLock implements Lock, Serializable {
             // Run 'owner.lockAvailable' within the Drools session
             if (policySession != null) {
                 DroolsRunnable callback = () -> {
-                    ((TargetLock)lock).owner.lockAvailable(lock);
+                    ((TargetLock) lock).owner.lockAvailable(lock);
                 };
                 policySession.getKieSession().insert(callback);
             }
@@ -994,15 +997,15 @@ public class TargetLock implements Lock, Serializable {
             // Run 'owner.unlockAvailable' within the Drools session
             if (policySession != null) {
                 DroolsRunnable callback = () -> {
-                    ((TargetLock)lock).owner.lockUnavailable(lock);
+                    ((TargetLock) lock).owner.lockUnavailable(lock);
                 };
                 policySession.getKieSession().insert(callback);
             }
         }
 
-        /*****************/
-        /* Serialization */
-        /*****************/
+        /* *************** */
+        /* Serialization   */
+        /* *************** */
 
         /**
          * Specializes serialization of 'PolicySessionContext'.
@@ -1080,6 +1083,8 @@ public class TargetLock implements Lock, Serializable {
      * of the lock implementation.
      */
     public static class GlobalLocks implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // this is the lock table, mapping 'key' to 'LockEntry', which indicates
         // the current lock holder, and all those waiting
         private Map<String, LockEntry> keyToEntry = new HashMap<>();
@@ -1206,6 +1211,8 @@ public class TargetLock implements Lock, Serializable {
      * any that are waiting.
      */
     private static class LockEntry implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // string key identifying the lock
         private String key;
 
@@ -1290,6 +1297,8 @@ public class TargetLock implements Lock, Serializable {
      * This corresponds to a member of 'LockEntry.waitingList'
      */
     private static class Waiting implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // string key identifying the owner
         String ownerKey;
 
@@ -1337,6 +1346,8 @@ public class TargetLock implements Lock, Serializable {
      * This class is used to restore a 'GlobalLocks' instance from a backup.
      */
     static class LockRestore implements Bucket.Restore, Serializable {
+        private static final long serialVersionUID = 1L;
+
         GlobalLocks globalLocks;
 
         /**
@@ -1400,7 +1411,7 @@ public class TargetLock implements Lock, Serializable {
                     // here. The alternative is to add some additional information
                     // to make this mapping quick, at the expense of a slight
                     // slow down of normal lock operations.
-                    for (int i = 0 ; i < Bucket.BUCKETCOUNT ; i += 1) {
+                    for (int i = 0; i < Bucket.BUCKETCOUNT; i += 1) {
                         LocalLocks localLocks =
                             Bucket.getBucket(i).getAdjunctDontCreate(LocalLocks.class);
                         if (localLocks != null) {
@@ -1595,7 +1606,7 @@ public class TargetLock implements Lock, Serializable {
             Object decodedData = Util.deserialize(Base64.getDecoder().decode(data));
             if (decodedData instanceof HostData) {
                 // deserialized data
-                HostData hostData = (HostData)decodedData;
+                HostData hostData = (HostData) decodedData;
 
                 // fetch 'Server' instance associated with the responding server
                 Server server = Server.getServer(hostData.hostUuid);
@@ -2020,6 +2031,8 @@ public class TargetLock implements Lock, Serializable {
          * host that is consolidating the information for display.
          */
         static class HostData implements Serializable {
+            private static final long serialVersionUID = 1L;
+
             // the UUID of the host sending the data
             private UUID hostUuid;
 
@@ -2042,7 +2055,7 @@ public class TargetLock implements Lock, Serializable {
                 serverDataList = new ArrayList<ServerData>();
 
                 // go through buckets
-                for (int i = 0 ; i < Bucket.BUCKETCOUNT ; i += 1) {
+                for (int i = 0; i < Bucket.BUCKETCOUNT; i += 1) {
                     Bucket bucket = Bucket.getBucket(i);
 
                     // client data
@@ -2089,6 +2102,8 @@ public class TargetLock implements Lock, Serializable {
          * Information derived from the 'LocalLocks' adjunct to a single bucket.
          */
         static class ClientData implements Serializable {
+            private static final long serialVersionUID = 1L;
+
             // number of the bucket
             private int bucketNumber;
 
@@ -2111,6 +2126,8 @@ public class TargetLock implements Lock, Serializable {
          * single 'TargetLock'.
          */
         static class ClientDataRecord implements Serializable {
+            private static final long serialVersionUID = 1L;
+
             // contains key, ownerKey, uuid
             private Identity identity;
 
@@ -2135,6 +2152,8 @@ public class TargetLock implements Lock, Serializable {
          * Information derived from the 'GlobalLocks' adjunct to a single bucket.
          */
         static class ServerData implements Serializable {
+            private static final long serialVersionUID = 1L;
+
             // number of the bucket
             private int bucketNumber;
 
@@ -2161,6 +2180,8 @@ public class TargetLock implements Lock, Serializable {
      * 'TargetLock' audit.
      */
     static class AuditData implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // sending UUID
         private UUID hostUuid;
 
@@ -2382,7 +2403,7 @@ public class TargetLock implements Lock, Serializable {
                 Object decodedData =
                     Util.deserialize(Base64.getDecoder().decode(encodedData));
                 if (decodedData instanceof AuditData) {
-                    return (AuditData)decodedData;
+                    return (AuditData) decodedData;
                 } else {
                     logger.error(
                         "TargetLock.AuditData.decode returned instance of class {}",
@@ -2406,7 +2427,7 @@ public class TargetLock implements Lock, Serializable {
         static TimerTask timerTask = null;
 
         // maps 'Server' to audit data associated with that server
-        Map<Server,AuditData> auditMap = new IdentityHashMap<>();
+        Map<Server, AuditData> auditMap = new IdentityHashMap<>();
 
         /**
          * Run a single audit cycle.
@@ -2556,7 +2577,7 @@ public class TargetLock implements Lock, Serializable {
          * remote server.
          */
         void build() {
-            for (int i = 0 ; i < Bucket.BUCKETCOUNT ; i += 1) {
+            for (int i = 0; i < Bucket.BUCKETCOUNT; i += 1) {
                 Bucket bucket = Bucket.getBucket(i);
 
                 // client data

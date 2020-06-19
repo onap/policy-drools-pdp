@@ -29,13 +29,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
-
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.hibernate.cfg.AvailableSettings;
@@ -833,7 +831,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
         }
     }
 
-    /** Factory for various items. Methods can be overridden for junit testing. */
+    /* Factory for various items. Methods can be overridden for junit testing. */
 
     /**
      * Gets the transaction manager.

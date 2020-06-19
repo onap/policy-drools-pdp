@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -275,7 +275,7 @@ public class ProcessingStateTest extends SupportBasicStateTester {
 
     @Test
     public void testRemoveExcessHosts() {
-        /**
+        /*
          * All hosts are still alive, plus some others.
          */
         state.setAssignments(ASGN3);
@@ -314,7 +314,7 @@ public class ProcessingStateTest extends SupportBasicStateTester {
 
     @Test
     public void testRebalanceBuckets() {
-        /**
+        /*
          * Some are very lopsided.
          */
         String[] asgn = {MY_HOST, HOST1, MY_HOST, MY_HOST, MY_HOST, MY_HOST, HOST1, HOST2, HOST1, HOST3};

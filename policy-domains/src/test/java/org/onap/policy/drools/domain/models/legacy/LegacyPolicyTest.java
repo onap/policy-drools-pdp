@@ -49,7 +49,7 @@ public class LegacyPolicyTest {
             new ToscaPolicyTypeIdentifier(OPERATIONAL_LEGACY_POLICY_TYPE, "1.0.0");
 
         DomainMaker domainMaker = new DomainMaker();
-        assertTrue(domainMaker .isConformant(legacyType, rawVcpeToscaPolicy));
+        assertTrue(domainMaker.isConformant(legacyType, rawVcpeToscaPolicy));
         LegacyPolicy legacyPolicy = domainMaker.convertTo(legacyType, rawVcpeToscaPolicy, LegacyPolicy.class);
 
         ToscaPolicy policy = new StandardCoder().decode(rawVcpeToscaPolicy, ToscaPolicy.class);

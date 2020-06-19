@@ -41,14 +41,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import lombok.AllArgsConstructor;
-
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -126,7 +123,7 @@ public class FeatureServerPool
      * table[0] = {"requestID"}
      * table[1] = {"CommonHeader", "RequestID"}
      */
-    private static HashMap<String,String[][]> topicToPaths = new HashMap<>();
+    private static HashMap<String, String[][]> topicToPaths = new HashMap<>();
 
     // this table is used for any topics that aren't in 'topicToPaths'
     private static String[][] defaultPaths = new String[0][];
@@ -144,9 +141,9 @@ public class FeatureServerPool
     private static final String QP_PROTOCOL = "protocol";
     private static final String QP_TOPIC = "topic";
 
-    /******************************/
-    /* 'OrderedService' interface */
-    /******************************/
+    /* **************************** */
+    /* 'OrderedService' interface   */
+    /* **************************** */
 
     /**
      * {@inheritDoc}
@@ -158,9 +155,9 @@ public class FeatureServerPool
         return -1000000;
     }
 
-    /**************************************/
-    /* 'PolicyEngineFeatureApi' interface */
-    /**************************************/
+    /* ************************************ */
+    /* 'PolicyEngineFeatureApi' interface   */
+    /* ************************************ */
 
     /**
      * {@inheritDoc}
@@ -270,9 +267,9 @@ public class FeatureServerPool
         return true;
     }
 
-    /******************************************/
-    /* 'PolicyControllerFeatureApi' interface */
-    /******************************************/
+    /* **************************************** */
+    /* 'PolicyControllerFeatureApi' interface   */
+    /* **************************************** */
 
     /**
      * This method is called from 'AggregatedPolicyController.onTopicEvent',
@@ -411,7 +408,7 @@ public class FeatureServerPool
              * TBD: it would be nice to limit the number of hops, in case we
              * somehow have a loop.
              */
-            ((TopicListener)controller).onTopicEvent(
+            ((TopicListener) controller).onTopicEvent(
                 CommInfrastructure.valueOf(protocol), topic, event);
         } else {
             /*
@@ -573,7 +570,7 @@ public class FeatureServerPool
             // Example: requestID,CommonHeader.RequestID
             String[] commaSeparatedEntries = prop.getProperty(name).split(",");
             String[][] paths = new String[commaSeparatedEntries.length][];
-            for (int i = 0 ; i < commaSeparatedEntries.length ; i += 1) {
+            for (int i = 0; i < commaSeparatedEntries.length; i += 1) {
                 paths[i] = commaSeparatedEntries[i].split("\\.");
             }
 
@@ -663,7 +660,7 @@ public class FeatureServerPool
                  * TBD: it would be nice to limit the number of hops, in case we
                  * somehow have a loop.
                  */
-                ((TopicListener)controller).onTopicEvent(protocol, topic, event);
+                ((TopicListener) controller).onTopicEvent(protocol, topic, event);
             } else {
                 /*
                  * This 'PolicyController' was also a 'TopicListener' on the sender's
@@ -748,6 +745,8 @@ public class FeatureServerPool
      * This class is used to generate and restore backup Drools data.
      */
     static class DroolsSessionRestore implements Bucket.Restore, Serializable {
+        private static final long serialVersionUID = 1L;
+
         // backup data for all Drools sessions on this host
         private final List<SingleSession> sessions = new LinkedList<>();
 
@@ -801,7 +800,7 @@ public class FeatureServerPool
                 }
             }
 
-            /**
+            /*
              * data copying can start as soon as we receive results
              * from pending sessions (there may not be any)
              */
@@ -822,7 +821,7 @@ public class FeatureServerPool
                 PolicySession session = pair.second();
                 long delay = endTime - System.currentTimeMillis();
                 if (delay < 0) {
-                    /**
+                    /*
                      * we have already reached the time limit, so we will
                      * only process data that has already been received
                      */
@@ -892,6 +891,8 @@ public class FeatureServerPool
      * been backed up, or is being restored.
      */
     static class SingleSession implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // the group id associated with the Drools container
         String groupId;
 
@@ -969,7 +970,7 @@ public class FeatureServerPool
             Object obj = ois.readObject();
 
             if (obj instanceof List) {
-                final List<?> droolsObjects = (List<?>)obj;
+                final List<?> droolsObjects = (List<?>) obj;
                 logger.info("{}: session={}, got {} object(s)",
                             this, session.getFullName(), droolsObjects.size());
 

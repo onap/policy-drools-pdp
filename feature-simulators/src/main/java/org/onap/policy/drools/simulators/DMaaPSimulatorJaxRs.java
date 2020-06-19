@@ -26,7 +26,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -37,7 +36,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,8 +75,7 @@ public class DMaaPSimulatorJaxRs {
 
         if (queues.containsKey(topicName)) {
             return getNextMessageFromQueue(timeout, topicName);
-        }
-        else if (timeout > 0) {
+        } else if (timeout > 0) {
             return waitForNextMessageFromQueue(timeout, topicName);
         }
         return NO_TOPIC_MSG;

@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,11 +26,11 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 public class PairTripleTest {
-    
+
     @Test
     public void testPair() {
         Pair<String, String> pair = new Pair<String, String>("foo", "bar");
-        
+
         assertEquals("foo", pair.first());
         assertEquals("bar", pair.second());
         assertEquals("foo", pair.getFirst());
@@ -45,13 +45,13 @@ public class PairTripleTest {
         assertEquals("two", pair.getSecond());
 
         assertNotNull(pair.toString());
-        
-    } 
+
+    }
 
     @Test
     public void testTriple() {
-        Triple<String, String, String> triple = new Triple<String, String,String>("foo", "bar", "fiz");
-        
+        Triple<String, String, String> triple = new Triple<String, String, String>("foo", "bar", "fiz");
+
         assertEquals("foo", triple.first());
         assertEquals("bar", triple.second());
         assertEquals("fiz", triple.third());
@@ -62,7 +62,7 @@ public class PairTripleTest {
 
         assertEquals("one", triple.first());
         assertEquals("two", triple.second());
-        assertEquals("three", triple.third());   
+        assertEquals("three", triple.third());
     }
 
 }

@@ -32,7 +32,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

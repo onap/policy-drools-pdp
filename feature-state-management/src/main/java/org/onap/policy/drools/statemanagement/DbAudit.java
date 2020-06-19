@@ -27,7 +27,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +63,7 @@ public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
     /**
      * Get the instance.
-     *  
+     *
      * @return the single 'DbAudit' instance. */
     public static DroolsPdpIntegrityMonitor.AuditBase getInstance() {
         return instance;

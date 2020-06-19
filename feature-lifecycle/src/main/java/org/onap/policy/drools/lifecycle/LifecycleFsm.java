@@ -362,7 +362,7 @@ public class LifecycleFsm implements Startable {
     }
 
     protected boolean updatePoliciesAction(List<ToscaPolicy> toscaPolicies) {
-        return (this.scheduler.submit( () -> state.updatePolicies(toscaPolicies)) != null);
+        return (this.scheduler.submit(() -> state.updatePolicies(toscaPolicies)) != null);
     }
 
     /* ** Action Helpers ** */

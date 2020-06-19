@@ -37,7 +37,6 @@ import static org.onap.policy.drools.serverpool.ServerPoolProperties.DISCOVER_PU
 import static org.onap.policy.drools.serverpool.ServerPoolProperties.getProperty;
 
 import com.google.gson.Gson;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +45,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
@@ -55,7 +53,6 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

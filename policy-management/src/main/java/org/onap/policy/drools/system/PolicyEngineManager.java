@@ -829,7 +829,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     private <T> void attempt(AtomicReference<Boolean> success, List<T> items, PredicateWithEx<T> pred,
-                    BiConsumer<T,Exception> handleEx) {
+                    BiConsumer<T, Exception> handleEx) {
 
         for (T item : items) {
             try {
@@ -848,7 +848,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     private <T> void applyAll(List<T> items, Consumer<T> function,
-                    BiConsumer<T,Exception> handleEx) {
+                    BiConsumer<T, Exception> handleEx) {
 
         for (T item : items) {
             try {

@@ -21,8 +21,6 @@
 package org.onap.policy.drools.serverpool;
 
 import java.io.Serializable;
-import java.util.IdentityHashMap;
-
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.serverpooltest.TargetLockWrapper;
@@ -32,6 +30,8 @@ import org.onap.policy.drools.serverpooltest.TargetLockWrapper;
  * 'TargetLockWrapperImpl' class for each simulated host.
  */
 public class TargetLockWrapperImpl implements TargetLockWrapper {
+    private static final long serialVersionUID = 1L;
+
     // this is the 'TargetLock' instance associated with the wrapper
     private TargetLock targetLock;
 
@@ -156,6 +156,8 @@ public class TargetLockWrapperImpl implements TargetLockWrapper {
      * interface, translating it to a 'TargetLockWrapper.Owner' callback.
      */
     public static class OwnerAdapter implements LockCallback, Serializable {
+        private static final long serialVersionUID = 1L;
+
         // the 'TargetLockWrapper' instance to pass as an argument in the callback
         TargetLockWrapper targetLock;
 

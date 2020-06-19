@@ -27,9 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-
 import lombok.AllArgsConstructor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +128,7 @@ public class Keyword {
     // this table maps class name to a sequence of method calls and field
     // references, based upon 'keyword.<CLASS-NAME>.lookup' entries found
     // in the property list
-    private static Map<String,String> classNameToSequence = null;
+    private static Map<String, String> classNameToSequence = null;
 
     static final String KEYWORD_PROPERTY_START = "keyword.";
     static final String KEYWORD_PROPERTY_END = ".lookup";
@@ -186,7 +184,7 @@ public class Keyword {
      */
     private static Class<?> buildReflectiveLookup_findKeyClass(Class<?> clazz) {
         Class<?> keyClass = null;
-        for (Class<?> cl = clazz ; cl != null ; cl = cl.getSuperclass()) {
+        for (Class<?> cl = clazz; cl != null; cl = cl.getSuperclass()) {
             if (classNameToSequence.containsKey(cl.getName())) {
                 // matches the class
                 keyClass = cl;
@@ -218,7 +216,7 @@ public class Keyword {
         // we found a matching key in the table -- now, process the values
         Class<?> currentClass = keyClass;
 
-        /**
+        /*
          * there may potentially be a chain of entries if multiple
          * field and/or method calls are in the sequence -- this is the first
          */
@@ -227,7 +225,7 @@ public class Keyword {
         // this is the last entry in the list
         ReflectiveLookup last = null;
 
-        /**
+        /*
          * split the value into segments, where each segment has the form
          * 'FIELD-NAME' or 'METHOD-NAME()', with an optional ':CONVERSION'
          * at the end
@@ -325,9 +323,9 @@ public class Keyword {
             field = clazz.getField(segment);
         }
 
-        /********************************/
-        /* 'ReflectiveLookup' interface */
-        /********************************/
+        /* ****************************** */
+        /* 'ReflectiveLookup' interface   */
+        /* ****************************** */
 
         /**
          * {@inheritDoc}
@@ -337,9 +335,9 @@ public class Keyword {
             return field.getType();
         }
 
-        /**********************/
-        /* 'Lookup' interface */
-        /**********************/
+        /* ******************** */
+        /* 'Lookup' interface   */
+        /* ******************** */
 
         /**
          * {@inheritDoc}

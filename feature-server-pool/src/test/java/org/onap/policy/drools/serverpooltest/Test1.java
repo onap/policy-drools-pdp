@@ -40,12 +40,10 @@ import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.awaitility.Durations;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.kie.api.runtime.KieSession;
 import org.onap.policy.drools.core.DroolsRunnable;
 import org.onap.policy.drools.serverpool.BucketWrapperImpl;
@@ -68,7 +66,7 @@ public class Test1 {
         if (count > thr.length) {
             count = thr.length;
         }
-        for (int i = 0 ; i < count ; i += 1) {
+        for (int i = 0; i < count; i += 1) {
             StringBuilder sb = new StringBuilder();
             sb.append("    ").append(thr[i]);
             if (stackTrace) {
@@ -202,7 +200,7 @@ public class Test1 {
             if (adapter == firstAdapter) {
                 // make sure an owner and primary backup have been chosen
                 // for each bucket (secondary backups aren't implemented yet)
-                for (int i = 0 ; i < bucketStatic.getBucketCount() ; i += 1) {
+                for (int i = 0; i < bucketStatic.getBucketCount(); i += 1) {
                     BucketWrapper bucket = bucketStatic.getBucket(i);
                     assertNotNull(bucket.getOwner());
                     assertNotNull(bucket.getPrimaryBackup());
@@ -210,7 +208,7 @@ public class Test1 {
             } else {
                 // make sure the bucket assignments are consistent with
                 // the primary backup
-                for (int i = 0 ; i < bucketStatic.getBucketCount() ; i += 1) {
+                for (int i = 0; i < bucketStatic.getBucketCount(); i += 1) {
                     BucketWrapper firstBucket = firstBucketStatic.getBucket(i);
                     BucketWrapper bucket = bucketStatic.getBucket(i);
                     assertEquals(firstBucket.getOwner().getUuid(),
@@ -586,7 +584,7 @@ public class Test1 {
         KieSession kieSession = newClient.getKieSession();
         for (Object obj : new ArrayList<Object>(kieSession.getObjects())) {
             if (obj instanceof KeywordWrapper) {
-                KeywordWrapper kw = (KeywordWrapper)obj;
+                KeywordWrapper kw = (KeywordWrapper) obj;
 
                 if ("lmt.owner".equals(kw.id)) {
                     owner = kw.getObject(LockOwner.class);
@@ -705,6 +703,8 @@ public class Test1 {
 
         // need a 'LockOwner' variant
         final LockOwner owner = new LockOwner() {
+            private static final long serialVersionUID = 1L;
+
             /**
              * {@inheritDoc}
              */
@@ -840,6 +840,9 @@ public class Test1 {
      */
     public static class LockOwner extends LinkedBlockingQueue<Object[]>
         implements TargetLockWrapper.Owner, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
         /**
          * Constructor -- initialize the 'LinkedBlockingQueue'.
          */
@@ -873,6 +876,8 @@ public class Test1 {
      * testing.
      */
     public static class KeywordWrapper implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         // this is the keyword, which determines the associated bucket,
         // which then determines when this object is migrated
         public String key;

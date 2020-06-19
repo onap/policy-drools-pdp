@@ -78,13 +78,11 @@ import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.glassfish.jersey.client.ClientProperties;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
@@ -306,13 +304,13 @@ public class Server implements Comparable<Server> {
 
             possibleError = "HTTP server initialization error";
             restServer = HttpServletServerFactoryInstance.getServerFactory().build(
-                         "SERVER-POOL",                              // name
-                         useHttps,                                   // https
-                         socketAddress.getAddress().getHostAddress(),// host (maybe 0.0.0.0)
-                         port,                                       // port (can no longer be 0)
-                         null,                                       // contextPath
-                         false,                                      // swagger
-                         false);                                     // managed
+                         "SERVER-POOL",                                 // name
+                         useHttps,                                      // https
+                         socketAddress.getAddress().getHostAddress(),   // host (maybe 0.0.0.0)
+                         port,                                          // port (can no longer be 0)
+                         null,                                          // contextPath
+                         false,                                         // swagger
+                         false);                                        // managed
             restServer.addServletClass(null, RestServerPool.class.getName());
 
             // add any additional servlets
@@ -877,7 +875,7 @@ public class Server implements Comparable<Server> {
         // TBD: We need a way to get this information without reflection
         Field field = client.getClass().getDeclaredField("client");
         field.setAccessible(true);
-        Client rsClient = (Client)field.get(client);
+        Client rsClient = (Client) field.get(client);
         field.setAccessible(false);
 
         rsClient.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
@@ -917,7 +915,7 @@ public class Server implements Comparable<Server> {
         }
 
         getThreadPool().execute(() -> {
-            /**
+            /*
              * This method is running within the 'MainLoop' thread.
              */
             try {

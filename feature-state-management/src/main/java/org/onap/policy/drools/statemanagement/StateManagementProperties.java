@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,6 @@
 package org.onap.policy.drools.statemanagement;
 
 import java.util.Properties;
-
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,13 +67,13 @@ public class StateManagementProperties {
 
     /**
      * Initialize the parameter values from the feature-state-management.properties file values.
-     * 
+     *
      * <p>This is designed so that the Properties object is obtained from the
      * feature-state-management.properties file and then is passed to this method to initialize the
      * value of the parameters. This allows the flexibility of JUnit tests using
      * getProperties(filename) to get the properties while runtime methods can use
      * getPropertiesFromClassPath(filename).
-     * 
+     *
      * @param prop properties
      */
     public static void initProperties(Properties prop) {

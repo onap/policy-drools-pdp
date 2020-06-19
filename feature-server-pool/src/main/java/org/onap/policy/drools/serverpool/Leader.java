@@ -38,10 +38,8 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

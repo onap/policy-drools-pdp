@@ -21,7 +21,6 @@
 package org.onap.policy.drools.serverpool;
 
 import java.util.Properties;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

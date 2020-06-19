@@ -95,7 +95,7 @@ public abstract class Adapter {
                 ClassLoader saveClassLoader =
                     Thread.currentThread().getContextClassLoader();
                 if (saveClassLoader instanceof URLClassLoader) {
-                    urls = ((URLClassLoader)saveClassLoader).getURLs();
+                    urls = ((URLClassLoader) saveClassLoader).getURLs();
                 } else {
                     // the parent is not a 'URLClassLoader' --
                     // try to get this information from 'java.class.path'
@@ -111,7 +111,7 @@ public abstract class Adapter {
                     urls = tmpUrls.toArray(new URL[0]);
                 }
                 try {
-                    for (int i = 0 ; i < adapters.length ; i += 1) {
+                    for (int i = 0; i < adapters.length; i += 1) {
                         /*
                          * Build a new 'ClassLoader' for this adapter. The
                          * 'ClassLoader' hierarchy is:

@@ -21,8 +21,6 @@
 package org.onap.policy.drools.serverpooltest;
 
 import java.io.Serializable;
-import java.util.Objects;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +35,8 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class TestDroolsObject implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     // determines the bucket number
     private String key;
 

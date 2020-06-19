@@ -23,7 +23,6 @@ package org.onap.policy.drools.droolsinit;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import org.kie.api.runtime.rule.FactHandle;
-
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.system.PolicyEngineConstants;

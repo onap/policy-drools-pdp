@@ -364,7 +364,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                     logger.debug("INFO: DesignatedWaiter.run: PDP= {} "
                                     + "designated= {}, current= {}, "
                                     + "designatedPdpHasFailed= {}, "
-                                    + "standbyStatus= {}",pdp.getPdpId(),
+                                    + "standbyStatus= {}", pdp.getPdpId(),
                                     pdp.isDesignated(), false, designatedPdpHasFailed, standbyStatus);
                     pdpNotDesignatedNotCurrent(pdp, standbyStatus);
                 }
@@ -452,7 +452,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             } else { //it is a remote PDP that is failed
                 logger.debug("\n\nDesignatedWaiter.run: PDP {} is not Current. "
                                 + " Executing stateManagement.disableFailed(otherResourceName)\n\n",
-                                pdp.getPdpId() );
+                                pdp.getPdpId());
                 // We found a PDP is designated but not current
                 // We already called standdown(pdp) which will change designated to false
                 // Now we need to disableFail it to get its states in synch.  The standbyStatus
@@ -561,7 +561,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         private void designateNoPdp() {
             // Just to be sure the parameters are correctly set
             myPdp.setDesignated(false);
-            pdpsConnector.setDesignated(myPdp,false);
+            pdpsConnector.setDesignated(myPdp, false);
             isDesignated = false;
 
             waitTimerLastRunDate = currentTime.getDate();
@@ -597,7 +597,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 logger.error("ERROR: DesignatedWaiter.run: Caught Exception attempting to promote PDP={}"
                         + ", message=", myPdp.getPdpId(), e);
                 myPdp.setDesignated(false);
-                pdpsConnector.setDesignated(myPdp,false);
+                pdpsConnector.setDesignated(myPdp, false);
                 isDesignated = false;
                 //If you can't promote it, demote it
                 try {
@@ -639,7 +639,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         List<DroolsPdp> listForRemoval = new ArrayList<>();
         for (DroolsPdp pdp : listOfDesignated) {
             logger.debug("DesignatedWaiter.run sanitizing: pdp = {}"
-                            + " isDesignated = {}",pdp.getPdpId(), pdp.isDesignated());
+                            + " isDesignated = {}", pdp.getPdpId(), pdp.isDesignated());
             if (pdp.isDesignated()) {
                 containsDesignated = true;
             } else {
@@ -783,7 +783,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             }
             // If the rejectedPdp is myPdp, we need to stand it down and demote it.  Each pdp is responsible
             // for demoting itself
-            if (rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(),myPdp.getPdpId())) {
+            if (rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(), myPdp.getPdpId())) {
                 logger.debug("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated myPdp ID: {}"
                                 + " is NOT the lowest priority.  Executing stateManagement.demote()\n\n",
                                 myPdp.getPdpId(),
@@ -821,11 +821,11 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 return null;
             } else {
                 if (pdp.getPdpId().equals((lowestPrioritySameSite.getPdpId()))) {
-                    return null;//nothing to compare
+                    return null;    //nothing to compare
                 }
                 if (pdp.comparePriority(lowestPrioritySameSite) < 0) {
                     logger.debug("\nDesignatedWaiter.run: myPdp {}  listOfDesignated pdp ID: {}"
-                                    + " has lower priority than pdp ID: {}",myPdp.getPdpId(), pdp.getPdpId(),
+                                    + " has lower priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
                                     lowestPrioritySameSite.getPdpId());
                     //we need to reject lowestPrioritySameSite
                     DroolsPdp rejectedPdp = lowestPrioritySameSite;
@@ -834,7 +834,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 } else {
                     //we need to reject pdp and keep lowestPrioritySameSite
                     logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {} "
-                                    + " has higher priority than pdp ID: {}", myPdp.getPdpId(),pdp.getPdpId(),
+                                    + " has higher priority than pdp ID: {}", myPdp.getPdpId(), pdp.getPdpId(),
                                     lowestPrioritySameSite.getPdpId());
                     return pdp;
                 }
@@ -851,7 +851,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                     return null;
                 }
                 if (pdp.getPdpId().equals((lowestPriorityDifferentSite.getPdpId()))) {
-                    return null;//nothing to compare
+                    return null;    //nothing to compare
                 }
                 if (pdp.comparePriority(lowestPriorityDifferentSite) < 0) {
                     logger.debug("\nDesignatedWaiter.run: myPdp {} listOfDesignated pdp ID: {}"

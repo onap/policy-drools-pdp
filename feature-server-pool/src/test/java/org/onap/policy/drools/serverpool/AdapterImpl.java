@@ -172,7 +172,7 @@ public class AdapterImpl extends Adapter {
                     TimeUnit.MILLISECONDS).until(() -> Leader.getLeader() != null);
 
             // wait for each bucket to have an owner
-            for (int i = 0 ; i < Bucket.BUCKETCOUNT ; i += 1) {
+            for (int i = 0; i < Bucket.BUCKETCOUNT; i += 1) {
                 Bucket bucket = Bucket.getBucket(i);
                 while (bucket.getOwner() == null) {
                     Thread.sleep(Math.min(endTime - System.currentTimeMillis(), 100L));
@@ -312,7 +312,7 @@ public class AdapterImpl extends Adapter {
          */
         logger.info("{}: Calling 'sendEvent': packages = {}", this,
                     policySession.getKieSession().getKieBase().getKiePackages());
-        ((TopicListener)policyController).onTopicEvent(
+        ((TopicListener) policyController).onTopicEvent(
             CommInfrastructure.UEB, "JUNIT-TEST-TOPIC",
             "{\"key\":\"" + key + "\"}");
     }
@@ -374,7 +374,7 @@ public class AdapterImpl extends Adapter {
         String rval = null;
 
         // try up to 10000 numeric values to locate one on a particular host
-        for (int i = 0 ; i < 10000 ; i += 1) {
+        for (int i = 0; i < 10000; i += 1) {
             // generate key, and see if it is on the desired server
             String testString = prefix + (startingIndex + i);
             if (ServerWrapperImpl.getWrapper(

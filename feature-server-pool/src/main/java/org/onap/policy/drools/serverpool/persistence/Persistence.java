@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,7 +43,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
@@ -78,9 +76,9 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
     private static final String QP_COUNT = "count";
     private static final String QP_DEST = "dest";
 
-    /***************************************/
-    /* 'PolicySessionFeatureApi' interface */
-    /***************************************/
+    /* ************************************* */
+    /* 'PolicySessionFeatureApi' interface   */
+    /* ************************************* */
 
     /**
      * {@inheritDoc}
@@ -117,9 +115,9 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
         }
     }
 
-    /*****************************/
-    /* 'ServerPoolApi' interface */
-    /*****************************/
+    /* *************************** */
+    /* 'ServerPoolApi' interface   */
+    /* *************************** */
 
     /**
      * {@inheritDoc}
@@ -184,7 +182,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
                     for (PolicySession session : sbd.sessionData.keySet()) {
                         Object obj = session.getAdjunct(PersistenceRunnable.class);
                         if (obj instanceof PersistenceRunnable) {
-                            PersistenceRunnable pr = (PersistenceRunnable)obj;
+                            PersistenceRunnable pr = (PersistenceRunnable) obj;
                             synchronized (pr.modifiedBuckets) {
                                 // mark bucket associated with this session
                                 // as modified
@@ -300,9 +298,9 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
             session.getKieSession().addEventListener(this);
         }
 
-        /******************************/
-        /* 'DroolsRunnable' interface */
-        /******************************/
+        /* **************************** */
+        /* 'DroolsRunnable' interface   */
+        /* **************************** */
 
         /**
          * {@inheritDoc}
@@ -364,9 +362,9 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
             }
         }
 
-        /****************************************/
-        /* 'RuleRuntimeEventListener' interface */
-        /****************************************/
+        /* ************************************** */
+        /* 'RuleRuntimeEventListener' interface   */
+        /* ************************************** */
 
         /**
          * {@inheritDoc}
@@ -462,7 +460,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
      */
     static class SenderSessionBucketData {
         // the set of all objects in the session associated with this bucket
-        Map<Object,Object> droolsObjects = new IdentityHashMap<>();
+        Map<Object, Object> droolsObjects = new IdentityHashMap<>();
 
         // used by the receiver to determine whether an update is really newer
         int count = 0;
@@ -741,7 +739,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
 
                 // if we reach this point, we have decoded the persistent data
 
-                final Map<?,?> droolsObjects = (Map<?,?>) obj;
+                final Map<?, ?> droolsObjects = (Map<?, ?>) obj;
 
                 // signal when restore is complete
                 final CountDownLatch sessionLatch = new CountDownLatch(1);
@@ -779,7 +777,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
                         bucket.putAdjunct(obj);
 
                         // send out updated date
-                        sendLockDataToBackups(bucket, (GlobalLocks)obj);
+                        sendLockDataToBackups(bucket, (GlobalLocks) obj);
                     } else {
                         logger.error(RESTORE_BUCKET_ERROR
                                      + "Expected 'GlobalLocks', got '{}'",

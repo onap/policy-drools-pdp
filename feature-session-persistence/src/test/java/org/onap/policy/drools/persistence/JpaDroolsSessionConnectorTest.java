@@ -29,19 +29,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.drools.persistence.DroolsSessionEntity;
-import org.onap.policy.drools.persistence.EntityMgrTrans;
-import org.onap.policy.drools.persistence.JpaDroolsSessionConnector;
 
 public class JpaDroolsSessionConnectorTest {
 
@@ -56,7 +51,7 @@ public class JpaDroolsSessionConnectorTest {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception exception
      */
     @Before
