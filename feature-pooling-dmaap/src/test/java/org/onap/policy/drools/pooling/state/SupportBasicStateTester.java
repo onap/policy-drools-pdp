@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,13 +36,13 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
+import org.onap.policy.common.utils.resources.Pair;
 import org.onap.policy.drools.pooling.CancellableScheduledTask;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.PoolingProperties;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
-import org.onap.policy.drools.utils.Pair;
 import org.onap.policy.drools.utils.Triple;
 
 /**
@@ -116,7 +117,7 @@ public class SupportBasicStateTester {
 
     /**
      * Setup.
-     * 
+     *
      * @throws Exception throws exception
      */
     public void setUp() throws Exception {
@@ -198,7 +199,7 @@ public class SupportBasicStateTester {
 
     /**
      * Makes a sorted set of hosts.
-     * 
+     *
      * @param hosts the hosts to be sorted
      * @return the set of hosts, sorted
      */
@@ -208,7 +209,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the host array from the Leader message published to the admin channel.
-     * 
+     *
      * @return the host array, as a list
      */
     protected List<String> captureHostList() {
@@ -217,7 +218,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the host array from the Leader message published to the admin channel.
-     * 
+     *
      * @return the host array
      */
     protected String[] captureHostArray() {
@@ -231,7 +232,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the assignments from the Leader message published to the admin channel.
-     * 
+     *
      * @return the bucket assignments
      */
     protected BucketAssignments captureAssignments() {
@@ -244,7 +245,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the message published to the admin channel.
-     * 
+     *
      * @param clazz type of {@link Message} to capture
      * @return the message that was published
      */
@@ -254,7 +255,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the message published to the admin channel.
-     * 
+     *
      * @param clazz type of {@link Message} to capture
      * @param index index of the item to be captured
      * @return the message that was published
@@ -265,7 +266,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the message published to the non-admin channels.
-     * 
+     *
      * @param clazz type of {@link Message} to capture
      * @return the (channel,message) pair that was published
      */
@@ -275,7 +276,7 @@ public class SupportBasicStateTester {
 
     /**
      * Captures the message published to the non-admin channels.
-     * 
+     *
      * @param clazz type of {@link Message} to capture
      * @param index index of the item to be captured
      * @return the (channel,message) pair that was published

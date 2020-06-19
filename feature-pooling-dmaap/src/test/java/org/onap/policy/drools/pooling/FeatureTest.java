@@ -3,13 +3,14 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2019-2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,11 +58,11 @@ import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
+import org.onap.policy.common.utils.resources.Pair;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
-import org.onap.policy.drools.utils.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * <dt>PolicyEngine, PolicyController, DroolsController</dt>
  * <dd>mocked</dd>
  * </dl>
- * 
+ *
  * <p>Invoke {@link #runSlow()}, before the test, to slow things down.
  */
 public class FeatureTest {
@@ -178,7 +179,7 @@ public class FeatureTest {
     private String makeMessage(int reqnum) {
         return "{\"reqid\":\"req" + reqnum + "\", \"data\":\"hello " + reqnum + "\"}";
     }
-    
+
     /**
      * Invoke this to slow the timers down.
      */
@@ -196,7 +197,7 @@ public class FeatureTest {
 
     /**
      * Decodes an event.
-     * 
+     *
      * @param event event
      * @return the decoded event, or {@code null} if it cannot be decoded
      */
@@ -253,7 +254,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param nEvents number of events to be processed
          */
         public Context(int events) {
@@ -270,7 +271,7 @@ public class FeatureTest {
 
         /**
          * Creates and adds a new host to the context.
-         * 
+         *
          * @return the new Host
          */
         public Host addHost() {
@@ -308,7 +309,7 @@ public class FeatureTest {
         /**
          * Sets {@link #currentHost} to the specified host, and then invokes the given
          * function. Resets {@link #currentHost} to {@code null} before returning.
-         * 
+         *
          * @param host host
          * @param func function to invoke
          */
@@ -320,7 +321,7 @@ public class FeatureTest {
 
         /**
          * Offers an event to the external topic.
-         * 
+         *
          * @param event event
          */
         public void offerExternal(String event) {
@@ -329,7 +330,7 @@ public class FeatureTest {
 
         /**
          * Adds an internal channel to the set of channels.
-         * 
+         *
          * @param channel channel
          * @param queue the channel's queue
          */
@@ -339,7 +340,7 @@ public class FeatureTest {
 
         /**
          * Offers a message to all internal channels.
-         * 
+         *
          * @param message message
          */
         public void offerInternal(String message) {
@@ -348,7 +349,7 @@ public class FeatureTest {
 
         /**
          * Offers amessage to an internal channel.
-         * 
+         *
          * @param channel channel
          * @param message message
          */
@@ -361,7 +362,7 @@ public class FeatureTest {
 
         /**
          * Associates a controller with its drools controller.
-         * 
+         *
          * @param controller controller
          * @param droolsController drools controller
          */
@@ -371,7 +372,7 @@ public class FeatureTest {
 
         /**
          * Get controller.
-         * 
+         *
          * @param droolsController drools controller
          * @return the controller associated with a drools controller, or {@code null} if
          *         it has no associated controller
@@ -382,7 +383,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @return queue for the external topic
          */
         public BlockingQueue<String> getExternalTopic() {
@@ -391,7 +392,7 @@ public class FeatureTest {
 
         /**
          * Get decode errors.
-         * 
+         *
          * @return the number of decode errors so far
          */
         public int getDecodeErrors() {
@@ -407,7 +408,7 @@ public class FeatureTest {
 
         /**
          * Get remaining events.
-         * 
+         *
          * @return the number of events that haven't been processed
          */
         public long getRemainingEvents() {
@@ -423,7 +424,7 @@ public class FeatureTest {
 
         /**
          * Waits, for a period of time, for all events to be processed.
-         * 
+         *
          * @param time time
          * @param units units
          * @return {@code true} if all events have been processed, {@code false} otherwise
@@ -436,7 +437,7 @@ public class FeatureTest {
         /**
          * Gets the current host, provided this is used from within a call to
          * {@link #withHost(Host, VoidFunction)}.
-         * 
+         *
          * @return the current host, or {@code null} if there is no current host
          */
         public Host getCurrentHost() {
@@ -475,7 +476,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context context
          */
         public Host(Context context) {
@@ -496,13 +497,13 @@ public class FeatureTest {
 
             // arrange to read from the external topic
             externalSource = new TopicSourceImpl(context, false);
-            
+
             feature = new PoolingFeatureImpl(context);
         }
 
         /**
          * Get name.
-         * 
+         *
          * @return the host name
          */
         public String getName() {
@@ -543,7 +544,7 @@ public class FeatureTest {
 
         /**
          * Offers an event to the feature, before the policy controller handles it.
-         * 
+         *
          * @param protocol protocol
          * @param topic2 topic
          * @param event event
@@ -555,7 +556,7 @@ public class FeatureTest {
 
         /**
          * Offers an event to the feature, after the policy controller handles it.
-         * 
+         *
          * @param protocol protocol
          * @param topic topic
          * @param event event
@@ -569,7 +570,7 @@ public class FeatureTest {
 
         /**
          * Offers an event to the feature, before the drools controller handles it.
-         * 
+         *
          * @param fact fact
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
@@ -579,7 +580,7 @@ public class FeatureTest {
 
         /**
          * Offers an event to the feature, after the drools controller handles it.
-         * 
+         *
          * @param fact fact
          * @param successInsert {@code true} if it was successfully inserted by the drools
          *        controller, {@code false} otherwise
@@ -598,7 +599,7 @@ public class FeatureTest {
 
         /**
          * Message seen.
-         * 
+         *
          * @return {@code true} if a message was seen for this host, {@code false}
          *         otherwise
          */
@@ -608,7 +609,7 @@ public class FeatureTest {
 
         /**
          * Get internal queue.
-         * 
+         *
          * @return the queue associated with this host's internal topic
          */
         public BlockingQueue<String> getInternalQueue() {
@@ -681,7 +682,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context context
          */
         public TopicSinkImpl(Context context) {
@@ -738,7 +739,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context context
          * @param internal {@code true} if to read from the internal topic, {@code false}
          *        to read from the external topic
@@ -784,7 +785,7 @@ public class FeatureTest {
                 try {
                     do {
                         processMessages(newPair.first(), listener);
-                    } 
+                    }
                     while (!newPair.first().await(stdInterPollMs, TimeUnit.MILLISECONDS));
 
                     logger.info("topic source thread completed");
@@ -816,7 +817,7 @@ public class FeatureTest {
         /**
          * Registers a new "pair" with this source, stopping the consumer associated with
          * any previous registration.
-         * 
+         *
          * @param newPair the new "pair", or {@code null} to unregister
          */
         private void reregister(Pair<CountDownLatch, CountDownLatch> newPair) {
@@ -855,7 +856,7 @@ public class FeatureTest {
 
         /**
          * Polls for messages from the topic and offers them to the listener.
-         * 
+         *
          * @param stopped triggered if processing should stop
          * @param listener listener
          * @throws InterruptedException throws interrupted exception
@@ -967,7 +968,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context context
          */
         public PoolingFeatureImpl(Context context) {
@@ -1010,7 +1011,7 @@ public class FeatureTest {
 
         /**
          * Embeds a specializer within a property name, after the prefix.
-         * 
+         *
          * @param propnm property name into which it should be embedded
          * @param spec specializer to be embedded
          * @return the property name, with the specializer embedded within it
@@ -1025,7 +1026,7 @@ public class FeatureTest {
                         CountDownLatch activeLatch) {
 
             currentContext.set(context);
-            
+
             return new PoolingManagerTest(host, controller, props, activeLatch);
         }
     }
@@ -1037,7 +1038,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param host the host
          * @param controller the controller
          * @param props the properties
@@ -1072,7 +1073,7 @@ public class FeatureTest {
 
         /**
          * Constructor.
-         * 
+         *
          * @param context this manager's context
          * @param topic the topic
          * @throws PoolingFeatureException if an error occurs
