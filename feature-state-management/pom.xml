@@ -153,11 +153,6 @@
             <artifactId>integrity-monitor</artifactId>
             <version>${policy.common.version}</version>
         </dependency>
-        <!-- Need to pull into assembly for IntegrityMonitor -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
