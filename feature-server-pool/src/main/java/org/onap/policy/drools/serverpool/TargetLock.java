@@ -981,9 +981,8 @@ public class TargetLock implements Lock, Serializable {
         public void lockAvailable(final Lock lock) {
             // Run 'owner.lockAvailable' within the Drools session
             if (policySession != null) {
-                DroolsRunnable callback = () -> {
+                DroolsRunnable callback = () ->
                     ((TargetLock) lock).owner.lockAvailable(lock);
-                };
                 policySession.getKieSession().insert(callback);
             }
         }
@@ -995,9 +994,8 @@ public class TargetLock implements Lock, Serializable {
         public void lockUnavailable(Lock lock) {
             // Run 'owner.unlockAvailable' within the Drools session
             if (policySession != null) {
-                DroolsRunnable callback = () -> {
+                DroolsRunnable callback = () ->
                     ((TargetLock) lock).owner.lockUnavailable(lock);
-                };
                 policySession.getKieSession().insert(callback);
             }
         }
@@ -1612,12 +1610,12 @@ public class TargetLock implements Lock, Serializable {
 
                 // process the client-end data
                 for (ClientData clientData : hostData.clientDataList) {
-                    populateLockData_clientData(clientData, server);
+                    populateLockDataClientData(clientData, server);
                 }
 
                 // process the server-end data
                 for (ServerData serverData : hostData.serverDataList) {
-                    populateLockData_serverData(serverData, server);
+                    populateLockDataServerData(serverData, server);
                 }
             } else {
                 logger.error("TargetLock.DumpLocks.populateLockData: "
@@ -1626,7 +1624,7 @@ public class TargetLock implements Lock, Serializable {
             }
         }
 
-        private void populateLockData_clientData(ClientData clientData, Server server) {
+        private void populateLockDataClientData(ClientData clientData, Server server) {
             // 'true' if the bucket associated with this 'ClientData'
             // doesn't belong to the remote server, as far as we can tell
             boolean serverMismatch =
@@ -1665,7 +1663,7 @@ public class TargetLock implements Lock, Serializable {
             }
         }
 
-        private void populateLockData_serverData(ServerData serverData, Server server) {
+        private void populateLockDataServerData(ServerData serverData, Server server) {
             // 'true' if the bucket associated with this 'ServerData'
             // doesn't belong to the remote server, as far as we can tell
             boolean serverMismatch =
@@ -1713,13 +1711,13 @@ public class TargetLock implements Lock, Serializable {
 
                 // we need 'MergeData' entries for all waiting requests
                 for (Waiting waiting : le.waitingList) {
-                    populateLockData_serverData_waiting(
+                    populateLockDataServerDataWaiting(
                         serverData, server, serverMismatch, le, waiting);
                 }
             }
         }
 
-        private void populateLockData_serverData_waiting(
+        private void populateLockDataServerDataWaiting(
             ServerData serverData, Server server, boolean serverMismatch,
             LockEntry le, Waiting waiting) {
 
@@ -1808,11 +1806,11 @@ public class TargetLock implements Lock, Serializable {
                 out.printf(format, "---", "---------", "----", "-----", "--------");
             }
 
-            dump_serverTable(out);
-            dump_clientOnlyEntries(out);
+            dumpServerTable(out);
+            dumpClientOnlyEntries(out);
         }
 
-        private void dump_serverTable(PrintStream out) {
+        private void dumpServerTable(PrintStream out) {
             // iterate over the server table
             for (LockEntry le : lockEntries.values()) {
                 // fetch merged data
@@ -1855,7 +1853,7 @@ public class TargetLock implements Lock, Serializable {
             }
         }
 
-        private void dump_clientOnlyEntries(PrintStream out) {
+        private void dumpClientOnlyEntries(PrintStream out) {
             // client records that don't have matching server entries
             for (MergedData md : clientOnlyEntries.values()) {
                 ClientDataRecord cdr = md.clientDataRecord;
@@ -1981,7 +1979,7 @@ public class TargetLock implements Lock, Serializable {
             Waiting serverWaiting = null;
 
             // detected problems, such as server/client mismatches
-            Queue<String> comments = new LinkedList<String>();
+            Queue<String> comments = new LinkedList<>();
 
             /**
              * Constructor - initialize the 'uuid'.
@@ -2050,8 +2048,8 @@ public class TargetLock implements Lock, Serializable {
                 hostUuid = Server.getThisServer().getUuid();
 
                 // initial storage for client and server data
-                clientDataList = new ArrayList<ClientData>();
-                serverDataList = new ArrayList<ServerData>();
+                clientDataList = new ArrayList<>();
+                serverDataList = new ArrayList<>();
 
                 // go through buckets
                 for (int i = 0; i < Bucket.BUCKETCOUNT; i += 1) {
@@ -2215,15 +2213,15 @@ public class TargetLock implements Lock, Serializable {
             AuditData response = new AuditData();
 
             // compare remote servers client data with our server data
-            generateResponse_clientEnd(response, includeWarnings);
+            generateResponseClientEnd(response, includeWarnings);
 
             // test server data
-            generateResponse_serverEnd(response, includeWarnings);
+            generateResponseServerEnd(response, includeWarnings);
 
             return response;
         }
 
-        private void generateResponse_clientEnd(AuditData response, boolean includeWarnings) {
+        private void generateResponseClientEnd(AuditData response, boolean includeWarnings) {
             for (Identity identity : clientData) {
                 // remote end is the client, and we are the server
                 Bucket bucket = Bucket.getBucket(identity.key);
@@ -2275,7 +2273,7 @@ public class TargetLock implements Lock, Serializable {
             }
         }
 
-        private void generateResponse_serverEnd(AuditData response, boolean includeWarnings) {
+        private void generateResponseServerEnd(AuditData response, boolean includeWarnings) {
             for (Identity identity : serverData) {
                 // remote end is the server, and we are the client
                 Bucket bucket = Bucket.getBucket(identity.ownerKey);
@@ -2674,11 +2672,11 @@ public class TargetLock implements Lock, Serializable {
             }
 
             for (final Server server : auditMap.keySet()) {
-                send_server(server);
+                sendServer(server);
             }
         }
 
-        private void send_server(final Server server) {
+        private void sendServer(final Server server) {
             // fetch audit data
             AuditData auditData = auditMap.get(server);
 
