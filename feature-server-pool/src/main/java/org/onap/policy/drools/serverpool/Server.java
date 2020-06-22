@@ -215,6 +215,23 @@ public class Server implements Comparable<Server> {
         return Util.uuidComparator.compare(uuid, other.uuid);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Server)) {
+            return false;
+        }
+        Server other = (Server) obj;
+        return Objects.equals(uuid, other.uuid);
+    }
+
     /**
      * This method may be invoked from any thread, and is used as the main
      * entry point when testing.
