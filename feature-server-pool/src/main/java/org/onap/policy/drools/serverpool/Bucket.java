@@ -874,7 +874,7 @@ public class Bucket {
                                          || thisServer == secondaryBackup));
 
         // invoke 'TargetLock' directly
-        TargetLock.auditBucket(this, isOwner, isBackup);
+        TargetLock.auditBucket(this, isOwner);
         for (ServerPoolApi feature : ServerPoolApi.impl.getList()) {
             feature.auditBucket(this, isOwner, isBackup);
         }

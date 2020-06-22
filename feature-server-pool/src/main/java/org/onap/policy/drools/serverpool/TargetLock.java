@@ -660,9 +660,8 @@ public class TargetLock implements Lock, Serializable {
      *
      * @param bucket the bucket to audit
      * @param owner 'true' if the current host owns the bucket
-     * @param backup 'true' if the current host is a backup for the bucket
      */
-    static void auditBucket(Bucket bucket, boolean isOwner, boolean isBackup) {
+    static void auditBucket(Bucket bucket, boolean isOwner) {
         if (!isOwner) {
             // we should not have any 'TargetLock' adjuncts
             if (bucket.removeAdjunct(LocalLocks.class) != null) {
