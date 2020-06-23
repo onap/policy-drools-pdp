@@ -16,6 +16,24 @@
       "revId": "4bfcf9f47067d4c1e5e840270d9b93cd96f0bf80",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98e71af9_45673dcb",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-06-23T08:18:26Z",
+      "side": 1,
+      "message": "The standard UUID comparator does a signed comparison, which results in a strange ordering for UUIDs -- UUIDs beginning with 8 through F occur before UUIDs beginning with 0 through 7. This ordering affects the first and seventeenth hex digit, with the rest of the digits occurring in the natural order. When you do unsigned comparison, as \u0027Util.uuidComparator\u0027 does, you get the expected natural ordering.",
+      "parentUuid": "b9205983_6207834a",
+      "revId": "4bfcf9f47067d4c1e5e840270d9b93cd96f0bf80",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
