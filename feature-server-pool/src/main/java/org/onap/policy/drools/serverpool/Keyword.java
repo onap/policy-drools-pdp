@@ -49,7 +49,7 @@ public class Keyword {
         new ConcurrentHashMap<>();
 
     // this is a pre-defined 'Lookup' instance that always returns 'null'
-    private static Lookup nullLookup = (Object obj) -> (String) null;
+    private static Lookup nullLookup = (Object obj) -> null;
 
     /**
      * This method takes the object's class, looks it up in the 'classToLookup'
@@ -166,14 +166,14 @@ public class Keyword {
             }
         }
 
-        Class<?> keyClass = buildReflectiveLookup_findKeyClass(clazz);
+        Class<?> keyClass = buildReflectiveLookupFindKeyClass(clazz);
 
         if (keyClass == null) {
             // no matching class name found
             return null;
         }
 
-        return buildReflectiveLookup_build(clazz, keyClass);
+        return buildReflectiveLookupBuild(clazz, keyClass);
     }
 
     /**
@@ -182,7 +182,7 @@ public class Keyword {
      * interfaces. If no match is found, repeat with the superclass,
      * and all the way up the superclass chain.
      */
-    private static Class<?> buildReflectiveLookup_findKeyClass(Class<?> clazz) {
+    private static Class<?> buildReflectiveLookupFindKeyClass(Class<?> clazz) {
         Class<?> keyClass = null;
         for (Class<?> cl = clazz; cl != null; cl = cl.getSuperclass()) {
             if (classNameToSequence.containsKey(cl.getName())) {
@@ -212,7 +212,7 @@ public class Keyword {
         return keyClass;
     }
 
-    private static Lookup buildReflectiveLookup_build(Class<?> clazz, Class<?> keyClass) {
+    private static Lookup buildReflectiveLookupBuild(Class<?> clazz, Class<?> keyClass) {
         // we found a matching key in the table -- now, process the values
         Class<?> currentClass = keyClass;
 
@@ -278,8 +278,10 @@ public class Keyword {
             last = current;
         }
 
-        // add optional conversion function ('null' if it doesn't exist)
-        last.next = conversionFunctionLookup;
+        if (last != null) {
+            // add optional conversion function ('null' if it doesn't exist)
+            last.next = conversionFunctionLookup;
+        }
 
         // successful - return the first 'Lookup' instance in the chain
         return first;
@@ -441,11 +443,11 @@ public class Keyword {
     static final int UUID_LENGTH = 36;
 
     static {
-        conversionFunction.put("uuid", value -> {
+        conversionFunction.put("uuid", value ->
             // truncate strings to 36 characters
-            return value != null && value.length() > UUID_LENGTH
-                ? value.substring(0, UUID_LENGTH) : value;
-        });
+            value != null && value.length() > UUID_LENGTH
+                ? value.substring(0, UUID_LENGTH) : value
+        );
     }
 
     /**
