@@ -181,9 +181,7 @@ public class Test1 {
         UUID leaderUuid = firstAdapter.getLeader().getUuid();
         for (Adapter adapter : Adapter.adapters) {
             UUID uuid = adapter.getLeader().getUuid();
-            assertTrue(adapter.toString() + " has UUID " + uuid
-                       + " (expected UUID " + leaderUuid + ")",
-                       uuid.equals(leaderUuid));
+            assertEquals(adapter.toString(), leaderUuid, uuid);
         }
     }
 
