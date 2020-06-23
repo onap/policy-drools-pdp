@@ -175,7 +175,7 @@ public class AdapterImpl extends Adapter {
             for (int i = 0; i < Bucket.BUCKETCOUNT; i += 1) {
                 Bucket bucket = Bucket.getBucket(i);
                 while (bucket.getOwner() == null) {
-                    Thread.sleep(Math.min(endTime - System.currentTimeMillis(), 100L));
+                    await().atMost(Math.min(endTime - System.currentTimeMillis(), 100L), TimeUnit.MILLISECONDS);
                 }
             }
         } catch (IllegalArgumentException e) {
