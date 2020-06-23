@@ -596,7 +596,7 @@ public class Bucket {
              * selected bucket has no server assigned -- this should only be a
              * transient situation, until 'rebalance' is run.
              */
-            out.format("Bucket is %d, which has no owner\n", bucketNumber);
+            out.format("Bucket is %d, which has no owner%n", bucketNumber);
         } else if (server == Server.getThisServer()) {
             /*
              * the selected bucket is associated with this particular server --
@@ -609,9 +609,9 @@ public class Bucket {
              * the selected bucket is assigned to a different server -- forward
              * the message.
              */
-            out.format("Bucket is %d: sending from\n"
-                       + "    %s to\n"
-                       + "    %s\n",
+            out.format("Bucket is %d: sending from%n"
+                       + "    %s to%n"
+                       + "    %s%n",
                        bucketNumber, Server.getThisServer().getUuid(), server.getUuid());
 
             // do a POST call of /bucket/bucketResponse to the remoote server
@@ -656,7 +656,7 @@ public class Bucket {
                 if (response == null) {
                     out.println("Timed out waiting for a response");
                 } else {
-                    out.format("Received response code %s\nEntity = %s\n",
+                    out.format("Received response code %s\nEntity = %s%n",
                                response.getStatus(), response.readEntity(String.class));
                 }
             } catch (InterruptedException e) {
