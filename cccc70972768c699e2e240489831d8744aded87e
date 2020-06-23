@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0de1db21_a791c405",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-23T23:15:28Z",
+      "side": 1,
+      "message": "@Ralph, there is a chance where last could be null. I am not sure what the logic will be for if last is null case...",
+      "range": {
+        "startLine": 281,
+        "startChar": 1,
+        "endLine": 284,
+        "endChar": 9
+      },
+      "revId": "cccc70972768c699e2e240489831d8744aded87e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
