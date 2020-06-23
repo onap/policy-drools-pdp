@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9205983_6207834a",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-23T03:26:26Z",
+      "side": 1,
+      "message": "Code seems OK to me, but check with Ralph to make sure that there is nothing special for the equals and hashcode below, as I see that this class is using this Util.uuidComparator object (vs. the UUID one, https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/UUID.html#compareTo(java.util.UUID)).",
+      "revId": "4bfcf9f47067d4c1e5e840270d9b93cd96f0bf80",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
