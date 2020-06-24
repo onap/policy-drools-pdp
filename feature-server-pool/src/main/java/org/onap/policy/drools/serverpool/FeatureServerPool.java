@@ -120,8 +120,8 @@ public class FeatureServerPool
      * Example <field-list>: requestID,CommonHeader.RequestID
      *
      * Table generated from this example has length 2:
-     * table[0] = {"requestID"}
-     * table[1] = {"CommonHeader", "RequestID"}
+     * table 0 is "requestID"
+     * table 1 is "CommonHeader", "RequestID"
      */
     private static HashMap<String, String[][]> topicToPaths = new HashMap<>();
 
@@ -320,17 +320,11 @@ public class FeatureServerPool
             }
             keyword = sco.getString(path);
             if (keyword != null) {
-                if (conversionFunctionName == null) {
-                    // We found a keyword -- we don't need to try other paths,
-                    // so we should break out of the loop
-                    break;
-                }
-
-                // we have post-processing to do
-                keyword = Keyword.convertKeyword(keyword, conversionFunctionName);
-                if (keyword != null) {
-                    // conversion was successful
-                    break;
+                if (conversionFunctionName != null) {
+                    keyword = Keyword.convertKeyword(keyword, conversionFunctionName);
+                    if (keyword != null) {
+                        break;
+                    }
                 }
             }
         }
