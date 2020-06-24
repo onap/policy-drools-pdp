@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4856f462_c4a3b85c",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Leader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-24T20:02:23Z",
+      "side": 1,
+      "message": "delete \".toString()\", as logger.info() will invoke it automatically, if INFO is enabled",
+      "range": {
+        "startLine": 351,
+        "startChar": 42,
+        "endLine": 351,
+        "endChar": 53
+      },
+      "revId": "f570b17c4fcf0f18face509506c7b347a0431340",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
