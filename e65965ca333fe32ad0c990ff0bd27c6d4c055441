@@ -34,6 +34,24 @@
       "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "efd312d7_f92356aa",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-24T10:58:14Z",
+      "side": 1,
+      "message": "assertEquals can put msg as an extra argument. I moved msg to logger.info to keep the same function as before. not an improvement. and Assert.assertTrue(a.equals(b)); is Noncompliant Code based on sonar.",
+      "parentUuid": "008455de_f0bd2fc0",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
