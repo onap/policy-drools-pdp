@@ -16,6 +16,24 @@
       "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "008455de_f0bd2fc0",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-06-24T08:20:18Z",
+      "side": 1,
+      "message": "Why is this viewed as an improvement? The previously-existing assert would provide more information if an error occurs.",
+      "parentUuid": "d3189d5e_98dc5282",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
