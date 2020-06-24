@@ -602,7 +602,7 @@ public class Bucket {
              * the selected bucket is associated with this particular server --
              * no forwarding is needed.
              */
-            out.format("Bucket is %d, which is owned by this server: %s\n",
+            out.format("Bucket is %d, which is owned by this server: %s%n",
                        bucketNumber, server.getUuid());
         } else {
             /*
@@ -656,7 +656,7 @@ public class Bucket {
                 if (response == null) {
                     out.println("Timed out waiting for a response");
                 } else {
-                    out.format("Received response code %s\nEntity = %s%n",
+                    out.format("Received response code %s%nEntity = %s%n",
                                response.getStatus(), response.readEntity(String.class));
                 }
             } catch (InterruptedException e) {

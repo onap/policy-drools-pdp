@@ -40,6 +40,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import lombok.EqualsAndHashCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,7 @@ class Leader {
     }
 
     // Server currently in the leader roll
-    private static Server leader = null;
+    private static Server leaderLocal = null;
 
     // Vote state machine -- it is null, unless a vote is in progress
     private static VoteCycle voteCycle = null;
@@ -118,7 +119,7 @@ class Leader {
      * @return the current leader ('null' if none has been selected)
      */
     public static Server getLeader() {
-        return leader;
+        return leaderLocal;
     }
 
     /**
@@ -168,10 +169,10 @@ class Leader {
          */
         @Override
         public void serverFailed(Server server) {
-            if (server == leader) {
+            if (server == leaderLocal) {
                 // the lead server has failed --
                 // start/restart the VoteCycle state machine
-                leader = null;
+                leaderLocal = null;
                 startVoting();
 
                 // send out a notification that the lead server has failed
@@ -223,7 +224,7 @@ class Leader {
          * start the 'Discovery' thread.
          */
         VoteCycle() {
-            if (leader == null || leader == Server.getThisServer()) {
+            if (leaderLocal == null || leaderLocal == Server.getThisServer()) {
                 Discovery.startDiscovery();
             }
         }
@@ -294,20 +295,20 @@ class Leader {
 
             // 5 second grace period has passed -- the leader is one with
             // the most votes, which is the first entry in 'voteData'
-            Server oldLeader = leader;
-            leader = Server.getServer(voteData.first().uuid);
-            if (leader != oldLeader) {
+            Server oldLeader = leaderLocal;
+            leaderLocal = Server.getServer(voteData.first().uuid);
+            if (leaderLocal != oldLeader) {
                 // the leader has changed -- send out notifications
                 for (Events listener : Events.getListeners()) {
-                    listener.newLeader(leader);
+                    listener.newLeader(leaderLocal);
                 }
             } else {
                 // the election is over, and the leader has been confirmed
                 for (Events listener : Events.getListeners()) {
-                    listener.leaderConfirmed(leader);
+                    listener.leaderConfirmed(leaderLocal);
                 }
             }
-            if (leader == Server.getThisServer()) {
+            if (leaderLocal == Server.getThisServer()) {
                 // this is the lead server --
                 // make sure the 'Discovery' threads are running
                 Discovery.startDiscovery();
@@ -347,8 +348,7 @@ class Leader {
                     }
                 }
             }
-
-            logger.info(bos.toString());
+            logger.info("Output - {}", bos.toString());
         }
 
         /**
@@ -495,9 +495,9 @@ class Leader {
 
             if (uuidToVoterData.size() * 2 < Server.getServerCount()) {
                 // fewer than half of the nodes have voted
-                if (leader != null) {
+                if (leaderLocal != null) {
                     // choose the current leader
-                    myVote = leader.getUuid();
+                    myVote = leaderLocal.getUuid();
                 } else {
                     // choose the first entry in the servers list
                     myVote = Server.getFirstServer().getUuid();
@@ -525,6 +525,7 @@ class Leader {
      * This class corresponds to a single vote recipient --
      * the Server being voted for.
      */
+    @EqualsAndHashCode
     private static class VoteData implements Comparable<VoteData> {
         // uuid voted for
         private UUID uuid;
