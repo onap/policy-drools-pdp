@@ -22,6 +22,30 @@
       "revId": "cccc70972768c699e2e240489831d8744aded87e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dcd34f5_beb6b6e4",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-06-24T11:36:25Z",
+      "side": 1,
+      "message": "It seems to me that on line 242, \u0027sequence.split(...)\u0027 will always return at least one entry, so there will be at least one attempt to go through the loop. If it then makes it out of the loop without returning (or an exception), \u0027current\u0027 and \u0027last\u0027 will both be set to non-null values. In any case, this test doesn\u0027t hurt, and probably makes Sonar happy.",
+      "parentUuid": "0de1db21_a791c405",
+      "range": {
+        "startLine": 281,
+        "startChar": 1,
+        "endLine": 284,
+        "endChar": 9
+      },
+      "revId": "cccc70972768c699e2e240489831d8744aded87e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
