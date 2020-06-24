@@ -91,6 +91,24 @@
     },
     {
       "key": {
+        "uuid": "b1aea9b9_8ac38124",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-24T15:35:38Z",
+      "side": 1,
+      "message": "await().atMost(Math.min(endTime - System.currentTimeMillis(), 100L), TimeUnit.MILLISECONDS)\n       .until(() -\u003e bucket.getOwner() !\u003d null);\n\nthat is what I did in my local...",
+      "parentUuid": "f6cd7199_3f850cb0",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
