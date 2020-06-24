@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7f9133e7_5b57278d",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-24T14:41:06Z",
+      "side": 1,
+      "message": "since there is no \"until\" conditional statement. either atMost or pollInterval acted the same, but I will change to atMost",
+      "parentUuid": "b7cb9313_44c72e6e",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "maybe just eliminate logger.info line and add adapter.toString() as the first argument to assertEquals.  Eclipse (and intellij, I assume) will show the expected vs actual value without having to include them in the message.",
       "parentUuid": "efd312d7_f92356aa",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "beb336bc_4405f637",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-24T14:41:06Z",
+      "side": 1,
+      "message": "ok. will change",
+      "parentUuid": "81bdcb40_3f8d0560",
       "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
