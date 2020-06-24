@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b430482b_8db52091",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-24T22:07:53Z",
+      "side": 1,
+      "message": "I used a new variable: keywordLocal to replace the original line #330 which was reusing variable keyword. then below line #328 is to combine two \"break\" statement into one \"break\" statement",
+      "range": {
+        "startLine": 326,
+        "startChar": 20,
+        "endLine": 326,
+        "endChar": 32
+      },
+      "revId": "9249fb5fad533885a4903974f47b54c3839e4161",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
