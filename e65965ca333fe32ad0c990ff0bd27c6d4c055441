@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "b7cb9313_44c72e6e",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-24T14:17:08Z",
+      "side": 1,
+      "message": "I believe this should be atMost() instead of pollInterval()",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
@@ -49,6 +66,24 @@
       "side": 1,
       "message": "assertEquals can put msg as an extra argument. I moved msg to logger.info to keep the same function as before. not an improvement. and Assert.assertTrue(a.equals(b)); is Noncompliant Code based on sonar.",
       "parentUuid": "008455de_f0bd2fc0",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "81bdcb40_3f8d0560",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-24T14:17:08Z",
+      "side": 1,
+      "message": "maybe just eliminate logger.info line and add adapter.toString() as the first argument to assertEquals.  Eclipse (and intellij, I assume) will show the expected vs actual value without having to include them in the message.",
+      "parentUuid": "efd312d7_f92356aa",
       "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
