@@ -163,6 +163,24 @@
     },
     {
       "key": {
+        "uuid": "6b6b086f_a924a2e4",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-24T20:30:51Z",
+      "side": 1,
+      "message": "so apparently there are some buckets that never have owners - perhaps there is a bug?",
+      "parentUuid": "3b4294ef_6d3fc74f",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
