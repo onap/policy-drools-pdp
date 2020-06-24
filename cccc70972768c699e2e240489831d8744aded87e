@@ -70,6 +70,30 @@
       "revId": "cccc70972768c699e2e240489831d8744aded87e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e1f4a62_b4be7554",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-24T13:56:11Z",
+      "side": 1,
+      "message": "I\u0027m OK with this either way.  We could just mark the original line as \"NOSONAR\" and add Ralph\u0027s comment, or leave it as Taka has changed it, the downside being that sonar coverage will now complain that only one branch of the \"if\" test is covered since that\u0027s the only branch that can ever actually be covered.",
+      "parentUuid": "d709a9a7_41ded22f",
+      "range": {
+        "startLine": 281,
+        "startChar": 1,
+        "endLine": 284,
+        "endChar": 9
+      },
+      "revId": "cccc70972768c699e2e240489831d8744aded87e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
