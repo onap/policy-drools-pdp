@@ -199,6 +199,24 @@
     },
     {
       "key": {
+        "uuid": "c8c9b607_2ccf0001",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-24T23:46:46Z",
+      "side": 1,
+      "message": "I\u0027m seeing the same issue.  Enough fighting with this - let\u0027s leave it as you have it for now.",
+      "parentUuid": "20d97fe4_899b666e",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
