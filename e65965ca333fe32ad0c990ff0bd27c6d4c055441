@@ -181,6 +181,24 @@
     },
     {
       "key": {
+        "uuid": "20d97fe4_899b666e",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-24T22:23:16Z",
+      "side": 1,
+      "message": "maybe it\u0027s my mac os local env issue. let me submit a patch and let jenkins run the verify-merge job.",
+      "parentUuid": "6b6b086f_a924a2e4",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
