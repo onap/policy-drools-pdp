@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3189d5e_98dc5282",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-24T02:25:44Z",
+      "side": 1,
+      "message": "no issue, but the toString() in adapter could be avoided.",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
