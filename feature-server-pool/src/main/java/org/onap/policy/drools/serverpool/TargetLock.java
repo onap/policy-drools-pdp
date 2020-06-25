@@ -147,6 +147,9 @@ public class TargetLock implements Lock, Serializable {
     private static final String QP_SERVER = "server";
     private static final String QP_TTL = "ttl";
 
+    // define a constant for null of byte array
+    private static final byte[] NULL_BYTE_ARRAY = null;
+
     /**
      * This method triggers registration of 'eventHandler', and also extracts
      * property values.
@@ -1524,7 +1527,7 @@ public class TargetLock implements Lock, Serializable {
 
                 logger.error("Couldn't forward 'lock/dumpLocksData to uuid {}",
                              serverUuid);
-                return null;
+                return NULL_BYTE_ARRAY;
             }
 
             return Base64.getEncoder().encode(Util.serialize(new HostData()));
@@ -1641,11 +1644,7 @@ public class TargetLock implements Lock, Serializable {
                 UUID uuid = cdr.identity.uuid;
 
                 // fetch/generate 'MergeData' instance for this UUID
-                MergedData md = mergedDataMap.get(uuid);
-                if (md == null) {
-                    md = new MergedData(uuid);
-                    mergedDataMap.put(uuid, md);
-                }
+                MergedData md = mergedDataMap.computeIfAbsent(uuid, key -> new MergedData(uuid));
 
                 // update 'MergedData.clientDataRecord'
                 if (md.clientDataRecord == null) {
@@ -1680,11 +1679,7 @@ public class TargetLock implements Lock, Serializable {
                 UUID uuid = le.currentOwnerUuid;
 
                 // fetch/generate 'MergeData' instance for this UUID
-                MergedData md = mergedDataMap.get(uuid);
-                if (md == null) {
-                    md = new MergedData(uuid);
-                    mergedDataMap.put(uuid, md);
-                }
+                MergedData md = mergedDataMap.computeIfAbsent(uuid, key -> new MergedData(uuid));
 
                 // update 'lockEntries' table entry
                 if (lockEntries.get(le.key) != null) {
@@ -1728,11 +1723,7 @@ public class TargetLock implements Lock, Serializable {
             UUID uuid = waiting.ownerUuid;
 
             // fetch/generate 'MergeData' instance for this UUID
-            MergedData md = mergedDataMap.get(uuid);
-            if (md == null) {
-                md = new MergedData(uuid);
-                mergedDataMap.put(uuid, md);
-            }
+            MergedData md = mergedDataMap.computeIfAbsent(uuid, key -> new MergedData(uuid));
 
             // update 'MergedData.serverLockEntry' and
             // 'MergedData.serverWaiting'
@@ -2383,7 +2374,7 @@ public class TargetLock implements Lock, Serializable {
                 return Base64.getEncoder().encode(Util.serialize(this));
             } catch (IOException e) {
                 logger.error("TargetLock.AuditData.encode Exception", e);
-                return null;
+                return NULL_BYTE_ARRAY;
             }
         }
 
@@ -2557,7 +2548,7 @@ public class TargetLock implements Lock, Serializable {
                 // if we reach this point, we didn't forward for some reason
 
                 logger.error("Couldn't forward 'lock/audit to uuid {}", serverUuid);
-                return null;
+                return NULL_BYTE_ARRAY;
             }
 
             AuditData auditData = AuditData.decode(encodedData);
@@ -2565,7 +2556,7 @@ public class TargetLock implements Lock, Serializable {
                 AuditData auditResp = auditData.generateResponse(true);
                 return auditResp.encode();
             }
-            return null;
+            return NULL_BYTE_ARRAY;
         }
 
         /**
@@ -2649,8 +2640,9 @@ public class TargetLock implements Lock, Serializable {
         AuditData getAuditData(String key) {
             // map 'key -> bucket number', and then 'bucket number' -> 'server'
             Server server = Bucket.bucketToServer(Bucket.bucketNumber(key));
+            AuditData auditData = null;
             if (server != null) {
-                AuditData auditData =
+                auditData =
                     auditMap.computeIfAbsent(server, sk -> new AuditData());
                 return auditData;
             }
