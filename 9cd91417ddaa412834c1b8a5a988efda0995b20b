@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "03965f0c_40a88680",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T19:19:02Z",
+      "side": 1,
+      "message": "should make this all uppercase since it\u0027s a constant",
+      "revId": "9cd91417ddaa412834c1b8a5a988efda0995b20b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "75c64c68_ce069ddf",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 3
