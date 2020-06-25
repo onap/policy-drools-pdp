@@ -94,6 +94,30 @@
       "revId": "cccc70972768c699e2e240489831d8744aded87e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b01ee420_acd0dea5",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-25T18:55:20Z",
+      "side": 1,
+      "message": "added NOSONAR comment",
+      "parentUuid": "3e1f4a62_b4be7554",
+      "range": {
+        "startLine": 281,
+        "startChar": 1,
+        "endLine": 284,
+        "endChar": 9
+      },
+      "revId": "cccc70972768c699e2e240489831d8744aded87e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
