@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4b89dac2_b2a1a621",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T13:16:11Z",
+      "side": 1,
+      "message": "can delete this part - only need adapter.toString(), because the IDE will display the rest automatically",
+      "range": {
+        "startLine": 184,
+        "startChar": 43,
+        "endLine": 185,
+        "endChar": 64
+      },
+      "revId": "4756fa6e186ee32ad71c7b88b40724b397405cef",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
