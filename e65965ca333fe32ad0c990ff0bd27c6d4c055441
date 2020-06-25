@@ -217,6 +217,24 @@
     },
     {
       "key": {
+        "uuid": "b3e0dde0_3243e6f1",
+        "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpool/AdapterImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-25T11:23:38Z",
+      "side": 1,
+      "message": "pushed another patch.",
+      "parentUuid": "c8c9b607_2ccf0001",
+      "revId": "e65965ca333fe32ad0c990ff0bd27c6d4c055441",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3189d5e_98dc5282",
         "filename": "feature-server-pool/src/test/java/org/onap/policy/drools/serverpooltest/Test1.java",
         "patchSetId": 1
