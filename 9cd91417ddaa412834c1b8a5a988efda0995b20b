@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "75c64c68_ce069ddf",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 2377,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-25T18:44:59Z",
+      "side": 1,
+      "message": "I think this change may a problem, in general, there seems to be places in the code here that checks for null return after calling this encode() function.   There are side-effects with this change, affecting those areas that are checking for null, they will need to be modified.",
+      "revId": "9cd91417ddaa412834c1b8a5a988efda0995b20b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e87431f_af87353f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 2775,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-25T18:44:59Z",
+      "side": 1,
+      "message": "This is one occurrence of what I meant with the side-effect changes above, now will not hit this leg of code, and will go down.",
+      "revId": "9cd91417ddaa412834c1b8a5a988efda0995b20b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
