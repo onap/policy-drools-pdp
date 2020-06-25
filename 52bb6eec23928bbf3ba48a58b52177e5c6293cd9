@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "074fff6c_ecd37a79",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 1530,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T19:32:05Z",
+      "side": 1,
+      "message": "if sonar was complaining about \"return null\", then I think it will still complain about this",
+      "revId": "52bb6eec23928bbf3ba48a58b52177e5c6293cd9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
