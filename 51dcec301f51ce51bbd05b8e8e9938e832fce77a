@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "907625da_00dcb14f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T19:10:35Z",
+      "side": 1,
+      "message": "this should be appended to line 289, not left as a stand-alone comment",
+      "revId": "51dcec301f51ce51bbd05b8e8e9938e832fce77a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6206256_4085684b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T19:10:35Z",
+      "side": 1,
+      "message": "remove trailing spaces on all of these lines",
+      "revId": "51dcec301f51ce51bbd05b8e8e9938e832fce77a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27f82e97_ed8af285",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T19:10:35Z",
+      "side": 1,
+      "message": "\"Ralph\u0027s comment: It seems to me that on line 242,\" \u003d\u003e \"The preceding\"",
+      "range": {
+        "startLine": 283,
+        "startChar": 11,
+        "endLine": 283,
+        "endChar": 60
+      },
+      "revId": "51dcec301f51ce51bbd05b8e8e9938e832fce77a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c4d0679_8d3a5781",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Keyword.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-25T19:10:35Z",
+      "side": 1,
+      "message": "delete this part of the comment",
+      "range": {
+        "startLine": 287,
+        "startChar": 33,
+        "endLine": 288,
+        "endChar": 42
+      },
+      "revId": "51dcec301f51ce51bbd05b8e8e9938e832fce77a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
