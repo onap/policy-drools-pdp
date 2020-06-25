@@ -46,6 +46,30 @@
       "revId": "9249fb5fad533885a4903974f47b54c3839e4161",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f794cb4d_a28f3072",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-25T00:57:45Z",
+      "side": 1,
+      "message": "for what condition to set keyword here? on line #324 if keyword is not null, then break out to line #334, keyword is eventually not equal to null. also when going to next loop, the keyword value will be set again on line #322. I think the original logic is still there.",
+      "parentUuid": "c58b280b_96626c47",
+      "range": {
+        "startLine": 326,
+        "startChar": 20,
+        "endLine": 326,
+        "endChar": 32
+      },
+      "revId": "9249fb5fad533885a4903974f47b54c3839e4161",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
