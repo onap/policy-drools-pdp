@@ -33,6 +33,24 @@
       "revId": "9cd91417ddaa412834c1b8a5a988efda0995b20b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "57ca06db_62a5cedb",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 2775,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-25T18:58:51Z",
+      "side": 1,
+      "message": "good point",
+      "parentUuid": "2e87431f_af87353f",
+      "revId": "9cd91417ddaa412834c1b8a5a988efda0995b20b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
