@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "85301dba_30c7a043",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-06-26T08:18:45Z",
+      "side": 1,
+      "message": "\u0027keywordLocal\u0027 is never used beyond the test below, and is ultimately discarded -- this is not functionally equivalent to the original code. I don\u0027t know why the additional variable was added.",
+      "revId": "457072459335f5fa8571b3cf5cd0286e68d858ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
