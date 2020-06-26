@@ -34,6 +34,24 @@
       "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a832c330_f91ee430",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-26T21:01:58Z",
+      "side": 1,
+      "message": "the original 2nd break on line #333 would cover on the new code line #328.",
+      "parentUuid": "7a2c30e5_f32590c7",
+      "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
