@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3da9064_8cf01e14",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 2647,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-06-26T08:07:02Z",
+      "side": 1,
+      "message": "Why not eliminate the variable \u0027auditData\u0027?\n\nreturn auditMap.computeIfAbsent(server, sk -\u003e new AuditData());",
+      "revId": "1e6844cdca6987cf74ebe5b15906b183738664db",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
