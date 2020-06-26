@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2838daa_f4904221",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-06-26T20:18:51Z",
+      "side": 1,
+      "message": "If keyword !\u003d null and conversioFunctionName \u003d\u003d null, this code will fall through to line 333.   In the original version of the code it issues a \"break\".   So, the 2 versions are not functionally equivalent.  Is this intended?",
+      "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
