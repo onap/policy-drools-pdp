@@ -16,6 +16,24 @@
       "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a2c30e5_f32590c7",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-26T20:52:57Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s correct.  If keyword !\u003d null and conversioFunctionName \u003d\u003d null, it will hit the break on line 328, which is as desired",
+      "parentUuid": "f2838daa_f4904221",
+      "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
