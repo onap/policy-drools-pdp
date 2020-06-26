@@ -16,6 +16,24 @@
       "revId": "457072459335f5fa8571b3cf5cd0286e68d858ab",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d38b72d0_2e1fd918",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-06-26T14:47:31Z",
+      "side": 1,
+      "message": "Yes. good point. I am refactoring the code. and will send another patch soon.",
+      "parentUuid": "85301dba_30c7a043",
+      "revId": "457072459335f5fa8571b3cf5cd0286e68d858ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
