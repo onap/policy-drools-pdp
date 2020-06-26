@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fa6c685_dd647efa",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/PairTripleTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-26T15:45:03Z",
+      "side": 0,
+      "message": "Did we replace the Triple with apache, too?  (Probably should.)  If not, then this test is still needed, though could rename the file to TripleTest.java.",
+      "revId": "7707b8db05c1018c6a9e53dc0d9126698b88e62d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
