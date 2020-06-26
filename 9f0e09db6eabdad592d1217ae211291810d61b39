@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0b92aa2_98f58951",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/PoolingFeatureTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T14:54:54Z",
+      "side": 1,
+      "message": "personally I don\u0027t like abbreviations like mgr or msg etc.\nNot sure how strict ONAP is on this, just giving my opinion (in ENM I would have asked you to change this to manager1 and manager2)\nI also appreciate its legacy but still when modifying legacy code when coming across bad names it is no harm to chance them...",
+      "range": {
+        "startLine": 117,
+        "startChar": 8,
+        "endLine": 117,
+        "endChar": 12
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5577a2b_f445d049",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/ActiveStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T14:54:54Z",
+      "side": 1,
+      "message": "as before I would prefer \u0027message\u0027",
+      "range": {
+        "startLine": 74,
+        "startChar": 32,
+        "endLine": 74,
+        "endChar": 36
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8799e019_b63fd7f0",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T14:54:54Z",
+      "side": 1,
+      "message": "Not familiar with getRight(). Will this return the same object as is being asserted on line 257. If so that assert on line 257 is redundant.",
+      "range": {
+        "startLine": 264,
+        "startChar": 27,
+        "endLine": 264,
+        "endChar": 43
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59dda195_77e14166",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T14:54:54Z",
+      "side": 1,
+      "message": "is there enough duplication here to extract out a common method?",
+      "range": {
+        "startLine": 308,
+        "startChar": 0,
+        "endLine": 316,
+        "endChar": 52
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02a70342_c6458bc3",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/StartStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T14:54:54Z",
+      "side": 1,
+      "message": "I wont repeat but you know my view now on \u0027msg\u0027 and \u0027mgr\u0027",
+      "range": {
+        "startLine": 84,
+        "startChar": 32,
+        "endLine": 84,
+        "endChar": 36
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
