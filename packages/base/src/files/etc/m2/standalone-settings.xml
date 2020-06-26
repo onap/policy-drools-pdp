@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   Base Package
   ================================================================================
-  Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
   Modifications Copyright (C) 2020 Bell Canada.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@
 -->
 
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <offline>false</offline>
     <profiles>
         <profile>
@@ -74,10 +74,31 @@
                 </repository>
             </repositories>
         </profile>
+        <profile>
+            <id>onap-public</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2/</url>
+                </repository>
+                <repository>
+                    <id>onap-public</id>
+                    <name>onap-public</name>
+                    <url>https://nexus.onap.org/content/repositories/public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
     </profiles>
     <activeProfiles>
         <activeProfile>policy-local</activeProfile>
         <activeProfile>releases</activeProfile>
         <activeProfile>snapshots</activeProfile>
+        <activeProfile>onap-public</activeProfile>
     </activeProfiles>
 </settings>
