@@ -66,6 +66,30 @@
     },
     {
       "key": {
+        "uuid": "abec66ec_a79193c7",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/PoolingFeatureTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T16:53:16Z",
+      "side": 1,
+      "message": "ok, we\u0027ll settle this is down to personal preference so :-)",
+      "parentUuid": "740f31fa_56b33104",
+      "range": {
+        "startLine": 117,
+        "startChar": 8,
+        "endLine": 117,
+        "endChar": 12
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5577a2b_f445d049",
         "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/ActiveStateTest.java",
         "patchSetId": 6
@@ -86,6 +110,30 @@
       "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd85d69a_92d34aaf",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/ActiveStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T16:53:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c5577a2b_f445d049",
+      "range": {
+        "startLine": 74,
+        "startChar": 32,
+        "endLine": 74,
+        "endChar": 36
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -124,6 +172,30 @@
       "side": 1,
       "message": "line 257 ensures that getRight() is non-null, while line 264 ensures that fire() returns the \"next\" state.\n\nif line 257 were removed and getRight() returned null, then it\u0027s true that the test would fail, but it would fail by throwing an NPE rather than with an assertion error.  Nevertheless, I\u0027m fine with it either way - we can delete line 257 or remove it.",
       "parentUuid": "8799e019_b63fd7f0",
+      "range": {
+        "startLine": 264,
+        "startChar": 27,
+        "endLine": 264,
+        "endChar": 43
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5456ab9_e62c34d4",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-26T16:53:16Z",
+      "side": 1,
+      "message": "I prefer to keep test shorter so a null check on something you will test  a method on next I think I would remove it...",
+      "parentUuid": "62381e7a_2b6f3691",
       "range": {
         "startLine": 264,
         "startChar": 27,
