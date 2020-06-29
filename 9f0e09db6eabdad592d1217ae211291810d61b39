@@ -108,6 +108,30 @@
     },
     {
       "key": {
+        "uuid": "1a1d3110_4f2033fb",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/PoolingFeatureTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-29T07:39:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "abec66ec_a79193c7",
+      "range": {
+        "startLine": 117,
+        "startChar": 8,
+        "endLine": 117,
+        "endChar": 12
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c5577a2b_f445d049",
         "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/ActiveStateTest.java",
         "patchSetId": 6
@@ -293,6 +317,30 @@
       "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb54ab9a_0e6f9d46",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/StartStateTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-29T07:39:45Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "02a70342_c6458bc3",
+      "range": {
+        "startLine": 84,
+        "startChar": 32,
+        "endLine": 84,
+        "endChar": 36
+      },
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
