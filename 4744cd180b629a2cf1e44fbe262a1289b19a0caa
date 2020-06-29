@@ -70,6 +70,24 @@
       "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "316f5d31_bbe7343b",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-06-29T15:04:59Z",
+      "side": 1,
+      "message": "How about:\n\nif (keyword !\u003d null \u0026\u0026 conversionFunctionName !\u003d null) {\n    keyword \u003d Keyword.convertKeyword(keyword, conversionFunctionName);\n}\n\nif (keyword !\u003d null) {\n    break;\n}",
+      "parentUuid": "1d4bd609_3c2f8416",
+      "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
