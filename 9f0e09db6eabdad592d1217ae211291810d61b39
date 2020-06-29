@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d1c89b49_65d999ff",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/FeatureTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 6722
+      },
+      "writtenOn": "2020-06-29T06:45:34Z",
+      "side": 1,
+      "message": "I should have caught this. Thanks Jim.",
+      "parentUuid": "80a0579a_2234fc44",
+      "revId": "9f0e09db6eabdad592d1217ae211291810d61b39",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b0b92aa2_98f58951",
         "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/PoolingFeatureTest.java",
         "patchSetId": 6
