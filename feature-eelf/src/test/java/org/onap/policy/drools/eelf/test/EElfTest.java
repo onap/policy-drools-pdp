@@ -114,7 +114,7 @@ public class EElfTest {
         assertTrue(loggers.contains(Configuration.ERROR_LOGGER_NAME));
         assertTrue(loggers.contains(Configuration.METRICS_LOGGER_NAME));
 
-        final EELFLogger eelfAuditLogger = EELFManager.getInstance().getAuditLogger();
+        final EELFLogger eelfAuditLogger = EELFManager.getAuditLogger();
         final Logger slf4jAuditLogger = org.slf4j.LoggerFactory.getLogger(Configuration.AUDIT_LOGGER_NAME);
         org.onap.policy.common.logging.flexlogger.Logger flexLogger =
                 FlexLogger.getLogger(EElfTest.class, true);
@@ -123,7 +123,7 @@ public class EElfTest {
 
         Exception testException = new IllegalStateException("exception test");
         flexLogger.error("flex-logger exception", testException);
-        EELFManager.getInstance().getErrorLogger().error("eelf-logger exception", testException);
+        EELFManager.getErrorLogger().error("eelf-logger exception", testException);
         org.slf4j.LoggerFactory.getLogger(Configuration.ERROR_LOGGER_NAME).error("slf4j-logger", testException);
 
 
