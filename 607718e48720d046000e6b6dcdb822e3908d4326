@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "b4bee314_c44aa675",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6722
+      },
+      "writtenOn": "2020-06-29T14:59:56Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "5f4f2b93_06a80c88",
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "763de585_bb0dfc6d",
         "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
         "patchSetId": 7
@@ -214,6 +232,30 @@
       "side": 1,
       "message": "Maybe we could clean up this code in another review, Is there a JIRA for that?",
       "parentUuid": "4ed1e485_4f27431e",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 54
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "781aed57_b521f97c",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 6722
+      },
+      "writtenOn": "2020-06-29T14:59:56Z",
+      "side": 1,
+      "message": "Yes, I can do this in another review.",
+      "parentUuid": "60066a87_77930c2d",
       "range": {
         "startLine": 44,
         "startChar": 8,
