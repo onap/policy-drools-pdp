@@ -52,6 +52,24 @@
       "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d4bd609_3c2f8416",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/FeatureServerPool.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-06-29T08:46:07Z",
+      "side": 1,
+      "message": "It does do the \u0027keyword !\u003d null\u0027 test twice, but it is functionally equivalent to the original code.",
+      "parentUuid": "a832c330_f91ee430",
+      "revId": "4744cd180b629a2cf1e44fbe262a1289b19a0caa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
