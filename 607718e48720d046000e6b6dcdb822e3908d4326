@@ -175,6 +175,30 @@
       "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ed1e485_4f27431e",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-29T12:52:58Z",
+      "side": 1,
+      "message": "if we\u0027re going to take the time to update this legacy code, we should probably change all of the assertTrues to assertEquals, to eliminate a sonar complaint.",
+      "parentUuid": "c26a8f6a_11cee63a",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 54
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
