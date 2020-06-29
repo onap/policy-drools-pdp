@@ -49,6 +49,64 @@
     },
     {
       "key": {
+        "uuid": "c74ab7ee_738f1fde",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-29T12:51:14Z",
+      "side": 1,
+      "message": "once the change below is made, \"or\" may be correct once again. :-)  Or may rewrite the whole comment.",
+      "parentUuid": "09980d1c_14f54d2a",
+      "range": {
+        "startLine": 430,
+        "startChar": 48,
+        "endLine": 430,
+        "endChar": 50
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2df7c8fb_745e758f",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-29T12:51:14Z",
+      "side": 1,
+      "message": "hmm, probably only want to do the one of these that\u0027s relevant to the particular test, because part of the (undocumented) point was to make sure the code under test actually chose the correct goXxx() method.  As this is written, the test will pass even if the code under test should invoke the wrong goXxx() method.",
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5f4f2b93_06a80c88",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-06-29T12:51:14Z",
+      "side": 1,
+      "message": "should probably remove Triple, too, then this file won\u0027t be needed, but that can be done in a subsequent review.",
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "763de585_bb0dfc6d",
         "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
         "patchSetId": 7
