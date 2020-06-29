@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "d71c15bc_1b0ab28a",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-06-29T15:07:48Z",
+      "side": 1,
+      "message": "Maybe we should just go back to the original way the test was 😕",
+      "parentUuid": "2df7c8fb_745e758f",
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5f4f2b93_06a80c88",
         "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
         "patchSetId": 7
@@ -265,6 +283,30 @@
       "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "259bd7e0_2a8eea67",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2020-06-29T15:07:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "781aed57_b521f97c",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 54
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
