@@ -93,6 +93,30 @@
       "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c26a8f6a_11cee63a",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 6639
+      },
+      "writtenOn": "2020-06-29T12:36:18Z",
+      "side": 1,
+      "message": "yep, thats what I am suggesting...",
+      "parentUuid": "ecbcf568_4a108e6a",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 54
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
