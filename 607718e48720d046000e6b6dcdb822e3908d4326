@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "09980d1c_14f54d2a",
+        "filename": "feature-pooling-dmaap/src/test/java/org/onap/policy/drools/pooling/state/QueryStateTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 6722
+      },
+      "writtenOn": "2020-06-29T12:06:49Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d5e42cb1_b26ef03c",
+      "range": {
+        "startLine": 430,
+        "startChar": 48,
+        "endLine": 430,
+        "endChar": 50
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "763de585_bb0dfc6d",
         "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2020-06-29T10:50:12Z",
       "side": 1,
       "message": "The test with roman numerals does not add value ie. cover no new code paths and doe snot add to the understanding for the developer.\nLegacy again but maybe time to cleaan up?",
+      "range": {
+        "startLine": 44,
+        "startChar": 8,
+        "endLine": 44,
+        "endChar": 54
+      },
+      "revId": "607718e48720d046000e6b6dcdb822e3908d4326",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecbcf568_4a108e6a",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/utils/TripleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 6722
+      },
+      "writtenOn": "2020-06-29T12:06:49Z",
+      "side": 1,
+      "message": "I agree. Would you suggest removing it maybe?",
+      "parentUuid": "763de585_bb0dfc6d",
       "range": {
         "startLine": 44,
         "startChar": 8,
