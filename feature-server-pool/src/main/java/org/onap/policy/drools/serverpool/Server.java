@@ -203,6 +203,9 @@ public class Server implements Comparable<Server> {
     // 'pingHosts' error
     static final String PINGHOSTS_ERROR = "Server.pingHosts error";
 
+    // a string for print
+    static final String PRINTOUT_DASHES = "-------";
+
     /*==============================*/
     /* Comparable<Server> interface */
     /*==============================*/
@@ -963,13 +966,11 @@ public class Server implements Comparable<Server> {
                 if (responseCallback != null) {
                     responseCallback.exceptionResponse(e);
                 }
-                MainLoop.queueWork(() -> {
-                    // this runs in the 'MainLoop' thread
+                // this runs in the 'MainLoop' thread
 
-                    // the DNS cache may have been out-of-date when this server
-                    // was first contacted -- fix the problem, if needed
-                    checkServer();
-                });
+                // the DNS cache may have been out-of-date when this server
+                // was first contacted -- fix the problem, if needed
+                MainLoop.queueWork(this::checkServer);
             }
         });
     }
@@ -985,7 +986,7 @@ public class Server implements Comparable<Server> {
             sendThreadPool =
                 new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
                                        keepAliveTime, TimeUnit.MILLISECONDS,
-                                       new LinkedTransferQueue<Runnable>());
+                                       new LinkedTransferQueue<>());
             sendThreadPool.allowCoreThreadTimeOut(true);
         }
         return sendThreadPool;
@@ -1170,31 +1171,7 @@ public class Server implements Comparable<Server> {
                     new String(Base64.getEncoder().encode(bos.toByteArray()),
                         StandardCharsets.UTF_8),
                     MediaType.APPLICATION_OCTET_STREAM_TYPE);
-
-                // loop through hosts
-                for (InetSocketAddress host : hosts) {
-                    HttpClient httpClient = null;
-
-                    try {
-                        httpClient = buildClient(host.toString(), host,
-                                                 socketAddressToName(host));
-                        getTarget(httpClient).path("admin").request().post(entity);
-                        httpClient.shutdown();
-                        httpClient = null;
-                    } catch (KeyManagementException | NoSuchAlgorithmException e) {
-                        out.println(host + ": Unable to create client connection");
-                        logger.error(PINGHOSTS_ERROR, e);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        out.println(host + ": Unable to get link to target");
-                        logger.error(PINGHOSTS_ERROR, e);
-                    } catch (Exception e) {
-                        out.println(host + ": " + e);
-                        logger.error(PINGHOSTS_ERROR, e);
-                    }
-                    if (httpClient != null) {
-                        httpClient.shutdown();
-                    }
-                }
+                pingHostsLoop(entity, out, hosts);
             } catch (IOException e) {
                 out.println("Unable to generate 'ping' data: " + e);
                 logger.error(PINGHOSTS_ERROR, e);
@@ -1210,6 +1187,43 @@ public class Server implements Comparable<Server> {
             Thread.currentThread().interrupt();
         } catch (ExecutionException | TimeoutException e) {
             logger.error("Server.pingHosts: error waiting for queued work", e);
+        }
+    }
+
+    /**
+     * This method is used for pingHosts method to reduce its Cognitive Complexity.
+     *
+     * @param entity for sending out to all hosts
+     * @param out the 'PrintStream' to use for displaying information
+     * @param hosts a collection of 'InetSocketAddress' instances, which are
+     *     the hosts to send the information to
+     */
+    static void pingHostsLoop(final Entity<String> entity,
+                              final PrintStream out,
+                              final Collection<InetSocketAddress> hosts) {
+        // loop through hosts
+        for (InetSocketAddress host : hosts) {
+            HttpClient httpClient = null;
+
+            try {
+                httpClient = buildClient(host.toString(), host,
+                                     socketAddressToName(host));
+                getTarget(httpClient).path("admin").request().post(entity);
+                httpClient.shutdown();
+                httpClient = null;
+            } catch (KeyManagementException | NoSuchAlgorithmException e) {
+                out.println(host + ": Unable to create client connection");
+                logger.error(PINGHOSTS_ERROR, e);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                out.println(host + ": Unable to get link to target");
+                logger.error(PINGHOSTS_ERROR, e);
+            } catch (Exception e) {
+                out.println(host + ": " + e);
+                logger.error(PINGHOSTS_ERROR, e);
+            }
+            if (httpClient != null) {
+                httpClient.shutdown();
+            }
         }
     }
 
@@ -1264,14 +1278,14 @@ public class Server implements Comparable<Server> {
                        "Count", "Update Time", "Elapsed", "Allowed");
             out.printf(format, "", "----", "----------", "----",
                        "---------------", "----",
-                       "-----", "-----------", "-------", "-------");
+                       "-----", "-----------", PRINTOUT_DASHES, PRINTOUT_DASHES);
             // @formatter:on
         } else {
             // @formatter:off
             out.printf(format, "", "UUID", "IP Address", "Port",
                        "Count", "Update Time", "Elapsed", "Allowed");
             out.printf(format, "", "----", "----------", "----",
-                       "-----", "-----------", "-------", "-------");
+                       "-----", "-----------", PRINTOUT_DASHES, PRINTOUT_DASHES);
             // @formatter:on
         }
 
