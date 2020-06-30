@@ -66,6 +66,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -179,6 +180,7 @@ public class Bucket {
     private static final String QP_KEYWORD = "keyword";
     private static final String QP_DEST = "dest";
     private static final String QP_TTL = "ttl";
+    private static final String OWNED_STR = "Owned";
 
     // BACKUP data (only buckets for where we are the owner, or a backup)
 
@@ -579,7 +581,7 @@ public class Bucket {
      * @throws IOException when error occurred
      */
     public static void bucketMessage(
-        final PrintStream out, final String keyword, String message) throws IOException {
+        final PrintStream out, final String keyword, String message) {
 
         if (keyword == null) {
             out.println("'keyword' is mandatory");
@@ -1149,6 +1151,7 @@ public class Bucket {
      * on any server.
      * Each instance of this class corresponds to a 'Bucket' instance.
      */
+    @EqualsAndHashCode
     private static class TestBucket implements Comparable<TestBucket> {
         // bucket number
         int index;
@@ -1326,6 +1329,7 @@ public class Bucket {
      * around a 'TestServer' instance, as it would be if another specific
      * server failed.
      */
+    @EqualsAndHashCode
     private static class AdjustedTestServer
         implements Comparable<AdjustedTestServer> {
         TestServer server;
@@ -1529,15 +1533,12 @@ public class Bucket {
              * 'needBuckets' TreeSet: those with the fewest buckets allocated are
              * at the head of the list.
              */
-            Comparator<TestServer> bucketCount = new Comparator<>() {
-                @Override
-                public int compare(TestServer s1, TestServer s2) {
-                    int rval = s1.buckets.size() - s2.buckets.size();
-                    if (rval == 0) {
-                        rval = Util.uuidComparator.compare(s1.uuid, s2.uuid);
-                    }
-                    return rval;
+            Comparator<TestServer> bucketCount = (s1, s2) -> {
+                int rval = s1.buckets.size() - s2.buckets.size();
+                if (rval == 0) {
+                    rval = Util.uuidComparator.compare(s1.uuid, s2.uuid);
                 }
+                return rval;
             };
 
             // sort servers according to the order in which they can
@@ -1715,7 +1716,7 @@ public class Bucket {
                 // populate a 'TreeSet' of 'AdjustedTestServer' instances based
                 // the failure of 'failedServer'
                 TreeSet<AdjustedTestServer> adjustedTestServers =
-                    new TreeSet<AdjustedTestServer>();
+                    new TreeSet<>();
                 for (TestServer server : testServers.values()) {
                     if (server == failedServer
                             || Objects.equals(siteSocketAddress,
@@ -1872,11 +1873,11 @@ public class Bucket {
                 // dump out 'owned' bucket information
                 if (ts.buckets.isEmpty()) {
                     // no buckets owned by this server
-                    out.printf(format, ts.uuid, "Owned", 0, "");
+                    out.printf(format, ts.uuid, OWNED_STR, 0, "");
                 } else {
                     // dump out primary buckets information
                     totalOwner +=
-                        dumpBucketsSegment(out, format, ts.buckets, ts.uuid.toString(), "Owned");
+                        dumpBucketsSegment(out, format, ts.buckets, ts.uuid.toString(), OWNED_STR);
                 }
                 // optionally dump out primary buckets information
                 totalPrimary +=
@@ -1899,7 +1900,7 @@ public class Bucket {
 
                 // optionally dump out unassigned owned buckets information
                 if (dumpBucketsSegment(out, format, nullServer.buckets,
-                                       uuidField, "Owned") != 0) {
+                                       uuidField, OWNED_STR) != 0) {
                     uuidField = "";
                 }
                 // optionally dump out unassigned primary backup buckets information
@@ -2247,7 +2248,9 @@ public class Bucket {
                         && oldOwner.isActive()
                         && (delay = getTimeout()) > 0) {
                     // ignore return value -- 'data' will indicate the result
-                    dataAvailable.await(delay, TimeUnit.MILLISECONDS);
+                    if (!dataAvailable.await(delay, TimeUnit.MILLISECONDS)) {
+                        logger.error("CountDownLatch await time reached");
+                    }
                 }
                 if (lclData == null) {
                     // no data available -- log an error, and abort
@@ -2282,11 +2285,11 @@ public class Bucket {
             } catch (Exception e) {
                 logger.error("Exception in {}", this, e);
             } finally {
-                run_cleanup();
+                runCleanup();
             }
         }
 
-        private void run_cleanup() {
+        private void runCleanup() {
             /*
              * cleanly leave state -- we want to make sure that messages
              * are processed in order, so the queue needs to remain until
