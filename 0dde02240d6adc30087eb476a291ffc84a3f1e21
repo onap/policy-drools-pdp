@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "75ff2eb7_4992548f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-01T23:34:17Z",
+      "side": 1,
+      "message": "I think we\u0027re going to have to discuss this.  One of the performance boosts that logger provides is that it doesn\u0027t bother invoking toString() unless it determines that the given logging level is enabled.\n\nIn addition, I think this will create a whole new set of sonar complaints that you shouldn\u0027t do anything \"complex\" when invoking logger without putting an \"if(logger.isInfoEnbled())\" around it.\n\nPretty sure that none of the UUIDs have to be cleaned before logging, nor do integers, so just keys and owner keys, but I\u0027m guessing they don\u0027t need to be cleaned either unless DCAE is giving us garbage - if so, we should probably clean the events on input to drools-pdp rather than in every logging statement.",
+      "revId": "0dde02240d6adc30087eb476a291ffc84a3f1e21",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "418e8951_84c83b4e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1161,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-01T23:34:17Z",
+      "side": 1,
+      "message": "trailing space",
+      "revId": "0dde02240d6adc30087eb476a291ffc84a3f1e21",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
