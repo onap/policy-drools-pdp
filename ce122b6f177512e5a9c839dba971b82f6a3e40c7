@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ee396f7_f9b2ab1e",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1281,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-01T08:28:49Z",
+      "side": 1,
+      "message": "This is unfortunate -- it is nice to see the alignment between the names and the dashes.",
+      "revId": "ce122b6f177512e5a9c839dba971b82f6a3e40c7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
