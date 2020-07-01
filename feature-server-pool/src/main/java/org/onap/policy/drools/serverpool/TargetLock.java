@@ -131,13 +131,13 @@ public class TargetLock implements Lock, Serializable {
 
     // this is used to notify the application when a lock is available,
     // or if it is not available
-    private volatile LockCallback owner;
+    private final LockCallback owner;
 
     // This is what is actually called by the infrastructure to do the owner
     // notification. The owner may be running in a Drools session, in which case
     // the actual notification should be done within that thread -- the 'context'
     // object ensures that it happens this way.
-    private volatile LockCallback context;
+    private final LockCallback context;
 
     // HTTP query parameters
     private static final String QP_KEY = "key";
@@ -149,6 +149,11 @@ public class TargetLock implements Lock, Serializable {
 
     // define a constant for empty of byte array
     private static final byte[] EMPTY_BYTE_ARRAY = {};
+
+    // below are for duplicating string in printout or logger
+    private static final String PRINTOUT_DASHES = "---------";
+    private static final String LOCK_AUDIT = "lock/audit";
+    private static final String TARGETLOCK_AUDIT_SEND = "TargetLock.Audit.send: ";
 
     /**
      * This method triggers registration of 'eventHandler', and also extracts
@@ -1783,9 +1788,9 @@ public class TargetLock implements Lock, Serializable {
                 out.printf(format, "Key", "Bucket", "Host UUID",
                            "Owner Key", "Bucket", "Host UUID",
                            "Lock UUID", "State", "Comments");
-                out.printf(format, "---", "------", "---------",
-                           "---------", "------", "---------",
-                           "---------", "-----", "--------");
+                out.printf(format, "---", "------", PRINTOUT_DASHES,
+                           PRINTOUT_DASHES, "------", PRINTOUT_DASHES,
+                           PRINTOUT_DASHES, "-----", "--------");
             } else {
                 // generate format based upon the maximum key length, maximum
                 // owner key length, and whether comments are included anywhere
@@ -1794,7 +1799,7 @@ public class TargetLock implements Lock, Serializable {
 
                 // dump out the header
                 out.printf(format, "Key", "Owner Key", "UUID", "State", "Comments");
-                out.printf(format, "---", "---------", "----", "-----", "--------");
+                out.printf(format, "---", PRINTOUT_DASHES, "----", "-----", "--------");
             }
 
             dumpServerTable(out);
@@ -2170,9 +2175,6 @@ public class TargetLock implements Lock, Serializable {
     static class AuditData implements Serializable {
         private static final long serialVersionUID = 1L;
 
-        // sending UUID
-        private UUID hostUuid;
-
         // client records that currently exist, or records to be cleared
         // (depending upon message) -- client/server is from the senders side
         private List<Identity> clientData;
@@ -2186,7 +2188,6 @@ public class TargetLock implements Lock, Serializable {
          * empty lists.
          */
         AuditData() {
-            hostUuid = Server.getThisServer().getUuid();
             clientData = new ArrayList<>();
             serverData = new ArrayList<>();
         }
@@ -2530,9 +2531,9 @@ public class TargetLock implements Lock, Serializable {
                 if (ttl > 0) {
                     Server server = Server.getServer(serverUuid);
                     if (server != null) {
-                        WebTarget webTarget = server.getWebTarget("lock/audit");
+                        WebTarget webTarget = server.getWebTarget(LOCK_AUDIT);
                         if (webTarget != null) {
-                            logger.info("Forwarding 'lock/audit' to uuid {}",
+                            logger.info("Forwarding {} to uuid {}", LOCK_AUDIT,
                                         serverUuid);
                             Entity<String> entity =
                                 Entity.entity(new String(encodedData),
@@ -2547,7 +2548,8 @@ public class TargetLock implements Lock, Serializable {
 
                 // if we reach this point, we didn't forward for some reason
 
-                logger.error("Couldn't forward 'lock/audit to uuid {}", serverUuid);
+                logger.error("Couldn't forward {} to uuid {}", LOCK_AUDIT,
+                             serverUuid);
                 return EMPTY_BYTE_ARRAY;
             }
 
@@ -2675,8 +2677,7 @@ public class TargetLock implements Lock, Serializable {
                 if (respData.clientData.isEmpty()
                         && respData.serverData.isEmpty()) {
                     // no mismatches
-                    logger.info("TargetLock.Audit.send: "
-                                + "no errors from self ({})", server);
+                    logger.info("{} no errors from self ({})", TARGETLOCK_AUDIT_SEND, server);
                     return;
                 }
 
@@ -2736,9 +2737,8 @@ public class TargetLock implements Lock, Serializable {
             AuditData respData =
                 AuditData.decode(response.readEntity(byte[].class));
             if (respData == null) {
-                logger.error("TargetLock.Audit.send: "
-                             + "couldn't process response from {}",
-                             server);
+                logger.error("{} couldn't process response from {}",
+                             TARGETLOCK_AUDIT_SEND, server);
                 return;
             }
 
@@ -2746,8 +2746,7 @@ public class TargetLock implements Lock, Serializable {
             if (respData.clientData.isEmpty()
                     && respData.serverData.isEmpty()) {
                 // no mismatches
-                logger.info("TargetLock.Audit.send: "
-                            + "no errors from {}", server);
+                logger.info("{} no errors from {}", TARGETLOCK_AUDIT_SEND, server);
                 return;
             }
 
