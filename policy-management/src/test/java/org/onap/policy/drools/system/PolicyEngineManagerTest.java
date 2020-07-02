@@ -519,7 +519,7 @@ public class PolicyEngineManagerTest {
         verify(prov1).beforeConfigure(mgr, properties);
         verify(prov2).beforeConfigure(mgr, properties);
 
-        assertTrue(mgr.getProperties() == properties);
+        assertSame(properties, mgr.getProperties());
 
         assertEquals(sources, mgr.getSources());
         assertEquals(sinks, mgr.getSinks());
@@ -553,7 +553,7 @@ public class PolicyEngineManagerTest {
             (prov, flag) -> when(prov.afterConfigure(mgr)).thenReturn(flag),
             () -> mgr.configure(properties),
             prov -> verify(prov).beforeConfigure(mgr, properties),
-            () -> assertTrue(mgr.getProperties() == properties),
+            () -> assertSame(properties, mgr.getProperties()),
             prov -> verify(prov).afterConfigure(mgr));
     }
 

@@ -176,9 +176,9 @@ public class ProtocolCoderToolsetTest {
 
         tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
 
-        Assert.assertTrue(tripleDecoded.first().equals(triple.first()));
-        Assert.assertTrue(tripleDecoded.second().equals(triple.second()));
-        Assert.assertTrue(tripleDecoded.third().equals(triple.third()));
+        Assert.assertEquals(tripleDecoded.first(), triple.first());
+        Assert.assertEquals(tripleDecoded.second(), triple.second());
+        Assert.assertEquals(tripleDecoded.third(), triple.third());
 
         coderFilters.getFilter().setRule("[?($.third =~ /.*v3.*/)]");
     }
