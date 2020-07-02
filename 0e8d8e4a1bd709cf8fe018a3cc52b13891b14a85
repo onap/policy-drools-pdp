@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c915fe79_8fba810e",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/DroolsSessionEntityTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-02T16:18:44Z",
+      "side": 1,
+      "message": "it may cause a sonar, but these arguments should be reversed",
+      "revId": "0e8d8e4a1bd709cf8fe018a3cc52b13891b14a85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d77c6626_2520c1ce",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/DroolsSessionEntityTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-02T16:18:44Z",
+      "side": 1,
+      "message": "remove extra parenthesese",
+      "revId": "0e8d8e4a1bd709cf8fe018a3cc52b13891b14a85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c904474a_006869bc",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/DroolsSessionEntityTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-02T16:18:44Z",
+      "side": 1,
+      "message": "\"entity\" should be on the left of all of these asserts",
+      "revId": "0e8d8e4a1bd709cf8fe018a3cc52b13891b14a85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "467aeb12_660df578",
+        "filename": "feature-session-persistence/src/test/java/org/onap/policy/drools/persistence/DroolsSessionEntityTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-02T16:18:44Z",
+      "side": 1,
+      "message": "\"entity\" should be on the left of all of these asserts",
+      "revId": "0e8d8e4a1bd709cf8fe018a3cc52b13891b14a85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
