@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "3c4b9c07_5024c498",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-02T08:16:07Z",
+      "side": 1,
+      "message": "\u0027owner\u0027 and \u0027context\u0027 are set in the constructor, and never changed -- why is this necessary? The \u0027volatile\u0027 was added in the past to shut up Sonar.",
+      "revId": "0dde02240d6adc30087eb476a291ffc84a3f1e21",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "418e8951_84c83b4e",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 1
@@ -30,6 +47,23 @@
       "writtenOn": "2020-07-01T23:34:17Z",
       "side": 1,
       "message": "trailing space",
+      "revId": "0dde02240d6adc30087eb476a291ffc84a3f1e21",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c012dbca_79cebb00",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1527,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-02T08:16:07Z",
+      "side": 1,
+      "message": "As Jim indicated, UUIDs will never have a special character -- they have the usual hexadecimal characters, and \u0027-\u0027.",
       "revId": "0dde02240d6adc30087eb476a291ffc84a3f1e21",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
