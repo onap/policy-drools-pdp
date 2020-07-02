@@ -22,6 +22,7 @@ package org.onap.policy.drools.core.jmx;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class PdpJmxTest {
     public void testGetInstance() {
         jmx = PdpJmx.getInstance();
         assertNotNull(jmx);
-        assertTrue(PdpJmx.getInstance() == jmx);
+        assertSame(jmx, PdpJmx.getInstance());
     }
 
     @Test

@@ -343,8 +343,7 @@ public class RestServerPool {
             )
     @Produces(MediaType.TEXT_PLAIN)
     public String bucketMessage(@QueryParam("keyword") String keyword,
-                                @QueryParam("message") String message)
-        throws IOException {
+                                @QueryParam("message") String message) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         Bucket.bucketMessage(new PrintStream(bos, true), keyword, message);
         return bos.toString(StandardCharsets.UTF_8);

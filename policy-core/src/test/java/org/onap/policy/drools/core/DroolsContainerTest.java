@@ -22,6 +22,7 @@ package org.onap.policy.drools.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -117,7 +118,7 @@ public class DroolsContainerTest {
         try {
             // fetch the session, and verify that it exists
             PolicySession session = container.getPolicySession("session1");
-            assertTrue(session != null);
+            assertNotNull(session);
 
             // get all sessions, and verify that this one is the only one
             {
@@ -279,7 +280,7 @@ public class DroolsContainerTest {
         try {
             // fetch the session, and verify that it exists
             PolicySession session = container.getPolicySession("session1");
-            assertTrue(session != null);
+            assertNotNull(session);
 
             // get all sessions, and verify that this one is the only one
             {

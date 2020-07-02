@@ -31,32 +31,32 @@ public class TripleTest {
         Triple<String, String, String> triple  =
                 new Triple<>("one", "two", "three");
 
-        Assert.assertTrue("one".equals(triple.first()));
-        Assert.assertTrue("one".equals(triple.getFirst()));
+        Assert.assertEquals("one", triple.first());
+        Assert.assertEquals("one", triple.getFirst());
 
-        Assert.assertTrue("two".equals(triple.second()));
-        Assert.assertTrue("two".equals(triple.getSecond()));
+        Assert.assertEquals("two", triple.second());
+        Assert.assertEquals("two", triple.getSecond());
 
-        Assert.assertTrue("three".equals(triple.third()));
-        Assert.assertTrue("three".equals(triple.getThird()));
+        Assert.assertEquals("three", triple.third());
+        Assert.assertEquals("three", triple.getThird());
 
         triple.first("I");
-        Assert.assertTrue("I".equals(triple.first()));
+        Assert.assertEquals("I", triple.first());
 
         triple.setFirst("1");
-        Assert.assertTrue("1".equals(triple.first()));
+        Assert.assertEquals("1", triple.first());
 
         triple.second("2");
-        Assert.assertTrue("2".equals(triple.second()));
+        Assert.assertEquals("2", triple.second());
 
         triple.setSecond("II");
-        Assert.assertTrue("II".equals(triple.second()));
+        Assert.assertEquals("II", triple.second());
 
         triple.third("3");
-        Assert.assertTrue("3".equals(triple.third()));
+        Assert.assertEquals("3", triple.third());
 
         triple.setThird("III");
-        Assert.assertTrue("III".equals(triple.third()));
+        Assert.assertEquals("III", triple.third());
 
     }
 }

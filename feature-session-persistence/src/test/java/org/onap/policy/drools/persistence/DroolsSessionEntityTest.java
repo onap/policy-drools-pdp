@@ -22,6 +22,7 @@ package org.onap.policy.drools.persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -36,11 +37,11 @@ public class DroolsSessionEntityTest {
         DroolsSessionEntity e2 = makeEnt("mynameA", 2);
 
         // session id is not part of hash code
-        assertTrue(entity.hashCode() == e2.hashCode());
+        assertEquals(entity.hashCode(), e2.hashCode());
 
         // diff sess name
         e2 = makeEnt("mynameB", 1);
-        assertTrue(entity.hashCode() != e2.hashCode());
+        assertNotEquals(entity.hashCode(), e2.hashCode());
     }
 
     /** Ensures that hashCode() functions as expected when the getXxx methods are overridden. */
@@ -51,11 +52,11 @@ public class DroolsSessionEntityTest {
         DroolsSessionEntity e2 = makeEnt("mynameA", 2);
 
         // session id is not part of hash code
-        assertTrue(entity.hashCode() == e2.hashCode());
+        assertEquals(entity.hashCode(), e2.hashCode());
 
         // diff sess name
         e2 = makeEnt("mynameB", 1);
-        assertTrue(entity.hashCode() != e2.hashCode());
+        assertNotEquals(entity.hashCode(), e2.hashCode());
     }
 
     @Test
@@ -103,21 +104,21 @@ public class DroolsSessionEntityTest {
         DroolsSessionEntity entity = makeEnt("mynameA", 1);
 
         // diff object type
-        assertFalse(entity.equals("hello"));
+        assertNotEquals(entity, "hello");
 
         // reflexive
-        assertTrue(entity.equals(entity));
+        assertEquals(entity, entity);
 
         DroolsSessionEntity e2 = makeEnt("mynameA", 2);
 
         // session id is not part of hash code
-        assertTrue(entity.equals(e2));
-        assertTrue(entity.equals(e2));
+        assertEquals(entity, e2);
+        assertEquals(entity, e2);
 
         // diff sess name
         e2 = makeEnt("mynameB", 1);
-        assertFalse(entity.equals(e2));
-        assertFalse(entity.equals(e2));
+        assertNotEquals(entity, e2);
+        assertNotEquals(entity, e2);
     }
 
     /** Ensures that equals() functions as expected when the getXxx methods are overridden. */
@@ -126,18 +127,18 @@ public class DroolsSessionEntityTest {
         DroolsSessionEntity entity = makeEnt2("mynameA", 1);
 
         // reflexive
-        assertTrue(entity.equals(entity));
+        assertEquals(entity, entity);
 
         DroolsSessionEntity e2 = makeEnt("mynameA", 2);
 
         // session id is not part of hash code
-        assertTrue(entity.equals(e2));
-        assertTrue(entity.equals(e2));
+        assertEquals(entity, e2);
+        assertEquals(entity, e2);
 
         // diff sess name
         e2 = makeEnt("mynameB", 1);
-        assertFalse(entity.equals(e2));
-        assertFalse(entity.equals(e2));
+        assertNotEquals(entity, e2);
+        assertNotEquals(entity, e2);
     }
 
     @Test
