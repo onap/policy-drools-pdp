@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "dc2c5cd2_8ce0bac6",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-02T12:06:25Z",
+      "side": 1,
+      "message": "interesting.  Wonder why?  In that case we could simply change the \"volatile\" to \"final\".",
+      "parentUuid": "3c4b9c07_5024c498",
+      "revId": "0dde02240d6adc30087eb476a291ffc84a3f1e21",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "418e8951_84c83b4e",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 1
