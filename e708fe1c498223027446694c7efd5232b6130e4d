@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1a7319_72910d10",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2179,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-07-02T17:04:07Z",
+      "side": 1,
+      "message": "@Ralph, hostUuid is unused from eclipse and sonar.",
+      "range": {
+        "startLine": 2179,
+        "startChar": 21,
+        "endLine": 2179,
+        "endChar": 29
+      },
+      "revId": "e708fe1c498223027446694c7efd5232b6130e4d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
