@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "4839b8da_41d1d74b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-06T08:37:59Z",
+      "side": 1,
+      "message": "The \u0027AtomicReference\u0027 comment is no longer true",
+      "revId": "e708fe1c498223027446694c7efd5232b6130e4d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7a1a7319_72910d10",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
         "patchSetId": 2
@@ -46,6 +63,30 @@
       "revId": "e708fe1c498223027446694c7efd5232b6130e4d",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9dc3443_15bc3a6f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2179,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-06T08:37:59Z",
+      "side": 1,
+      "message": "\u0027hostUuid\u0027 can be removed.",
+      "parentUuid": "e9de69dd_5ec71a76",
+      "range": {
+        "startLine": 2179,
+        "startChar": 21,
+        "endLine": 2179,
+        "endChar": 29
+      },
+      "revId": "e708fe1c498223027446694c7efd5232b6130e4d",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
