@@ -21,7 +21,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -60,31 +60,31 @@ public abstract class LifecycleStateUnsupportedTest {
 
     @Test
     public void start() {
-        assertThatThrownBy(() -> state.start())
+        assertThatThrownBy(state::start)
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void stop() {
-        assertThatThrownBy(() -> state.stop())
+        assertThatThrownBy(state::stop)
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void shutdown() {
-        assertThatThrownBy(() -> state.shutdown())
+        assertThatThrownBy(state::shutdown)
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void isAlive() {
-        assertThatThrownBy(() -> state.isAlive())
+        assertThatThrownBy(state::isAlive)
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void status() {
-        assertThatThrownBy(() -> state.status())
+        assertThatThrownBy(state::status)
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
