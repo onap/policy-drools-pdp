@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +44,6 @@ import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.util.KieUtils;
-import org.onap.policy.drools.utils.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,11 +69,10 @@ public class ProtocolCoderToolsetTest {
      */
     @BeforeClass
     public static void setUpClass() throws IOException {
-        releaseId = KieUtils.installArtifact(
-            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
-            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
-            MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH,
-            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
+        releaseId = KieUtils.installArtifact(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
+                        Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
+                        MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH,
+                        Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
     }
 
     /**
@@ -104,28 +104,25 @@ public class ProtocolCoderToolsetTest {
      * @param protocolFilter protocol filter
      */
     private void testGsonToolset(JsonProtocolFilter protocolFilter) {
-        GsonProtocolCoderToolset gsonToolset = new GsonProtocolCoderToolset(
-                EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
-                        .groupId(releaseId.getGroupId())
-                        .artifactId(releaseId.getArtifactId())
-                        .eventClass(Triple.class.getName())
-                        .protocolFilter(protocolFilter)
-                        .customGsonCoder(null)
-                        .modelClassLoaderHash(12345678), CONTROLLER_ID);
+        GsonProtocolCoderToolset gsonToolset =
+                        new GsonProtocolCoderToolset(EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
+                                        .groupId(releaseId.getGroupId()).artifactId(releaseId.getArtifactId())
+                                        .eventClass(ThreeStrings.class.getName()).protocolFilter(protocolFilter)
+                                        .customGsonCoder(null).modelClassLoaderHash(12345678), CONTROLLER_ID);
 
         Assert.assertNotNull(gsonToolset.getEncoder());
         Assert.assertNotNull(gsonToolset.getDecoder());
 
         testToolset(protocolFilter, gsonToolset);
 
-        Triple<String, String, String> triple = createTriple();
+        ThreeStrings triple = createTriple();
         gsonToolset.setCustomCoder(new CustomGsonCoder(this.getClass().getName(), "customCoder"));
         String tripleEncoded = encode(gsonToolset, triple);
         decode(protocolFilter, gsonToolset, triple, tripleEncoded);
     }
 
-    private Triple<String, String, String> createTriple() {
-        return new Triple<>("v1", "v2", "v3");
+    private ThreeStrings createTriple() {
+        return new ThreeStrings("v1", "v2", "v3");
     }
 
     private void testToolset(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
@@ -137,61 +134,59 @@ public class ProtocolCoderToolsetTest {
         addRemoveCoder(coderToolset);
 
         /* restore original filters */
-        coderToolset.addCoder(Triple.class.getName(), protocolFilter, 654321);
+        coderToolset.addCoder(ThreeStrings.class.getName(), protocolFilter, 654321);
 
-        Triple<String, String, String> triple = createTriple();
+        ThreeStrings triple = createTriple();
 
         String tripleEncoded = encode(coderToolset, triple);
 
         decode(protocolFilter, coderToolset, triple, tripleEncoded);
     }
 
-    @SuppressWarnings("unchecked")
     private void decode(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset,
-            Triple<String, String, String> triple, String tripleEncoded) {
+                    ThreeStrings triple, String tripleEncoded) {
 
-        Triple<String, String, String> tripleDecoded = null;
+        ThreeStrings tripleDecoded = null;
         try {
-            tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
+            tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
         } catch (UnsupportedOperationException e) {
             /* OK */
             logger.trace("Junit expected exception - decode does not pass filtering", e);
         }
 
-        CoderFilters coderFilters = coderToolset.getCoder(Triple.class.getName());
-        Assert.assertSame(coderFilters.getCodedClass(), Triple.class.getName());
+        CoderFilters coderFilters = coderToolset.getCoder(ThreeStrings.class.getName());
+        Assert.assertSame(coderFilters.getCodedClass(), ThreeStrings.class.getName());
         Assert.assertSame(coderFilters.getFilter(), protocolFilter);
         Assert.assertNotNull(coderFilters.getFilter().getRule());
 
         coderFilters.getFilter().setRule("[?($.second =~ /^v2$/ && $.third =~ /.*v3.*/)]");
 
-        tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
+        tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
 
-        Assert.assertEquals(triple.first(), tripleDecoded.first());
-        Assert.assertEquals(triple.second(), tripleDecoded.second());
-        Assert.assertEquals(triple.third(), tripleDecoded.third());
+        Assert.assertEquals(triple.getFirst(), tripleDecoded.getFirst());
+        Assert.assertEquals(triple.getSecond(), tripleDecoded.getSecond());
+        Assert.assertEquals(triple.getThird(), tripleDecoded.getThird());
 
         coderFilters.getFilter().setRule(null);
         Assert.assertEquals("[?($ =~ /.*/)]", coderFilters.getFilter().getRule());
 
-        tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
+        tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
 
-        Assert.assertEquals(tripleDecoded.first(), triple.first());
-        Assert.assertEquals(tripleDecoded.second(), triple.second());
-        Assert.assertEquals(tripleDecoded.third(), triple.third());
+        Assert.assertEquals(tripleDecoded.getFirst(), triple.getFirst());
+        Assert.assertEquals(tripleDecoded.getSecond(), triple.getSecond());
+        Assert.assertEquals(tripleDecoded.getThird(), triple.getThird());
 
         coderFilters.getFilter().setRule("[?($.third =~ /.*v3.*/)]");
     }
 
-    private String encode(ProtocolCoderToolset coderToolset, Triple<String, String, String> triple) {
+    private String encode(ProtocolCoderToolset coderToolset, ThreeStrings triple) {
         String tripleEncoded = coderToolset.encode(triple);
         Assert.assertTrue(!tripleEncoded.isEmpty());
         return tripleEncoded;
     }
 
     private void addRemoveCoder(ProtocolCoderToolset coderToolset) {
-        coderToolset.addCoder(this.getClass().getName(),
-                new JsonProtocolFilter("[?($.second =~ /.*/)]"), 654321);
+        coderToolset.addCoder(this.getClass().getName(), new JsonProtocolFilter("[?($.second =~ /.*/)]"), 654321);
         Assert.assertEquals(2, coderToolset.getCoders().size());
 
         coderToolset.removeCoders(this.getClass().getName());
@@ -199,18 +194,16 @@ public class ProtocolCoderToolsetTest {
     }
 
     private void updateCoderFilterRule(ProtocolCoderToolset coderToolset) {
-        coderToolset.addCoder(Triple.class.getName(), new JsonProtocolFilter("[?($.third =~ /.*/)]"), 654321);
+        coderToolset.addCoder(ThreeStrings.class.getName(), new JsonProtocolFilter("[?($.third =~ /.*/)]"), 654321);
 
         Assert.assertEquals(1, coderToolset.getCoders().size());
 
-        Assert.assertEquals(654321, coderToolset.getCoder(Triple.class.getName()).getModelClassLoaderHash());
+        Assert.assertEquals(654321, coderToolset.getCoder(ThreeStrings.class.getName()).getModelClassLoaderHash());
 
-        Assert.assertNotNull(
-                coderToolset.getCoder(
-                        Triple.class.getName()).getFilter().getRule());
+        Assert.assertNotNull(coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
 
-        Assert.assertEquals("[?($.third =~ /.*/)]", coderToolset.getCoder(Triple.class.getName())
-                .getFilter().getRule());
+        Assert.assertEquals("[?($.third =~ /.*/)]",
+                        coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
     }
 
     private void validateInitialization(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
@@ -224,7 +217,7 @@ public class ProtocolCoderToolsetTest {
         CoderFilters coderFilters = coderToolset.getCoder(CONTROLLER_ID);
         Assert.assertNull(coderFilters);
 
-        coderFilters = coderToolset.getCoder(Triple.class.getName());
+        coderFilters = coderToolset.getCoder(ThreeStrings.class.getName());
         Assert.assertNotNull(coderFilters);
 
         Assert.assertEquals(coderFilters.getFilter(), protocolFilter);
@@ -243,13 +236,27 @@ public class ProtocolCoderToolsetTest {
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_GROUPID, releaseId.getGroupId());
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_ARTIFACTID, releaseId.getArtifactId());
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_VERSION, releaseId.getVersion());
-        droolsControllerConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
-                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX, Triple.class.getName());
+        droolsControllerConfig.put(
+                        PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
+                                        + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX,
+                        ThreeStrings.class.getName());
 
         return DroolsControllerConstants.getFactory().build(droolsControllerConfig, null, noopTopics);
     }
 
     private JsonProtocolFilter createFilterSet() {
         return new JsonProtocolFilter("[?($.first =~ /.*/ && $.second =~ /^blah.*/ && $.third =~ /^hello$/)]");
+    }
+
+    /**
+     * Note: We need an object that can be constructed, but the apache Triple cannot, thus
+     * we create our own class just for these tests.
+     */
+    @Getter
+    @AllArgsConstructor
+    public static class ThreeStrings {
+        private String first;
+        private String second;
+        private String third;
     }
 }
