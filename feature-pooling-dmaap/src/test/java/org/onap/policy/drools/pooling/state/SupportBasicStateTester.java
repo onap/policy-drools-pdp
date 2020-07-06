@@ -37,13 +37,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.onap.policy.drools.pooling.CancellableScheduledTask;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.PoolingProperties;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
-import org.onap.policy.drools.utils.Triple;
 
 /**
  * Superclass used to test subclasses of {@link State}.
@@ -179,7 +179,7 @@ public class SupportBasicStateTester {
         // capture scheduleWithFixedDelay() arguments, and return a new future
         when(mgr.scheduleWithFixedDelay(anyLong(), anyLong(), any(StateTimerTask.class))).thenAnswer(invocation -> {
             Object[] args = invocation.getArguments();
-            repeatedTasks.add(new Triple<>((Long) args[0], (Long) args[1], (StateTimerTask) args[2]));
+            repeatedTasks.add(Triple.of((Long) args[0], (Long) args[1], (StateTimerTask) args[2]));
 
             CancellableScheduledTask sched = mock(CancellableScheduledTask.class);
             repeatedSchedules.add(sched);
