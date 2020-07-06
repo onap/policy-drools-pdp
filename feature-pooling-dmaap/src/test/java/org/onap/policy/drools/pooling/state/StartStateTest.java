@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.Forward;
@@ -42,7 +43,6 @@ import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
-import org.onap.policy.drools.utils.Triple;
 
 public class StartStateTest extends SupportBasicStateTester {
 
@@ -92,15 +92,15 @@ public class StartStateTest extends SupportBasicStateTester {
          */
         Triple<Long, Long, StateTimerTask> generator = repeatedTasks.removeFirst();
 
-        assertEquals(STD_INTER_HEARTBEAT_MS, generator.first().longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, generator.second().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, generator.getLeft().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, generator.getMiddle().longValue());
 
         // invoke the task - it should generate another heartbeat
-        assertEquals(null, generator.third().fire());
+        assertEquals(null, generator.getRight().fire());
         verify(mgr, times(2)).publish(MY_HOST, msg.getRight());
 
         // and again
-        assertEquals(null, generator.third().fire());
+        assertEquals(null, generator.getRight().fire());
         verify(mgr, times(3)).publish(MY_HOST, msg.getRight());
 
 

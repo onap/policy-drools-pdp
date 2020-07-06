@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
@@ -46,7 +47,6 @@ import org.onap.policy.drools.pooling.message.Leader;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
-import org.onap.policy.drools.utils.Triple;
 
 public class ActiveStateTest extends SupportBasicStateTester {
 
@@ -304,18 +304,18 @@ public class ActiveStateTest extends SupportBasicStateTester {
 
         // heart beat generator
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.getLeft().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.getMiddle().longValue());
 
         // my heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.getLeft().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.getMiddle().longValue());
 
         // predecessor's heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.getLeft().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.getMiddle().longValue());
     }
 
     @Test
@@ -333,13 +333,13 @@ public class ActiveStateTest extends SupportBasicStateTester {
 
         // heart beat generator
         timer = repeatedTasks.remove();
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_INTER_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.getLeft().longValue());
+        assertEquals(STD_INTER_HEARTBEAT_MS, timer.getMiddle().longValue());
 
         // my heart beat checker
         timer = repeatedTasks.remove();
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.first().longValue());
-        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.second().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.getLeft().longValue());
+        assertEquals(STD_ACTIVE_HEARTBEAT_MS, timer.getMiddle().longValue());
     }
 
     @Test
@@ -356,7 +356,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
         verify(mgr).publish(anyString(), any(Heartbeat.class));
 
         // fire the task
-        assertNull(task.third().fire());
+        assertNull(task.getRight().fire());
 
         // should have generated a second pair of heart beats
         verify(mgr, times(2)).publish(anyString(), any(Heartbeat.class));
@@ -381,7 +381,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
         when(mgr.goInactive()).thenReturn(next);
 
         // fire the task - should not transition
-        assertNull(task.third().fire());
+        assertNull(task.getRight().fire());
 
         verify(mgr, never()).publishAdmin(any(Query.class));
     }
@@ -398,7 +398,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
         when(mgr.goStart()).thenReturn(next);
 
         // fire the task - should transition
-        assertEquals(next, task.third().fire());
+        assertEquals(next, task.getRight().fire());
 
         // should continue to distribute
         verify(mgr, never()).startDistributing(null);
@@ -423,7 +423,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
         when(mgr.goQuery()).thenReturn(next);
 
         // fire the task - should NOT transition
-        assertNull(task.third().fire());
+        assertNull(task.getRight().fire());
 
         verify(mgr, never()).publishAdmin(any(Query.class));
     }
@@ -440,7 +440,7 @@ public class ActiveStateTest extends SupportBasicStateTester {
         when(mgr.goQuery()).thenReturn(next);
 
         // fire the task - should transition
-        assertEquals(next, task.third().fire());
+        assertEquals(next, task.getRight().fire());
 
         verify(mgr).publishAdmin(any(Query.class));
     }

@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +44,6 @@ import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.util.KieUtils;
-import org.onap.policy.drools.utils.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,18 +168,18 @@ public class ProtocolCoderToolsetTest {
 
         tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
 
-        Assert.assertEquals(triple.first(), tripleDecoded.first());
-        Assert.assertEquals(triple.second(), tripleDecoded.second());
-        Assert.assertEquals(triple.third(), tripleDecoded.third());
+        Assert.assertEquals(triple.getFirst(), tripleDecoded.getFirst());
+        Assert.assertEquals(triple.getSecond(), tripleDecoded.getSecond());
+        Assert.assertEquals(triple.getThird(), tripleDecoded.getThird());
 
         coderFilters.getFilter().setRule(null);
         Assert.assertEquals("[?($ =~ /.*/)]", coderFilters.getFilter().getRule());
 
         tripleDecoded = (Triple<String, String, String>) coderToolset.decode(tripleEncoded);
 
-        Assert.assertEquals(tripleDecoded.first(), triple.first());
-        Assert.assertEquals(tripleDecoded.second(), triple.second());
-        Assert.assertEquals(tripleDecoded.third(), triple.third());
+        Assert.assertEquals(tripleDecoded.getFirst(), triple.getFirst());
+        Assert.assertEquals(tripleDecoded.getSecond(), triple.getSecond());
+        Assert.assertEquals(tripleDecoded.getThird(), triple.getThird());
 
         coderFilters.getFilter().setRule("[?($.third =~ /.*v3.*/)]");
     }
@@ -251,5 +252,13 @@ public class ProtocolCoderToolsetTest {
 
     private JsonProtocolFilter createFilterSet() {
         return new JsonProtocolFilter("[?($.first =~ /.*/ && $.second =~ /^blah.*/ && $.third =~ /^hello$/)]");
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Triple<F, S, T> {
+        private F first;
+        private S second;
+        private T third;
     }
 }
