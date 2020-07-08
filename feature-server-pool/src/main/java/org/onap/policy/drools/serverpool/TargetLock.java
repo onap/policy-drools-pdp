@@ -2688,7 +2688,7 @@ public class TargetLock implements Lock, Serializable {
                     if (AuditPostResponse.responseSupport(
                         respData, "self (" + server + ")",
                         "TargetLock.Audit.send")) {
-                        // a return falue of 'true' either indicates the
+                        // a return failure of 'true' either indicates the
                         // mismatches were resolved after a retry, or we
                         // received an interrupt, and need to abort
                         return;
@@ -2712,7 +2712,7 @@ public class TargetLock implements Lock, Serializable {
                 Entity.entity(new String(encodedData),
                               MediaType.APPLICATION_OCTET_STREAM_TYPE);
 
-            server.post("lock/audit", entity, new AuditPostResponse(server));
+            server.post(LOCK_AUDIT, entity, new AuditPostResponse(server));
         }
     }
 

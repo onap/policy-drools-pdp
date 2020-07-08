@@ -84,7 +84,9 @@ class MainLoop extends Thread {
      * @param work this is the Runnable to invoke
      */
     public static void queueWork(Runnable work) {
-        incomingWork.offer(work);
+        if (!incomingWork.offer(work)) {
+            logger.info("incomingWork returned false");
+        }
     }
 
     /**
@@ -143,15 +145,22 @@ class MainLoop extends Thread {
 
                 // work that runs every cycle
                 for (Runnable work : backgroundWork) {
-                    try {
-                        work.run();
-                    } catch (Exception e) {
-                        logger.error("Exception in MainLoop background work", e);
-                    }
+                    backgroundWorkRunnable(work);
                 }
             } catch (Exception e) {
                 logger.error("Exception in MainLoop", e);
             }
+        }
+    }
+
+    /**
+     * Runnable try loop.
+     */
+    static void backgroundWorkRunnable(Runnable work) {
+        try {
+            work.run();
+        } catch (Exception e) {
+            logger.error("Exception in MainLoop background work", e);
         }
     }
 
