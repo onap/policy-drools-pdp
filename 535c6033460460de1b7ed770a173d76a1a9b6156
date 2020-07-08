@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8bda7ed_5efe5329",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/TargetLock.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2691,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-08T20:40:57Z",
+      "side": 1,
+      "message": "\"failure\" \u003d\u003e \"value\"",
+      "range": {
+        "startLine": 2691,
+        "startChar": 36,
+        "endLine": 2691,
+        "endChar": 44
+      },
+      "revId": "535c6033460460de1b7ed770a173d76a1a9b6156",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
