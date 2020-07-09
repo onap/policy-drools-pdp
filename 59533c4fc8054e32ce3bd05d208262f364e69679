@@ -33,6 +33,24 @@
       "revId": "59533c4fc8054e32ce3bd05d208262f364e69679",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "969dcfaf_7d3c081f",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-07-09T14:41:33Z",
+      "side": 1,
+      "message": "yes - checkstyle doesn\u0027t pick these up, but Eclipse will.",
+      "parentUuid": "5392798a_5080fb17",
+      "revId": "59533c4fc8054e32ce3bd05d208262f364e69679",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
