@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ab92a31f_d7eea7ee",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2020-07-09T20:25:16Z",
+      "side": 1,
+      "message": "I will suggest not to call this release yet. Because what we are doing is rather pointing to released version of parent, common \u0026 models.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 18
+      },
+      "revId": "9ad40593844d13d75358bae815b9752bbecc3b00",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
