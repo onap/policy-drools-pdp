@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26b9f6ea_b4ebe197",
+        "filename": "releases/1.7.0.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-09T23:32:14Z",
+      "side": 1,
+      "message": "we usually add this line, but I think it is optional (false by default).\ntag_release: false",
+      "revId": "af4f83c592d5830d56f3fe3c4e4ffd315ab0b851",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
