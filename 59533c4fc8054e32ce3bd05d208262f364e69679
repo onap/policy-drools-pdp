@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "6b2f50e2_4aa8d232",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/MainLoop.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-09T08:57:30Z",
+      "side": 1,
+      "message": "\u0027incomingWork\u0027 is a \u0027LinkedTransferQueue\u0027 - the \u0027offer\u0027 method always returns \u0027true\u0027",
+      "revId": "59533c4fc8054e32ce3bd05d208262f364e69679",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5392798a_5080fb17",
         "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
         "patchSetId": 3
