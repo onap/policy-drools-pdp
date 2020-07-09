@@ -51,6 +51,24 @@
       "revId": "59533c4fc8054e32ce3bd05d208262f364e69679",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37d73cc5_0dc19147",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-07-09T15:57:39Z",
+      "side": 1,
+      "message": "good eye. I will remove those unused import.",
+      "parentUuid": "969dcfaf_7d3c081f",
+      "revId": "59533c4fc8054e32ce3bd05d208262f364e69679",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
