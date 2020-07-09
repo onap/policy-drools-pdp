@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5392798a_5080fb17",
+        "filename": "feature-server-pool/src/main/java/org/onap/policy/drools/serverpool/Server.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 649,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-09T00:40:17Z",
+      "side": 1,
+      "message": "if you could delete the imports for the removed exceptions",
+      "revId": "59533c4fc8054e32ce3bd05d208262f364e69679",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
