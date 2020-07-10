@@ -34,6 +34,24 @@
       "revId": "af4f83c592d5830d56f3fe3c4e4ffd315ab0b851",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c256713c_fb091ab9",
+        "filename": "releases/1.7.0.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-07-10T11:24:01Z",
+      "side": 1,
+      "message": "Jim is correct, if the repo has a docker job then we don\u0027t turn off tagging. It is true by default, which is why we turn it off on this job. It will get tagged in the docker release. For repos that don\u0027t do a docker image, then we omit this so the tagging happens in the java artifact release.",
+      "parentUuid": "57a8fb8d_bcf776b3",
+      "revId": "af4f83c592d5830d56f3fe3c4e4ffd315ab0b851",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
