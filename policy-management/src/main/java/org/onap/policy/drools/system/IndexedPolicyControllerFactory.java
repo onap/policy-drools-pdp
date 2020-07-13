@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
@@ -44,13 +45,13 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     /**
      * Policy Controller Name Index.
      */
-    private final HashMap<String, PolicyController> policyControllers =
+    private final Map<String, PolicyController> policyControllers =
             new HashMap<>();
 
     /**
      * Group/Artifact Ids Index.
      */
-    private final HashMap<String, PolicyController> coordinates2Controller =
+    private final Map<String, PolicyController> coordinates2Controller =
             new HashMap<>();
 
     /**
@@ -380,6 +381,14 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     // these methods can be overridden by junit tests
 
     protected PolicyController newPolicyController(String name, Properties properties) {
+        for (PolicyControllerBuilderApi builder : PolicyControllerBuilderApiConstants.getProviders().getList()) {
+            PolicyController controller = builder.build(name, properties);
+            if (controller != null) {
+                return controller;
+            }
+        }
+
+        // 'controller.type' isn't specified -- default behavior
         return new AggregatedPolicyController(name, properties);
     }
 

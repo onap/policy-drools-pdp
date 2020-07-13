@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -53,7 +54,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     /**
      * Policy Controller Name Index.
      */
-    protected HashMap<String, DroolsController> droolsControllers = new HashMap<>();
+    protected Map<String, DroolsController> droolsControllers = new HashMap<>();
 
     /**
      * Null Drools Controller.
@@ -96,6 +97,19 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = codersAndFilters(properties, eventSources);
         List<TopicCoderFilterConfiguration> topics2EncodedClasses2Filters = codersAndFilters(properties, eventSinks);
+
+        for (DroolsControllerBuilderApi builder : DroolsControllerBuilderApiConstants.getProviders().getList()) {
+            DroolsController controller = builder.build(properties,
+                groupId, artifactId, version,
+                topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
+            if (controller != null) {
+                String controllerId = controller.getGroupId() + ":" + controller.getArtifactId();
+                synchronized (this) {
+                    droolsControllers.put(controllerId, controller);
+                }
+                return controller;
+            }
+        }
 
         return this.build(groupId, artifactId, version, topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
     }

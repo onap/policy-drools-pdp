@@ -1,6 +1,6 @@
-/*-
+/*
  * ============LICENSE_START=======================================================
- * policy-core
+ * policy-management
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -18,26 +18,20 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.properties;
+package org.onap.policy.drools.controller;
 
-public class DroolsPropertyConstants {
+import lombok.Getter;
+import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
-    /* Controller Properties */
+public class DroolsControllerBuilderApiConstants {
+    /**
+     * Feature providers implementing this interface.
+     */
+    @Getter
+    private static final OrderedServiceImpl<DroolsControllerBuilderApi> providers =
+            new OrderedServiceImpl<>(DroolsControllerBuilderApi.class);
 
-    public static final String PROPERTY_CONTROLLER_NAME = "controller.name";
-
-    public static final String PROPERTY_CONTROLLER_TYPE = "controller.type";
-
-    public static final String DEFAULT_CONTROLLER_POLICY_TYPE_VERSION = "1.0.0";
-    public static final String PROPERTY_CONTROLLER_POLICY_TYPES = "controller.policy.types";
-
-    /* Drools Properties */
-
-    public static final String RULES_GROUPID = "rules.groupId";
-    public static final String RULES_ARTIFACTID = "rules.artifactId";
-    public static final String RULES_VERSION = "rules.version";
-
-    private DroolsPropertyConstants() {
+    private DroolsControllerBuilderApiConstants() {
         // do nothing
     }
 }
