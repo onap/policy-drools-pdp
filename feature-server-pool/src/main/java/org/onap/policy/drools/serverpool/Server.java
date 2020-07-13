@@ -59,8 +59,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Collection;
@@ -239,14 +237,14 @@ public class Server implements Comparable<Server> {
      * This method may be invoked from any thread, and is used as the main
      * entry point when testing.
      *
-     * @param args arguments contaning an '=' character are intepreted as
+     * @param args arguments containing an '=' character are interpreted as
      *     a property, other arguments are presumed to be a property file.
      */
     public static void main(String[] args) throws IOException {
         Properties prop = new Properties();
 
         for (String arg : args) {
-            // arguments with an '=' in them are a property definition;
+            // arguments with an equals sign in them are a property definition;
             // otherwise, they are a properties file name
 
             if (arg.contains("=")) {
@@ -646,9 +644,7 @@ public class Server implements Comparable<Server> {
 
                 // initialize the 'target' field
                 target = getTarget(client);
-            } catch (KeyManagementException | NoSuchAlgorithmException
-                         | NoSuchFieldException | IllegalAccessException
-                         | ClassNotFoundException | HttpClientConfigException e) {
+            } catch (NoSuchFieldException | IllegalAccessException | HttpClientConfigException e) {
                 logger.error("Server.newServer: problems creating 'client'", e);
             }
         }
@@ -684,9 +680,7 @@ public class Server implements Comparable<Server> {
 
             // initialize the 'target' field
             target = getTarget(client);
-        } catch (KeyManagementException | NoSuchAlgorithmException
-                     | NoSuchFieldException | IllegalAccessException
-                     | ClassNotFoundException | HttpClientConfigException e) {
+        } catch (NoSuchFieldException | IllegalAccessException | HttpClientConfigException e) {
             logger.error("Server.checkServer: problems recreating 'client'", e);
         }
     }
@@ -756,7 +750,7 @@ public class Server implements Comparable<Server> {
     }
 
     /**
-     * Fetch, and possibily calculate, the "notify list" associated with this
+     * Fetch, and possibly calculate, the "notify list" associated with this
      * server. This is the list of servers to forward a server and bucket
      * information to, and is approximately log2(n) in length, where 'n' is
      * the total number of servers.
@@ -790,7 +784,7 @@ public class Server implements Comparable<Server> {
             siteSocketAddresses.add(thisSiteSocketAddress);
 
             // the list we are building
-            notifyList = new LinkedList<Server>();
+            notifyList = new LinkedList<>();
 
             int index = 1;
             for ( ; ; ) {
@@ -869,8 +863,7 @@ public class Server implements Comparable<Server> {
      * @param destName the string name to use for the destination
      */
     static HttpClient buildClient(String name, InetSocketAddress dest, String destName)
-        throws KeyManagementException, NoSuchAlgorithmException,
-        ClassNotFoundException, HttpClientConfigException {
+        throws HttpClientConfigException {
 
         return HttpClientFactoryInstance.getClientFactory().build(
             BusTopicParams.builder()
@@ -1211,9 +1204,6 @@ public class Server implements Comparable<Server> {
                 getTarget(httpClient).path("admin").request().post(entity);
                 httpClient.shutdown();
                 httpClient = null;
-            } catch (KeyManagementException | NoSuchAlgorithmException e) {
-                out.println(host + ": Unable to create client connection");
-                logger.error(PINGHOSTS_ERROR, e);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 out.println(host + ": Unable to get link to target");
                 logger.error(PINGHOSTS_ERROR, e);
