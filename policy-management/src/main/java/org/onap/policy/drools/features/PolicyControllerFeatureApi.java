@@ -58,6 +58,32 @@ public interface PolicyControllerFeatureApi extends OrderedService {
     }
 
     /**
+     * called before the actual instantiation of a Policy Controller.
+     *
+     * @param name name of the controller
+     * @param properties configuration parameters in the form of properties
+     *
+     * @return a Policy Controller or 'null for no intercept.
+     */
+    default PolicyController beforeInstance(String name, Properties properties) {
+        return null;
+    }
+
+    /**
+     * called after the Policy Controller is instantiated.
+     *
+     * @param controller policy controller
+     * @param properties configuration parameters in the form of properties
+     *
+     * @return true if this feature intercepts and takes ownership
+     *     of the operation preventing the invocation of
+     *     lower priority features.   False, otherwise.
+     */
+    default boolean afterInstance(PolicyController controller, Properties properties) {
+        return false;
+    }
+
+    /**
      * intercept before the Policy Controller is started.
      *
      * @return true if this feature intercepts and takes ownership

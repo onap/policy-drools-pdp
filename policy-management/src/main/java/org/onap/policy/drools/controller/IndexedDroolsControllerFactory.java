@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -32,6 +33,8 @@ import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.controller.internal.MavenDroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
+import org.onap.policy.drools.features.DroolsControllerFeatureApi;
+import org.onap.policy.drools.features.DroolsControllerFeatureApiConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
@@ -48,12 +51,12 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     /**
      * logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(IndexedDroolsControllerFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(IndexedDroolsControllerFactory.class);
 
     /**
      * Policy Controller Name Index.
      */
-    protected HashMap<String, DroolsController> droolsControllers = new HashMap<>();
+    protected Map<String, DroolsController> droolsControllers = new HashMap<>();
 
     /**
      * Null Drools Controller.
@@ -97,11 +100,12 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = codersAndFilters(properties, eventSources);
         List<TopicCoderFilterConfiguration> topics2EncodedClasses2Filters = codersAndFilters(properties, eventSinks);
 
-        return this.build(groupId, artifactId, version, topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
+        return this.build(properties, groupId, artifactId, version,
+                topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
     }
 
     @Override
-    public DroolsController build(String newGroupId, String newArtifactId, String newVersion,
+    public DroolsController build(Properties properties, String newGroupId, String newArtifactId, String newVersion,
             List<TopicCoderFilterConfiguration> decoderConfigurations,
             List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError {
 
@@ -148,14 +152,49 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
         /* new drools controller */
 
-        DroolsController controller = new MavenDroolsController(newGroupId, newArtifactId, newVersion,
-                decoderConfigurations, encoderConfigurations);
+        DroolsController controller = null;
+        for (DroolsControllerFeatureApi feature: getProviders()) {
+            try {
+                controller = feature.beforeInstance(properties,
+                        newGroupId, newArtifactId, newVersion,
+                        decoderConfigurations, encoderConfigurations);
+                if (controller != null) {
+                    logger.info("feature {} ({}) beforeInstance() has intercepted drools controller {}:{}:{}",
+                            feature.getName(), feature.getSequenceNumber(),
+                            newGroupId, newArtifactId, newVersion);
+                    break;
+                }
+            } catch (RuntimeException r) {
+                logger.error("feature {} ({}) beforeInstance() of drools controller {}:{}:{} returned a exception {}",
+                        feature.getName(), feature.getSequenceNumber(),
+                        newGroupId, newArtifactId, newVersion, r);
+            }
+        }
+
+        if (controller == null) {
+            controller = new MavenDroolsController(newGroupId, newArtifactId, newVersion, decoderConfigurations,
+                    encoderConfigurations);
+        }
 
         synchronized (this) {
             droolsControllers.put(controllerId, controller);
         }
 
+        for (DroolsControllerFeatureApi feature: getProviders()) {
+            try {
+                feature.afterInstance(controller, properties);
+            } catch (RuntimeException r) {
+                logger.error("feature {} ({}) afterInstance() of drools controller {}:{}:{} returned a exception {}",
+                        feature.getName(), feature.getSequenceNumber(),
+                        newGroupId, newArtifactId, newVersion, r);
+            }
+        }
+
         return controller;
+    }
+
+    protected List<DroolsControllerFeatureApi> getProviders() {
+        return DroolsControllerFeatureApiConstants.getProviders().getList();
     }
 
     /**
