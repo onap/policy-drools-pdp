@@ -20,11 +20,14 @@
 
 package org.onap.policy.drools.system;
 
+import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_TYPE;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
@@ -40,6 +43,19 @@ import org.slf4j.LoggerFactory;
 class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(IndexedPolicyControllerFactory.class);
+
+    // table mapping 'controller.type' values to 'PolicyControllerBuilder' instances
+    private static final HashMap<String, PolicyControllerBuilder> builders = new HashMap<>();
+
+    static {
+        for (PolicyControllerBuilder builder : ServiceLoader.load(PolicyControllerBuilder.class)) {
+            for (String type : builder.getType().split(",")) {
+                builders.put(type, builder);
+                logger.info("Adding PolicyControllerBuilder for {}={}, with {}",
+                            PROPERTY_CONTROLLER_TYPE, type, builder.getClass());
+            }
+        }
+    }
 
     /**
      * Policy Controller Name Index.
@@ -380,7 +396,19 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     // these methods can be overridden by junit tests
 
     protected PolicyController newPolicyController(String name, Properties properties) {
-        return new AggregatedPolicyController(name, properties);
+        String type = properties.getProperty(PROPERTY_CONTROLLER_TYPE);
+        if (type == null) {
+            // 'controller.type' isn't specified -- default behavior
+            return new AggregatedPolicyController(name, properties);
+        }
+
+        // 'controller.type' is specified -- look up, and then invoke the builder
+        PolicyControllerBuilder builder = builders.get(type);
+        if (builder == null) {
+            throw new IllegalArgumentException("No PolicyControllerBuilder for "
+                                               + PROPERTY_CONTROLLER_TYPE + "=" + type);
+        }
+        return builder.build(name, properties);
     }
 
     protected List<PolicyControllerFeatureApi> getProviders() {

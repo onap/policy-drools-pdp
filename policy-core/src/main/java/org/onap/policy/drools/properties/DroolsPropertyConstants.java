@@ -26,6 +26,8 @@ public class DroolsPropertyConstants {
 
     public static final String PROPERTY_CONTROLLER_NAME = "controller.name";
 
+    public static final String PROPERTY_CONTROLLER_TYPE = "controller.type";
+
     public static final String DEFAULT_CONTROLLER_POLICY_TYPE_VERSION = "1.0.0";
     public static final String PROPERTY_CONTROLLER_POLICY_TYPES = "controller.policy.types";
 

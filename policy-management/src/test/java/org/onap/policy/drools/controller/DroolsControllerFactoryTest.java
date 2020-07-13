@@ -20,16 +20,22 @@
 
 package org.onap.policy.drools.controller;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_TYPE;
 
 import java.util.List;
 import java.util.Properties;
 import org.junit.Test;
+import org.onap.policy.drools.controller.internal.NullDroolsController;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 
 public class DroolsControllerFactoryTest {
+    private static final String DROOLS_CONTROLLER_BUILDER_TAG = "DroolsControllerFactoryTest";
 
     @Test
     public void testBuildNullController() {
@@ -95,6 +101,30 @@ public class DroolsControllerFactoryTest {
         return DroolsControllerConstants.NO_VERSION.equals(droolsController.getVersion());
     }
 
+    @Test
+    public void testControllerType() {
+        DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
+        Properties props = new Properties();
+
+        // this should build a 'NullDroolsController'
+        DroolsController ctrl1 = droolsFactory.build(props, null, null);
+        
+        // this should build a 'TestDroolsController'
+        props.setProperty(PROPERTY_CONTROLLER_TYPE, DROOLS_CONTROLLER_BUILDER_TAG);
+        DroolsController ctrl2 = droolsFactory.build(props, null, null);
+
+        // verify controller types
+        assertSame(NullDroolsController.class, ctrl1.getClass());
+        assertSame(TestDroolsController.class, ctrl2.getClass());
+
+        // verify that we can find the controller in the factory table
+        assertSame(ctrl2, droolsFactory.get(ctrl2.getGroupId(), ctrl2.getArtifactId(), null));
+
+        // this should trigger an exception
+        props.setProperty(PROPERTY_CONTROLLER_TYPE, "unknownType");
+        assertThatIllegalArgumentException().isThrownBy(() -> droolsFactory.build(props, null, null));
+    }
+
     private boolean isActualController(DroolsController droolsController) {
         if (droolsController == null) {
             return false;
@@ -109,5 +139,41 @@ public class DroolsControllerFactoryTest {
         }
 
         return droolsController.getVersion() != null && droolsController.getVersion().substring(0, 1).matches("[0-9]");
+    }
+
+    /**
+     * This class provides an alternate DroolsController implementation,
+     * for the purpose of easy identification within a Junit test.
+     */
+    public static class TestDroolsController extends NullDroolsController {
+        @Override
+        public String getGroupId() {
+            return "testGroupId";
+        }
+
+        @Override
+        public String getArtifactId() {
+            return "testArtifactId";
+        }
+    }
+
+    /**
+     * An instance of this class is created by 'IndexedDroolsControllerFactory',
+     * using 'ServiceLoader'. It does the build operation when the value of the
+     * 'controller.type' property matches the value of DROOLS_CONTROLLER_BUILDER_TAG.
+     */
+    public static class DroolsBuilder implements DroolsControllerBuilder {
+        @Override
+        public String getType() {
+            return DROOLS_CONTROLLER_BUILDER_TAG;
+        }
+
+        @Override
+        public DroolsController build(Properties properties,
+                                      List<TopicCoderFilterConfiguration> decoderConfigurations,
+                                      List<TopicCoderFilterConfiguration> encoderConfigurations) {
+
+            return new TestDroolsController();
+        }
     }
 }

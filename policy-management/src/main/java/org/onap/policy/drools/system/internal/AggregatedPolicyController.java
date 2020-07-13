@@ -73,12 +73,12 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Abstracted Event Sources List regardless communication technology.
      */
-    private final List<TopicSource> sources;
+    protected final List<TopicSource> sources;
 
     /**
      * Abstracted Event Sinks List regardless communication technology.
      */
-    private final List<TopicSink> sinks;
+    protected final List<TopicSink> sinks;
 
     /**
      * Mapping topics to sinks.
@@ -102,7 +102,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Policy Drools Controller.
      */
-    private final AtomicReference<DroolsController> droolsController = new AtomicReference<>();
+    protected final AtomicReference<DroolsController> droolsController = new AtomicReference<>();
 
     /**
      * Properties used to initialize controller.
@@ -190,7 +190,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      *
      * @throws IllegalArgumentException if invalid parameters are passed in
      */
-    private void initDrools(Properties properties) {
+    protected void initDrools(Properties properties) {
         try {
             // Register with drools infrastructure
             this.droolsController.set(getDroolsFactory().build(properties, sources, sinks));
