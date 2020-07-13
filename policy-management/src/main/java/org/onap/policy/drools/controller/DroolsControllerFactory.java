@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-management
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ public interface DroolsControllerFactory {
     /**
      * Explicit construction of a Drools Controller.
      *
+     * @param properties properties containing initialization parameters
      * @param groupId maven group id of drools artifact
      * @param artifactId maven artifact id of drools artifact
      * @param version maven version id of drools artifact
@@ -59,7 +60,7 @@ public interface DroolsControllerFactory {
      * @throws IllegalArgumentException with invalid parameters
      * @throws LinkageError Failure to link rules and models in Drools Libraries
      */
-    DroolsController build(String groupId, String artifactId, String version,
+    DroolsController build(Properties properties, String groupId, String artifactId, String version,
         List<TopicCoderFilterConfiguration> decoderConfigurations,
         List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError;
 

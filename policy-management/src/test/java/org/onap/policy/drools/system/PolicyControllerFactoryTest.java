@@ -24,12 +24,14 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_TYPE;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,10 +41,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
+import org.onap.policy.drools.controller.internal.NullDroolsController;
+import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
+import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
+import org.onap.policy.drools.system.internal.AggregatedPolicyController;
 
 public class PolicyControllerFactoryTest {
+    private static final String POLICY_CONTROLLER_BUILDER_TAG = "PolicyControllerFactoryTest";
 
     private static final String MY_NAME = "my-name-a";
     private static final String MY_NAME2 = "my-name-b";
@@ -403,6 +410,30 @@ public class PolicyControllerFactoryTest {
         assertEquals(feature2, ipc.getFeatureProvider(FEATURE2));
     }
 
+    @Test
+    public void testControllerType() {
+        PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
+        Properties props = new Properties();
+
+        // this should build an 'AggregatedPolicyController'
+        final String name1 = "ctrl1";
+        PolicyController ctrl1 = factory.build(name1, props);
+
+        // this should build a 'TestPolicyController'
+        final String name2 = "ctrl2";
+        props.setProperty(PROPERTY_CONTROLLER_TYPE, POLICY_CONTROLLER_BUILDER_TAG);
+        PolicyController ctrl2 = factory.build(name2, props);
+
+        // verify controller types
+        assertSame(AggregatedPolicyController.class, ctrl1.getClass());
+        assertSame(TestPolicyController.class, ctrl2.getClass());
+        assertSame(NullDroolsController.class, ctrl2.getDrools().getClass());
+
+        // verify controller lookups
+        assertSame(ctrl1, factory.get(name1));
+        assertSame(ctrl2, factory.get(name2));
+    }
+
     /**
      * Factory with overrides.
      */
@@ -425,6 +456,60 @@ public class PolicyControllerFactoryTest {
         @Override
         protected List<PolicyControllerFeatureApi> getProviders() {
             return providers;
+        }
+    }
+
+    /**
+     * This class provides an alternate PolicyController implementation,
+     * for the purpose of easy identification within a junit test.
+     */
+    public static class TestPolicyController extends AggregatedPolicyController {
+        public TestPolicyController(String name, Properties properties) {
+            super(name, properties);
+        }
+    }
+
+    /**
+     * An instance of this class is created by 'IndexedPolicyControllerFactory',
+     * using features. It does the build operation when the value of the
+     * 'controller.type' property matches the value of POLICY_CONTROLLER_BUILDER_TAG.
+     */
+    public static class PolicyBuilder implements PolicyControllerFeatureApi {
+        @Override
+        public int getSequenceNumber() {
+            return 1;
+        }
+
+        @Override
+        public PolicyController beforeInstance(String name, Properties properties) {
+            if (POLICY_CONTROLLER_BUILDER_TAG.equals(properties.getProperty(PROPERTY_CONTROLLER_TYPE))) {
+                return new TestPolicyController(name, properties);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * An instance of this class is created by 'IndexedDroolsControllerFactory',
+     * using features. It does the build operation when the value of the
+     * 'controller.type' property matches the value of POLICY_CONTROLLER_BUILDER_TAG.
+     */
+    public static class DroolsBuilder implements DroolsControllerFeatureApi {
+        @Override
+        public int getSequenceNumber() {
+            return 1;
+        }
+
+        @Override
+        public DroolsController beforeInstance(Properties properties,
+                String groupId, String artifactId, String version,
+                List<TopicCoderFilterConfiguration> decoderConfigurations,
+                List<TopicCoderFilterConfiguration> encoderConfigurations) {
+
+            if (POLICY_CONTROLLER_BUILDER_TAG.equals(properties.getProperty(PROPERTY_CONTROLLER_TYPE))) {
+                return new NullDroolsController();
+            }
+            return null;
         }
     }
 }
