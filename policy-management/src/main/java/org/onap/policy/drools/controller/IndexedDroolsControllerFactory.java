@@ -20,11 +20,15 @@
 
 package org.onap.policy.drools.controller;
 
+import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_TYPE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -50,10 +54,23 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
      */
     private static Logger logger = LoggerFactory.getLogger(IndexedDroolsControllerFactory.class);
 
+    // table mapping 'controller.type' values to 'DroolsControllerBuilder' instances
+    private static final Map<String, DroolsControllerBuilder> builders = new HashMap<>();
+
+    static {
+        for (DroolsControllerBuilder builder : ServiceLoader.load(DroolsControllerBuilder.class)) {
+            for (String type : builder.getType().split(",")) {
+                builders.put(type, builder);
+                logger.info("Adding DroolsControllerBuilder for {}={}, with {}",
+                            PROPERTY_CONTROLLER_TYPE, type, builder.getClass());
+            }
+        }
+    }
+
     /**
      * Policy Controller Name Index.
      */
-    protected HashMap<String, DroolsController> droolsControllers = new HashMap<>();
+    protected Map<String, DroolsController> droolsControllers = new HashMap<>();
 
     /**
      * Null Drools Controller.
@@ -97,7 +114,28 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
         List<TopicCoderFilterConfiguration> topics2DecodedClasses2Filters = codersAndFilters(properties, eventSources);
         List<TopicCoderFilterConfiguration> topics2EncodedClasses2Filters = codersAndFilters(properties, eventSinks);
 
-        return this.build(groupId, artifactId, version, topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
+        String type = properties.getProperty(PROPERTY_CONTROLLER_TYPE);
+        if (type == null) {
+            return this.build(groupId, artifactId, version,
+                              topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
+        }
+
+        // 'controller.type' is specified -- look up, and then invoke the builder
+        DroolsControllerBuilder builder = builders.get(type);
+        if (builder == null) {
+            throw new IllegalArgumentException("No DroolsControllerBuilder for "
+                                               + PROPERTY_CONTROLLER_TYPE + "=" + type);
+        }
+
+        DroolsController controller =
+            builder.build(properties, topics2DecodedClasses2Filters, topics2EncodedClasses2Filters);
+        if (controller != null) {
+            String controllerId = controller.getGroupId() + ":" + controller.getArtifactId();
+            synchronized (this) {
+                droolsControllers.put(controllerId, controller);
+            }
+        }
+        return controller;
     }
 
     @Override
