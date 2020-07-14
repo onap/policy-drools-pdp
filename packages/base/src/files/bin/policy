@@ -18,89 +18,97 @@
 # limitations under the License.
 # ============LICENSE_END=========================================================
 
-source ${POLICY_HOME}/etc/profile.d/env.sh
-
 function usage() {
-	echo -n "syntax: $(basename $0) "
-	echo -n "[--debug] "
-	echo    "status|start|stop"
+    echo -n "syntax: $(basename $0) "
+    echo -n "[--debug] "
+    echo "status|start|stop"
 }
 
 function check_x_file() {
-        if [[ $DEBUG == y ]]; then
-                echo "-- ${FUNCNAME[0]} --"
-                set -x
-        fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} --"
+        set -x
+    fi
 
-        FILE=$1
-        if [[ ! -f ${FILE} || ! -x ${FILE} ]]; then
+    FILE=$1
+    if [[ ! -f ${FILE} || ! -x ${FILE} ]]; then
         return 1
-        fi
+    fi
 
-        return 0
+    return 0
 }
 
 function policy_op() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} --"
+        set -x
+    fi
 
-	operation=$1
-	
-	cd $POLICY_HOME
-	echo "[drools-pdp-controllers]"
-	binScript="bin/policy-management-controller"
-	if check_x_file "${binScript}"; then
-		trap "rm -f /tmp/out$$" EXIT
-		${binScript} ${operation} >/tmp/out$$
-		echo " L [${controller}]: $(sed ':a;N;$!ba;s/\n/ /g' /tmp/out$$)"
-	else
-		echo "	L [${controller}]: -"
-	fi
+    operation=$1
+
+    cd $POLICY_HOME
+    echo "[drools-pdp-controllers]"
+    if check_x_file "${BIN_SCRIPT}"; then
+        trap "rm -f /tmp/out$$" EXIT
+        ${BIN_SCRIPT} ${operation} >/tmp/out$$
+        echo " L [${controller}]: $(sed ':a;N;$!ba;s/\n/ /g' /tmp/out$$)"
+    else
+        echo "	L [${controller}]: -"
+    fi
 }
 
 function policy_status() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	echo
-	policy_op "status"
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} --"
+        set -x
+    fi
 
-	NUM_CRONS=$(crontab -l 2> /dev/null | wc -l)
-	echo "	${NUM_CRONS} cron jobs installed."
+    echo
+    policy_op "status"
 
-	echo
-	echo "[features]"
-	features status
-	
-	local databases=$(ls -d "${POLICY_HOME}"/etc/db/migration/*/ 2> /dev/null)
-	if [[ -n ${databases} ]]; then
-		echo "[migration]"
-		db-migrator -s ALL -o ok
-	fi
-	
+    NUM_CRONS=$(crontab -l 2>/dev/null | wc -l)
+    echo "	${NUM_CRONS} cron jobs installed."
+
+    echo
+    echo "[features]"
+    features status
+
+    local databases=$(ls -d "${POLICY_HOME}"/etc/db/migration/*/ 2>/dev/null)
+    if [[ -n ${databases} ]]; then
+        echo "[migration]"
+        db-migrator -s ALL -o ok
+    fi
+
 }
 
 function policy_start() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	policy_op "start"
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} --"
+        set -x
+    fi
+
+    policy_op "start"
 }
 
+function policy_exec() {
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} --"
+        set -x
+    fi
+
+    cd $POLICY_HOME
+    if check_x_file "${BIN_SCRIPT}"; then
+        ${BIN_SCRIPT} "exec"
+    fi
+}
 
 function policy_stop() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	policy_op "stop"
+    if [[ $DEBUG == y ]]; then
+        echo "-- ${FUNCNAME[0]} --"
+        set -x
+    fi
+
+    policy_op "stop"
 }
 
 #########################################################################
@@ -109,56 +117,77 @@ function policy_stop() {
 ##
 #########################################################################
 
-DEBUG=n
+source ${POLICY_HOME}/etc/profile.d/env.sh
+
+if [[ ${DEBUG} == y ]]; then
+    echo "-- $0 $* --"
+    set -x
+fi
+
+BIN_SCRIPT="bin/policy-management-controller"
 OPERATION=none
 
 until [[ -z "$1" ]]; do
-	case $1 in
-		-d|--debug|debug) 	DEBUG=y
-						set -x
-						;;
-		-i|--status|status) 		OPERATION=status
-						;;
-		-s|--start|start)		OPERATION=start
-						;;
-		-h|--stop|stop|--halt|halt)	OPERATION=halt
-						;;
-		*)				usage
-						exit 1
-						;;
-	esac
-	shift
+    case $1 in
+    -d | --debug | debug)
+        DEBUG=y
+        set -x
+        ;;
+    -i | --status | status)
+        OPERATION=status
+        ;;
+    -s | --start | start)
+        OPERATION=start
+        ;;
+    -x | --exec | exec)
+        OPERATION=exec
+        ;;
+    -h | --stop | stop | --halt | halt)
+        OPERATION=halt
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+    esac
+    shift
 done
 
 # operation validation
 case $OPERATION in
-	status)	;;
-	start)	;;
-	halt)	;;
-	*)	echo "invalid operation \(${OPERATION}\): must be in {status|start|stop}";
-		usage
-		exit 1
-		;;
+status) ;;
+start) ;;
+exec) ;;
+halt) ;;
+*)
+    echo "invalid operation \(${OPERATION}\): must be in {status|start|stop}"
+    usage
+    exit 1
+    ;;
 esac
 
 if [[ -z ${POLICY_HOME} ]]; then
-	echo "error: POLICY_HOME is unset."
-	exit 1
+    echo "error: POLICY_HOME is unset."
+    exit 1
 fi
 
 # operation validation
 case $OPERATION in
-	status)	
-		policy_status
-		;;
-	start)	
-		policy_start
-		;;
-	halt)	
-		policy_stop
-		;;
-	*)		echo "invalid operation \(${OPERATION}\): must be in {status|start|stop}";
-			usage
-			exit 1
-			;;
+status)
+    policy_status
+    ;;
+start)
+    policy_start
+    ;;
+exec)
+    policy_exec
+    ;;
+halt)
+    policy_stop
+    ;;
+*)
+    echo "invalid operation \(${OPERATION}\): must be in {status|start|stop}"
+    usage
+    exit 1
+    ;;
 esac
