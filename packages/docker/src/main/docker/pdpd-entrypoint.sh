@@ -234,9 +234,10 @@ function dockerBoot {
 
     set -e
 
-    vmBoot
+    configure
 
-    tail -f /dev/null
+    source "${POLICY_HOME}"/etc/profile.d/env.sh
+    policy exec
 }
 
 if [[ ${DEBUG} == y ]]; then
