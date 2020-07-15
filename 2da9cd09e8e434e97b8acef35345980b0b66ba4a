@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f5116f35_98aefdde",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/properties/DroolsPropertyConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "license year",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35f814bd_e8c412fd",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "license year",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1570a02d_140578d9",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "Optionally, may try to template this functionality into a method, since pretty much same as in the controller factory one, that could be reused by the controller and drools factories.",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "318fd25f_2c8333ff",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "I guess, I am having trouble to see much benefit of introducing another\nway of doing things.  There are existing patterns in the code for example\nto override a LockManager or a PolicyController by using features, such as\nPolicyEngineFeatureApi.beforeCreateLockManager() and PolicyEngineFeatureApi.beforeCreate.\nThese don\u0027t require to maintain the ServiceLoader tables in each factory class.\nWe will have to add documentation describing this new approach (features are already\ndescribed at length in the documentation).",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "478aea03_49b81614",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "would have to check if controller is null, and throw exception, I think previous functionality ensured controller could not be null.",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc16c9fd_72b60491",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "I would think, that similar to the work in the review in the PolicyControllerFactory,\nthis would be the place where it would make more sense to allow for a custom DroolsController,\nso not to skip the functionality above (right before the new).\n\nThere is going to be another implementation in this release that will require the same functionality\nthat tdjam uses.   For example, we have this epic that adds DMN controllers, ie. https://jira.onap.org/browse/POLICY-2642.\nThese controllers should be able to use this same mechanisms to provide their own controllers.\nNote that the DMN also uses maven coordinates, and kjars.\n\nThere may be other use cases that I could see may have similar needs, for example plain Aether-only based\ncontrollers.\n\nIn any case, feature hooks placed at this point, would seem to satisfy all the different needs, with\nor without maven coordinates, as any parameters can be passed, and the feature could ignore or not.",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "593a6c08_e2272d89",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-15T23:49:49Z",
+      "side": 1,
+      "message": "To preserve previous behavior, where will return a non-null object or exception (within constructor), check that builder.build() returns non-null.",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
