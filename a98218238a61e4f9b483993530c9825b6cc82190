@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6a20a0b6_4b78230f",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-15T10:24:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4b3b90ba_edd9a9fc",
+      "range": {
+        "startLine": 57,
+        "startChar": 25,
+        "endLine": 57,
+        "endChar": 32
+      },
+      "revId": "a98218238a61e4f9b483993530c9825b6cc82190",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25e9ea51_dd851795",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2020-07-14T18:51:12Z",
       "side": 1,
       "message": "is it possible for this method to be invoked by more than one thread at a time?  If so, then multiple controllers will be created, though only the last one inserted into the map.  Maybe this doesn\u0027t matter?",
+      "revId": "a98218238a61e4f9b483993530c9825b6cc82190",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c754f30e_88a76f7b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-15T10:24:54Z",
+      "side": 1,
+      "message": "The issue existed before this change, with \u0027MavenDroolsController\u0027. I don\u0027t think we see this in practice, because it is \u0027PolicyEngineManager\u0027 that calls this at boot time, and in response to provisioning changes.",
+      "parentUuid": "25e9ea51_dd851795",
       "revId": "a98218238a61e4f9b483993530c9825b6cc82190",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "0fdc5626_1272a4d3",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-15T10:24:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4edf1ee5_1a2be9c3",
+      "range": {
+        "startLine": 48,
+        "startChar": 25,
+        "endLine": 48,
+        "endChar": 32
+      },
+      "revId": "a98218238a61e4f9b483993530c9825b6cc82190",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba096666_4a81dfa4",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
         "patchSetId": 1
@@ -79,6 +145,24 @@
       "revId": "a98218238a61e4f9b483993530c9825b6cc82190",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fbf573da_23ae1936",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-15T10:24:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba096666_4a81dfa4",
+      "revId": "a98218238a61e4f9b483993530c9825b6cc82190",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
