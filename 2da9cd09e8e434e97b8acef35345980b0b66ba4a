@@ -88,6 +88,24 @@
     },
     {
       "key": {
+        "uuid": "cf2b4844_2ec9c7aa",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-16T19:32:56Z",
+      "side": 1,
+      "message": "is it difficult to do via the feature bus?  If not, I\u0027d prefer to stick with that rather than invent another mechanism",
+      "parentUuid": "ec37b36d_4200c545",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "478aea03_49b81614",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 2
