@@ -123,6 +123,23 @@
     },
     {
       "key": {
+        "uuid": "642a6245_ba6e01f9",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-16T21:58:40Z",
+      "side": 1,
+      "message": "Just to make it more clear what I tried to explain below, this method skipped, and may want to reuse for DMN controllers, (that they also use kie-ci maven coordinates for artifacts so).. so that would be one reason to delay instantiation till the \"new\".",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bc16c9fd_72b60491",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 2
