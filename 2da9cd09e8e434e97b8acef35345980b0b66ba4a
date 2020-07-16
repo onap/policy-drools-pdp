@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "ec37b36d_4200c545",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-16T12:13:45Z",
+      "side": 1,
+      "message": "We did talk about this when we had a meeting to discuss this capability. The feature bus approach is very flexible, but it can be a bit chaotic -- each feature on the bus could use different criteria to decide whether to take control, and the winner is determined by who chose the lowest sequence number.\n\nIn this case, the extension is chosen by a string name, which is the value of \u0027controller.type\u0027. There is still flexibility in how each individual builder works, but it seemed useful to nail down the way the builder is selected. Maybe there are other places in the code where this pattern would be useful -- it could become another extension mechanism in addition to \u0027OrderedService\u0027. Perhaps it could be called \u0027TaggedService\u0027 or \u0027KeywordService\u0027.",
+      "parentUuid": "318fd25f_2c8333ff",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "478aea03_49b81614",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 2
