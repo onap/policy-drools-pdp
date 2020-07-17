@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "246e7607_eba2b081",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/properties/DroolsPropertyConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-17T11:04:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f5116f35_98aefdde",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "35f814bd_e8c412fd",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilder.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "29b1e761_1d673e32",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-17T11:04:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35f814bd_e8c412fd",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1570a02d_140578d9",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 2
@@ -50,6 +86,24 @@
       "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "229aa447_0d533b22",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-17T11:04:35Z",
+      "side": 1,
+      "message": "This has been removed",
+      "parentUuid": "1570a02d_140578d9",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -106,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "3c817faa_27218b2e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-17T11:04:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf2b4844_2ec9c7aa",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "478aea03_49b81614",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 2
@@ -120,6 +192,24 @@
       "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ce70310_135c8dc6",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-17T11:04:35Z",
+      "side": 1,
+      "message": "No longer an issue",
+      "parentUuid": "478aea03_49b81614",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -189,6 +279,24 @@
       "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ead44f25_9bfcf39e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-17T11:04:35Z",
+      "side": 1,
+      "message": "No longer an issue",
+      "parentUuid": "593a6c08_e2272d89",
+      "revId": "2da9cd09e8e434e97b8acef35345980b0b66ba4a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
