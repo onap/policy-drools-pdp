@@ -2,6 +2,108 @@
   "comments": [
     {
       "key": {
+        "uuid": "9f21415b_30ecb00e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilderApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "Copyright (C) 2020",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "978d18e7_25cd5b39",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilderApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "We have all *FeatureApi and *FeatureConstants in package:\norg.onap.policy.drools.features;\nBetter to place it there for consistency with others.\n\nNote that there is a DroolsControllerFeatureApi, it may be better to simply add a\nbeforeBuild(..) and afterBuild(..) to keep it more compact in a single place, and not require clients to deal with multiple of this.",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5f4c259_e9ccfd62",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilderApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "@params and @throws don\u0027t match method signature",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2714ff66_05ba2fa1",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilderApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "Following the naming convention followed in the org.onap.policy.drools.features.*FeatureApi.   All have a before* and after*.   It will be best to follow the same naming convention for the method name, ie.\nbeforeBuild(...)\nafterBuild(...)\nIt may be better too to call it beforeInstantiate and afterInstantiate, since we want to intercept at the point of instantiation, when before the actual \"new \" happens, so not to be confused with the build() which could returned a cached copy (so the actual object was already instantiated).",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9d90b5e_200abab3",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilderApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "May be better to remove LinkageError from signature and force features to deal with it or return null.",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a4ee6f8_b284de0c",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerBuilderApiConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "See my note before about package\norg.onap.policy.drools.features\ncontaining files.\n\nThe naming convention even though may be long is *FeatureApiConstants if it could be preserved.\nAlso note my comment, that we can avoid these files all together if we piggyback the methods to\nthe existing DroolsControllerFeatureApi and DroolsControllerFeatureApiConstants interface.\nI tend to think that these would be a better home for them.",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0ac38660_51866d53",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
         "patchSetId": 3
@@ -19,6 +121,58 @@
     },
     {
       "key": {
+        "uuid": "6d005dbf_40b0b5c4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "Good point, exceptions should be caught here, cannot escape.",
+      "parentUuid": "0ac38660_51866d53",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a0e38f6_d1fb0177",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "I think I would like to do move this block with before and after sections to line 164 (before) and 166 (after).\nThe idea is that potential DMN code or other that uses kie maven functionality reuse the functionality in method in line 118, this will provide upgrade capabilities directly to them.   It is OK to pass properties as an argument the build in 118.",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d690ce38_95138567",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "see my comment for earlier with regards to beforeBuild and afterBuild for consistency with the other features",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "94ba1acf_084e47b1",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
         "patchSetId": 3
@@ -30,6 +184,41 @@
       "writtenOn": "2020-07-17T15:29:10Z",
       "side": 1,
       "message": "is it ok if exceptions escape?",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ceac368d_45cfcf6a",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "should be caught here too.",
+      "parentUuid": "94ba1acf_084e47b1",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5772323e_6357b474",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyControllerBuilderApi.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-17T20:56:52Z",
+      "side": 1,
+      "message": "Same comment I made in the DroolsControllerBuilderApi files apply here.\nIn summary:\nThe convention is to have the features under this package:  org.onap.policy.drools.features\nwith extensions *FeatureApi and *FeatureApiConstants.\nAll hooks to operations have a (preemptable) before* operation and after* operation.\nIt may be better to not confuse it with the factory build operations that at times return cached objects, to have it named as\nbeforeInstantiate(..) and afterInstantiate(..), or some other name that resolves that ambiguity.",
       "revId": "816a709ad8ed45601bf56a52437e891cae133998",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
