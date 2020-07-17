@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ac38660_51866d53",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-17T15:29:10Z",
+      "side": 1,
+      "message": "is it ok if exceptions escape?",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94ba1acf_084e47b1",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-17T15:29:10Z",
+      "side": 1,
+      "message": "is it ok if exceptions escape?",
+      "revId": "816a709ad8ed45601bf56a52437e891cae133998",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
