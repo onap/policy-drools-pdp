@@ -186,7 +186,7 @@ halt)
     policy_stop
     ;;
 *)
-    echo "invalid operation \(${OPERATION}\): must be in {status|start|stop}"
+    echo "invalid operation \(${OPERATION}\): must be in {status|start|stop|exec}"
     usage
     exit 1
     ;;
