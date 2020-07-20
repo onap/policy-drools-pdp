@@ -16,6 +16,24 @@
       "revId": "e7f57317f694c7a2a673e37dbfdd6275adcd74c0",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b973149_91d6559c",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-20T21:50:43Z",
+      "side": 0,
+      "message": "jackson does still end up in the classpath, I think because of swagger.  Nonetheless, AFAIK, the RestServer in policy-common now defaults to gson instead of jackson and drools-pdp has been using that for at least a month.  I\u0027ve built to make sure the repos still build and junits run with these reviews, but it is still possible we\u0027ll find a limitation when running telemetry or CSITs - can revert if that\u0027s the case.",
+      "parentUuid": "ee5e3b80_629d4fa1",
+      "revId": "e7f57317f694c7a2a673e37dbfdd6275adcd74c0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
