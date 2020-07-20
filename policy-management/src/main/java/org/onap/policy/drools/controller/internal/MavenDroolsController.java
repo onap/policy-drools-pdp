@@ -20,8 +20,6 @@
 
 package org.onap.policy.drools.controller.internal;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +76,6 @@ public class MavenDroolsController implements DroolsController {
     /**
      * Policy Container, the access object to the policy-core layer.
      */
-    @JsonIgnore
     @GsonJsonIgnore
     protected final PolicyContainer policyContainer;
 
@@ -658,14 +655,12 @@ public class MavenDroolsController implements DroolsController {
         return this.locked;
     }
 
-    @JsonIgnore
     @GsonJsonIgnore
     @Override
     public PolicyContainer getContainer() {
         return this.policyContainer;
     }
 
-    @JsonProperty("sessions")
     @GsonJsonProperty("sessions")
     @Override
     public List<String> getSessionNames() {
@@ -695,7 +690,6 @@ public class MavenDroolsController implements DroolsController {
         return sessionNames;
     }
 
-    @JsonProperty("sessionCoordinates")
     @GsonJsonProperty("sessionCoordinates")
     @Override
     public List<String> getCanonicalSessionNames() {

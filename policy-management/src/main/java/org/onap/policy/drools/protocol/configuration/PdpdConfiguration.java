@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,6 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +36,6 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 /**
  * ENGINE-CONFIGURATION.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class PdpdConfiguration {
 
@@ -49,19 +43,16 @@ public class PdpdConfiguration {
     public static final String CONFIG_ENTITY_CONTROLLER = "controller";
 
     /** Unique Transaction ID. This is an UUID. (Required) */
-    @JsonProperty("requestID")
     @GsonJsonProperty("requestID")
     private String requestId;
     /* Set of entities on which configuration can be performed: controller (Required) */
-    @JsonProperty("entity")
     @GsonJsonProperty("entity")
     private String entity;
     /* Controller Information, only applicable when the entity is set to controller */
-    @JsonProperty("controllers")
     @GsonJsonProperty("controllers")
     private List<ControllerConfiguration> controllers = new ArrayList<>();
 
-    @JsonIgnore @GsonJsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
+    @GsonJsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
     protected static final Object NOT_FOUND_VALUE = new Object();
 
     /** No args constructor for use in serialization. */
@@ -88,7 +79,6 @@ public class PdpdConfiguration {
      *
      * @return The requestID
      */
-    @JsonProperty("requestID")
     @GsonJsonProperty("requestID")
     public String getRequestId() {
         return requestId;
@@ -99,7 +89,6 @@ public class PdpdConfiguration {
      *
      * @param requestId The requestID
      */
-    @JsonProperty("requestID")
     @GsonJsonProperty("requestID")
     public void setRequestId(String requestId) {
         this.requestId = requestId;
@@ -115,7 +104,6 @@ public class PdpdConfiguration {
      *
      * @return The entity
      */
-    @JsonProperty("entity")
     @GsonJsonProperty("entity")
     public String getEntity() {
         return entity;
@@ -126,7 +114,6 @@ public class PdpdConfiguration {
      *
      * @param entity The entity
      */
-    @JsonProperty("entity")
     @GsonJsonProperty("entity")
     public void setEntity(String entity) {
         this.entity = entity;
@@ -142,7 +129,6 @@ public class PdpdConfiguration {
      *
      * @return The controller
      */
-    @JsonProperty("controllers")
     @GsonJsonProperty("controllers")
     public List<ControllerConfiguration> getControllers() {
         return controllers;
@@ -153,7 +139,6 @@ public class PdpdConfiguration {
      *
      * @param controllers controllers
      */
-    @JsonProperty("controllers")
     @GsonJsonProperty("controllers")
     public void setControllers(List<ControllerConfiguration> controllers) {
         this.controllers = controllers;
@@ -164,13 +149,11 @@ public class PdpdConfiguration {
         return this;
     }
 
-    @JsonAnyGetter
     @GsonJsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
-    @JsonAnySetter
     @GsonJsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);

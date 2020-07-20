@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.system.internal;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,7 +82,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Mapping topics to sinks.
      */
-    @JsonIgnore
     @GsonJsonIgnore
     private final HashMap<String, TopicSink> topic2Sinks = new HashMap<>();
 
@@ -642,7 +640,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * {@inheritDoc}.
      */
     @Override
-    @JsonIgnore
     @GsonJsonIgnore
     public Properties getProperties() {
         return this.properties;

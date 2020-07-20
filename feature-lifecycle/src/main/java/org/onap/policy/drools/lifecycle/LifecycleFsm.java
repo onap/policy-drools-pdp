@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.lifecycle;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,7 +148,6 @@ public class LifecycleFsm implements Startable {
                  new PolicyTypeNativeArtifactController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
     }
 
-    @JsonIgnore
     @GsonJsonIgnore
     public DomainMaker getDomainMaker() {
         return PolicyEngineConstants.getManager().getDomainMaker();

@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.lifecycle;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +58,6 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
     protected final ToscaPolicyTypeIdentifier policyType;
 
     @GsonJsonIgnore
-    @JsonIgnore
     protected final LifecycleFsm fsm;
 
     /**

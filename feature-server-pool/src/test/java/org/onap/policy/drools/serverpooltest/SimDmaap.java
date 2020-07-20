@@ -81,9 +81,7 @@ public class SimDmaap {
 
             holder = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class.getName(), "/*");
             holder.setInitParameter(
-                "jersey.config.server.provider.classnames",
-                "com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"
-                + "," + SimDmaap.class.getName());
+                "jersey.config.server.provider.classnames", SimDmaap.class.getName());
 
             jettyServer.start();
             jettyServer.join();

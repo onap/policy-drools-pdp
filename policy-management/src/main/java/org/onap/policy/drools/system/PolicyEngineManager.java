@@ -24,8 +24,6 @@ import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERV
 import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME;
 import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_PORT;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
@@ -194,14 +192,12 @@ class PolicyEngineManager implements PolicyEngine {
         this.environment.putAll(PropertyUtil.getInterpolatedProperties(properties));
     }
 
-    @JsonIgnore
     @GsonJsonIgnore
     @Override
     public synchronized Properties getEnvironment() {
         return this.environment;
     }
 
-    @JsonIgnore
     @GsonJsonIgnore
     @Override
     public DomainMaker getDomainMaker() {
@@ -249,7 +245,6 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
-    @JsonIgnore
     @GsonJsonIgnore
     public ScheduledExecutorService getExecutorService() {
         return executorService;
@@ -1007,14 +1002,12 @@ class PolicyEngineManager implements PolicyEngine {
         getControllerFactory().destroy(controller);
     }
 
-    @JsonIgnore
     @GsonJsonIgnore
     @Override
     public List<PolicyController> getPolicyControllers() {
         return getControllerFactory().inventory();
     }
 
-    @JsonProperty("controllers")
     @GsonJsonProperty("controllers")
     @Override
     public List<String> getPolicyControllerIds() {
@@ -1026,7 +1019,6 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
-    @JsonIgnore
     @GsonJsonIgnore
     public Properties getProperties() {
         return this.properties;
@@ -1041,7 +1033,6 @@ class PolicyEngineManager implements PolicyEngine {
         return features;
     }
 
-    @JsonIgnore
     @GsonJsonIgnore
     @Override
     public List<PolicyEngineFeatureApi> getFeatureProviders() {

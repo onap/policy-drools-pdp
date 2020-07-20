@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.system;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -348,7 +347,6 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     /**
      * {@inheritDoc}.
      */
-    @JsonIgnore
     @GsonJsonIgnore
     @Override
     public List<PolicyControllerFeatureApi> getFeatureProviders() {

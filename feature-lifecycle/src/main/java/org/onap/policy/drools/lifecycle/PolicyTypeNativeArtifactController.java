@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.lifecycle;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.CoderException;
@@ -43,7 +42,6 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
     protected final ToscaPolicyTypeIdentifier policyType;
 
     @GsonJsonIgnore
-    @JsonIgnore
     protected final LifecycleFsm fsm;
 
     public PolicyTypeNativeArtifactController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {

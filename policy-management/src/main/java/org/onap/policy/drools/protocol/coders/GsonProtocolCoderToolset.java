@@ -20,7 +20,6 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -57,11 +56,9 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     /**
      * Formatter for JSON encoding/decoding.
      */
-    @JsonIgnore
     @GsonJsonIgnore
     public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx");
 
-    @JsonIgnore
     @GsonJsonIgnore
     public static final DateTimeFormatter zuluFormat = DateTimeFormatter.ISO_INSTANT;
 
@@ -105,7 +102,6 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     /**
      * decoder.
      */
-    @JsonIgnore
     @GsonJsonIgnore
     protected final Gson decoder = new GsonBuilder().disableHtmlEscaping()
         .registerTypeAdapter(ZonedDateTime.class, new GsonUtcAdapter())
@@ -114,7 +110,6 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     /**
      * encoder.
      */
-    @JsonIgnore
     @GsonJsonIgnore
     protected final Gson encoder = new GsonBuilder().disableHtmlEscaping()
         .registerTypeAdapter(ZonedDateTime.class, new GsonUtcAdapter())
@@ -135,7 +130,6 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      *
      * @return the Gson decoder
      */
-    @JsonIgnore
     @GsonJsonIgnore
     protected Gson getDecoder() {
         return this.decoder;
@@ -146,7 +140,6 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      *
      * @return the Gson encoder
      */
-    @JsonIgnore
     @GsonJsonIgnore
     protected Gson getEncoder() {
         return this.encoder;

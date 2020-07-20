@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,6 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.ToString;
@@ -39,7 +34,6 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
  * Maven Related Information.
  *
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class DroolsConfiguration {
 
@@ -48,7 +42,6 @@ public class DroolsConfiguration {
      * (Required).
      *
      */
-    @JsonProperty("artifactId")
     @GsonJsonProperty("artifactId")
     private String artifactId;
 
@@ -57,7 +50,6 @@ public class DroolsConfiguration {
      * (Required).
      *
      */
-    @JsonProperty("groupId")
     @GsonJsonProperty("groupId")
     private String groupId;
 
@@ -66,11 +58,9 @@ public class DroolsConfiguration {
      * (Required).
      *
      */
-    @JsonProperty("version")
     @GsonJsonProperty("version")
     private String version;
 
-    @JsonIgnore
     @GsonJsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -104,7 +94,6 @@ public class DroolsConfiguration {
      * @return
      *     The artifactId
      */
-    @JsonProperty("artifactId")
     @GsonJsonProperty("artifactId")
     public String getArtifactId() {
         return artifactId;
@@ -117,7 +106,6 @@ public class DroolsConfiguration {
      * @param artifactId
      *     The artifactId
      */
-    @JsonProperty("artifactId")
     @GsonJsonProperty("artifactId")
     public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
@@ -135,7 +123,6 @@ public class DroolsConfiguration {
      * @return
      *     The groupId
      */
-    @JsonProperty("groupId")
     @GsonJsonProperty("groupId")
     public String getGroupId() {
         return groupId;
@@ -148,7 +135,6 @@ public class DroolsConfiguration {
      * @param groupId
      *     The groupId
      */
-    @JsonProperty("groupId")
     @GsonJsonProperty("groupId")
     public void setGroupId(String groupId) {
         this.groupId = groupId;
@@ -166,7 +152,6 @@ public class DroolsConfiguration {
      * @return
      *     The version
      */
-    @JsonProperty("version")
     @GsonJsonProperty("version")
     public String getVersion() {
         return version;
@@ -179,7 +164,6 @@ public class DroolsConfiguration {
      * @param version
      *     The version
      */
-    @JsonProperty("version")
     @GsonJsonProperty("version")
     public void setVersion(String version) {
         this.version = version;
@@ -190,13 +174,11 @@ public class DroolsConfiguration {
         return this;
     }
 
-    @JsonAnyGetter
     @GsonJsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
-    @JsonAnySetter
     @GsonJsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
