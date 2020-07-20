@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee5e3b80_629d4fa1",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-20T21:43:06Z",
+      "side": 0,
+      "message": "I thought because of dmaap libraries, or aaf, jackson, ends up in the classpath and the common endpoints http-server ends up using it, may be this is not the case anymore?",
+      "revId": "e7f57317f694c7a2a673e37dbfdd6275adcd74c0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
