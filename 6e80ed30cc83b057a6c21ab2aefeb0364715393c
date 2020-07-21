@@ -16,6 +16,24 @@
       "revId": "6e80ed30cc83b057a6c21ab2aefeb0364715393c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3cb8e95d_05246df2",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-07-21T12:05:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7a31014_03a116a2",
+      "revId": "6e80ed30cc83b057a6c21ab2aefeb0364715393c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
