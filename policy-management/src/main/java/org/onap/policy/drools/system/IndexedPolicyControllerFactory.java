@@ -23,6 +23,7 @@ package org.onap.policy.drools.system;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsController;
@@ -43,13 +44,13 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     /**
      * Policy Controller Name Index.
      */
-    private final HashMap<String, PolicyController> policyControllers =
+    private final Map<String, PolicyController> policyControllers =
             new HashMap<>();
 
     /**
      * Group/Artifact Ids Index.
      */
-    private final HashMap<String, PolicyController> coordinates2Controller =
+    private final Map<String, PolicyController> coordinates2Controller =
             new HashMap<>();
 
     /**
@@ -378,7 +379,35 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
     // these methods can be overridden by junit tests
 
     protected PolicyController newPolicyController(String name, Properties properties) {
-        return new AggregatedPolicyController(name, properties);
+        PolicyController controller = null;
+        for (PolicyControllerFeatureApi feature: getProviders()) {
+            try {
+                controller = feature.beforeInstance(name, properties);
+                if (controller != null) {
+                    logger.info("feature {} ({}) beforeInstance() has intercepted controller {}",
+                            feature.getName(), feature.getSequenceNumber(), name);
+                    break;
+                }
+            } catch (RuntimeException r) {
+                logger.error("feature {} ({}) beforeInstance() of controller {} failed",
+                        feature.getName(), feature.getSequenceNumber(), name, r);
+            }
+        }
+
+        if (controller == null) {
+            controller = new AggregatedPolicyController(name, properties);
+        }
+
+        for (PolicyControllerFeatureApi feature: getProviders()) {
+            try {
+                feature.afterInstance(controller, properties);
+            } catch (RuntimeException r) {
+                logger.error("feature {} ({}) afterInstance() of controller {} failed ",
+                        feature.getName(), feature.getSequenceNumber(), name, r);
+            }
+        }
+
+        return controller;
     }
 
     protected List<PolicyControllerFeatureApi> getProviders() {
