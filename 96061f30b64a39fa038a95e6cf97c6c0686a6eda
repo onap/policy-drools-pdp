@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ceba03a_8dcf6664",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/DroolsControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-21T13:33:27Z",
+      "side": 1,
+      "message": "this is an existing file, so should keep original license dates, too, right?",
+      "revId": "96061f30b64a39fa038a95e6cf97c6c0686a6eda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ff5b6149_af4cf91b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-21T13:33:27Z",
+      "side": 1,
+      "message": "remove trailing \"{}\" - logger will add the exception information automatically",
+      "range": {
+        "startLine": 168,
+        "startChar": 113,
+        "endLine": 168,
+        "endChar": 116
+      },
+      "revId": "96061f30b64a39fa038a95e6cf97c6c0686a6eda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68c24f13_c1aa3370",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/IndexedDroolsControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-21T13:33:27Z",
+      "side": 1,
+      "message": "remove trailing \"{}\" - logger will add the exception information automatically",
+      "range": {
+        "startLine": 187,
+        "startChar": 112,
+        "endLine": 187,
+        "endChar": 115
+      },
+      "revId": "96061f30b64a39fa038a95e6cf97c6c0686a6eda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ae6cf85_0c314a39",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-21T13:33:27Z",
+      "side": 1,
+      "message": "remove trailing \"{}\"",
+      "range": {
+        "startLine": 394,
+        "startChar": 100,
+        "endLine": 394,
+        "endChar": 103
+      },
+      "revId": "96061f30b64a39fa038a95e6cf97c6c0686a6eda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a1c95f2_55498148",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/IndexedPolicyControllerFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-07-21T13:33:27Z",
+      "side": 1,
+      "message": "remove trailing \"{}\"",
+      "range": {
+        "startLine": 407,
+        "startChar": 107,
+        "endLine": 407,
+        "endChar": 110
+      },
+      "revId": "96061f30b64a39fa038a95e6cf97c6c0686a6eda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
