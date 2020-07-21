@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a7a31014_03a116a2",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/controller/DroolsControllerFactoryTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 743
+      },
+      "writtenOn": "2020-07-21T08:28:23Z",
+      "side": 1,
+      "message": "It\u0027s a bit unexpected to see the name \u0027TDJAM\u0027 here, given that it is supposed to reside in the \u0027drools-artifacts\u0027 repository.",
+      "revId": "6e80ed30cc83b057a6c21ab2aefeb0364715393c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
