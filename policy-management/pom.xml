@@ -34,10 +34,6 @@
     <name>policy-management</name>
     <description>Policy Management</description>
 
-    <properties>
-        <jackson.version>2.9.5</jackson.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
