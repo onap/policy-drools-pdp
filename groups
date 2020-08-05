@@ -1,4 +1,5 @@
 # UUID                                                                            	Group Name
 #
+0355b3a2b69a8c27923b93ed2fd5c7e4105bd39e                                          	saml/onap-gerrit-policy-drools-pdp-committers
 daebbf523be390041a1a9c0e340a6d833aae5043                                          	GitHub Replication
 ldap:cn=onap-gerrit-policy-drools-pdp-committers,ou=Groups,dc=freestandards,dc=org	ldap/onap-gerrit-policy-drools-pdp-committers
