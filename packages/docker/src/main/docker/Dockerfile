@@ -1,4 +1,4 @@
-FROM onap/policy-jdk-debian:2.0.1
+FROM onap/policy-jdk-alpine:2.0.1
 
 LABEL maintainer="Policy Team"
 
@@ -20,16 +20,15 @@ ENV MVN_SNAPSHOT_REPO_URL $MVN_SNAPSHOT_REPO_URL
 ENV MVN_RELEASE_REPO_URL $MVN_RELEASE_REPO_URL
 ENV http_proxy $http_proxy
 
-RUN apt-get update \
-    && apt-get install -y \
-    httpie \
-    python3 python3-pip \
-    mariadb-client \
-    file bash-completion \
-    net-tools netcat sudo \
+RUN apk update && \
+    apk add --no-cache python3 \
+    mariadb-client py3-pip \
+    bash file bash-completion dpkg \
+    net-tools netcat-openbsd sudo \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
-    && pip install http-prompt
+    && pip install --upgrade pip setuptools httpie http-prompt \
+    && rm -r /root/.cache
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
     chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL
