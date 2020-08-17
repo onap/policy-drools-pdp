@@ -1,8 +1,9 @@
-FROM onap/policy-jdk-debian:2.0.1
+FROM onap/policy-jdk-alpine:2.0.1
 
 LABEL maintainer="Policy Team"
 
 ARG BUILD_VERSION_DROOLS=${BUILD_VERSION_DROOLS}
+ARG JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 ARG POLICY_LOGS=/var/log/onap/policy/pdpd
 ARG POLICY_INSTALL=/tmp/policy-install
 ARG MVN_SNAPSHOT_REPO_URL
@@ -10,6 +11,7 @@ ARG MVN_RELEASE_REPO_URL
 ARG http_proxy
 
 ENV BUILD_VERSION_DROOLS $BUILD_VERSION_DROOLS
+ENV JAVA_HOME $JAVA_HOME
 ENV POLICY_INSTALL $POLICY_INSTALL
 ENV POLICY_INSTALL_INIT $POLICY_INSTALL/config
 ENV POLICY_LOGS $POLICY_LOGS
@@ -20,16 +22,15 @@ ENV MVN_SNAPSHOT_REPO_URL $MVN_SNAPSHOT_REPO_URL
 ENV MVN_RELEASE_REPO_URL $MVN_RELEASE_REPO_URL
 ENV http_proxy $http_proxy
 
-RUN apt-get update \
-    && apt-get install -y \
-    httpie \
-    python3 python3-pip \
-    mariadb-client \
-    file bash-completion \
-    net-tools netcat sudo \
+RUN apk update && \
+    apk add --no-cache python3 \
+    mariadb-client py3-pip \
+    bash file bash-completion dpkg \
+    net-tools netcat-openbsd sudo \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
-    && pip install http-prompt
+    && pip install --upgrade pip setuptools httpie http-prompt \
+    && rm -r /root/.cache
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
     chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL
