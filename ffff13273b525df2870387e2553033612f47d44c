@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f3448a5_674eb265",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-08-19T17:01:25Z",
+      "side": 1,
+      "message": "I don\u0027t think the JAVA_HOME is necessary here, can set it directly in line 14.",
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1f0f71e6_71b70223",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-08-19T17:01:25Z",
+      "side": 1,
+      "message": "can you add these packages:  vim, openssl, less.\nI am looking at the previous alpine drools-pdp version of elalto for comparison here, fyi:  https://git.onap.org/policy/drools-pdp/tree/packages/docker/src/main/docker/Dockerfile?h\u003delalto",
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6329d967_047f3d2b",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-08-19T17:01:25Z",
+      "side": 1,
+      "message": "when you have a chance if you can check that the telemetry shell comes up .. and the \"deploy\" tool as in the drools-pdp video tutorials in the wiki to check all that is working",
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
