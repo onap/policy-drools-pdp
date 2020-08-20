@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ee42a3a2_2ec946f9",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-08-20T18:53:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3f3448a5_674eb265",
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1f0f71e6_71b70223",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "89ee95f0_b752a15d",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-08-20T18:53:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f0f71e6_71b70223",
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6329d967_047f3d2b",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 4
@@ -50,6 +86,24 @@
       "revId": "ffff13273b525df2870387e2553033612f47d44c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8510b8d_1d926f5a",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-08-20T18:53:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6329d967_047f3d2b",
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
