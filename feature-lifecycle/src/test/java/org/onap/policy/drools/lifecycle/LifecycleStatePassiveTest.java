@@ -29,8 +29,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -76,11 +74,11 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertSame(controllerSupport.getController(),
             ((PolicyTypeDroolsController) fsm.getController(
                     new ToscaPolicyTypeIdentifier(
-                            ControllerSupport.POLICY_TYPE_LEGACY_OP, ControllerSupport.POLICY_TYPE_VERSION)))
+                            ControllerSupport.POLICY_TYPE_COMPLIANT_OP, ControllerSupport.POLICY_TYPE_VERSION)))
                 .controllers().get(0));
 
         fsm.stop(controllerSupport.getController());
-        assertNull(fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE_LEGACY_OP,
+        assertNull(fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE_COMPLIANT_OP,
                         ControllerSupport.POLICY_TYPE_VERSION)));
 
         fsm.shutdown();
@@ -168,9 +166,9 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("z", fsm.getSubgroup());
         assertBasicPassive();
 
-        String rawPolicy = new String(
-                        Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
-        ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
+        ToscaPolicy toscaPolicy =
+            getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
+        toscaPolicy.getProperties().put("controllerName", "lifecycle");
         update.setPolicies(Arrays.asList(toscaPolicy));
 
         assertFalse(fsm.update(update));
@@ -211,11 +209,11 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertTrue(fsm.policiesMap.isEmpty());
 
         fsm.start(controllerSupport.getController());
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         assertTrue(fsm.update(update));
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(1, fsm.policiesMap.size());
         assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
         assertEquals(PdpState.PASSIVE, fsm.state());
@@ -229,7 +227,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         update.setPdpSubgroup(null);
         update.setPolicies(Collections.emptyList());
         assertTrue(fsm.update(update));
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(0, fsm.policiesMap.size());
         assertEquals(PdpState.PASSIVE, fsm.state());
         assertEquals(interval, fsm.getStatusTimerSeconds());
@@ -263,18 +261,18 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
 
-        String rawPolicy = new String(
-                        Files.readAllBytes(Paths.get("src/test/resources/tosca-policy-operational-restart.json")));
-        ToscaPolicy toscaPolicy = new StandardCoder().decode(rawPolicy, ToscaPolicy.class);
+        ToscaPolicy toscaPolicy =
+            getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
+        toscaPolicy.getProperties().put("controllerName", "lifecycle");
         update.setPolicies(Arrays.asList(toscaPolicy));
 
         controllerSupport.getController().start();
         fsm.start(controllerSupport.getController());
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertTrue(fsm.policiesMap.isEmpty());
 
         assertTrue(fsm.update(update));
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(1, fsm.policiesMap.size());
         assertEquals(fsm.policiesMap.get(toscaPolicy.getIdentifier()), toscaPolicy);
         assertEquals(PdpState.PASSIVE, fsm.state());

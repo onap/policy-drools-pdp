@@ -28,8 +28,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -143,11 +141,11 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         assertEquals(policyNativeArtifact, fsm.getPoliciesMap().get(policyNativeArtifact.getIdentifier()));
 
         //
-        // add a legacy operational policy
+        // add an operational policy
         //
 
-        String restart = Files.readString(Paths.get("src/test/resources/tosca-policy-operational-restart.json"));
-        ToscaPolicy opPolicyRestart = new StandardCoder().decode(restart, ToscaPolicy.class);
+        ToscaPolicy opPolicyRestart =
+            getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
         update.setPolicies(List.of(policyNativeController, policyNativeArtifact, opPolicyRestart));
         assertFalse(fsm.update(update));
 
@@ -159,13 +157,11 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
 
         fsm.start(controllerSupport.getController());
 
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Controller", "1.0.0")));
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Artifact", "1.0.0")));
-        assertNotNull(fsm.getPolicyTypesMap().get(
-                new ToscaPolicyTypeIdentifier("onap.policies.controlloop.Operational", "1.0.0")));
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaPolicyTypeIdentifier("onap.policies.controlloop.operational.common.Drools",
                         "1.0.0")));
@@ -193,9 +189,9 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
 
         // upgrade operational policy with valid controller name
 
-        String restartV2 = Files.readString(
-            Paths.get("src/test/resources/tosca-policy-operational-restart.v2.json"));
-        ToscaPolicy opPolicyRestartV2 = new StandardCoder().decode(restartV2, ToscaPolicy.class);
+        ToscaPolicy opPolicyRestartV2 =
+            getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
+        opPolicyRestartV2.setVersion("2.0.0");
         opPolicyRestartV2.getProperties().put("controllerName", "lifecycle");
         update.setPolicies(List.of(policyNativeController, policyNativeArtifact, opPolicyRestartV2));
         assertTrue(fsm.update(update));

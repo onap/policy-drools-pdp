@@ -31,6 +31,7 @@ import org.junit.BeforeClass;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
+import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
@@ -119,6 +120,12 @@ public abstract class LifecycleStateRunningTest {
     protected ToscaPolicy getPolicyFromFile(String filePath, String policyName) throws CoderException, IOException {
         String policyJson = Files.readString(Paths.get(filePath));
         ToscaServiceTemplate serviceTemplate = coder.decode(policyJson, ToscaServiceTemplate.class);
+        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
+    }
+
+    protected ToscaPolicy getExamplesPolicy(String resourcePath, String policyName) throws CoderException {
+        String policyJson = ResourceUtils.getResourceAsString(resourcePath);
+        ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
         return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
     }
 }

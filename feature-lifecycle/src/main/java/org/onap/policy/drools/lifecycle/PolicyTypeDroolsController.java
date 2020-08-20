@@ -29,7 +29,6 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.CoderException;
-import org.onap.policy.drools.domain.models.legacy.LegacyPolicy;
 import org.onap.policy.drools.domain.models.operational.OperationalPolicy;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
@@ -43,8 +42,6 @@ import org.slf4j.LoggerFactory;
  */
 
 public class PolicyTypeDroolsController implements PolicyTypeController {
-    protected static final ToscaPolicyTypeIdentifier legacyType =
-        new ToscaPolicyTypeIdentifier("onap.policies.controlloop.Operational", "1.0.0");
 
     protected static final ToscaPolicyTypeIdentifier compliantType =
         new ToscaPolicyTypeIdentifier("onap.policies.controlloop.operational.common.Drools", "1.0.0");
@@ -142,20 +139,13 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
     }
 
     private List<PolicyController> selectControllers(ToscaPolicy policy) throws CoderException {
-        List<PolicyController> selected;
-        if (legacyType.equals(policyType)) {
-            selected = controllers(
-                fsm.getDomainMaker().convertTo(policy, LegacyPolicy.class)
-                    .getProperties()
-                    .getControllerName());
-        } else if (compliantType.equals(policyType)) {
-            selected = controllers(
+        if (compliantType.equals(policyType)) {
+            return controllers(
                 fsm.getDomainMaker().convertTo(policy, OperationalPolicy.class)
                     .getProperties()
                     .getControllerName());
-        } else {
-            selected = List.copyOf(controllers.values());
         }
-        return selected;
+
+        return List.copyOf(controllers.values());
     }
 }

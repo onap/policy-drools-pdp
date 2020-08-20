@@ -44,7 +44,6 @@ public class ControllerSupport {
     protected static final String JUNIT_KJAR_DRL_PATH =
         "src/main/resources/kbLifecycle/org/onap/policy/drools/test/";
 
-    protected static final String POLICY_TYPE_LEGACY_OP = "onap.policies.controlloop.Operational";
     protected static final String POLICY_TYPE_COMPLIANT_OP = "onap.policies.controlloop.operational.common.Drools";
     protected static final String POLICY_TYPE_VERSION = "1.0.0";
 
@@ -110,8 +109,7 @@ public class ControllerSupport {
      * Get Policy Type.
      */
     public static String getPolicyType() {
-        return POLICY_TYPE_LEGACY_OP + ":" + POLICY_TYPE_VERSION + ","
-                       + POLICY_TYPE_COMPLIANT_OP + ":" + POLICY_TYPE_VERSION;
+        return POLICY_TYPE_COMPLIANT_OP + ":" + POLICY_TYPE_VERSION;
     }
 
     /**

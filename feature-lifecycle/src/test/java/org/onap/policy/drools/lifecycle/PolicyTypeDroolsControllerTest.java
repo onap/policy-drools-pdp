@@ -27,12 +27,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
-import org.onap.policy.common.utils.coder.StandardCoder;
-import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.drools.domain.models.operational.OperationalPolicy;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
 /**
  * Drools Controller Policy Test.
@@ -88,12 +85,6 @@ public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
         assertTrue(controller.deploy(policy));
         assertTrue(controller.undeploy(policy));
         assertFalse(controller.undeploy(policy));
-    }
-
-    private ToscaPolicy getExamplesPolicy(String resourcePath, String policyName) throws CoderException {
-        String policyJson = ResourceUtils.getResourceAsString(resourcePath);
-        ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
-        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
     }
 
 }
