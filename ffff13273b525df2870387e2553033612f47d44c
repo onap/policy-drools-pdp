@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "b04319ad_e5407f20",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-08-21T14:34:30Z",
+      "side": 1,
+      "message": "i think 2.0.2 is the latest official docker image. I will change this as well.",
+      "range": {
+        "startLine": 1,
+        "startChar": 28,
+        "endLine": 1,
+        "endChar": 33
+      },
+      "revId": "ffff13273b525df2870387e2553033612f47d44c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3f3448a5_674eb265",
         "filename": "packages/docker/src/main/docker/Dockerfile",
         "patchSetId": 4
