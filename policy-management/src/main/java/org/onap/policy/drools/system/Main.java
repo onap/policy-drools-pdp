@@ -26,6 +26,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.http.client.HttpClientConfigException;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
+import org.onap.policy.common.utils.resources.MessageConstants;
 import org.onap.policy.common.utils.security.CryptoUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
@@ -102,7 +103,10 @@ public class Main {
         /* 4. Create and start the controllers */
         createAndStartControllers(logger, trans);
 
+        /* 5. Open the engine for dynamic configuration */
         PolicyEngineConstants.getManager().open();
+
+        logger.info(String.format(MessageConstants.START_SUCCESS_MSG, MessageConstants.POLICY_DROOLS_PDP));
     }
 
     private static void setSystemProperties() {
@@ -140,6 +144,8 @@ public class Main {
                         LoggerUtil.TRANSACTION_LOG_MARKER,
                         "Main: {} has been partially started",
                         PolicyEngineConstants.getManager());
+                throw new PolicyDroolsPdpRuntimeException(
+                        String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP));
             } else {
                 trans.setStatusCode(true).transaction();
             }
@@ -155,6 +161,8 @@ public class Main {
                     PolicyEngineConstants.getManager(),
                     e.getMessage(),
                     e);
+            throw new PolicyDroolsPdpRuntimeException(
+                    String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP));
         } catch (final Exception e) {
             trans
                 .setStatusCode(false)
@@ -167,7 +175,8 @@ public class Main {
                     PolicyEngineConstants.getManager(),
                     e.getMessage(),
                     e);
-            System.exit(1);
+            throw new PolicyDroolsPdpRuntimeException(
+                    String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP));
         }
         return trans;
     }
@@ -204,6 +213,8 @@ public class Main {
                         controllerName,
                         e.getMessage(),
                         e);
+                throw new PolicyDroolsPdpRuntimeException(
+                        String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP));
             } catch (final LinkageError e) {
                 trans
                     .setStatusCode(false)
@@ -216,6 +227,8 @@ public class Main {
                         controllerName,
                         e.getMessage(),
                         e);
+                throw new PolicyDroolsPdpRuntimeException(
+                        String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP));
             }
         }
     }
