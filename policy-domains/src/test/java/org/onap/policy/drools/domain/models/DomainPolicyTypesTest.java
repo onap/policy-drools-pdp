@@ -54,8 +54,6 @@ public class DomainPolicyTypesTest {
     private static final String OP_POLICY_NAME_VCPE = "operational.restart";
     private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
             "policies/vCPE.policy.operational.input.tosca.json";
-    public static final String VCPE_OPERATIONAL_DROOLS_LEGACY_POLICY_JSON =
-            "src/test/resources/tosca-policy-operational-restart.json";
 
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
@@ -74,57 +72,6 @@ public class DomainPolicyTypesTest {
     public void setUp() {
         domainMaker = new DomainMaker();
         nonValCoder = new StandardCoder();
-    }
-
-    @Test
-    public void testToscaOperationalPolicyType() throws CoderException, IOException {
-        String rawVcpeToscaPolicy = getExamplesPolicyString(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
-        String rawVcpeLegacyToscaPolicy = getJsonFromFile(VCPE_OPERATIONAL_DROOLS_LEGACY_POLICY_JSON);
-
-        // valid "known" policy type with implicit schema
-        assertTrue(domainMaker
-            .isConformant(new ToscaPolicyTypeIdentifier(OPERATIONAL_DROOLS_POLICY_TYPE, "1.0.0"),
-                rawVcpeToscaPolicy));
-
-        // policy type without schema
-        assertFalse(domainMaker
-            .isConformant(new ToscaPolicyTypeIdentifier("blah.blah", "1.0.0"), rawVcpeToscaPolicy));
-
-        // known policy type but invalid json (legacy).
-        assertFalse(domainMaker
-            .isConformant(new ToscaPolicyTypeIdentifier(OPERATIONAL_DROOLS_POLICY_TYPE, "1.0.0"),
-                rawVcpeLegacyToscaPolicy));
-
-        ToscaPolicy vcpeToscaPolicy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
-        assertTrue(domainMaker.isConformant(vcpeToscaPolicy));
-        assertTrue(domainMaker.conformance(vcpeToscaPolicy));
-
-        // set an invalid value in the Tosca Policy (timeout less than minimum value).
-        final int timeout = (int) vcpeToscaPolicy.getProperties().get("timeout");
-        vcpeToscaPolicy.getProperties().put("timeout", 0);
-        assertFalse(domainMaker.isConformant(vcpeToscaPolicy));
-        assertThatThrownBy(() ->
-                                   domainMaker.conformance(vcpeToscaPolicy))
-                .isInstanceOf(ValidationFailedException.class)
-                .hasMessageContaining("Value 0 is smaller than minimum 1");
-
-        // put back the original timeout value in the Tosca Policy
-        vcpeToscaPolicy.getProperties().put("timeout", timeout);
-        assertTrue(domainMaker.isConformant(vcpeToscaPolicy));
-        assertTrue(domainMaker.conformance(vcpeToscaPolicy));
-
-        // remove required element
-        final Object operations = vcpeToscaPolicy.getProperties().remove("operations");
-        assertFalse(domainMaker.isConformant(vcpeToscaPolicy));
-        assertThatThrownBy(() ->
-                                   domainMaker.conformance(vcpeToscaPolicy))
-                .isInstanceOf(ValidationFailedException.class)
-                .hasMessageContaining("Required property operations is missing from object");
-
-        // put back the original operations value in the Tosca Policy
-        vcpeToscaPolicy.getProperties().put("operations", operations);
-        assertTrue(domainMaker.isConformant(vcpeToscaPolicy));
-        assertTrue(domainMaker.conformance(vcpeToscaPolicy));
     }
 
     @Test

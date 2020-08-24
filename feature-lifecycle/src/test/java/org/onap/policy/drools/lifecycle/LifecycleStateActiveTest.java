@@ -56,12 +56,6 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
     private static final String POLICY_COMPLIANT_VCPE_BAD_INTEGER_JSON =
             "src/test/resources/tosca-policy-compliant-vcpe-bad-integer.json";
-    private static final String POLICY_OPERATIONAL_FIREWALL_JSON =
-            "src/test/resources/tosca-policy-operational-firewall.json";
-    private static final String POLICY_OPERATIONAL_RESTART_V_2_JSON =
-            "src/test/resources/tosca-policy-operational-restart.v2.json";
-    private static final String POLICY_OPERATIONAL_RESTART_JSON =
-            "src/test/resources/tosca-policy-operational-restart.json";
 
     /**
      * Start tests in the Active state.
@@ -208,9 +202,9 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertEquals("w", fsm.getSubgroup());
 
-        String restartV1 =
-            Files.readString(Paths.get(POLICY_OPERATIONAL_RESTART_JSON), StandardCharsets.UTF_8);
-        ToscaPolicy toscaPolicyRestartV1 = new StandardCoder().decode(restartV1, ToscaPolicy.class);
+        ToscaPolicy toscaPolicyRestartV1 =
+            getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
+        toscaPolicyRestartV1.getProperties().put("controllerName", "lifecycle");
         update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
 
         int qlength = fsm.client.getSink().getRecentEvents().length;
@@ -219,13 +213,11 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertTrue(fsm.update(update));
         assertEquals(qlength + 1, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Controller", "1.0.0")));
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Artifact", "1.0.0")));
-        assertNotNull(fsm.getPolicyTypesMap().get(
-                new ToscaPolicyTypeIdentifier("onap.policies.controlloop.Operational", "1.0.0")));
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaPolicyTypeIdentifier("onap.policies.controlloop.operational.common.Drools",
                 "1.0.0")));
@@ -242,7 +234,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertTrue(fsm.update(update));
         assertEquals(qlength + 2, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 1], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -257,7 +249,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         update.setPolicies(Collections.emptyList());
         assertTrue(fsm.update(update));
         assertEquals(qlength + 3, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 2], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -271,7 +263,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 4, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 3], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -283,13 +275,14 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         // deploy a new version of the operational.restart policy
 
-        String restartV2 =
-            Files.readString(Paths.get(POLICY_OPERATIONAL_RESTART_V_2_JSON), StandardCharsets.UTF_8);
-        ToscaPolicy toscaPolicyRestartV2 = new StandardCoder().decode(restartV2, ToscaPolicy.class);
+        ToscaPolicy toscaPolicyRestartV2 =
+            getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
+        toscaPolicyRestartV2.setVersion("2.0.0");
+        toscaPolicyRestartV2.getProperties().put("controllerName", "lifecycle");
         update.setPolicies(Arrays.asList(toscaPolicyRestartV2));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 5, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 4], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
@@ -302,13 +295,13 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         // deploy another policy : firewall
 
-        String firewall =
-            Files.readString(Paths.get(POLICY_OPERATIONAL_FIREWALL_JSON), StandardCharsets.UTF_8);
-        ToscaPolicy toscaPolicyFirewall = new StandardCoder().decode(firewall, ToscaPolicy.class);
+        ToscaPolicy toscaPolicyFirewall =
+            getExamplesPolicy("policies/vFirewall.policy.operational.input.tosca.json", "operational.modifyconfig");
+        toscaPolicyFirewall.getProperties().put("controllerName", "lifecycle");
         update.setPolicies(Arrays.asList(toscaPolicyRestartV2, toscaPolicyFirewall));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 6, fsm.client.getSink().getRecentEvents().length);
-        assertEquals(4, fsm.policyTypesMap.size());
+        assertEquals(3, fsm.policyTypesMap.size());
         cachedStatus = new StandardCoder()
             .decode(fsm.client.getSink().getRecentEvents()[qlength + 5], PdpStatus.class);
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());

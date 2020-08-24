@@ -171,7 +171,6 @@ public class RestLifecycleManagerTest {
         resourceLists("policyTypes", 2);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.controlloop.Operational/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         resourceLists("policies", 0);
@@ -196,7 +195,6 @@ public class RestLifecycleManagerTest {
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isAlive());
 
-        get("policyTypes/onap.policies.controlloop.Operational/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         resourceLists("policies", 1);
@@ -214,10 +212,9 @@ public class RestLifecycleManagerTest {
 
         /* verify new supported operational policy types */
 
-        resourceLists("policyTypes", 5);
+        resourceLists("policyTypes", 4);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.controlloop.Operational/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.type1.type2/1.0.0", Status.OK.getStatusCode());
 
@@ -294,7 +291,6 @@ public class RestLifecycleManagerTest {
         resourceLists("policyTypes", 2);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.controlloop.Operational/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.type1.type2/1.0.0", Status.NOT_FOUND.getStatusCode());
 
@@ -310,7 +306,6 @@ public class RestLifecycleManagerTest {
         resourceLists("policyTypes", 2);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.controlloop.Operational/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.type1.type2/1.0.0", Status.NOT_FOUND.getStatusCode());
 
