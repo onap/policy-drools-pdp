@@ -205,7 +205,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         ToscaPolicy toscaPolicyRestartV1 =
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
         toscaPolicyRestartV1.getProperties().put("controllerName", "lifecycle");
-        update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
+        update.setPolicies(Collections.singletonList(toscaPolicyRestartV1));
 
         int qlength = fsm.client.getSink().getRecentEvents().length;
 
@@ -260,7 +260,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         // redeploy operational.restart policy
 
-        update.setPolicies(Arrays.asList(toscaPolicyRestartV1));
+        update.setPolicies(Collections.singletonList(toscaPolicyRestartV1));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 4, fsm.client.getSink().getRecentEvents().length);
         assertEquals(3, fsm.policyTypesMap.size());
@@ -279,7 +279,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
         toscaPolicyRestartV2.setVersion("2.0.0");
         toscaPolicyRestartV2.getProperties().put("controllerName", "lifecycle");
-        update.setPolicies(Arrays.asList(toscaPolicyRestartV2));
+        update.setPolicies(Collections.singletonList(toscaPolicyRestartV2));
         assertTrue(fsm.update(update));
         assertEquals(qlength + 5, fsm.client.getSink().getRecentEvents().length);
         assertEquals(3, fsm.policyTypesMap.size());
@@ -327,7 +327,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         String badIntegerPolicy =
             Files.readString(Paths.get(POLICY_COMPLIANT_VCPE_BAD_INTEGER_JSON), StandardCharsets.UTF_8);
         ToscaPolicy toscaPolicyRestartBad = new StandardCoder().decode(badIntegerPolicy, ToscaPolicy.class);
-        update.setPolicies(Arrays.asList(toscaPolicyRestartBad));
+        update.setPolicies(Collections.singletonList(toscaPolicyRestartBad));
         assertFalse(fsm.update(update));
 
         assertTrue(controllerSupport.getController().getDrools().delete(ToscaPolicy.class));
