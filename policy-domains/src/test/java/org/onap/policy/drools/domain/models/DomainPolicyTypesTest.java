@@ -47,13 +47,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 public class DomainPolicyTypesTest {
 
     // Policy Types
-    private static final String OPERATIONAL_DROOLS_POLICY_TYPE = "onap.policies.controlloop.operational.common.Drools";
     private static final String NATIVE_DROOLS_POLICY_TYPE = "onap.policies.native.drools.Artifact";
-
-    // Operational vCPE Policy
-    private static final String OP_POLICY_NAME_VCPE = "operational.restart";
-    private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
-            "policies/vCPE.policy.operational.input.tosca.json";
 
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
@@ -183,9 +177,5 @@ public class DomainPolicyTypesTest {
         String policyJson = getJsonFromResource(resourcePath);
         ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
         return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
-    }
-
-    private String getExamplesPolicyString(String resourcePath, String policyName) throws CoderException {
-        return nonValCoder.encode(getExamplesPolicy(resourcePath, policyName));
     }
 }

@@ -767,6 +767,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
                 }
             }
 
+            session.removePolicySession();
             logger.info("PersistentThreadModel completed");
         }
     }

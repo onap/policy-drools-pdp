@@ -157,10 +157,8 @@ public class Main {
                 .flush();
             logger.warn(
                     LoggerUtil.TRANSACTION_LOG_MARKER,
-                    "Main: cannot start {} (bad state) because of {}",
-                    PolicyEngineConstants.getManager(),
-                    e.getMessage(),
-                    e);
+                    "Main: cannot start {} (bad state)",
+                    PolicyEngineConstants.getManager());
             throw new PolicyDroolsPdpRuntimeException(
                     String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP), e);
         } catch (final Exception e) {
@@ -171,10 +169,8 @@ public class Main {
                 .flush();
             logger.warn(
                     LoggerUtil.TRANSACTION_LOG_MARKER,
-                    "Main: cannot start {} because of {}",
-                    PolicyEngineConstants.getManager(),
-                    e.getMessage(),
-                    e);
+                    "Main: cannot start {}",
+                    PolicyEngineConstants.getManager());
             throw new PolicyDroolsPdpRuntimeException(
                     String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP), e);
         }
@@ -209,10 +205,8 @@ public class Main {
                     .flush();
                 logger.error(
                         LoggerUtil.TRANSACTION_LOG_MARKER,
-                        "Main: cannot instantiate policy-controller {} because of {}",
-                        controllerName,
-                        e.getMessage(),
-                        e);
+                        "Main: cannot instantiate policy-controller {}",
+                        controllerName);
                 throw new PolicyDroolsPdpRuntimeException(
                         String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP), e);
             } catch (final LinkageError e) {
@@ -223,10 +217,8 @@ public class Main {
                     .flush();
                 logger.warn(
                         LoggerUtil.TRANSACTION_LOG_MARKER,
-                        "Main: cannot instantiate policy-controller {} (linkage) because of {}",
-                        controllerName,
-                        e.getMessage(),
-                        e);
+                        "Main: cannot instantiate policy-controller {} (linkage)",
+                        controllerName);
                 throw new PolicyDroolsPdpRuntimeException(
                         String.format(MessageConstants.START_FAILURE_MSG, MessageConstants.POLICY_DROOLS_PDP), e);
             }

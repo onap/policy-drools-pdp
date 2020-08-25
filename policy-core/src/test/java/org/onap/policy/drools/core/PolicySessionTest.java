@@ -102,7 +102,7 @@ public class PolicySessionTest {
     }
 
     @Test
-    public void testSetPolicySession_testGetCurrentSession() {
+    public void testSetPolicySession_testGetCurrentSession_testRemovePolicySession() {
         PolicySession sess2 = new PolicySession(MY_NAME + "-b", container, kie);
 
         session.setPolicySession();
@@ -110,6 +110,14 @@ public class PolicySessionTest {
 
         sess2.setPolicySession();
         assertEquals(sess2, PolicySession.getCurrentSession());
+
+        // remove a different session - should be unchanged
+        session.removePolicySession();
+        assertEquals(sess2, PolicySession.getCurrentSession());
+
+        // remove the session
+        sess2.removePolicySession();
+        assertNull(PolicySession.getCurrentSession());
     }
 
     @Test

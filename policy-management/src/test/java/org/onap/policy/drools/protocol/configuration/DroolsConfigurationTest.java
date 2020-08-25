@@ -56,7 +56,7 @@ public class DroolsConfigurationTest {
         additionalProperties.put(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
 
         final DroolsConfiguration droolsConfig = new DroolsConfiguration(ARTIFACT, GROUPID, VERSION);
-        assertEquals(droolsConfig, droolsConfig);
+        assertEquals(droolsConfig, (Object) droolsConfig);
 
         droolsConfig.set(ARTIFACT_ID_STRING, "foobar");
         assertEquals("foobar", droolsConfig.get(ARTIFACT_ID_STRING));

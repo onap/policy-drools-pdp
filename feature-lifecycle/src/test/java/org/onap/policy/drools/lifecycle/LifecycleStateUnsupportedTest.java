@@ -90,19 +90,22 @@ public abstract class LifecycleStateUnsupportedTest {
 
     @Test
     public void update() {
-        assertThatThrownBy(() -> state.update(new PdpUpdate()))
+        PdpUpdate update = new PdpUpdate();
+        assertThatThrownBy(() -> state.update(update))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void stateChange() {
-        assertThatThrownBy(() -> state.stateChange(new PdpStateChange()))
+        PdpStateChange change = new PdpStateChange();
+        assertThatThrownBy(() -> state.stateChange(change))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
     @Test
     public void changeState() {
-        assertThatThrownBy(() -> state.transitionToState(new LifecycleStateActive(new LifecycleFsm())))
+        LifecycleStateActive active = new LifecycleStateActive(new LifecycleFsm());
+        assertThatThrownBy(() -> state.transitionToState(active))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 }

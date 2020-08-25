@@ -108,7 +108,8 @@ public class DomainMakerTest {
         assertDomainPolicy(domainAPolicy);
 
         domainAPolicy.getProperties().getNested().setNested1("");
-        assertThatThrownBy(() -> domainMaker.conformance(policy1.getTypeIdentifier(), domainAPolicy))
+        ToscaPolicyTypeIdentifier ident1 = policy1.getTypeIdentifier();
+        assertThatThrownBy(() -> domainMaker.conformance(ident1, domainAPolicy))
                 .isInstanceOf(ValidationFailedException.class)
                 .hasMessageContaining("Pattern ^(.+)$ is not contained in text");
     }
@@ -142,8 +143,9 @@ public class DomainMakerTest {
 
     @Test
     public void testConvertToSchema() {
+        ToscaPolicyType type = new ToscaPolicyType();
         assertThatThrownBy(() -> domainMaker
-            .convertToSchema(new ToscaPolicyType()))
+            .convertToSchema(type))
             .isInstanceOf(UnsupportedOperationException.class);
     }
 

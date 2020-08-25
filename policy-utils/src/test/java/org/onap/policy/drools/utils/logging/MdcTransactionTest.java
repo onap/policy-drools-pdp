@@ -164,7 +164,6 @@ public class MdcTransactionTest {
         assertEquals(trans.getInvocationId(), MDC.get(MdcTransactionConstants.INVOCATION_ID));
         assertEquals(trans.timestamp(trans.getStartTime()), MDC.get(MdcTransactionConstants.BEGIN_TIMESTAMP));
         assertEquals(trans.timestamp(trans.getEndTime()), MDC.get(MdcTransactionConstants.END_TIMESTAMP));
-        assertNotEquals(trans.getElapsedTime(), MDC.get(MdcTransactionConstants.ELAPSED_TIME));
         assertEquals(String.valueOf(Duration.between(trans.getStartTime(), trans.getEndTime()).toMillis()),
             MDC.get(MdcTransactionConstants.ELAPSED_TIME));
         assertEquals(trans.getServiceInstanceId(), MDC.get(MdcTransactionConstants.SERVICE_INSTANCE_ID));

@@ -66,7 +66,7 @@ public class ControllerConfigurationTest {
 
         ControllerConfiguration controllerConfig = new ControllerConfiguration(NAME, OPERATION, DROOLS_CONFIG);
 
-        assertEquals(controllerConfig, controllerConfig);
+        assertEquals(controllerConfig, (Object) controllerConfig);
         assertNotEquals(controllerConfig, new Object());
 
         ControllerConfiguration controllerConfig2 = new ControllerConfiguration();
