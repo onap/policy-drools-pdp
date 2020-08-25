@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "247a5f13_da515e02",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-08-25T16:03:26Z",
+      "side": 1,
+      "message": "just added //nosonar in case it does, since it seems to me a little more readable than working it out with compute()",
+      "parentUuid": "800ba381_41e1c870",
+      "revId": "c358cad5e7636545f4c05884d1bfd41eea3aa956",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "72007240_19165d58",
         "filename": "packages/install/src/files/base.conf",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "c358cad5e7636545f4c05884d1bfd41eea3aa956",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47319d8f_b4737820",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-08-25T16:03:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "72007240_19165d58",
+      "revId": "c358cad5e7636545f4c05884d1bfd41eea3aa956",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
