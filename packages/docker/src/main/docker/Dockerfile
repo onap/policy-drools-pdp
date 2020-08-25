@@ -48,7 +48,7 @@ RUN unzip -o install-drools.zip && \
     unzip policy-management-${BUILD_VERSION_DROOLS}.zip -d $POLICY_HOME && \
     echo "source $POLICY_HOME/etc/profile.d/env.sh" >> "$HOME/.bashrc" && \
     mv pdpd-entrypoint.sh $POLICY_HOME/bin/ && \
-    chmod 700 $POLICY_HOME/bin/* && \
+    chmod 755 $POLICY_HOME/bin/* && \
     chmod 600 $POLICY_HOME/config/* && \
     rm -f $POLICY_INSTALL/*.conf && \
     . $POLICY_HOME/etc/profile.d/env.sh && \
