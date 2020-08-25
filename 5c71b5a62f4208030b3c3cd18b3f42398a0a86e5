@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "73c594c2_c5165955",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-08-25T16:47:17Z",
+      "side": 1,
+      "message": "not sure - seems like it would be about the same:\n\n  xxx.compute(... (key,value) -\u003e {\n    if (value \u003d\u003d null) {\n      return new ...\n    } else {\n      value.add(...)\n      return value\n    }\n  });",
+      "revId": "5c71b5a62f4208030b3c3cd18b3f42398a0a86e5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
