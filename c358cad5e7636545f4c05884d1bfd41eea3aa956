@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "800ba381_41e1c870",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-08-25T13:50:08Z",
+      "side": 1,
+      "message": "not sure, but sonar may say to use compute() instead of get/put.",
+      "revId": "c358cad5e7636545f4c05884d1bfd41eea3aa956",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72007240_19165d58",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-08-25T13:50:08Z",
+      "side": 1,
+      "message": "same name as on line 93??",
+      "revId": "c358cad5e7636545f4c05884d1bfd41eea3aa956",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
