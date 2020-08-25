@@ -290,7 +290,7 @@ public class DmaapManagerTest {
     @Test
     public void testPublish() throws PoolingFeatureException {
         // cannot publish before starting
-        assertThatThrownBy(() -> mgr.publish(MSG)).as("publish,pre");
+        assertThatThrownBy(() -> mgr.publish(MSG)).as("publish,pre").isInstanceOf(PoolingFeatureException.class);
 
         mgr.startPublisher();
 
@@ -306,7 +306,7 @@ public class DmaapManagerTest {
 
         // stop and verify we can no longer publish
         mgr.stopPublisher(0);
-        assertThatThrownBy(() -> mgr.publish(MSG)).as("publish,stopped");
+        assertThatThrownBy(() -> mgr.publish(MSG)).as("publish,stopped").isInstanceOf(PoolingFeatureException.class);
     }
 
     @Test(expected = PoolingFeatureException.class)

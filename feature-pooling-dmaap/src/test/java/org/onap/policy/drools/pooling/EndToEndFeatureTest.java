@@ -178,21 +178,33 @@ public class EndToEndFeatureTest {
         }
     }
 
+    /*
+     * This test should only be run manually, after configuring all of the fields,
+     * thus it is ignored.
+     */
     @Ignore
     @Test
-    public void test_SingleHost() throws Exception {
+    public void test_SingleHost() throws Exception {    // NOSONAR
         run(70, 1);
     }
 
+    /*
+     * This test should only be run manually, after configuring all of the fields,
+     * thus it is ignored.
+     */
     @Ignore
     @Test
-    public void test_TwoHosts() throws Exception {
+    public void test_TwoHosts() throws Exception {      // NOSONAR
         run(200, 2);
     }
 
+    /*
+     * This test should only be run manually, after configuring all of the fields,
+     * thus it is ignored.
+     */
     @Ignore
     @Test
-    public void test_ThreeHosts() throws Exception {
+    public void test_ThreeHosts() throws Exception {    // NOSONAR
         run(200, 3);
     }
 

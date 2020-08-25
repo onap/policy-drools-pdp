@@ -244,7 +244,7 @@ public class Server implements Comparable<Server> {
         Properties prop = new Properties();
 
         for (String arg : args) {
-            // arguments with an equals sign in them are a property definition;
+            // arguments with an equals sign in them are a property definition -
             // otherwise, they are a properties file name
 
             if (arg.contains("=")) {
@@ -320,7 +320,6 @@ public class Server implements Comparable<Server> {
             InetAddress address = InetAddress.getByName(ipAddressString);
             InetSocketAddress socketAddress = new InetSocketAddress(address, port);
 
-            possibleError = "HTTP server initialization error";
             restServer = HttpServletServerFactoryInstance.getServerFactory().build(
                          "SERVER-POOL",                                 // name
                          useHttps,                                      // https
@@ -342,7 +341,6 @@ public class Server implements Comparable<Server> {
             }
 
             // we may not know the port until after the server is started
-            possibleError = "HTTP server start error";
             restServer.start();
             possibleError = null;
 
@@ -625,7 +623,7 @@ public class Server implements Comparable<Server> {
         updatedList.add(this);
 
         // notify list will need to be rebuilt
-        notifyList = null;
+        resetNotifyList();
 
         if (socketAddress != null && this != thisServer) {
             // initialize 'client' and 'target' fields
@@ -652,6 +650,10 @@ public class Server implements Comparable<Server> {
         for (Events listener : Events.getListeners()) {
             listener.newServer(this);
         }
+    }
+
+    private static void resetNotifyList() {
+        notifyList = null;
     }
 
     /**
@@ -1092,7 +1094,7 @@ public class Server implements Comparable<Server> {
             for (Server server : failed) {
                 server.serverFailed();
             }
-            notifyList = null;
+            resetNotifyList();
         }
     }
 

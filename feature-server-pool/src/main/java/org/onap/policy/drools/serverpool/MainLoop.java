@@ -27,6 +27,7 @@ import static org.onap.policy.drools.serverpool.ServerPoolProperties.getProperty
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ class MainLoop extends Thread {
         new ConcurrentLinkedQueue<>();
 
     // this is the 'MainLoop' thread
-    private static volatile MainLoop mainLoop = null;
+    private static AtomicReference<MainLoop> mainLoopInstance = new AtomicReference<>(null);
 
     // main loop cycle time
     private static long cycleTime;
@@ -58,9 +59,9 @@ class MainLoop extends Thread {
      */
     public static synchronized void startThread() {
         cycleTime = getProperty(MAINLOOP_CYCLE, DEFAULT_MAINLOOP_CYCLE);
-        if (mainLoop == null) {
-            mainLoop = new MainLoop();
-            mainLoop.start();
+        if (mainLoopInstance.get() == null) {
+            mainLoopInstance.set(new MainLoop());
+            mainLoopInstance.get().start();
         }
     }
 
@@ -69,9 +70,9 @@ class MainLoop extends Thread {
      */
     public static synchronized void stopThread() {
         // this won't be immediate, but the thread should discover it shortly
-        MainLoop saveMainLoop = mainLoop;
+        MainLoop saveMainLoop = mainLoopInstance.get();
 
-        mainLoop = null;
+        mainLoopInstance.set(null);
         if (saveMainLoop != null) {
             saveMainLoop.interrupt();
         }
@@ -132,7 +133,7 @@ class MainLoop extends Thread {
      */
     @Override
     public void run() {
-        while (this == mainLoop) {
+        while (this == mainLoopInstance.get()) {
             try {
                 // the following reads in messages over a period of 1 second
                 handleIncomingWork();

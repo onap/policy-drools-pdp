@@ -97,7 +97,8 @@ public class SerializerTest {
         assertEquals(msg.getChannel(), decoded.getChannel());
 
         // invalid subclass when encoding
-        assertThatThrownBy(() -> ser.encodeMsg(new Message() {})).isInstanceOf(JsonParseException.class)
+        Message msg2 = new Message() {};
+        assertThatThrownBy(() -> ser.encodeMsg(msg2)).isInstanceOf(JsonParseException.class)
                         .hasMessageContaining("cannot serialize");
 
         // missing type when decoding

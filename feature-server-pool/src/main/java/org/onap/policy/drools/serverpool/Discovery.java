@@ -45,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
@@ -70,7 +71,7 @@ public class Discovery implements TopicListener {
 
     private static Discovery discovery = null;
 
-    private volatile Publisher publisherThread = null;
+    private AtomicReference<Publisher> publisherThread = new AtomicReference<>();
 
     private List<TopicSource> consumers = null;
     private List<TopicSink> publishers = null;
@@ -144,10 +145,10 @@ public class Discovery implements TopicListener {
         for (TopicSink publisher : publishers) {
             publisher.start();
         }
-        if (publisherThread == null) {
+        if (publisherThread.get() == null) {
             // send thread wasn't running -- start it
-            publisherThread = new Publisher();
-            publisherThread.start();
+            publisherThread.set(new Publisher());
+            publisherThread.get().start();
         }
     }
 
@@ -155,7 +156,7 @@ public class Discovery implements TopicListener {
      * Stop all consumers and publishers, and stop the publisher thread.
      */
     private void stop() {
-        publisherThread = null;
+        publisherThread.set(null);
         for (TopicSink publisher : publishers) {
             publisher.stop();
         }
@@ -180,14 +181,14 @@ public class Discovery implements TopicListener {
          * same format base64-encoded message that 'Server'
          * instances periodically exchange
          */
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
         try {
-            map = coder.decode(event, LinkedHashMap.class);
+            @SuppressWarnings("unchecked")
+            Map<String, String> map = coder.decode(event, LinkedHashMap.class);
             String message = map.get("pingData");
             Server.adminRequest(message.getBytes(StandardCharsets.UTF_8));
             logger.info("Received a message, server count={}", Server.getServerCount());
         } catch (CoderException e) {
-            logger.error("Can't decode message: {}", e);
+            logger.error("Can't decode message", e);
         }
     }
 
@@ -309,7 +310,7 @@ public class Discovery implements TopicListener {
             // or some other 'Publisher' instance replaces it
             long cycleTime = getProperty(DISCOVER_PUBLISHER_LOOP_CYCLE_TIME,
                                          DEFAULT_DISCOVER_PUBLISHER_LOOP_CYCLE_TIME);
-            while (this == publisherThread) {
+            while (this == publisherThread.get()) {
                 try {
                     // wait 5 seconds (default)
                     Thread.sleep(cycleTime);
@@ -332,6 +333,7 @@ public class Discovery implements TopicListener {
                         publisher.send(jsonString);
                     }
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     logger.error("Exception in Discovery.Publisher.run():", e);
                     return;
                 } catch (Exception e) {
@@ -340,6 +342,7 @@ public class Discovery implements TopicListener {
                     try {
                         Thread.sleep(15000);
                     } catch (InterruptedException e2) {
+                        Thread.currentThread().interrupt();
                         logger.error("Discovery.Publisher sleep interrupted");
                     }
                     return;

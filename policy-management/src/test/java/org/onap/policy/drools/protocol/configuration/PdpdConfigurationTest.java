@@ -74,7 +74,7 @@ public class PdpdConfigurationTest {
         drools.set("version", VERSION);
         drools.set(PROPERTY1, VALUE1);
 
-        assertEquals(drools, drools);
+        assertEquals(drools, (Object) drools);
         assertNotEquals(drools, new Object());
 
         logger.info("Drools HashCode {}", drools.hashCode());
@@ -131,7 +131,7 @@ public class PdpdConfigurationTest {
         controller.set("drools", drools);
         controller.set(PROPERTY1, VALUE1);
 
-        assertEquals(controller, controller);
+        assertEquals(controller, (Object) controller);
         assertNotEquals(controller, new Object());
 
         logger.info("Controller HashCode {}", controller.hashCode());
@@ -194,7 +194,7 @@ public class PdpdConfigurationTest {
         config.set("controllers", controllers);
         config.set(PROPERTY1, VALUE1);
 
-        assertEquals(config, config);
+        assertEquals(config, (Object) config);
         assertNotEquals(config, new Object());
 
         logger.info("Config HashCode {}", config.hashCode());

@@ -168,15 +168,23 @@ public class FeatureServerPool
         logger.info("Starting FeatureServerPool");
         Server.startup(CONFIG_FILE);
         TargetLock.startup();
-        droolsTimeoutMillis =
-            getProperty(BUCKET_DROOLS_TIMEOUT, DEFAULT_BUCKET_DROOLS_TIMEOUT);
+        setDroolsTimeoutMillis(
+            getProperty(BUCKET_DROOLS_TIMEOUT, DEFAULT_BUCKET_DROOLS_TIMEOUT));
         int intTimeToLive =
             getProperty(BUCKET_TIME_TO_LIVE, DEFAULT_BUCKET_TIME_TO_LIVE);
-        timeToLiveSecond = String.valueOf(intTimeToLive);
+        setTimeToLiveSecond(String.valueOf(intTimeToLive));
         buildKeywordTable();
         Bucket.Backup.register(new DroolsSessionBackup());
         Bucket.Backup.register(new TargetLock.LockBackup());
         return false;
+    }
+
+    private static void setDroolsTimeoutMillis(long timeoutMs) {
+        droolsTimeoutMillis = timeoutMs;
+    }
+
+    private static void setTimeToLiveSecond(String ttl) {
+        timeToLiveSecond = ttl;
     }
 
     /**
@@ -319,7 +327,7 @@ public class FeatureServerPool
                 path = Arrays.copyOf(path, path.length);
                 path[path.length - 1] = fieldName;
             }
-            keyword = sco.getString(path);
+            keyword = sco.getString((Object[]) path);
 
             if (keyword != null) {
                 if (conversionFunctionName != null) {
@@ -993,8 +1001,10 @@ public class FeatureServerPool
                     }
                 };
                 kieSession.insert(doRestore);
+                ois.close();
                 return sessionLatch;
             } else {
+                ois.close();
                 logger.error("{}: Invalid session data for session={}, type={}",
                              this, session.getFullName(), obj.getClass().getName());
             }

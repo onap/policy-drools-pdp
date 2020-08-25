@@ -51,12 +51,6 @@ import org.slf4j.LoggerFactory;
  */
 public class AdapterImpl extends Adapter {
     private static Logger logger = LoggerFactory.getLogger(AdapterImpl.class);
-    /*
-     * Each 'AdapterImpl' instance has it's own class object, making it a
-     * singleton. There is only a single 'Adapter' class object, and all
-     * 'AdapterImpl' classes are derived from it.
-     */
-    private static AdapterImpl adapter = null;
 
     // this is the adapter index
     private int index;
@@ -84,7 +78,6 @@ public class AdapterImpl extends Adapter {
      */
     @Override
     public void init(int index) throws Exception {
-        adapter = this;
         this.index = index;
 
         PolicyEngineConstants.getManager().configure(new Properties());
@@ -347,7 +340,7 @@ public class AdapterImpl extends Adapter {
         boolean rval = false;
         ClassLoader myClassLoader = AdapterImpl.class.getClassLoader();
         for (Object o : objects) {
-            Class clazz = o.getClass();
+            Class<?> clazz = o.getClass();
             ClassLoader objClassLoader = clazz.getClassLoader();
 
             try {

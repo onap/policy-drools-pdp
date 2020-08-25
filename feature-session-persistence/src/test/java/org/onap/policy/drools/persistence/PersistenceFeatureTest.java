@@ -1098,15 +1098,9 @@ public class PersistenceFeatureTest {
         // return adjunct on next call
         when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-        try {
-            doThrow(new IllegalArgumentException(EXPECTED)).when(emf).close();
-
-            feat.destroyKieSession(polsess);
-            fail(MISSING_EXCEPTION);
-
-        } catch (IllegalArgumentException ex) {
-            logger.trace(EXPECTED, ex);
-        }
+        IllegalArgumentException exception = new IllegalArgumentException(EXPECTED);
+        doThrow(exception).when(emf).close();
+        assertThatCode(() -> feat.destroyKieSession(polsess)).isEqualTo(exception);
 
         verify(bds, times(2)).close();
     }
@@ -1126,15 +1120,10 @@ public class PersistenceFeatureTest {
         // return adjunct on next call
         when(polcont.getAdjunct(any())).thenReturn(adjcap.getValue());
 
-        try {
-            doThrow(new SQLException(EXPECTED)).when(bds).close();
-
-            feat.destroyKieSession(polsess);
-            fail(MISSING_EXCEPTION);
-
-        } catch (PersistenceFeatureException ex) {
-            logger.trace(EXPECTED, ex);
-        }
+        SQLException cause = new SQLException(EXPECTED);
+        doThrow(cause).when(bds).close();
+        assertThatCode(() -> feat.destroyKieSession(polsess)).isInstanceOf(PersistenceFeatureException.class)
+                        .hasCause(cause);
     }
 
     /**

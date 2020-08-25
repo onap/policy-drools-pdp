@@ -190,6 +190,16 @@ public class PolicySession
     }
 
     /**
+     * Unset this 'PolicySession' instance as the one associated with the
+     * currently-running thread.
+     */
+    public void removePolicySession() {
+        if (policySess.get() == this) {
+            policySess.remove();
+        }
+    }
+
+    /**
      * Get current session.
      *
      * @return the 'PolicySession' instance associated with the current thread
@@ -498,6 +508,8 @@ public class PolicySession
                     logger.error("startThread error in kieSession1.fireUntilHalt", e);
                 }
             }
+
+            session.removePolicySession();
             logger.info("fireUntilHalt() returned");
         }
     }

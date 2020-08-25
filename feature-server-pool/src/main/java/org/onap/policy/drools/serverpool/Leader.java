@@ -172,7 +172,7 @@ class Leader {
             if (server == leaderLocal) {
                 // the lead server has failed --
                 // start/restart the VoteCycle state machine
-                leaderLocal = null;
+                resetLocalLeader();
                 startVoting();
 
                 // send out a notification that the lead server has failed
@@ -184,6 +184,10 @@ class Leader {
                 // (don't do anything if there is no vote in progress)
                 voteCycle.serverChanged();
             }
+        }
+
+        private static void resetLocalLeader() {
+            leaderLocal = null;
         }
     }
 
@@ -296,7 +300,7 @@ class Leader {
             // 5 second grace period has passed -- the leader is one with
             // the most votes, which is the first entry in 'voteData'
             Server oldLeader = leaderLocal;
-            leaderLocal = Server.getServer(voteData.first().uuid);
+            setLocalLeader(Server.getServer(voteData.first().uuid));
             if (leaderLocal != oldLeader) {
                 // the leader has changed -- send out notifications
                 for (Events listener : Events.getListeners()) {
@@ -319,7 +323,7 @@ class Leader {
 
             // we are done with voting -- clean up, and report results
             MainLoop.removeBackgroundWork(this);
-            voteCycle = null;
+            resetVoteCycle();
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintStream out = new PrintStream(bos);
@@ -349,6 +353,14 @@ class Leader {
                 }
             }
             logger.info("Output - {}", bos);
+        }
+
+        private void setLocalLeader(Server server) {
+            leaderLocal = server;
+        }
+
+        private static void resetVoteCycle() {
+            voteCycle = null;
         }
 
         /**

@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.statemanagement.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -143,8 +144,8 @@ public class StateManagementTest {
         logger.debug("avail = {}", avail);
         logger.debug("standby = {}", standby);
 
-        assertTrue("Admin state not unlocked after initialization", admin.equals(StateManagement.UNLOCKED));
-        assertTrue("Operational state not enabled after initialization", oper.equals(StateManagement.ENABLED));
+        assertEquals("Admin state not unlocked after initialization", StateManagement.UNLOCKED, admin);
+        assertEquals("Operational state not enabled after initialization", StateManagement.ENABLED, oper);
 
         try {
             stateManagementFeature.disableFailed();
@@ -164,8 +165,8 @@ public class StateManagementTest {
         logger.debug("avail = {}", avail);
         logger.debug("standby = {}", standby);
 
-        assertTrue("Operational state not disabled after disableFailed()", oper.equals(StateManagement.DISABLED));
-        assertTrue("Availability status not failed after disableFailed()", avail.equals(StateManagement.FAILED));
+        assertEquals("Operational state not disabled after disableFailed()", StateManagement.DISABLED, oper);
+        assertEquals("Availability status not failed after disableFailed()", StateManagement.FAILED, avail);
 
 
         try {
@@ -185,7 +186,7 @@ public class StateManagementTest {
         logger.debug("avail = {}", avail);
         logger.debug("standby = {}", standby);
 
-        assertTrue("Standby status not coldstandby after promote()", standby.equals(StateManagement.COLD_STANDBY));
+        assertEquals("Standby status not coldstandby after promote()", StateManagement.COLD_STANDBY, standby);
 
         /* *************Repository Audit Test. ************* */
         logger.debug("\n\ntestStateManagementOperation: Repository Audit\n\n");

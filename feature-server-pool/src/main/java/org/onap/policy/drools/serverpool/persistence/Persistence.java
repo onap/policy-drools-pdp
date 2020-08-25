@@ -708,38 +708,12 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
                     }
                 }
 
-                if (policySession == null) {
-                    logger.error(RESTORE_BUCKET_ERROR
-                                 + "Can't find PolicySession{}", sessionName);
-                    continue;
-                }
-
-                Object obj = null;
-                try {
-                    // deserialization needs to use the correct 'ClassLoader'
-                    obj = Util.deserialize(Base64.getDecoder().decode(rsbd.encodedSerializedData),
-                        policySession.getPolicyContainer().getClassLoader());
-                } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
-                    logger.error(RESTORE_BUCKET_ERROR
-                                 + "Failed to read data for session '{}'",
-                                 sessionName, e);
-
-                    // can't decode -- skip this session
-                    continue;
-                }
-
-                if (!(obj instanceof Map)) {
-                    logger.error(RESTORE_BUCKET_ERROR
-                                 + "Session '{}' data has class {}, expected 'Map'",
-                                 sessionName, obj.getClass().getName());
-
-                    // wrong object type decoded -- skip this session
-                    continue;
-                }
-
                 // if we reach this point, we have decoded the persistent data
 
-                final Map<?, ?> droolsObjects = (Map<?, ?>) obj;
+                final Map<?, ?> droolsObjects = decodeObjects(policySession, sessionName, rsbd);
+                if (droolsObjects == null) {
+                    continue;
+                }
 
                 // signal when restore is complete
                 final CountDownLatch sessionLatch = new CountDownLatch(1);
@@ -765,6 +739,41 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
                 sessionLatches.add(sessionLatch);
             }
             return sessionLatches;
+        }
+
+        private Map<?, ?> decodeObjects(PolicySession policySession, String sessionName,
+                        ReceiverSessionBucketData rsbd) {
+
+            if (policySession == null) {
+                logger.error(RESTORE_BUCKET_ERROR
+                             + "Can't find PolicySession{}", sessionName);
+                return null;
+            }
+
+            Object obj = null;
+            try {
+                // deserialization needs to use the correct 'ClassLoader'
+                obj = Util.deserialize(Base64.getDecoder().decode(rsbd.encodedSerializedData),
+                    policySession.getPolicyContainer().getClassLoader());
+            } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
+                logger.error(RESTORE_BUCKET_ERROR
+                             + "Failed to read data for session '{}'",
+                             sessionName, e);
+
+                // can't decode -- skip this session
+                return null;
+            }
+
+            if (!(obj instanceof Map)) {
+                logger.error(RESTORE_BUCKET_ERROR
+                             + "Session '{}' data has class {}, expected 'Map'",
+                             sessionName, obj.getClass().getName());
+
+                // wrong object type decoded -- skip this session
+                return null;
+            }
+
+            return (Map<?, ?>) obj;
         }
 
         private void restoreBucketLocks(Bucket bucket) {

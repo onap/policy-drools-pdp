@@ -83,6 +83,8 @@ import org.slf4j.LoggerFactory;
  *     owned by the host containing the entry.
  */
 public class TargetLock implements Lock, Serializable {
+    private static final String LOCK_ARGS_MSG = "(key={},owner={},uuid={},ttl={})";
+
     private static final long serialVersionUID = 1L;
 
     private static Logger logger = LoggerFactory.getLogger(TargetLock.class);
@@ -131,13 +133,13 @@ public class TargetLock implements Lock, Serializable {
 
     // this is used to notify the application when a lock is available,
     // or if it is not available
-    private final LockCallback owner;
+    private final transient LockCallback owner;
 
     // This is what is actually called by the infrastructure to do the owner
     // notification. The owner may be running in a Drools session, in which case
     // the actual notification should be done within that thread -- the 'context'
     // object ensures that it happens this way.
-    private final LockCallback context;
+    private final transient LockCallback context;
 
     // HTTP query parameters
     private static final String QP_KEY = "key";
@@ -550,7 +552,7 @@ public class TargetLock implements Lock, Serializable {
                     WebTarget webTarget = server.getWebTarget("lock/free");
                     if (webTarget != null) {
                         logger.warn("Forwarding 'lock/free' to uuid {} "
-                                    + "(key={},owner={},uuid={},ttl={})",
+                                    + LOCK_ARGS_MSG,
                                     server.getUuid(), key, ownerKey, uuid, ttl);
                         return webTarget
                                .queryParam(QP_KEY, key)
@@ -565,7 +567,7 @@ public class TargetLock implements Lock, Serializable {
             // if we reach this point, we didn't forward for some reason --
             // return failure by indicating it is locked and unavailable
             logger.error("Couldn't forward 'lock/free' "
-                         + "(key={},owner={},uuid={},ttl={})",
+                         + LOCK_ARGS_MSG,
                          key, ownerKey, uuid, ttl);
             return null;
         }
@@ -599,7 +601,7 @@ public class TargetLock implements Lock, Serializable {
                     WebTarget webTarget = server.getWebTarget("lock/locked");
                     if (webTarget != null) {
                         logger.warn("Forwarding 'lock/locked' to uuid {} "
-                                    + "(key={},owner={},uuid={},ttl={})",
+                                    + LOCK_ARGS_MSG,
                                     server.getUuid(), key, ownerKey, uuid, ttl);
                         return webTarget
                                .queryParam(QP_KEY, key)
@@ -614,7 +616,7 @@ public class TargetLock implements Lock, Serializable {
             // if we reach this point, we didn't forward for some reason --
             // return failure by indicating it is locked and unavailable
             logger.error("Couldn't forward 'lock/locked' "
-                         + "(key={},owner={},uuid={},ttl={})",
+                         + LOCK_ARGS_MSG,
                          key, ownerKey, uuid, ttl);
             return Response.noContent().status(LOCKED).build();
         }
@@ -2221,30 +2223,9 @@ public class TargetLock implements Lock, Serializable {
                     bucket.getAdjunctDontCreate(GlobalLocks.class);
 
                 if (globalLocks != null) {
-                    Map<String, LockEntry> keyToEntry = globalLocks.keyToEntry;
-                    synchronized (keyToEntry) {
-                        LockEntry le = keyToEntry.get(identity.key);
-                        if (le != null) {
-                            if (identity.uuid.equals(le.currentOwnerUuid)
-                                    && identity.ownerKey.equals(le.currentOwnerKey)) {
-                                // we found a match
-                                continue;
-                            }
-
-                            // check the waiting list
-                            boolean match = false;
-                            for (Waiting waiting : le.waitingList) {
-                                if (identity.uuid.equals(waiting.ownerUuid)
-                                        && identity.ownerKey.equals(waiting.ownerKey)) {
-                                    // we found a match on the waiting list
-                                    match = true;
-                                    break;
-                                }
-                            }
-                            if (match) {
-                                // there was a match on the waiting list
-                                continue;
-                            }
+                    synchronized (globalLocks.keyToEntry) {
+                        if (matchFound(globalLocks.keyToEntry, identity)) {
+                            continue;
                         }
                     }
                 }
@@ -2263,6 +2244,28 @@ public class TargetLock implements Lock, Serializable {
                 // it was 'clientData' to the sender, but 'serverData' to us
                 response.serverData.add(identity);
             }
+        }
+
+        private boolean matchFound(Map<String, LockEntry> keyToEntry, Identity identity) {
+            LockEntry le = keyToEntry.get(identity.key);
+            if (le == null) {
+                return false;
+            }
+
+            if (identity.uuid.equals(le.currentOwnerUuid) && identity.ownerKey.equals(le.currentOwnerKey)) {
+                // we found a match
+                return true;
+            }
+
+            // check the waiting list
+            for (Waiting waiting : le.waitingList) {
+                if (identity.uuid.equals(waiting.ownerUuid) && identity.ownerKey.equals(waiting.ownerKey)) {
+                    // we found a match on the waiting list
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void generateResponseServerEnd(AuditData response, boolean includeWarnings) {
@@ -2779,7 +2782,7 @@ public class TargetLock implements Lock, Serializable {
 
             // send new list to other end
             response = server
-                       .getWebTarget("lock/audit")
+                       .getWebTarget(LOCK_AUDIT)
                        .queryParam(QP_SERVER, server.getUuid().toString())
                        .queryParam(QP_TTL, timeToLive)
                        .request().post(entity);
