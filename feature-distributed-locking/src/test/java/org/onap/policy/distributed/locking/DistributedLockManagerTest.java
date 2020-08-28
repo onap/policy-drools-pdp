@@ -258,7 +258,8 @@ public class DistributedLockManagerTest {
             }
         };
 
-        assertThatThrownBy(() -> feature.beforeCreateLockManager(engine, new Properties()))
+        Properties props = new Properties();
+        assertThatThrownBy(() -> feature.beforeCreateLockManager(engine, props))
                         .isInstanceOf(DistributedLockManagerException.class);
     }
 
