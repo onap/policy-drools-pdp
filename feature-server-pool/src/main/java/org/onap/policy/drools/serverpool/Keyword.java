@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,33 +183,26 @@ public class Keyword {
      * and all the way up the superclass chain.
      */
     private static Class<?> buildReflectiveLookupFindKeyClass(Class<?> clazz) {
-        Class<?> keyClass = null;
         for (Class<?> cl = clazz; cl != null; cl = cl.getSuperclass()) {
             if (classNameToSequence.containsKey(cl.getName())) {
                 // matches the class
-                keyClass = cl;
-                break;
+                return cl;
             }
             for (Class<?> intf : cl.getInterfaces()) {
                 if (classNameToSequence.containsKey(intf.getName())) {
                     // matches one of the interfaces
-                    keyClass = intf;
-                    break;
+                    return intf;
                 }
                 // interface can have superclass
                 for (Class<?> cla = clazz; cla != null; cla = intf.getSuperclass()) {
                     if (classNameToSequence.containsKey(cla.getName())) {
                         // matches the class
-                        keyClass = cla;
-                        break;
+                        return cla;
                     }
                 }
             }
-            if (keyClass != null) {
-                break;
-            }
         }
-        return keyClass;
+        return null;
     }
 
     private static Lookup buildReflectiveLookupBuild(Class<?> clazz, Class<?> keyClass) {
@@ -438,7 +431,7 @@ public class Keyword {
      */
 
     // used to lookup optional conversion functions
-    private static Map<String, Function<String, String>> conversionFunction =
+    private static Map<String, UnaryOperator<String>> conversionFunction =
         new ConcurrentHashMap<>();
 
     // conversion function 'uuid':
@@ -459,7 +452,7 @@ public class Keyword {
      * @param name the conversion function name
      * @param function the object that does the transformation
      */
-    public static void addConversionFunction(String name, Function<String, String> function) {
+    public static void addConversionFunction(String name, UnaryOperator<String> function) {
         conversionFunction.put(name, function);
     }
 
@@ -478,7 +471,7 @@ public class Keyword {
         }
 
         // look up the function
-        Function<String, String> function = conversionFunction.get(functionName);
+        UnaryOperator<String> function = conversionFunction.get(functionName);
         if (function == null) {
             logger.error("{}: conversion function not found", functionName);
             return null;
