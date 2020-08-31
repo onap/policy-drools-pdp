@@ -21,6 +21,7 @@
 package org.onap.policy.drools.serverpool;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
@@ -39,7 +40,7 @@ public interface ServerPoolApi extends OrderedService {
      * @return a Collection of classes implementing REST methods
      */
     public default Collection<Class<?>> servletClasses() {
-        return null;
+        return Collections.emptyList();
     }
 
     /**

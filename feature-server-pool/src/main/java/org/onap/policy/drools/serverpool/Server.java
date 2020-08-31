@@ -334,11 +334,8 @@ public class Server implements Comparable<Server> {
 
             // add any additional servlets
             for (ServerPoolApi feature : ServerPoolApi.impl.getList()) {
-                Collection<Class<?>> classes = feature.servletClasses();
-                if (classes != null) {
-                    for (Class<?> clazz : classes) {
-                        restServer.addServletClass(null, clazz.getName());
-                    }
+                for (Class<?> clazz : feature.servletClasses()) {
+                    restServer.addServletClass(null, clazz.getName());
                 }
             }
 

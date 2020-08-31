@@ -355,7 +355,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
          * @param persistenceProperties Used for DB access
          * @throws Exception passed in by the audit
          */
-        abstract void invoke(Properties persistenceProperties) throws Exception;
+        abstract void invoke(Properties persistenceProperties) throws IntegrityMonitorException;
     }
 
     public static class IntegrityMonitorRestServer implements Startable {

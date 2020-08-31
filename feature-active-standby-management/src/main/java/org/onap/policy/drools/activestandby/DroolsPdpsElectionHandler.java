@@ -587,10 +587,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                      * Only call promote if it is not already in the right state.  Don't worry about
                      * synching the lower level topic endpoint states.  That is done by the
                      * refreshStateAudit.
-                     * Note that we need to fetch the session list from 'mostRecentPrimary'
-                     * at this point -- soon, 'mostRecentPrimary' will be set to this host.
                      */
-                    //this.sessions = mostRecentPrimary.getSessions();
                     stateManagementFeature.promote();
                 }
             } catch (Exception e) {

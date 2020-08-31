@@ -31,6 +31,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -698,47 +699,53 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
         private List<CountDownLatch> restoreBucketDroolsSessions() {
             List<CountDownLatch> sessionLatches = new LinkedList<>();
             for (Map.Entry<String, ReceiverSessionBucketData> entry : sessionData.entrySet()) {
-                String sessionName = entry.getKey();
-                ReceiverSessionBucketData rsbd = entry.getValue();
-
-                PolicySession policySession = detmPolicySession(sessionName);
-                if (policySession == null) {
-                    logger.error(RESTORE_BUCKET_ERROR
-                                 + "Can't find PolicySession{}", sessionName);
-                    continue;
-                }
-
-                final Map<?, ?> droolsObjects = deserializeMap(sessionName, rsbd, policySession);
-                if (droolsObjects == null) {
-                    continue;
-                }
-
-                // if we reach this point, we have decoded the persistent data
-
-                // signal when restore is complete
-                final CountDownLatch sessionLatch = new CountDownLatch(1);
-
-                // 'KieSession' object
-                final KieSession kieSession = policySession.getKieSession();
-
-                // run the following within the Drools session thread
-                DroolsRunnable insertDroolsObjects = () -> {
-                    try {
-                        // insert all of the Drools objects into the session
-                        for (Object droolsObj : droolsObjects.keySet()) {
-                            kieSession.insert(droolsObj);
-                        }
-                    } finally {
-                        // signal completion
-                        sessionLatch.countDown();
-                    }
-                };
-                kieSession.insert(insertDroolsObjects);
-
-                // add this to the set of 'CountDownLatch's we are waiting for
-                sessionLatches.add(sessionLatch);
+                restoreBucketDroolsSession(sessionLatches, entry);
             }
             return sessionLatches;
+        }
+
+        private void restoreBucketDroolsSession(List<CountDownLatch> sessionLatches,
+                        Entry<String, ReceiverSessionBucketData> entry) {
+
+            String sessionName = entry.getKey();
+            ReceiverSessionBucketData rsbd = entry.getValue();
+
+            PolicySession policySession = detmPolicySession(sessionName);
+            if (policySession == null) {
+                logger.error(RESTORE_BUCKET_ERROR
+                             + "Can't find PolicySession{}", sessionName);
+                return;
+            }
+
+            final Map<?, ?> droolsObjects = deserializeMap(sessionName, rsbd, policySession);
+            if (droolsObjects == null) {
+                return;
+            }
+
+            // if we reach this point, we have decoded the persistent data
+
+            // signal when restore is complete
+            final CountDownLatch sessionLatch = new CountDownLatch(1);
+
+            // 'KieSession' object
+            final KieSession kieSession = policySession.getKieSession();
+
+            // run the following within the Drools session thread
+            DroolsRunnable insertDroolsObjects = () -> {
+                try {
+                    // insert all of the Drools objects into the session
+                    for (Object droolsObj : droolsObjects.keySet()) {
+                        kieSession.insert(droolsObj);
+                    }
+                } finally {
+                    // signal completion
+                    sessionLatch.countDown();
+                }
+            };
+            kieSession.insert(insertDroolsObjects);
+
+            // add this to the set of 'CountDownLatch's we are waiting for
+            sessionLatches.add(sessionLatch);
         }
 
         private PolicySession detmPolicySession(String sessionName) {

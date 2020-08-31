@@ -37,6 +37,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.onap.policy.common.im.IntegrityMonitorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +107,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
      * @param properties properties to be passed to the audit
      */
     @Override
-    public void invoke(Properties properties) throws IOException, InterruptedException {
+    public void invoke(Properties properties) throws IntegrityMonitorException {
         logger.debug("Running 'RepositoryAudit.invoke'");
 
         InvokeData data = new InvokeData();
@@ -121,25 +122,35 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             return;
         }
 
-        // Run audit for first nexus repository
-        logger.debug("Running read-only audit on first nexus repository: repository");
-        runAudit(data);
+        try {
+            // Run audit for first nexus repository
+            logger.debug("Running read-only audit on first nexus repository: repository");
+            runAudit(data);
 
-        // set of indices for supported nexus repos (ex: repository2 -> 2)
-        // TreeSet is used to maintain order so repos can be audited in numerical order
-        TreeSet<Integer> repoIndices = countAdditionalNexusRepos();
-        logger.debug("Additional nexus repositories: {}", repoIndices);
+            // set of indices for supported nexus repos (ex: repository2 -> 2)
+            // TreeSet is used to maintain order so repos can be audited in numerical
+            // order
+            TreeSet<Integer> repoIndices = countAdditionalNexusRepos();
+            logger.debug("Additional nexus repositories: {}", repoIndices);
 
-        // Run audit for remaining 'numNexusRepos' repositories
-        for (int index : repoIndices) {
-            logger.debug("Running read-only audit on nexus repository = repository{}", index);
+            // Run audit for remaining 'numNexusRepos' repositories
+            for (int index : repoIndices) {
+                logger.debug("Running read-only audit on nexus repository = repository{}", index);
 
-            data = new InvokeData(index);
-            data.initIsActive();
+                data = new InvokeData(index);
+                data.initIsActive();
 
-            if (data.isActive) {
-                runAudit(data);
+                if (data.isActive) {
+                    runAudit(data);
+                }
             }
+
+        } catch (IOException e) {
+            throw new IntegrityMonitorException(e);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IntegrityMonitorException(e);
         }
     }
 
