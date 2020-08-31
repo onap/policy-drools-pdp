@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.statemanagement.test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -37,6 +38,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.DbAudit;
@@ -190,34 +192,16 @@ public class StateManagementTest {
 
         /* *************Repository Audit Test. ************* */
         logger.debug("\n\ntestStateManagementOperation: Repository Audit\n\n");
-        try {
-            StateManagementProperties.initProperties(fsmProperties);
-            RepositoryAudit repositoryAudit = (RepositoryAudit) RepositoryAudit.getInstance();
-            repositoryAudit.invoke(fsmProperties);
+        StateManagementProperties.initProperties(fsmProperties);
+        RepositoryAudit repositoryAudit = (RepositoryAudit) RepositoryAudit.getInstance();
 
-            //Should not throw an IOException in Linux Foundation env
-            assertTrue(true);
-        } catch (IOException e) {
-            //Note: this catch is here because in a local environment mvn will not run in
-            //in the temp directory
-            logger.debug("testSubsytemTest RepositoryAudit IOException", e);
-        } catch (InterruptedException e) {
-            assertTrue(false);
-            logger.debug("testSubsytemTest RepositoryAudit InterruptedException", e);
-        }
+        assertThatCode(() -> repositoryAudit.invoke(fsmProperties)).isInstanceOf(IntegrityMonitorException.class)
+                        .hasCauseInstanceOf(IOException.class);
 
         /* ****************Db Audit Test. ************** */
         logger.debug("\n\ntestStateManagementOperation: DB Audit\n\n");
-
-        try {
-            DbAudit dbAudit = (DbAudit) DbAudit.getInstance();
-            dbAudit.invoke(fsmProperties);
-
-            assertTrue(true);
-        } catch (Exception e) {
-            assertTrue(false);
-            logger.debug("testSubsytemTest DbAudit exception", e);
-        }
+        DbAudit dbAudit = (DbAudit) DbAudit.getInstance();
+        dbAudit.invoke(fsmProperties);
 
         /* ************IntegrityMonitorRestManager Test. ************ */
         logger.debug("\n\ntestStateManagementOperation: IntegrityMonitorRestManager\n\n");

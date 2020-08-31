@@ -23,7 +23,9 @@ package org.onap.policy.drools.statemanagement;
 import javax.validation.constraints.NotNull;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.im.AllSeemsWellException;
+import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.common.im.StateChangeNotifier;
+import org.onap.policy.common.im.StateManagementException;
 import org.onap.policy.common.utils.services.OrderedService;
 
 /**
@@ -105,18 +107,18 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * will take a value of coldstandby.
      *
      * @param resourceName resource name
-     * @throws Exception exception
+     * @throws StateManagementException exception
      */
-    void disableFailed(String resourceName) throws Exception;
+    void disableFailed(String resourceName) throws StateManagementException;
 
     /**
      * This method moves the X.731 Operational State for this resource into a value of disabled and
      * the Availability Status to a value of failed. As a consequence the Standby Status value will
      * take a value of coldstandby.
      *
-     * @throws Exception exception
+     * @throws StateManagementException exception
      */
-    void disableFailed() throws Exception;
+    void disableFailed() throws StateManagementException;
 
     /**
      * This method moves the X.731 Standby Status for this resource from hotstandby to
@@ -124,18 +126,18 @@ public interface StateManagementFeatureApi extends OrderedService, Lockable {
      * value is null, it will move to providingservice assuming the Operational State is enabled and
      * Administrative State is unlocked.
      *
-     * @throws Exception exception
+     * @throws IntegrityMonitorException exception
      */
-    void promote() throws Exception;
+    void promote() throws IntegrityMonitorException;
 
     /**
      * This method moves the X.731 Standby Status for this resource from providingservice to
      * hotstandby. If the current value is null, it will move to hotstandby assuming the Operational
      * State is enabled and Administrative State is unlocked. Else, it will move to coldstandby
      *
-     * @throws Exception exception
+     * @throws StateManagementException exception
      */
-    void demote() throws Exception;
+    void demote() throws StateManagementException;
 
     /**
      * Returns the resourceName associated with this instance of the

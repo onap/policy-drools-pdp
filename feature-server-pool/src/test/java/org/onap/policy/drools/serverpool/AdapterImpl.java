@@ -55,8 +55,12 @@ public class AdapterImpl extends Adapter {
      * Each 'AdapterImpl' instance has it's own class object, making it a
      * singleton. There is only a single 'Adapter' class object, and all
      * 'AdapterImpl' classes are derived from it.
+     *
+     * Sonar thinks this field isn't used.  However, it's value is actually
+     * retrieved via Whitebox, below.  Thus it is marked "protected" instead
+     * of "private" to avoid the sonar complaint.
      */
-    private static AdapterImpl adapter = null;
+    protected static AdapterImpl adapter = null;
 
     // this is the adapter index
     private int index;
@@ -347,7 +351,7 @@ public class AdapterImpl extends Adapter {
         boolean rval = false;
         ClassLoader myClassLoader = AdapterImpl.class.getClassLoader();
         for (Object o : objects) {
-            Class clazz = o.getClass();
+            Class<?> clazz = o.getClass();
             ClassLoader objClassLoader = clazz.getClassLoader();
 
             try {
