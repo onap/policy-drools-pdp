@@ -23,8 +23,10 @@ package org.onap.policy.drools.statemanagement;
 import java.io.IOException;
 import java.util.Properties;
 import org.onap.policy.common.im.AllSeemsWellException;
+import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.im.StateManagement;
+import org.onap.policy.common.im.StateManagementException;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -146,7 +148,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
      * {@inheritDoc}.
      */
     @Override
-    public void disableFailed(String resourceName) throws Exception {
+    public void disableFailed(String resourceName) throws StateManagementException {
         stateManagement.disableFailed(resourceName);
 
     }
@@ -155,7 +157,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
      * {@inheritDoc}.
      */
     @Override
-    public void disableFailed() throws Exception {
+    public void disableFailed() throws StateManagementException {
         stateManagement.disableFailed();
     }
 
@@ -163,7 +165,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
      * {@inheritDoc}.
      */
     @Override
-    public void promote() throws Exception {
+    public void promote() throws IntegrityMonitorException {
         stateManagement.promote();
     }
 
@@ -171,7 +173,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
      * {@inheritDoc}.
      */
     @Override
-    public void demote() throws Exception {
+    public void demote() throws StateManagementException {
         stateManagement.demote();
     }
 

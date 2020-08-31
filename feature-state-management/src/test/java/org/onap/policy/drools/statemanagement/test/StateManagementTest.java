@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -37,6 +36,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.statemanagement.DbAudit;
@@ -196,28 +196,18 @@ public class StateManagementTest {
             repositoryAudit.invoke(fsmProperties);
 
             //Should not throw an IOException in Linux Foundation env
-            assertTrue(true);
-        } catch (IOException e) {
+
+        } catch (IntegrityMonitorException e) {
             //Note: this catch is here because in a local environment mvn will not run in
             //in the temp directory
             logger.debug("testSubsytemTest RepositoryAudit IOException", e);
-        } catch (InterruptedException e) {
-            assertTrue(false);
-            logger.debug("testSubsytemTest RepositoryAudit InterruptedException", e);
         }
 
         /* ****************Db Audit Test. ************** */
         logger.debug("\n\ntestStateManagementOperation: DB Audit\n\n");
 
-        try {
-            DbAudit dbAudit = (DbAudit) DbAudit.getInstance();
-            dbAudit.invoke(fsmProperties);
-
-            assertTrue(true);
-        } catch (Exception e) {
-            assertTrue(false);
-            logger.debug("testSubsytemTest DbAudit exception", e);
-        }
+        DbAudit dbAudit = (DbAudit) DbAudit.getInstance();
+        dbAudit.invoke(fsmProperties);
 
         /* ************IntegrityMonitorRestManager Test. ************ */
         logger.debug("\n\ntestStateManagementOperation: IntegrityMonitorRestManager\n\n");

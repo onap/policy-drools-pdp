@@ -783,7 +783,11 @@ public class Bucket {
              * current host.
              */
             UUID key = oldHost.uuid;
-            for (int count = new Random().nextInt(rb.testServers.size() - 1); count >= 0; count -= 1) {
+            /*
+             * Disabling sonar, because this Random() is not used for security purposes.
+             */
+            int randomStart = new Random().nextInt(rb.testServers.size() - 1);  // NOSONAR
+            for (int count = randomStart; count >= 0; count -= 1) {
                 key = rb.testServers.higherKey(key);
                 if (key == null) {
                     // wrap to the beginning of the list

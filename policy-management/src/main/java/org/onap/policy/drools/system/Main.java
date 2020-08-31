@@ -106,7 +106,9 @@ public class Main {
         /* 5. Open the engine for dynamic configuration */
         PolicyEngineConstants.getManager().open();
 
-        logger.info(String.format(MessageConstants.START_SUCCESS_MSG, MessageConstants.POLICY_DROOLS_PDP));
+        if (logger.isInfoEnabled()) {
+            logger.info(String.format(MessageConstants.START_SUCCESS_MSG, MessageConstants.POLICY_DROOLS_PDP));
+        }
     }
 
     private static void setSystemProperties() {

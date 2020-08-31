@@ -31,6 +31,7 @@ import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.drools.controller.internal.MavenDroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
@@ -152,6 +153,32 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
         /* new drools controller */
 
+        DroolsController controller = applyBeforeInstance(properties, newGroupId, newArtifactId, newVersion,
+                        decoderConfigurations, encoderConfigurations);
+
+        if (controller == null) {
+            controller = new MavenDroolsController(newGroupId, newArtifactId, newVersion, decoderConfigurations,
+                    encoderConfigurations);
+        }
+
+        synchronized (this) {
+            droolsControllers.put(controllerId, controller);
+        }
+
+        final DroolsController controllerFinal = controller;
+
+        FeatureApiUtils.apply(getProviders(),
+            feature -> feature.afterInstance(controllerFinal, properties),
+            (feature, ex) -> logger.error("feature {} ({}) afterInstance() of drools controller {}:{}:{} failed",
+                            feature.getName(), feature.getSequenceNumber(),
+                            newGroupId, newArtifactId, newVersion, ex));
+
+        return controller;
+    }
+
+    private DroolsController applyBeforeInstance(Properties properties, String newGroupId, String newArtifactId,
+                    String newVersion, List<TopicCoderFilterConfiguration> decoderConfigurations,
+                    List<TopicCoderFilterConfiguration> encoderConfigurations) {
         DroolsController controller = null;
         for (DroolsControllerFeatureApi feature: getProviders()) {
             try {
@@ -170,26 +197,6 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                         newGroupId, newArtifactId, newVersion, r);
             }
         }
-
-        if (controller == null) {
-            controller = new MavenDroolsController(newGroupId, newArtifactId, newVersion, decoderConfigurations,
-                    encoderConfigurations);
-        }
-
-        synchronized (this) {
-            droolsControllers.put(controllerId, controller);
-        }
-
-        for (DroolsControllerFeatureApi feature: getProviders()) {
-            try {
-                feature.afterInstance(controller, properties);
-            } catch (RuntimeException r) {
-                logger.error("feature {} ({}) afterInstance() of drools controller {}:{}:{} failed",
-                        feature.getName(), feature.getSequenceNumber(),
-                        newGroupId, newArtifactId, newVersion, r);
-            }
-        }
-
         return controller;
     }
 
