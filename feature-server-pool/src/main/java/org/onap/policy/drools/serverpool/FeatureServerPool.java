@@ -168,15 +168,23 @@ public class FeatureServerPool
         logger.info("Starting FeatureServerPool");
         Server.startup(CONFIG_FILE);
         TargetLock.startup();
-        droolsTimeoutMillis =
-            getProperty(BUCKET_DROOLS_TIMEOUT, DEFAULT_BUCKET_DROOLS_TIMEOUT);
+        setDroolsTimeoutMillis(
+            getProperty(BUCKET_DROOLS_TIMEOUT, DEFAULT_BUCKET_DROOLS_TIMEOUT));
         int intTimeToLive =
             getProperty(BUCKET_TIME_TO_LIVE, DEFAULT_BUCKET_TIME_TO_LIVE);
-        timeToLiveSecond = String.valueOf(intTimeToLive);
+        setTimeToLiveSecond(String.valueOf(intTimeToLive));
         buildKeywordTable();
         Bucket.Backup.register(new DroolsSessionBackup());
         Bucket.Backup.register(new TargetLock.LockBackup());
         return false;
+    }
+
+    private static void setDroolsTimeoutMillis(long timeoutMs) {
+        droolsTimeoutMillis = timeoutMs;
+    }
+
+    private static void setTimeToLiveSecond(String ttlSec) {
+        timeToLiveSecond = ttlSec;
     }
 
     /**
@@ -319,7 +327,7 @@ public class FeatureServerPool
                 path = Arrays.copyOf(path, path.length);
                 path[path.length - 1] = fieldName;
             }
-            keyword = sco.getString(path);
+            keyword = sco.getString((Object[]) path);
 
             if (keyword != null) {
                 if (conversionFunctionName != null) {
@@ -554,21 +562,11 @@ public class FeatureServerPool
                 continue;
             }
 
-            int beginIndex = begin.length();
-            int endIndex = name.length() - end.length();
-            if (beginIndex < endIndex) {
-                // <topic> is specified, so this table is limited to this
-                // specific topic
-                topic = name.substring(beginIndex, endIndex);
-            }
+            topic = detmTopic(name, begin, end);
 
             // now, process the value
             // Example: requestID,CommonHeader.RequestID
-            String[] commaSeparatedEntries = prop.getProperty(name).split(",");
-            String[][] paths = new String[commaSeparatedEntries.length][];
-            for (int i = 0; i < commaSeparatedEntries.length; i += 1) {
-                paths[i] = commaSeparatedEntries[i].split("\\.");
-            }
+            String[][] paths = splitPaths(prop, name);
 
             if (topic == null) {
                 // these paths are used for any topics not explicitly
@@ -579,6 +577,28 @@ public class FeatureServerPool
                 topicToPaths.put(topic, paths);
             }
         }
+    }
+
+    private static String detmTopic(String name, String begin, String end) {
+        int beginIndex = begin.length();
+        int endIndex = name.length() - end.length();
+        if (beginIndex < endIndex) {
+            // <topic> is specified, so this table is limited to this
+            // specific topic
+            return name.substring(beginIndex, endIndex);
+        }
+
+        return null;
+    }
+
+    private static String[][] splitPaths(Properties prop, String name) {
+        String[] commaSeparatedEntries = prop.getProperty(name).split(",");
+        String[][] paths = new String[commaSeparatedEntries.length][];
+        for (int i = 0; i < commaSeparatedEntries.length; i += 1) {
+            paths[i] = commaSeparatedEntries[i].split("\\.");
+        }
+
+        return paths;
     }
 
     /*======================================*/
@@ -993,8 +1013,10 @@ public class FeatureServerPool
                     }
                 };
                 kieSession.insert(doRestore);
+                ois.close();
                 return sessionLatch;
             } else {
+                ois.close();
                 logger.error("{}: Invalid session data for session={}, type={}",
                              this, session.getFullName(), obj.getClass().getName());
             }

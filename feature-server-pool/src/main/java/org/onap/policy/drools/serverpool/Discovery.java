@@ -180,14 +180,14 @@ public class Discovery implements TopicListener {
          * same format base64-encoded message that 'Server'
          * instances periodically exchange
          */
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
         try {
-            map = coder.decode(event, LinkedHashMap.class);
+            @SuppressWarnings("unchecked")
+            LinkedHashMap<String, String> map = coder.decode(event, LinkedHashMap.class);
             String message = map.get("pingData");
             Server.adminRequest(message.getBytes(StandardCharsets.UTF_8));
             logger.info("Received a message, server count={}", Server.getServerCount());
         } catch (CoderException e) {
-            logger.error("Can't decode message: {}", e);
+            logger.error("Can't decode message", e);
         }
     }
 
@@ -332,6 +332,7 @@ public class Discovery implements TopicListener {
                         publisher.send(jsonString);
                     }
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     logger.error("Exception in Discovery.Publisher.run():", e);
                     return;
                 } catch (Exception e) {
@@ -340,6 +341,7 @@ public class Discovery implements TopicListener {
                     try {
                         Thread.sleep(15000);
                     } catch (InterruptedException e2) {
+                        Thread.currentThread().interrupt();
                         logger.error("Discovery.Publisher sleep interrupted");
                     }
                     return;

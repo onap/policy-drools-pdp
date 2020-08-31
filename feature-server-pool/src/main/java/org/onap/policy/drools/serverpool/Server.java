@@ -81,6 +81,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import lombok.Setter;
 import org.glassfish.jersey.client.ClientProperties;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
@@ -105,6 +106,7 @@ public class Server implements Comparable<Server> {
         new TreeMap<>(Util.uuidComparator);
 
     // subset of servers to be notified (null means it needs to be rebuilt)
+    @Setter
     private static LinkedList<Server> notifyList = null;
 
     // data to be sent out to notify list
@@ -320,7 +322,6 @@ public class Server implements Comparable<Server> {
             InetAddress address = InetAddress.getByName(ipAddressString);
             InetSocketAddress socketAddress = new InetSocketAddress(address, port);
 
-            possibleError = "HTTP server initialization error";
             restServer = HttpServletServerFactoryInstance.getServerFactory().build(
                          "SERVER-POOL",                                 // name
                          useHttps,                                      // https
@@ -342,7 +343,6 @@ public class Server implements Comparable<Server> {
             }
 
             // we may not know the port until after the server is started
-            possibleError = "HTTP server start error";
             restServer.start();
             possibleError = null;
 
@@ -625,7 +625,7 @@ public class Server implements Comparable<Server> {
         updatedList.add(this);
 
         // notify list will need to be rebuilt
-        notifyList = null;
+        setNotifyList(null);
 
         if (socketAddress != null && this != thisServer) {
             // initialize 'client' and 'target' fields
@@ -769,60 +769,63 @@ public class Server implements Comparable<Server> {
         // The 'notifyList' value is initially 'null', and it is reset to 'null'
         // every time a new host joins, or one leaves. That way, it is marked for
         // recalculation, but only when needed.
-        if (notifyList == null) {
-            // next index we are looking for
-            int dest = 1;
+        if (notifyList != null) {
+            return notifyList;
+        }
 
-            // our current position in the Server table -- starting at 'thisServer'
-            UUID current = thisServer.uuid;
+        // next index we are looking for
+        int dest = 1;
 
-            // site socket address of 'current'
-            InetSocketAddress thisSiteSocketAddress = thisServer.siteSocketAddress;
+        // our current position in the Server table -- starting at 'thisServer'
+        UUID current = thisServer.uuid;
 
-            // hash set of all site socket addresses located
-            HashSet<InetSocketAddress> siteSocketAddresses = new HashSet<>();
-            siteSocketAddresses.add(thisSiteSocketAddress);
+        // site socket address of 'current'
+        InetSocketAddress thisSiteSocketAddress = thisServer.siteSocketAddress;
 
-            // the list we are building
-            notifyList = new LinkedList<>();
+        // hash set of all site socket addresses located
+        HashSet<InetSocketAddress> siteSocketAddresses = new HashSet<>();
+        siteSocketAddresses.add(thisSiteSocketAddress);
 
-            int index = 1;
-            for ( ; ; ) {
-                // move to the next key (UUID) -- if we hit the end of the table,
-                // wrap to the beginning
-                current = servers.higherKey(current);
-                if (current == null) {
-                    current = servers.firstKey();
-                }
-                if (current.equals(thisServer.uuid)) {
-                    // we have looped through the entire list
-                    break;
-                }
+        // the list we are building
+        notifyList = new LinkedList<>();
 
-                // fetch associated server & site socket address
-                Server server = servers.get(current);
-                InetSocketAddress currentSiteSocketAddress =
-                    server.siteSocketAddress;
+        int index = 1;
+        for ( ; ; ) {
+            // move to the next key (UUID) -- if we hit the end of the table,
+            // wrap to the beginning
+            current = servers.higherKey(current);
+            if (current == null) {
+                current = servers.firstKey();
+            }
+            if (current.equals(thisServer.uuid)) {
+                // we have looped through the entire list
+                break;
+            }
 
-                if (Objects.equals(thisSiteSocketAddress,
-                                   currentSiteSocketAddress)) {
-                    // same site -- see if we should add this one
-                    if (index == dest) {
-                        // this is the next index we are looking for --
-                        // add the server
-                        notifyList.add(server);
+            // fetch associated server & site socket address
+            Server server = servers.get(current);
+            InetSocketAddress currentSiteSocketAddress =
+                server.siteSocketAddress;
 
-                        // advance to the next offset (current-offset * 2)
-                        dest = dest << 1;
-                    }
-                    index += 1;
-                } else if (!siteSocketAddresses.contains(currentSiteSocketAddress)) {
-                    // we need at least one member from each site
+            if (Objects.equals(thisSiteSocketAddress,
+                               currentSiteSocketAddress)) {
+                // same site -- see if we should add this one
+                if (index == dest) {
+                    // this is the next index we are looking for --
+                    // add the server
                     notifyList.add(server);
-                    siteSocketAddresses.add(currentSiteSocketAddress);
+
+                    // advance to the next offset (current-offset * 2)
+                    dest = dest << 1;
                 }
+                index += 1;
+            } else if (!siteSocketAddresses.contains(currentSiteSocketAddress)) {
+                // we need at least one member from each site
+                notifyList.add(server);
+                siteSocketAddresses.add(currentSiteSocketAddress);
             }
         }
+
         return notifyList;
     }
 
@@ -932,27 +935,8 @@ public class Server implements Comparable<Server> {
              * This method is running within the 'MainLoop' thread.
              */
             try {
-                WebTarget webTarget = target.path(path);
-                if (responseCallback != null) {
-                    // give callback a chance to modify 'WebTarget'
-                    webTarget = responseCallback.webTarget(webTarget);
+                invokeWebTarget(path, entity, responseCallback);
 
-                    // send the response to the callback
-                    Response response;
-                    if (entity == null) {
-                        response = webTarget.request().get();
-                    } else {
-                        response = webTarget.request().post(entity);
-                    }
-                    responseCallback.response(response);
-                } else {
-                    // just do the invoke, and ignore the response
-                    if (entity == null) {
-                        webTarget.request().get();
-                    } else {
-                        webTarget.request().post(entity);
-                    }
-                }
             } catch (Exception e) {
                 logger.error("Failed to send to {} ({}, {})",
                              uuid, destSocketAddress, destName);
@@ -966,6 +950,30 @@ public class Server implements Comparable<Server> {
                 MainLoop.queueWork(this::checkServer);
             }
         });
+    }
+
+    private void invokeWebTarget(final String path, final Entity<?> entity, PostResponse responseCallback) {
+        WebTarget webTarget = target.path(path);
+        if (responseCallback != null) {
+            // give callback a chance to modify 'WebTarget'
+            webTarget = responseCallback.webTarget(webTarget);
+
+            // send the response to the callback
+            Response response;
+            if (entity == null) {
+                response = webTarget.request().get();
+            } else {
+                response = webTarget.request().post(entity);
+            }
+            responseCallback.response(response);
+        } else {
+            // just do the invoke, and ignore the response
+            if (entity == null) {
+                webTarget.request().get();
+            } else {
+                webTarget.request().post(entity);
+            }
+        }
     }
 
     /**

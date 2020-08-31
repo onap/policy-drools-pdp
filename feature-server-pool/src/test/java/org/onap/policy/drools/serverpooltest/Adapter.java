@@ -133,6 +133,7 @@ public abstract class Adapter {
                         // but a new copy of class 'AdapterImpl'
                         Adapter adapter = (Adapter) classLoader.loadClass(
                             "org.onap.policy.drools.serverpool.AdapterImpl")
+                            .getDeclaredConstructor()
                             .newInstance();
 
                         // initialize the adapter

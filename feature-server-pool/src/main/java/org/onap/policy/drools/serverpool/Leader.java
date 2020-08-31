@@ -41,6 +41,7 @@ import java.util.UUID;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +65,11 @@ class Leader {
     }
 
     // Server currently in the leader roll
+    @Setter
     private static Server leaderLocal = null;
 
     // Vote state machine -- it is null, unless a vote is in progress
+    @Setter
     private static VoteCycle voteCycle = null;
 
     private static UUID emptyUUID = new UUID(0L, 0L);
@@ -172,7 +175,7 @@ class Leader {
             if (server == leaderLocal) {
                 // the lead server has failed --
                 // start/restart the VoteCycle state machine
-                leaderLocal = null;
+                setLeaderLocal(null);
                 startVoting();
 
                 // send out a notification that the lead server has failed
@@ -296,7 +299,7 @@ class Leader {
             // 5 second grace period has passed -- the leader is one with
             // the most votes, which is the first entry in 'voteData'
             Server oldLeader = leaderLocal;
-            leaderLocal = Server.getServer(voteData.first().uuid);
+            setLeaderLocal(Server.getServer(voteData.first().uuid));
             if (leaderLocal != oldLeader) {
                 // the leader has changed -- send out notifications
                 for (Events listener : Events.getListeners()) {
@@ -319,7 +322,7 @@ class Leader {
 
             // we are done with voting -- clean up, and report results
             MainLoop.removeBackgroundWork(this);
-            voteCycle = null;
+            setVoteCycle(null);
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             PrintStream out = new PrintStream(bos);
@@ -332,6 +335,11 @@ class Leader {
             out.format(format, "UUID", "Votes", "Voter(s)");
             out.format(format, "----", "-----", "--------");
 
+            outputVotes(out, format);
+            logger.info("Output - {}", bos);
+        }
+
+        private void outputVotes(PrintStream out, String format) {
             for (VoteData vote : voteData) {
                 if (vote.voters.isEmpty()) {
                     out.format(format, vote.uuid, 0, "");
@@ -348,7 +356,6 @@ class Leader {
                     }
                 }
             }
-            logger.info("Output - {}", bos);
         }
 
         /**
