@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68150d9a_92489757",
+        "filename": "api-state-management/src/main/java/org/onap/policy/drools/statemanagement/StateManagementFeatureApi.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-08-31T14:27:08Z",
+      "side": 1,
+      "message": "yes, this should be IntegrityMonitorException to match the wrapped class",
+      "range": {
+        "startLine": 131,
+        "startChar": 26,
+        "endLine": 131,
+        "endChar": 51
+      },
+      "revId": "a7278c7a7993306819951d79e709e08e4ec42d99",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
