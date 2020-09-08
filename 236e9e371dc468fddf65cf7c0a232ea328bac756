@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3e9fa2db_5a4a52c5",
+        "filename": "releases/1.7.1.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-09-08T20:15:53Z",
+      "side": 1,
+      "message": "Not sure if this is necessary, but previous release files include this line after \u0027project\u0027 line:\n\n  tag_release: false",
+      "revId": "236e9e371dc468fddf65cf7c0a232ea328bac756",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
