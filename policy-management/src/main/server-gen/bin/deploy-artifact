@@ -94,6 +94,7 @@ function init
     if [[ -n ${pomProperties} ]]; then
         jar xf "${jar}" "${pomProperties}"
         WORKING_POM_PROPERTIES=$(realpath ${pomProperties})
+        sed -i 's/\r$//' "${WORKING_POM_PROPERTIES}"
         source "${WORKING_POM_PROPERTIES}"
         echo "${artifact}: sourcing in ${WORKING_POM_PROPERTIES}"
     else
