@@ -16,6 +16,24 @@
       "revId": "3edffd7c65d84601db7a258606f511498ad73616",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "539cbfc2_db6570c9",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-09-11T22:11:51Z",
+      "side": 1,
+      "message": "happens when maven generates the jar file.  Particular case is when running maven with eclipse on windows, don\u0027t know if there are other cases\n\nthis should work whether the pom.properties is generated on linux or on windows, thus it\u0027s backward compatible.  Furthermore, it addresses the exact issue - the file has CR added on windows, thus use a utility to remove the CRs.\n\nyes, dos2unix is already installed, which is why I used it.  However, I can switch to \u0027sed\u0027, assuming it works.",
+      "parentUuid": "a63d1d1e_7f413d6b",
+      "revId": "3edffd7c65d84601db7a258606f511498ad73616",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
