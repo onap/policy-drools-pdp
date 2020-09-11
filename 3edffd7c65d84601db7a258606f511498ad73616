@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a63d1d1e_7f413d6b",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-09-11T21:38:42Z",
+      "side": 1,
+      "message": "Is the issue here that for external zip, jar files that are generated in windows OS?  Or this is a generic problem, or only when running on a windows host?\n\nIf it is only for when wanting to install external artifacts generated in windows OS, I guess I have some reservations, as I have some concerns with supporting Windows OS in general.\n\nOne constraint of adding this, is that the dos2unix utilities should be installed in the drools pdp image.   Is dos2unix already available in the current alpine images?\n\nAnother consideration is that there are some other folks like ecomp folks that build with these packages, their own image, that will require them to support in their OS of choice this package.\n\nOne other alternative would be to strip \\r characters at the end with sed or other text processing utility to avoid dependencies with the package.",
+      "revId": "3edffd7c65d84601db7a258606f511498ad73616",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
