@@ -25,12 +25,12 @@ import java.util.Collections;
 import org.onap.policy.common.utils.services.OrderedService;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
-public interface ServerPoolApi extends OrderedService {
+public abstract class ServerPoolApi implements OrderedService {
     /**
      * 'ServerPoolApi.impl.getList()' returns an ordered list of objects
      * implementing the 'ServerPoolApi' interface.
      */
-    public static OrderedServiceImpl<ServerPoolApi> impl =
+    public static final OrderedServiceImpl<ServerPoolApi> impl =
         new OrderedServiceImpl<>(ServerPoolApi.class);
 
     /**
@@ -39,7 +39,7 @@ public interface ServerPoolApi extends OrderedService {
      *
      * @return a Collection of classes implementing REST methods
      */
-    public default Collection<Class<?>> servletClasses() {
+    public Collection<Class<?>> servletClasses() {
         return Collections.emptyList();
     }
 
@@ -50,7 +50,8 @@ public interface ServerPoolApi extends OrderedService {
      *
      * @param bucket the bucket that needs restoring
      */
-    public default void restoreBucket(Bucket bucket) {
+    public void restoreBucket(Bucket bucket) {
+        // do nothing
     }
 
     /**
@@ -60,7 +61,8 @@ public interface ServerPoolApi extends OrderedService {
      * @param bucket the bucket containing the 'GlobalLocks' adjunct
      * @param globalLocks the 'GlobalLocks' adjunct
      */
-    public default void lockUpdate(Bucket bucket, TargetLock.GlobalLocks globalLocks) {
+    public void lockUpdate(Bucket bucket, TargetLock.GlobalLocks globalLocks) {
+        // do nothing
     }
 
     /**
@@ -74,6 +76,7 @@ public interface ServerPoolApi extends OrderedService {
      * @param isOwner 'true' if the current host owns the bucket
      * @param isBackup 'true' if the current host is a backup for the bucket
      */
-    public default void auditBucket(Bucket bucket, boolean isOwner, boolean isBackup) {
+    public void auditBucket(Bucket bucket, boolean isOwner, boolean isBackup) {
+        // do nothing
     }
 }

@@ -246,7 +246,7 @@ public class Server implements Comparable<Server> {
         Properties prop = new Properties();
 
         for (String arg : args) {
-            // arguments with an equals sign in them are a property definition;
+            // arguments with an equals sign in them are a property definition -
             // otherwise, they are a properties file name
 
             if (arg.contains("=")) {

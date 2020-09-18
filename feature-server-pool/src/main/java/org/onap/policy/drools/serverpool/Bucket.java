@@ -45,12 +45,14 @@ import java.util.Base64;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -109,7 +111,9 @@ public class Bucket {
 
         // create MD5 MessageDigest -- used to hash keywords
         try {
-            messageDigest = MessageDigest.getInstance("MD5");
+            // disabling sonar, as the digest is only used to hash keywords - it isn't
+            // used for security purposes
+            messageDigest = MessageDigest.getInstance("MD5");   // NOSONAR
         } catch (NoSuchAlgorithmException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -406,12 +410,30 @@ public class Bucket {
             logger.info("Bucket {} owner: {}->null",
                         index, bucket.getOwner());
             bucketChanges = true;
-            synchronized (bucket) {
-                bucket.setOwner(null);
-                bucket.setState(null);
-            }
+            bucket.nullifyOwner();
         }
         return bucketChanges;
+    }
+
+    private synchronized void nullifyOwner() {
+        setOwner(null);
+        setState(null);
+    }
+
+    /**
+     * Gets the set of backups.
+     *
+     * @return the set of backups
+     */
+    public synchronized Set<Server> getBackups() {
+        /*
+         * For some reason, the junit tests break if Set.of() is used, so we'll stick with
+         * the long way for now.
+         */
+        Set<Server> backups = new HashSet<>();
+        backups.add(getPrimaryBackup());
+        backups.add(getSecondaryBackup());
+        return backups;
     }
 
     private static boolean updatePrimaryBackup(DataInputStream dis, int index, Bucket bucket, boolean bucketChanges)
@@ -1017,7 +1039,7 @@ public class Bucket {
      * is registered to listen for notifications of state transitions. Note
      * that all of these methods are running within the 'MainLoop' thread.
      */
-    private static class EventHandler implements Events {
+    private static class EventHandler extends Events {
         /**
          * {@inheritDoc}
          */

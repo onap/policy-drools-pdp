@@ -28,9 +28,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * This interface is used to distribute notifications of various system
  * events, such as new 'Server' instances, or a server failing.
  */
-public interface Events {
+public class Events {
     // set of listeners receiving event notifications
-    static final Queue<Events> listeners =
+    private static final Queue<Events> listeners =
         new ConcurrentLinkedQueue<>();
 
     /**
@@ -64,7 +64,8 @@ public interface Events {
      *
      * @param server this is the new server
      */
-    public default void newServer(Server server) {
+    public void newServer(Server server) {
+        // do nothing
     }
 
     /**
@@ -72,7 +73,8 @@ public interface Events {
      *
      * @param server this is the server that failed
      */
-    public default void serverFailed(Server server) {
+    public void serverFailed(Server server) {
+        // do nothing
     }
 
     /**
@@ -80,7 +82,8 @@ public interface Events {
      *
      * @param server this is the new lead server
      */
-    public default void newLeader(Server server) {
+    public void newLeader(Server server) {
+        // do nothing
     }
 
     /**
@@ -88,7 +91,8 @@ public interface Events {
      *
      * @param server the lead server that failed
      */
-    public default void leaderFailed(Server server) {
+    public void leaderFailed(Server server) {
+        // do nothing
     }
 
     /**
@@ -98,6 +102,7 @@ public interface Events {
      *
      * @param server the current leader, which has been confirmed
      */
-    public default void leaderConfirmed(Server server) {
+    public void leaderConfirmed(Server server) {
+        // do nothing
     }
 }

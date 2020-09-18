@@ -157,7 +157,7 @@ class Leader {
      * is registered to listen for notifications of state transitions. Note
      * that all of these methods are running within the 'MainLoop' thread.
      */
-    private static class EventHandler implements Events {
+    private static class EventHandler extends Events {
         /**
          * {@inheritDoc}
          */

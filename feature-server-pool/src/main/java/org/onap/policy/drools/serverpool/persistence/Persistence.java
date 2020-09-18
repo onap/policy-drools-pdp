@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * backing up the data of selected Drools sessions and server-side 'TargetLock'
  * data on separate hosts.
  */
-public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
+public class Persistence extends ServerPoolApi implements PolicySessionFeatureApi {
     private static Logger logger = LoggerFactory.getLogger(Persistence.class);
 
     // HTTP query parameters
@@ -240,13 +240,7 @@ public class Persistence implements PolicySessionFeatureApi, ServerPoolApi {
                           MediaType.APPLICATION_OCTET_STREAM_TYPE);
         final int count = lockCount;
 
-        // build list of backup servers
-        Set<Server> servers = new HashSet<>();
-        synchronized (bucket) {
-            servers.add(bucket.getPrimaryBackup());
-            servers.add(bucket.getSecondaryBackup());
-        }
-        sendLocksToBackupServers(bucketNumber, entity, count, servers);
+        sendLocksToBackupServers(bucketNumber, entity, count, bucket.getBackups());
     }
 
     private static void sendLocksToBackupServers(final int bucketNumber, final Entity<String> entity, final int count,

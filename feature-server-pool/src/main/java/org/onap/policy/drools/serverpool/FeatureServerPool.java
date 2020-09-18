@@ -205,8 +205,9 @@ public class FeatureServerPool
      * {@inheritDoc}
      */
     @Override
-    public boolean insertDrools(
-        final PolicySession session, final Object object) {
+    public boolean insertDrools(final PolicySession session, final Object object) { // NOSONAR
+        // sonar complained that the method always returns the same value. However,
+        // we prefer the code be structured this way, thus disabled sonar
 
         final String keyword = Keyword.lookupKeyword(object);
         if (keyword == null) {

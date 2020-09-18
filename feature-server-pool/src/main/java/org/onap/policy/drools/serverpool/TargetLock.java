@@ -821,7 +821,7 @@ public class TargetLock implements Lock, Serializable {
      * There is a single instance of class 'TargetLock.EventHandler', which is
      * registered to listen for notifications of state transitions.
      */
-    private static class EventHandler implements Events {
+    private static class EventHandler extends Events {
         /**
          * {@inheritDoc}
          */
