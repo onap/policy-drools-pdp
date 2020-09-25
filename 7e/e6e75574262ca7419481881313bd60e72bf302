@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Takamune Cho <takamune.cho@att.com>
+Code-Review+1: Ajith Sreekumar <ajith.sreekumar@bell.ca>
+Code-Review+2: Pamela Dragosh <pdragosh@research.att.com>
+Submitted-by: Jorge Hernandez <jorge.hernandez-herrero@att.com>
+Submitted-at: Fri, 25 Sep 2020 15:51:16 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/policy/drools-pdp/+/113131
+Project: policy/drools-pdp
+Branch: refs/heads/master
