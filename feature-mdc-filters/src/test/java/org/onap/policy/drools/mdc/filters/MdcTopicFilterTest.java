@@ -194,9 +194,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addFilterRuleNullKeyStringPathTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule(null, "$.subRequestID");
+        addFilterRuleValidateFailure(null, "$.subRequestID");
     }
 
     /**
@@ -205,9 +203,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addFilterRuleNullKeyPathListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule(null, Arrays.asList("$.subRequestID"));
+        addFilterRuleValidateFailure(null, Arrays.asList("$.subRequestID"));
     }
 
     /**
@@ -216,9 +212,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addFilterRuleEmptyKeyStringPathTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule("", "$.subRequestID");
+        addFilterRuleValidateFailure("", "$.subRequestID");
     }
 
     /**
@@ -227,9 +221,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addFilterRuleEmptyKeyPathListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule("", Arrays.asList("$.subRequestID"));
+        addFilterRuleValidateFailure("", Arrays.asList("$.subRequestID"));
     }
 
     /**
@@ -237,9 +229,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addFilterRuleEmptyPathTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule("subRequestID", "");
+        addFilterRuleValidateFailure("subRequestID", "");
     }
 
     /**
@@ -247,9 +237,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addFilterRuleEmptyPathsTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule("subRequestID", Arrays.asList());
+        addFilterRuleValidateFailure("subRequestID", Arrays.asList());
     }
 
     /**
@@ -258,9 +246,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addExistingFilterRuleStringTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule("requestID", "$.test");
+        addFilterRuleValidateFailure("requestID", "$.test");
     }
 
     /**
@@ -269,9 +255,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addExistingFilterRuleListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.addFilterRule("requestID", Arrays.asList("$.test"));
+        addFilterRuleValidateFailure("requestID", Arrays.asList("$.test"));
     }
 
     @Test
@@ -337,9 +321,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleNullKeyStringPathTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule(null, "$.request-id");
+        modifyFilterRuleValidateFailure(null, "$.request-id");
     }
 
     /**
@@ -348,9 +330,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleNullKeyPathListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule(null, Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure(null, Arrays.asList("$.request-id"));
     }
 
     /**
@@ -359,9 +339,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleEmptyKeyStringPathTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("", "$.request-id");
+        modifyFilterRuleValidateFailure("", "$.request-id");
     }
 
     /**
@@ -370,9 +348,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleEmptyKeyPathListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("", Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure("", Arrays.asList("$.request-id"));
     }
 
     /**
@@ -390,9 +366,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleEmptyPathListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("requestID", Arrays.asList());
+        modifyFilterRuleValidateFailure("requestID", Arrays.asList());
     }
 
     /**
@@ -412,9 +386,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleMissingKeyPathListTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("request-id", Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure("request-id", Arrays.asList("$.request-id"));
     }
 
 
@@ -423,9 +395,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleNullOldKeyTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule(null, "request-id", Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure(null, "request-id", Arrays.asList("$.request-id"));
     }
 
     /**
@@ -433,9 +403,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleEmptyOldKeyTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("", "request-id", Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure("", "request-id", Arrays.asList("$.request-id"));
     }
 
     /**
@@ -443,9 +411,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleNullNewKeyTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("requestID", null, Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure("requestID", null, Arrays.asList("$.request-id"));
     }
 
     /**
@@ -453,9 +419,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleEmptyNewKeyTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("requestID", "", Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure("requestID", "", Arrays.asList("$.request-id"));
     }
 
     /**
@@ -463,9 +427,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleSameKeyTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("requestID", "requestID",
+        modifyFilterRuleValidateFailure("requestID", "requestID",
                 Arrays.asList("$.request-id"));
     }
 
@@ -474,9 +436,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleEmptyPathsTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("requestID", "request-id", Arrays.asList());
+        modifyFilterRuleValidateFailure("requestID", "request-id", Arrays.asList());
     }
 
     /**
@@ -485,9 +445,7 @@ public class MdcTopicFilterTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void modifyFilterRuleNonExistingOldKeyTest() {
-        String topicFilterProp = "requestID=$.requestID";
-        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
-        topicFilter.modifyFilterRule("request-id", "id", Arrays.asList("$.request-id"));
+        modifyFilterRuleValidateFailure("request-id", "id", Arrays.asList("$.request-id"));
     }
 
     /**
@@ -657,5 +615,35 @@ public class MdcTopicFilterTest {
 
         rule.addPaths(Arrays.asList("pathD", "pathE"));
         assertEquals("[pathA, pathB, pathC, pathD, pathE]", rule.getPaths().toString());
+    }
+
+    private void addFilterRuleValidateFailure(String mdcKey, String path) {
+        String topicFilterProp = "requestID=$.requestID";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+        topicFilter.addFilterRule(mdcKey, path);
+    }
+
+    private void addFilterRuleValidateFailure(String mdcKey, List<String> paths) {
+        String topicFilterProp = "requestID=$.requestID";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+        topicFilter.addFilterRule(mdcKey, paths);
+    }
+
+    private void modifyFilterRuleValidateFailure(String mdcKey, String path) {
+        String topicFilterProp = "requestID=$.requestID";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+        topicFilter.modifyFilterRule(mdcKey, path);
+    }
+
+    private void modifyFilterRuleValidateFailure(String mdcKey, List<String> paths) {
+        String topicFilterProp = "requestID=$.requestID";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+        topicFilter.modifyFilterRule(mdcKey, paths);
+    }
+
+    private void modifyFilterRuleValidateFailure(String oldMdcKey, String newMdcKey, List<String> paths) {
+        String topicFilterProp = "requestID=$.requestID";
+        MdcTopicFilter topicFilter = new MdcTopicFilter(topicFilterProp);
+        topicFilter.modifyFilterRule(oldMdcKey, newMdcKey, paths);
     }
 }

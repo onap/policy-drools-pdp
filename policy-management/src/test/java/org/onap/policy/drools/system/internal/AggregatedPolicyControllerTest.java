@@ -600,20 +600,17 @@ public class AggregatedPolicyControllerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testDeliver_NullTopic() {
-        apc.start();
-        apc.deliver(CommInfrastructure.NOOP, null, MY_EVENT);
+        validateDeliverFailure(null, MY_EVENT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testDeliver_EmptyTopic() {
-        apc.start();
-        apc.deliver(CommInfrastructure.NOOP, "", MY_EVENT);
+        validateDeliverFailure("", MY_EVENT);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testDeliver_NullEvent() {
-        apc.start();
-        apc.deliver(CommInfrastructure.NOOP, SINK_TOPIC1, null);
+        validateDeliverFailure(SINK_TOPIC1, null);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -786,6 +783,11 @@ public class AggregatedPolicyControllerTest {
     @Test
     public void testToString() {
         assertTrue(apc.toString().startsWith("AggregatedPolicyController ["));
+    }
+
+    private void validateDeliverFailure(String topic, String event) {
+        apc.start();
+        apc.deliver(CommInfrastructure.NOOP, topic, event);
     }
 
     /**
