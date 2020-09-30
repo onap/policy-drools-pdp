@@ -47,38 +47,49 @@ public class MdcTransactionTest {
 
         assertNullSubTransactionFields(trans);
 
-        assertNotNull(MDC.get(MdcTransactionConstants.REQUEST_ID));
-        assertNotNull(MDC.get(MdcTransactionConstants.PARTNER_NAME));
-        assertNotNull(MDC.get(MdcTransactionConstants.VIRTUAL_SERVER_NAME));
-        assertNotNull(MDC.get(MdcTransactionConstants.SERVER));
-        assertNotNull(MDC.get(MdcTransactionConstants.SERVER_IP_ADDRESS));
-        assertNotNull(MDC.get(MdcTransactionConstants.SERVER_FQDN));
-        assertNotNull(MDC.get(MdcTransactionConstants.SERVICE_NAME));
+        assertNotNullKeys(
+            MdcTransactionConstants.REQUEST_ID,
+            MdcTransactionConstants.PARTNER_NAME,
+            MdcTransactionConstants.VIRTUAL_SERVER_NAME,
+            MdcTransactionConstants.SERVER,
+            MdcTransactionConstants.SERVER_IP_ADDRESS,
+            MdcTransactionConstants.SERVER_FQDN,
+            MdcTransactionConstants.SERVICE_NAME
+        );
 
-        assertNull(MDC.get(MdcTransactionConstants.INVOCATION_ID));
-        assertNull(MDC.get(MdcTransactionConstants.BEGIN_TIMESTAMP));
-        assertNull(MDC.get(MdcTransactionConstants.END_TIMESTAMP));
-        assertNull(MDC.get(MdcTransactionConstants.ELAPSED_TIME));
-        assertNull(MDC.get(MdcTransactionConstants.SERVICE_INSTANCE_ID));
-        assertNull(MDC.get(MdcTransactionConstants.INSTANCE_UUID));
-        assertNull(MDC.get(MdcTransactionConstants.PROCESS_KEY));
-        assertNull(MDC.get(MdcTransactionConstants.STATUS_CODE));
-        assertNull(MDC.get(MdcTransactionConstants.RESPONSE_CODE));
-        assertNull(MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));
-        assertNull(MDC.get(MdcTransactionConstants.SEVERITY));
-        assertNull(MDC.get(MdcTransactionConstants.TARGET_ENTITY));
-        assertNull(MDC.get(MdcTransactionConstants.TARGET_SERVICE_NAME));
-        assertNull(MDC.get(MdcTransactionConstants.TARGET_VIRTUAL_ENTITY));
-        assertNull(MDC.get(MdcTransactionConstants.CLIENT_IP_ADDRESS));
-        assertNull(MDC.get(MdcTransactionConstants.REMOTE_HOST));
 
-        assertEquals(trans.getRequestId(), MDC.get(MdcTransactionConstants.REQUEST_ID));
-        assertEquals(trans.getPartner(), MDC.get(MdcTransactionConstants.PARTNER_NAME));
-        assertEquals(trans.getVirtualServerName(), MDC.get(MdcTransactionConstants.VIRTUAL_SERVER_NAME));
-        assertEquals(trans.getServer(), MDC.get(MdcTransactionConstants.SERVER));
-        assertEquals(trans.getServerIpAddress(), MDC.get(MdcTransactionConstants.SERVER_IP_ADDRESS));
-        assertEquals(trans.getServerFqdn(), MDC.get(MdcTransactionConstants.SERVER_FQDN));
-        assertEquals(trans.getServiceName(), MDC.get(MdcTransactionConstants.SERVICE_NAME));
+        assertNullKeys(
+            MdcTransactionConstants.INVOCATION_ID,
+            MdcTransactionConstants.BEGIN_TIMESTAMP,
+            MdcTransactionConstants.END_TIMESTAMP,
+            MdcTransactionConstants.ELAPSED_TIME,
+            MdcTransactionConstants.SERVICE_INSTANCE_ID,
+            MdcTransactionConstants.INSTANCE_UUID,
+            MdcTransactionConstants.PROCESS_KEY,
+            MdcTransactionConstants.STATUS_CODE,
+            MdcTransactionConstants.RESPONSE_CODE,
+            MdcTransactionConstants.RESPONSE_DESCRIPTION,
+            MdcTransactionConstants.SEVERITY,
+            MdcTransactionConstants.TARGET_ENTITY,
+            MdcTransactionConstants.TARGET_SERVICE_NAME,
+            MdcTransactionConstants.TARGET_VIRTUAL_ENTITY,
+            MdcTransactionConstants.CLIENT_IP_ADDRESS,
+            MdcTransactionConstants.REMOTE_HOST
+        );
+
+        assertTransactionFields(trans);
+    }
+
+    private void assertNotNullKeys(String... notNullKeys) {
+        for (String key: notNullKeys) {
+            assertNotNull(key, MDC.get(key));
+        }
+    }
+
+    private void assertNullKeys(String... nullKeys) {
+        for (String key: nullKeys) {
+            assertNull(key, MDC.get(key));
+        }
     }
 
     private void assertNullSubTransactionFields(MdcTransaction trans) {
@@ -144,52 +155,51 @@ public class MdcTransactionTest {
 
         assertTransactionFields(trans);
 
-        assertNotNull(MDC.get(MdcTransactionConstants.INVOCATION_ID));
-        assertNotNull(MDC.get(MdcTransactionConstants.BEGIN_TIMESTAMP));
-        assertNotNull(MDC.get(MdcTransactionConstants.END_TIMESTAMP));
-        assertNotNull(MDC.get(MdcTransactionConstants.ELAPSED_TIME));
-        assertNotNull(MDC.get(MdcTransactionConstants.SERVICE_INSTANCE_ID));
-        assertNotNull(MDC.get(MdcTransactionConstants.INSTANCE_UUID));
-        assertNotNull(MDC.get(MdcTransactionConstants.PROCESS_KEY));
-        assertNotNull(MDC.get(MdcTransactionConstants.STATUS_CODE));
-        assertNotNull(MDC.get(MdcTransactionConstants.RESPONSE_CODE));
-        assertNotNull(MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));
-        assertNotNull(MDC.get(MdcTransactionConstants.SEVERITY));
-        assertNotNull(MDC.get(MdcTransactionConstants.TARGET_ENTITY));
-        assertNotNull(MDC.get(MdcTransactionConstants.TARGET_SERVICE_NAME));
-        assertNotNull(MDC.get(MdcTransactionConstants.TARGET_VIRTUAL_ENTITY));
-        assertNotNull(MDC.get(MdcTransactionConstants.CLIENT_IP_ADDRESS));
-        assertNotNull(MDC.get(MdcTransactionConstants.REMOTE_HOST));
+        assertNotNullKeys(
+            MdcTransactionConstants.INVOCATION_ID,
+            MdcTransactionConstants.BEGIN_TIMESTAMP,
+            MdcTransactionConstants.END_TIMESTAMP,
+            MdcTransactionConstants.ELAPSED_TIME,
+            MdcTransactionConstants.SERVICE_INSTANCE_ID,
+            MdcTransactionConstants.INSTANCE_UUID,
+            MdcTransactionConstants.PROCESS_KEY,
+            MdcTransactionConstants.STATUS_CODE,
+            MdcTransactionConstants.RESPONSE_CODE,
+            MdcTransactionConstants.RESPONSE_DESCRIPTION,
+            MdcTransactionConstants.SEVERITY,
+            MdcTransactionConstants.TARGET_ENTITY,
+            MdcTransactionConstants.TARGET_SERVICE_NAME,
+            MdcTransactionConstants.TARGET_VIRTUAL_ENTITY,
+            MdcTransactionConstants.CLIENT_IP_ADDRESS,
+            MdcTransactionConstants.REMOTE_HOST);
 
         assertEquals(trans.getInvocationId(), MDC.get(MdcTransactionConstants.INVOCATION_ID));
         assertEquals(trans.timestamp(trans.getStartTime()), MDC.get(MdcTransactionConstants.BEGIN_TIMESTAMP));
         assertEquals(trans.timestamp(trans.getEndTime()), MDC.get(MdcTransactionConstants.END_TIMESTAMP));
         assertEquals(String.valueOf(Duration.between(trans.getStartTime(), trans.getEndTime()).toMillis()),
             MDC.get(MdcTransactionConstants.ELAPSED_TIME));
-        assertEquals(trans.getServiceInstanceId(), MDC.get(MdcTransactionConstants.SERVICE_INSTANCE_ID));
         assertEquals(trans.getInstanceUuid(), MDC.get(MdcTransactionConstants.INSTANCE_UUID));
-        assertEquals(trans.getProcessKey(), MDC.get(MdcTransactionConstants.PROCESS_KEY));
-        assertEquals(trans.getStatusCode(), MDC.get(MdcTransactionConstants.STATUS_CODE));
-        assertEquals(trans.getResponseCode(), MDC.get(MdcTransactionConstants.RESPONSE_CODE));
-        assertEquals(trans.getResponseDescription(), MDC.get(MdcTransactionConstants.RESPONSE_DESCRIPTION));
-        assertEquals(trans.getSeverity(), MDC.get(MdcTransactionConstants.SEVERITY));
-        assertEquals(trans.getTargetEntity(), MDC.get(MdcTransactionConstants.TARGET_ENTITY));
-        assertEquals(trans.getTargetServiceName(), MDC.get(MdcTransactionConstants.TARGET_SERVICE_NAME));
-        assertEquals(trans.getTargetVirtualEntity(), MDC.get(MdcTransactionConstants.TARGET_VIRTUAL_ENTITY));
-        assertEquals(trans.getClientIpAddress(), MDC.get(MdcTransactionConstants.CLIENT_IP_ADDRESS));
-        assertEquals(trans.getRemoteHost(), MDC.get(MdcTransactionConstants.REMOTE_HOST));
 
-        assertEquals("service-instance-id", trans.getServiceInstanceId());
-        assertEquals("process-key", trans.getProcessKey());
-        assertEquals("status-code", trans.getStatusCode());
-        assertEquals("response-code", trans.getResponseCode());
-        assertEquals("response-description", trans.getResponseDescription());
-        assertEquals("severity", trans.getSeverity());
-        assertEquals("target-entity", trans.getTargetEntity());
-        assertEquals("target-service-name", trans.getTargetServiceName());
-        assertEquals("target-virtual-entity", trans.getTargetVirtualEntity());
-        assertEquals("client-ip-address", trans.getClientIpAddress());
-        assertEquals("remote-host", trans.getRemoteHost());
+        assertKeyEquals("service-instance-id", trans.getServiceInstanceId(),
+                        MdcTransactionConstants.SERVICE_INSTANCE_ID);
+        assertKeyEquals("process-key", trans.getProcessKey(), MdcTransactionConstants.PROCESS_KEY);
+        assertKeyEquals("status-code", trans.getStatusCode(), MdcTransactionConstants.STATUS_CODE);
+        assertKeyEquals("response-code", trans.getResponseCode(), MdcTransactionConstants.RESPONSE_CODE);
+        assertKeyEquals("response-description", trans.getResponseDescription(),
+                        MdcTransactionConstants.RESPONSE_DESCRIPTION);
+        assertKeyEquals("severity", trans.getSeverity(), MdcTransactionConstants.SEVERITY);
+        assertKeyEquals("target-entity", trans.getTargetEntity(), MdcTransactionConstants.TARGET_ENTITY);
+        assertKeyEquals("target-service-name", trans.getTargetServiceName(),
+                        MdcTransactionConstants.TARGET_SERVICE_NAME);
+        assertKeyEquals("target-virtual-entity", trans.getTargetVirtualEntity(),
+                        MdcTransactionConstants.TARGET_VIRTUAL_ENTITY);
+        assertKeyEquals("client-ip-address", trans.getClientIpAddress(), MdcTransactionConstants.CLIENT_IP_ADDRESS);
+        assertKeyEquals("remote-host", trans.getRemoteHost(), MdcTransactionConstants.REMOTE_HOST);
+    }
+
+    private void assertKeyEquals(String expected, String transValue, String mdcKey) {
+        assertEquals("trans." + expected, expected, transValue);
+        assertEquals("mdc." + expected, expected, MDC.get(mdcKey));
     }
 
     @Test

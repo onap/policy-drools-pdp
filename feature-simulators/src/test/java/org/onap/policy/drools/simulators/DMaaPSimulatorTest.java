@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-simulators
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -72,290 +70,131 @@ public class DMaaPSimulatorTest {
     }
 
     @Test
-    public void testGetNoData() {
-        int timeout = 1000;
-        Pair<Integer, String> response = dmaapGet("myTopicNoData", timeout);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(DMaaPSimulatorJaxRs.NO_TOPIC_MSG, response.second);
+    public void testGetNoData() throws IOException {
+        validateResponse(DMaaPSimulatorJaxRs.NO_TOPIC_MSG, dmaapGet("myTopicNoData", 1000));
     }
 
     @Test
-    public void testSinglePost() {
+    public void testSinglePost() throws IOException {
         String myTopic = "myTopicSinglePost";
         String testData = "This is some test data";
-        Pair<Integer, String> response = dmaapPost(myTopic, testData);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
 
-        response = dmaapGet(myTopic, 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(testData, response.second);
+        validateResponse(dmaapPost(myTopic, testData));
+
+        validateResponse(testData, dmaapGet(myTopic, 1000));
     }
 
     @Test
-    public void testOneTopicMultiPost() {
+    public void testOneTopicMultiPost() throws IOException {
         String[] data = {"data point 1", "data point 2", "something random"};
         String myTopic = "myTopicMultiPost";
-        Pair<Integer, String> response = dmaapPost(myTopic, data[0]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
 
-        response = dmaapPost(myTopic, data[1]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
+        validateResponse(dmaapPost(myTopic, data[0]));
+        validateResponse(dmaapPost(myTopic, data[1]));
+        validateResponse(dmaapPost(myTopic, data[2]));
 
-        response = dmaapPost(myTopic, data[2]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
-
-        response = dmaapGet(myTopic, 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[0], response.second);
-
-        response = dmaapGet(myTopic, 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[1], response.second);
-
-        response = dmaapGet(myTopic, 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[2], response.second);
+        validateResponse(data[0], dmaapGet(myTopic, 1000));
+        validateResponse(data[1], dmaapGet(myTopic, 1000));
+        validateResponse(data[2], dmaapGet(myTopic, 1000));
     }
 
     @Test
-    public void testMultiTopic() {
+    public void testMultiTopic() throws IOException {
         String[][] data = {{"Topic one message one", "Topic one message two"},
             {"Topic two message one", "Topic two message two"}};
         String[] topics = {"topic1", "topic2"};
 
-        Pair<Integer, String> response = dmaapPost(topics[0], data[0][0]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
+        validateResponse(dmaapPost(topics[0], data[0][0]));
 
-        response = dmaapGet(topics[0], 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[0][0], response.second);
+        validateResponse(data[0][0], dmaapGet(topics[0], 1000));
+        validateResponse(DMaaPSimulatorJaxRs.NO_TOPIC_MSG, dmaapGet(topics[1], 1000));
 
-        response = dmaapGet(topics[1], 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(DMaaPSimulatorJaxRs.NO_TOPIC_MSG, response.second);
+        validateResponse(dmaapPost(topics[1], data[1][0]));
+        validateResponse(dmaapPost(topics[1], data[1][1]));
+        validateResponse(dmaapPost(topics[0], data[0][1]));
 
-        response = dmaapPost(topics[1], data[1][0]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
-
-        response = dmaapPost(topics[1], data[1][1]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
-
-        response = dmaapPost(topics[0], data[0][1]);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
-
-        response = dmaapGet(topics[1], 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[1][0], response.second);
-
-        response = dmaapGet(topics[0], 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[0][1], response.second);
-
-        response = dmaapGet(topics[1], 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(data[1][1], response.second);
-
-        response = dmaapGet(topics[0], 1000);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertEquals(DMaaPSimulatorJaxRs.NO_DATA_MSG, response.second);
+        validateResponse(data[1][0], dmaapGet(topics[1], 1000));
+        validateResponse(data[0][1], dmaapGet(topics[0], 1000));
+        validateResponse(data[1][1], dmaapGet(topics[1], 1000));
+        validateResponse(DMaaPSimulatorJaxRs.NO_DATA_MSG, dmaapGet(topics[0], 1000));
     }
 
     @Test
-    public void testResponseCode() {
-        Pair<Integer, String> response = dmaapPost("myTopic", "myTopicData");
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
+    public void testResponseCode() throws IOException {
+        validateResponse(dmaapPost("myTopic", "myTopicData"));
 
-        response = setStatus(503);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
+        validateResponse(setStatus(503));
+        validateResponse(503, "You got response code: 503", dmaapGet("myTopic", 500));
 
-        response = dmaapGet("myTopic", 500);
-        assertNotNull(response);
-        assertEquals(503, response.first.intValue());
-        assertEquals("You got response code: 503", response.second);
-
-        response = setStatus(202);
-        assertNotNull(response);
-        assertNotNull(response.first);
-        assertNotNull(response.second);
-
-        response = dmaapGet("myTopic", 500);
-        assertNotNull(response);
-        assertEquals(202, response.first.intValue());
-        assertEquals("myTopicData", response.second);
+        validateResponse(setStatus(202));
+        validateResponse(202, "myTopicData", dmaapGet("myTopic", 500));
     }
 
-    private static Pair<Integer, String> dmaapGet(String topic, int timeout) {
+    private void validateResponse(Pair<Integer, String> response) {
+        assertNotNull(response);
+        assertNotNull(response.getLeft());
+        assertNotNull(response.getRight());
+    }
+
+    private void validateResponse(int expectedCode, String expectedResponse, Pair<Integer, String> response) {
+        assertNotNull(response);
+        assertEquals(expectedCode, response.getLeft().intValue());
+        assertEquals(expectedResponse, response.getRight());
+    }
+
+    private void validateResponse(String expectedResponse, Pair<Integer, String> response) {
+        assertNotNull(response);
+        assertNotNull(response.getLeft());
+        assertEquals(expectedResponse, response.getRight());
+    }
+
+    private static Pair<Integer, String> dmaapGet(String topic, int timeout) throws IOException {
         return dmaapGet(topic, "1", "1", timeout);
     }
 
-    private static Pair<Integer, String> dmaapGet(String topic, String consumerGroup, String consumerId, int timeout) {
+    private static Pair<Integer, String> dmaapGet(String topic, String consumerGroup, String consumerId, int timeout)
+                    throws IOException {
         String url = "http://localhost:" + DMAAPSIM_SERVER_PORT + "/events/" + topic + "/" + consumerGroup + "/"
                 + consumerId + "?timeout=" + timeout;
-        try {
-            URLConnection conn = new URL(url).openConnection();
-            HttpURLConnection httpConn = null;
-            if (conn instanceof HttpURLConnection) {
-                httpConn = (HttpURLConnection) conn;
-            } else {
-                fail("connection not set up right");
-            }
-            httpConn.setRequestMethod("GET");
-            httpConn.connect();
-            String response = "";
-            try (BufferedReader connReader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()))) {
-                String line;
-                while ((line = connReader.readLine()) != null) {
-                    response += line;
-                }
-                httpConn.disconnect();
-                return new Pair<Integer, String>(httpConn.getResponseCode(), response);
-            } catch (IOException e) {
-                if (e.getMessage().startsWith("Server returned HTTP response code")) {
-                    System.out.println("hi");
-                    BufferedReader connReader = new BufferedReader(new InputStreamReader(httpConn.getErrorStream()));
-                    String line;
-                    while ((line = connReader.readLine()) != null) {
-                        response += line;
-                    }
-                    httpConn.disconnect();
-                    return new Pair<Integer, String>(httpConn.getResponseCode(), response);
-                } else {
-                    fail("we got an exception: " + e);
-                }
-            }
-        } catch (Exception e) {
-            fail("we got an exception" + e);
-        }
-
-        return null;
+        HttpURLConnection httpConn = (HttpURLConnection) new URL(url).openConnection();
+        httpConn.setRequestMethod("GET");
+        httpConn.connect();
+        return getResponse(httpConn);
     }
 
-    private static Pair<Integer, String> dmaapPost(String topic, String data) {
+    private static Pair<Integer, String> dmaapPost(String topic, String data) throws IOException {
         String url = "http://localhost:" + DMAAPSIM_SERVER_PORT + "/events/" + topic;
         byte[] postData = data.getBytes(StandardCharsets.UTF_8);
-        try {
-            URLConnection conn = new URL(url).openConnection();
-            HttpURLConnection httpConn = null;
-            if (conn instanceof HttpURLConnection) {
-                httpConn = (HttpURLConnection) conn;
-            } else {
-                fail("connection not set up right");
-            }
-            httpConn.setRequestMethod("POST");
-            httpConn.setDoOutput(true);
-            httpConn.setRequestProperty("Content-Type", "text/plain");
-            httpConn.setRequestProperty("Content-Length", "" + postData.length);
-            httpConn.connect();
-            String response = "";
-            try (DataOutputStream connWriter = new DataOutputStream(httpConn.getOutputStream())) {
-                connWriter.write(postData);
-                connWriter.flush();
-            }
-            try (BufferedReader connReader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()))) {
-                String line;
-                while ((line = connReader.readLine()) != null) {
-                    response += line;
-                }
-                httpConn.disconnect();
-                return new Pair<Integer, String>(httpConn.getResponseCode(), response);
-            } catch (IOException e) {
-                if (e.getMessage().startsWith("Server returned HTTP response code")) {
-                    System.out.println("hi");
-                    BufferedReader connReader = new BufferedReader(new InputStreamReader(httpConn.getErrorStream()));
-                    String line;
-                    while ((line = connReader.readLine()) != null) {
-                        response += line;
-                    }
-                    httpConn.disconnect();
-                    return new Pair<Integer, String>(httpConn.getResponseCode(), response);
-                } else {
-                    fail("we got an exception: " + e);
-                }
-            }
-        } catch (Exception e) {
-            fail("we got an exception: " + e);
-        }
-        return null;
+        HttpURLConnection httpConn = (HttpURLConnection) new URL(url).openConnection();
+        httpConn.setRequestMethod("POST");
+        httpConn.setDoOutput(true);
+        httpConn.setRequestProperty("Content-Type", "text/plain");
+        httpConn.setRequestProperty("Content-Length", "" + postData.length);
+        httpConn.connect();
+        IOUtils.write(postData, httpConn.getOutputStream());
+        return getResponse(httpConn);
     }
 
-    private static Pair<Integer, String> setStatus(int status) {
+    private static Pair<Integer, String> setStatus(int status) throws IOException {
         String url = "http://localhost:" + DMAAPSIM_SERVER_PORT + "/events/setStatus?statusCode=" + status;
-        try {
-            URLConnection conn = new URL(url).openConnection();
-            HttpURLConnection httpConn = null;
-            if (conn instanceof HttpURLConnection) {
-                httpConn = (HttpURLConnection) conn;
-            } else {
-                fail("connection not set up right");
-            }
-            httpConn.setRequestMethod("POST");
-            httpConn.connect();
-            String response = "";
-            try (BufferedReader connReader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()))) {
-                String line;
-                while ((line = connReader.readLine()) != null) {
-                    response += line;
-                }
-                httpConn.disconnect();
-                return new Pair<Integer, String>(httpConn.getResponseCode(), response);
-            } catch (IOException e) {
-                if (e.getMessage().startsWith("Server returned HTTP response code")) {
-                    System.out.println("hi");
-                    BufferedReader connReader = new BufferedReader(new InputStreamReader(httpConn.getErrorStream()));
-                    String line;
-                    while ((line = connReader.readLine()) != null) {
-                        response += line;
-                    }
-                    httpConn.disconnect();
-                    return new Pair<Integer, String>(httpConn.getResponseCode(), response);
-                } else {
-                    fail("we got an exception: " + e);
-                }
-            }
-        } catch (Exception e) {
-            fail("we got an exception" + e);
-        }
-        return null;
+        HttpURLConnection httpConn = (HttpURLConnection) new URL(url).openConnection();
+        httpConn.setRequestMethod("POST");
+        httpConn.connect();
+        return getResponse(httpConn);
     }
 
-    private static class Pair<A, B> {
-        public final A first;
-        public final B second;
+    private static Pair<Integer, String> getResponse(HttpURLConnection httpConn) throws IOException {
+        try {
+            String response = IOUtils.toString(httpConn.getInputStream(), StandardCharsets.UTF_8);
+            return Pair.of(httpConn.getResponseCode(), response);
 
-        public Pair(A first, B second) {
-            this.first = first;
-            this.second = second;
+        } catch (IOException e) {
+            if (e.getMessage().startsWith("Server returned HTTP response code")) {
+                String response = IOUtils.toString(httpConn.getErrorStream(), StandardCharsets.UTF_8);
+                return Pair.of(httpConn.getResponseCode(), response);
+            }
+
+            throw e;
         }
     }
 }
