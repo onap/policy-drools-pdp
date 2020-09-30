@@ -640,27 +640,17 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testBeforeInsert_NoIntercept() throws Exception {
-        startMgr();
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateUnhandled(CommInfrastructure.UEB);
     }
 
     @Test
     public void testHandleExternalCommInfrastructureStringStringString_NullReqId() throws Exception {
-        startMgr();
-
-        when(extractors.extract(any())).thenReturn(null);
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateHandleReqId(null);
     }
 
     @Test
     public void testHandleExternalCommInfrastructureStringStringString_EmptyReqId() throws Exception {
-        startMgr();
-
-        when(extractors.extract(any())).thenReturn("");
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateHandleReqId("");
     }
 
     @Test
@@ -672,50 +662,28 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testHandleExternalCommInfrastructureStringStringString() throws Exception {
-        startMgr();
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateUnhandled(CommInfrastructure.UEB);
     }
 
     @Test
     public void testHandleExternalForward_NoAssignments() throws Exception {
-        startMgr();
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateUnhandled(CommInfrastructure.UEB);
     }
 
     @Test
     public void testHandleExternalForward() throws Exception {
-        startMgr();
-
-        // route the message to this host
-        mgr.startDistributing(makeAssignments(true));
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateNoForward();
     }
 
     @Test
     public void testHandleEvent_NullTarget() throws Exception {
-        startMgr();
-
         // buckets have null targets
-        mgr.startDistributing(new BucketAssignments(new String[] {null, null}));
-
-        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        verify(dmaap, times(START_PUB)).publish(any());
+        validateHandled(new BucketAssignments(new String[] {null, null}), START_PUB);
     }
 
     @Test
     public void testHandleEvent_SameHost() throws Exception {
-        startMgr();
-
-        // route the message to this host
-        mgr.startDistributing(makeAssignments(true));
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        verify(dmaap, times(START_PUB)).publish(any());
+        validateNoForward();
     }
 
     @Test
@@ -736,14 +704,7 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testHandleEvent_DiffHost_Forward() throws Exception {
-        startMgr();
-
-        // route the message to the *OTHER* host
-        mgr.startDistributing(makeAssignments(false));
-
-        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-
-        verify(dmaap, times(START_PUB + 1)).publish(any());
+        validateHandled(makeAssignments(false), START_PUB + 1);
     }
 
     @Test
@@ -755,11 +716,7 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testExtractRequestId_NullReqId() throws Exception {
-        startMgr();
-
-        when(extractors.extract(any())).thenReturn(null);
-
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+        validateHandleReqId(null);
     }
 
     @Test
@@ -1009,12 +966,7 @@ public class PoolingManagerImplTest {
 
     @Test
     public void testStartDistributing() throws Exception {
-        startMgr();
-
-        // route the message to this host
-        mgr.startDistributing(makeAssignments(true));
-        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
-        verify(dmaap, times(START_PUB)).publish(any());
+        validateNoForward();
 
 
         // null assignments should cause message to be processed locally
@@ -1131,6 +1083,41 @@ public class PoolingManagerImplTest {
 
         // it should NOT have counted down
         assertEquals(1, latch.getCount());
+    }
+
+    private void validateHandleReqId(String requestId) throws PoolingFeatureException {
+        startMgr();
+
+        when(extractors.extract(any())).thenReturn(requestId);
+
+        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+    }
+
+    private void validateNoForward() throws PoolingFeatureException {
+        startMgr();
+
+        // route the message to this host
+        mgr.startDistributing(makeAssignments(true));
+
+        assertFalse(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+
+        verify(dmaap, times(START_PUB)).publish(any());
+    }
+
+    private void validateHandled(BucketAssignments assignments, int publishCount) throws PoolingFeatureException {
+        startMgr();
+
+        // route the message to the *OTHER* host
+        mgr.startDistributing(assignments);
+
+        assertTrue(mgr.beforeInsert(CommInfrastructure.UEB, TOPIC2, THE_EVENT, DECODED_EVENT));
+
+        verify(dmaap, times(publishCount)).publish(any());
+    }
+
+    private void validateUnhandled(CommInfrastructure infra) throws PoolingFeatureException {
+        startMgr();
+        assertFalse(mgr.beforeInsert(infra, TOPIC2, THE_EVENT, DECODED_EVENT));
     }
 
     /**

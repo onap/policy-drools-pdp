@@ -537,7 +537,12 @@ public class PolicyContainer implements Startable {
      * {@inheritDoc}.
      */
     @Override
-    public synchronized boolean start() {
+    public synchronized boolean start() {   // NOSONAR
+        /*
+         * disabling sonar about returning the same value, because we prefer the code to
+         * be structured this way
+         */
+
         if (isStarted) {
             return true;
         }
