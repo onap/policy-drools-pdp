@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d25d23ec_c634ffdc",
+        "filename": "releases/1.7.2.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2020-10-07T20:38:20Z",
+      "side": 1,
+      "message": "should be 1.7.2",
+      "range": {
+        "startLine": 2,
+        "startChar": 14,
+        "endLine": 2,
+        "endChar": 15
+      },
+      "revId": "77fe0358f14cdbc556c8298f62763f8e3cbc5c6e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
