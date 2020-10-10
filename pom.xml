@@ -32,7 +32,7 @@
 
     <groupId>org.onap.policy.drools-pdp</groupId>
     <artifactId>drools-pdp</artifactId>
-    <version>1.7.3-SNAPSHOT</version>
+    <version>1.7.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>policy-drools-pdp</name>
 
