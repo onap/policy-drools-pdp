@@ -49,6 +49,8 @@ RUN apk update && \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
     && pip install --upgrade setuptools http-prompt \
+    && pip uninstall -y httpie \
+    && pip install httpie==1.0.3 \
     && rm -r /root/.cache
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
