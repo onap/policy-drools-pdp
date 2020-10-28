@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,12 +40,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PropertyUtilTest {
+    /*
+     * Note: to generate the encrypted values, invoke CryptoUtils passing both the value
+     * to be encrypted and the crypto key.
+     *
+     * The INTERPOLATION_CRYPTO_KEY is a 16 or 32 character string, base-64 encoded.
+     *
+     * For "INTERPOLATION_ENC_HELLOWORLD", the encrypted value was generated via:
+     *  java org.onap.policy.common.utils.security.CryptoUtils enc HelloWorld MTIzNDU2Nzg5MDEyMzQ1Ng==
+     *
+     * The generated value should also be placed into the following properties within
+     * the file, interpolation.properties:
+     *  interpolation.enc
+     *  interpolation.enc2
+     *  interpolation.envenc
+     */
 
     private static final String INTERPOLATION_PROPERTIES = "src/test/resources/interpolation.properties";
     private static final String INTERPOLATION_CRYPTO_KEY = "MTIzNDU2Nzg5MDEyMzQ1Ng==";
     private static final String INTERPOLATION_PLAINTEXT = "HelloWorld";
     private static final String INTERPOLATION_ENVD_DEFAULT_VALUE = "default";
-    private static final String INTERPOLATION_ENC_HELLOWORLD = "enc:hcI2XVX+cxPz/6rlbebkWpCFF6WPbBtT7iJRr2VHUkA=";
+    private static final String INTERPOLATION_ENC_HELLOWORLD =
+                    "enc:MjGhDZTTIx1ihB7KvxLnOJcvb0WN/CSgpw7sY1hDnvL1VHa8wGRzOX3X";
     private static final String INTERPOLATION_ENC_HELLOWORLD_VAR = "${" + INTERPOLATION_ENC_HELLOWORLD + "}";
 
     private static final String INTERPOLATION_NO = "interpolation.no";
