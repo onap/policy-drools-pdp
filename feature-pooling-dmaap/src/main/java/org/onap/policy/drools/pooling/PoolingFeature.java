@@ -77,11 +77,11 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
     private final CountDownLatch activeLatch = new CountDownLatch(1);
 
     /**
-     * Arguments passed to beforeOffer(), which are saved for when the beforeInsert() is called
-     * later. As multiple threads can be active within the methods at the same time, we must keep
-     * this in thread local storage.
+     * Topic names passed to beforeOffer(), which are saved for when the beforeInsert() is
+     * called later. As multiple threads can be active within the methods at the same
+     * time, we must keep this in thread local storage.
      */
-    private ThreadLocal<OfferArgs> offerArgs = new ThreadLocal<>();
+    private ThreadLocal<String> offerTopics = new ThreadLocal<>();
 
     /**
      * Constructor.
@@ -236,19 +236,19 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
             return false;
         }
 
-        if (mgr.beforeOffer(protocol, topic2, event)) {
+        if (mgr.beforeOffer(topic2, event)) {
             return true;
         }
 
-        offerArgs.set(new OfferArgs(protocol, topic2, event));
+        offerTopics.set(topic2);
         return false;
     }
 
     @Override
     public boolean beforeInsert(DroolsController droolsController, Object fact) {
 
-        OfferArgs args = offerArgs.get();
-        if (args == null) {
+        String topic = offerTopics.get();
+        if (topic == null) {
             logger.warn("missing arguments for feature-pooling-dmaap in beforeInsert");
             return false;
         }
@@ -279,7 +279,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
             return false;
         }
 
-        return mgr.beforeInsert(args.protocol, args.topic, args.event, fact);
+        return mgr.beforeInsert(topic, fact);
     }
 
     @Override
@@ -287,7 +287,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
             boolean success) {
 
         // clear any stored arguments
-        offerArgs.remove();
+        offerTopics.remove();
 
         return false;
     }
@@ -343,40 +343,6 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
          * @throws PoolingFeatureException feature exception
          */
         boolean apply(PoolingManagerImpl mgr) throws PoolingFeatureException;
-    }
-
-    /**
-     * Arguments captured from beforeOffer().
-     */
-    private static class OfferArgs {
-
-        /**
-         * Protocol of the receiving topic.
-         */
-        private CommInfrastructure protocol;
-
-        /**
-         * Topic on which the event was received.
-         */
-        private String topic;
-
-        /**
-         * The event text that was received on the topic.
-         */
-        private String event;
-
-        /**
-         * Constructor.
-         *
-         * @param protocol protocol
-         * @param topic topic
-         * @param event the actual event data received on the topic
-         */
-        public OfferArgs(CommInfrastructure protocol, String topic, String event) {
-            this.protocol = protocol;
-            this.topic = topic;
-            this.event = event;
-        }
     }
 
     /*

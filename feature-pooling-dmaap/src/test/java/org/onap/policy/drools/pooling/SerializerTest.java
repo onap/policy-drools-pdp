@@ -23,15 +23,9 @@ package org.onap.policy.drools.pooling;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeAnd;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
 
 import com.google.gson.JsonParseException;
-import java.util.Map;
-import java.util.TreeMap;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Query;
@@ -41,33 +35,6 @@ public class SerializerTest {
     @Test
     public void testSerializer() {
         assertThatCode(() -> new Serializer()).doesNotThrowAnyException();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testEncodeFilter() throws Exception {
-        final Serializer ser = new Serializer();
-
-        /*
-         * Ensure raw maps serialize as expected. Use a TreeMap so the field
-         * order is predictable.
-         */
-        Map<String, Object> top = new TreeMap<>();
-        Map<String, Object> inner = new TreeMap<>();
-        top.put("abc", 20);
-        top.put("def", inner);
-        top.put("ghi", true);
-        inner.put("xyz", 30);
-        assertEquals("{'abc':20,'def':{'xyz':30},'ghi':true}".replace('\'', '"'), ser.encodeFilter(top));
-
-        /*
-         * Ensure we can encode a complicated filter without throwing an
-         * exception
-         */
-        Map<String, Object> complexFilter = makeAnd(makeEquals("fieldC", "valueC"),
-                        makeOr(makeEquals("fieldA", "valueA"), makeEquals("fieldB", "valueB")));
-        String val = ser.encodeFilter(complexFilter);
-        assertFalse(val.isEmpty());
     }
 
     @Test
