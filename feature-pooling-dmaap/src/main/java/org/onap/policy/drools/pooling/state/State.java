@@ -20,22 +20,15 @@
 
 package org.onap.policy.drools.pooling.state;
 
-import static org.onap.policy.drools.pooling.state.FilterUtils.MSG_CHANNEL;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.onap.policy.drools.pooling.CancellableScheduledTask;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.PoolingProperties;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
-import org.onap.policy.drools.pooling.message.Forward;
 import org.onap.policy.drools.pooling.message.Heartbeat;
 import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
-import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
 import org.slf4j.Logger;
@@ -68,18 +61,6 @@ public abstract class State {
      */
     public State(PoolingManager mgr) {
         this.mgr = mgr;
-    }
-
-    /**
-     * Gets the server-side filter to use when polling the DMaaP internal topic. The
-     * default method returns a filter that accepts messages on the admin channel and on
-     * the host's own channel.
-     *
-     * @return the server-side filter to use.
-     */
-    @SuppressWarnings("unchecked")
-    public Map<String, Object> getFilter() {
-        return makeOr(makeEquals(MSG_CHANNEL, Message.ADMIN), makeEquals(MSG_CHANNEL, getHost()));
     }
 
     /**
@@ -139,26 +120,6 @@ public abstract class State {
      */
     protected State goInactive() {
         return mgr.goInactive();
-    }
-
-    /**
-     * Processes a message. The default method passes it to the manager to handle and
-     * returns {@code null}.
-     *
-     * @param msg message to be processed
-     * @return the new state, or {@code null} if the state is unchanged
-     */
-    public State process(Forward msg) {
-        if (getHost().equals(msg.getChannel())) {
-            logger.info("received Forward message from {} on topic {}", msg.getSource(), getTopic());
-            mgr.handle(msg);
-
-        } else {
-            logger.info("discard Forward message to {} from {} on topic {}", msg.getChannel(), msg.getSource(),
-                            getTopic());
-        }
-
-        return null;
     }
 
     /**
@@ -285,16 +246,6 @@ public abstract class State {
      */
     protected final void publish(Query msg) {
         mgr.publishAdmin(msg);
-    }
-
-    /**
-     * Publishes a message on the specified channel.
-     *
-     * @param channel channel
-     * @param msg message to be published
-     */
-    protected final void publish(String channel, Forward msg) {
-        mgr.publish(channel, msg);
     }
 
     /**

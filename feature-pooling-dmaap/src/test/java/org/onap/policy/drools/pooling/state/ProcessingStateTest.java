@@ -32,7 +32,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
@@ -56,17 +55,6 @@ public class ProcessingStateTest extends SupportBasicStateTester {
 
         state = new ProcessingState(mgr, MY_HOST);
         hostBucket = new HostBucket(MY_HOST);
-    }
-
-    @Test
-    public void testGetFilter() {
-        Map<String, Object> filter = state.getFilter();
-
-        FilterUtilsTest utils = new FilterUtilsTest();
-
-        utils.checkArray(FilterUtils.CLASS_OR, 2, filter);
-        utils.checkEquals(FilterUtils.MSG_CHANNEL, Message.ADMIN, utils.getItem(filter, 0));
-        utils.checkEquals(FilterUtils.MSG_CHANNEL, MY_HOST, utils.getItem(filter, 1));
     }
 
     @Test

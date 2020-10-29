@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2020 Nordix Foundation
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -298,20 +298,20 @@ public class PoolingFeatureTest {
     @Test
     public void testBeforeOffer() {
         assertFalse(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1));
-        verify(mgr1).beforeOffer(CommInfrastructure.UEB, TOPIC1, EVENT1);
+        verify(mgr1).beforeOffer(TOPIC1, EVENT1);
 
         // ensure that the args were captured
         pool.beforeInsert(drools1, OBJECT1);
-        verify(mgr1).beforeInsert(CommInfrastructure.UEB, TOPIC1, EVENT1, OBJECT1);
+        verify(mgr1).beforeInsert(TOPIC1, OBJECT1);
 
 
         // ensure it's still in the map by re-invoking
         assertFalse(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2));
-        verify(mgr1).beforeOffer(CommInfrastructure.UEB, TOPIC2, EVENT2);
+        verify(mgr1).beforeOffer(TOPIC2, EVENT2);
 
         // ensure that the new args were captured
         pool.beforeInsert(drools1, OBJECT2);
-        verify(mgr1).beforeInsert(CommInfrastructure.UEB, TOPIC2, EVENT2, OBJECT2);
+        verify(mgr1).beforeInsert(TOPIC2, OBJECT2);
 
 
         assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC1, EVENT1));
@@ -326,14 +326,14 @@ public class PoolingFeatureTest {
     public void testBeforeOffer_MgrTrue() {
 
         // manager will return true
-        when(mgr1.beforeOffer(any(), any(), any())).thenReturn(true);
+        when(mgr1.beforeOffer(any(), any())).thenReturn(true);
 
         assertTrue(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1));
-        verify(mgr1).beforeOffer(CommInfrastructure.UEB, TOPIC1, EVENT1);
+        verify(mgr1).beforeOffer(TOPIC1, EVENT1);
 
         // ensure it's still in the map by re-invoking
         assertTrue(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2));
-        verify(mgr1).beforeOffer(CommInfrastructure.UEB, TOPIC2, EVENT2);
+        verify(mgr1).beforeOffer(TOPIC2, EVENT2);
 
         assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC1, EVENT1));
     }
@@ -342,12 +342,12 @@ public class PoolingFeatureTest {
     public void testBeforeInsert() {
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
-        verify(mgr1).beforeInsert(CommInfrastructure.UEB, TOPIC1, EVENT1, OBJECT1);
+        verify(mgr1).beforeInsert(TOPIC1, OBJECT1);
 
         // ensure it's still in the map by re-invoking
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2);
         assertFalse(pool.beforeInsert(drools1, OBJECT2));
-        verify(mgr1).beforeInsert(CommInfrastructure.UEB, TOPIC2, EVENT2, OBJECT2);
+        verify(mgr1).beforeInsert(TOPIC2, OBJECT2);
 
         pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC2, EVENT2);
         assertFalse(pool.beforeInsert(droolsDisabled, OBJECT1));
@@ -358,10 +358,10 @@ public class PoolingFeatureTest {
 
         // call beforeInsert without beforeOffer
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
-        verify(mgr1, never()).beforeInsert(any(), any(), any(), any());
+        verify(mgr1, never()).beforeInsert(any(), any());
 
         assertFalse(pool.beforeInsert(droolsDisabled, OBJECT1));
-        verify(mgr1, never()).beforeInsert(any(), any(), any(), any());
+        verify(mgr1, never()).beforeInsert(any(), any());
     }
 
     @Test
@@ -376,7 +376,7 @@ public class PoolingFeatureTest {
 
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
-        verify(mgr1, never()).beforeInsert(any(), any(), any(), any());
+        verify(mgr1, never()).beforeInsert(any(), any());
     }
 
     @Test
@@ -391,7 +391,7 @@ public class PoolingFeatureTest {
 
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
-        verify(mgr1, never()).beforeInsert(any(), any(), any(), any());
+        verify(mgr1, never()).beforeInsert(any(), any());
     }
 
     @Test
@@ -407,7 +407,7 @@ public class PoolingFeatureTest {
 
         pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
-        verify(mgr1, never()).beforeInsert(any(), any(), any(), any());
+        verify(mgr1, never()).beforeInsert(any(), any());
     }
 
     @Test
@@ -426,7 +426,7 @@ public class PoolingFeatureTest {
         assertFalse(pool.afterOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2, true));
 
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
-        verify(mgr1, never()).beforeInsert(any(), any(), any(), any());
+        verify(mgr1, never()).beforeInsert(any(), any());
 
 
         assertFalse(pool.beforeInsert(droolsDisabled, OBJECT1));

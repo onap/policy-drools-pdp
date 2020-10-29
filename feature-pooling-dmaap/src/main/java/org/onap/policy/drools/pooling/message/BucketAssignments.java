@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -63,7 +63,7 @@ public class BucketAssignments {
 
     /**
      * Constructor.
-     * 
+     *
      * @param hostArray maps a bucket number (i.e., array index) to a host. All values
      *        must be non-null
      */
@@ -81,7 +81,7 @@ public class BucketAssignments {
 
     /**
      * Gets the leader, which is the host with the minimum UUID.
-     * 
+     *
      * @return the assignment leader
      */
     public String getLeader() {
@@ -103,7 +103,7 @@ public class BucketAssignments {
 
     /**
      * Determines if a host has an assignment.
-     * 
+     *
      * @param host host to be checked
      * @return {@code true} if the host has an assignment, {@code false} otherwise
      */
@@ -123,7 +123,7 @@ public class BucketAssignments {
 
     /**
      * Gets all of the hosts that have an assignment.
-     * 
+     *
      * @return all of the hosts that have an assignment
      */
     public Set<String> getAllHosts() {
@@ -143,7 +143,7 @@ public class BucketAssignments {
 
     /**
      * Gets the host assigned to a given bucket.
-     * 
+     *
      * @param hashCode hash code of the item whose assignment is desired
      * @return the assigned host, or {@code null} if the item has no assigned host
      */
@@ -153,12 +153,12 @@ public class BucketAssignments {
             return null;
         }
 
-        return hostArray[(hashCode & MAX_BUCKETS_MASK) % hostArray.length];
+        return hostArray[(Math.abs(hashCode) & MAX_BUCKETS_MASK) % hostArray.length];
     }
 
     /**
      * Gets the number of buckets.
-     * 
+     *
      * @return the number of buckets
      */
     public int size() {
@@ -168,7 +168,7 @@ public class BucketAssignments {
     /**
      * Checks the validity of the assignments, verifying that all buckets have been
      * assigned to a host.
-     * 
+     *
      * @throws PoolingFeatureException if the assignments are invalid
      */
     public void checkValidity() throws PoolingFeatureException {

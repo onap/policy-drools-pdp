@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,16 +20,8 @@
 
 package org.onap.policy.drools.pooling.state;
 
-import static org.onap.policy.drools.pooling.state.FilterUtils.MSG_CHANNEL;
-import static org.onap.policy.drools.pooling.state.FilterUtils.MSG_TIMESTAMP;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeAnd;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeEquals;
-import static org.onap.policy.drools.pooling.state.FilterUtils.makeOr;
-
-import java.util.Map;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.Heartbeat;
-import org.onap.policy.drools.pooling.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +41,7 @@ public class StartState extends State {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mgr pooling manager
      */
     public StartState(PoolingManager mgr) {
@@ -58,7 +50,7 @@ public class StartState extends State {
 
     /**
      * Get Heart beat time stamp in milliseconds.
-     * 
+     *
      * @return the time stamp inserted into the heart beat message
      */
     public long getHbTimestampMs() {
@@ -110,14 +102,4 @@ public class StartState extends State {
 
         return null;
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<String, Object> getFilter() {
-        // ignore everything except our most recent heart beat message
-        return makeOr(makeEquals(MSG_CHANNEL, Message.ADMIN), makeAnd(makeEquals(MSG_CHANNEL, getHost()),
-                        makeEquals(MSG_TIMESTAMP, String.valueOf(hbTimestampMs))));
-
-    }
-
 }
