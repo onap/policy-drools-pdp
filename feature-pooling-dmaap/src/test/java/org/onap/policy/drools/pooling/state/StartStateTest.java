@@ -31,16 +31,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.policy.drools.pooling.message.Forward;
 import org.onap.policy.drools.pooling.message.Heartbeat;
 import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
-import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Offline;
 import org.onap.policy.drools.pooling.message.Query;
 
@@ -57,24 +54,6 @@ public class StartStateTest extends SupportBasicStateTester {
         super.setUp();
 
         state = new StartState(mgr);
-    }
-
-    @Test
-    public void testGetFilter() {
-        Map<String, Object> filter = state.getFilter();
-
-        FilterUtilsTest utils = new FilterUtilsTest();
-
-        utils.checkArray(FilterUtils.CLASS_OR, 2, filter);
-        utils.checkEquals(FilterUtils.MSG_CHANNEL, Message.ADMIN, utils.getItem(filter, 0));
-
-        // get the sub-filter
-        filter = utils.getItem(filter, 1);
-
-        utils.checkArray(FilterUtils.CLASS_AND, 2, filter);
-        utils.checkEquals(FilterUtils.MSG_CHANNEL, MY_HOST, utils.getItem(filter, 0));
-        utils.checkEquals(FilterUtils.MSG_TIMESTAMP, String.valueOf(state.getHbTimestampMs()),
-                        utils.getItem(filter, 1));
     }
 
     @Test
@@ -139,15 +118,6 @@ public class StartStateTest extends SupportBasicStateTester {
          * delegates to the manager.
          */
         assertEquals(MY_HOST, state.getHost());
-    }
-
-    @Test
-    public void testProcessForward() {
-        Forward msg = new Forward();
-        msg.setChannel(MY_HOST);
-        assertNull(state.process(msg));
-
-        verify(mgr).handle(msg);
     }
 
     @Test

@@ -53,14 +53,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
-import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
@@ -334,20 +332,6 @@ public class FeatureTest {
 
         public void offerInternal(String message) {
             channel2queue.values().forEach(queue -> queue.offer(message));
-        }
-
-        /**
-         * Offers amessage to an internal channel.
-         *
-         * @param channel channel
-         * @param message message
-         */
-
-        public void offerInternal(String channel, String message) {
-            BlockingQueue<String> queue = channel2queue.get(channel);
-            if (queue != null) {
-                queue.offer(message);
-            }
         }
 
         /**
@@ -666,10 +650,6 @@ public class FeatureTest {
 
     private static class TopicSinkImpl extends TopicImpl implements TopicSink {
         private final Context context;
-        /**
-         * Used to decode the messages so that the channel can be extracted.
-         */
-        private final Serializer serializer = new Serializer();
 
         /**
          * Constructor.
@@ -687,15 +667,7 @@ public class FeatureTest {
                 return false;
             }
             try {
-                Message msg = serializer.decodeMsg(message);
-                String channel = msg.getChannel();
-                if (Message.ADMIN.equals(channel)) {
-                    // add to every queue
-                    context.offerInternal(message);
-                } else {
-                    // add to a specific queue
-                    context.offerInternal(channel, message);
-                }
+                context.offerInternal(message);
                 return true;
             } catch (JsonParseException e) {
                 logger.warn("could not decode message: {}", message);
@@ -709,7 +681,7 @@ public class FeatureTest {
      * Source implementation that reads from a queue associated with a topic.
      */
 
-    private static class TopicSourceImpl extends TopicImpl implements FilterableTopicSource {
+    private static class TopicSourceImpl extends TopicImpl implements TopicSource {
 
         private final String topic;
         /**
@@ -739,11 +711,6 @@ public class FeatureTest {
                 this.topic = EXTERNAL_TOPIC;
                 this.queue = context.getExternalTopic();
             }
-        }
-
-        @Override
-        public void setFilter(String filter) {
-            logger.info("topic filter set to: {}", filter);
         }
 
         @Override

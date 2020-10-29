@@ -21,7 +21,6 @@
 package org.onap.policy.drools.pooling;
 
 import org.onap.policy.drools.pooling.message.BucketAssignments;
-import org.onap.policy.drools.pooling.message.Forward;
 import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.state.State;
 import org.onap.policy.drools.pooling.state.StateTimerTask;
@@ -82,13 +81,6 @@ public interface PoolingManager {
      * @param msg message to be published
      */
     void publish(String channel, Message msg);
-
-    /**
-     * Handles a {@link Forward} event that was received from the internal topic.
-     *
-     * @param event event
-     */
-    void handle(Forward event);
 
     /**
      * Schedules a timer to fire after a delay.

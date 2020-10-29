@@ -29,14 +29,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
-import org.onap.policy.drools.pooling.message.Message;
 import org.onap.policy.drools.pooling.message.Query;
 
 public class InactiveStateTest extends SupportBasicStateTester {
@@ -53,17 +51,6 @@ public class InactiveStateTest extends SupportBasicStateTester {
         super.setUp();
 
         state = new InactiveState(mgr);
-    }
-
-    @Test
-    public void testGetFilter() {
-        Map<String, Object> filter = state.getFilter();
-
-        FilterUtilsTest utils = new FilterUtilsTest();
-
-        utils.checkArray(FilterUtils.CLASS_OR, 2, filter);
-        utils.checkEquals(FilterUtils.MSG_CHANNEL, Message.ADMIN, utils.getItem(filter, 0));
-        utils.checkEquals(FilterUtils.MSG_CHANNEL, MY_HOST, utils.getItem(filter, 1));
     }
 
     @Test
