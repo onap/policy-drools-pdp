@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import java.util.HashMap;
 import java.util.Map;
-import org.onap.policy.drools.pooling.message.Forward;
 import org.onap.policy.drools.pooling.message.Heartbeat;
 import org.onap.policy.drools.pooling.message.Identification;
 import org.onap.policy.drools.pooling.message.Leader;
@@ -60,7 +59,6 @@ public class Serializer {
     private static final Map<String, Class<? extends Message>> type2class = new HashMap<>();
 
     static {
-        class2type.put(Forward.class, "forward");
         class2type.put(Heartbeat.class, "heartbeat");
         class2type.put(Identification.class, "identification");
         class2type.put(Leader.class, "leader");
@@ -79,7 +77,7 @@ public class Serializer {
 
     /**
      * Encodes a filter.
-     * 
+     *
      * @param filter filter to be encoded
      * @return the filter, serialized as a JSON string
      */
@@ -89,7 +87,7 @@ public class Serializer {
 
     /**
      * Encodes a message.
-     * 
+     *
      * @param msg message to be encoded
      * @return the message, serialized as a JSON string
      */
@@ -108,7 +106,7 @@ public class Serializer {
 
     /**
      * Decodes a JSON string into a Message.
-     * 
+     *
      * @param msg JSON string representing the message
      * @return the message
      */

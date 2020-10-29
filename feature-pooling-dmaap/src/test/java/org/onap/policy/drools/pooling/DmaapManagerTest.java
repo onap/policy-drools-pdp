@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
@@ -48,10 +47,9 @@ public class DmaapManagerTest {
     private static final String EXPECTED = "expected";
     private static final String MY_TOPIC = "my.topic";
     private static final String MSG = "a message";
-    private static final String FILTER = "a filter";
 
     private TopicListener listener;
-    private FilterableTopicSource source;
+    private TopicSource source;
     private boolean gotSources;
     private TopicSink sink;
     private boolean gotSinks;
@@ -65,7 +63,7 @@ public class DmaapManagerTest {
     @Before
     public void setUp() throws Exception {
         listener = mock(TopicListener.class);
-        source = mock(FilterableTopicSource.class);
+        source = mock(TopicSource.class);
         gotSources = false;
         sink = mock(TopicSink.class);
         gotSinks = false;
@@ -104,32 +102,9 @@ public class DmaapManagerTest {
         };
     }
 
-    @Test(expected = PoolingFeatureException.class)
-    public void testDmaapManager_CannotFilter() throws PoolingFeatureException {
-        // force an error when setFilter() is called
-        doThrow(new UnsupportedOperationException(EXPECTED)).when(source).setFilter(any());
-
-        new DmaapManagerImpl(MY_TOPIC);
-    }
-
     @Test
     public void testGetTopic() {
         assertEquals(MY_TOPIC, mgr.getTopic());
-    }
-
-    @Test(expected = PoolingFeatureException.class)
-    public void testFindTopicSource_NotFilterableTopicSource() throws PoolingFeatureException {
-
-        // matching topic, but doesn't have the correct interface
-        TopicSource source2 = mock(TopicSource.class);
-        when(source2.getTopic()).thenReturn(MY_TOPIC);
-
-        new DmaapManagerImpl(MY_TOPIC) {
-            @Override
-            protected List<TopicSource> getTopicSources() {
-                return Arrays.asList(source2);
-            }
-        };
     }
 
     @Test(expected = PoolingFeatureException.class)
@@ -272,19 +247,6 @@ public class DmaapManagerTest {
         // re-stopping should have no effect
         mgr.stopConsumer(listener);
         verify(source).unregister(listener);
-    }
-
-    @Test
-    public void testSetFilter() throws PoolingFeatureException {
-        assertThatCode(() -> mgr.setFilter(FILTER)).doesNotThrowAnyException();
-    }
-
-    @Test(expected = PoolingFeatureException.class)
-    public void testSetFilter_Exception() throws PoolingFeatureException {
-        // force an error when setFilter() is called
-        doThrow(new UnsupportedOperationException(EXPECTED)).when(source).setFilter(any());
-
-        mgr.setFilter(FILTER);
     }
 
     @Test
