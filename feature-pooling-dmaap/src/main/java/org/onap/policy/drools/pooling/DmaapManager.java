@@ -21,7 +21,6 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.List;
-import org.onap.policy.common.endpoints.event.comm.FilterableTopicSource;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
@@ -46,7 +45,7 @@ public class DmaapManager {
     /**
      * Topic source whose filter is to be manipulated.
      */
-    private final FilterableTopicSource topicSource;
+    private final TopicSource topicSource;
 
     /**
      * Where to publish messages.
@@ -79,9 +78,6 @@ public class DmaapManager {
             this.topicSource = findTopicSource();
             this.topicSink = findTopicSink();
 
-            // verify that we can set the filter
-            setFilter(null);
-
         } catch (IllegalArgumentException e) {
             logger.error("failed to attach to topic {}", topic);
             throw new PoolingFeatureException(e);
@@ -98,15 +94,10 @@ public class DmaapManager {
      * @return the topic source
      * @throws PoolingFeatureException if the source doesn't exist or is not filterable
      */
-    private FilterableTopicSource findTopicSource() throws PoolingFeatureException {
+    private TopicSource findTopicSource() throws PoolingFeatureException {
         for (TopicSource src : getTopicSources()) {
             if (topic.equals(src.getTopic())) {
-                if (src instanceof FilterableTopicSource) {
-                    return (FilterableTopicSource) src;
-
-                } else {
-                    throw new PoolingFeatureException("topic source " + topic + " is not filterable");
-                }
+                return src;
             }
         }
 
@@ -196,22 +187,6 @@ public class DmaapManager {
         logger.info("stop consuming from topic {}", topic);
         consuming = false;
         topicSource.unregister(listener);
-    }
-
-    /**
-     * Sets the server-side filter to be used by the consumer.
-     *
-     * @param filter the filter string, or {@code null} if no filter is to be used
-     * @throws PoolingFeatureException if the topic is not filterable
-     */
-    public void setFilter(String filter) throws PoolingFeatureException {
-        try {
-            logger.debug("change filter for topic {} to {}", topic, filter);
-            topicSource.setFilter(filter);
-
-        } catch (UnsupportedOperationException e) {
-            throw new PoolingFeatureException("cannot filter topic " + topic, e);
-        }
     }
 
     /**

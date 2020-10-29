@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
@@ -143,12 +142,7 @@ public class SupportBasicStateTester {
         when(props.getActiveHeartbeatMs()).thenReturn(STD_ACTIVE_HEARTBEAT_MS);
         when(props.getInterHeartbeatMs()).thenReturn(STD_INTER_HEARTBEAT_MS);
 
-        prevState = new State(mgr) {
-            @Override
-            public Map<String, Object> getFilter() {
-                throw new UnsupportedOperationException("cannot filter");
-            }
-        };
+        prevState = new State(mgr) {};
 
         // capture publish() arguments
         doAnswer(invocation -> {
