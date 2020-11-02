@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c4f5676_1724527b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-02T22:31:37Z",
+      "side": 1,
+      "message": "Can the feature-pooling-dmaap documentation in the policy/parent for this feature be also updated?",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "56ef3ca6_8985ba1d",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/DmaapManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-02T22:31:37Z",
+      "side": 1,
+      "message": "license year 2020 - general comment",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8818160e_6ab48bb5",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/PoolingManagerImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-02T22:31:37Z",
+      "side": 1,
+      "message": "I think there there may be an issue with using only the reqid hash here to get the host as in the case of dcae they are sending multiple copies of the onset with different request ids.",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
