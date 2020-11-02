@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "224ecb9e_bfb22eb9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-02T23:13:08Z",
+      "side": 1,
+      "message": "planning to.  went looking for it a few hours ago and didn\u0027t find it right away, but found other stuff to fix. :-)",
+      "parentUuid": "1c4f5676_1724527b",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "56ef3ca6_8985ba1d",
         "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/DmaapManager.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "44c0df00_4d6a9d19",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/DmaapManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-02T23:13:08Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "56ef3ca6_8985ba1d",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8818160e_6ab48bb5",
         "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/PoolingManagerImpl.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2020-11-02T22:31:37Z",
       "side": 1,
       "message": "I think there there may be an issue with using only the reqid hash here to get the host as in the case of dcae they are sending multiple copies of the onset with different request ids.",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66d91543_c20f3c79",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/PoolingManagerImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-02T23:13:08Z",
+      "side": 1,
+      "message": "yes, the old code simply used the request id to route.  I made this change in anticipation of handling exactly what you\u0027re describing, just hadn\u0027t taken the final step of using the event hash code instead of the request hash code",
+      "parentUuid": "8818160e_6ab48bb5",
       "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
