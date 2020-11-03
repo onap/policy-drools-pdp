@@ -104,6 +104,24 @@
       "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08068471_87fbfa7f",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/PoolingManagerImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-03T14:09:58Z",
+      "side": 1,
+      "message": "Sounds good, this can get a bit tricky but will review then",
+      "parentUuid": "66d91543_c20f3c79",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
