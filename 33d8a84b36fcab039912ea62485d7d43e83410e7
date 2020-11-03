@@ -122,6 +122,24 @@
       "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4acdf6dd_ccae725a",
+        "filename": "feature-pooling-dmaap/src/main/java/org/onap/policy/drools/pooling/PoolingManagerImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-03T20:43:31Z",
+      "side": 1,
+      "message": "Actually, this patch has the change to use event.hashCode() instead of requestId.hashCode(), so it should at least work correctly with CanonicalOnset events.",
+      "parentUuid": "08068471_87fbfa7f",
+      "revId": "33d8a84b36fcab039912ea62485d7d43e83410e7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
