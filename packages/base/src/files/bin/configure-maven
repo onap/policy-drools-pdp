@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -20,14 +20,14 @@
 
 source ${POLICY_HOME}/etc/profile.d/env.sh
 
-if [[ ${DEBUG} == y ]]; then
+if [ "${DEBUG}" = "y" ]; then
     set -x
 fi
 
 HOME_M2="${HOME}"/.m2
 mkdir -p "${HOME_M2}" 2> /dev/null
 
-if [[ -z "${SNAPSHOT_REPOSITORY_URL}" && -z "${RELEASE_REPOSITORY_URL}" ]]; then
+if [ -z "${SNAPSHOT_REPOSITORY_URL}" ] && [ -z "${RELEASE_REPOSITORY_URL}" ]; then
     ln -s -f "${POLICY_HOME}"/etc/m2/standalone-settings.xml "${HOME_M2}"/settings.xml
 else
     ln -s -f "${POLICY_HOME}"/etc/m2/settings.xml "${HOME_M2}"/settings.xml
