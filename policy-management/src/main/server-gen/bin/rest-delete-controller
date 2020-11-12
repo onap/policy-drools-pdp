@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -20,8 +20,8 @@
 
 source $POLICY_HOME/etc/profile.d/env.sh
 
-if [[ -n $1 ]]; then
-    if [[ -n ${TELEMETRY_PASSWORD} ]]; then
+if [ -n "$1" ]; then
+    if [ -n "${TELEMETRY_PASSWORD}" ]; then
         curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X DELETE --header "Content-Type: application/json" \
             https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers/${1}
     else

@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -21,112 +21,111 @@
 source ${POLICY_HOME}/etc/profile.d/env.sh
 
 function usage() {
-	echo -n "Usage: $(basename $0) "
-	echo -n "[(-d|--debug)] "
-	echo -n "(-h|--host) <bus-host> "
-	echo -n "[(-p|--port) <bus-port>] "
-	echo -n "[(-k|--key) <api-key>] "
-	echo -n "[(-s|--secret) <api-secret>] "
-	echo -n "[(-r|--request-id) <request-id>] "
-	echo -n "(-c|--controller-name) <controller-name> "
-	echo -n "(-o|--operation) <create|update|lock|unlock> "
-	echo -n "[(-g|--group-id) <group-id> "
-	echo -n "(-a|--artifact-id) <artifact-id> "
-	echo -n "(-v|--version) <version>] "
-	echo -n "[(-t|--topic) <topic>] "
-	echo ""
+    echo -n "Usage: $(basename $0) "
+    echo -n "[(-d|--debug)] "
+    echo -n "(-h|--host) <bus-host> "
+    echo -n "[(-p|--port) <bus-port>] "
+    echo -n "[(-k|--key) <api-key>] "
+    echo -n "[(-s|--secret) <api-secret>] "
+    echo -n "[(-r|--request-id) <request-id>] "
+    echo -n "(-c|--controller-name) <controller-name> "
+    echo -n "(-o|--operation) <create|update|lock|unlock> "
+    echo -n "[(-g|--group-id) <group-id> "
+    echo -n "(-a|--artifact-id) <artifact-id> "
+    echo -n "(-v|--version) <version>] "
+    echo -n "[(-t|--topic) <topic>] "
+    echo ""
 }
 
 BUS_PORT=3904
-ENTITY=controller
 REQUEST_ID="7f5474ca-16a9-42ac-abc0-d86f62296fbc"
 TOPIC="PDPD-CONFIGURATION"
 
 # command line options parsing
-until [[ -z "$1" ]]; do
-	case $1 in
-		-d|--debug) 	set -x
-				;;
-		-h|--host) 		shift
-					BUS_HOST=$1
-					;;						
-		-p|--port) 		shift
-					BUS_PORT=$1
-					;;
-		-r|--request-id) 		shift
-					REQUEST_ID=$1
-					;;
-		-k|--key) 		shift
-					API_KEY=$1
-					;;	
-		-s|--secret) 		shift
-					API_SECRET=$1
-					;;	
-		-c|--controller-name) 		shift
-					CONTROLLER_NAME=$1
-					;;
-		-o|--operation) 		shift
-					OPERATION=$1
-					;;							
-		-g|--group-id) 	shift
-					GROUP_ID=$1
-					;;
-		-a|--artifact-id) shift
-					ARTIFACT_ID=$1
-					;;
-		-v|--version) shift
-					VERSION=$1
-					;;		
-		-t|--topic) shift
-					TOPIC=$1
-					;;															
-		*)			usage
-					exit 1
-					;;
-	esac
-	shift
+until [ -z "$1" ]; do
+    case $1 in
+        -d|--debug)     set -x
+                ;;
+        -h|--host)         shift
+                    BUS_HOST=$1
+                    ;;                        
+        -p|--port)         shift
+                    BUS_PORT=$1
+                    ;;
+        -r|--request-id)         shift
+                    REQUEST_ID=$1
+                    ;;
+        -k|--key)         shift
+                    API_KEY=$1
+                    ;;    
+        -s|--secret)         shift
+                    API_SECRET=$1
+                    ;;    
+        -c|--controller-name)         shift
+                    CONTROLLER_NAME=$1
+                    ;;
+        -o|--operation)         shift
+                    OPERATION=$1
+                    ;;                            
+        -g|--group-id)     shift
+                    GROUP_ID=$1
+                    ;;
+        -a|--artifact-id) shift
+                    ARTIFACT_ID=$1
+                    ;;
+        -v|--version) shift
+                    VERSION=$1
+                    ;;        
+        -t|--topic) shift
+                    TOPIC=$1
+                    ;;                                                            
+        *)            usage
+                    exit 1
+                    ;;
+    esac
+    shift
 done
 
-if [[ -z ${BUS_HOST} ]]; then
-	echo "An UEB/DMAAP server must be provided."
-	echo
-	usage
-	exit 1
+if [ -z "${BUS_HOST}" ]; then
+    echo "An UEB/DMAAP server must be provided."
+    echo
+    usage
+    exit 1
 fi
 
-if [[ -z ${CONTROLLER_NAME} ]]; then
-	echo "The controller-name must be provided."
-	usage
-	exit 2
+if [ -z "${CONTROLLER_NAME}" ]; then
+    echo "The controller-name must be provided."
+    usage
+    exit 2
 fi
 
-if [[ -z ${OPERATION} ]]; then
-	echo "The operation  must be provided: create|update|lock|unlock"
-	usage
-	exit 3
+if [ -z "${OPERATION}" ]; then
+    echo "The operation  must be provided: create|update|lock|unlock"
+    usage
+    exit 3
 fi
 
-if [[ ${OPERATION} == "create" ]] || [[ ${OPERATION} == "update" ]]; then
-	if [[ -z ${GROUP_ID} ]]; then
-		echo "The maven group id must be provided when operation is create|update"
-		usage
-		exit 4
-	fi
-	
-	if [[ -z ${ARTIFACT_ID} ]]; then
-		echo "The maven artifact id must be provided when operation is create|update"
-		usage
-		exit 5
-	fi
-	
-	if [[ -z ${VERSION} ]]; then
-		echo "The maven version must be provided when operation is create|update"
-		usage
-		exit 6
-	fi
+if [ "${OPERATION}" = "create" ] || [ "${OPERATION}" = "update" ]; then
+    if [ -z "${GROUP_ID}" ]; then
+        echo "The maven group id must be provided when operation is create|update"
+        usage
+        exit 4
+    fi
+    
+    if [ -z "${ARTIFACT_ID}" ]; then
+        echo "The maven artifact id must be provided when operation is create|update"
+        usage
+        exit 5
+    fi
+    
+    if [ -z "${VERSION}" ]; then
+        echo "The maven version must be provided when operation is create|update"
+        usage
+        exit 6
+    fi
 fi
 
-UPDATE_BODY=$(< <(cat <<EOF
+UPDATE_BODY=$(cat <<EOF
 {
       "requestID": "${REQUEST_ID}",
       "entity": "controller",
@@ -140,11 +139,10 @@ UPDATE_BODY=$(< <(cat <<EOF
             "operation": "${OPERATION}"
       }]
 }
-
 EOF
-))
+)
 
-LOCK_BODY=$(< <(cat <<EOF
+LOCK_BODY=$(cat <<EOF
 {
       "requestID": "${REQUEST_ID}",
       "entity": "controller",
@@ -155,46 +153,46 @@ LOCK_BODY=$(< <(cat <<EOF
 }
 
 EOF
-))
+)
 
 unset http_proxy
 
-if [[ ${OPERATION} == "lock" ]] || [[ ${OPERATION} == "unlock" ]]; then
-	if [[ -n ${API_KEY} ]]; then
-		DATE=$(date)
-		DATE_HASH=$(echo -n "${DATE}" | openssl sha1 -hmac "${API_SECRET}" -binary | openssl base64)
-		curl --silent -X POST \
-			--header "Accept:" \
-			--header "X-CambriaDate: ${DATE}" \
-			--header "X-CambriaAuth: ${API_KEY}:${DATE_HASH}" \
-			--header "Content-Type: application/json" \
-			--data "${LOCK_BODY}" \
-			http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
-	else
-		curl --silent -X POST \
-			--header "Accept:" \
-			--header "Content-Type: application/json" \
-			--data "${LOCK_BODY}" \
-			http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
-	fi
+if [ "${OPERATION}" = "lock" ] || [ "${OPERATION}" = "unlock" ]; then
+    if [ -n "${API_KEY}" ]; then
+        DATE=$(date)
+        DATE_HASH=$(echo -n "${DATE}" | openssl sha1 -hmac "${API_SECRET}" -binary | openssl base64)
+        curl --silent -X POST \
+            --header "Accept:" \
+            --header "X-CambriaDate: ${DATE}" \
+            --header "X-CambriaAuth: ${API_KEY}:${DATE_HASH}" \
+            --header "Content-Type: application/json" \
+            --data "${LOCK_BODY}" \
+            http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
+    else
+        curl --silent -X POST \
+            --header "Accept:" \
+            --header "Content-Type: application/json" \
+            --data "${LOCK_BODY}" \
+            http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
+    fi
 fi
 
-if [[ ${OPERATION} == "create" ]] || [[ ${OPERATION} == "update" ]]; then
-	if [[ -n ${API_KEY} ]]; then
-		DATE=$(date)
-		DATE_HASH=$(echo -n "${DATE}" | openssl sha1 -hmac "${API_SECRET}" -binary | openssl base64)
-		curl --silent -X POST \
-			--header "Accept:" \
-			--header "X-CambriaDate: ${DATE}" \
-			--header "X-CambriaAuth: ${API_KEY}:${DATE_HASH}" \
-			--header "Content-Type: application/json" \
-			--data "${UPDATE_BODY}" \
-			http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
-	else
-		curl --silent -X POST \
-			--header "Accept:" \
-			--header "Content-Type: application/json" \
-			--data "${UPDATE_BODY}" \
-			http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
-	fi
+if [ "${OPERATION}" = "create" ] || [ "${OPERATION}" = "update" ]; then
+    if [ -n "${API_KEY}" ]; then
+        DATE=$(date)
+        DATE_HASH=$(echo -n "${DATE}" | openssl sha1 -hmac "${API_SECRET}" -binary | openssl base64)
+        curl --silent -X POST \
+            --header "Accept:" \
+            --header "X-CambriaDate: ${DATE}" \
+            --header "X-CambriaAuth: ${API_KEY}:${DATE_HASH}" \
+            --header "Content-Type: application/json" \
+            --data "${UPDATE_BODY}" \
+            http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
+    else
+        curl --silent -X POST \
+            --header "Accept:" \
+            --header "Content-Type: application/json" \
+            --data "${UPDATE_BODY}" \
+            http://${BUS_HOST}:${BUS_PORT}/events/${TOPIC}
+    fi
 fi
