@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP POLICY
@@ -25,13 +25,13 @@ PNAME=policy-management
 CLASS=org.onap.policy.drools.system.Main
 
 function start() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- start --"
         set -x
     fi
 
     um_start
-    if [[ ${RETVAL} != 0 ]]; then
+    if [ $RETVAL -ne 0 ]; then
         update_monitor off
     else
         update_monitor on
@@ -39,8 +39,8 @@ function start() {
 }
 
 function preRunning() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- preRunning --"
         set -x
     fi
 
@@ -51,25 +51,24 @@ function preRunning() {
     source ${POLICY_HOME}/etc/profile.d/env.sh
 
     ${POLICY_HOME}/bin/configure-maven
-    JVM_OPTS=(${JVM_OPTIONS})
 
     # If 'system.properties' exists, convert it into "-D" JVM arguments.
     # Note that the following also handles property values with spaces.
-    IFS=$'\n'
-    systemProperties=($(
-        if [[ -f $_DIR/config/system.properties ]]; then
+
+    systemProperties=$(
+        if [ -f "$_DIR/config/system.properties" ]; then
             sed -n -e 's/^[ \t]*\([^ \t#]*\)[ \t]*=[ \t]*\(.*\)$/-D\1=\2/p' \
                 $_DIR/config/system.properties
         fi
-    ))
+    )
 
     cd $_DIR
 
 }
 
 function exec_start() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- exec_start --"
         set -x
     fi
 
@@ -80,13 +79,18 @@ function exec_start() {
     fi
 
     preRunning
-    exec $JAVA_HOME/bin/java "${JVM_OPTS[@]}" -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS
+    exec $JAVA_HOME/bin/java ${JVM_OPTIONS} -cp $_DIR/config:$_DIR/lib:$CP ${systemProperties} "$@" $CLASS
+}
+
+# adding timestamp for stdout and stderr
+function timestamp () {
+    exec awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
 }
 
 # unmonitored start, does not change monitor status (immutable)
 function um_start() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- um_start --"
         set -x
     fi
 
@@ -104,15 +108,8 @@ function um_start() {
     if [ -e $_LOGS/$PNAME.err ]; then mv $_LOGS/$PNAME.err $_LOGS/$PNAME.err.1; fi
 
     (
-        if [[ "${cfg}" != "" ]]; then
-            # need to make sure that we don't pass the lock file descriptor
-            # to subprocesses
-            exec {cfg}>&-
-        fi
-        nohup $JAVA_HOME/bin/java "${JVM_OPTS[@]}" -cp $_DIR/config:$_DIR/lib:$CP "${systemProperties[@]}" "$@" $CLASS > >(while read line; do echo "$(date): ${line}"; done >$_LOGS/$PNAME.out) 2> >(while read line; do echo "$(date): ${line}"; done >$_LOGS/$PNAME.err) &
-
-        _PID=$!
-        echo $_PID >$_PIDFILE
+        exec 200>&-
+        { ( nohup $JAVA_HOME/bin/java ${JVM_OPTIONS} -cp $_DIR/config:$_DIR/lib:$CP ${systemProperties} "$@" $CLASS ; echo $_PID >$_PIDFILE ) | timestamp > $_LOGS/$PNAME.out; } 2>&1 | timestamp > $_LOGS/$PNAME.err &
     )
     sleep 5
     status
@@ -127,8 +124,8 @@ function um_start() {
 }
 
 function stop() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- stop --"
         set -x
     fi
 
@@ -138,8 +135,8 @@ function stop() {
 
 # unmonitored stop, does not change monitor status (immutable)
 function um_stop() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- um_stop --"
         set -x
     fi
 
@@ -148,7 +145,7 @@ function um_stop() {
         echo $_STATUS
         remove_pid_file
     else
-        if [[ -n ${TELEMETRY_PASSWORD} ]]; then
+        if [ -n "${TELEMETRY_PASSWORD}" ]; then
             http_proxy= timeout 10 curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
         else
             http_proxy= timeout 10 curl -k --silent -X DELETE https://localhost:${TELEMETRY_PORT}/policy/pdp/engine -o /dev/null
@@ -174,15 +171,15 @@ function um_stop() {
 }
 
 function status() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- status --"
         set -x
     fi
 
     if [ -f "${_PIDFILE}" ]; then
         _PID=$(cat "${_PIDFILE}")
         check_status_of_pid "$_PID"
-    elif [[ ${POLICY_DOCKER} == true ]] && _PID=$(pidof -s java); then
+    elif [ ${POLICY_DOCKER} ] && _PID=$(pidof -s java); then
         echo "${_PID}" > ${_PIDFILE}
         check_status_of_pid "$_PID"
     else
@@ -190,7 +187,7 @@ function status() {
         _RUNNING=0
     fi
 
-    if [[ $_RUNNING == 1 ]]; then
+    if [ "$_RUNNING" = "1" ]; then
         RETVAL=0
     else
         RETVAL=1
@@ -198,8 +195,8 @@ function status() {
 }
 
 function check_status_of_pid() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- check_status_of_pid --"
         set -x
     fi
 
@@ -213,8 +210,8 @@ function check_status_of_pid() {
 }
 
 function remove_pid_file() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- remove_pid_file --"
         set -x
     fi
 
@@ -224,13 +221,13 @@ function remove_pid_file() {
 }
 
 function update_monitor() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- update_monitor --"
         set -x
     fi
 
     STATUS=$1
-    if [[ -f ${POLICY_HOME}/etc/monitor/monitor.cfg ]]; then
+    if [ -f "${POLICY_HOME}"/etc/monitor/monitor.cfg ]; then
         /bin/sed -i.bak \
             -e "s/^${CONTROLLER}=.*/${CONTROLLER}=${STATUS}/g" \
             ${POLICY_HOME}/etc/monitor/monitor.cfg
@@ -238,8 +235,8 @@ function update_monitor() {
 }
 
 # main
-
-if [[ ${DEBUG} == y ]]; then
+lockfile=${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+if [ "${DEBUG}" = "y" ]; then
     echo "-- $0 $* --"
     set -x
 fi
@@ -247,7 +244,7 @@ fi
 _DIR=${POLICY_HOME}
 _LOGS=${POLICY_LOGS}
 
-if [[ -z ${POLICY_LOGS} ]]; then
+if [ -z "${POLICY_LOGS}" ]; then
     _LOGS="${POLICY_HOME}"/logs
 fi
 
@@ -263,9 +260,9 @@ status)
     echo "$_STATUS"
     ;;
 start)
-    if flock ${cfg}; then
+    if flock 200; then
         start
-    fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+    fi 200>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
     ;;
 umstart)
     um_start
@@ -274,19 +271,19 @@ exec)
     exec_start
     ;;
 stop)
-    if flock ${cfg}; then
+    if flock 200; then
         stop
-    fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+    fi 200>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
     ;;
 umstop)
     um_stop
     ;;
 restart)
-    if flock ${cfg}; then
-        stop
-        sleep 2
-        start
-    fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
+    if flock 200; then 
+       stop
+       sleep 2
+       start
+    fi 200>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
     ;;
 *)
     echo "error: invalid option $@"
