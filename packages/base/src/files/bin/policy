@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -25,8 +25,8 @@ function usage() {
 }
 
 function check_x_file() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- $FUNC --"
         set -x
     fi
 
@@ -39,8 +39,8 @@ function check_x_file() {
 }
 
 function policy_op() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- $FUNC --"
         set -x
     fi
 
@@ -53,13 +53,13 @@ function policy_op() {
         ${BIN_SCRIPT} ${operation} >/tmp/out$$
         echo " L [${controller}]: $(sed ':a;N;$!ba;s/\n/ /g' /tmp/out$$)"
     else
-        echo "	L [${controller}]: -"
+        echo "    L [${controller}]: -"
     fi
 }
 
 function policy_status() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- $FUNC --"
         set -x
     fi
 
@@ -67,14 +67,14 @@ function policy_status() {
     policy_op "status"
 
     NUM_CRONS=$(crontab -l 2>/dev/null | wc -l)
-    echo "	${NUM_CRONS} cron jobs installed."
+    echo "    ${NUM_CRONS} cron jobs installed."
 
     echo
     echo "[features]"
     features status
 
     local databases=$(ls -d "${POLICY_HOME}"/etc/db/migration/*/ 2>/dev/null)
-    if [[ -n ${databases} ]]; then
+    if [ -n "${databases}" ]; then
         echo "[migration]"
         db-migrator -s ALL -o ok
     fi
@@ -82,8 +82,8 @@ function policy_status() {
 }
 
 function policy_start() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- $FUNC --"
         set -x
     fi
 
@@ -91,8 +91,8 @@ function policy_start() {
 }
 
 function policy_exec() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- $FUNC --"
         set -x
     fi
 
@@ -103,8 +103,8 @@ function policy_exec() {
 }
 
 function policy_stop() {
-    if [[ $DEBUG == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- $FUNC --"
         set -x
     fi
 
@@ -119,15 +119,15 @@ function policy_stop() {
 
 source ${POLICY_HOME}/etc/profile.d/env.sh
 
-if [[ ${DEBUG} == y ]]; then
+if [ "${DEBUG}" = "y" ]; then
     echo "-- $0 $* --"
     set -x
 fi
 
 BIN_SCRIPT="bin/policy-management-controller"
 OPERATION=none
-
-until [[ -z "$1" ]]; do
+FUNC=$1
+until [ -z "$1" ]; do
     case $1 in
     -d | --debug | debug)
         DEBUG=y
@@ -166,7 +166,7 @@ halt) ;;
     ;;
 esac
 
-if [[ -z ${POLICY_HOME} ]]; then
+if [ -z "${POLICY_HOME}" ]; then
     echo "error: POLICY_HOME is unset."
     exit 1
 fi
