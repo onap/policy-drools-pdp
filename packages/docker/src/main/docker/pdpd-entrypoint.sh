@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env ash
 
 # ########################################################################
 # Copyright 2019-2020 AT&T Intellectual Property. All rights reserved
@@ -18,19 +18,19 @@
 
 
 function maven {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- maven --"
         set -x
     fi
 
-    if [[ -f "${POLICY_INSTALL_INIT}"/settings.xml ]]; then
+    if [ -f "${POLICY_INSTALL_INIT}"/settings.xml ]; then
         if ! cmp -s "${POLICY_INSTALL_INIT}"/settings.xml "${POLICY_HOME}"/etc/m2/settings.xml; then
             echo "overriding settings.xml"
             cp -f "${POLICY_INSTALL_INIT}"/settings.xml "${POLICY_HOME}"/etc/m2
         fi
     fi
 
-    if [[ -f "${POLICY_INSTALL_INIT}"/standalone-settings.xml ]]; then
+    if [ -f "${POLICY_INSTALL_INIT}"/standalone-settings.xml ]; then
         if ! cmp -s "${POLICY_INSTALL_INIT}"/standalone-settings.xml "${POLICY_HOME}"/etc/m2/standalone-settings.xml; then
             echo "overriding standalone-settings.xml"
             cp -f "${POLICY_INSTALL_INIT}"/standalone-settings.xml "${POLICY_HOME}"/etc/m2
@@ -39,8 +39,8 @@ function maven {
 }
 
 function systemConfs {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- systemConfs --"
         set -x
     fi
 
@@ -61,8 +61,8 @@ function systemConfs {
 }
 
 function features {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- features --"
         set -x
     fi
 
@@ -79,8 +79,8 @@ function features {
 }
 
 function scripts {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- scripts --"
         set -x
     fi
 
@@ -99,26 +99,26 @@ function scripts {
 }
 
 function security {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- security --"
         set -x
     fi
 
-    if [[ -f "${POLICY_INSTALL_INIT}"/policy-keystore ]]; then
+    if [ -f "${POLICY_INSTALL_INIT}"/policy-keystore ]; then
         if ! cmp -s "${POLICY_INSTALL_INIT}"/policy-keystore "${POLICY_HOME}"/etc/ssl/policy-keystore; then
             echo "overriding policy-keystore"
             cp -f "${POLICY_INSTALL_INIT}"/policy-keystore "${POLICY_HOME}"/etc/ssl
         fi
     fi
 
-    if [[ -f ${POLICY_INSTALL_INIT}/policy-truststore ]]; then
+    if [ -f "${POLICY_INSTALL_INIT}"/policy-truststore ]; then
         if ! cmp -s "${POLICY_INSTALL_INIT}"/policy-truststore "${POLICY_HOME}"/etc/ssl/policy-truststore; then
             echo "overriding policy-truststore"
             cp -f "${POLICY_INSTALL_INIT}"/policy-truststore "${POLICY_HOME}"/etc/ssl
         fi
     fi
 
-    if [[ -f "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile ]]; then
+    if [ -f "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile ]; then
         if ! cmp -s "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile "${POLICY_HOME}"/config/aaf-cadi.keyfile; then
             echo "overriding aaf-cadi.keyfile"
             cp -f "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile "${POLICY_HOME}"/config/aaf-cadi.keyfile
@@ -127,8 +127,8 @@ function security {
 }
 
 function serverConfig {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- serverConfig --"
         set -x
     fi
 
@@ -145,24 +145,24 @@ function serverConfig {
 }
 
 function db {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- db --"
         set -x
     fi
 
-    if [[ -z ${SQL_HOST} ]]; then
+    if [ -z "${SQL_HOST}" ]; then
         return 0
     fi
 
     echo "Wating for ${SQL_HOST} ."
-    timeout 120 bash -c 'until nc -vz "${SQL_HOST}" 3306; do echo -n "."; sleep 1; done'; echo $?
+    timeout 120 ash -c 'until nc -vz "${SQL_HOST}" 3306; do echo -n "."; sleep 1; done'; echo $?
 
     "${POLICY_HOME}"/bin/db-migrator -s ALL -o upgrade
 }
 
 function inspect {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- inspect --"
         set -x
     fi
 
@@ -179,8 +179,8 @@ function inspect {
 }
 
 function reload {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- reload --"
         set -x
     fi
 
@@ -195,8 +195,8 @@ function reload {
 }
 
 function start {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- start --"
         set -x
     fi
 
@@ -205,8 +205,8 @@ function start {
 }
 
 function configure {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]]; then
+        echo "-- configure --"
         set -x
     fi
 
@@ -215,8 +215,8 @@ function configure {
 }
 
 function vmBoot {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- vmBoot --"
         set -x
     fi
 
@@ -227,8 +227,8 @@ function vmBoot {
 }
 
 function dockerBoot {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- dockerBoot --"
         set -x
     fi
 
@@ -240,7 +240,7 @@ function dockerBoot {
     policy exec
 }
 
-if [[ ${DEBUG} == y ]]; then
+if [ "${DEBUG}" = "y" ]; then
     echo "-- $0 $* --"
     set -x
 fi
