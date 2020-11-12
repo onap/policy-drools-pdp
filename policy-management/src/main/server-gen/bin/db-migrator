@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -20,44 +20,43 @@
 
 # #####################################################################
 #
-# Upgrade/Downgrade SQL File Name Format:  
+# Upgrade/Downgrade SQL File Name Format:
 #
-# 	<VERSION>-<pdp|feature-name>[-description](.upgrade|.downgrade).sql
+#     <VERSION>-<pdp|feature-name>[-description](.upgrade|.downgrade).sql
 #
 # This tool operates on a migration working directory at
-# 
-#	$POLICY_HOME/etc/db/migration
 #
-# Upgrade/Downgrade files for each schema (aka database) names to be maintained 
+#    $POLICY_HOME/etc/db/migration
+#
+# Upgrade/Downgrade files for each schema (aka database) names to be maintained
 # by this tool are located at
 #
-#	$POLICY_HOME/etc/db/migration/<schema-name>/sql
+#    $POLICY_HOME/etc/db/migration/<schema-name>/sql
 #
 # The nature of the migration directories is dynamic.
 # Other tooling aware of when migrations are needed are in charge to populate
-# the migrations directory accordingly.   
+# the migrations directory accordingly.
 #
 # One of these tools is the 'features' when a feature with DB requirements
 # is 'enabled', the upgrade scripts will be made present in the migration directory.
 # When a features is 'disabled' downgrade scripts will be made available in the
 # migration directory.
 #
-# The 'policy' tool via its operations 'status' or 'start' will signal the 
+# The 'policy' tool via its operations 'status' or 'start' will signal the
 # need to perform upgrade or downgrade for a given schema.
 #
 # At any given time the following invariant must be preserved in any given
 # $POLICY_HOME/etc/db/migration/<schema-name>/sql directory
 #
-# 	There is only upgrade scripts, or only downgrade scripts, or none.
+#     There is only upgrade scripts, or only downgrade scripts, or none.
 #
 # #####################################################################
 
 source ${POLICY_HOME}/etc/profile.d/env.sh
 
 METADATA_DB=migration
-METADATA_TABLE="${METADATA_DB}".metadata_versions
-MIGRATION_DIR="${POLICY_HOME}"/etc/db/migration
-
+METADATA_TABLE=${METADATA_DB}.metadata_versions
+MIGRATION_DIR=${POLICY_HOME}/etc/db/migration
 ZERO_VERSION="0"
 UPGRADE_SQL_SUFFIX=".upgrade.sql"
 DOWNGRADE_SQL_SUFFIX=".downgrade.sql"
@@ -69,33 +68,33 @@ SQL_QUOTES="SET SESSION SQL_MODE=ANSI_QUOTES;"
 #####################################################
 
 function usage() {
-	echo
-	echo -e "syntax: $(basename "$0") "
-	echo -e "\t -s <schema-name> "
-	echo -e "\t [-b <migration-dir>] "
-	echo -e "\t [-f <from-version>]"
-	echo -e "\t [-t <target-version>]"
-	echo -e "\t -o <operations> "
-	echo 
-	echo -e "\t where <operations>=upgrade|downgrade|auto|version|erase|report"
-	echo
-	echo
-	echo -e "Configuration Options:"
-	echo -e "\t -s|--schema|--database:  schema to operate on ('ALL' to apply on all)"		
-	echo -e "\t -b|--basedir: overrides base DB migration directory"
-	echo -e "\t -f|--from: overrides current release version for operations"
-	echo -e "\t -t|--target: overrides target release to upgrade/downgrade"
-	echo
-	echo -e "Operations:"
-	echo -e "\t upgrade: upgrade operation"
-	echo -e "\t downgrade: performs a downgrade operation"
-	echo -e "\t auto: autonomous operation, determines upgrade or downgrade"
-	echo -e "\t version: returns current version, and in conjunction if '-f' sets the current version"
-	echo -e "\t erase: erase all data related <schema> (use with care)"
-	echo -e "\t report: migration detailed report on an schema"
-	echo -e "\t ok: is the migration status valid"
-	echo
-	echo
+    echo
+    echo -e "syntax: $(basename "$0") "
+    echo -e "\t -s <schema-name> "
+    echo -e "\t [-b <migration-dir>] "
+    echo -e "\t [-f <from-version>]"
+    echo -e "\t [-t <target-version>]"
+    echo -e "\t -o <operations> "
+    echo
+    echo -e "\t where <operations>=upgrade|downgrade|auto|version|erase|report"
+    echo
+    echo
+    echo -e "Configuration Options:"
+    echo -e "\t -s|--schema|--database:  schema to operate on ('ALL' to apply on all)"
+    echo -e "\t -b|--basedir: overrides base DB migration directory"
+    echo -e "\t -f|--from: overrides current release version for operations"
+    echo -e "\t -t|--target: overrides target release to upgrade/downgrade"
+    echo
+    echo -e "Operations:"
+    echo -e "\t upgrade: upgrade operation"
+    echo -e "\t downgrade: performs a downgrade operation"
+    echo -e "\t auto: autonomous operation, determines upgrade or downgrade"
+    echo -e "\t version: returns current version, and in conjunction if '-f' sets the current version"
+    echo -e "\t erase: erase all data related <schema> (use with care)"
+    echo -e "\t report: migration detailed report on an schema"
+    echo -e "\t ok: is the migration status valid"
+    echo
+    echo
 }
 
 #####################################################
@@ -104,24 +103,24 @@ function usage() {
 
 function ensure_metadata
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local sql rc
-	
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local sql rc
+
     sql="CREATE DATABASE IF NOT EXISTS ${METADATA_DB};"
-	${MYSQL} --execute "${sql}"
-	rc=$?
-	if [[ ${rc} != 0 ]]; then
-		return ${rc}
-	fi
-    
+    ${MYSQL} --execute "${sql}"
+    rc=$?
+    if [ ${rc} -ne 0 ]; then
+        return ${rc}
+    fi
+
     sql="CREATE TABLE IF NOT EXISTS ${METADATA_TABLE} "
-    sql+="(name VARCHAR(60) NOT NULL, version VARCHAR(20), PRIMARY KEY(name));"
-	${MYSQL} --execute "${sql}"
-	return $?
+    sql=${sql}"(name VARCHAR(60) NOT NULL, version VARCHAR(20), PRIMARY KEY(name));"
+    ${MYSQL} --execute "${sql}"
+    return $?
 }
 
 
@@ -131,26 +130,26 @@ function ensure_metadata
 
 function ensure_metadata_schema
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local sql rc
-	
-	sql="CREATE TABLE IF NOT EXISTS ${METADATA_HISTORY} "
-	sql+="(script VARCHAR(80) NOT NULL, operation VARCHAR(10), success VARCHAR(1), "
-	sql+="atTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
-	sql+="PRIMARY KEY(script));"
-	${MYSQL} --execute "${sql}"
-	rc=$?
-	if [[ ${rc} != 0 ]]; then
-		return ${rc}
-	fi
-	
-	sql="CREATE DATABASE IF NOT EXISTS ${SCHEMA_DB};"
-	${MYSQL} --execute "${sql}"
-	return $?
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local sql rc
+
+    sql="CREATE TABLE IF NOT EXISTS ${METADATA_HISTORY} "
+    sql=${sql}"(script VARCHAR(80) NOT NULL, operation VARCHAR(10), success VARCHAR(1), "
+    sql=${sql}"atTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
+    sql=${sql}"PRIMARY KEY(script));"
+    ${MYSQL} --execute "${sql}"
+    rc=$?
+    if [ ${rc} -ne 0 ]; then
+        return ${rc}
+    fi
+
+    sql="CREATE DATABASE IF NOT EXISTS ${SCHEMA_DB};"
+    ${MYSQL} --execute "${sql}"
+    return $?
 }
 
 
@@ -160,25 +159,25 @@ function ensure_metadata_schema
 
 function target_release
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local sql sqlName upgradeSqls downgradeSqls
-	
-	TARGET_UPGRADE_RELEASE=${ZERO_VERSION}
-	TARGET_DOWNGRADE_RELEASE=${ZERO_VERSION}
-	
-	upgradeSqls=$(ls -v -r "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
-	for sql in ${upgradeSqls}; do
-		sqlName=$(basename "${sql}")
-		TARGET_UPGRADE_RELEASE="${sqlName%-*}"
-		break
-	done
-	
-	# default unless overriden
-	TARGET_DOWNGRADE_RELEASE="${ZERO_VERSION}"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local sql sqlName upgradeSqls downgradeSqls
+
+    TARGET_UPGRADE_RELEASE=${ZERO_VERSION}
+    TARGET_DOWNGRADE_RELEASE=${ZERO_VERSION}
+
+    upgradeSqls=$(ls -v -r "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
+    for sql in ${upgradeSqls}; do
+        sqlName=$(basename "${sql}")
+        TARGET_UPGRADE_RELEASE="${sqlName%-*}"
+        break
+    done
+
+    # default unless overriden
+    TARGET_DOWNGRADE_RELEASE="${ZERO_VERSION}"
 }
 
 #####################################################
@@ -187,19 +186,19 @@ function target_release
 
 function is_upgrade
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local upgradeSqls
-	
-	upgradeSqls=$(ls "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
-	if [[ -z ${upgradeSqls} ]]; then
-		return 1
-	else
-		return 0
-	fi
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local upgradeSqls
+
+    upgradeSqls=$(ls "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
+    if [ -z ${upgradeSqls} ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 
@@ -209,43 +208,19 @@ function is_upgrade
 
 function is_downgrade
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local downgradeSqls
-	
-	downgradeSqls=$(ls "${DOWNGRADE_DIR}"/*"${DOWNGRADE_SQL_SUFFIX}" 2> /dev/null)
-	if [[ -z ${downgradeSqls} ]]; then
-		return 1
-	else
-		return 0
-	fi
-}
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
 
+    local downgradeSqls
 
-#####################################################
-# current_release
-#####################################################
-
-function current_release
-{
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local rc
-	local query="SELECT version FROM ${METADATA_TABLE} WHERE name='${SCHEMA}'"
-	
-	CURRENT_RELEASE=$(${MYSQL} --skip-column-names --silent --execute "${query}")	
-	if [[ -z ${CURRENT_RELEASE} ]]; then
-		set_current_release "${ZERO_VERSION}"
-		return $?
-	fi
-	
-	return 0
+    downgradeSqls=$(ls "${DOWNGRADE_DIR}"/*"${DOWNGRADE_SQL_SUFFIX}" 2> /dev/null)
+    if [ -z ${downgradeSqls} ]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 
@@ -255,21 +230,44 @@ function current_release
 
 function set_current_release
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $* --"
-		set -x
-	fi
-	
-	CURRENT_RELEASE="${1}"
-	
-	local sql="INSERT INTO ${METADATA_TABLE} (name, version) "
-	sql+="VALUES('${SCHEMA}', '${CURRENT_RELEASE}') "
-	sql+="ON DUPLICATE KEY UPDATE version='${CURRENT_RELEASE}';"
-					
-	${MYSQL} --execute "${sql}"
-	return $?
+        if [ "${DEBUG}" = "y" ]; then
+                echo "-- ${FUNC} --"
+                set -x
+        fi
+
+        CURRENT_RELEASE="${1}"
+
+        local sql
+        sql="INSERT INTO ${METADATA_TABLE} (name, version) "
+        sql=${sql}"VALUES('${SCHEMA}', '${CURRENT_RELEASE}') "
+        sql=${sql}"ON DUPLICATE KEY UPDATE version='${CURRENT_RELEASE}';"
+
+        ${MYSQL} --execute "${sql}"
+        return $?
 }
 
+#####################################################
+# current_release
+#####################################################
+
+function current_release
+{
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local rc
+    local query="SELECT version FROM ${METADATA_TABLE} WHERE name='${SCHEMA}'"
+
+    CURRENT_RELEASE=$(${MYSQL} --skip-column-names --silent --execute "${query}")
+    if [ -z "${CURRENT_RELEASE}" ]; then
+        set_current_release "${ZERO_VERSION}"
+        return $?
+    fi
+
+    return 0
+}
 
 #####################################################
 # execute sql script history
@@ -277,18 +275,18 @@ function set_current_release
 
 function track_script
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $* --"
-		set -x
-	fi
-	
-	local script="${1}" operation="${2}" success="${3}"	
-	local sql="INSERT INTO ${METADATA_HISTORY}(script,operation,success,atTime) "
-	sql+="VALUES ('${script}','${operation}','${success}',now()) "
-	sql+="ON DUPLICATE KEY UPDATE operation=values(operation), success=values(success), atTime=values(atTime);"
-				
-	${MYSQL} --execute "${sql}"
-	return $?
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
+        set -x
+    fi
+
+    local script="${1}" operation="${2}" success="${3}"
+    local sql="INSERT INTO ${METADATA_HISTORY}(script,operation,success,atTime) "
+    sql=${sql}"VALUES ('${script}','${operation}','${success}',now()) "
+    sql=${sql}"ON DUPLICATE KEY UPDATE operation=values(operation), success=values(success), atTime=values(atTime);"
+
+    ${MYSQL} --execute "${sql}"
+    return $?
 }
 
 
@@ -298,27 +296,27 @@ function track_script
 
 function run_script
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} $* --"
-		set -x
-	fi
-	
-	local operation="${1}" script="${2}" scriptPath="${3}"
-	
-	echo
-	echo "> ${operation} ${script}"
-	
-	${MYSQL} --verbose < "${scriptPath}"
-	local rc=$?
-	if [[ ${rc} != 0 ]]; then
-		success="0"
-	else
-		success="1"
-	fi
-	
-	track_script "${script}" "${operation}" "${success}"
-	
-	return ${rc}
+    if [ "${DEBUG}" == "y" ]]; then
+        echo "-- ${FUNC} $* --"
+        set -x
+    fi
+
+    local operation="${1}" script="${2}" scriptPath="${3}"
+
+    echo
+    echo "> ${operation} ${script}"
+
+    ${MYSQL} --verbose < "${scriptPath}"
+    local rc=$?
+    if [ ${rc} -ne 0 ]; then
+        success="0"
+    else
+        success="1"
+    fi
+
+    track_script "${script}" "${operation}" "${success}"
+
+    return ${rc}
 }
 
 #####################################################
@@ -327,38 +325,38 @@ function run_script
 
 function upgrade
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local sqlName sqlFile schemaVersion upgradeSqls rc
-	
-	${MYSQL} --execute "USE ${SCHEMA_DB}"
-	
-	echo "upgrade: ${CURRENT_RELEASE} -> ${TARGET_UPGRADE_RELEASE}"
-	
-	if [[ ${CURRENT_RELEASE} < ${TARGET_UPGRADE_RELEASE} ]]; then 
-		upgradeSqls=$(ls -v "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
-	    for sqlFile in ${upgradeSqls}; do
-	    	sqlName=$(basename "${sqlFile}")
-			schemaVersion="${sqlName%-*}"
-	    	if [ "${schemaVersion}" -gt "${CURRENT_RELEASE}" ] && \
-	    		[ "${schemaVersion}" -le "${TARGET_UPGRADE_RELEASE}" ]; then
-	    		run_script "upgrade" "${sqlName}" "${sqlFile}"
-	    		rc=$?
-				if [[ ${rc} != 0 ]]; then
-	        		echo "${SCHEMA}: upgrade aborted at ${schemaVersion} by script ${sqlName}"
-	        		set_current_release "${schemaVersion}"
-	        		return ${rc}
-	        	fi
-	    	fi
-	    done
-   	
-    	set_current_release "${TARGET_UPGRADE_RELEASE}"
-	fi
-	
-	return 0
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local sqlName sqlFile schemaVersion upgradeSqls rc
+
+    ${MYSQL} --execute "USE ${SCHEMA_DB}"
+
+    echo "upgrade: ${CURRENT_RELEASE} -> ${TARGET_UPGRADE_RELEASE}"
+
+    if [ ${CURRENT_RELEASE} -lt ${TARGET_UPGRADE_RELEASE} ]; then
+        upgradeSqls=$(ls -v "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
+        for sqlFile in ${upgradeSqls}; do
+            sqlName=$(basename "${sqlFile}")
+            schemaVersion="${sqlName%-*}"
+            if [ "${schemaVersion}" \> "${CURRENT_RELEASE}" ] && \
+                [ ! "${schemaVersion}" \> "${TARGET_UPGRADE_RELEASE}" ]; then
+                run_script "upgrade" "${sqlName}" "${sqlFile}"
+                rc=$?
+                if [ ${rc} -ne 0 ]; then
+                    echo "${SCHEMA}: upgrade aborted at ${schemaVersion} by script ${sqlName}"
+                    set_current_release "${schemaVersion}"
+                    return ${rc}
+                fi
+            fi
+        done
+
+        set_current_release "${TARGET_UPGRADE_RELEASE}"
+    fi
+
+    return 0
 }
 
 #####################################################
@@ -367,38 +365,38 @@ function upgrade
 
 function downgrade
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local sqlName sqlFile schemaVersion downgradeSqls rc
-	
-	${MYSQL} --execute "USE ${SCHEMA_DB}"
-	
-	echo "downgrade: ${CURRENT_RELEASE} -> ${TARGET_DOWNGRADE_RELEASE}"
-	
-	if [[ ${CURRENT_RELEASE} > ${TARGET_DOWNGRADE_RELEASE} ]]; then 
-		downgradeSqls=$(ls -v -r "${DOWNGRADE_DIR}"/*"${DOWNGRADE_SQL_SUFFIX}" 2> /dev/null)
-		for sqlFile in ${downgradeSqls}; do
-	    	sqlName=$(basename "${sqlFile}")
-			schemaVersion="${sqlName%-*}"
-	    	if [ "${schemaVersion}" -le "${CURRENT_RELEASE}" ] && \
-	    		[ "${schemaVersion}" -gt "${TARGET_DOWNGRADE_RELEASE}" ]; then
-	        	run_script "downgrade" "${sqlName}" "${sqlFile}"
-	        	rc=$?
-				if [[ ${rc} != 0 ]]; then
-	        		echo "${SCHEMA}: downgrade aborted at ${schemaVersion} by script ${sqlName}"
-	        		set_current_release "${schemaVersion}"
-	        		return ${rc}
-	        	fi
-	    	fi
-	    done
-    	
-    	set_current_release "${TARGET_DOWNGRADE_RELEASE}"
-	fi
-	
-	return 0
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local sqlName sqlFile schemaVersion downgradeSqls rc
+
+    ${MYSQL} --execute "USE ${SCHEMA_DB}"
+
+    echo "downgrade: ${CURRENT_RELEASE} -> ${TARGET_DOWNGRADE_RELEASE}"
+
+    if [ ${CURRENT_RELEASE} -gt ${TARGET_DOWNGRADE_RELEASE} ]; then
+        downgradeSqls=$(ls -v -r "${DOWNGRADE_DIR}"/*"${DOWNGRADE_SQL_SUFFIX}" 2> /dev/null)
+        for sqlFile in ${downgradeSqls}; do
+            sqlName=$(basename "${sqlFile}")
+            schemaVersion="${sqlName%-*}"
+            if [ ! "${schemaVersion}" \> "${CURRENT_RELEASE}" ] && \
+                [ "${schemaVersion}" \> "${TARGET_DOWNGRADE_RELEASE}" ]; then
+                run_script "downgrade" "${sqlName}" "${sqlFile}"
+                rc=$?
+                if [ ${rc} -ne 0 ]; then
+                    echo "${SCHEMA}: downgrade aborted at ${schemaVersion} by script ${sqlName}"
+                    set_current_release "${schemaVersion}"
+                    return ${rc}
+                fi
+            fi
+        done
+
+        set_current_release "${TARGET_DOWNGRADE_RELEASE}"
+    fi
+
+    return 0
 }
 
 #####################################################
@@ -407,19 +405,19 @@ function downgrade
 
 function erase
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local updateMetadata="UPDATE ${METADATA_TABLE} SET version='${ZERO_VERSION}';"
-	${MYSQL} --execute "${updateMetadata}"
-	
-	local deleteHistory="DELETE FROM ${METADATA_HISTORY};"
-	${MYSQL} --execute "${deleteHistory}"
-	
-	local dropDB="DROP DATABASE IF EXISTS ${SCHEMA_DB}";
-	${MYSQL} --execute "${dropDB}"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local updateMetadata="UPDATE ${METADATA_TABLE} SET version='${ZERO_VERSION}';"
+    ${MYSQL} --execute "${updateMetadata}"
+
+    local deleteHistory="DELETE FROM ${METADATA_HISTORY};"
+    ${MYSQL} --execute "${deleteHistory}"
+
+    local dropDB="DROP DATABASE IF EXISTS ${SCHEMA_DB}";
+    ${MYSQL} --execute "${dropDB}"
 }
 
 #####################################################
@@ -428,202 +426,202 @@ function erase
 
 function report
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local versionSql="SELECT * FROM ${METADATA_TABLE} WHERE name='${SCHEMA}';"
-	${MYSQL} --execute "${versionSql}"
-	
-	local historySql="SELECT * FROM ${METADATA_HISTORY} ORDER BY atTime ASC;"
-	${MYSQL} --execute "${historySql}"
-	
-	okay
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local versionSql="SELECT * FROM ${METADATA_TABLE} WHERE name='${SCHEMA}';"
+    ${MYSQL} --execute "${versionSql}"
+
+    local historySql="SELECT * FROM ${METADATA_HISTORY} ORDER BY atTime ASC;"
+    ${MYSQL} --execute "${historySql}"
+
+    okay
 }
 
 function okay
 {
-	if [[ ${DEBUG} == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	local rc=0
-	if is_upgrade; then
-		if [[ ${CURRENT_RELEASE} == "${TARGET_UPGRADE_RELEASE}" ]]; then
-			echo "${SCHEMA}: OK @ ${CURRENT_RELEASE}"
-		else
-			echo "${SCHEMA}: upgrade available: ${CURRENT_RELEASE} -> ${TARGET_UPGRADE_RELEASE}"
-			rc=1
-		fi
-	else
-		if [[ ${CURRENT_RELEASE} == "${TARGET_DOWNGRADE_RELEASE}" ]]; then
-			echo "${SCHEMA}: OK @ ${CURRENT_RELEASE}"
-		else
-			echo "${SCHEMA}: downgrade available: ${CURRENT_RELEASE} -> ${TARGET_DOWNGRADE_RELEASE}"
-			rc=1
-		fi
-	fi
-	
-	return ${rc}
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} --"
+        set -x
+    fi
+
+    local rc=0
+    if is_upgrade; then
+        if [ "${CURRENT_RELEASE}" = "${TARGET_UPGRADE_RELEASE}" ]; then
+            echo "${SCHEMA}: OK @ ${CURRENT_RELEASE}"
+        else
+            echo "${SCHEMA}: upgrade available: ${CURRENT_RELEASE} -> ${TARGET_UPGRADE_RELEASE}"
+            rc=1
+        fi
+    else
+        if [ "${CURRENT_RELEASE}" = "${TARGET_DOWNGRADE_RELEASE}" ]; then
+            echo "${SCHEMA}: OK @ ${CURRENT_RELEASE}"
+        else
+            echo "${SCHEMA}: downgrade available: ${CURRENT_RELEASE} -> ${TARGET_DOWNGRADE_RELEASE}"
+            rc=1
+        fi
+    fi
+
+    return ${rc}
 }
 
 #####################################################
 # MAIN
 #####################################################
 
-if [[ ${DEBUG} == y ]]; then
-	echo "-- $0 $* --"
-	set -x
+FUNC=$1
+if [ "${DEBUG}" = "y" ]; then
+    echo "-- $0 $* --"
+    set -x
 fi
-
-until [[ -z "$1" ]]; do
-	case $1 in
-		-s|--schema|--database)	shift
-								SCHEMA=$1
-								;;
-		-b|--basedir)   shift
-						MIGRATION_DIR=$1		
-						;;
-		-t|--target)    shift
-						INPUT_TARGET_RELEASE=$1		
-						;;
-		-f|--from)      shift
-						INPUT_CURRENT_RELEASE=$1		
-						;;
-		-o|--operation) shift
-						OPERATION=$1		
-						;;
-		*)				usage
-						exit 1
-						;;
-	esac
-	shift
+until [ -z "$1" ]; do
+    case $1 in
+        -s|--schema|--database)    shift
+             SCHEMA=$1
+             ;;
+        -b|--basedir)   shift
+             MIGRATION_DIR=$1
+             ;;
+        -t|--target)    shift
+             INPUT_TARGET_RELEASE=$1
+             ;;
+        -f|--from)      shift
+             INPUT_CURRENT_RELEASE=$1
+             ;;
+        -o|--operation) shift
+             OPERATION=$1
+             ;;
+        *)              usage
+             exit 1
+             ;;
+    esac
+    shift
 done
 
 case ${OPERATION} in
-	upgrade)	;;
-	downgrade)	;;
-	auto)	;;
-	version)	;;
-	erase)		;;
-	report)		;;
-	ok)			;;
-	*)			echo "error: invalid operation provided"
-				usage
-				exit 1
-				;;
+    upgrade)    ;;
+    downgrade)  ;;
+    auto)       ;;
+    version)    ;;
+    erase)      ;;
+    report)     ;;
+    ok)         ;;
+    *)          echo "error: invalid operation provided"
+                usage
+                exit 1
+                ;;
 esac
 
-if [[ -z ${SCHEMA} ]]; then
-	echo "error: a database name must be provided"
-	usage
-	exit 2
+if [ -z "${SCHEMA}" ]; then
+    echo "error: a database name must be provided"
+    usage
+    exit 2
 fi
 
 source "${POLICY_HOME}"/etc/profile.d/env.sh
 
-if [[ -z ${SQL_HOST} ]] || [[ -z ${SQL_USER} ]] || [[ -z ${SQL_PASSWORD} ]]; then
-	echo "error: no database has been set up" 
-	exit 4
+if [ -z "${SQL_HOST}" ] || [ -z "${SQL_USER}" ] || [ -z "${SQL_PASSWORD}" ]; then
+    echo "error: no database has been set up"
+    exit 4
 fi
 
 MYSQL="mysql -u${SQL_USER} -p${SQL_PASSWORD} -h ${SQL_HOST}";
 if ! ${MYSQL} -h"${SQL_HOST}" --execute "show databases;" > /dev/null 2>&1; then
-	echo "error: No DB connectivity to ${SQL_HOST} for ${SQL_USER}"
-	exit 5
+    echo "error: No DB connectivity to ${SQL_HOST} for ${SQL_USER}"
+    exit 5
 fi
 
-if [[ ${SCHEMA} == ALL ]]; then
-	SCHEMA="*"
+if [ "${SCHEMA}" = "ALL" ]; then
+    SCHEMA="*"
 fi
 
 SCHEMA_S=$(ls -d "${MIGRATION_DIR}"/${SCHEMA}/ 2> /dev/null)
-if [[ -z ${SCHEMA_S} ]]; then
-	echo "error: no databases available"
-	exit 0
+if [ -z "${SCHEMA_S}" ]; then
+    echo "error: no databases available"
+    exit 0
 fi
 
 if ! ensure_metadata; then
-	echo "error: migration metadata not accessible"
-	exit 7
+    echo "error: migration metadata not accessible"
+    exit 7
 fi
 
 rc=0
 for dbPath in ${SCHEMA_S}; do
-	SCHEMA=$(basename "${dbPath}")
-	SCHEMA_DB="\`${SCHEMA}\`"
-	UPGRADE_DIR="${MIGRATION_DIR}"/"${SCHEMA}"/sql
-	DOWNGRADE_DIR=${UPGRADE_DIR}
-	METADATA_HISTORY="${METADATA_DB}.\`${SCHEMA}_history\`"
-	TARGET_RELEASE=${INPUT_TARGET_RELEASE}
-	CURRENT_RELEASE=${INPUT_CURRENT_RELEASE}
-	
-	if is_upgrade && is_downgrade; then
-		echo "${SCHEMA}: failure: invalid configuration: ${UPGRADE_SQL_SUFFIX} and "\
-			"${DOWNGRADE_SQL_SUFFIX} exist under ${DOWNGRADE_DIR}"
-		rc=1
-		continue
-	fi
-	
-	if [[ ${operation} == auto ]]; then
-		if is_upgrade; then
-			operation=upgrade
-		else
-			operation=downgrade
-		fi
-	fi
-	
-	if ! ensure_metadata_schema; then
-		echo "${SCHEMA}: failure: metadata not accessible for this schema"
-		continue
-	fi	
-	
-	if [[ -z ${TARGET_RELEASE} ]]; then
-		target_release
-	else
-		# user asked to override
-		TARGET_UPGRADE_RELEASE="${TARGET_RELEASE}"
-		TARGET_DOWNGRADE_RELEASE="${TARGET_RELEASE}"
-	fi
-	
-	if [[ -z ${CURRENT_RELEASE} ]]; then
-		if ! current_release; then
-			echo "${SCHEMA}: failure: cannot obtain current release"
-			continue
-		fi
-	else
-		if ! set_current_release "${CURRENT_RELEASE}"; then
-			echo "${SCHEMA}: failure: cannot set current release"
-			continue
-		fi
-	fi
-	
-	case ${OPERATION} in
-		upgrade) 	if upgrade; then
-						echo "${SCHEMA}: OK: upgrade (${CURRENT_RELEASE})"
-					else
-						rc=1
-						echo "${SCHEMA}: failure: upgrade to release ${TARGET_UPGRADE_RELEASE} (${CURRENT_RELEASE})"
-					fi			
-					;;
-		downgrade)  if downgrade; then
-						echo "${SCHEMA}: OK: downgrade (${CURRENT_RELEASE})"
-					else
-						rc=1
-						echo "${SCHEMA}: failure: downgrade to release ${TARGET_DOWNGRADE_RELEASE} (${CURRENT_RELEASE})"
-					fi					
-					;;
-		version) 	echo "${SCHEMA}: ${CURRENT_RELEASE}"
-					;;
-		erase) 		erase 
-					;;
-		report) 	report
-					;;
-		ok) 		okay
-					;;
-	esac
+    SCHEMA=$(basename "${dbPath}")
+    SCHEMA_DB="\`${SCHEMA}\`"
+    UPGRADE_DIR="${MIGRATION_DIR}"/"${SCHEMA}"/sql
+    DOWNGRADE_DIR=${UPGRADE_DIR}
+    METADATA_HISTORY="${METADATA_DB}.\`${SCHEMA}_history\`"
+    TARGET_RELEASE=${INPUT_TARGET_RELEASE}
+    CURRENT_RELEASE=${INPUT_CURRENT_RELEASE}
+
+    if is_upgrade && is_downgrade; then
+        echo "${SCHEMA}: failure: invalid configuration: ${UPGRADE_SQL_SUFFIX} and "\
+            "${DOWNGRADE_SQL_SUFFIX} exist under ${DOWNGRADE_DIR}"
+        rc=1
+        continue
+    fi
+
+    if [ "${operation}" = "auto" ]; then
+        if is_upgrade; then
+            operation=upgrade
+        else
+            operation=downgrade
+        fi
+    fi
+
+    if ! ensure_metadata_schema; then
+        echo "${SCHEMA}: failure: metadata not accessible for this schema"
+        continue
+    fi
+
+    if [ -z "${TARGET_RELEASE}" ]; then
+        target_release
+    else
+        # user asked to override
+        TARGET_UPGRADE_RELEASE="${TARGET_RELEASE}"
+        TARGET_DOWNGRADE_RELEASE="${TARGET_RELEASE}"
+    fi
+
+    if [ -z "${CURRENT_RELEASE}" ]; then
+        if ! current_release; then
+            echo "${SCHEMA}: failure: cannot obtain current release"
+            continue
+        fi
+    else
+        if ! set_current_release "${CURRENT_RELEASE}"; then
+            echo "${SCHEMA}: failure: cannot set current release"
+            continue
+        fi
+    fi
+
+    case ${OPERATION} in
+        upgrade)     if upgrade; then
+                         echo "${SCHEMA}: OK: upgrade (${CURRENT_RELEASE})"
+                     else
+                         rc=1
+                         echo "${SCHEMA}: failure: upgrade to release ${TARGET_UPGRADE_RELEASE} (${CURRENT_RELEASE})"
+                     fi
+                     ;;
+        downgrade)   if downgrade; then
+                         echo "${SCHEMA}: OK: downgrade (${CURRENT_RELEASE})"
+                     else
+                        rc=1
+                        echo "${SCHEMA}: failure: downgrade to release ${TARGET_DOWNGRADE_RELEASE} (${CURRENT_RELEASE})"
+                     fi
+                     ;;
+        version)     echo "${SCHEMA}: ${CURRENT_RELEASE}"
+                     ;;
+        erase)       erase
+                     ;;
+        report)      report
+                     ;;
+        ok)          okay
+                     ;;
+        esac
 
 done
-exit ${rc}
+exit $rc

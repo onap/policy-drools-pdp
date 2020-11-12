@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -56,34 +56,36 @@ function usage() {
 
 function init
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local artifact="${1}"
-    if [[ ! -f ${artifact} ]]; then
+    if [ ! -f "${artifact}" ]; then
         echo "${artifact}: artifact does not exist"
         return 1
     fi
 
-    if [[ ${artifact} != *.jar ]]; then
+    filename=`basename $artifact .jar`
+    if [ -z "$filename" ] ; then
         return 0
     fi
 
     local dir=$(mktemp -d)
     local jar="${artifact##*/}"
 
+    CURRENT_DIR=`pwd`
     WORKING_DIR=$(realpath "${dir}")
 
     cp -p "${artifact}" "${WORKING_DIR}/${jar}"
-    pushd "${dir}"
+    cd "${WORKING_DIR}"
 
     local rc=0
 
     # determine name of 'pom' file within JAR
     local pom=$(jar tf "${jar}" META-INF | grep '/pom\.xml$' | head -1)
-    if [[ -n ${pom} ]] ; then
+    if [ -n "${pom}" ] ; then
         jar xf "${jar}" "${pom}"
         WORKING_POM=$(realpath "${pom}")
     else
@@ -91,7 +93,7 @@ function init
     fi
 
     local pomProperties=$(jar tf "${jar}" META-INF | grep '/pom\.properties$' | head -1)
-    if [[ -n ${pomProperties} ]]; then
+    if [ -n "${pomProperties}" ]; then
         jar xf "${jar}" "${pomProperties}"
         WORKING_POM_PROPERTIES=$(realpath ${pomProperties})
         sed -i 's/\r$//' "${WORKING_POM_PROPERTIES}"
@@ -99,7 +101,7 @@ function init
         echo "${artifact}: sourcing in ${WORKING_POM_PROPERTIES}"
     else
         echo "${artifact}: pom.properties not found"
-        if [[ -n ${WORKING_POM} ]]; then
+        if [ -n "${WORKING_POM}" ]; then
             if ! getPomAttributes "${WORKING_POM}" artifactId groupId version ; then
                 echo "${WORKING_POM}: cannot extract maven coordinates"
                 rc=1
@@ -109,14 +111,13 @@ function init
             rc=1
         fi
     fi
-
-    if [[ -z ${version} ]] || [[ -z ${groupId} ]] || [[ -z ${artifactId} ]]; then
+    if [ -z "${version}" ] || [ -z "${groupId}" ] || [ -z "${artifactId}" ]; then
         echo "${artifact}: some coordinates cannot be extracted"
         rc=1
     fi
 
     echo "${artifact}: coordinates ${groupId}:${artifactId}:${version}"
-    popd
+    cd ${CURRENT_DIR}
 
     return ${rc}
 }
@@ -129,12 +130,12 @@ function init
 
 function cleanup
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
-    if [[ -n ${WORKING_DIR} ]]; then
+    if [ -n "${WORKING_DIR}" ]; then
         rm -rf "${WORKING_DIR}"
     fi
 }
@@ -149,18 +150,18 @@ function cleanup
 
 function getPomAttributes
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="$1"
-    if [[ ! -f "${file}" ]]; then
+    if [ ! -f "${file}" ]; then
         echo "${file}: file does not exist"
         return 1
     fi
 
-    local tab=$'\t' rval=0 attr value
+    local rval=0 attr value
     shift
 
     for attr in "$@" ; do
@@ -177,10 +178,10 @@ function getPomAttributes
             -e '/<packaging>/,/<\/packaging>/d' \
             -e '/<modelVersion>/,/<\/modelVersion>/d' \
             -e '/<properties>/,/<\/properties>/d' \
-            -e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
+            -e "/^[ \t]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
             <"${file}")
 
-        if [[ "${value}" == "" ]]; then
+        if [ "${value}" = "" ]; then
             # need to check parent for parameter
             value=$(sed -n \
                 -e '/<dependencies>/,/<\/dependencies>/d' \
@@ -190,10 +191,10 @@ function getPomAttributes
                 -e '/<packaging>/,/<\/packaging>/d' \
                 -e '/<modelVersion>/,/<\/modelVersion>/d' \
                 -e '/<properties>/,/<\/properties>/d' \
-                -e "/^[ ${tab}]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
+                -e "/^[ \t]*<${attr}>\([^<]*\)<\/${attr}>.*/{s//\1/p;}" \
                 <"${file}")
 
-            if [[ "${value}" == "" ]] ; then
+            if [ "${value}" = "" ] ; then
                 echo "${file}: Can't determine ${attr}"
                 rval=1
             fi
@@ -201,7 +202,7 @@ function getPomAttributes
 
         # the following sets an environment variable with the name referred
         # to by ${attr}
-        read "${attr}" <<<"${value}"
+        export ${attr}="${value}"
     done
     return ${rval}
 }
@@ -213,16 +214,17 @@ function getPomAttributes
 # extracting the attributes such as proxy host, port, username and password.
 # These proxy attributes are set into the global variable for maven proxy
 # settings to be used as build arguments with maven commands.
+# The http proxy format is: http_proxy="http://username:password@proxy.thing.com:8080"
 ##############################################################################
 
 function setMavenProxyArgs
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
-    if [[ -z ${http_proxy} ]]; then
+    if [ -z "${http_proxy}" ]; then
         return 0
     fi
 
@@ -232,11 +234,11 @@ function setMavenProxyArgs
     local port="${proxy#*:}"
     MVN_PROXY_SETTINGS="-DproxyHost=${host} -DproxyPort=${port}"
 
-    if [[ "$proxy_creds" == *"@"* ]]; then
+    if [ -n  "`echo "$proxy_creds" | egrep -s '*@*'`" ]; then
         local creds="${proxy_creds%%@*}"
         local username="${creds%:*}"
         local password="${creds#*:}"
-        MVN_PROXY_SETTINGS+=" -DproxyUsername=${username} -DproxyPassword=${password}"
+        MVN_PROXY_SETTINGS=${MVN_PROXY_SETTINGS}" -DproxyUsername=${username} -DproxyPassword=${password}"
     fi
 }
 
@@ -249,19 +251,19 @@ function setMavenProxyArgs
 
 function deployJar
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
 
-    if [[ ! -f ${file} ]]; then
+    if [ ! -f "${file}" ]; then
         return 1
     fi
 
     local repoId repoUrl
-    if [[ "${version}" =~ SNAPSHOT ]] ; then
+    if [ -n "`echo "$version" | egrep -s 'SNAPSHOT'`" ] ; then
         repoId=${SNAPSHOT_REPOSITORY_ID}
         repoUrl=${SNAPSHOT_REPOSITORY_URL}
     else
@@ -269,7 +271,7 @@ function deployJar
         repoUrl=${RELEASE_REPOSITORY_URL}
     fi
 
-    if [[ -z ${repoUrl} ]] || [[ -z ${repoId} ]]; then
+    if [ -z "${repoUrl}" ] || [ -z "${repoId}" ]; then
         echo "{file}: no repository id/url to deploy jar"
         return 1
     fi
@@ -278,13 +280,13 @@ function deployJar
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} deploy:deploy-file \
-        -Dfile="${file}" \
-        -Dversion="${version}" \
+        -Dfile=${file} \
+        -Dversion=${version} \
         -Dpackaging=jar \
         -DgeneratePom=false \
-        -DpomFile="${WORKING_POM}" \
-        -DrepositoryId="${repoId}" \
-        -Durl="${repoUrl}" \
+        -DpomFile=${WORKING_POM} \
+        -DrepositoryId=${repoId} \
+        -Durl=${repoUrl} \
         -DupdateReleaseInfo=true
 
     return ${?}
@@ -298,14 +300,14 @@ function deployJar
 
 function deployPom
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
 
-    if [[ ! -f ${file} ]]; then
+    if [ ! -f "${file}" ]; then
         return 1
     fi
 
@@ -315,7 +317,7 @@ function deployPom
     fi
 
     local repoId repoUrl
-    if [[ "${version}" =~ SNAPSHOT ]] ; then
+    if [ -n "`echo "$version" | egrep -s 'SNAPSHOT'`" ] ; then
         repoId=${SNAPSHOT_REPOSITORY_ID}
         repoUrl=${SNAPSHOT_REPOSITORY_URL}
     else
@@ -327,14 +329,14 @@ function deployPom
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} deploy:deploy-file \
-        -Dfile="${file}" \
+        -Dfile=${file} \
         -Dpackaging=pom \
         -DgeneratePom=false \
-        -DgroupId="${groupId}" \
-        -DartifactId="${artifactId}" \
-        -Dversion="${version}" \
-        -DrepositoryId="${repoId}" \
-        -Durl="${repoUrl}" \
+        -DgroupId=${groupId} \
+        -DartifactId=${artifactId} \
+        -Dversion=${version} \
+        -DrepositoryId=${repoId} \
+        -Durl=${repoUrl} \
         -DupdateReleaseInfo=true
 
     return ${?}
@@ -348,18 +350,18 @@ function deployPom
 
 function deployArtifact
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
-    if [[ -z "${file}" ]]; then
+    if [ -z "${file}" ]; then
         echo "${file}: artifact file not provided"
         return 1
     fi
 
-    if [[ ! -f "${file}" ]]; then
+    if [ ! -f "${file}" ]; then
         echo "${file}: artifact file does not exist"
         return 1
     fi
@@ -387,19 +389,19 @@ function deployArtifact
 
 function installJar
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
 
-    if [[ ! -f ${file} ]]; then
+    if [ ! -f "${file}" ]; then
         return 1
     fi
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
-    org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile="${file}"
+    org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile=${file}
 
     return $?
 }
@@ -412,22 +414,22 @@ function installJar
 
 function installPom
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
 
-    if [[ ! -f ${file} ]]; then
+    if [ ! -f "${file}" ]; then
         return 1
     fi
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
         org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
         -Dpackaging=pom \
-        -Dfile="${file}" \
-        -DpomFile="${file}"
+        -Dfile=${file} \
+        -DpomFile=${file}
 
     return $?
 }
@@ -440,22 +442,21 @@ function installPom
 
 function installArtifact
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
-    if [[ -z "${file}" ]]; then
+    if [ -z "${file}" ]; then
         echo "${file}: artifact file not provided"
         return 1
     fi
 
-    if [[ ! -f "${file}" ]]; then
+    if [ ! -f "${file}" ]; then
         echo "${file}: artifact file does not exist"
         return 1
     fi
-
     case "${file}" in
         *pom.xml|*.pom)
             installPom "${file}"
@@ -480,18 +481,18 @@ function installArtifact
 
 function installDependencies
 {
-    if [[ ${DEBUG} == y ]]; then
-        echo "-- ${FUNCNAME[0]} $* --"
+    if [ "${DEBUG}" = "y" ]; then
+        echo "-- ${FUNC} $* --"
         set -x
     fi
 
     local file="${1}"
 
-    if [[ ! -f ${file} ]]; then
+    if [ ! -f "${file}" ]; then
         return 1
     fi
 
-    if [[ -z ${DEPENDENCY_REPO_URL} ]]; then
+    if [ -z "${DEPENDENCY_REPO_URL}" ]; then
         echo "${file}: no repo url to install dependencies"
         return 1
     fi
@@ -501,10 +502,10 @@ function installDependencies
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
         org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
-        -DartifactId="${artifactId}" \
-        -DgroupId="${groupId}" \
-        -Dversion="${version}" \
-        -DremoteRepositories="${DEPENDENCY_REPO_URL}"
+        -DartifactId=${artifactId} \
+        -DgroupId=${groupId} \
+        -Dversion=${version} \
+        -DremoteRepositories=${DEPENDENCY_REPO_URL}
 
     return ${?}
 }
@@ -513,7 +514,8 @@ function installDependencies
 # MAIN
 ##############################################################################
 
-if [[ ${DEBUG} == y ]]; then
+FUNC=$1
+if [ "${DEBUG}" = "y" ]; then
     echo "-- $0 $* --"
     set -x
 fi
@@ -534,7 +536,7 @@ unset MVN_PROXY_SETTINGS
 
 # process input
 
-until [[ -z "$1" ]]; do
+until [ -z "$1" ]; do
     case $1 in
         -a|--artifact)     shift
                            ARTIFACT_FILE=$1
@@ -555,13 +557,13 @@ until [[ -z "$1" ]]; do
     shift
 done
 
-if [[ -z ${ARTIFACT_FILE} ]]; then
+if [ -z "${ARTIFACT_FILE}" ]; then
     echo "No artifact file provided: $*"
     usage
     exit 1
 fi
 
-if [[ -n ${SETTINGS_FILE} ]]; then
+if [ -n "${SETTINGS_FILE}" ]; then
     CUSTOM_SETTINGS="--settings=${SETTINGS_FILE}"
 fi
 
@@ -576,7 +578,7 @@ retval=0
 
 init "${ARTIFACT_FILE}"
 retval=$?
-if [[ ${retval} != 0 ]]; then
+if [ ${retval} -ne 0 ]; then
     cleanup
     exit ${retval}
 fi
@@ -586,14 +588,14 @@ fi
 # SNAPSHOT_REPOSITORY_URL and RELEASE_REPOSITORY_URL
 # are pre-existing environmental variables (base.conf)
 
-if [[ -n ${SNAPSHOT_REPOSITORY_URL} ]] || [[ -n ${RELEASE_REPOSITORY_URL} ]]; then
+if [ -n "${SNAPSHOT_REPOSITORY_URL}" ] || [ -n "${RELEASE_REPOSITORY_URL}" ]; then
     deployArtifact "${ARTIFACT_FILE}"
     retval=$(( retval + ${?} ))
 fi
 
 # deploy in file repository
 
-if [[ -n ${FILE_REPO_INSTALL} ]]; then
+if [ -n "${FILE_REPO_INSTALL}" ]; then
     FILE_REPO_ID="file-repository"
     FILE_REPO_URL="file:${HOME}/.m2/file-repository"
 
@@ -609,21 +611,21 @@ fi
 
 # install in local repository
 
-if [[ -n ${LOCAL_INSTALL} ]]; then
+if [ -n "${LOCAL_INSTALL}" ]; then
     installArtifact "${ARTIFACT_FILE}"
     retval=$(( retval + ${?} ))
 fi
 
 # install dependencies in local and/or file repositories
 
-if [[ -n ${INSTALL_DEPS} ]]; then
-    if [[ -n ${FILE_REPO_INSTALL} ]]; then
+if [ -n "${INSTALL_DEPS}" ]; then
+    if [ -n "${FILE_REPO_INSTALL}" ]; then
         DEPENDENCY_REPO_URL="${FILE_REPO_URL}"
         installDependencies "${ARTIFACT_FILE}"
         retval=$(( retval + ${?} ))
     fi
 
-    if [[ -n ${LOCAL_INSTALL} ]]; then
+    if [ -n "${LOCAL_INSTALL}" ]; then
         DEPENDENCY_REPO_URL="file:${HOME}/.m2/repository"
         installDependencies "${ARTIFACT_FILE}"
         retval=$(( retval + ${?} ))
