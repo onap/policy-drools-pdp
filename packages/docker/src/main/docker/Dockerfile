@@ -61,14 +61,13 @@ COPY --chown=policy:policy /maven/install-drools.zip pdpd-entrypoint.sh $POLICY_
 WORKDIR $POLICY_INSTALL
 USER policy:policy
 
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/ash", "-c"]
 RUN unzip -o install-drools.zip && \
     rm install-drools.zip && \
     chown -R policy:policy * && \
     mkdir -p $POLICY_HOME/logs $POLICY_HOME/config $HOME/.m2 && \
     tar -C $POLICY_HOME -xvf base-${BUILD_VERSION_DROOLS}.tar.gz --no-same-owner && \
     unzip policy-management-${BUILD_VERSION_DROOLS}.zip -d $POLICY_HOME && \
-    echo "source $POLICY_HOME/etc/profile.d/env.sh" >> "$HOME/.bashrc" && \
     mv pdpd-entrypoint.sh $POLICY_HOME/bin/ && \
     chmod 700 $POLICY_HOME/bin/* && \
     chmod 600 $POLICY_HOME/config/* && \

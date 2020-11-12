@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ash
 ###
 # ============LICENSE_START=======================================================
 # ONAP
@@ -28,7 +28,7 @@
 
 templateRegex='^\$\{\{POLICY_HOME}}$'
 
-if [[ -z "${POLICY_HOME}" ]]; then
+if [ -z "${POLICY_HOME}" ]; then
     templatedPolicyHome='${{POLICY_HOME}}'
     if [[ ! ${templatedPolicyHome} =~ ${templateRegex} ]]; then
         POLICY_HOME=${templatedPolicyHome}
