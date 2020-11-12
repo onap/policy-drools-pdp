@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env ash
 
 ###
 # ============LICENSE_START=======================================================
@@ -20,13 +20,13 @@
 # ============LICENSE_END=========================================================
 ##
 
-if [[ "${DEBUG}" == "y" ]]; then
+if [ "${DEBUG}" = "y" ]; then
 	set -x
 fi
 
 SYSTEM_PROPS="${POLICY_HOME}"/config/system.properties
 
-if [[ -f ${SYSTEM_PROPS} && -r ${SYSTEM_PROPS} ]]; then
+if [ -f "${SYSTEM_PROPS}" ] && [ -r "${SYSTEM_PROPS}" ]; then
 	if grep -q "^logback.configurationFile=.*$" "${SYSTEM_PROPS}"; then
 		sed -i -e "s|^logback.configurationFile=.*$|logback.configurationFile=config/logback.xml|" "${SYSTEM_PROPS}"
 	fi

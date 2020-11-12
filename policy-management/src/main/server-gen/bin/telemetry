@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env ash 
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -33,7 +33,7 @@ if ! "${POLICY_HOME}"/bin/policy-management-controller status >/dev/null 2>&1; t
     exit 2
 fi
 
-if [[ ! -r ${TELEMETRY_SPEC} ]]; then
+if [ ! -r "${TELEMETRY_SPEC}" ]; then
     echo "generating new spec .."
     if ! http --verify=no -a "${TELEMETRY_USER}:${TELEMETRY_PASSWORD}" https://localhost:9696/swagger.json >${TELEMETRY_SPEC} 2>/dev/null; then
         echo "error: cannot generate telemetry spec"
