@@ -18,4 +18,4 @@
 # ============LICENSE_END=========================================================
 ###
 
-* * * * * bash -l -c '${POLICY_HOME}/bin/monitor >/dev/null 2>&1'
+* * * * * ash -l -c '${POLICY_HOME}/bin/monitor >/dev/null 2>&1'

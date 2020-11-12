@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env ash
 
 ###
 # ============LICENSE_START=======================================================
@@ -21,91 +21,91 @@
 ###
 
 function usage() {
-	echo -n "Usage: $(basename $0) "
-	echo -n "[(-d|--debug)] "
-	echo -n "(-h|--host) <bus-host> "
-	echo -n "[(-p|--port) <bus-port>] "
-	echo -n "(-k|--key) <api-key> "
-	echo -n "(-s|--secret) <api-secret> "
-	echo -n "(-P|--producer-key) <producer-key> "
-	echo -n "(-C|--consumer-key) <consumer-key> "
-	echo "(-t|--topic) <topic> "
+    echo -n "Usage: $(basename $0) "
+    echo -n "[(-d|--debug)] "
+    echo -n "(-h|--host) <bus-host> "
+    echo -n "[(-p|--port) <bus-port>] "
+    echo -n "(-k|--key) <api-key> "
+    echo -n "(-s|--secret) <api-secret> "
+    echo -n "(-P|--producer-key) <producer-key> "
+    echo -n "(-C|--consumer-key) <consumer-key> "
+    echo "(-t|--topic) <topic> "
 }
 
 BUS_PORT=3904
 
 # command line options parsing
-until [[ -z "$1" ]]; do
-	case $1 in
-		-d|--debug) 	set -x
-				;;
-		-h|--host) 		shift
-					BUS_HOST=$1
-					;;						
-		-p|--port) 		shift
-					BUS_PORT=$1
-					;;
-		-k|--key) 		shift
-					API_KEY=$1
-					;;	
-		-s|--secret) 		shift
-					API_SECRET=$1
-					;;	
-		-t|--topic) 		shift
-					TOPIC=$1
-					;;							
-		-P|--producer-key) 	shift
-					URL_CONTEXT="producers"
-					PRODUCER_KEY=$1
-					KEY=$1
-					;;	
-		-C|--consumer-key) 	shift
-					URL_CONTEXT="consumers"
-					CONSUMER_KEY=$1
-					KEY=$1
-					;;																
-		*)			usage
-					exit 1
-					;;
-	esac
-	shift
+until [ -z "$1" ]; do
+    case $1 in
+        -d|--debug)     set -x
+                ;;
+        -h|--host)         shift
+                    BUS_HOST=$1
+                    ;;                        
+        -p|--port)         shift
+                    BUS_PORT=$1
+                    ;;
+        -k|--key)         shift
+                    API_KEY=$1
+                    ;;    
+        -s|--secret)         shift
+                    API_SECRET=$1
+                    ;;    
+        -t|--topic)         shift
+                    TOPIC=$1
+                    ;;                            
+        -P|--producer-key)     shift
+                    URL_CONTEXT="producers"
+                    PRODUCER_KEY=$1
+                    KEY=$1
+                    ;;    
+        -C|--consumer-key)     shift
+                    URL_CONTEXT="consumers"
+                    CONSUMER_KEY=$1
+                    KEY=$1
+                    ;;                                                                
+        *)            usage
+                    exit 1
+                    ;;
+    esac
+    shift
 done
 
-if [[ -z ${BUS_HOST} ]]; then
-	echo "An UEB/DMAAP server must be provided."
-	echo
-	usage
-	exit 1
+if [ -z "${BUS_HOST}" ]; then
+    echo "An UEB/DMAAP server must be provided."
+    echo
+    usage
+    exit 1
 fi
 
-if [[ -z ${API_KEY} ]]; then
-	echo "The API Key must be provided."
-	usage
-	exit 2
+if [ -z "${API_KEY}" ]; then
+    echo "The API Key must be provided."
+    usage
+    exit 2
 fi
 
-if [[ -z ${API_SECRET} ]]; then
-	echo "The API Secret must be provided."
-	usage
-	exit 3
+if [ -z "${API_SECRET}" ]; then
+    echo "The API Secret must be provided."
+    usage
+    exit 3
 fi
 
-if [[ -z ${TOPIC} ]]; then
-	echo "The Topic Name must be provided."
-	usage
-	exit 3
+if [ -z "${TOPIC}" ]; then
+    echo "The Topic Name must be provided."
+    usage
+    exit 3
 fi
 
-if [[ -z ${PRODUCER_KEY} && -z ${CONSUMER_KEY} ]]; then
-	echo "Either the Producer or Consumer options must be provided."
-	usage
-	exit 4
+if [ -z "${PRODUCER_KEY}" ] && [ -z "${CONSUMER_KEY}" ]; then
+    echo "Either the Producer or Consumer options must be provided."
+    usage
+    exit 4
 fi
 
-if [[ -n ${PRODUCER_KEY} && -n ${CONSUMER_KEY} ]]; then
-	echo "Only and only one of the Producer or Consumer options must be provided."
-	usage
-	exit 5
+if [ -n "${PRODUCER_KEY}" ] && [ -n "${CONSUMER_KEY}" ]; then
+    echo "Only and only one of the Producer or Consumer options must be provided."
+    usage
+    exit 5
 fi
 
 
@@ -114,9 +114,9 @@ DATE_HASH=$(echo -n "${DATE}" | openssl sha1 -hmac "${API_SECRET}" -binary | ope
 
 unset http_proxy
 curl --silent -X PUT \
-	--header "Accept:" \
-	--header "X-CambriaDate: ${DATE}" \
-	--header "X-CambriaAuth: ${API_KEY}:${DATE_HASH}" \
-	--header "Content-Type: application/json" \
-	--data "{}" \
-	http://${BUS_HOST}:${BUS_PORT}/topics/${TOPIC}/${URL_CONTEXT}/${KEY}
+    --header "Accept:" \
+    --header "X-CambriaDate: ${DATE}" \
+    --header "X-CambriaAuth: ${API_KEY}:${DATE_HASH}" \
+    --header "Content-Type: application/json" \
+    --data "{}" \
+    http://${BUS_HOST}:${BUS_PORT}/topics/${TOPIC}/${URL_CONTEXT}/${KEY}
