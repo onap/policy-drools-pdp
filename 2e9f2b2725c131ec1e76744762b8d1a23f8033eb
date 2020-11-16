@@ -1,0 +1,605 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c2b26d3_863517b8",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}",
+      "range": {
+        "startLine": 34,
+        "startChar": 18,
+        "endLine": 34,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9f2650f_bbff834b",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}",
+      "range": {
+        "startLine": 62,
+        "startChar": 18,
+        "endLine": 62,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "957c4acd_d1fd0e1e",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}",
+      "range": {
+        "startLine": 81,
+        "startChar": 18,
+        "endLine": 81,
+        "endChar": 23
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e300d024_84147dcc",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}",
+      "range": {
+        "startLine": 99,
+        "startChar": 18,
+        "endLine": 99,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "321a6822_a02392e4",
+        "filename": "packages/base/src/files/etc/cron.d/monitor.cron",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "no longer using cron job?",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47702ec2_97d18b47",
+        "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}\n\nsame comment below",
+      "range": {
+        "startLine": 22,
+        "startChar": 18,
+        "endLine": 22,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "098a8d70_f377a61a",
+        "filename": "policy-management/src/main/server-gen/bin/add-secured-participant",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "would prefer commands to be indented to the same level",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa52de01_d2abdc89",
+        "filename": "policy-management/src/main/server-gen/bin/create-api-key",
+        "patchSetId": 7
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "would prefer commands to be indented to the same level",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e6a4c5e_30fe90bf",
+        "filename": "policy-management/src/main/server-gen/bin/create-secured-topic",
+        "patchSetId": 7
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "would prefer commands to be indented to the same level",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de40d9c5_39b5f773",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}\n\nsame comment below",
+      "range": {
+        "startLine": 107,
+        "startChar": 18,
+        "endLine": 107,
+        "endChar": 23
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67dc4073_b6876876",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "need quotes around this for when it\u0027s empty?",
+      "range": {
+        "startLine": 264,
+        "startChar": 12,
+        "endLine": 264,
+        "endChar": 30
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6496e0e9_802ca79c",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "what does \"\\\u003e\" do?  Why not leave as \"-gt\"?\n\nsame comment below",
+      "range": {
+        "startLine": 344,
+        "startChar": 36,
+        "endLine": 344,
+        "endChar": 38
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e524768_3fc9270f",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "would prefer all commands be indented the same",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "518ac7e6_f6cb34ec",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "would prefer all commands be indented the same",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21f8e4d8_083aab0a",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "would prefer all commands be indented the same",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72493dc6_2e19cb40",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 7
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}\n\nsame comment below",
+      "range": {
+        "startLine": 60,
+        "startChar": 18,
+        "endLine": 60,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d946ee93_873d1b12",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}\n\nsame comment below",
+      "range": {
+        "startLine": 250,
+        "startChar": 18,
+        "endLine": 250,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3526b322_89438aab",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "maybe remove trailing spaces while we\u0027re at it?\n\nsame comment below",
+      "range": {
+        "startLine": 284,
+        "startChar": 34,
+        "endLine": 284,
+        "endChar": 36
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69d6c4ba_a588fd82",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 707,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "trailing space or tab",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f428e2b2_620e5eb6",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "prefer \"-ne 0\"",
+      "range": {
+        "startLine": 755,
+        "startChar": 22,
+        "endLine": 755,
+        "endChar": 27
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9012e0c4_decdfd1e",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 998,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "maybe use the same grep as before?",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1556277c_dc3745eb",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 1203,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "prefer \"-ne 0\"",
+      "range": {
+        "startLine": 1203,
+        "startChar": 22,
+        "endLine": 1203,
+        "endChar": 28
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "50f6fd82_3abbd979",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 1241,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "prefer \"-ne 0\"",
+      "range": {
+        "startLine": 1241,
+        "startChar": 22,
+        "endLine": 1241,
+        "endChar": 28
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c92ae0c9_290898cb",
+        "filename": "policy-management/src/main/server-gen/bin/pdpd-configuration",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "prefer same indentation for all commands",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e05c29b_5aab318b",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "{FUNC}\n\nsame comment below",
+      "range": {
+        "startLine": 29,
+        "startChar": 18,
+        "endLine": 29,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68ac2af9_493c6043",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "not sure, but this may need to be quoted to preserve quotes - but that\u0027s an ancient memory, so unsure",
+      "range": {
+        "startLine": 83,
+        "startChar": 92,
+        "endLine": 83,
+        "endChar": 94
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "03f69c41_35fd9b75",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "200?",
+      "range": {
+        "startLine": 107,
+        "startChar": 13,
+        "endLine": 107,
+        "endChar": 16
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbe671a7_92ba1ae6",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "don\u0027t we still need to prefix each line with a date stamp like it was before?",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2e0fa7e_cc4016c0",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T17:26:59Z",
+      "side": 1,
+      "message": "maybe use ${lockfile} (either that, or delete line 238)\n\nsame comment below",
+      "range": {
+        "startLine": 265,
+        "startChar": 12,
+        "endLine": 265,
+        "endChar": 55
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
