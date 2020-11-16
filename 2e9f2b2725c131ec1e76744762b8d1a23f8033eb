@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "536417ef_fae749d2",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "ACK\u0027ed all related to FUNC",
+      "parentUuid": "0c2b26d3_863517b8",
+      "range": {
+        "startLine": 34,
+        "startChar": 18,
+        "endLine": 34,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a9f2650f_bbff834b",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 7
@@ -111,6 +135,24 @@
     },
     {
       "key": {
+        "uuid": "beb7b303_5f5de170",
+        "filename": "packages/base/src/files/etc/cron.d/monitor.cron",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "we don\u0027t need cron running to monitor controller is running or not in k8s.",
+      "parentUuid": "321a6822_a02392e4",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "47702ec2_97d18b47",
         "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
         "patchSetId": 7
@@ -151,6 +193,24 @@
     },
     {
       "key": {
+        "uuid": "21adbbe7_6c321442",
+        "filename": "policy-management/src/main/server-gen/bin/add-secured-participant",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "098a8d70_f377a61a",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aa52de01_d2abdc89",
         "filename": "policy-management/src/main/server-gen/bin/create-api-key",
         "patchSetId": 7
@@ -168,6 +228,24 @@
     },
     {
       "key": {
+        "uuid": "9751509d_20e45bfc",
+        "filename": "policy-management/src/main/server-gen/bin/create-api-key",
+        "patchSetId": 7
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "aa52de01_d2abdc89",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e6a4c5e_30fe90bf",
         "filename": "policy-management/src/main/server-gen/bin/create-secured-topic",
         "patchSetId": 7
@@ -182,6 +260,24 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ba44511_491dd4c4",
+        "filename": "policy-management/src/main/server-gen/bin/create-secured-topic",
+        "patchSetId": 7
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4e6a4c5e_30fe90bf",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -231,6 +327,30 @@
     },
     {
       "key": {
+        "uuid": "e37357d6_1562ecd1",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "67dc4073_b6876876",
+      "range": {
+        "startLine": 264,
+        "startChar": 12,
+        "endLine": 264,
+        "endChar": 30
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6496e0e9_802ca79c",
         "filename": "policy-management/src/main/server-gen/bin/db-migrator",
         "patchSetId": 7
@@ -242,6 +362,30 @@
       "writtenOn": "2020-11-16T17:26:59Z",
       "side": 1,
       "message": "what does \"\\\u003e\" do?  Why not leave as \"-gt\"?\n\nsame comment below",
+      "range": {
+        "startLine": 344,
+        "startChar": 36,
+        "endLine": 344,
+        "endChar": 38
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6570ba99_65e332f8",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "https://github.com/koalaman/shellcheck/wiki/SC2073\n\nhere is comparing string",
+      "parentUuid": "6496e0e9_802ca79c",
       "range": {
         "startLine": 344,
         "startChar": 36,
@@ -271,6 +415,24 @@
     },
     {
       "key": {
+        "uuid": "6d0f7d9a_7a7ca7f9",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 480,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9e524768_3fc9270f",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "518ac7e6_f6cb34ec",
         "filename": "policy-management/src/main/server-gen/bin/db-migrator",
         "patchSetId": 7
@@ -288,6 +450,24 @@
     },
     {
       "key": {
+        "uuid": "cd75dc85_71531a8c",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "518ac7e6_f6cb34ec",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21f8e4d8_083aab0a",
         "filename": "policy-management/src/main/server-gen/bin/db-migrator",
         "patchSetId": 7
@@ -302,6 +482,24 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "18f8b0cf_6026ae26",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "21f8e4d8_083aab0a",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -540,6 +738,30 @@
     },
     {
       "key": {
+        "uuid": "fccfa5ad_55888202",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "umm. preserving quotes would be better.",
+      "parentUuid": "68ac2af9_493c6043",
+      "range": {
+        "startLine": 83,
+        "startChar": 92,
+        "endLine": 83,
+        "endChar": 94
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "03f69c41_35fd9b75",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 7
@@ -563,6 +785,30 @@
     },
     {
       "key": {
+        "uuid": "707417af_385d6d22",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "the original line #110 {cfg}, only bash supported. 200 is a file descriptor number. make sure the nohup command below is using #200.",
+      "parentUuid": "03f69c41_35fd9b75",
+      "range": {
+        "startLine": 107,
+        "startChar": 13,
+        "endLine": 107,
+        "endChar": 16
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bbe671a7_92ba1ae6",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 7
@@ -574,6 +820,24 @@
       "writtenOn": "2020-11-16T17:26:59Z",
       "side": 1,
       "message": "don\u0027t we still need to prefix each line with a date stamp like it was before?",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab009531_ca31a5dd",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T21:30:14Z",
+      "side": 1,
+      "message": "i got an error in ash when kept time stamp in it. if someone has better idea, please let me know",
+      "parentUuid": "bbe671a7_92ba1ae6",
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
