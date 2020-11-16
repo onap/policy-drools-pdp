@@ -1204,6 +1204,24 @@
     },
     {
       "key": {
+        "uuid": "8dd77723_634af673",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T23:09:14Z",
+      "side": 1,
+      "message": "FYI: I only suggested a function because it might make it a little clearer.  The real issue is the use of \"\u003e\u003e\" to redirect to a command - ash does not support that, thus replacing it with pipes a simple way around it.  However, you can\u0027t directly send stderr to a pipe, which is why the example I gave before wrapped things in parentheses and used two different pipes",
+      "parentUuid": "d8103c40_63ada42f",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e2e0fa7e_cc4016c0",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 7
