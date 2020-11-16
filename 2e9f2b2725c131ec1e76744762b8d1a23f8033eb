@@ -584,6 +584,30 @@
     },
     {
       "key": {
+        "uuid": "0ee691dc_bc6374b5",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T22:47:32Z",
+      "side": 1,
+      "message": "the original code has quoted variable. i think that was a string comparison. and line 341 did not have quoted variable - that was a numerical comparison.",
+      "parentUuid": "d12c1e89_6cb694c2",
+      "range": {
+        "startLine": 344,
+        "startChar": 36,
+        "endLine": 344,
+        "endChar": 38
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9e524768_3fc9270f",
         "filename": "policy-management/src/main/server-gen/bin/db-migrator",
         "patchSetId": 7
@@ -1132,6 +1156,24 @@
       "side": 1,
       "message": "it probably doesn\u0027t like \"\u003e\u003e(some command)\".\n\ncould define a function, add_date, containing the content of the while loop and then do:\n\n  (nohup ... | add_date \u003efile.out) 2\u003e\u00261 | add_date \u003efile.err",
       "parentUuid": "ab009531_ca31a5dd",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8103c40_63ada42f",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-16T22:47:32Z",
+      "side": 1,
+      "message": "yeah. adding new function would fix. will try tomorrow.",
+      "parentUuid": "431e62fd_9b56d898",
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
