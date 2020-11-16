@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "19c412a8_89de9ca5",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "536417ef_fae749d2",
+      "range": {
+        "startLine": 34,
+        "startChar": 18,
+        "endLine": 34,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a9f2650f_bbff834b",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 7
@@ -69,6 +93,30 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7693c06_bf7148d0",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a9f2650f_bbff834b",
+      "range": {
+        "startLine": 62,
+        "startChar": 18,
+        "endLine": 62,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -95,6 +143,30 @@
     },
     {
       "key": {
+        "uuid": "8be28f0f_5d3026c5",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "957c4acd_d1fd0e1e",
+      "range": {
+        "startLine": 81,
+        "startChar": 18,
+        "endLine": 81,
+        "endChar": 23
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e300d024_84147dcc",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 7
@@ -115,6 +187,30 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c5fc161_f39a93bf",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 7
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e300d024_84147dcc",
+      "range": {
+        "startLine": 99,
+        "startChar": 18,
+        "endLine": 99,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -153,6 +249,24 @@
     },
     {
       "key": {
+        "uuid": "573ed8a1_6decc9cd",
+        "filename": "packages/base/src/files/etc/cron.d/monitor.cron",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "beb7b303_5f5de170",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "47702ec2_97d18b47",
         "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
         "patchSetId": 7
@@ -173,6 +287,30 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eea5c520_891a6b9b",
+        "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47702ec2_97d18b47",
+      "range": {
+        "startLine": 22,
+        "startChar": 18,
+        "endLine": 22,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -304,6 +442,30 @@
     },
     {
       "key": {
+        "uuid": "4fd411e7_51b3ce91",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de40d9c5_39b5f773",
+      "range": {
+        "startLine": 107,
+        "startChar": 18,
+        "endLine": 107,
+        "endChar": 23
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67dc4073_b6876876",
         "filename": "policy-management/src/main/server-gen/bin/db-migrator",
         "patchSetId": 7
@@ -386,6 +548,30 @@
       "side": 1,
       "message": "https://github.com/koalaman/shellcheck/wiki/SC2073\n\nhere is comparing string",
       "parentUuid": "6496e0e9_802ca79c",
+      "range": {
+        "startLine": 344,
+        "startChar": 36,
+        "endLine": 344,
+        "endChar": 38
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d12c1e89_6cb694c2",
+        "filename": "policy-management/src/main/server-gen/bin/db-migrator",
+        "patchSetId": 7
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "ok, thx.  the original code used -gt, which does a numerical comparison.  which makes more sense?",
+      "parentUuid": "6570ba99_65e332f8",
       "range": {
         "startLine": 344,
         "startChar": 36,
@@ -526,6 +712,30 @@
     },
     {
       "key": {
+        "uuid": "4ae381e4_9532d4da",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 7
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "72493dc6_2e19cb40",
+      "range": {
+        "startLine": 60,
+        "startChar": 18,
+        "endLine": 60,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d946ee93_873d1b12",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 7
@@ -546,6 +756,30 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3873cdd_6385b31e",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 7
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d946ee93_873d1b12",
+      "range": {
+        "startLine": 250,
+        "startChar": 18,
+        "endLine": 250,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -692,6 +926,24 @@
     },
     {
       "key": {
+        "uuid": "36ba63e3_fd5f0dd8",
+        "filename": "policy-management/src/main/server-gen/bin/pdpd-configuration",
+        "patchSetId": 7
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c92ae0c9_290898cb",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e05c29b_5aab318b",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 7
@@ -712,6 +964,30 @@
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f71a558f_6d66c6fa",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e05c29b_5aab318b",
+      "range": {
+        "startLine": 29,
+        "startChar": 18,
+        "endLine": 29,
+        "endChar": 22
+      },
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -838,6 +1114,24 @@
       "side": 1,
       "message": "i got an error in ash when kept time stamp in it. if someone has better idea, please let me know",
       "parentUuid": "bbe671a7_92ba1ae6",
+      "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "431e62fd_9b56d898",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 7
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-16T22:28:19Z",
+      "side": 1,
+      "message": "it probably doesn\u0027t like \"\u003e\u003e(some command)\".\n\ncould define a function, add_date, containing the content of the while loop and then do:\n\n  (nohup ... | add_date \u003efile.out) 2\u003e\u00261 | add_date \u003efile.err",
+      "parentUuid": "ab009531_ca31a5dd",
       "revId": "2e9f2b2725c131ec1e76744762b8d1a23f8033eb",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
