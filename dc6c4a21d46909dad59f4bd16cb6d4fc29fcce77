@@ -33,6 +33,24 @@
       "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffe0a28d_93c561b6",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:47:15Z",
+      "side": 0,
+      "message": "sounds like go to .profile.\n\nhttps://unix.stackexchange.com/questions/176027/ash-profile-configuration-file",
+      "parentUuid": "4faaa098_5c7b0d54",
+      "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
