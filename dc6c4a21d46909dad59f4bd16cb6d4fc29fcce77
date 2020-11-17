@@ -105,6 +105,24 @@
       "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c87c2a23_f2be5a5e",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T20:14:27Z",
+      "side": 0,
+      "message": "ok... fair enough. based on https://linux.die.net/man/1/ash\n\"A login shell first reads commands from the files /etc/profile and .profile if they exist\"\ni will move to .profile",
+      "parentUuid": "c5e6ef32_38c824f7",
+      "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
