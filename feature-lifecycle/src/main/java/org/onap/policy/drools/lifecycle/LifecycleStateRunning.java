@@ -24,6 +24,7 @@ package org.onap.policy.drools.lifecycle;
 import java.util.List;
 import java.util.function.BiPredicate;
 import lombok.NonNull;
+import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -161,6 +162,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     protected boolean syncPolicies(List<ToscaPolicy> policies,
                                    BiPredicate<PolicyTypeController, ToscaPolicy> sync) {
         boolean success = true;
+        DomainMaker domain = fsm.getDomainMaker();
         for (ToscaPolicy policy : policies) {
             ToscaPolicyTypeIdentifier policyType = policy.getTypeIdentifier();
             PolicyTypeController controller = fsm.getController(policyType);
@@ -170,7 +172,12 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
                 continue;
             }
 
-            success = fsm.getDomainMaker().isConformant(policy) && sync.test(controller, policy) && success;
+            if (domain.isRegistered(policy.getTypeIdentifier())) {
+                success = domain.isConformant(policy) && sync.test(controller, policy) && success;
+            } else {
+                logger.info("no validator registered for policy type {}", policy.getTypeIdentifier());
+                success = sync.test(controller, policy) && success;
+            }
         }
 
         return success;

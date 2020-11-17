@@ -76,6 +76,10 @@ public class RestLifecycleManagerTest {
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON =
             "src/test/resources/tosca-policy-native-artifact-example.json";
 
+    private static final String EXAMPLE_OTHER_POLICY_NAME = "other";
+    private static final String EXAMPLE_OTHER_POLICY_JSON =
+            "src/test/resources/tosca-policy-other.json";
+
     private static final String OP_POLICY_NAME_VCPE = "operational.restart";
     private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
             "policies/vCPE.policy.operational.input.tosca.json";
@@ -231,31 +235,12 @@ public class RestLifecycleManagerTest {
         if (StringUtils.isBlank(opPolicy.getName())) {
             opPolicy.setName(opPolicy.getMetadata().get("policy-id"));
         }
-        assertTrue(
-            listPost("policies/operations/validation", toString(opPolicy), Status.OK.getStatusCode()).isEmpty());
+        testNotNativePolicy(opPolicy);
 
-        booleanPost("policies", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
-        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
-        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
-        assertEquals(1,
-            PolicyControllerConstants
-                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
+        /* add tosca "other" of policy type "other" with no attached type schema */
 
-        resourceLists("policies", 3);
-        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.OK.getStatusCode());
-        get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
-        get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
-
-        booleanDelete("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(),
-                Status.OK.getStatusCode(), Boolean.TRUE);
-        assertEquals(0,
-            PolicyControllerConstants
-                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
-
-        resourceLists("policies", 2);
-        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
-        get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
-        get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
+        ToscaPolicy otherPolicy = getPolicyFromFile(EXAMPLE_OTHER_POLICY_JSON, EXAMPLE_OTHER_POLICY_NAME);
+        testNotNativePolicy(otherPolicy);
 
         /* individual deploy/undeploy operations */
 
@@ -319,6 +304,35 @@ public class RestLifecycleManagerTest {
         assertFalse(
             listPost("policies/operations/validation", toString(opPolicy),
                     Status.NOT_ACCEPTABLE.getStatusCode()).isEmpty());
+    }
+
+    private void testNotNativePolicy(ToscaPolicy opPolicy) throws CoderException {
+        assertTrue(
+            listPost("policies/operations/validation", toString(opPolicy),
+                    Status.OK.getStatusCode()).isEmpty());
+
+        booleanPost("policies", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
+        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
+        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
+        assertEquals(1,
+            PolicyControllerConstants
+                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
+
+        resourceLists("policies", 3);
+        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.OK.getStatusCode());
+        get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
+        get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
+
+        booleanDelete("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(),
+                Status.OK.getStatusCode(), Boolean.TRUE);
+        assertEquals(0,
+            PolicyControllerConstants
+                .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
+
+        resourceLists("policies", 2);
+        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
+        get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
+        get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
     }
 
     private Response get(String contextPath, int statusCode) {

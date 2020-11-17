@@ -1,0 +1,22 @@
+{
+    "tosca_definitions_version": "tosca_simple_yaml_1_0_0",
+    "topology_template": {
+        "policies": [
+            {
+                "other": {
+                    "type": "onap.policies.type1.type2",
+                    "type_version": "1.0.0",
+                    "name": "other",
+                    "version": "1.0.0",
+                    "metadata": {
+                        "policy-id": "other"
+                    },
+                    "properties": {
+                        "field1": "abc",
+                        "field2": 2
+                    }
+                }
+            }
+        ]
+    }
+}
