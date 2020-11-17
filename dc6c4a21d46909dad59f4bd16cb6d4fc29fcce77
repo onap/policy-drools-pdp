@@ -87,6 +87,24 @@
       "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5e6ef32_38c824f7",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T19:42:33Z",
+      "side": 0,
+      "message": "I am concerned that is going to break some form of operation, there was an usage at some point for it, but can\u0027t remember, not sure if it is while doing development with the docker image as in tutorials, or something else.   In any case, if at all possible, I would prefer to keep same functionality as it was originally with the login shell configured to work with the system.\n\nAs a note, drools pdp supports not only environment files passed in but also config files that will be read in .conf files.",
+      "parentUuid": "a6ac39cd_b636a090",
+      "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
