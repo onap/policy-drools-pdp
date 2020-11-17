@@ -2,6 +2,125 @@
   "comments": [
     {
       "key": {
+        "uuid": "2c4ed8a7_ed7c9f16",
+        "filename": "feature-controller-logging/src/main/feature/install/disable",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "question: does it need to install \"ash\" shell in dockerfile, or it is part already of the alpine base image?",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "365a9094_52e3ebba",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "I don\u0027t think $FUNC does print the function name as ${FUNCNAME[0]} did, the equivalent would be to hardcode the name in the line.   This is a global comment.",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "637aef8c_1ae501d9",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "cfg is not set up with the changes in the flock section at bottom of script.  General comment.",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f09ee3ba_95ef67b6",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "see my comment above",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17cbdb6a_9e73220a",
+        "filename": "packages/base/src/files/bin/policy",
+        "patchSetId": 8
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "see my comments with regards to FUN in previous file",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "91fd9ef5_4d6ae41a",
+        "filename": "packages/base/src/files/etc/profile.d/env.sh",
+        "patchSetId": 8
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "license",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30cd5e60_7dac1446",
+        "filename": "packages/docker/src/main/docker/pdpd-entrypoint.sh",
+        "patchSetId": 8
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "see comments in other files",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "28fdbba2_72121209",
         "filename": "policy-management/src/main/server-gen/bin/db-migrator",
         "patchSetId": 8
@@ -13,6 +132,108 @@
       "writtenOn": "2020-11-16T22:28:19Z",
       "side": 1,
       "message": "original code had \"-le\"",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8fbdb87e_8a58a90f",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 8
+      },
+      "lineNbr": 707,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "tab",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d1544171_cc221e21",
+        "filename": "policy-management/src/main/server-gen/bin/pdpd-configuration",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "tab",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4ae99402_f5d28ff0",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "did you have a chance to test this with arbitrary jvm flags are passed down to the jvm ?",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "196cef2d_af9de090",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "same q here",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "477952d8_ce7b727d",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "see global comments before",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ee675ba_34ef7c48",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 1,
+      "message": "is there a way to preserve timestamps as before ?",
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true

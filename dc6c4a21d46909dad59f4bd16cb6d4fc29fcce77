@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee2b75d7_6dbf17d8",
+        "filename": "packages/base/src/files/etc/cron.d/monitor.cron",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 0,
+      "message": "delete or replace with \"ash\" (not sure if the cron job is refer some other places, may be in some install scripts perhaps from Roy) ..",
+      "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4faaa098_5c7b0d54",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-17T00:27:39Z",
+      "side": 0,
+      "message": "I think need replacement for this, not sure if it would be .profile or which file applicable to ash.",
+      "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
