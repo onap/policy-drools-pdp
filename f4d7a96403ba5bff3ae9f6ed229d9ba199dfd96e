@@ -423,6 +423,24 @@
     },
     {
       "key": {
+        "uuid": "565559b5_3ae489e3",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T22:37:45Z",
+      "side": 1,
+      "message": "adding JVM_OPTIONS\u003d-verbose:gc -XX:+PrintGC in envfile. it seems to work.",
+      "parentUuid": "d1f5215c_25607f9a",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "196cef2d_af9de090",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 8
