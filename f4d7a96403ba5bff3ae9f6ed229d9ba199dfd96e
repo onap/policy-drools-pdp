@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "d2e44f6b_2149a562",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-17T15:25:26Z",
+      "side": 1,
+      "message": "in that case, ${FUNC} will have to be replaced with the hard-coded function name in all of these cases",
+      "parentUuid": "0c29444f_2c21777a",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "637aef8c_1ae501d9",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 8
@@ -362,6 +380,29 @@
       "side": 1,
       "message": "means? a quote: \"$(...)\" ?",
       "parentUuid": "196cef2d_af9de090",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d544b47_59600f3b",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-17T15:25:26Z",
+      "side": 1,
+      "message": "definitely should be double quotes around $@",
+      "range": {
+        "startLine": 83,
+        "startChar": 92,
+        "endLine": 83,
+        "endChar": 94
+      },
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true

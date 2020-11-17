@@ -51,6 +51,24 @@
       "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e107cb77_ce8e409c",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-17T15:25:26Z",
+      "side": 0,
+      "message": "not sure - depends how it is to be used.  Appears that .profile is only read by a \"login\" shell, but any environment variables exported there will be propagated to sub-shells.  If that\u0027s how it\u0027s used, then .profile makes sense.  OTOH, cron jobs would have to explicitly \"source\" env.sh as cron does not execute .profile - this shouldn\u0027t matter in the ONAP context/environment.",
+      "parentUuid": "ffe0a28d_93c561b6",
+      "revId": "dc6c4a21d46909dad59f4bd16cb6d4fc29fcce77",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
