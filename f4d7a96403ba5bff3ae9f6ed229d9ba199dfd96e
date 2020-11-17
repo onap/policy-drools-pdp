@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7d5cf498_b4803201",
+        "filename": "feature-controller-logging/src/main/feature/install/disable",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "ash is a busybox command that comes with alpine, so there is no need to install ash package",
+      "parentUuid": "2c4ed8a7_ed7c9f16",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "365a9094_52e3ebba",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 8
@@ -30,6 +48,24 @@
       "writtenOn": "2020-11-17T00:27:39Z",
       "side": 1,
       "message": "I don\u0027t think $FUNC does print the function name as ${FUNCNAME[0]} did, the equivalent would be to hardcode the name in the line.   This is a global comment.",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c29444f_2c21777a",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "${FUNCNAME[0]} is a bash-ish. ash(dash) does not support it. And ash does not have array concept\n\nhttps://unix.stackexchange.com/questions/264934/bash-funcname-equivalent-in-dash",
+      "parentUuid": "365a9094_52e3ebba",
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ca39fb97_822b390c",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "637aef8c_1ae501d9",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f09ee3ba_95ef67b6",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 8
@@ -67,6 +121,24 @@
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a548991_231adae9",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f09ee3ba_95ef67b6",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "027e43a1_d88a8268",
+        "filename": "packages/base/src/files/bin/policy",
+        "patchSetId": 8
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "same my comment in the previous file",
+      "parentUuid": "17cbdb6a_9e73220a",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "91fd9ef5_4d6ae41a",
         "filename": "packages/base/src/files/etc/profile.d/env.sh",
         "patchSetId": 8
@@ -101,6 +191,24 @@
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc79683a_18aca316",
+        "filename": "packages/base/src/files/etc/profile.d/env.sh",
+        "patchSetId": 8
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "91fd9ef5_4d6ae41a",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -172,6 +280,24 @@
     },
     {
       "key": {
+        "uuid": "2512db8e_1ab70820",
+        "filename": "policy-management/src/main/server-gen/bin/pdpd-configuration",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d1544171_cc221e21",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4ae99402_f5d28ff0",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 8
@@ -189,6 +315,24 @@
     },
     {
       "key": {
+        "uuid": "d1f5215c_25607f9a",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "i think i did tested. lots of tests I did :-(. Can\u0027t exactly remember what I did. \nbut I will re-test :-)",
+      "parentUuid": "4ae99402_f5d28ff0",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "196cef2d_af9de090",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 8
@@ -200,6 +344,24 @@
       "writtenOn": "2020-11-17T00:27:39Z",
       "side": 1,
       "message": "same q here",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab6bdc03_68ec3416",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "means? a quote: \"$(...)\" ?",
+      "parentUuid": "196cef2d_af9de090",
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -234,6 +396,24 @@
       "writtenOn": "2020-11-17T00:27:39Z",
       "side": 1,
       "message": "is there a way to preserve timestamps as before ?",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7937409f_ebaea2fd",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T01:42:43Z",
+      "side": 1,
+      "message": "will try tomorrow.",
+      "parentUuid": "7ee675ba_34ef7c48",
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
