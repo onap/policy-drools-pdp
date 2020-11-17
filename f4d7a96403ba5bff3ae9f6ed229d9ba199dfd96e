@@ -178,6 +178,24 @@
     },
     {
       "key": {
+        "uuid": "357f9df4_d7b22512",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 8
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-17T20:26:18Z",
+      "side": 1,
+      "message": "according to https://github.com/koalaman/shellcheck/wiki/SC3023\n\nash only support single digit file descriptor",
+      "parentUuid": "1a548991_231adae9",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17cbdb6a_9e73220a",
         "filename": "packages/base/src/files/bin/policy",
         "patchSetId": 8
