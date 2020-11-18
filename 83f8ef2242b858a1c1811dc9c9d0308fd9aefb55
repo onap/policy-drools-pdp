@@ -16,6 +16,24 @@
       "revId": "83f8ef2242b858a1c1811dc9c9d0308fd9aefb55",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36f09fd5_f3444e8d",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/server/restful/RestLifecycleManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-11-18T22:56:19Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "bd214039_a5ce6d7d",
+      "revId": "83f8ef2242b858a1c1811dc9c9d0308fd9aefb55",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
