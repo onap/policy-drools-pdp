@@ -18,6 +18,7 @@
 
 package org.onap.policy.drools.server.restful;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -76,9 +77,17 @@ public class RestLifecycleManagerTest {
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON =
             "src/test/resources/tosca-policy-native-artifact-example.json";
 
-    private static final String EXAMPLE_OTHER_POLICY_NAME = "other";
-    private static final String EXAMPLE_OTHER_POLICY_JSON =
-            "src/test/resources/tosca-policy-other.json";
+    private static final String EXAMPLE_OTHER_UNVAL_POLICY_NAME = "other-unvalidated";
+    private static final String EXAMPLE_OTHER_UNVAL_POLICY_JSON =
+            "src/test/resources/tosca-policy-other-unvalidated.json";
+
+    private static final String EXAMPLE_OTHER_VAL_POLICY_NAME = "other-validated";
+    private static final String EXAMPLE_OTHER_VAL_POLICY_JSON =
+            "src/test/resources/tosca-policy-other-validated.json";
+
+    private static final String EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME = "other-validation-error";
+    private static final String EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON =
+            "src/test/resources/tosca-policy-other-validation-error.json";
 
     private static final String OP_POLICY_NAME_VCPE = "operational.restart";
     private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
@@ -216,11 +225,12 @@ public class RestLifecycleManagerTest {
 
         /* verify new supported operational policy types */
 
-        resourceLists("policyTypes", 4);
+        resourceLists("policyTypes", 5);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.type1.type2/1.0.0", Status.OK.getStatusCode());
+        get("policyTypes/onap.policies.typeA/1.0.0", Status.OK.getStatusCode());
 
         /* verify controller and artifact policies */
 
@@ -237,10 +247,24 @@ public class RestLifecycleManagerTest {
         }
         testNotNativePolicy(opPolicy);
 
-        /* add tosca "other" of policy type "other" with no attached type schema */
+        /* add tosca policy "other-unvalidated" of policy type "type1.type2" with no attached type schema */
 
-        ToscaPolicy otherPolicy = getPolicyFromFile(EXAMPLE_OTHER_POLICY_JSON, EXAMPLE_OTHER_POLICY_NAME);
-        testNotNativePolicy(otherPolicy);
+        testNotNativePolicy(getPolicyFromFile(EXAMPLE_OTHER_UNVAL_POLICY_JSON, EXAMPLE_OTHER_UNVAL_POLICY_NAME));
+
+        /* add tosca policy "other-validated" of policy type "typeA" with an attached type schema */
+
+        testNotNativePolicy(getPolicyFromFile(EXAMPLE_OTHER_VAL_POLICY_JSON, EXAMPLE_OTHER_VAL_POLICY_NAME));
+
+        /* try to add invalid tosca policy "other-validation-error" of policy type "typeA" */
+
+        ToscaPolicy toscaPolicyValError =
+                getPolicyFromFile(EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON, EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME);
+        assertThat(
+                listPost("policies/operations/validation", toString(toscaPolicyValError),
+                        Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
+
+        booleanPost("policies", toString(toscaPolicyValError),
+                Status.NOT_ACCEPTABLE.getStatusCode(), Boolean.FALSE);
 
         /* individual deploy/undeploy operations */
 
@@ -278,6 +302,7 @@ public class RestLifecycleManagerTest {
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.type1.type2/1.0.0", Status.NOT_FOUND.getStatusCode());
+        get("policyTypes/onap.policies.typeA/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         resourceLists("policies", 1);
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
@@ -293,6 +318,7 @@ public class RestLifecycleManagerTest {
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policyTypes/onap.policies.type1.type2/1.0.0", Status.NOT_FOUND.getStatusCode());
+        get("policyTypes/onap.policies.typeA/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         resourceLists("policies", 0);
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
@@ -301,17 +327,17 @@ public class RestLifecycleManagerTest {
 
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
         opPolicy.getMetadata().remove("policy-id");
-        assertFalse(
+        assertThat(
             listPost("policies/operations/validation", toString(opPolicy),
-                    Status.NOT_ACCEPTABLE.getStatusCode()).isEmpty());
+                    Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
     }
 
-    private void testNotNativePolicy(ToscaPolicy opPolicy) throws CoderException {
-        assertTrue(
-            listPost("policies/operations/validation", toString(opPolicy),
-                    Status.OK.getStatusCode()).isEmpty());
+    private void testNotNativePolicy(ToscaPolicy toscaPolicy) throws CoderException {
+        assertThat(
+            listPost("policies/operations/validation", toString(toscaPolicy),
+                    Status.OK.getStatusCode())).isEmpty();
 
-        booleanPost("policies", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
+        booleanPost("policies", toString(toscaPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
         assertEquals(1,
@@ -319,18 +345,18 @@ public class RestLifecycleManagerTest {
                 .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
 
         resourceLists("policies", 3);
-        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.OK.getStatusCode());
+        get("policies/" + toscaPolicy.getName() + "/" + toscaPolicy.getVersion(), Status.OK.getStatusCode());
         get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
 
-        booleanDelete("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(),
+        booleanDelete("policies/" + toscaPolicy.getName() + "/" + toscaPolicy.getVersion(),
                 Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(0,
             PolicyControllerConstants
                 .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
 
         resourceLists("policies", 2);
-        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
+        get("policies/" + toscaPolicy.getName() + "/" + toscaPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
         get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
     }
