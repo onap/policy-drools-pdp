@@ -441,6 +441,41 @@
     },
     {
       "key": {
+        "uuid": "deb34e0e_de7181e9",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-18T13:59:27Z",
+      "side": 1,
+      "message": "hmm.  did you check \"ps\" to see the whole command line (if it lets you)?  Seems to be that double quotes are needed around ${JVM_OPTIONS}.  As an alternative, could eliminate JVM_OPTS altogether and just use JVM_OPTIONS on the java command line below.",
+      "parentUuid": "565559b5_3ae489e3",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab5abb1c_8b016686",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-18T13:59:27Z",
+      "side": 1,
+      "message": "I don\u0027t think line 58 is needed; in fact, not sure it has any effect in \"ash\".  (Ran a short test with ash to verify.)\nWithout this, the variable, $systemProperties, will contain embedded newlines between each property.  However, the shell will replace them with spaces on the java command line below, provided $systemProperties is not quoted.  (If it WERE quoted, then it would retain the newlines and treat it as a single argument, which we don\u0027t want anyway.)",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "196cef2d_af9de090",
         "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
         "patchSetId": 8
@@ -470,6 +505,24 @@
       "side": 1,
       "message": "means? a quote: \"$(...)\" ?",
       "parentUuid": "196cef2d_af9de090",
+      "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b44be64e_e0a7557e",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-18T13:59:27Z",
+      "side": 1,
+      "message": "yes, this appears to work, based on a quick test",
+      "parentUuid": "ab6bdc03_68ec3416",
       "revId": "f4d7a96403ba5bff3ae9f6ed229d9ba199dfd96e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
