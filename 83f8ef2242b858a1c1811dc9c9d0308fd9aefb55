@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd214039_a5ce6d7d",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/server/restful/RestLifecycleManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-18T22:53:11Z",
+      "side": 1,
+      "message": "maybe use this instead?  at one point sonar was pushing this, though I don\u0027t know if it\u0027s still the case:\n\n  assertThat(...).isNotEmpty()",
+      "revId": "83f8ef2242b858a1c1811dc9c9d0308fd9aefb55",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
