@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   feature-controller-logging
   ================================================================================
-  Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@
   -->
 
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-    <kbase name="onap.policies.controlloop.operational.common.Drools" default="false" equalsBehavior="equality"/>
+    <kbase name="onap.policies.typeA" default="false" equalsBehavior="equality"/>
+    <kbase name="onap.policies.controlloop.operational.common.Drools"
+        includes="onap.policies.typeA" default="false" equalsBehavior="equality"/>
     <kbase name="onap.policies.type1.type2" includes="onap.policies.controlloop.operational.common.Drools">
         <ksession name="junits" />
     </kbase>

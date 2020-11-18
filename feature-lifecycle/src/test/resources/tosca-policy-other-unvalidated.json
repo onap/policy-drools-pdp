@@ -3,13 +3,13 @@
     "topology_template": {
         "policies": [
             {
-                "other": {
+                "other-unvalidated": {
                     "type": "onap.policies.type1.type2",
                     "type_version": "1.0.0",
-                    "name": "other",
+                    "name": "other-unvalidated",
                     "version": "1.0.0",
                     "metadata": {
-                        "policy-id": "other"
+                        "policy-id": "other-unvalidated"
                     },
                     "properties": {
                         "field1": "abc",

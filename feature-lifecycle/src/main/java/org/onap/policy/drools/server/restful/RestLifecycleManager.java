@@ -286,8 +286,10 @@ public class RestLifecycleManager {
         List<ToscaPolicy> policies =
                 LifecycleFeature.fsm.getPoliciesMap().values().stream().collect(Collectors.toList());
         policies.add(toscaPolicy);
-        return Response.status(Response.Status.OK)
-                       .entity(LifecycleFeature.fsm.update(getPolicyUpdate(policies)))
+
+        boolean updateResult = LifecycleFeature.fsm.update(getPolicyUpdate(policies));
+        return Response.status((updateResult ? Response.Status.OK : Response.Status.NOT_ACCEPTABLE))
+                       .entity(updateResult)
                        .build();
     }
 
