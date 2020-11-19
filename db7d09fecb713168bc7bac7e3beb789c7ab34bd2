@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "9482ac40_9635d7c4",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T22:52:25Z",
+      "side": 1,
+      "message": "actually, the extra space is probably intentional, but the logic isn\u0027t quite right",
+      "parentUuid": "10034a91_973502cb",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "61db4bd4_9b282de6",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -53,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "429c31f3_cbb58890",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T22:52:25Z",
+      "side": 1,
+      "message": "or use $PWD",
+      "parentUuid": "61db4bd4_9b282de6",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1c9d5d58_3b1d5405",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -64,6 +100,24 @@
       "writtenOn": "2020-11-19T22:16:04Z",
       "side": 1,
       "message": "Question: Does \"$*\" work in ash ?",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c6abcb3_51ca9357",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T22:52:25Z",
+      "side": 1,
+      "message": "yes",
+      "parentUuid": "1c9d5d58_3b1d5405",
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -121,6 +175,24 @@
     },
     {
       "key": {
+        "uuid": "82afe11b_df98b49c",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T22:52:25Z",
+      "side": 1,
+      "message": "it\u0027s needed - syntax error without it",
+      "parentUuid": "fb90db92_88f7aa0c",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e8ffd924_1a25cfa8",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -149,6 +221,40 @@
       "writtenOn": "2020-11-19T22:16:04Z",
       "side": 1,
       "message": "why not surrounding it with \"\" ? general question",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80750148_ed4f8115",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 11
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T22:52:25Z",
+      "side": 1,
+      "message": "this line is no longer needed",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a10fea51_e6b7608c",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 11
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T22:52:25Z",
+      "side": 1,
+      "message": "this should work as long as there are no spaces in the jar paths",
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
