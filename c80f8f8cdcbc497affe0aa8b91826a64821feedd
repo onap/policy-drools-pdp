@@ -93,6 +93,30 @@
       "revId": "c80f8f8cdcbc497affe0aa8b91826a64821feedd",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11769b1a_feb4af2c",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 10
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T20:16:50Z",
+      "side": 1,
+      "message": "ah, I missed the semicolon before the closing \"}\" - that seems to make it happy",
+      "parentUuid": "099936d6_841d25d2",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 112,
+        "endChar": 9
+      },
+      "revId": "c80f8f8cdcbc497affe0aa8b91826a64821feedd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
