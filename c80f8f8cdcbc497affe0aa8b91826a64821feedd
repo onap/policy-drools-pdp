@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27388de1_632b6c38",
+        "filename": "policy-management/src/main/server-gen/bin/policy-management-controller",
+        "patchSetId": 10
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-19T19:55:59Z",
+      "side": 1,
+      "message": "should this be $! instead of $_PID?",
+      "range": {
+        "startLine": 112,
+        "startChar": 123,
+        "endLine": 112,
+        "endChar": 128
+      },
+      "revId": "c80f8f8cdcbc497affe0aa8b91826a64821feedd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
