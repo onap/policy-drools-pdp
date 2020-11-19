@@ -44,7 +44,7 @@ ENV http_proxy $http_proxy
 RUN apk update && \
     apk add --no-cache python3 \
     mariadb-client py3-pip \
-    file bash-completion dpkg httpie \
+    file dpkg httpie \
     net-tools netcat-openbsd sudo less vim openssl \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
