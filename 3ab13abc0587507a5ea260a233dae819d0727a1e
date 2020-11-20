@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "85726d35_74fef873",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 14
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:48:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "09c803b7_14c857ea",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0f5daac9_9e70e17a",
         "filename": "packages/base/src/files/bin/monitor",
         "patchSetId": 14
@@ -33,6 +51,24 @@
       "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7162823e_df324875",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 14
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:48:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0f5daac9_9e70e17a",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "628f473c_d4d94f52",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 14
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:48:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "34b34404_1e4b1abd",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "327bab99_6a391fd0",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 14
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "310de61e_f9606424",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 14
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:48:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "327bab99_6a391fd0",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f8e28cf1_276fd509",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 14
@@ -81,6 +153,24 @@
       "writtenOn": "2020-11-20T18:37:16Z",
       "side": 1,
       "message": "remind me here Taka, the features under $FEATURES directory are named with \"feature-name\" or just \"name\".  If it is \"feature-name\" it may conflict with $@ arguments as the uninstall, could be without feature, ie.  \"feature uninstall healthcheck distributed-locking\".   Question to make sure.",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a220e15a_d75c110c",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 14
+      },
+      "lineNbr": 1168,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:48:11Z",
+      "side": 1,
+      "message": "I used the current code. Here is my output:\n\n/tmp/policy-install $ features status\nname                 version         status\n----                 -------         ------\nlifecycle            1.8.0-SNAPSHOT  enabled\nhealthcheck          1.8.0-SNAPSHOT  disabled\ndistributed-locking  1.8.0-SNAPSHOT  disabled\n\n/tmp/policy-install $ cd /opt/app/policy/features/\n/opt/app/policy/features $ ls\ndistributed-locking  healthcheck  lifecycle\n/opt/app/policy/features $ features uninstall distributed-locking  healthcheck\nerror: no database has been set up\nerror: no database has been set up\nwarning: distributed-locking: poolingpoolingpoolingpooling: database data is leftover. Consider cleaning left over data with \u0027db-migrator\u0027.\n/opt/app/policy/features $ ls\nlifecycle\n/opt/app/policy/features $ features status\nname                 version         status\n----                 -------         ------\nlifecycle            1.8.0-SNAPSHOT  enabled",
+      "parentUuid": "f8e28cf1_276fd509",
       "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
