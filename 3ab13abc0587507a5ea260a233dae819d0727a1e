@@ -282,6 +282,24 @@
     },
     {
       "key": {
+        "uuid": "f36e8a75_4bc4e074",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 14
+      },
+      "lineNbr": 1168,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:58:15Z",
+      "side": 1,
+      "message": "/opt/app/policy/features $ features uninstall aaa-ccc bbb-dddd\nfeature aaa-ccc not found\nfeature bbb-dddd not found",
+      "parentUuid": "534baed0_f5a6d5be",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ce223c01_add21c46",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 14
