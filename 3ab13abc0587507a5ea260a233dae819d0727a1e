@@ -107,6 +107,75 @@
     },
     {
       "key": {
+        "uuid": "546330ab_0be63790",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 14
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "should probably put double quotes around this, too",
+      "range": {
+        "startLine": 70,
+        "startChar": 9,
+        "endLine": 70,
+        "endChar": 20
+      },
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3468c930_61164f97",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 14
+      },
+      "lineNbr": 236,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "missing the \"$\"",
+      "range": {
+        "startLine": 236,
+        "startChar": 14,
+        "endLine": 236,
+        "endChar": 15
+      },
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6bde61ba_d92d7bff",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 14
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "missing the \"$\"",
+      "range": {
+        "startLine": 265,
+        "startChar": 13,
+        "endLine": 265,
+        "endChar": 14
+      },
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "327bab99_6a391fd0",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 14
@@ -139,6 +208,24 @@
       "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6b6e235_da8180cc",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 14
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "yes, the latter seems cleaner",
+      "parentUuid": "310de61e_f9606424",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     },
     {
       "key": {
