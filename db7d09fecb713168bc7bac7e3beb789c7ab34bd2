@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5afedb78_1f9bf67c",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 11
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T15:48:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0ab2dfd_4f8d26eb",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "10034a91_973502cb",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -87,6 +105,24 @@
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "825f66a4_de7e4e2c",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T15:48:17Z",
+      "side": 1,
+      "message": "should change to \"${artifact}\" \u003d \"${artifact%.jar}\"",
+      "parentUuid": "d7a56e24_e7335264",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -175,6 +211,24 @@
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7d482621_47a248cd",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T15:48:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7c6abcb3_51ca9357",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -283,6 +337,24 @@
     },
     {
       "key": {
+        "uuid": "f6ddfee6_6eeb73d0",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T15:48:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82afe11b_df98b49c",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e8ffd924_1a25cfa8",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -315,6 +387,24 @@
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "752600e3_9a41482d",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T15:48:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "40766134_da6b58ab",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -368,6 +458,24 @@
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c8e70794_96f40327",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T15:48:17Z",
+      "side": 1,
+      "message": "added back \"\", it worked.",
+      "parentUuid": "61b0760e_4233033f",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
