@@ -264,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "534baed0_f5a6d5be",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 14
+      },
+      "lineNbr": 1168,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "removed flag thing. the echo could be more accurate:\n\n/opt/app/policy/features $ features uninstall aaa bbb\nfeature aaa not found\nfeature bbb not found",
+      "parentUuid": "a220e15a_d75c110c",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ce223c01_add21c46",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 14
@@ -281,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "f1cbe198_e25e31dd",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 14
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ce223c01_add21c46",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9172fc72_870ec16f",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 14
@@ -295,6 +331,24 @@
       "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "722870ed_09231504",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 14
+      },
+      "lineNbr": 1175,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T20:55:59Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9172fc72_870ec16f",
+      "revId": "3ab13abc0587507a5ea260a233dae819d0727a1e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
