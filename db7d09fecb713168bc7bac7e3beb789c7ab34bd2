@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f0ab2dfd_4f8d26eb",
+        "filename": "packages/base/src/files/bin/monitor",
+        "patchSetId": 11
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "1, yeah. will change the name to just \"lines\"\n2, OK\n3, OK\n4, \"local lines\"",
+      "parentUuid": "bc85ddd5_6646e771",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "10034a91_973502cb",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -48,6 +66,24 @@
       "side": 1,
       "message": "actually, the extra space is probably intentional, but the logic isn\u0027t quite right",
       "parentUuid": "10034a91_973502cb",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7a56e24_e7335264",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "yes. that is intentionally doing that. \"${artifact}\" !\u003d \"${artifact%.jar}\" would work.",
+      "parentUuid": "9482ac40_9635d7c4",
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -86,6 +122,24 @@
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7e2af08_61965680",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "429c31f3_cbb58890",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -141,6 +195,24 @@
     },
     {
       "key": {
+        "uuid": "835cda2b_60988de7",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d756cfda_a0641e81",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2aa5c44d_82464f93",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -155,6 +227,24 @@
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f53b185d_d2899fc7",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2aa5c44d_82464f93",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -210,6 +300,24 @@
     },
     {
       "key": {
+        "uuid": "40766134_da6b58ab",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "yeah just a simple \"@\" would do. I used http_proxy\u003d\"http://username:password@proxy.thing.com:8080\"\nto test this function. FYI",
+      "parentUuid": "e8ffd924_1a25cfa8",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1b963782_750e42b0",
         "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
         "patchSetId": 11
@@ -221,6 +329,24 @@
       "writtenOn": "2020-11-19T22:16:04Z",
       "side": 1,
       "message": "why not surrounding it with \"\" ? general question",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61b0760e_4233033f",
+        "filename": "policy-management/src/main/server-gen/bin/deploy-artifact",
+        "patchSetId": 11
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "\" \" did not work for mvn command, getting mvn error msg (I did not record the mvn errors). maybe some newline inside those vars etc. but without \"\", it worked for all mvn commands.",
+      "parentUuid": "1b963782_750e42b0",
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -244,6 +370,24 @@
     },
     {
       "key": {
+        "uuid": "90063844_cbd5d597",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 11
+      },
+      "lineNbr": 754,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "80750148_ed4f8115",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a10fea51_e6b7608c",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 11
@@ -261,6 +405,24 @@
     },
     {
       "key": {
+        "uuid": "dd72eda7_0b639647",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 11
+      },
+      "lineNbr": 755,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "I never saw there are spaces or special characters in any jar files in features.",
+      "parentUuid": "a10fea51_e6b7608c",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c121fe70_974d1935",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 11
@@ -272,6 +434,24 @@
       "writtenOn": "2020-11-19T22:16:04Z",
       "side": 1,
       "message": "Probably this needs some very good testing enable and disable features to make sure still working properly with the replacement of the associative array.",
+      "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7bc6f1ca_3b8dc600",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 11
+      },
+      "lineNbr": 784,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-20T00:20:03Z",
+      "side": 1,
+      "message": "correct, I repeated running tests for enable/disable/install/uninstall features in drools-pdp and drools-apps.",
+      "parentUuid": "c121fe70_974d1935",
       "revId": "db7d09fecb713168bc7bac7e3beb789c7ab34bd2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
