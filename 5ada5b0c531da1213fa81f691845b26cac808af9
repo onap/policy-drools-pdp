@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0f725af9_79c1c8a3",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 15
+      },
+      "lineNbr": 1109,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-27T15:14:11Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f8695250_0cbc1b94",
+      "range": {
+        "startLine": 1109,
+        "startChar": 20,
+        "endLine": 1109,
+        "endChar": 50
+      },
+      "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4433438_2506aa26",
         "filename": "policy-management/src/main/server-gen/bin/features",
         "patchSetId": 15
@@ -36,6 +60,24 @@
       "writtenOn": "2020-11-20T22:39:43Z",
       "side": 1,
       "message": "I think you had this part correct previously, as it shouldn\u0027t print this message unless it gets all the way through the loop without finding a match",
+      "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2dbca382_7c531fdc",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 15
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-27T15:14:11Z",
+      "side": 1,
+      "message": "i think both should all work. the msg in echo statement is leading some kind of ambiguous.\n\n$name -\u003e is a feature intended for uninstall\n$aFeature -\u003e is a feature in /opt/app/policy/feature\n\nI would prefer just adding more msg in echo statement.",
+      "parentUuid": "a4433438_2506aa26",
       "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
