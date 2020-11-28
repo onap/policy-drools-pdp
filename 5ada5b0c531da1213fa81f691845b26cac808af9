@@ -81,6 +81,24 @@
       "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8713509f_f2cc179d",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 15
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-28T13:52:18Z",
+      "side": 1,
+      "message": "no, they will not both work.  the way this is written, if there were four features in \"allFeatures\", then it is guaranteed to execute line 1170 three times for each $name, even if $name matches one of those features.  The original code (and the code with the flag), on the other hand, would have never executed line 1170 unless $name didn\u0027t match.\n\nthe bottom line: line 1170 should not appear within the inner loop",
+      "parentUuid": "2dbca382_7c531fdc",
+      "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
