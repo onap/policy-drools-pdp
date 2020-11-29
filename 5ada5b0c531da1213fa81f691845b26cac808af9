@@ -117,6 +117,24 @@
       "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b57d28db_e05c7c24",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 15
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-29T03:52:59Z",
+      "side": 1,
+      "message": "If I ran the flag version.\n\nfeatures uninstall healthcheck aa\n\nthat won\u0027t echo \"feature aa not found\"\nsince flag has been set true due to the existing feature: healthcheck",
+      "parentUuid": "9bae1aa1_ab256181",
+      "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
