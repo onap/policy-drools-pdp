@@ -99,6 +99,24 @@
       "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9bae1aa1_ab256181",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 15
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 2477
+      },
+      "writtenOn": "2020-11-29T03:21:20Z",
+      "side": 1,
+      "message": "here is the example:\n/tmp/policy-install # ls /opt/app/policy/features/\ndistributed-locking  healthcheck  lifecycle\n\nallFeatures would come with three values: distributed-locking  healthcheck  lifecycle\nline 1165 - 1172 is the loop for allFeatures\nso aFeauture would have distributed-locking, healthcheck and lifecycle three loops\nif executing: \"features uninstall healthcheck lifecycle\"\n$@\u003dhealthcheck lifecycle\nso only line 1168 would do : uninstallFeature healthcheck then lifecycle\n\n/tmp/policy-install # features uninstall healthcheck lifecycle\nintend to uninstall feature: healthcheck, not matched with feature: distributed-locking\nintend to uninstall feature: healthcheck, not matched with feature: lifecycle\nintend to uninstall feature: lifecycle, not matched with feature: distributed-locking\nintend to uninstall feature: lifecycle, not matched with feature: healthcheck\n/tmp/policy-install # ls /opt/app/policy/features/\ndistributed-locking\n\n/tmp/policy-install # features status\nname                 version         status\n----                 -------         ------\ndistributed-locking  1.8.0-SNAPSHOT  disabled\n\nI even think can remove line 1169 else portion - that does not really do anything.",
+      "parentUuid": "8713509f_f2cc179d",
+      "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
