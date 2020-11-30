@@ -135,6 +135,24 @@
       "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6323e9d0_0e25bc5c",
+        "filename": "policy-management/src/main/server-gen/bin/features",
+        "patchSetId": 15
+      },
+      "lineNbr": 1170,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-11-30T14:00:48Z",
+      "side": 1,
+      "message": "The example you provided demonstrates the problem: since healthcheck is a valid feature, it should never have reported:\n\n    intend to uninstall feature: healthcheck, not matched with feature: distributed-locking\n    intend to uninstall feature: healthcheck, not matched with feature: lifecycle\n\nIt should only report features that are not matched at all during the inner loop.  So it should not report healthcheck or lifecycle at all, because those are matched by one of the features in the inner loop, while it should report that \"aa\" was unmatched",
+      "parentUuid": "b57d28db_e05c7c24",
+      "revId": "5ada5b0c531da1213fa81f691845b26cac808af9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
