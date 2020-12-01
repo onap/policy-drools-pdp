@@ -79,11 +79,13 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     @Override
     public boolean status() {
         synchronized (fsm) {
-            if (fsm.getPolicyTypesMap().isEmpty()) {
-                return true;
-            } else {
-                return fsm.statusAction();
+            if (!fsm.isMandatoryPolicyTypesCompliant()) {
+                logger.info("Not all expected policy types are registered yet, current={}, expected={}",
+                        fsm.getCurrentPolicyTypes(), fsm.getMandatoryPolicyTypes());
+                return false;
             }
+
+            return fsm.statusAction();
         }
     }
 

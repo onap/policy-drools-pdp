@@ -23,10 +23,12 @@ package org.onap.policy.drools.lifecycle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -78,6 +80,7 @@ public class LifecycleFsm implements Startable {
 
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String GROUP_NAME = "lifecycle.pdp.group";
+    protected static final String MANDATORY_POLICY_TYPES = "lifecycle.pdp.policytypes";
     protected static final String DEFAULT_PDP_GROUP = "defaultGroup";
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
@@ -130,6 +133,9 @@ public class LifecycleFsm implements Startable {
     protected String subgroup;
 
     @Getter
+    protected Set<String> mandatoryPolicyTypes = new HashSet<>();
+
+    @Getter
     protected final Map<ToscaPolicyTypeIdentifier, PolicyTypeController> policyTypesMap = new HashMap<>();
 
     @Getter
@@ -147,6 +153,16 @@ public class LifecycleFsm implements Startable {
         this.policyTypesMap.put(
                 POLICY_TYPE_DROOLS_NATIVE_RULES,
                  new PolicyTypeNativeArtifactController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
+
+        String commaSeparatedPolicyTypes = this.properties.getProperty(MANDATORY_POLICY_TYPES);
+        if (!StringUtils.isBlank(commaSeparatedPolicyTypes)) {
+            for (String mpt: commaSeparatedPolicyTypes.split("\\s*,\\s*")) {
+                this.mandatoryPolicyTypes.add(mpt);
+            }
+        }
+
+        logger.info("The mandatory Policy Types are {}. Compliance is {}",
+                this.mandatoryPolicyTypes, this.isMandatoryPolicyTypesCompliant());
     }
 
     @JsonIgnore
@@ -166,6 +182,7 @@ public class LifecycleFsm implements Startable {
     public PdpState state() {
         return state.state();
     }
+
 
     /* ** FSM events - entry points of events into the FSM ** */
 
@@ -187,12 +204,12 @@ public class LifecycleFsm implements Startable {
 
         for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
             if (isToscaPolicyType(id.getName())) {
-                PolicyTypeDroolsController ptDroolsController = (PolicyTypeDroolsController) policyTypesMap.get(id);
-                if (ptDroolsController == null) {
+                PolicyTypeDroolsController ptDc = (PolicyTypeDroolsController) policyTypesMap.get(id); //NOSONAR
+                if (ptDc == null) {
                     policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
                     logger.info("policy-type {} added", id);
                 } else {
-                    ptDroolsController.add(controller);
+                    ptDc.add(controller);
                 }
             }
         }
@@ -331,10 +348,6 @@ public class LifecycleFsm implements Startable {
         return stopTimers() && startTimers();
     }
 
-    protected PolicyTypeController getController(ToscaPolicyTypeIdentifier policyType) {
-        return policyTypesMap.get(policyType);
-    }
-
     protected List<ToscaPolicy> getDeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
         List<ToscaPolicy> deployPolicies = new ArrayList<>(policies);
         deployPolicies.removeAll(policiesMap.values());
@@ -363,6 +376,22 @@ public class LifecycleFsm implements Startable {
 
     protected boolean updatePoliciesAction(List<ToscaPolicy> toscaPolicies) {
         return (this.scheduler.submit( () -> state.updatePolicies(toscaPolicies)) != null);
+    }
+
+    protected PolicyTypeController getController(ToscaPolicyTypeIdentifier policyType) {
+        return policyTypesMap.get(policyType);
+    }
+
+    /**
+     * Do I support the mandatory policy types?.
+     */
+    protected boolean isMandatoryPolicyTypesCompliant() {
+        return getCurrentPolicyTypes().containsAll(getMandatoryPolicyTypes());
+    }
+
+    protected Set<String> getCurrentPolicyTypes() {
+        return getPolicyTypesMap().keySet().stream()
+                       .map(ToscaPolicyTypeIdentifier::getName).collect(Collectors.toSet());
     }
 
     /* ** Action Helpers ** */

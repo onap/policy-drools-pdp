@@ -23,6 +23,7 @@ package org.onap.policy.drools.lifecycle;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -34,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
@@ -82,6 +84,22 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         fsm.setSubGroupAction("a");
         fsm.source.offer(new StandardCoder().encode(change));
         controllerSupport.getController().start();
+    }
+
+    @Test
+    public void testMandatoryPolicyTypes() {
+        assertEquals(Set.of("onap.policies.native.drools.Artifact", "onap.policies.native.drools.Controller"),
+            fsm.getMandatoryPolicyTypes());
+        assertEquals(fsm.getMandatoryPolicyTypes(), fsm.getCurrentPolicyTypes());
+        assertTrue(fsm.isMandatoryPolicyTypesCompliant());
+        assertTrue(fsm.status());
+
+        fsm.mandatoryPolicyTypes.add("blah");
+        assertEquals(Set.of("onap.policies.native.drools.Artifact", "onap.policies.native.drools.Controller", "blah"),
+                fsm.getMandatoryPolicyTypes());
+        assertNotEquals(fsm.getMandatoryPolicyTypes(), fsm.getCurrentPolicyTypes());
+        assertFalse(fsm.isMandatoryPolicyTypesCompliant());
+        assertFalse(fsm.status());
     }
 
     @Test
