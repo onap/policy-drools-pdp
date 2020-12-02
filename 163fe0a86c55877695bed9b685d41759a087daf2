@@ -117,6 +117,30 @@
       "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a13d3d2_6cc87b4b",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2020-12-02T17:25:15Z",
+      "side": 1,
+      "message": "any changes needed for base.conf in CSITs or OOM?",
+      "parentUuid": "48d54327_be7c65f3",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 27
+      },
+      "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
