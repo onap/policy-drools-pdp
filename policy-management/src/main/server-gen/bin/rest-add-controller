@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -8,7 +8,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
 # 
 # Unless required by applicable law or agreed to in writing, software
@@ -22,14 +22,14 @@ source $POLICY_HOME/etc/profile.d/env.sh
 
 json=$1-controller.rest.json
 
-if [ -f ${json} ]; then
-	if [[ -n ${TELEMETRY_PASSWORD} ]]; then
-	curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X POST --data @${json} --header "Content-Type: application/json" \
-			https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers
-	else
-		curl -k --silent -X POST --data @${json} --header "Content-Type: application/json" \
-			https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers
-	fi
+if [ -f "${json}" ]; then
+    if [ -n "${TELEMETRY_PASSWORD}" ]; then
+    curl -k --silent --user ${TELEMETRY_USER}:${TELEMETRY_PASSWORD} -X POST --data @${json} --header "Content-Type: application/json" \
+            https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers
+    else
+        curl -k --silent -X POST --data @${json} --header "Content-Type: application/json" \
+            https://localhost:${TELEMETRY_PORT}/policy/pdp/engine/controllers
+    fi
 else
-	echo "Usage: rest-add-controller.sh closed-loop-sample|reporter|sepc|vsegw|.. (or any other config file ending with *-controller.rest.json)"	
+    echo "Usage: rest-add-controller.sh closed-loop-sample|reporter|sepc|vsegw|.. (or any other config file ending with *-controller.rest.json)"
 fi

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env ash
 
 # ============LICENSE_START=======================================================
 # ONAP
@@ -21,122 +21,118 @@
 source ${POLICY_HOME}/etc/profile.d/env.sh
 
 function usage() {
-	echo -n "syntax: $(basename $0) "
-	echo "[--debug]"
+    echo -n "syntax: $(basename $0) "
+    echo "[--debug]"
 }
 
 function log() {
-	echo "$(date +"%Y-%m-%d_%H-%M-%S") $1" >> ${POLICY_HOME}/logs/monitor.log
+    echo "$(date +"%Y-%m-%d_%H-%M-%S") $1" >> ${POLICY_HOME}/logs/monitor.log
 }
 
 function monitor() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-		
-	CONTROLLER=$1
-	STATUS=$2
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- monitor --"
+        set -x
+    fi
+        
+    CONTROLLER=$1
+    STATUS=$2
 
-	if [[ -z ${CONTROLLER} ]]; then
-		log "WARNING: invalid invocation: no component provided"
-		return
-	fi
-	
-	if [[ -z ${STATUS} ]]; then
-		log "WARNING: invalid invocation: no on/off/uninstalled switch provided for ${CONTROLLER}"
-		return
-	fi
+    if [ -z "${CONTROLLER}" ]; then
+        log "WARNING: invalid invocation: no component provided"
+        return
+    fi
+    
+    if [ -z "${STATUS}" ]; then
+        log "WARNING: invalid invocation: no on/off/uninstalled switch provided for ${CONTROLLER}"
+        return
+    fi
 
-	if [[ "${STATUS}" == "off" ]]; then
-		off ${CONTROLLER}
-	else
-		if [[ "${STATUS}" == "on" ]]; then
-			on ${CONTROLLER}
-		fi
-	fi
+    if [ "${STATUS}" = "off" ]; then
+        off ${CONTROLLER}
+    else
+        if [ "${STATUS}" = "on" ]; then
+            on ${CONTROLLER}
+        fi
+    fi
 }
 
 function on() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-		
-	CONTROLLER=$1
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- on --"
+        set -x
+    fi
+        
+    CONTROLLER=$1
 
-	${POLICY_HOME}/bin/${CONTROLLER} status
-	if [[ $? != 0 ]]; then
-		log "starting ${CONTROLLER}"
+    ${POLICY_HOME}/bin/${CONTROLLER} status
+    if [ $? -ne 0 ]; then
+        log "starting ${CONTROLLER}"
 
-		# need to make sure we don't pass the lock file descriptor
-		${POLICY_HOME}/bin/${CONTROLLER} umstart {cfg}>&-
-	else		
-		log "OK: ${CONTROLLER} (UP)"
-	fi
+        # need to make sure we don't pass the lock file descriptor
+        ${POLICY_HOME}/bin/${CONTROLLER} umstart 200>&-
+    else        
+        log "OK: ${CONTROLLER} (UP)"
+    fi
 }
 
 function off() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-		
-	CONTROLLER=$1
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- off --"
+        set -x
+    fi
+        
+    CONTROLLER=$1
 
-	${POLICY_HOME}/bin/${CONTROLLER} status
-	if [[ $? != 0 ]]; then
-		log "OK: ${CONTROLLER} (DOWN)"
+    ${POLICY_HOME}/bin/${CONTROLLER} status
+    if [ $? -ne 0 ]; then
+        log "OK: ${CONTROLLER} (DOWN)"
 
-	else
-		log "stopping ${CONTROLLER}"
-		${POLICY_HOME}/bin/${CONTROLLER} umstop
-	fi
+    else
+        log "stopping ${CONTROLLER}"
+        ${POLICY_HOME}/bin/${CONTROLLER} umstop
+    fi
 }
 
 function process_config() {
-	if [[ $DEBUG == y ]]; then
-		echo "-- ${FUNCNAME[0]} --"
-		set -x
-	fi
-	
-	CONF_FILE=${POLICY_HOME}/etc/monitor/monitor.cfg
-	while read line || [ -n "${line}" ]; do
-        if [[ -n ${line} ]] && [[ ${line} != *#* ]]; then
-	        controller=$(echo "${line}" | awk -F = '{print $1;}')
-	        status=$(echo "${line}" | awk -F = '{print $2;}')
-			if [[ -n ${controller} ]] && [[ -n ${status} ]]; then
-	    		monitor ${controller} ${status}
-	    	fi
-        fi
-	done < "${CONF_FILE}"
-	return 0
+    if [ "$DEBUG" = "y" ]; then
+        echo "-- process_config --"
+        set -x
+    fi
+    local lines=$(grep "^[^#;]" ${CON_FILE} 2> /dev/null)
+    for line in ${lines} ; do
+       controller=$(echo "${line}" | awk -F = '{print $1;}')
+       status=$(echo "${line}" | awk -F = '{print $2;}')
+       if [ -n "${controller}" ] && [ -n "${status}" ]; then
+           monitor ${controller} ${status} 
+       fi 
+    done
+    return 0
 }
 
 log "Enter monitor"
 
 DEBUG=n
 until [[ -z "$1" ]]; do
-	case $1 in
-		-d|--debug|debug)	DEBUG=y
-							set -x
-							;;								
-		*)					usage
-							exit 1
-							;;
-	esac
-	shift
+    case $1 in
+        -d|--debug|debug)    DEBUG=y
+                            set -x
+                            ;;                                
+        *)                    usage
+                            exit 1
+                            ;;
+    esac
+    shift
 done
 
 if pidof -o %PPID -x $(basename $0) > /dev/null 2>&1; then
-	log "WARNING: $(basename $0) from the previous iteration still running.  Exiting."
-	exit 1
+    log "WARNING: $(basename $0) from the previous iteration still running.  Exiting."
+    exit 1
 fi
 
+CONF_FILE=${POLICY_HOME}/etc/monitor/monitor.cfg
 . ${POLICY_HOME}/etc/profile.d/env.sh
 
-if flock ${cfg} ; then
-	process_config
-fi {cfg}>>${POLICY_HOME}/etc/monitor/monitor.cfg.lock
-
-
+if flock 200 ; then
+    process_config
+fi 200>>${CONF_FILE}.lock
