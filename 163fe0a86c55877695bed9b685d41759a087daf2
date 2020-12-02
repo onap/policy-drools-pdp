@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a0de2cf_9b8e52c2",
+        "filename": "feature-lifecycle/src/test/resources/feature-lifecycle.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2020-12-02T16:22:00Z",
+      "side": 1,
+      "message": "We don\u0027t need \"onap.policies.controlloop.operational.common.Drools\" here?",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 25
+      },
+      "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
