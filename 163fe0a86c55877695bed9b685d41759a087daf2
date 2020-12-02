@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "6b4a7ae1_e581d259",
+        "filename": "feature-lifecycle/src/test/resources/feature-lifecycle.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-12-02T16:27:22Z",
+      "side": 1,
+      "message": "Not needed here, this is just a companion for junit tests",
+      "parentUuid": "7a0de2cf_9b8e52c2",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 25
+      },
+      "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3c3fa29d_b72d4ed4",
         "filename": "packages/install/src/files/base.conf",
         "patchSetId": 2
@@ -60,6 +84,30 @@
       "writtenOn": "2020-12-02T16:24:31Z",
       "side": 1,
       "message": "We don\u0027t need \"onap.policies.controlloop.operational.common.Drools\" here?",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 27
+      },
+      "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48d54327_be7c65f3",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2020-12-02T16:27:22Z",
+      "side": 1,
+      "message": "not needed, this is to be provided by each installation, this is just to track the installation variable",
+      "parentUuid": "3c3fa29d_b72d4ed4",
       "range": {
         "startLine": 104,
         "startChar": 0,
