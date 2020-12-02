@@ -22,6 +22,53 @@
       "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c815f6e8_af0708a3",
+        "filename": "feature-lifecycle/src/test/resources/feature-lifecycle.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2020-12-02T16:24:31Z",
+      "side": 1,
+      "message": "pls ignore, this is only test.",
+      "parentUuid": "7a0de2cf_9b8e52c2",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 25
+      },
+      "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c3fa29d_b72d4ed4",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2020-12-02T16:24:31Z",
+      "side": 1,
+      "message": "We don\u0027t need \"onap.policies.controlloop.operational.common.Drools\" here?",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 104,
+        "endChar": 27
+      },
+      "revId": "163fe0a86c55877695bed9b685d41759a087daf2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
