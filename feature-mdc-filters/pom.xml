@@ -24,7 +24,7 @@
     <parent>
         <artifactId>drools-pdp</artifactId>
         <groupId>org.onap.policy.drools-pdp</groupId>
-        <version>1.6.4-SNAPSHOT</version>
+        <version>1.6.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>feature-mdc-filters</artifactId>
