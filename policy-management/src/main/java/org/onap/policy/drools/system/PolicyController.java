@@ -3,6 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +30,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 
 /**
  * A Policy Controller is the higher level unit of control. It corresponds to the ncomp equivalent
@@ -63,7 +64,7 @@ public interface PolicyController extends Startable, Lockable {
     /**
      * Get Policy Types supported by this controller.
      */
-    List<ToscaPolicyTypeIdentifier> getPolicyTypes();
+    List<ToscaConceptIdentifier> getPolicyTypes();
 
     /**
      * Update maven configuration.

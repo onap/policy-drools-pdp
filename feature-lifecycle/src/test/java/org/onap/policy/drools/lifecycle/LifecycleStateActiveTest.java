@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +47,8 @@ import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
 /**
  * Lifecycle State Active Test.
@@ -215,11 +216,11 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals(qlength + 1, fsm.client.getSink().getRecentEvents().length);
         assertEquals(3, fsm.policyTypesMap.size());
         assertNotNull(fsm.getPolicyTypesMap().get(
-                new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Controller", "1.0.0")));
+                new ToscaConceptIdentifier("onap.policies.native.drools.Controller", "1.0.0")));
         assertNotNull(fsm.getPolicyTypesMap().get(
-                new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Artifact", "1.0.0")));
+                new ToscaConceptIdentifier("onap.policies.native.drools.Artifact", "1.0.0")));
         assertNotNull(fsm.getPolicyTypesMap().get(
-                new ToscaPolicyTypeIdentifier("onap.policies.controlloop.operational.common.Drools",
+                new ToscaConceptIdentifier("onap.policies.controlloop.operational.common.Drools",
                 "1.0.0")));
         PdpStatus cachedStatus = new StandardCoder()
                                     .decode(fsm.client.getSink().getRecentEvents()[qlength], PdpStatus.class);

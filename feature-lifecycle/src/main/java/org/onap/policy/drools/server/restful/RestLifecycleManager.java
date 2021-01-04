@@ -1,6 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,9 +47,8 @@ import org.onap.policy.drools.lifecycle.PolicyTypeController;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyIdentifier;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,7 +239,7 @@ public class RestLifecycleManager {
             @PathParam("policyTypeVersion") String policyTypeVersion) {
         PolicyTypeController typeController =
             LifecycleFeature.fsm.getPolicyTypesMap()
-                    .get(new ToscaPolicyTypeIdentifier(policyType, policyTypeVersion));
+                    .get(new ToscaConceptIdentifier(policyType, policyTypeVersion));
         if (typeController == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -307,7 +307,7 @@ public class RestLifecycleManager {
         ToscaPolicy policy;
         try {
             policy =
-                LifecycleFeature.fsm.getPoliciesMap().get(new ToscaPolicyIdentifier(policyName, policyVersion));
+                LifecycleFeature.fsm.getPoliciesMap().get(new ToscaConceptIdentifier(policyName, policyVersion));
         } catch (RuntimeException r) {
             logger.debug("policy {}:{} has not been found", policyName, policyVersion, r);
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -334,7 +334,7 @@ public class RestLifecycleManager {
         ToscaPolicy policy;
         try {
             policy =
-                LifecycleFeature.fsm.getPoliciesMap().get(new ToscaPolicyIdentifier(policyName, policyVersion));
+                LifecycleFeature.fsm.getPoliciesMap().get(new ToscaConceptIdentifier(policyName, policyVersion));
         } catch (RuntimeException r) {
             logger.debug("policy {}:{} has not been found", policyName, policyVersion, r);
             return Response.status(Response.Status.NOT_FOUND).build();
