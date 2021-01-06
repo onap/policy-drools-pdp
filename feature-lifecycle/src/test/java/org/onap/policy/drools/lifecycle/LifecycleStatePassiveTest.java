@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +44,8 @@ import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
 /**
  * Lifecycle State Passive Tests.
@@ -73,12 +74,12 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         fsm.start(controllerSupport.getController());
         assertSame(controllerSupport.getController(),
             ((PolicyTypeDroolsController) fsm.getController(
-                    new ToscaPolicyTypeIdentifier(
+                    new ToscaConceptIdentifier(
                             ControllerSupport.POLICY_TYPE_COMPLIANT_OP, ControllerSupport.POLICY_TYPE_VERSION)))
                 .controllers().get(0));
 
         fsm.stop(controllerSupport.getController());
-        assertNull(fsm.getController(new ToscaPolicyTypeIdentifier(ControllerSupport.POLICY_TYPE_COMPLIANT_OP,
+        assertNull(fsm.getController(new ToscaConceptIdentifier(ControllerSupport.POLICY_TYPE_COMPLIANT_OP,
                         ControllerSupport.POLICY_TYPE_VERSION)));
 
         fsm.shutdown();

@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ *  Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +41,8 @@ import org.onap.policy.drools.domain.models.artifact.NativeArtifactProperties;
 import org.onap.policy.drools.domain.models.artifact.NativeArtifactRulesArtifact;
 import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
 import org.onap.policy.drools.policies.DomainMaker;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
 public class DomainPolicyTypesTest {
@@ -75,8 +76,8 @@ public class DomainPolicyTypesTest {
         ToscaPolicy toscaPolicy =
             getExamplesPolicy(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
 
-        ToscaPolicyTypeIdentifier policyTypeId =
-            new ToscaPolicyTypeIdentifier(NATIVE_DROOLS_POLICY_TYPE, "1.0.0");
+        ToscaConceptIdentifier policyTypeId =
+            new ToscaConceptIdentifier(NATIVE_DROOLS_POLICY_TYPE, "1.0.0");
         domainMaker.isConformant(policyTypeId, rawNativeDroolsPolicy);
 
         assertTrue(domainMaker.isConformant(toscaPolicy));
@@ -116,7 +117,7 @@ public class DomainPolicyTypesTest {
 
         assertTrue(domainMaker
             .isDomainConformant(
-                    new ToscaPolicyTypeIdentifier(domainDroolsPolicy2.getType(), domainDroolsPolicy2.getTypeVersion()),
+                    new ToscaConceptIdentifier(domainDroolsPolicy2.getType(), domainDroolsPolicy2.getTypeVersion()),
                     domainDroolsPolicy2));
     }
 

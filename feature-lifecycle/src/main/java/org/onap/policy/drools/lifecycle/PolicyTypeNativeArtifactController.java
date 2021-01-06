@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +31,8 @@ import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +40,12 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
     private static final Logger logger = LoggerFactory.getLogger(PolicyTypeNativeArtifactController.class);
 
     @Getter
-    protected final ToscaPolicyTypeIdentifier policyType;
+    protected final ToscaConceptIdentifier policyType;
 
     @GsonJsonIgnore
     protected final LifecycleFsm fsm;
 
-    public PolicyTypeNativeArtifactController(LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType) {
+    public PolicyTypeNativeArtifactController(LifecycleFsm fsm, ToscaConceptIdentifier policyType) {
         this.policyType = policyType;
         this.fsm = fsm;
     }

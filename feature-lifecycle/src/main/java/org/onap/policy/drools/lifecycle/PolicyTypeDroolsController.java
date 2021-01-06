@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +32,8 @@ import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.domain.models.operational.OperationalPolicy;
 import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +44,8 @@ import org.slf4j.LoggerFactory;
 
 public class PolicyTypeDroolsController implements PolicyTypeController {
 
-    protected static final ToscaPolicyTypeIdentifier compliantType =
-        new ToscaPolicyTypeIdentifier("onap.policies.controlloop.operational.common.Drools", "1.0.0");
+    protected static final ToscaConceptIdentifier compliantType =
+        new ToscaConceptIdentifier("onap.policies.controlloop.operational.common.Drools", "1.0.0");
 
     private static final Logger logger = LoggerFactory.getLogger(PolicyTypeDroolsController.class);
 
@@ -52,7 +53,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
     protected final Map<String, PolicyController> controllers = new ConcurrentHashMap<>();
 
     @Getter
-    protected final ToscaPolicyTypeIdentifier policyType;
+    protected final ToscaConceptIdentifier policyType;
 
     @GsonJsonIgnore
     protected final LifecycleFsm fsm;
@@ -61,7 +62,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
      * Creates a Policy Type Drools Controller.
      */
     public PolicyTypeDroolsController(
-            LifecycleFsm fsm, ToscaPolicyTypeIdentifier policyType, PolicyController controller) {
+            LifecycleFsm fsm, ToscaConceptIdentifier policyType, PolicyController controller) {
         this.policyType = policyType;
         this.controllers.put(controller.getName(), controller);
         this.fsm = fsm;

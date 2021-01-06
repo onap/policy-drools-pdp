@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +47,7 @@ import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.utils.PropertyUtil;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +111,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Policy Types.
      */
-    private List<ToscaPolicyTypeIdentifier> policyTypes;
+    private List<ToscaConceptIdentifier> policyTypes;
 
     /**
      * Constructor version mainly used for bootstrapping at initialization time a policy engine
@@ -147,7 +148,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     }
 
     @Override
-    public List<ToscaPolicyTypeIdentifier> getPolicyTypes() {
+    public List<ToscaConceptIdentifier> getPolicyTypes() {
         if (!policyTypes.isEmpty()) {
             return policyTypes;
         }
@@ -156,13 +157,13 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
                 .get()
                 .getBaseDomainNames()
                 .stream()
-                .map(d -> new ToscaPolicyTypeIdentifier(d,
+                .map(d -> new ToscaConceptIdentifier(d,
                                 DroolsPropertyConstants.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION))
                 .collect(Collectors.toList());
     }
 
-    protected List<ToscaPolicyTypeIdentifier> getPolicyTypesFromProperties() {
-        List<ToscaPolicyTypeIdentifier> policyTypeIds = new ArrayList<>();
+    protected List<ToscaConceptIdentifier> getPolicyTypesFromProperties() {
+        List<ToscaConceptIdentifier> policyTypeIds = new ArrayList<>();
 
         String ptiPropValue = properties.getProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_POLICY_TYPES);
         if (ptiPropValue == null) {
@@ -173,10 +174,10 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         for (String pti : ptiPropList) {
             String[] ptv = pti.split(":");
             if (ptv.length == 1) {
-                policyTypeIds.add(new ToscaPolicyTypeIdentifier(ptv[0],
+                policyTypeIds.add(new ToscaConceptIdentifier(ptv[0],
                     DroolsPropertyConstants.DEFAULT_CONTROLLER_POLICY_TYPE_VERSION));
             } else if (ptv.length == 2) {
-                policyTypeIds.add(new ToscaPolicyTypeIdentifier(ptv[0], ptv[1]));
+                policyTypeIds.add(new ToscaConceptIdentifier(ptv[0], ptv[1]));
             }
         }
 

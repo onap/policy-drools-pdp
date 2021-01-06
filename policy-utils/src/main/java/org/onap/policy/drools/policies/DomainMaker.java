@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ *  Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +31,9 @@ import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.coder.StandardValCoder;
 import org.onap.policy.common.utils.resources.ResourceUtils;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyType;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ public class DomainMaker {
     /**
      * policy-type -> schema validator map.
      */
-    private final Map<ToscaPolicyTypeIdentifier, StandardValCoder> validators = new ConcurrentHashMap<>();
+    private final Map<ToscaConceptIdentifier, StandardValCoder> validators = new ConcurrentHashMap<>();
 
     /**
      * non-validation serialization coder.
@@ -66,7 +67,7 @@ public class DomainMaker {
     /**
      * Does this json conform to a registered policy type schema?.
      */
-    public boolean isConformant(@NonNull ToscaPolicyTypeIdentifier policyType, @NonNull String json) {
+    public boolean isConformant(@NonNull ToscaConceptIdentifier policyType, @NonNull String json) {
         if (!isRegistered(policyType)) {
             return false;
         }
@@ -89,7 +90,7 @@ public class DomainMaker {
     /**
      * Does this domain policy conforms to its schema definition?.
      */
-    public <T> boolean isDomainConformant(@NonNull ToscaPolicyTypeIdentifier policyType, @NonNull T domainPolicy) {
+    public <T> boolean isDomainConformant(@NonNull ToscaConceptIdentifier policyType, @NonNull T domainPolicy) {
         if (!isRegistered(policyType)) {
             return false;
         }
@@ -134,7 +135,7 @@ public class DomainMaker {
      * Checks a domain policy conformance to its specification providing a list of errors
      * in a ValidationFailedException.
      */
-    public <T> boolean conformance(@NonNull ToscaPolicyTypeIdentifier policyType, T domainPolicy) {
+    public <T> boolean conformance(@NonNull ToscaConceptIdentifier policyType, T domainPolicy) {
 
         if (!isRegistered(policyType)) {
             return false;
@@ -156,7 +157,7 @@ public class DomainMaker {
     /**
      * Registers a known schema resource for validation.
      */
-    public boolean registerValidator(@NonNull ToscaPolicyTypeIdentifier policyType) {
+    public boolean registerValidator(@NonNull ToscaConceptIdentifier policyType) {
         //
         // A known schema is one that embedded in a .jar in the classpath as a resource
         // matching the following syntax: <policy-type-name>-<policy-type-version>.schema.json.
@@ -175,7 +176,7 @@ public class DomainMaker {
     /**
      * Registers/Overrides a new/known schema for a policy type.
      */
-    public boolean registerValidator(@NonNull ToscaPolicyTypeIdentifier policyType, @NonNull String schema) {
+    public boolean registerValidator(@NonNull ToscaConceptIdentifier policyType, @NonNull String schema) {
         try {
             validators.put(policyType, new StandardValCoder(schema, policyType.toString()));
         } catch (RuntimeException r) {
@@ -195,7 +196,7 @@ public class DomainMaker {
     /**
      * Converts a JSON policy into a Domain Policy.
      */
-    public <T> T convertTo(@NonNull ToscaPolicyTypeIdentifier policyType, @NonNull String json, @NonNull Class<T> clazz)
+    public <T> T convertTo(@NonNull ToscaConceptIdentifier policyType, @NonNull String json, @NonNull Class<T> clazz)
             throws CoderException {
         if (isRegistered(policyType)) {
             return validators.get(policyType).decode(json, clazz);
@@ -215,7 +216,7 @@ public class DomainMaker {
         throw new UnsupportedOperationException("schema generation from policy type is not supported");
     }
 
-    public boolean isRegistered(@NonNull ToscaPolicyTypeIdentifier policyType) {
+    public boolean isRegistered(@NonNull ToscaConceptIdentifier policyType) {
         return validators.containsKey(policyType) || registerValidator(policyType);
     }
 

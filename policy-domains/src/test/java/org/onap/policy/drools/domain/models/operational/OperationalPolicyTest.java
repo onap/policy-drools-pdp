@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +32,8 @@ import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.drools.domain.models.Metadata;
 import org.onap.policy.drools.policies.DomainMaker;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
 public class OperationalPolicyTest {
@@ -58,8 +59,8 @@ public class OperationalPolicyTest {
         String rawVcpeToscaPolicy = getExamplesPolicyString(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
 
         // valid "known" policy type with implicit schema
-        ToscaPolicyTypeIdentifier operationalCompliantType =
-                new ToscaPolicyTypeIdentifier(OPERATIONAL_DROOLS_POLICY_TYPE, "1.0.0");
+        ToscaConceptIdentifier operationalCompliantType =
+                new ToscaConceptIdentifier(OPERATIONAL_DROOLS_POLICY_TYPE, "1.0.0");
         assertTrue(domainMaker.isConformant(operationalCompliantType, rawVcpeToscaPolicy));
         assertNotNull(domainMaker.convertTo(operationalCompliantType, rawVcpeToscaPolicy, OperationalPolicy.class));
     }

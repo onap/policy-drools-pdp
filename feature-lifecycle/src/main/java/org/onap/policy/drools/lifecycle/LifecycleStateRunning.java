@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +31,8 @@ import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,7 +165,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         boolean success = true;
         DomainMaker domain = fsm.getDomainMaker();
         for (ToscaPolicy policy : policies) {
-            ToscaPolicyTypeIdentifier policyType = policy.getTypeIdentifier();
+            ToscaConceptIdentifier policyType = policy.getTypeIdentifier();
             PolicyTypeController controller = fsm.getController(policyType);
             if (controller == null) {
                 logger.warn("no controller found for {}", policyType);

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,9 +60,8 @@ import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyIdentifier;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +84,11 @@ public class LifecycleFsm implements Startable {
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
 
-    protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_NATIVE_RULES =
-            new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Artifact", "1.0.0");
+    protected static final ToscaConceptIdentifier POLICY_TYPE_DROOLS_NATIVE_RULES =
+            new ToscaConceptIdentifier("onap.policies.native.drools.Artifact", "1.0.0");
 
-    protected static final ToscaPolicyTypeIdentifier POLICY_TYPE_DROOLS_NATIVE_CONTROLLER =
-            new ToscaPolicyTypeIdentifier("onap.policies.native.drools.Controller", "1.0.0");
+    protected static final ToscaConceptIdentifier POLICY_TYPE_DROOLS_NATIVE_CONTROLLER =
+            new ToscaConceptIdentifier("onap.policies.native.drools.Controller", "1.0.0");
 
     @Getter
     protected final Properties properties;
@@ -135,10 +135,10 @@ public class LifecycleFsm implements Startable {
     protected Set<String> mandatoryPolicyTypes = new HashSet<>();
 
     @Getter
-    protected final Map<ToscaPolicyTypeIdentifier, PolicyTypeController> policyTypesMap = new HashMap<>();
+    protected final Map<ToscaConceptIdentifier, PolicyTypeController> policyTypesMap = new HashMap<>();
 
     @Getter
-    protected final Map<ToscaPolicyIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
+    protected final Map<ToscaConceptIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
 
     /**
      * Constructor.
@@ -200,7 +200,7 @@ public class LifecycleFsm implements Startable {
             return;
         }
 
-        for (ToscaPolicyTypeIdentifier id : controller.getPolicyTypes()) {
+        for (ToscaConceptIdentifier id : controller.getPolicyTypes()) {
             PolicyTypeDroolsController ptDc = (PolicyTypeDroolsController) policyTypesMap.get(id); //NOSONAR
             if (ptDc == null) {
                 policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
@@ -374,7 +374,7 @@ public class LifecycleFsm implements Startable {
         return (this.scheduler.submit(() -> state.updatePolicies(toscaPolicies)) != null);
     }
 
-    protected PolicyTypeController getController(ToscaPolicyTypeIdentifier policyType) {
+    protected PolicyTypeController getController(ToscaConceptIdentifier policyType) {
         return policyTypesMap.get(policyType);
     }
 
@@ -387,7 +387,7 @@ public class LifecycleFsm implements Startable {
 
     protected Set<String> getCurrentPolicyTypes() {
         return getPolicyTypesMap().keySet().stream()
-                       .map(ToscaPolicyTypeIdentifier::getName).collect(Collectors.toSet());
+                       .map(ToscaConceptIdentifier::getName).collect(Collectors.toSet());
     }
 
     /* ** Action Helpers ** */

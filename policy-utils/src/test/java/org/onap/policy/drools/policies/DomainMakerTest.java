@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ *  Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +39,9 @@ import org.onap.policy.drools.models.domains.a.DomainAPolicy;
 import org.onap.policy.drools.models.domains.a.Metadata;
 import org.onap.policy.drools.models.domains.a.Nested;
 import org.onap.policy.drools.models.domains.a.Properties;
+import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyType;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyTypeIdentifier;
 
 public class DomainMakerTest {
 
@@ -53,8 +54,8 @@ public class DomainMakerTest {
 
     @Test
     public void testIsConformantString() throws IOException {
-        ToscaPolicyTypeIdentifier policyTypeId =
-            new ToscaPolicyTypeIdentifier("policy.type.A", "1.0.0");
+        ToscaConceptIdentifier policyTypeId =
+            new ToscaConceptIdentifier("policy.type.A", "1.0.0");
         String rawJsonPolicyType =
             getJsonFromFile("src/test/resources/policyA.json");
 
@@ -75,8 +76,8 @@ public class DomainMakerTest {
 
     @Test
     public void testIsDomainConformant() {
-        ToscaPolicyTypeIdentifier policyTypeId =
-                new ToscaPolicyTypeIdentifier("policy.type.A", "1.0.0");
+        ToscaConceptIdentifier policyTypeId =
+                new ToscaConceptIdentifier("policy.type.A", "1.0.0");
 
         DomainAPolicy domainAPolicy = createDomainPolicy();
 
@@ -108,7 +109,7 @@ public class DomainMakerTest {
         assertDomainPolicy(domainAPolicy);
 
         domainAPolicy.getProperties().getNested().setNested1("");
-        ToscaPolicyTypeIdentifier ident1 = policy1.getTypeIdentifier();
+        ToscaConceptIdentifier ident1 = policy1.getTypeIdentifier();
         assertThatThrownBy(() -> domainMaker.conformance(ident1, domainAPolicy))
                 .isInstanceOf(ValidationFailedException.class)
                 .hasMessageContaining("Pattern ^(.+)$ is not contained in text");
@@ -116,8 +117,8 @@ public class DomainMakerTest {
 
     @Test
     public void testRegisterValidator() throws IOException, CoderException {
-        ToscaPolicyTypeIdentifier policyTypeId =
-                new ToscaPolicyTypeIdentifier("policy.type.external", "9.9.9");
+        ToscaConceptIdentifier policyTypeId =
+                new ToscaConceptIdentifier("policy.type.external", "9.9.9");
 
         assertTrue(domainMaker.registerValidator(policyTypeId,
             getJsonFromFile("src/test/resources/policy.type.external-9.9.9.schema.json")));
@@ -151,12 +152,12 @@ public class DomainMakerTest {
 
     @Test
     public void testIsRegistered() {
-        ToscaPolicyTypeIdentifier policyTypeId1 =
-                new ToscaPolicyTypeIdentifier("policy.type.A", "1.0.0");
+        ToscaConceptIdentifier policyTypeId1 =
+                new ToscaConceptIdentifier("policy.type.A", "1.0.0");
         assertTrue(domainMaker.isRegistered(policyTypeId1));
 
-        ToscaPolicyTypeIdentifier policyTypeId2 =
-                new ToscaPolicyTypeIdentifier("policy.type.external", "7.7.9");
+        ToscaConceptIdentifier policyTypeId2 =
+                new ToscaConceptIdentifier("policy.type.external", "7.7.9");
         assertFalse(domainMaker.isRegistered(policyTypeId2));
 
     }
