@@ -50,8 +50,7 @@ RUN apk update && \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
     && pip install --no-cache-dir --upgrade setuptools http-prompt \
     && pip uninstall -y httpie \
-    && pip install --no-cache-dir httpie==1.0.3 \
-    && rm -r /root/.cache
+    && pip install --no-cache-dir httpie==1.0.3
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
     chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL
