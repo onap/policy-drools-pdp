@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -347,13 +348,61 @@ public class LifecycleFsm implements Startable {
     protected List<ToscaPolicy> getDeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
         List<ToscaPolicy> deployPolicies = new ArrayList<>(policies);
         deployPolicies.removeAll(policiesMap.values());
-        return deployPolicies;
+
+        // Ensure that the sequence of policy deployments is sane to minimize potential errors,
+        // First policies to deploy are the controller related ones, those that affect the lifecycle of
+        // controllers, starting with the ones that affect the existence of the controller (native controller),
+        // second the ones that "brain" the controller with application logic (native artifacts).
+        // Lastly the application specific ones such as operational policies.
+
+        // group policies by policy types
+        Map<String, List<ToscaPolicy>> policyTypeGroups = groupPoliciesByPolicyType(deployPolicies);
+
+        // place native controller policies at the start of the list
+        List<ToscaPolicy> orderedDeployableList =
+            new ArrayList<>(policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName(),
+                Collections.EMPTY_LIST));
+
+        // add to the working list the native controller policies
+        orderedDeployableList.addAll(
+            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.EMPTY_LIST));
+
+        // place non-native policies to place at the end of the list
+        orderedDeployableList.addAll(getNonNativePolicies(policyTypeGroups));
+
+        return orderedDeployableList;
     }
 
     protected List<ToscaPolicy> getUndeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
         List<ToscaPolicy> undeployPolicies = new ArrayList<>(policiesMap.values());
         undeployPolicies.removeAll(policies);
-        return undeployPolicies;
+        if (undeployPolicies.isEmpty()) {
+            return undeployPolicies;
+        }
+
+        // Ensure that the sequence of policy undeployments is sane to minimize potential errors,
+        // as it is assumed not smart ordering from the policies sent by the PAP.
+        // First policies to undeploy are those that are only of relevance within a drools container,
+        // such as the operational policies.   The next set of policies to undeploy are those that
+        // affect the overall PDP-D application support, firstly the ones that supports the
+        // application software wiring (native rules policies), and second those that relate
+        // to the PDP-D controllers lifecycle.
+
+        // group policies by policy types
+        Map<String, List<ToscaPolicy>> policyTypeGroups = groupPoliciesByPolicyType(undeployPolicies);
+
+        // place controller only (non-native policies) at the start of the list of the undeployment list
+        List<ToscaPolicy> orderedUndeployableList = getNonNativePolicies(policyTypeGroups);
+
+        // add to the working list the native rules policies if any
+        orderedUndeployableList.addAll(
+            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.EMPTY_LIST));
+
+        // finally add to the working list native controller policies if any
+        orderedUndeployableList.addAll(
+            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName(), Collections.EMPTY_LIST));
+
+        return orderedUndeployableList;
     }
 
     protected void deployedPolicyAction(@NonNull ToscaPolicy policy) {
@@ -376,6 +425,17 @@ public class LifecycleFsm implements Startable {
 
     protected PolicyTypeController getController(ToscaConceptIdentifier policyType) {
         return policyTypesMap.get(policyType);
+    }
+
+    protected Map<String, List<ToscaPolicy>> groupPoliciesByPolicyType(List<ToscaPolicy> deployPolicies) {
+        return deployPolicies.stream().collect(Collectors.groupingBy(policy -> policy.getTypeIdentifier().getName()));
+    }
+
+    protected List<ToscaPolicy> getNonNativePolicies(@NonNull Map<String, List<ToscaPolicy>> policyTypeGroups) {
+        return policyTypeGroups.entrySet().stream()
+            .filter(entry -> !entry.getKey().equals(POLICY_TYPE_DROOLS_NATIVE_RULES.getName())
+                && !entry.getKey().equals(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName()))
+            .flatMap(entry -> entry.getValue().stream()).collect(Collectors.toList());
     }
 
     /**
