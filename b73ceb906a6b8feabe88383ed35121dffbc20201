@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d2f8132_34e33e14",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-01-11T14:28:37Z",
+      "side": 1,
+      "message": "Cool; I learned something new today - thanks!  Now that I have a new hammer, I need to find some nails. :-)",
+      "range": {
+        "startLine": 431,
+        "startChar": 58,
+        "endLine": 431,
+        "endChar": 68
+      },
+      "revId": "b73ceb906a6b8feabe88383ed35121dffbc20201",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
