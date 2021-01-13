@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17261f5b_4c7b4188",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-01-13T23:09:10Z",
+      "side": 1,
+      "message": "does kieSession have a way to directly look-up the object?",
+      "revId": "18e62f2db17c3a3034537a52a46fbb252bd676c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b2b94783_1e9d66a9",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 936,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-01-13T23:09:10Z",
+      "side": 1,
+      "message": "could change this to:\n\n  filter(xxx).findAny()",
+      "range": {
+        "startLine": 936,
+        "startChar": 47,
+        "endLine": 936,
+        "endChar": 108
+      },
+      "revId": "18e62f2db17c3a3034537a52a46fbb252bd676c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
