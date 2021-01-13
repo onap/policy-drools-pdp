@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -231,6 +231,17 @@ public interface DroolsController extends Startable, Lockable {
      * Deletes all facts from a given class from all sessions.
      */
     <T> boolean delete(@NonNull Class<T> fact);
+
+    /**
+     * Checks is a fact exists in a given session.
+     */
+    <T> boolean exists(@NonNull String sessionName, @NonNull T fact);
+
+    /**
+     * Checks if a fact exists in any session.
+     */
+    <T> boolean exists(@NonNull T fact);
+
 
     /**
      * halts and permanently releases all resources.
