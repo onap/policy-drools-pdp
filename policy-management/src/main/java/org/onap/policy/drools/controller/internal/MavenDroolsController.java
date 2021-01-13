@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -919,6 +919,22 @@ public class MavenDroolsController implements DroolsController {
         return this.getSessionNames().stream().map(ss -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
     }
 
+    @Override
+    public <T> boolean exists(@NonNull String sessionName, @NonNull T fact) {
+        KieSession kieSession = getSession(sessionName).getKieSession();
+
+        Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(fact.getClass()));
+        for (FactHandle factHandle : factHandles) {
+            return Objects.equals(fact, kieSession.getObject(factHandle));
+        }
+
+        return false;
+    }
+
+    @Override
+    public <T> boolean exists(@NonNull T fact) {
+        return this.getSessionNames().stream().anyMatch(ss -> exists(ss, fact));
+    }
 
     @Override
     public Class<?> fetchModelClass(String className) {

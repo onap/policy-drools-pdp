@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,5 +156,12 @@ public class NullDroolsControllerTest {
     @Test
     public void factQuery() {
         Assert.assertTrue(new NullDroolsController().factQuery(null, null, null, false).isEmpty());
+    }
+
+    @Test
+    public void exists() {
+        Object o1 = new Object();
+        Assert.assertFalse(new NullDroolsController().exists("blah", o1));
+        Assert.assertFalse(new NullDroolsController().exists(o1));
     }
 }
