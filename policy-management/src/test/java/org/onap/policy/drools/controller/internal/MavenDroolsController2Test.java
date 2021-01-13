@@ -202,6 +202,9 @@ public class MavenDroolsController2Test {
         when(kieSess.getKieBase()).thenReturn(kieBase);
         when(kieSess.getQueryResults(QUERY, PARM1, PARM2)).thenReturn(queryResults);
 
+        when(kieSess.getFactHandle(FACT1_OBJECT)).thenReturn(fact1);
+        when(kieSess.getFactHandle(FACT3_OBJECT)).thenReturn(fact3);
+
         when(kieSess.getObject(fact1)).thenReturn(FACT1_OBJECT);
         when(kieSess.getObject(fact2)).thenReturn("");
         when(kieSess.getObject(fact3)).thenReturn(FACT3_OBJECT);

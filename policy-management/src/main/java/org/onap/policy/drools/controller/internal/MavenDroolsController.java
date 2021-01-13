@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -870,24 +870,31 @@ public class MavenDroolsController implements DroolsController {
     }
 
     @Override
-    public <T> boolean delete(@NonNull String sessionName, @NonNull T fact) {
-        String factClassName = fact.getClass().getName();
+    public <T> boolean delete(@NonNull String sessionName, @NonNull T objFact) {
+        KieSession kieSession = getSession(sessionName).getKieSession();
 
-        PolicySession session = getSession(sessionName);
-        KieSession kieSession = session.getKieSession();
+        // try first to get the object to delete first by reference
 
-        Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(fact.getClass()));
+        FactHandle quickFact = kieSession.getFactHandle(objFact);
+        if (quickFact != null) {
+            logger.info("Fast delete of {} from {}", objFact, sessionName);
+            kieSession.delete(quickFact);
+            return true;
+        }
+
+        // otherwise, try to the delete the fact associated with the object by scanning all
+        // facts from the same type and performing object equality.   The set of facts
+        // is restricted to those of the same type
+
+        Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(objFact.getClass()));
         for (FactHandle factHandle : factHandles) {
-            try {
-                if (Objects.equals(fact, kieSession.getObject(factHandle))) {
-                    logger.info("Deleting {} from {}", factClassName, sessionName);
-                    kieSession.delete(factHandle);
-                    return true;
-                }
-            } catch (Exception e) {
-                logger.warn(FACT_RETRIEVE_ERROR, factHandle, e);
+            if (Objects.equals(objFact, kieSession.getObject(factHandle))) {
+                logger.info("Slow delete of {} of type {} from {}", objFact, sessionName);
+                kieSession.delete(factHandle);
+                return true;
             }
         }
+
         return false;
     }
 
@@ -919,6 +926,30 @@ public class MavenDroolsController implements DroolsController {
         return this.getSessionNames().stream().map(ss -> delete(ss, fact)).reduce(false, Boolean::logicalOr);
     }
 
+    @Override
+    public <T> boolean exists(@NonNull String sessionName, @NonNull T objFact) {
+        KieSession kieSession = getSession(sessionName).getKieSession();
+        if (kieSession.getFactHandle(objFact) != null) {
+            return true;
+        }
+
+        // try to find the object by equality comparison instead if it could not be
+        // found by reference
+
+        Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(objFact.getClass()));
+        for (FactHandle factHandle : factHandles) {
+            if (Objects.equals(objFact, kieSession.getObject(factHandle))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public <T> boolean exists(@NonNull T fact) {
+        return this.getSessionNames().stream().anyMatch(ss -> exists(ss, fact));
+    }
 
     @Override
     public Class<?> fetchModelClass(String className) {

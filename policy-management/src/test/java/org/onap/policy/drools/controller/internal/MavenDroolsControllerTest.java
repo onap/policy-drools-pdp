@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,6 +91,35 @@ public class MavenDroolsControllerTest {
         Assert.assertFalse(controller.isAlive());
 
         new GsonTestUtils().compareGson(controller, MavenDroolsControllerTest.class);
+    }
+
+    @Test
+    public void testFact() throws InterruptedException {
+        DroolsController controller = createDroolsController(30000L);
+
+        Integer one = 1;
+        Integer two = 2;
+
+        Assert.assertTrue(controller.offer(one));
+        Assert.assertTrue(controller.exists(one));
+        Assert.assertFalse(controller.exists(two));
+
+        Assert.assertTrue(controller.offer(two));
+        Assert.assertTrue(controller.exists(one));
+        Assert.assertTrue(controller.exists(two));
+
+        Integer three = 3;
+        Assert.assertFalse(controller.delete(three));
+        Assert.assertTrue(controller.exists(one));
+        Assert.assertTrue(controller.exists(two));
+
+        Assert.assertTrue(controller.delete(two));
+        Assert.assertTrue(controller.exists(one));
+        Assert.assertFalse(controller.exists(two));
+
+        Assert.assertTrue(controller.delete(one));
+        Assert.assertFalse(controller.exists(one));
+        Assert.assertFalse(controller.exists(two));
     }
 
     private DroolsController createDroolsController(long courtesyStartTimeMs) throws InterruptedException {
