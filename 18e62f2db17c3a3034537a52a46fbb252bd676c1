@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "58efe001_5206ca5e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-01-14T01:07:46Z",
+      "side": 1,
+      "message": "I am not aware of any easier way to check it, let me know if you know or find out of an easier way.",
+      "parentUuid": "17261f5b_4c7b4188",
+      "revId": "18e62f2db17c3a3034537a52a46fbb252bd676c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2b94783_1e9d66a9",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2021-01-13T23:09:10Z",
       "side": 1,
       "message": "could change this to:\n\n  filter(xxx).findAny()",
+      "range": {
+        "startLine": 936,
+        "startChar": 47,
+        "endLine": 936,
+        "endChar": 108
+      },
+      "revId": "18e62f2db17c3a3034537a52a46fbb252bd676c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7a0f73c_2cd56a19",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 936,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-01-14T01:07:46Z",
+      "side": 1,
+      "message": "oh yes, right, thanks, that\u0027s better, there\u0027s also an anyMatch(..) that I think it would make it even simpler.",
+      "parentUuid": "b2b94783_1e9d66a9",
       "range": {
         "startLine": 936,
         "startChar": 47,
