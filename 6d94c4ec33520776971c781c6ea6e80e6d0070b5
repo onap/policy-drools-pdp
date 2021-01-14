@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c61951db_0c053c21",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 885,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-01-14T20:24:35Z",
+      "side": 1,
+      "message": "if objFact is a reference to the actual object to be deleted, then the rest of this is unnecessary.  However, if objFact may be a COPY of the object to be deleted, then the rest of this may be needed.",
+      "revId": "6d94c4ec33520776971c781c6ea6e80e6d0070b5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
