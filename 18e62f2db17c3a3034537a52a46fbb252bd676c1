@@ -91,6 +91,24 @@
     },
     {
       "key": {
+        "uuid": "17d35452_71c08954",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-01-14T21:36:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea0fd96c_c79e303e",
+      "revId": "18e62f2db17c3a3034537a52a46fbb252bd676c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2b94783_1e9d66a9",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
         "patchSetId": 1
