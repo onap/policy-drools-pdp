@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "ea0fd96c_c79e303e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 926,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-01-14T20:19:09Z",
+      "side": 1,
+      "message": "I remember now .. couldn\u0027t use getFactHandle(fact) as seems to look up stuff by reference, it seems when looking up objects equal but different reference it cannot find them which should be a common case, there is a getFactHandleByIdentity type casting the session to StatefulKnowledgeImpl but that had no success with it neither.",
+      "parentUuid": "32d57f30_06025d93",
+      "revId": "18e62f2db17c3a3034537a52a46fbb252bd676c1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b2b94783_1e9d66a9",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/controller/internal/MavenDroolsController.java",
         "patchSetId": 1
