@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
@@ -22,9 +22,14 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 import lombok.NonNull;
+import org.apache.commons.lang3.tuple.Pair;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
@@ -124,21 +129,48 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
                 return false;
             }
 
+            // update subgroup if applicable per update message
+
             fsm.setSubGroupAction(update.getPdpSubgroup());
 
-            if (!updatePolicies(update.getPolicies())) {
-                fsm.statusAction(response(update.getRequestId(), PdpResponseStatus.FAIL, "cannot process policies"));
-                return false;
-            }
+            // snapshot the active policies previous to apply the new set of active
+            // policies as given by the PAP in the update message
 
-            return fsm.statusAction(response(update.getRequestId(), PdpResponseStatus.SUCCESS, null));
+            List<ToscaPolicy> activePoliciesPreUpdate = fsm.getActivePolicies();
+
+            // update policies with the current set of active policies
+
+            Pair<List<ToscaPolicy>, List<ToscaPolicy>> results = updatePoliciesWithResults(update.getPolicies());
+
+            // summary message to return in the update response to the PAP
+
+            List<ToscaPolicy> failedPolicies = new ArrayList<>(results.getLeft());
+            failedPolicies.addAll(results.getRight());
+
+            // If there are *new* native artifact policies deployed, there may be already existing
+            // non-native policies (previous to the update event processing)
+            // that will need to be reapplied as the new controllers don't know about them.
+            // This requires going through the list of those non-native policies
+            // which neither were undeployed or deployed and re-apply them on top of the
+            // new "brained" controllers.
+
+            failedPolicies.addAll(reapplyNonNativePolicies(activePoliciesPreUpdate));
+
+            return fsm.statusAction(response(update.getRequestId(),
+                            (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
+                            getPolicyIdsMessage(failedPolicies))) && failedPolicies.isEmpty();
         }
     }
 
     @Override
     public boolean updatePolicies(List<ToscaPolicy> policies) {
+        Pair<List<ToscaPolicy>, List<ToscaPolicy>> results = updatePoliciesWithResults(policies);
+        return results.getLeft().isEmpty() && results.getRight().isEmpty();
+    }
+
+    protected Pair<List<ToscaPolicy>, List<ToscaPolicy>> updatePoliciesWithResults(List<ToscaPolicy> policies) {
         if (policies == null) {
-            return true;
+            return Pair.of(Collections.emptyList(), Collections.emptyList());
         }
 
         // Note that PAP sends the list of all ACTIVE policies with every
@@ -148,40 +180,83 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         // we will deploy those policies that are not installed but
         // included in this list.
 
-        boolean success = undeployPolicies(policies);
-        return deployPolicies(policies) && success;
+        List<ToscaPolicy> failedUndeployPolicies = undeployPolicies(policies);
+        if (!failedUndeployPolicies.isEmpty()) {
+            logger.warn("update-policies: undeployment failures: {}", getPolicyIdsMessage(failedUndeployPolicies));
+        }
+
+        List<ToscaPolicy> failedDeployPolicies = deployPolicies(policies);
+        if (!failedDeployPolicies.isEmpty()) {
+            logger.warn("update-policies: deployment failures: {}", getPolicyIdsMessage(failedDeployPolicies));
+        }
+
+        return Pair.of(failedUndeployPolicies, failedDeployPolicies);
     }
 
-    protected boolean deployPolicies(List<ToscaPolicy> policies) {
+    protected List<ToscaPolicy> reapplyNonNativePolicies(List<ToscaPolicy> preActivePolicies) {
+        // only need to re-apply non native policies if there are new native artifact policies
+
+        Map<String, List<ToscaPolicy>> activePoliciesByType = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
+        List<ToscaPolicy> activeNativeArtifactPolicies = fsm.getNativeArtifactPolicies(activePoliciesByType);
+
+        Map<String, List<ToscaPolicy>> prePoliciesByType = fsm.groupPoliciesByPolicyType(preActivePolicies);
+        activeNativeArtifactPolicies.removeAll(fsm.getNativeArtifactPolicies(prePoliciesByType));
+        if (activeNativeArtifactPolicies.isEmpty()) {
+            logger.info("reapply-non-native-policies: nothing to reapply, no new native artifact policies");
+            return Collections.emptyList();
+        }
+
+        // need to re-apply non native policies
+
+        logger.info("re-applying non-native policies because new native artifact policies have been found: {}",
+                getPolicyIdsMessage(activeNativeArtifactPolicies));
+
+        // get the non-native policies to be reapplied, this is just the intersection of
+        // the original active set, and the new active set (i.e policies that have not changed,
+        // or in other words, have not been neither deployed or undeployed.
+
+        List<ToscaPolicy> preNonNativePolicies = fsm.getNonNativePolicies(prePoliciesByType);
+        preNonNativePolicies.retainAll(fsm.getNonNativePolicies(activePoliciesByType));
+
+        List<ToscaPolicy> failedPolicies = syncPolicies(preNonNativePolicies, this::deployPolicy);
+        logger.info("re-applying non-native policies failures: {}",
+                getPolicyIdsMessage(activeNativeArtifactPolicies));
+        return failedPolicies;
+    }
+
+    protected List<ToscaPolicy> deployPolicies(List<ToscaPolicy> policies) {
         return syncPolicies(fsm.getDeployablePoliciesAction(policies), this::deployPolicy);
     }
 
-    protected boolean undeployPolicies(List<ToscaPolicy> policies) {
+    protected List<ToscaPolicy> undeployPolicies(List<ToscaPolicy> policies) {
         return syncPolicies(fsm.getUndeployablePoliciesAction(policies), this::undeployPolicy);
     }
 
-    protected boolean syncPolicies(List<ToscaPolicy> policies,
+    protected List<ToscaPolicy> syncPolicies(List<ToscaPolicy> policies,
                                    BiPredicate<PolicyTypeController, ToscaPolicy> sync) {
-        boolean success = true;
+        List<ToscaPolicy> failedPolicies = new ArrayList<>();
         DomainMaker domain = fsm.getDomainMaker();
         for (ToscaPolicy policy : policies) {
             ToscaConceptIdentifier policyType = policy.getTypeIdentifier();
             PolicyTypeController controller = fsm.getController(policyType);
             if (controller == null) {
                 logger.warn("no controller found for {}", policyType);
-                success = false;
+                failedPolicies.add(policy);
                 continue;
             }
 
             if (domain.isRegistered(policy.getTypeIdentifier())) {
-                success = domain.isConformant(policy) && sync.test(controller, policy) && success;
+                if (!domain.isConformant(policy) || !sync.test(controller, policy)) {
+                    failedPolicies.add(policy);
+                }
             } else {
                 logger.info("no validator registered for policy type {}", policy.getTypeIdentifier());
-                success = sync.test(controller, policy) && success;
+                if (!sync.test(controller, policy)) {
+                    failedPolicies.add(policy);
+                }
             }
         }
-
-        return success;
+        return failedPolicies;
     }
 
     private void invalidStateChange(PdpStateChange change) {
@@ -200,4 +275,12 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
         return response;
     }
+
+    protected String getPolicyIdsMessage(List<ToscaPolicy> policies) {
+        return policies.stream()
+                       .distinct()
+                       .map(ToscaPolicy::getIdentifier).collect(Collectors.toList())
+                       .toString();
+    }
+
 }

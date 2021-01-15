@@ -45,7 +45,8 @@ public class LifecycleStatePassive extends LifecycleStateRunning {
     protected boolean stateChangeToActive(@NonNull PdpStateChange change) {
         fsm.transitionToAction(new LifecycleStateActive(fsm));
         fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS, null));
-        return fsm.updatePoliciesAction(fsm.resetPoliciesAction());
+        fsm.updatePoliciesAction(fsm.resetPoliciesAction());
+        return true;
     }
 
     @Override

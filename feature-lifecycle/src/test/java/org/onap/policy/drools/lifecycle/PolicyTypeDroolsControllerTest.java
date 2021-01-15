@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -74,17 +75,45 @@ public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
         /* non-existing controller */
         assertFalse(controller.undeploy(policy));
         assertFalse(controller.deploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
 
         policy.getProperties().remove("controllerName");
+
         assertTrue(controller.deploy(policy));
+        assertTrue(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(1, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+
+        assertTrue(controller.deploy(policy));
+        assertTrue(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(1, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+
         assertTrue(controller.undeploy(policy));
-        assertFalse(controller.undeploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+
+        assertTrue(controller.undeploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
 
         /* existing controller */
         policy.getProperties().put("controllerName", "lifecycle");
+
         assertTrue(controller.deploy(policy));
+        assertTrue(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(1, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+
+        assertTrue(controller.deploy(policy));
+        assertTrue(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(1, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+
         assertTrue(controller.undeploy(policy));
-        assertFalse(controller.undeploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+
+        assertTrue(controller.undeploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
     }
 
 }
