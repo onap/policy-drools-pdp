@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import lombok.Getter;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -35,6 +36,7 @@ public class LifecycleFeature
     /**
      * Lifecycle FSM.
      */
+    @Getter
     public static final LifecycleFsm fsm = new LifecycleFsm();
 
     @Override
@@ -90,32 +92,32 @@ public class LifecycleFeature
     }
 
     private boolean fsmStart() {
-        fsm.start();
+        getFsm().start();
         return false;
     }
 
     private boolean fsmStart(PolicyController controller) {
-        fsm.start(controller);
+        getFsm().start(controller);
         return false;
     }
 
     private boolean fsmStop() {
-        fsm.stop();
+        getFsm().stop();
         return false;
     }
 
     private boolean fsmStop(PolicyController controller) {
-        fsm.stop(controller);
+        getFsm().stop(controller);
         return false;
     }
 
     private boolean fsmPatch(PolicyController controller) {
-        fsm.patch(controller);
+        getFsm().patch(controller);
         return false;
     }
 
     private boolean fsmShutdown() {
-        fsm.shutdown();
+        getFsm().shutdown();
         return false;
     }
 }

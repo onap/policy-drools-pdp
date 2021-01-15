@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -74,17 +75,36 @@ public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
         /* non-existing controller */
         assertFalse(controller.undeploy(policy));
         assertFalse(controller.deploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
 
         policy.getProperties().remove("controllerName");
-        assertTrue(controller.deploy(policy));
-        assertTrue(controller.undeploy(policy));
-        assertFalse(controller.undeploy(policy));
+
+        deploy();
+        deploy();  // one more time
+
+        undeploy();
+        undeploy();  // one more time
 
         /* existing controller */
         policy.getProperties().put("controllerName", "lifecycle");
-        assertTrue(controller.deploy(policy));
-        assertTrue(controller.undeploy(policy));
-        assertFalse(controller.undeploy(policy));
+
+        deploy();
+        deploy();  // one more time
+
+        undeploy();
+        undeploy();  // one more time
     }
 
+    protected void undeploy() {
+        assertTrue(controller.undeploy(policy));
+        assertFalse(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+    }
+
+    protected void deploy() {
+        assertTrue(controller.deploy(policy));
+        assertTrue(controllerSupport.getController().getDrools().exists(policy));
+        assertEquals(1, controllerSupport.getController().getDrools().factCount(ControllerSupport.SESSION_NAME));
+    }
 }

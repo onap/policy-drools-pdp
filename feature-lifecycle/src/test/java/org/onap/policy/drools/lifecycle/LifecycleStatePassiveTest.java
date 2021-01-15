@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -140,7 +140,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testUpdate() throws IOException, CoderException {
+    public void testUpdate() throws CoderException {
         controllerSupport.getController().getDrools().delete(ToscaPolicy.class);
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
@@ -224,6 +224,18 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertBasicPassive();
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
+        // The "update" event will undeploy "toscaPolicy" and deploy "toscaPolicy2"
+        ToscaPolicy toscaPolicy2 =
+                getExamplesPolicy("policies/vFirewall.policy.operational.input.tosca.json", "operational.modifyconfig");
+        toscaPolicy.getProperties().remove("controllerName");
+        update.setPolicies(Arrays.asList(toscaPolicy2));
+        assertTrue(fsm.update(update));
+        assertEquals(3, fsm.policyTypesMap.size());
+        assertEquals(1, fsm.policiesMap.size());
+        assertEquals(toscaPolicy2, fsm.policiesMap.get(toscaPolicy2.getIdentifier()));
+        assertNull(fsm.policiesMap.get(toscaPolicy.getIdentifier()));
+        assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
+
         update.setPdpGroup(null);
         update.setPdpSubgroup(null);
         update.setPolicies(Collections.emptyList());
@@ -239,7 +251,6 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         fsm.shutdown();
     }
-
 
     @Test
     public void testStateChange() throws CoderException, IOException {

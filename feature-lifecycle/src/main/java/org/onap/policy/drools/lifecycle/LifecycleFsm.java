@@ -156,9 +156,7 @@ public class LifecycleFsm implements Startable {
 
         String commaSeparatedPolicyTypes = this.properties.getProperty(MANDATORY_POLICY_TYPES);
         if (!StringUtils.isBlank(commaSeparatedPolicyTypes)) {
-            for (String mpt: commaSeparatedPolicyTypes.split("\\s*,\\s*")) {
-                this.mandatoryPolicyTypes.add(mpt);
-            }
+            Collections.addAll(this.mandatoryPolicyTypes, commaSeparatedPolicyTypes.split("\\s*,\\s*"));
         }
 
         logger.info("The mandatory Policy Types are {}. Compliance is {}",
@@ -347,7 +345,7 @@ public class LifecycleFsm implements Startable {
 
     protected List<ToscaPolicy> getDeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
         List<ToscaPolicy> deployPolicies = new ArrayList<>(policies);
-        deployPolicies.removeAll(policiesMap.values());
+        deployPolicies.removeAll(getActivePolicies());
 
         // Ensure that the sequence of policy deployments is sane to minimize potential errors,
         // First policies to deploy are the controller related ones, those that affect the lifecycle of
@@ -359,13 +357,12 @@ public class LifecycleFsm implements Startable {
         Map<String, List<ToscaPolicy>> policyTypeGroups = groupPoliciesByPolicyType(deployPolicies);
 
         // place native controller policies at the start of the list
-        List<ToscaPolicy> orderedDeployableList =
-            new ArrayList<>(policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName(),
-                Collections.EMPTY_LIST));
+        List<ToscaPolicy> orderedDeployableList = new ArrayList<>(
+                policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName(), Collections.emptyList()));
 
         // add to the working list the native controller policies
         orderedDeployableList.addAll(
-            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.EMPTY_LIST));
+            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.emptyList()));
 
         // place non-native policies to place at the end of the list
         orderedDeployableList.addAll(getNonNativePolicies(policyTypeGroups));
@@ -374,7 +371,7 @@ public class LifecycleFsm implements Startable {
     }
 
     protected List<ToscaPolicy> getUndeployablePoliciesAction(@NonNull List<ToscaPolicy> policies) {
-        List<ToscaPolicy> undeployPolicies = new ArrayList<>(policiesMap.values());
+        List<ToscaPolicy> undeployPolicies = new ArrayList<>(getActivePolicies());
         undeployPolicies.removeAll(policies);
         if (undeployPolicies.isEmpty()) {
             return undeployPolicies;
@@ -396,11 +393,11 @@ public class LifecycleFsm implements Startable {
 
         // add to the working list the native rules policies if any
         orderedUndeployableList.addAll(
-            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.EMPTY_LIST));
+            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.emptyList()));
 
         // finally add to the working list native controller policies if any
         orderedUndeployableList.addAll(
-            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName(), Collections.EMPTY_LIST));
+            policyTypeGroups.getOrDefault(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName(), Collections.emptyList()));
 
         return orderedUndeployableList;
     }
@@ -414,13 +411,13 @@ public class LifecycleFsm implements Startable {
     }
 
     protected List<ToscaPolicy> resetPoliciesAction() {
-        List<ToscaPolicy> policies = new ArrayList<>(policiesMap.values());
+        List<ToscaPolicy> policies = new ArrayList<>(getActivePolicies());
         policiesMap.clear();
         return policies;
     }
 
-    protected boolean updatePoliciesAction(List<ToscaPolicy> toscaPolicies) {
-        return (this.scheduler.submit(() -> state.updatePolicies(toscaPolicies)) != null);
+    protected void updatePoliciesAction(List<ToscaPolicy> toscaPolicies) {
+        this.scheduler.submit(() -> state.updatePolicies(toscaPolicies));
     }
 
     protected PolicyTypeController getController(ToscaConceptIdentifier policyType) {
@@ -428,7 +425,9 @@ public class LifecycleFsm implements Startable {
     }
 
     protected Map<String, List<ToscaPolicy>> groupPoliciesByPolicyType(List<ToscaPolicy> deployPolicies) {
-        return deployPolicies.stream().collect(Collectors.groupingBy(policy -> policy.getTypeIdentifier().getName()));
+        return deployPolicies.stream()
+            .distinct()
+            .collect(Collectors.groupingBy(policy -> policy.getTypeIdentifier().getName()));
     }
 
     protected List<ToscaPolicy> getNonNativePolicies(@NonNull Map<String, List<ToscaPolicy>> policyTypeGroups) {
@@ -436,6 +435,25 @@ public class LifecycleFsm implements Startable {
             .filter(entry -> !entry.getKey().equals(POLICY_TYPE_DROOLS_NATIVE_RULES.getName())
                 && !entry.getKey().equals(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName()))
             .flatMap(entry -> entry.getValue().stream()).collect(Collectors.toList());
+    }
+
+    protected List<ToscaPolicy> getNativeArtifactPolicies(@NonNull Map<String, List<ToscaPolicy>> policyTypeGroups) {
+        return policyTypeGroups.entrySet().stream()
+            .filter(entry -> entry.getKey().equals(POLICY_TYPE_DROOLS_NATIVE_RULES.getName()))
+            .flatMap(entry -> entry.getValue().stream()).collect(Collectors.toList());
+    }
+
+    protected List<ToscaPolicy> getNativeControllerPolicies(@NonNull Map<String, List<ToscaPolicy>> policyTypeGroups) {
+        return policyTypeGroups.entrySet().stream()
+                       .filter(entry -> entry.getKey().equals(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER.getName()))
+                       .flatMap(entry -> entry.getValue().stream()).collect(Collectors.toList());
+    }
+
+    protected String getPolicyIdsMessage(List<ToscaPolicy> policies) {
+        return policies.stream()
+                       .distinct()
+                       .map(ToscaPolicy::getIdentifier).collect(Collectors.toList())
+                       .toString();
     }
 
     /**
@@ -448,6 +466,10 @@ public class LifecycleFsm implements Startable {
     protected Set<String> getCurrentPolicyTypes() {
         return getPolicyTypesMap().keySet().stream()
                        .map(ToscaConceptIdentifier::getName).collect(Collectors.toSet());
+    }
+
+    protected List<ToscaPolicy> getActivePolicies() {
+        return new ArrayList<>(policiesMap.values());
     }
 
     /* ** Action Helpers ** */

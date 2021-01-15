@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   ONAP
   ================================================================================
-  Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,12 +19,9 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.onap.policy.drools.test</groupId>
-    <artifactId>echo</artifactId>
-    <version>1.0.0</version>
-</project>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+    <kbase name="onap.policies.typeA" default="false" equalsBehavior="equality"/>
+    <kbase name="onap.policies.type1.type2" includes="onap.policies.typeA">
+        <ksession name="echo"/>
+    </kbase>
+</kmodule>

@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,6 +140,26 @@ public class LifecycleFsmTest {
 
     @Test
     public void testGetUndeployableActions() {
+        deployAllPolicies();
+        List<ToscaPolicy> expectedUndeployOrder =
+                List.of(opPolicy, op2Policy, unvalPolicy, valPolicy, artifactPolicy,
+                        artifact2Policy, controller2Policy, controllerPolicy);
+
+        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
+        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
+        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
+    }
+
+    @Test
+    public void testGetNativeArtifactPolicies() {
+        deployAllPolicies();
+
+        Map<String, List<ToscaPolicy>> deployedPolicies = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
+        assertEquals(2, fsm.getNativeArtifactPolicies(deployedPolicies).size());
+        assertEquals(List.of(artifactPolicy, artifact2Policy), fsm.getNativeArtifactPolicies(deployedPolicies));
+    }
+
+    protected void deployAllPolicies() {
         fsm.deployedPolicyAction(controllerPolicy);
         fsm.deployedPolicyAction(controller2Policy);
         fsm.deployedPolicyAction(artifactPolicy);
@@ -147,14 +168,6 @@ public class LifecycleFsmTest {
         fsm.deployedPolicyAction(valPolicy);
         fsm.deployedPolicyAction(unvalPolicy);
         fsm.deployedPolicyAction(op2Policy);
-
-        List<ToscaPolicy> expectedUndeployOrder =
-                List.of(opPolicy, op2Policy, unvalPolicy, valPolicy, artifactPolicy,
-                        artifact2Policy, controller2Policy, controllerPolicy);
-
-        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
-        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
-        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
     }
 
     protected ToscaPolicy getPolicyFromFile(String filePath, String policyName) throws CoderException, IOException {
