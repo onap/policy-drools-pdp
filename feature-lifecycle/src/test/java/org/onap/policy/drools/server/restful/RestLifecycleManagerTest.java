@@ -25,8 +25,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -441,15 +439,8 @@ public class RestLifecycleManagerTest {
     }
 
     private LifecycleFsm newFsmInstance() throws NoSuchFieldException, IllegalAccessException {
-        Field fsmField = LifecycleFeature.class.getDeclaredField("fsm");
-        fsmField.setAccessible(true);
-
-        Field modifiers = Field.class.getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.setInt(fsmField, fsmField.getModifiers() & ~Modifier.FINAL);
-
         LifecycleFsm fsm = new LifecycleFsm();
-        fsmField.set(null, fsm);
+        ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", fsm);
         return fsm;
     }
 

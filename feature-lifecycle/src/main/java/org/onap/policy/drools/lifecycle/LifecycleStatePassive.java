@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,8 @@ public class LifecycleStatePassive extends LifecycleStateRunning {
     protected boolean stateChangeToActive(@NonNull PdpStateChange change) {
         fsm.transitionToAction(new LifecycleStateActive(fsm));
         fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS, null));
-        return fsm.updatePoliciesAction(fsm.resetPoliciesAction());
+        fsm.updatePoliciesAction(fsm.resetPoliciesAction());
+        return true;
     }
 
     @Override

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,7 +70,18 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
 
     @Override
     public boolean deploy(@NonNull ToscaPolicy policy) {
-        return perform(policy, (PolicyController controller) -> controller.offer(policy));
+        return perform(policy, controller -> {
+            if (!controller.getDrools().exists(policy)) {
+                return controller.offer(policy);
+            }
+
+            logger.warn("policy {} is not deployed into {} as it already exists",
+                    policy.getIdentifier(), controller.getName());
+
+            // provided that the presence of the given policy is the
+            // desired final state of the operation, return success
+            return true;
+        });
     }
 
     /**
@@ -93,7 +104,17 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
 
     @Override
     public boolean undeploy(@NonNull ToscaPolicy policy) {
-        return perform(policy, (PolicyController controller) -> controller.getDrools().delete(policy));
+        return perform(policy, (PolicyController controller) -> {
+            if (controller.getDrools().exists(policy)) {
+                return controller.getDrools().delete(policy);
+            }
+            logger.warn("policy {} is not undeployed from {} as it does not exist",
+                    policy.getIdentifier(), controller.getName());
+
+            // provided that the no presence of the policy is the
+            // desired final state of the operation, return success
+            return true;
+        });
     }
 
     /**
@@ -134,7 +155,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
         try {
             return operation.test(controller);
         } catch (RuntimeException r) {
-            logger.warn("invalid offer to controller: {}", controller);
+            logger.warn("invalid operation {} applied to controller: {}", operation, controller);
             return false;
         }
     }

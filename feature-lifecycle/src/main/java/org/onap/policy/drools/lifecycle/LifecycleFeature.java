@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import lombok.Getter;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -35,6 +36,7 @@ public class LifecycleFeature
     /**
      * Lifecycle FSM.
      */
+    @Getter
     public static final LifecycleFsm fsm = new LifecycleFsm();
 
     @Override
@@ -90,32 +92,32 @@ public class LifecycleFeature
     }
 
     private boolean fsmStart() {
-        fsm.start();
+        getFsm().start();
         return false;
     }
 
     private boolean fsmStart(PolicyController controller) {
-        fsm.start(controller);
+        getFsm().start(controller);
         return false;
     }
 
     private boolean fsmStop() {
-        fsm.stop();
+        getFsm().stop();
         return false;
     }
 
     private boolean fsmStop(PolicyController controller) {
-        fsm.stop(controller);
+        getFsm().stop(controller);
         return false;
     }
 
     private boolean fsmPatch(PolicyController controller) {
-        fsm.patch(controller);
+        getFsm().patch(controller);
         return false;
     }
 
     private boolean fsmShutdown() {
-        fsm.shutdown();
+        getFsm().shutdown();
         return false;
     }
 }

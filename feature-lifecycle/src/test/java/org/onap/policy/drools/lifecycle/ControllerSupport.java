@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,10 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
@@ -64,8 +67,8 @@ public class ControllerSupport {
             PolicyController controller = getController();
             controller.getDrools().delete(ToscaPolicy.class);
             return controller;
-        } catch (IllegalArgumentException e) {
-            ;
+        } catch (IllegalArgumentException ignored) {  // NOSONAR
+            ;   // checkstyle
         }
 
         ReleaseId coordinates = installArtifact();
@@ -81,14 +84,21 @@ public class ControllerSupport {
     }
 
     /**
+     * Install a maven artifact.
+     */
+    public static ReleaseId installArtifact(File kmodule, File pom,
+            String drlKjarPath, List<File> drls) throws IOException {
+        return KieUtils.installArtifact(kmodule, pom, drlKjarPath, drls);
+    }
+
+    /**
      * install artifact.
      */
     public ReleaseId installArtifact() throws IOException {
-        return
-            KieUtils.installArtifact(Paths.get(JUNIT_KMODULE_PATH).toFile(),
+        return ControllerSupport.installArtifact(Paths.get(JUNIT_KMODULE_PATH).toFile(),
                 Paths.get(JUNIT_KMODULE_POM_PATH).toFile(),
-                        JUNIT_KJAR_DRL_PATH,
-                        Paths.get(JUNIT_KMODULE_DRL_PATH).toFile());
+                JUNIT_KJAR_DRL_PATH,
+                List.of(Paths.get(JUNIT_KMODULE_DRL_PATH).toFile()));
     }
 
     /**
@@ -119,5 +129,28 @@ public class ControllerSupport {
         return PolicyControllerConstants.getFactory().get(name)
             .getDrools()
             .facts(SESSION_NAME, clazz);
+    }
+
+    /**
+     * Change final marker in static field.
+     */
+    public static <T> Field unsetFinalStaticAccess(Class<T> clazz, String fieldName)
+            throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(fieldName);
+        field.setAccessible(true);
+
+        Field modifiers = Field.class.getDeclaredField("modifiers");
+        modifiers.setAccessible(true);
+        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+        return field;
+    }
+
+    /*
+     * Reassign static field.
+     */
+    public static <T, E> void setStaticField(Class<T> clazz, String fieldName, E newValue)
+            throws NoSuchFieldException, IllegalAccessException {
+        unsetFinalStaticAccess(clazz, fieldName).set(null, newValue);
     }
 }

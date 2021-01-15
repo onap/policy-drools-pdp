@@ -14,7 +14,7 @@
                     "properties": {
                         "rulesArtifact": {
                             "groupId": "org.onap.policy.drools.test",
-                            "artifactId": "lifecycle",
+                            "artifactId": "echo",
                             "version": "1.0.0"
                         },
                         "controller": {
