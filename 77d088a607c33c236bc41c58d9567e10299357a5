@@ -46,6 +46,30 @@
       "revId": "77d088a607c33c236bc41c58d9567e10299357a5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb05a22c_13a37eb2",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-01-27T21:43:10Z",
+      "side": 1,
+      "message": "Sounds good, thanks for the clarifications!\nBTW just to let you know Wayne is already working on providing \"delta\" updates from PAP. Once that is done, PDPs will only get the list of policies to be deployed or undeployed. Probably with a new flag in PDP_UPDATE mentioning deploy vs undeploy for the list of policies. https://jira.onap.org/browse/POLICY-2112",
+      "parentUuid": "0affbf33_23f05c62",
+      "range": {
+        "startLine": 229,
+        "startChar": 21,
+        "endLine": 229,
+        "endChar": 55
+      },
+      "revId": "77d088a607c33c236bc41c58d9567e10299357a5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
