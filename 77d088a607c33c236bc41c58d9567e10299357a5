@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "558d5014_6f5b759e",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-01-27T19:07:17Z",
+      "side": 1,
+      "message": "Do you see any impact to the non-native existing policies due to the re-deployment? Also, will this happen for every PDP_UPDATE message coming from PAP? If yes, then it looks like a costly operation to me. Specially in cases where multiple use cases are running and change in one use case impacting others.",
+      "range": {
+        "startLine": 229,
+        "startChar": 21,
+        "endLine": 229,
+        "endChar": 55
+      },
+      "revId": "77d088a607c33c236bc41c58d9567e10299357a5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
