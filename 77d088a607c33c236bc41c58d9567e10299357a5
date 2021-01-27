@@ -22,6 +22,30 @@
       "revId": "77d088a607c33c236bc41c58d9567e10299357a5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0affbf33_23f05c62",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-01-27T20:28:56Z",
+      "side": 1,
+      "message": "There is no impact in the redeployment it those policies were already deployed, as it will check first if they have been installed (there are some exists() checks).   So, the kiesession will be untouched if the policies were already there.   I think that\u0027s your concern, the re-applying may be a little misleading, as it will be a no-op most of the times unless it needs to.  Also, the code will only be hit if there are new native \"Artifact\" policies deltas which should be a low runner scenario.\n\nIn theory this logic should only happen when there are UPDATEs that contains \"delta\" changes from the previous ones are received and one of those deltas is a new \"native artifact\" policy, I think in theory that should be a low occurrence.\n\nI had some enhancements I am thinking to make it just a little faster (in other reviews), but the essence of this functionality is necessary as what PDPs get from PAP is an unordered snapshot of all policies, in the case of the Drools PDP, order matters because of the native ones, and some policies may apply to several controllers, so when new native controllers are added and there are existing operational policies, it has to be revisited .. \n\nDoes it help with your concern?",
+      "parentUuid": "558d5014_6f5b759e",
+      "range": {
+        "startLine": 229,
+        "startChar": 21,
+        "endLine": 229,
+        "endChar": 55
+      },
+      "revId": "77d088a607c33c236bc41c58d9567e10299357a5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
