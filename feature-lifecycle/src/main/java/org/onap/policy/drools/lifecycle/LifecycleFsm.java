@@ -237,7 +237,7 @@ public class LifecycleFsm implements Startable {
         List<PolicyTypeDroolsController> opControllers =
             policyTypesMap.values().stream()
                 .filter(typeController -> typeController instanceof PolicyTypeDroolsController)
-                .map(typeController -> (PolicyTypeDroolsController) typeController)
+                .map(PolicyTypeDroolsController.class::cast)
                 .filter(opController -> opController.getControllers().containsKey(controller.getName()))
                 .collect(Collectors.toList());
 

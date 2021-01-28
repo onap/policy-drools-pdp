@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public abstract class LoggerMarkerFilter extends AbstractMatcherFilter<ILoggingE
 
     protected final Marker marker;
 
-    public LoggerMarkerFilter(Marker marker) {
+    protected LoggerMarkerFilter(Marker marker) {
         this.marker = marker;
     }
 

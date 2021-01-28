@@ -486,7 +486,7 @@ public class MavenDroolsController implements DroolsController {
                 topic)) {
 
             logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", this,
-                    topic, this.getGroupId(), this.getArtifactId());
+                    topic, this.getGroupId(), this.getArtifactId());        // NOSONAR
             return true;
         }
 
@@ -889,7 +889,8 @@ public class MavenDroolsController implements DroolsController {
         Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(objFact.getClass()));
         for (FactHandle factHandle : factHandles) {
             if (Objects.equals(objFact, kieSession.getObject(factHandle))) {
-                logger.info("Slow delete of {} of type {} from {}", objFact, sessionName);
+                logger.info("Slow delete of {} of type {} from {}",
+                        objFact, objFact.getClass().getName(), sessionName);
                 kieSession.delete(factHandle);
                 return true;
             }

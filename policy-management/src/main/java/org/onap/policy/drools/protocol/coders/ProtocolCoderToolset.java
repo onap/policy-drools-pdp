@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,7 +76,7 @@ public abstract class ProtocolCoderToolset {
      * @param controllerId the controller id
      * @throws IllegalArgumentException if invalid data has been passed in
      */
-    public ProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
+    protected ProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
 
         if (eventProtocolParams == null || controllerId == null) {
             throw new IllegalArgumentException("Invalid input");

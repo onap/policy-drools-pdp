@@ -71,7 +71,7 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
     /**
      * Constructs the object.
      */
-    public LockManager() {
+    protected LockManager() {
         super();
     }
 

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class TopicCoderFilterConfiguration {
          *
          * @param rawCustomCoder with format: &lt;class-containing-custom-coder&gt;,&lt;static-coder-field&gt.
          */
-        public CustomCoder(String rawCustomCoder) {
+        protected CustomCoder(String rawCustomCoder) {
             if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
 
                 this.className = rawCustomCoder.substring(0, rawCustomCoder.indexOf(','));
@@ -64,7 +64,7 @@ public class TopicCoderFilterConfiguration {
          * @param className class name
          * @param staticCoderField static coder field
          */
-        public CustomCoder(String className, String staticCoderField) {
+        protected CustomCoder(String className, String staticCoderField) {
             if (className == null || className.isEmpty()) {
                 throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
             }
