@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f6373e8_483c7306",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/policies/DomainMaker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-01-29T18:55:47Z",
+      "side": 1,
+      "message": "May be it\u0027s good to have sonar issue for TODO as it keeps track of it. I am okay either ways.",
+      "range": {
+        "startLine": 213,
+        "startChar": 19,
+        "endLine": 213,
+        "endChar": 29
+      },
+      "revId": "32905749456bb5309ff9158f9c74043fe0c32a49",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
