@@ -138,6 +138,8 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             // policies as given by the PAP in the update message
 
             List<ToscaPolicy> activePoliciesPreUpdate = fsm.getActivePolicies();
+            Map<String, List<ToscaPolicy>> activePoliciesPreUpdateMap =
+                    fsm.groupPoliciesByPolicyType(activePoliciesPreUpdate);
 
             // update policies with the current set of active policies
 
@@ -155,7 +157,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             // were neither deployed or undeployed and re-apply them on top
             // of the controllers.
 
-            failedPolicies.addAll(reapplyNativeArtifactPolicies(activePoliciesPreUpdate));
+            failedPolicies.addAll(reApplyNativeArtifactPolicies(activePoliciesPreUpdate, activePoliciesPreUpdateMap));
 
             // If there are *new* native artifact policies deployed, there may be existing
             // non-native policies (previous to the update event processing)
@@ -164,7 +166,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             // which neither were undeployed or deployed and re-apply them on top of the
             // new "brained" controllers.
 
-            failedPolicies.addAll(reapplyNonNativePolicies(activePoliciesPreUpdate));
+            failedPolicies.addAll(reApplyNonNativePolicies(activePoliciesPreUpdateMap));
 
             return fsm.statusAction(response(update.getRequestId(),
                             (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
@@ -193,7 +195,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         List<ToscaPolicy> failedUndeployPolicies = undeployPolicies(policies);
         if (!failedUndeployPolicies.isEmpty()) {
             logger.warn("update-policies: undeployment failures: {}", fsm.getPolicyIdsMessage(failedUndeployPolicies));
-            failedUndeployPolicies.stream().forEach(fsm::undeployedPolicyAction);
+            failedUndeployPolicies.forEach(fsm::undeployedPolicyAction);
         }
 
         List<ToscaPolicy> failedDeployPolicies = deployPolicies(policies);
@@ -204,14 +206,13 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         return Pair.of(failedUndeployPolicies, failedDeployPolicies);
     }
 
-    protected List<ToscaPolicy> reapplyNonNativePolicies(List<ToscaPolicy> preActivePolicies) {
+    protected List<ToscaPolicy> reApplyNonNativePolicies(Map<String, List<ToscaPolicy>> preActivePoliciesMap) {
         // only need to re-apply non native policies if there are new native artifact policies
 
         Map<String, List<ToscaPolicy>> activePoliciesByType = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
         List<ToscaPolicy> activeNativeArtifactPolicies = fsm.getNativeArtifactPolicies(activePoliciesByType);
 
-        Map<String, List<ToscaPolicy>> prePoliciesByType = fsm.groupPoliciesByPolicyType(preActivePolicies);
-        activeNativeArtifactPolicies.removeAll(fsm.getNativeArtifactPolicies(prePoliciesByType));
+        activeNativeArtifactPolicies.removeAll(fsm.getNativeArtifactPolicies(preActivePoliciesMap));
         if (activeNativeArtifactPolicies.isEmpty()) {
             logger.info("reapply-non-native-policies: nothing to reapply, no new native artifact policies");
             return Collections.emptyList();
@@ -223,7 +224,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         // the original active set, and the new active set (i.e policies that have not changed,
         // or in other words, have not been neither deployed or undeployed.
 
-        List<ToscaPolicy> preNonNativePolicies = fsm.getNonNativePolicies(prePoliciesByType);
+        List<ToscaPolicy> preNonNativePolicies = fsm.getNonNativePolicies(preActivePoliciesMap);
         preNonNativePolicies.retainAll(fsm.getNonNativePolicies(activePoliciesByType));
 
         logger.info("re-applying non-native policies {} because new native artifact policies have been found: {}",
@@ -235,14 +236,14 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         return failedPolicies;
     }
 
-    protected List<ToscaPolicy> reapplyNativeArtifactPolicies(List<ToscaPolicy> preActivePolicies) {
+    protected List<ToscaPolicy> reApplyNativeArtifactPolicies(List<ToscaPolicy> preActivePolicies,
+            Map<String, List<ToscaPolicy>> preActivePoliciesMap) {
         // only need to re-apply native artifact policies if there are new native controller policies
 
         Map<String, List<ToscaPolicy>> activePoliciesByType = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
         List<ToscaPolicy> activeNativeControllerPolicies = fsm.getNativeControllerPolicies(activePoliciesByType);
 
-        Map<String, List<ToscaPolicy>> prePoliciesByType = fsm.groupPoliciesByPolicyType(preActivePolicies);
-        activeNativeControllerPolicies.removeAll(fsm.getNativeControllerPolicies(prePoliciesByType));
+        activeNativeControllerPolicies.removeAll(fsm.getNativeControllerPolicies(preActivePoliciesMap));
         if (activeNativeControllerPolicies.isEmpty()) {
             logger.info("reapply-native-artifact-policies: nothing to reapply, no new native controller policies");
             return Collections.emptyList();
@@ -252,9 +253,9 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
         // get the native artifact policies to be reapplied, this is just the intersection of
         // the original active set, and the new active set (i.e policies that have not changed,
-        // or in other words, have not been neither deployed or undeployed.
+        // or in other words, have not been neither deployed or undeployed).
 
-        List<ToscaPolicy> preNativeArtifactPolicies = fsm.getNativeArtifactPolicies(prePoliciesByType);
+        List<ToscaPolicy> preNativeArtifactPolicies = fsm.getNativeArtifactPolicies(preActivePoliciesMap);
         preNativeArtifactPolicies.retainAll(fsm.getNativeArtifactPolicies(activePoliciesByType));
 
         logger.info("reapply candidate native artifact policies {} as new native controller policies {} were found",
@@ -294,8 +295,12 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         // since we want non-native policies to be reapplied when a new native artifact policy has been
         // reapplied here, remove it from the preActivePolicies, so it is detected as new.
 
-        preActivePolicies.removeAll(preNativeArtifactPoliciesToApply);
-
+        if (!preNativeArtifactPoliciesToApply.isEmpty()) {
+            preActivePolicies.removeAll(preNativeArtifactPoliciesToApply);
+            preActivePoliciesMap
+                    .getOrDefault(LifecycleFsm.POLICY_TYPE_DROOLS_NATIVE_RULES.getName(), Collections.emptyList())
+                    .removeAll(preNativeArtifactPoliciesToApply);
+        }
         return failedPolicies;
     }
 
