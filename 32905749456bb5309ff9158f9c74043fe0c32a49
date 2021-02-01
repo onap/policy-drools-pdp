@@ -46,6 +46,30 @@
       "revId": "32905749456bb5309ff9158f9c74043fe0c32a49",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c00548d4_95f8565a",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/policies/DomainMaker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-02-01T17:13:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a07083d8_8c60e862",
+      "range": {
+        "startLine": 213,
+        "startChar": 19,
+        "endLine": 213,
+        "endChar": 29
+      },
+      "revId": "32905749456bb5309ff9158f9c74043fe0c32a49",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
