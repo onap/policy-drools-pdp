@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,61 +53,23 @@ import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.TARGE
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.TARGET_VIRTUAL_ENTITY;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.VIRTUAL_SERVER_NAME;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
+import lombok.Getter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.onap.policy.drools.metrics.Metric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+@ToString
 class MdcTransactionImpl implements MdcTransaction {
 
     private static final Logger logger = LoggerFactory.getLogger(MdcTransactionImpl.class.getName());
 
-    /**
-     * Logging Format for Timestamps.
-     */
-
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS+00:00";
-
-    /* transaction inheritable fields */
-
-    private String requestId;
-    private String partner;
-
-    private String invocationId;
-    private String virtualServerName;
-    private String serverName;
-    private String serverIpAddress;
-    private String serverFqdn;
-
-    private String serviceName;
-
-    private Instant startTime;
-    private Instant endTime;
-    private Long elapsedTime;
-
-    private String serviceInstanceId;
-    private String instanceUuid;
-    private String processKey;
-
-    private String statusCode;
-    private String responseCode;
-    private String responseDescription;
-    private String alertSeverity;
-
-    private String targetEntity;
-    private String targetServiceName;
-    private String targetVirtualEntity;
-    private String clientIpAddress;
-    private String remoteHost;
-    private String customField1;
-    private String customField2;
-    private String customField3;
-    private String customField4;
+    @Getter
+    private final Metric execItem = new Metric();
 
     /**
      * Transaction with no information set.
@@ -125,76 +87,77 @@ class MdcTransactionImpl implements MdcTransaction {
     public MdcTransactionImpl(String requestId, String partner) {
         MDC.clear();
 
-        this.setRequestId(requestId);
-        this.setPartner(partner);
+        setRequestId(requestId);
+        setPartner(partner);
 
-        this.setServiceName(DEFAULT_SERVICE_NAME);
-        this.setServer(DEFAULT_HOSTNAME);
-        this.setServerIpAddress(DEFAULT_HOSTIP);
-        this.setServerFqdn(DEFAULT_HOSTNAME);
-        this.setVirtualServerName(DEFAULT_HOSTNAME);
+        setServiceName(DEFAULT_SERVICE_NAME);
+        setServer(DEFAULT_HOSTNAME);
+        setServerIpAddress(DEFAULT_HOSTIP);
+        setServerFqdn(DEFAULT_HOSTNAME);
+        setVirtualServerName(DEFAULT_HOSTNAME);
 
-        this.setStartTime(Instant.now());
+        setStartTime(Instant.now());
     }
 
     /**
-     * create subtransaction.
+     * create sub-transaction.
      *
-     * @param invocationId subtransaction id
+     * @param invocationId sub-transaction id
      */
     public MdcTransactionImpl(String invocationId) {
-        this.resetSubTransaction();
+        resetSubTransaction();
 
-        this.setRequestId(MDC.get(REQUEST_ID));
-        this.setPartner(MDC.get(PARTNER_NAME));
-        this.setServiceName(MDC.get(SERVICE_NAME));
-        this.setServer(MDC.get(SERVER));
-        this.setServerIpAddress(MDC.get(SERVER_IP_ADDRESS));
-        this.setServerFqdn(MDC.get(SERVER_FQDN));
-        this.setVirtualServerName(MDC.get(VIRTUAL_SERVER_NAME));
+        setRequestId(MDC.get(REQUEST_ID));
+        setPartner(MDC.get(PARTNER_NAME));
+        setServiceName(MDC.get(SERVICE_NAME));
+        setServerIpAddress(MDC.get(SERVER_IP_ADDRESS));
+        setServerFqdn(MDC.get(SERVER_FQDN));
+        setVirtualServerName(MDC.get(VIRTUAL_SERVER_NAME));
+        setServer(MDC.get(SERVER));
 
-        this.setInvocationId(invocationId);
-        this.setStartTime(Instant.now());
+        setInvocationId(invocationId);
+        setStartTime(Instant.now());
     }
 
     /**
-     * copy constructor transaction/subtransaction.
+     * copy constructor transaction/sub-transaction.
      *
      * @param transaction transaction
      */
     public MdcTransactionImpl(MdcTransaction transaction) {
         MDC.clear();
-        this.setClientIpAddress(transaction.getClientIpAddress());
-        this.setElapsedTime(transaction.getElapsedTime());
-        this.setEndTime(transaction.getEndTime());
-        this.setInstanceUuid(transaction.getInstanceUuid());
-        this.setInvocationId(transaction.getInvocationId());
-        this.setPartner(transaction.getPartner());
-        this.setProcessKey(transaction.getProcessKey());
-        this.setRemoteHost(transaction.getRemoteHost());
-        this.setRequestId(transaction.getRequestId());
-        this.setResponseCode(transaction.getResponseCode());
-        this.setResponseDescription(transaction.getResponseDescription());
-        this.setServer(transaction.getServer());
-        this.setServerFqdn(transaction.getServerFqdn());
-        this.setServerIpAddress(transaction.getServerIpAddress());
-        this.setServiceInstanceId(transaction.getServiceInstanceId());
-        this.setServiceName(transaction.getServiceName());
-        this.setSeverity(transaction.getSeverity());
-        this.setStartTime(transaction.getStartTime());
-        this.setStatusCode(transaction.getStatusCode());
-        this.setTargetEntity(transaction.getTargetEntity());
-        this.setTargetServiceName(transaction.getTargetServiceName());
-        this.setTargetVirtualEntity(transaction.getTargetVirtualEntity());
-        this.setVirtualServerName(transaction.getVirtualServerName());
-        this.setCustomField1(transaction.getCustomField1());
-        this.setCustomField2(transaction.getCustomField2());
-        this.setCustomField3(transaction.getCustomField3());
-        this.setCustomField4(transaction.getCustomField4());
+
+        setClientIpAddress(transaction.getClientIpAddress());
+        setElapsedTime(transaction.getElapsedTime());
+        setEndTime(transaction.getEndTime());
+        setInstanceUuid(transaction.getInstanceUuid());
+        setInvocationId(transaction.getInvocationId());
+        setPartner(transaction.getPartner());
+        setProcessKey(transaction.getProcessKey());
+        setRemoteHost(transaction.getRemoteHost());
+        setRequestId(transaction.getRequestId());
+        setResponseCode(transaction.getResponseCode());
+        setResponseDescription(transaction.getResponseDescription());
+        setServer(transaction.getServer());
+        setServerFqdn(transaction.getServerFqdn());
+        setServerIpAddress(transaction.getServerIpAddress());
+        setServiceInstanceId(transaction.getServiceInstanceId());
+        setServiceName(transaction.getServiceName());
+        setSeverity(transaction.getSeverity());
+        setStartTime(transaction.getStartTime());
+        setStatusCode(transaction.getStatusCode());
+        setTargetEntity(transaction.getTargetEntity());
+        setTargetServiceName(transaction.getTargetServiceName());
+        setTargetVirtualEntity(transaction.getTargetVirtualEntity());
+        setVirtualServerName(transaction.getVirtualServerName());
+        setCustomField1(transaction.getCustomField1());
+        setCustomField2(transaction.getCustomField2());
+        setCustomField3(transaction.getCustomField3());
+        setCustomField4(transaction.getCustomField4());
     }
 
     /**
-     * reset subtransaction portion.
+     * reset sub-transaction portion.
      *
      * @return MDCTransaction
      */
@@ -230,40 +193,42 @@ class MdcTransactionImpl implements MdcTransaction {
      */
     @Override
     public MdcTransaction flush() {
-        setMdc(REQUEST_ID, this.requestId);
-        setMdc(INVOCATION_ID, this.invocationId);
-        setMdc(PARTNER_NAME, this.partner);
-        setMdc(VIRTUAL_SERVER_NAME, this.virtualServerName);
-        setMdc(SERVER, this.serverName);
-        setMdc(SERVER_IP_ADDRESS, this.serverIpAddress);
-        setMdc(SERVER_FQDN, this.serverFqdn);
-        setMdc(SERVICE_NAME, this.serviceName);
-        setMdc(BEGIN_TIMESTAMP, timestamp(this.startTime));
-        setMdc(END_TIMESTAMP, timestamp(this.endTime));
+        setMdc(REQUEST_ID, execItem.getRequestId());
+        setMdc(INVOCATION_ID, execItem.getInvocationId());
+        setMdc(PARTNER_NAME, execItem.getPartner());
+        setMdc(VIRTUAL_SERVER_NAME, execItem.getVirtualServerName());
+        setMdc(SERVER, execItem.getServerName());
+        setMdc(SERVER_IP_ADDRESS, execItem.getServerIpAddress());
+        setMdc(SERVER_FQDN, execItem.getServerFqdn());
+        setMdc(SERVICE_NAME, execItem.getServiceName());
+        setMdc(BEGIN_TIMESTAMP, Metric.toTimestamp(execItem.getStartTime()));
+        setMdc(END_TIMESTAMP, Metric.toTimestamp(execItem.getEndTime()));
 
-        if (this.elapsedTime != null) {
-            MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
-        } else if (endTime != null && startTime != null) {
-            this.elapsedTime = Duration.between(startTime, endTime).toMillis();
-            MDC.put(ELAPSED_TIME, String.valueOf(this.elapsedTime));
+        if (execItem.getElapsedTime() != null) {
+            MDC.put(ELAPSED_TIME, String.valueOf(execItem.getElapsedTime()));
+        } else if (execItem.getEndTime() != null && execItem.getStartTime() != null) {
+            execItem.setElapsedTime(Duration
+                                .between(execItem.getStartTime(), execItem.getEndTime())
+                                .toMillis());
+            MDC.put(ELAPSED_TIME, String.valueOf(execItem.getElapsedTime()));
         }
 
-        setMdc(SERVICE_INSTANCE_ID, this.serviceInstanceId);
-        setMdc(INSTANCE_UUID, this.instanceUuid);
-        setMdc(PROCESS_KEY, this.processKey);
-        setMdc(STATUS_CODE, this.statusCode);
-        setMdc(RESPONSE_CODE, this.responseCode);
-        setMdc(RESPONSE_DESCRIPTION, this.responseDescription);
-        setMdc(SEVERITY, this.alertSeverity);
-        setMdc(TARGET_ENTITY, this.targetEntity);
-        setMdc(TARGET_SERVICE_NAME, this.targetServiceName);
-        setMdc(TARGET_VIRTUAL_ENTITY, this.targetVirtualEntity);
-        setMdc(CLIENT_IP_ADDRESS, this.clientIpAddress);
-        setMdc(REMOTE_HOST, this.remoteHost);
-        setMdc(CUSTOM_FIELD1, this.customField1);
-        setMdc(CUSTOM_FIELD2, this.customField2);
-        setMdc(CUSTOM_FIELD3, this.customField3);
-        setMdc(CUSTOM_FIELD4, this.customField4);
+        setMdc(SERVICE_INSTANCE_ID, execItem.getServiceInstanceId());
+        setMdc(INSTANCE_UUID, execItem.getInstanceUuid());
+        setMdc(PROCESS_KEY, execItem.getProcessKey());
+        setMdc(STATUS_CODE, execItem.getStatusCode());
+        setMdc(RESPONSE_CODE, execItem.getResponseCode());
+        setMdc(RESPONSE_DESCRIPTION, execItem.getResponseDescription());
+        setMdc(SEVERITY, execItem.getAlertSeverity());
+        setMdc(TARGET_ENTITY, execItem.getTargetEntity());
+        setMdc(TARGET_SERVICE_NAME, execItem.getTargetServiceName());
+        setMdc(TARGET_VIRTUAL_ENTITY, execItem.getTargetVirtualEntity());
+        setMdc(CLIENT_IP_ADDRESS, execItem.getClientIpAddress());
+        setMdc(REMOTE_HOST, execItem.getRemoteHost());
+        setMdc(CUSTOM_FIELD1, execItem.getCustomField1());
+        setMdc(CUSTOM_FIELD2, execItem.getCustomField2());
+        setMdc(CUSTOM_FIELD3, execItem.getCustomField3());
+        setMdc(CUSTOM_FIELD4, execItem.getCustomField4());
 
         return this;
     }
@@ -276,436 +241,341 @@ class MdcTransactionImpl implements MdcTransaction {
 
     @Override
     public MdcTransaction metric() {
-        this.flush();
+        flush();
         logger.info(LoggerUtil.METRIC_LOG_MARKER, "");
         return this;
     }
 
     @Override
     public MdcTransaction transaction() {
-        this.flush();
+        flush();
         logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "");
         return this;
     }
 
     @Override
     public MdcTransaction setEndTime(Instant endTime) {
-        if (endTime == null) {
-            this.endTime = Instant.now();
-        } else {
-            this.endTime = endTime;
-        }
+        execItem.setEndTime(endTime);
         return this;
     }
 
     @Override
     public MdcTransaction setElapsedTime(Long elapsedTime) {
-        this.elapsedTime = elapsedTime;
+        execItem.setElapsedTime(elapsedTime);
         return this;
     }
 
     @Override
     public MdcTransaction setServiceInstanceId(String serviceInstanceId) {
-        this.serviceInstanceId = serviceInstanceId;
+        execItem.setServiceInstanceId(serviceInstanceId);
         return this;
     }
 
     @Override
     public MdcTransaction setProcessKey(String processKey) {
-        this.processKey = processKey;
+        execItem.setProcessKey(processKey);
         return this;
     }
 
     @Override
     public MdcTransaction setClientIpAddress(String clientIpAddress) {
-        this.clientIpAddress = clientIpAddress;
+        execItem.setClientIpAddress(clientIpAddress);
         return this;
     }
 
     @Override
     public MdcTransaction setRemoteHost(String remoteHost) {
-        this.remoteHost = remoteHost;
+        execItem.setRemoteHost(remoteHost);
         return this;
     }
 
     @Override
     public Instant getStartTime() {
-        return this.startTime;
+        return execItem.getStartTime();
     }
 
     @Override
     public String getServer() {
-        return this.serverName;
+        return execItem.getServerName();
     }
 
     @Override
     public Instant getEndTime() {
-        return this.endTime;
+        return execItem.getEndTime();
     }
 
     @Override
     public Long getElapsedTime() {
-        return this.elapsedTime;
+        return execItem.getElapsedTime();
     }
 
     @Override
     public String getRemoteHost() {
-        return this.remoteHost;
+        return execItem.getRemoteHost();
     }
 
     @Override
     public String getClientIpAddress() {
-        return this.clientIpAddress;
+        return execItem.getClientIpAddress();
     }
 
     @Override
     public String getProcessKey() {
-        return this.processKey;
+        return execItem.getProcessKey();
     }
 
     @Override
     public String getServiceInstanceId() {
-        return this.serviceInstanceId;
+        return execItem.getServiceInstanceId();
     }
 
     @Override
     public String getCustomField1() {
-        return this.customField1;
+        return execItem.getCustomField1();
     }
 
     @Override
     public String getCustomField2() {
-        return this.customField2;
+        return execItem.getCustomField2();
     }
 
     @Override
     public String getCustomField3() {
-        return this.customField3;
+        return execItem.getCustomField3();
     }
 
     @Override
     public String getCustomField4() {
-        return this.customField4;
+        return execItem.getCustomField4();
     }
 
-    /* transaction and subtransaction fields */
+    @Override
+    public String timestamp(Instant time) {
+        return Metric.toTimestamp(time);
+    }
+
+    /* transaction and sub-transaction fields */
 
     @Override
     public MdcTransaction setInvocationId(String invocationId) {
-        if (invocationId == null) {
-            this.invocationId = UUID.randomUUID().toString();
-        } else {
-            this.invocationId = invocationId;
-        }
-
-        MDC.put(INVOCATION_ID, this.invocationId);
-
+        execItem.setInvocationId(invocationId);
+        MDC.put(INVOCATION_ID, execItem.getInvocationId());
         return this;
     }
 
     @Override
     public MdcTransaction setStartTime(Instant startTime) {
-        if (startTime == null) {
-            this.startTime = Instant.now();
-        } else {
-            this.startTime = startTime;
-        }
-
-        MDC.put(BEGIN_TIMESTAMP, this.timestamp(this.startTime));
-
+        execItem.setStartTime(startTime);
+        MDC.put(BEGIN_TIMESTAMP, Metric.toTimestamp(execItem.getStartTime()));
         return this;
     }
 
     @Override
     public MdcTransaction setServiceName(String serviceName) {
-        if (serviceName == null || serviceName.isEmpty()) {
-            this.serviceName = DEFAULT_SERVICE_NAME;
-        } else {
-            this.serviceName = serviceName;
-        }
-
-        MDC.put(SERVICE_NAME, this.serviceName);
-
+        execItem.setServiceName(serviceName);
+        MDC.put(SERVICE_NAME, execItem.getServiceName());
         return this;
     }
 
     @Override
     public MdcTransaction setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
+        execItem.setStatusCode(statusCode);
         return this;
     }
 
     @Override
     public MdcTransaction setStatusCode(boolean success) {
         if (success) {
-            this.statusCode = STATUS_CODE_COMPLETE;
+            execItem.setStatusCode(STATUS_CODE_COMPLETE);
         } else {
-            this.statusCode = STATUS_CODE_FAILURE;
+            execItem.setStatusCode(STATUS_CODE_FAILURE);
         }
         return this;
     }
 
     @Override
     public MdcTransaction setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
+        execItem.setResponseCode(responseCode);
         return this;
     }
 
     @Override
     public MdcTransaction setResponseDescription(String responseDescription) {
-        this.responseDescription = responseDescription;
+        execItem.setResponseDescription(responseDescription);
         return this;
     }
 
     @Override
     public MdcTransaction setInstanceUuid(String instanceUuid) {
-        if (instanceUuid == null) {
-            this.instanceUuid = UUID.randomUUID().toString();
-        } else {
-            this.instanceUuid = instanceUuid;
-        }
-
-        MDC.put(INSTANCE_UUID, this.instanceUuid);
+        execItem.setInstanceUuid(instanceUuid);
+        MDC.put(INSTANCE_UUID, execItem.getInstanceUuid());
         return this;
     }
 
     @Override
     public MdcTransaction setSeverity(String severity) {
-        this.alertSeverity = severity;
+        execItem.setAlertSeverity(severity);
         return this;
     }
 
     @Override
     public MdcTransaction setTargetEntity(String targetEntity) {
-        this.targetEntity = targetEntity;
+        execItem.setTargetEntity(targetEntity);
         return this;
     }
 
     @Override
     public MdcTransaction setTargetServiceName(String targetServiceName) {
-        this.targetServiceName = targetServiceName;
+        execItem.setTargetServiceName(targetServiceName);
         return this;
     }
 
     @Override
     public MdcTransaction setTargetVirtualEntity(String targetVirtualEntity) {
-        this.targetVirtualEntity = targetVirtualEntity;
+        execItem.setTargetVirtualEntity(targetVirtualEntity);
         return this;
     }
 
     @Override
     public MdcTransaction setCustomField1(String customField1) {
-        this.customField1 = customField1;
+        execItem.setCustomField1(customField1);
         return this;
     }
 
     @Override
     public MdcTransaction setCustomField2(String customField2) {
-        this.customField2 = customField2;
+        execItem.setCustomField2(customField2);
         return this;
     }
 
     @Override
     public MdcTransaction setCustomField3(String customField3) {
-        this.customField3 = customField3;
+        execItem.setCustomField3(customField3);
         return this;
     }
 
     @Override
     public MdcTransaction setCustomField4(String customField4) {
-        this.customField4 = customField4;
+        execItem.setCustomField4(customField4);
         return this;
     }
 
     @Override
     public String getInvocationId() {
-        return invocationId;
+        return execItem.getInvocationId();
     }
 
     @Override
     public String getServiceName() {
-        return serviceName;
+        return execItem.getServiceName();
     }
 
     @Override
     public String getStatusCode() {
-        return statusCode;
+        return execItem.getStatusCode();
     }
 
     @Override
     public String getResponseDescription() {
-        return responseDescription;
+        return execItem.getResponseDescription();
     }
 
     @Override
     public String getInstanceUuid() {
-        return instanceUuid;
+        return execItem.getInstanceUuid();
     }
 
     @Override
     public String getSeverity() {
-        return alertSeverity;
+        return execItem.getAlertSeverity();
     }
 
     @Override
     public String getTargetEntity() {
-        return targetEntity;
+        return execItem.getTargetEntity();
     }
 
     @Override
     public String getTargetServiceName() {
-        return targetServiceName;
+        return execItem.getTargetServiceName();
     }
 
     @Override
     public String getTargetVirtualEntity() {
-        return targetVirtualEntity;
+        return execItem.getTargetVirtualEntity();
     }
 
     @Override
     public String getResponseCode() {
-        return responseCode;
+        return execItem.getResponseCode();
     }
 
-    /* inheritable fields by subtransactions via MDC */
+    /* inheritable fields by sub-transactions via MDC */
 
     @Override
     public MdcTransaction setRequestId(String requestId) {
-        if (requestId == null || requestId.isEmpty()) {
-            this.requestId = UUID.randomUUID().toString();
-        } else {
-            this.requestId = requestId;
-        }
-
-        MDC.put(REQUEST_ID, this.requestId);
+        execItem.setRequestId(requestId);
+        MDC.put(REQUEST_ID, execItem.getRequestId());
         return this;
     }
 
     @Override
     public MdcTransaction setPartner(String partner) {
-        if (partner == null || partner.isEmpty()) {
-            this.partner = DEFAULT_SERVICE_NAME;
-        } else {
-            this.partner = partner;
-        }
-
-        MDC.put(PARTNER_NAME, this.partner);
+        execItem.setPartner(partner);
+        MDC.put(PARTNER_NAME, execItem.getPartner());
         return this;
     }
 
     @Override
     public MdcTransaction setServer(String server) {
-        if (server == null || server.isEmpty()) {
-            this.serverName = DEFAULT_HOSTNAME;
-        } else {
-            this.serverName = server;
-        }
-
-        MDC.put(SERVER, this.serverName);
+        execItem.setServerName(server);
+        MDC.put(SERVER, this.execItem.getServerName());
         return this;
     }
 
     @Override
     public MdcTransaction setServerIpAddress(String serverIpAddress) {
-        if (serverIpAddress == null || serverIpAddress.isEmpty()) {
-            this.serverIpAddress = DEFAULT_HOSTIP;
-        } else {
-            this.serverIpAddress = serverIpAddress;
-        }
-
-        MDC.put(SERVER_IP_ADDRESS, this.serverIpAddress);
+        execItem.setServerIpAddress(serverIpAddress);
+        MDC.put(SERVER_IP_ADDRESS, execItem.getServerIpAddress());
         return this;
     }
 
     @Override
     public MdcTransaction setServerFqdn(String serverFqdn) {
-        if (serverFqdn == null || serverFqdn.isEmpty()) {
-            this.serverFqdn = DEFAULT_HOSTNAME;
-        } else {
-            this.serverFqdn = serverFqdn;
-        }
-
-        MDC.put(SERVER_FQDN, this.serverFqdn);
+        execItem.setServerFqdn(serverFqdn);
+        MDC.put(SERVER_FQDN, execItem.getServerFqdn());
         return this;
     }
 
     @Override
     public MdcTransaction setVirtualServerName(String virtualServerName) {
-        if (virtualServerName == null || virtualServerName.isEmpty()) {
-            this.virtualServerName = DEFAULT_HOSTNAME;
-        } else {
-            this.virtualServerName = virtualServerName;
-        }
-
-        MDC.put(VIRTUAL_SERVER_NAME, this.virtualServerName);
+        execItem.setVirtualServerName(virtualServerName);
+        MDC.put(VIRTUAL_SERVER_NAME, execItem.getVirtualServerName());
         return this;
     }
 
     @Override
     public String getRequestId() {
-        return requestId;
+        return execItem.getRequestId();
     }
 
     @Override
     public String getPartner() {
-        return partner;
+        return execItem.getPartner();
     }
 
     @Override
     public String getServerFqdn() {
-        return serverFqdn;
+        return execItem.getServerFqdn();
     }
 
     @Override
     public String getVirtualServerName() {
-        return virtualServerName;
+        return execItem.getVirtualServerName();
     }
 
     @Override
     public String getServerIpAddress() {
-        return serverIpAddress;
-    }
-
-    @Override
-    public String timestamp(Instant time) {
-        if (time == null) {
-            return null;
-        }
-
-        return new SimpleDateFormat(DATE_FORMAT).format(Date.from(time));
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("MDCTransaction{");
-        sb.append("requestId='").append(requestId).append('\'');
-        sb.append(", partner='").append(partner).append('\'');
-        sb.append(", invocationId='").append(invocationId).append('\'');
-        sb.append(", virtualServerName='").append(virtualServerName).append('\'');
-        sb.append(", server='").append(serverName).append('\'');
-        sb.append(", serverIpAddress='").append(serverIpAddress).append('\'');
-        sb.append(", serverFqdn='").append(serverFqdn).append('\'');
-        sb.append(", serviceName='").append(serviceName).append('\'');
-        sb.append(", startTime=").append(startTime);
-        sb.append(", endTime=").append(endTime);
-        sb.append(", elapsedTime=").append(elapsedTime);
-        sb.append(", serviceInstanceId='").append(serviceInstanceId).append('\'');
-        sb.append(", instanceUUID='").append(instanceUuid).append('\'');
-        sb.append(", processKey='").append(processKey).append('\'');
-        sb.append(", statusCode='").append(statusCode).append('\'');
-        sb.append(", responseCode='").append(responseCode).append('\'');
-        sb.append(", responseDescription='").append(responseDescription).append('\'');
-        sb.append(", severity='").append(alertSeverity).append('\'');
-        sb.append(", targetEntity='").append(targetEntity).append('\'');
-        sb.append(", targetServiceName='").append(targetServiceName).append('\'');
-        sb.append(", targetVirtualEntity='").append(targetVirtualEntity).append('\'');
-        sb.append(", clientIpAddress='").append(clientIpAddress).append('\'');
-        sb.append(", remoteHost='").append(remoteHost).append('\'');
-        sb.append(", customField1='").append(customField1).append('\'');
-        sb.append(", customField2='").append(customField2).append('\'');
-        sb.append(", customField3='").append(customField3).append('\'');
-        sb.append(", customField4='").append(customField4).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return execItem.getServerIpAddress();
     }
 }
