@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7575d806_09686423",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/metrics/Metric.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-08T18:52:26Z",
+      "side": 1,
+      "message": "very nice, thanks",
+      "parentUuid": "c36b7733_10f640a1",
+      "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fc63939b_71deb44c",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/metrics/TransMetric.java",
         "patchSetId": 3
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "1754e771_3d9622d9",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/metrics/TransMetric.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-08T18:52:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fc63939b_71deb44c",
+      "range": {
+        "startLine": 29,
+        "startChar": 34,
+        "endLine": 29,
+        "endChar": 38
+      },
+      "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3f5b8464_594a3079",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
         "patchSetId": 3
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "06073749_c7864b34",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-08T18:52:26Z",
+      "side": 1,
+      "message": "yes, that\u0027s what the lombok generated method does, wraps a call to execItem.toString() and prepends the MdcTransactionImpl classname to that string.",
+      "parentUuid": "3f5b8464_594a3079",
+      "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "82ebc01d_518f00cd",
         "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
         "patchSetId": 3
@@ -70,6 +130,30 @@
       "writtenOn": "2021-02-06T23:57:53Z",
       "side": 1,
       "message": "just pass null here?  Isn\u0027t this the default behavior for null?",
+      "range": {
+        "startLine": 210,
+        "startChar": 36,
+        "endLine": 212,
+        "endChar": 43
+      },
+      "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f903f9be_1d6c9a76",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/MdcTransactionImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-08T18:52:26Z",
+      "side": 1,
+      "message": "yep, thanks!",
+      "parentUuid": "82ebc01d_518f00cd",
       "range": {
         "startLine": 210,
         "startChar": 36,
@@ -105,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "3e228b00_62163919",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/metrics/MetricTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-08T18:52:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5515f702_aaca7346",
+      "range": {
+        "startLine": 184,
+        "startChar": 8,
+        "endLine": 184,
+        "endChar": 18
+      },
+      "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "266dc548_558ab9e9",
         "filename": "policy-utils/src/test/java/org/onap/policy/drools/metrics/TransMetricTest.java",
         "patchSetId": 3
@@ -125,6 +233,30 @@
       "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26acc88c_58a96847",
+        "filename": "policy-utils/src/test/java/org/onap/policy/drools/metrics/TransMetricTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-08T18:52:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "266dc548_558ab9e9",
+      "range": {
+        "startLine": 66,
+        "startChar": 8,
+        "endLine": 66,
+        "endChar": 18
+      },
+      "revId": "c4b2a686f380b5f252581d61fce1489e3dad2a0b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
