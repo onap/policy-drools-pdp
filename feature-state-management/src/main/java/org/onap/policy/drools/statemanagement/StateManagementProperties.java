@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 package org.onap.policy.drools.statemanagement;
 
 import java.util.Properties;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +34,11 @@ public class StateManagementProperties {
     public static final String NODE_TYPE = "node_type";
     public static final String SITE_NAME = "site_name";
 
-    public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
-    public static final String DB_URL = "javax.persistence.jdbc.url";
-    public static final String DB_USER = "javax.persistence.jdbc.user";
-    public static final String DB_PWD = "javax.persistence.jdbc.password";
+    public static final String DB_DRIVER = PersistenceUnitProperties.JDBC_DRIVER;
+    public static final String DB_URL = PersistenceUnitProperties.JDBC_URL;
+    public static final String DB_USER = PersistenceUnitProperties.JDBC_USER;
+    public static final String DB_PWD = PersistenceUnitProperties.JDBC_PASSWORD;
+    public static final String DB_TYPE = PersistenceUnitProperties.TARGET_DATABASE;
 
     public static final String TEST_SERVICES = PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES;
     public static final String TEST_SERVICES_DEFAULT = "TEST";

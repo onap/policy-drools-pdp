@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 package org.onap.policy.drools.activestandby;
 
 import java.util.Properties;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +40,11 @@ public class ActiveStandbyProperties {
     /*
      * feature-active-standby-management.properties parameter key values
      */
-    public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
-    public static final String DB_URL = "javax.persistence.jdbc.url";
-    public static final String DB_USER = "javax.persistence.jdbc.user";
-    public static final String DB_PWD = "javax.persistence.jdbc.password";
+    public static final String DB_DRIVER = PersistenceUnitProperties.JDBC_DRIVER;
+    public static final String DB_URL = PersistenceUnitProperties.JDBC_URL;
+    public static final String DB_USER = PersistenceUnitProperties.JDBC_USER;
+    public static final String DB_PWD = PersistenceUnitProperties.JDBC_PASSWORD;
+    public static final String DB_TYPE = PersistenceUnitProperties.TARGET_DATABASE;
 
     private static Properties properties = null;
 

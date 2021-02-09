@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -187,14 +188,16 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
     public static DroolsPdpsConnector getDroolsPdpsConnector(String pu) {
 
         Map<String, Object> propMap = new HashMap<>();
-        propMap.put("javax.persistence.jdbc.driver", ActiveStandbyProperties
-                .getProperty(ActiveStandbyProperties.DB_DRIVER));
-        propMap.put("javax.persistence.jdbc.url",
-                ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_URL));
-        propMap.put("javax.persistence.jdbc.user", ActiveStandbyProperties
-                .getProperty(ActiveStandbyProperties.DB_USER));
-        propMap.put("javax.persistence.jdbc.password",
-                ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_PWD));
+        propMap.put(PersistenceUnitProperties.JDBC_DRIVER,
+                        ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_DRIVER));
+        propMap.put(PersistenceUnitProperties.JDBC_URL,
+                        ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_URL));
+        propMap.put(PersistenceUnitProperties.JDBC_USER,
+                        ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_USER));
+        propMap.put(PersistenceUnitProperties.JDBC_PASSWORD,
+                        ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_PWD));
+        propMap.put(PersistenceUnitProperties.TARGET_DATABASE,
+                        ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_TYPE));
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(
                 pu, propMap);
