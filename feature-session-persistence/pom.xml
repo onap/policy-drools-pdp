@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   ONAP Policy Engine - Drools PDP
   ================================================================================
-  Copyright (C) 2017-2018, 2020 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
   Modifications Copyright (C) 2020 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -131,6 +131,16 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <scope>provided</scope>
+            <!--
+            Exclude this because it's incompatible with eclipselink, which already
+            includes the same classes. 
+             -->
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.persistence</groupId>
+                    <artifactId>javax.persistence-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate.common</groupId>
