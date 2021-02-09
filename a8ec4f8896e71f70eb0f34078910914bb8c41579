@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f78a3ece_0d6bf9ad",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPdpIntegrityMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-02-09T19:34:01Z",
+      "side": 1,
+      "message": "May be better to add it to a constants class, if any.",
+      "range": {
+        "startLine": 129,
+        "startChar": 85,
+        "endLine": 129,
+        "endChar": 92
+      },
+      "revId": "a8ec4f8896e71f70eb0f34078910914bb8c41579",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
