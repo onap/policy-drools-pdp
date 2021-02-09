@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,6 +116,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
         checkPropError(stateManagementProperties, StateManagementProperties.SITE_NAME);
         checkPropError(stateManagementProperties, StateManagementProperties.NODE_TYPE);
         checkPropError(stateManagementProperties, StateManagementProperties.DEPENDENCY_GROUPS);
+        checkPropError(stateManagementProperties, StateManagementProperties.DB_TYPE);
         checkPropError(stateManagementProperties, StateManagementProperties.DB_DRIVER);
         checkPropError(stateManagementProperties, StateManagementProperties.DB_URL);
         checkPropError(stateManagementProperties, StateManagementProperties.DB_USER);
