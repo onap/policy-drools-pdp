@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3ebe801e_e15bb83c",
+        "filename": "feature-active-standby-management/src/main/java/org/onap/policy/drools/activestandby/ActiveStandbyFeature.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-09T20:54:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4be62cc5_706f7138",
+      "revId": "a8ec4f8896e71f70eb0f34078910914bb8c41579",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f78a3ece_0d6bf9ad",
         "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPdpIntegrityMonitor.java",
         "patchSetId": 2
@@ -63,6 +81,30 @@
       "revId": "a8ec4f8896e71f70eb0f34078910914bb8c41579",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c0fa091_f119d0c5",
+        "filename": "feature-state-management/src/main/java/org/onap/policy/drools/statemanagement/DroolsPdpIntegrityMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-09T20:54:30Z",
+      "side": 1,
+      "message": "The idea was to avoid having to update a bunch of property files that were already configured to work with mariadb.  Nevertheless, I went ahead and updated the property files.\n\nNote: the property files already assume it\u0027s a mariadb, thus I just hard-coded the target-database to \"MySQL\" in the property files.  For the H2 DB used in junit tests, the value was set to \"Auto\" - apparently eclipselink is able to determine appropriate info about H2 by querying its metadata.",
+      "parentUuid": "373c9fdd_39f7a092",
+      "range": {
+        "startLine": 129,
+        "startChar": 85,
+        "endLine": 129,
+        "endChar": 92
+      },
+      "revId": "a8ec4f8896e71f70eb0f34078910914bb8c41579",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
