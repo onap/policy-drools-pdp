@@ -26,9 +26,6 @@ import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTO
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD2;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD3;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.CUSTOM_FIELD4;
-import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTIP;
-import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_HOSTNAME;
-import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.DEFAULT_SERVICE_NAME;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.ELAPSED_TIME;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.END_TIMESTAMP;
 import static org.onap.policy.drools.utils.logging.MdcTransactionConstants.INSTANCE_UUID;
@@ -89,11 +86,11 @@ class MdcTransactionImpl implements MdcTransaction {
         setRequestId(requestId);
         setPartner(partner);
 
-        setServiceName(DEFAULT_SERVICE_NAME);
-        setServer(DEFAULT_HOSTNAME);
-        setServerIpAddress(DEFAULT_HOSTIP);
-        setServerFqdn(DEFAULT_HOSTNAME);
-        setVirtualServerName(DEFAULT_HOSTNAME);
+        setServiceName(Metric.HOST_TYPE);
+        setServer(Metric.HOSTNAME);
+        setServerIpAddress(Metric.HOSTIP);
+        setServerFqdn(Metric.HOSTNAME);
+        setVirtualServerName(Metric.HOSTNAME);
 
         setStartTime(Instant.now());
     }
@@ -203,12 +200,10 @@ class MdcTransactionImpl implements MdcTransaction {
         setMdc(BEGIN_TIMESTAMP, Metric.toTimestamp(execItem.getStartTime()));
         setMdc(END_TIMESTAMP, Metric.toTimestamp(execItem.getEndTime()));
 
-        if (execItem.getElapsedTime() != null) {
-            MDC.put(ELAPSED_TIME, String.valueOf(execItem.getElapsedTime()));
-        } else {
+        if (execItem.getElapsedTime() == null) {
             execItem.setElapsedTime(null);  // this computes elapsed time appropriately with start and end times
-            MDC.put(ELAPSED_TIME, String.valueOf(execItem.getElapsedTime()));
         }
+        MDC.put(ELAPSED_TIME, String.valueOf(execItem.getElapsedTime()));
 
         setMdc(SERVICE_INSTANCE_ID, execItem.getServiceInstanceId());
         setMdc(INSTANCE_UUID, execItem.getInstanceUuid());
@@ -377,11 +372,14 @@ class MdcTransactionImpl implements MdcTransaction {
     @Override
     public MdcTransaction setStatusCode(String statusCode) {
         execItem.setStatusCode(statusCode);
+        execItem.setSuccess(STATUS_CODE_COMPLETE.equals(execItem.getStatusCode()));
         return this;
     }
 
     @Override
     public MdcTransaction setStatusCode(boolean success) {
+        execItem.setSuccess(success);
+
         if (success) {
             execItem.setStatusCode(STATUS_CODE_COMPLETE);
         } else {
