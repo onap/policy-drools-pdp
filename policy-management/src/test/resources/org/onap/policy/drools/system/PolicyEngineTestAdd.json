@@ -16,5 +16,17 @@
     "features": [],
     "controllers": [
         "foo"
-    ]
+    ],
+    "stats": {
+        "groupStat": {
+            "averageExecutionTime": 0.0,
+            "birthTime": 0,
+            "lastExecutionTime": 0,
+            "lastStart": 0,
+            "policyExecutedCount": 0,
+            "policyExecutedFailCount": 0,
+            "policyExecutedSuccessCount": 0
+        },
+        "subgroupStats": {}
+    }
 }

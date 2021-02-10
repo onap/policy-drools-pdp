@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class PolicyEngineTest {
     /**
      * logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(PolicyEngineTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PolicyEngineTest.class);
 
     private static GsonTestUtils gson;
 
@@ -148,7 +148,7 @@ public class PolicyEngineTest {
     }
 
     @AfterClass
-    public static void tearDown() throws IOException {
+    public static void tearDown() {
         logger.info("enter");
         cleanUpWorkingDir();
     }
@@ -170,6 +170,7 @@ public class PolicyEngineTest {
 
         logger.info("engine {} has configuration {}", PolicyEngineConstants.getManager(), engineProps);
 
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setBirthTime(0L);
         gson.compareGson(PolicyEngineConstants.getManager(),
                         new File(PolicyEngineTest.class.getSimpleName() + "Config.json"));
     }
@@ -234,7 +235,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test400ControllerAdd() throws Exception {
+    public void test400ControllerAdd() {
         logger.info("enter");
 
         final Properties controllerProperties = new Properties();
@@ -243,6 +244,7 @@ public class PolicyEngineTest {
 
         assertEquals(1, PolicyControllerConstants.getFactory().inventory().size());
 
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setBirthTime(0L);
         gson.compareGson(PolicyEngineConstants.getManager(),
                         new File(PolicyEngineTest.class.getSimpleName() + "Add.json"));
     }
@@ -263,7 +265,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test500Deactivate() throws Exception {
+    public void test500Deactivate() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().deactivate();
@@ -276,7 +278,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test501Activate() throws Exception {
+    public void test501Activate() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().activate();
@@ -289,7 +291,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test900ControllerRemove() throws Exception {
+    public void test900ControllerRemove() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().removePolicyController(TEST_CONTROLLER_NAME);
@@ -297,7 +299,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test901Stop() throws InterruptedException {
+    public void test901Stop() {
         logger.info("enter");
 
         /* Shutdown managed resources */

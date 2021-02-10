@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@
  */
 
 package org.onap.policy.drools.utils.logging;
-
-import org.onap.policy.common.utils.network.NetworkUtil;
 
 public class MdcTransactionConstants {
     /*
@@ -162,21 +160,6 @@ public class MdcTransactionConstants {
      * Custom Field4.
      */
     public static final String CUSTOM_FIELD4 = "CustomField4";
-
-    /**
-     * Default Service Name.
-     */
-    public static final String DEFAULT_SERVICE_NAME = "PDP-D";
-
-    /**
-     * Default Host Name.
-     */
-    public static final String DEFAULT_HOSTNAME = NetworkUtil.getHostname();
-
-    /**
-     * Default Host IP.
-     */
-    public static final String DEFAULT_HOSTIP = NetworkUtil.getHostIp();
 
     /**
      * Status Code Complete.
