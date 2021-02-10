@@ -70,6 +70,8 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
+import org.onap.policy.drools.stats.PolicyStats;
+import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.system.internal.SimpleLockProperties;
 
@@ -143,6 +145,8 @@ public class PolicyEngineManagerTest {
     private PolicyEngineManager mgr;
     private ScheduledExecutorService exsvc;
     private PolicyResourceLockManager lockmgr;
+    private PolicyStats stats;
+    private PolicyStatsManager statsManager;
 
     /**
      * Initializes the object to be tested.
@@ -200,6 +204,10 @@ public class PolicyEngineManagerTest {
         pdpConfig = new PdpdConfiguration();
         exsvc = mock(ScheduledExecutorService.class);
         lockmgr = mock(PolicyResourceLockManager.class);
+        //statsManager = mock(PolicyStatsManager.class);
+        //stats = mock(PolicyStats.class);
+        statsManager = new PolicyStatsManager();
+        statsManager.getGroupStat().setBirthTime(0L);
 
         when(lockmgr.start()).thenReturn(true);
         when(lockmgr.stop()).thenReturn(true);
@@ -286,7 +294,7 @@ public class PolicyEngineManagerTest {
         when(endpoint.lock()).thenReturn(true);
         when(endpoint.unlock()).thenReturn(true);
         when(endpoint.getTopicSink(CommInfrastructure.NOOP, MY_TOPIC)).thenReturn(sink1);
-        when(endpoint.getTopicSinks(MY_TOPIC)).thenReturn(Arrays.asList(sink1));
+        when(endpoint.getTopicSinks(MY_TOPIC)).thenReturn(Collections.singletonList(sink1));
 
         when(coder.encode(any(), any())).thenReturn(MESSAGE);
 
@@ -295,6 +303,7 @@ public class PolicyEngineManagerTest {
 
         when(engine.createPolicyController(CONTROLLER3, properties)).thenReturn(controller3);
         when(engine.createPolicyController(CONTROLLER4, properties)).thenReturn(controller4);
+        when(engine.getStats()).thenReturn(statsManager);
 
         config3.setName(CONTROLLER3);
         config3.setOperation(ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_CREATE);
@@ -574,7 +583,7 @@ public class PolicyEngineManagerTest {
 
         // source list of size 1
         setUp();
-        when(endpoint.addTopicSources(any(Properties.class))).thenReturn(Arrays.asList(source1));
+        when(endpoint.addTopicSources(any(Properties.class))).thenReturn(Collections.singletonList(source1));
         mgr.configure(properties);
         assertTrue(mgr.configure(pdpConfig));
 
@@ -671,7 +680,7 @@ public class PolicyEngineManagerTest {
         // force exception in the first controller with invalid operation
         setUp();
         config3.setOperation("unknown-operation");
-        assertEquals(Arrays.asList(controller4), mgr.updatePolicyControllers(pdpConfig.getControllers()));
+        assertEquals(Collections.singletonList(controller4), mgr.updatePolicyControllers(pdpConfig.getControllers()));
 
         // controller3 should NOT have been done
         verify(controllerFactory, never()).patch(controller3, drools3);
@@ -1913,7 +1922,7 @@ public class PolicyEngineManagerTest {
         // remaining methods should not have been invoked
         assertThatThrownBy(() -> verifyBefore.accept(prov2)).isInstanceOf(AssertionError.class);
 
-        assertThatThrownBy(() -> verifyMiddle.run()).isInstanceOf(AssertionError.class);
+        assertThatThrownBy(verifyMiddle::run).isInstanceOf(AssertionError.class);
 
         assertThatThrownBy(() -> verifyAfter.accept(prov1)).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);
@@ -1995,6 +2004,11 @@ public class PolicyEngineManagerTest {
             return exsvc;
         }
 
+        @Override
+        public PolicyStatsManager getStats() {
+            return statsManager;
+        }
+
         /**
          * Shutdown thread with overrides.
          */
@@ -2027,7 +2041,7 @@ public class PolicyEngineManagerTest {
     }
 
     @FunctionalInterface
-    private static interface RunnableWithEx {
+    private interface RunnableWithEx {
         void run() throws Exception;
     }
 }

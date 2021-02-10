@@ -19,8 +19,6 @@
 
 package org.onap.policy.drools.utils.logging;
 
-import org.onap.policy.common.utils.network.NetworkUtil;
-
 public class MdcTransactionConstants {
     /*
      * The fields must match the naming given at
@@ -162,21 +160,6 @@ public class MdcTransactionConstants {
      * Custom Field4.
      */
     public static final String CUSTOM_FIELD4 = "CustomField4";
-
-    /**
-     * Default Service Name.
-     */
-    public static final String DEFAULT_SERVICE_NAME = "PDP-D";
-
-    /**
-     * Default Host Name.
-     */
-    public static final String DEFAULT_HOSTNAME = NetworkUtil.getHostname();
-
-    /**
-     * Default Host IP.
-     */
-    public static final String DEFAULT_HOSTIP = NetworkUtil.getHostIp();
 
     /**
      * Status Code Complete.

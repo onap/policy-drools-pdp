@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,8 @@ import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApiConstants;
+import org.onap.policy.drools.metrics.Metric;
+import org.onap.policy.drools.metrics.TransMetric;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
@@ -77,13 +79,13 @@ import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
 import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
+import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MdcTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Policy Engine Manager Implementation.
@@ -158,6 +160,9 @@ class PolicyEngineManager implements PolicyEngine {
     private PolicyResourceLockManager lockManager = null;
 
     private DomainMaker domainMaker = new DomainMaker();
+
+    @Getter
+    private final PolicyStatsManager stats = new PolicyStatsManager();
 
     /**
      * gson parser to decode configuration requests.
@@ -245,6 +250,21 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
+    public void metric(String controllerName, String policyName, Metric metric) {
+        return;     // NOSONAR - sub-operations are not being tracked
+    }
+
+    @Override
+    public void transaction(@NonNull String controllerName,
+            @NonNull String policyName, @NonNull TransMetric transaction) {
+
+        // will stat on a per policy name that for an admin would
+        // be more significant than a controller name.
+
+        stats.stat(controllerName + "[" + policyName + "]", transaction);
+    }
+
+    @Override
     @GsonJsonIgnore
     public ScheduledExecutorService getExecutorService() {
         return executorService;
@@ -252,6 +272,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     private ScheduledExecutorService makeExecutorService(Properties properties) {
         int nthreads = DEFAULT_EXECUTOR_THREADS;
+
         try {
             nthreads = Integer.valueOf(
                             properties.getProperty(EXECUTOR_THREAD_PROP, String.valueOf(DEFAULT_EXECUTOR_THREADS)));

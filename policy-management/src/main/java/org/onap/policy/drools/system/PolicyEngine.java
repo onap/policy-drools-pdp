@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,12 @@ import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
+import org.onap.policy.drools.metrics.Metric;
+import org.onap.policy.drools.metrics.TransMetric;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
+import org.onap.policy.drools.stats.PolicyStatsManager;
 
 /**
  * Policy Engine, the top abstraction for the Drools PDP Policy Engine. It abstracts away a Drools
@@ -147,7 +150,6 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @return the updated Policy Controller
      * @throws IllegalArgumentException in the configuration is invalid
      * @throws IllegalStateException    if the controller is in a bad state
-     * @throws Exception                any other reason
      */
     PolicyController updatePolicyController(ControllerConfiguration configuration);
 
@@ -234,13 +236,19 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      */
     List<String> getFeatures();
 
-
     /**
      * get domain maker.
      *
-     * @return the domain maker.
+     * @return the domain maker
      */
     DomainMaker getDomainMaker();
+
+    /**
+     * get statistics for this PDP.
+     *
+     * @return statistics
+     */
+    PolicyStatsManager getStats();
 
     /**
      * Attempts the dispatching of an "event" object.
@@ -337,4 +345,22 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @return policy engine configuration
      */
     Properties defaultTelemetryConfig();
+
+    /**
+     * Track a policy execution metric.
+     *
+     * @param controllerName controller name
+     * @param policyName policy name
+     * @param metric metric
+     */
+    void metric(String controllerName, String policyName, Metric metric);
+
+    /**
+     * Track a policy execution transaction.
+     *
+     * @param controllerName controller name
+     * @param policyName policy name
+     * @param transaction transaction
+     */
+    void transaction(String controllerName, String policyName, TransMetric transaction);
 }
