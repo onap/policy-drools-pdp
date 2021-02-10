@@ -20,5 +20,17 @@
     "sources": [
         { "name": "source1-topic" },
         { "name": "source2-topic" }
-    ]
+    ],
+    "stats": {
+        "groupStat": {
+            "averageExecutionTime":0.0,
+            "birthTime": 0,
+            "lastExecutionTime":0,
+            "lastStart":0,
+            "policyExecutedCount":0,
+            "policyExecutedFailCount":0,
+            "policyExecutedSuccessCount":0,
+            "totalElapsedTime": 0.0
+        },"subgroupStats":{}
+    }
 }

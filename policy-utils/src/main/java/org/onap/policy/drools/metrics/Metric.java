@@ -48,9 +48,20 @@ public class Metric {
      */
     protected static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS+00:00";
 
-    protected static final String HOSTNAME = NetworkUtil.getHostname();
-    protected static final String HOSTIP = NetworkUtil.getHostIp();
-    protected static final String HOST_TYPE = "PDP-D";
+    /**
+     * Host name.
+     */
+    public static final String HOSTNAME = NetworkUtil.getHostname();
+
+    /**
+     * Host IP address.
+     */
+    public static final String HOSTIP = NetworkUtil.getHostIp();
+
+    /**
+     * Host Type.
+     */
+    public static final String HOST_TYPE = "PDP-D";
 
     /* transaction inheritable fields */
 
@@ -87,6 +98,8 @@ public class Metric {
     private String customField2;
     private String customField3;
     private String customField4;
+
+    private boolean success = false;
 
     /**
      * converts time to timestamp with format yyyy-MM-dd'T'HH:mm:ss.SSS+00:00.

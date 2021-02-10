@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,8 @@ import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApiConstants;
+import org.onap.policy.drools.metrics.Metric;
+import org.onap.policy.drools.metrics.TransMetric;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
@@ -77,13 +79,13 @@ import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
 import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
+import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MdcTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * Policy Engine Manager Implementation.
@@ -157,7 +159,10 @@ class PolicyEngineManager implements PolicyEngine {
     @Getter(AccessLevel.PROTECTED)
     private PolicyResourceLockManager lockManager = null;
 
-    private DomainMaker domainMaker = new DomainMaker();
+    private final DomainMaker domainMaker = new DomainMaker();
+
+    @Getter
+    private final PolicyStatsManager stats = new PolicyStatsManager();
 
     /**
      * gson parser to decode configuration requests.
@@ -245,6 +250,21 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
+    public void metric(String controllerName, String policyName, Metric metric) {
+        // sub-operations are not being tracked
+    }
+
+    @Override
+    public void transaction(@NonNull String controllerName,
+            @NonNull String policyName, @NonNull TransMetric transaction) {
+
+        // will stat on a per policy name that for an admin would
+        // be more significant than a controller name.
+
+        getStats().stat(controllerName + "[" + policyName + "]", transaction);
+    }
+
+    @Override
     @GsonJsonIgnore
     public ScheduledExecutorService getExecutorService() {
         return executorService;
@@ -252,8 +272,9 @@ class PolicyEngineManager implements PolicyEngine {
 
     private ScheduledExecutorService makeExecutorService(Properties properties) {
         int nthreads = DEFAULT_EXECUTOR_THREADS;
+
         try {
-            nthreads = Integer.valueOf(
+            nthreads = Integer.parseInt(
                             properties.getProperty(EXECUTOR_THREAD_PROP, String.valueOf(DEFAULT_EXECUTOR_THREADS)));
 
         } catch (NumberFormatException e) {
@@ -370,7 +391,7 @@ class PolicyEngineManager implements PolicyEngine {
         } else {
             final String msg = "Configuration Entity is not supported: " + entity;
             mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
-            logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER_NAME, msg);
+            logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER, msg);
             throw new IllegalArgumentException(msg);
         }
     }
@@ -440,7 +461,7 @@ class PolicyEngineManager implements PolicyEngine {
             } catch (final Exception e) {
                 mdcTrans.setStatusCode(false).setResponseCode(e.getClass().getName())
                         .setResponseDescription(e.getMessage()).flush();
-                logger.error(LoggerUtil.TRANSACTION_LOG_MARKER_NAME,
+                logger.error(LoggerUtil.TRANSACTION_LOG_MARKER,
                         "{}: cannot update-policy-controllers because of {}", this, e.getMessage(), e);
             }
         }
@@ -679,7 +700,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @FunctionalInterface
-    private static interface PredicateWithEx<T> {
+    private interface PredicateWithEx<T> {
         boolean test(T value) throws InterruptedException;
     }
 
@@ -961,10 +982,10 @@ class PolicyEngineManager implements PolicyEngine {
 
         this.locked = false;
 
-        boolean success = true;
+        boolean success;
 
         try {
-            success = (this.lockManager == null || this.lockManager.unlock()) && success;
+            success = this.lockManager == null || this.lockManager.unlock();
         } catch (final RuntimeException e) {
             logger.warn("{}: cannot unlock() lock manager because of {}", this, e.getMessage(), e);
             success = false;
