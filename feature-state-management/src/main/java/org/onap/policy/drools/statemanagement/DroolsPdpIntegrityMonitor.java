@@ -318,7 +318,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
          *
          * @param name name of the audit
          */
-        public AuditBase(String name) {
+        protected AuditBase(String name) {
             this.name = name;
             this.response = null;
         }

@@ -485,8 +485,8 @@ public class MavenDroolsController implements DroolsController {
                 this.getArtifactId(),
                 topic)) {
 
-            logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", this,
-                    topic, this.getGroupId(), this.getArtifactId());        // NOSONAR
+            logger.warn("{}: DECODING-UNSUPPORTED {}:{}:{}", this,              // NOSONAR
+                    topic, this.getGroupId(), this.getArtifactId());
             return true;
         }
 
