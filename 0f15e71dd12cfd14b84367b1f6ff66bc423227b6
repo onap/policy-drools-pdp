@@ -22,6 +22,30 @@
       "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68dda9b3_683b18ee",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T22:42:19Z",
+      "side": 1,
+      "message": "The idea I had here is to keep it as a generic measurements class, where you can have a \"group\" start or global measurements, and then \"subgroup\" measurements where there are the details of the stats.   So, group and subgroups are used here in a more generic way, rather than the pdp groups and subgroups.   So the way that it will work is that on a PDP-D basis will have group stats with the totals, and subgroups of the form \"\u003ccontroller, policy\u003e\" pairs keeping the stats for those pairs.    I was thinking of arranging the subgroups on a per \"controller\" only basis, or \"policy\" only basis, but I thought the combination of both may be the more valuable to the user.   The When I finish the implementation, the group will map to the PdpStatistics top structure (PDP-D) and subgroups (\u003ccontroller,policy\u003e) will will map to the PdpEngineWorkerStatistics class of policy/models which is list contained by the PdpStatistics.",
+      "parentUuid": "abe31769_7338b84b",
+      "range": {
+        "startLine": 42,
+        "startChar": 30,
+        "endLine": 42,
+        "endChar": 39
+      },
+      "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
