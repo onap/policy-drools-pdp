@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "559d997d_96a5ff51",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0ee41758_2d79a2a5",
+      "range": {
+        "startLine": 49,
+        "startChar": 4,
+        "endLine": 49,
+        "endChar": 14
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "048ebd64_8f790591",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
         "patchSetId": 2
@@ -36,6 +60,24 @@
       "writtenOn": "2021-02-11T13:09:11Z",
       "side": 1,
       "message": "this is only correct the first time.  Really need to store the sum of the elapsed times to recompute the average each time.",
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e538658_edeaf00e",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "oops, yes, this should be the accumulation of elapsed times, thanks",
+      "parentUuid": "048ebd64_8f790591",
       "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -62,6 +104,30 @@
       "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9ec84c0_0c4cc6fa",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d887fb57_76bf9aab",
+      "range": {
+        "startLine": 42,
+        "startChar": 4,
+        "endLine": 42,
+        "endChar": 14
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -105,6 +171,48 @@
     },
     {
       "key": {
+        "uuid": "58c67fde_5e0867d7",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "f43af68b_2c3c87b9",
+      "range": {
+        "startLine": 43,
+        "startChar": 4,
+        "endLine": 43,
+        "endChar": 13
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b1312b70_a9182281",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "will deal with getter access later, still need to figure out how will be accesses through lifecycle, need some methods around it to get data, but planning on that for next review",
+      "parentUuid": "4edd9c80_cea0bf18",
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ef982132_c88d3a37",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
         "patchSetId": 2
@@ -116,6 +224,30 @@
       "writtenOn": "2021-02-11T13:09:11Z",
       "side": 1,
       "message": "change to putIfAbsent() (or computeIfAbsent) and delete line 52",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 54
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d55f07e6_190c018c",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "not sure what it buys, as putIfAbsent, I think returns null if it is absent, so will have to move the inlined constructor out, and may end up with more lines of code.",
+      "parentUuid": "ef982132_c88d3a37",
       "range": {
         "startLine": 50,
         "startChar": 42,
@@ -145,6 +277,24 @@
     },
     {
       "key": {
+        "uuid": "e500dec1_c4961ae5",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e8f7600b_39d6064b",
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a9dd3da0_d71858c2",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsManagerTest.java",
         "patchSetId": 2
@@ -156,6 +306,24 @@
       "writtenOn": "2021-02-11T13:09:11Z",
       "side": 1,
       "message": "don\u0027t really need this since getters \u0026 setters are generated by lombok",
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "573aade9_0cff4cde",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsManagerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "We have it in multiple policy repos for lombok classes.  Is this a recent change, or perhaps we didn\u0027t know better at the time?",
+      "parentUuid": "a9dd3da0_d71858c2",
       "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
@@ -236,6 +404,30 @@
     },
     {
       "key": {
+        "uuid": "a7736756_d3ccf0e8",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "The test was crafted to match exactly on purpose and note the average execution time it is a long, so from that standpoint is ok.\nBut revisiting the data structures now in policy/models, I realize I misread the def in PdpEngineWorkerStatistics and should be a double instead in the non-test PolicyStats class instead of a long.",
+      "parentUuid": "c35497cc_7e85a11e",
+      "range": {
+        "startLine": 90,
+        "startChar": 21,
+        "endLine": 90,
+        "endChar": 32
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2a1554af_85221369",
         "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsTest.java",
         "patchSetId": 2
@@ -247,6 +439,30 @@
       "writtenOn": "2021-02-11T13:09:11Z",
       "side": 1,
       "message": "private",
+      "range": {
+        "startLine": 97,
+        "startChar": 4,
+        "endLine": 97,
+        "endChar": 14
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5be6d549_04a8e5e1",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-11T16:54:37Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2a1554af_85221369",
       "range": {
         "startLine": 97,
         "startChar": 4,
