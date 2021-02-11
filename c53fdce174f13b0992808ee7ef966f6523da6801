@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "fac2e072_41e2288b",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-11T23:07:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e538658_edeaf00e",
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d887fb57_76bf9aab",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
         "patchSetId": 2

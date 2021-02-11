@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "ef6daabd_ef417f29",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-11T23:07:35Z",
+      "side": 1,
+      "message": "is this really needed?",
+      "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "abe31769_7338b84b",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
         "patchSetId": 4
@@ -46,6 +63,46 @@
       "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79dcdc89_bbfe65ac",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-11T23:07:35Z",
+      "side": 1,
+      "message": "lines 50 \u0026 51 are still doing two look-ups.  Can combine the two lines into one that does a single look-up:\n\n  subgroupStats.computeIfAbsent(subGroupName, PolicyStats::new).stat(transaction)",
+      "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c8771288_77a76558",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-11T23:07:35Z",
+      "side": 1,
+      "message": "good",
+      "range": {
+        "startLine": 277,
+        "startChar": 31,
+        "endLine": 277,
+        "endChar": 39
+      },
+      "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
