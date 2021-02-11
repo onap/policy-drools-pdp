@@ -260,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "a4e3eee0_4137017c",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-11T17:07:20Z",
+      "side": 1,
+      "message": "avoids doing look-up and insert as two separate steps, thus avoiding the double-look-up.  You\u0027re right, use computeIfAbsent(), as putIfAbsent() returns null if the value wasn\u0027t in the map yet.",
+      "parentUuid": "d55f07e6_190c018c",
+      "range": {
+        "startLine": 50,
+        "startChar": 42,
+        "endLine": 50,
+        "endChar": 54
+      },
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e8f7600b_39d6064b",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
         "patchSetId": 2
@@ -324,6 +348,24 @@
       "side": 1,
       "message": "We have it in multiple policy repos for lombok classes.  Is this a recent change, or perhaps we didn\u0027t know better at the time?",
       "parentUuid": "a9dd3da0_d71858c2",
+      "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f0923bd_db26517d",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsManagerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-11T17:07:20Z",
+      "side": 1,
+      "message": "yes, that was before we added lombok.config to the repos",
+      "parentUuid": "573aade9_0cff4cde",
       "revId": "c53fdce174f13b0992808ee7ef966f6523da6801",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
