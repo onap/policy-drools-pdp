@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Query;
@@ -53,7 +54,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -68,6 +69,7 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MavenDroolsController2Test {
     private static final int FACT1_OBJECT = 1000;
     private static final int FACT3_OBJECT = 1001;
@@ -189,8 +191,6 @@ public class MavenDroolsController2Test {
      */
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         when(droolsProviders.getList()).thenReturn(Arrays.asList(prov1, prov2));
 
         when(coderMgr.isDecodingSupported(GROUP, ARTIFACT, TOPIC)).thenReturn(true);
@@ -202,15 +202,12 @@ public class MavenDroolsController2Test {
         when(kieSess.getKieBase()).thenReturn(kieBase);
         when(kieSess.getQueryResults(QUERY, PARM1, PARM2)).thenReturn(queryResults);
 
-        when(kieSess.getFactHandle(FACT1_OBJECT)).thenReturn(fact1);
         when(kieSess.getFactHandle(FACT3_OBJECT)).thenReturn(fact3);
 
         when(kieSess.getObject(fact1)).thenReturn(FACT1_OBJECT);
         when(kieSess.getObject(fact2)).thenReturn("");
         when(kieSess.getObject(fact3)).thenReturn(FACT3_OBJECT);
         when(kieSess.getObject(factex)).thenThrow(RUNTIME_EX);
-
-        when(kieSess2.getFactHandles()).thenReturn(Collections.emptyList());
 
         when(kieBase.getKiePackages()).thenReturn(Arrays.asList(pkg1, pkg2));
 
@@ -1081,7 +1078,6 @@ public class MavenDroolsController2Test {
         assertFalse(drools.delete(SESSION1, "hello"));
 
         // repeat, but generate exception while getting the first object
-        when(kieSess.getObject(fact1)).thenThrow(RUNTIME_EX);
         assertTrue(drools.delete(SESSION1, FACT3_OBJECT));
 
         verify(kieSess, never()).delete(fact1);

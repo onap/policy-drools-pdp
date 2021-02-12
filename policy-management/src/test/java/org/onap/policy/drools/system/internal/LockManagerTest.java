@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,13 +35,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.policy.drools.core.lock.AlwaysFailLock;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LockManagerTest {
     private static final String OWNER_KEY = "my key";
     private static final String RESOURCE = "my resource";
@@ -61,8 +63,6 @@ public class LockManagerTest {
      */
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         doAnswer(args -> {
             args.getArgument(0, Runnable.class).run();
             return null;

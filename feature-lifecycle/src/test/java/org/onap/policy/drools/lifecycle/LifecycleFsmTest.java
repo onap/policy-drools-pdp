@@ -145,9 +145,9 @@ public class LifecycleFsmTest {
                 List.of(opPolicy, op2Policy, unvalPolicy, valPolicy, artifactPolicy,
                         artifact2Policy, controller2Policy, controllerPolicy);
 
-        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
-        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
-        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.EMPTY_LIST));
+        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.emptyList()));
+        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.emptyList()));
+        assertEquals(expectedUndeployOrder, fsm.getUndeployablePoliciesAction(Collections.emptyList()));
     }
 
     @Test
