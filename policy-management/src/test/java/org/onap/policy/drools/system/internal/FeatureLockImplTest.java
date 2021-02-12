@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.onap.policy.drools.core.DroolsRunnable;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.LockCallback;
@@ -54,6 +55,7 @@ import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.powermock.reflect.Whitebox;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FeatureLockImplTest {
     private static final String POLICY_ENGINE_EXECUTOR_FIELD = "executorService";
     private static final String OWNER_KEY = "my key";
@@ -92,8 +94,6 @@ public class FeatureLockImplTest {
      */
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
     }
 
