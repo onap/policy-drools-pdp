@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DMaaPSimulatorJaxRsTest {
     private static final String MESSAGE = "hello";
     private static final String MESSAGE2 = "world";
@@ -57,8 +59,6 @@ public class DMaaPSimulatorJaxRsTest {
      */
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         sim = new DMaaPSimulatorJaxRs();
     }
 
