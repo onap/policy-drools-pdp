@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "f8b6fca6_0d840598",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-02-12T14:45:45Z",
+      "side": 1,
+      "message": "Thanks for the clarifications Jorge!",
+      "parentUuid": "68dda9b3_683b18ee",
+      "range": {
+        "startLine": 42,
+        "startChar": 30,
+        "endLine": 42,
+        "endChar": 39
+      },
+      "revId": "0f15e71dd12cfd14b84367b1f6ff66bc423227b6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "79dcdc89_bbfe65ac",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStatsManager.java",
         "patchSetId": 4
