@@ -186,7 +186,7 @@ public class LifecycleFsmUpdateTest {
         change.setState(PdpState.ACTIVE);
         change.setName(fsm.getName());
 
-        fsm.setSubGroupAction("a");
+        fsm.setSubGroup("a");
         fsm.source.offer(new StandardCoder().encode(change));
 
         assertEquals(0, fsm.getPoliciesMap().size());

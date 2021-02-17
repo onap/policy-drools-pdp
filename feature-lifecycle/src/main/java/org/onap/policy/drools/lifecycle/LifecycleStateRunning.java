@@ -132,7 +132,15 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             // update subgroup if applicable per update message
 
-            fsm.setSubGroupAction(update.getPdpSubgroup());
+            fsm.setSubGroup(update.getPdpSubgroup());
+
+            // Deploy counts are reset when we get update messages.
+            // Since update messages contain the full set of active policies
+            // regardless, they have been already deployed or not, will reset
+            // and update counts every time such an update is received.
+            // This is thought to provide the most value to the system administrator.
+
+            fsm.resetDeployCountsAction();
 
             // snapshot the active policies previous to apply the new set of active
             // policies as given by the PAP in the update message
@@ -168,9 +176,17 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             failedPolicies.addAll(reApplyNonNativePolicies(activePoliciesPreUpdateMap));
 
-            return fsm.statusAction(response(update.getRequestId(),
-                            (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
-                            fsm.getPolicyIdsMessage(failedPolicies))) && failedPolicies.isEmpty();
+            // Update counts that we know about
+
+            fsm.updateDeployCountsAction((long) fsm.getActivePolicies().size(),
+                    null, (long) failedPolicies.size());
+
+            PdpResponseDetails response =
+                response(update.getRequestId(),
+                        (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
+                        fsm.getPolicyIdsMessage(failedPolicies));
+
+            return fsm.statusAction(response) && failedPolicies.isEmpty();
         }
     }
 
