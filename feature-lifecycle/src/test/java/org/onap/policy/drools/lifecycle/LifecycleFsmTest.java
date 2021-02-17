@@ -21,6 +21,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,11 +34,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
+import org.onap.policy.models.pdp.concepts.PdpStatus;
+import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
@@ -157,6 +161,54 @@ public class LifecycleFsmTest {
         Map<String, List<ToscaPolicy>> deployedPolicies = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
         assertEquals(2, fsm.getNativeArtifactPolicies(deployedPolicies).size());
         assertEquals(List.of(artifactPolicy, artifact2Policy), fsm.getNativeArtifactPolicies(deployedPolicies));
+    }
+
+    @Test
+    public void testSetGroup() {
+        fsm.setGroup("bar");
+        assertEquals("bar", fsm.getGroup());
+        assertEquals("bar", fsm.getStats().getPdpGroupName());
+    }
+
+    @Test
+    public void testSetSubGroup() {
+        fsm.setSubGroup("foo");
+        assertEquals("foo", fsm.getSubGroup());
+        assertEquals("foo", fsm.getStats().getPdpSubGroupName());
+    }
+
+    @Test
+    public void testDeployedPolicyAction() {
+        fsm.deployedPolicyAction(controllerPolicy);
+        assertEquals(1, fsm.getStats().getPolicyDeploySuccessCount());
+
+        fsm.undeployedPolicyAction(controllerPolicy);
+        assertEquals(2, fsm.getStats().getPolicyDeploySuccessCount());
+    }
+
+    @Test
+    public void testRestDeployCountsAction() {
+        deployAllPolicies();
+        assertEquals(8, fsm.getStats().getPolicyDeploySuccessCount());
+
+        fsm.resetDeployCountsAction();
+        assertEquals(0, fsm.getStats().getPolicyDeploySuccessCount());
+        assertEquals(0, fsm.getStats().getPolicyDeployFailCount());
+        assertEquals(0, fsm.getStats().getPolicyDeployCount());
+    }
+
+    @Test
+    public void testStatusPayload() {
+        fsm.updateDeployCountsAction(8L, 6L, 2L);
+        PdpStatus status = fsm.statusPayload(PdpState.ACTIVE);
+
+        assertEquals(fsm.getGroup(), status.getStatistics().getPdpGroupName());
+        assertEquals(fsm.getSubGroup(), status.getStatistics().getPdpSubGroupName());
+        assertEquals(NetworkUtil.getHostname(), status.getStatistics().getPdpInstanceId());
+        assertEquals(6, status.getStatistics().getPolicyDeploySuccessCount());
+        assertEquals(2, status.getStatistics().getPolicyDeployFailCount());
+        assertEquals(8, status.getStatistics().getPolicyDeployCount());
+        assertNotNull(status.getStatistics().getTimeStamp());
     }
 
     protected void deployAllPolicies() {

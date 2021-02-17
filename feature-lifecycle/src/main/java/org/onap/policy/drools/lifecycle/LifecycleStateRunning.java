@@ -132,7 +132,17 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             // update subgroup if applicable per update message
 
-            fsm.setSubGroupAction(update.getPdpSubgroup());
+            fsm.setSubGroup(update.getPdpSubgroup());
+
+            // Deploy counts are reset when we process UPDATE messages.
+            // UPDATE messages contain the complete set of active policies for this PDP-D
+            // regardless if they were already deployed or not.
+            // The deploy counts are reset any such message is received because
+            // it contains the universe of policies that this PDP-D should execute.
+            // It wouldn't make much sense for an administrator for *deploy* pegs
+            // to keep increasing monotonically the counters for these deploy measurements.
+
+            fsm.resetDeployCountsAction();
 
             // snapshot the active policies previous to apply the new set of active
             // policies as given by the PAP in the update message
@@ -168,9 +178,17 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             failedPolicies.addAll(reApplyNonNativePolicies(activePoliciesPreUpdateMap));
 
-            return fsm.statusAction(response(update.getRequestId(),
-                            (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
-                            fsm.getPolicyIdsMessage(failedPolicies))) && failedPolicies.isEmpty();
+            // Update counts that we know about
+
+            fsm.updateDeployCountsAction((long) fsm.getActivePolicies().size(),
+                    null, (long) failedPolicies.size());
+
+            PdpResponseDetails response =
+                response(update.getRequestId(),
+                        (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
+                        fsm.getPolicyIdsMessage(failedPolicies));
+
+            return fsm.statusAction(response) && failedPolicies.isEmpty();
         }
     }
 

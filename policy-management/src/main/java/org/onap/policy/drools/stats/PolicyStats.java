@@ -46,32 +46,32 @@ public class PolicyStats {
     /**
      * Number of executed policy transactions.
      */
-    private long policyExecutedCount;
+    private volatile long policyExecutedCount;
 
     /**
      * Number of successfully executed policy transactions.
      */
-    private long policyExecutedSuccessCount;
+    private volatile long policyExecutedSuccessCount;
 
     /**
      * Number of failed executions of policy transactions.
      */
-    private long policyExecutedFailCount;
+    private volatile long policyExecutedFailCount;
 
     /**
      * Last time the policy transaction was executed.
      */
-    private long lastExecutionTime;
+    private volatile long lastExecutionTime;
 
     /**
      * Average execution time of a policy transaction.
      */
-    private double averageExecutionTime;
+    private volatile double averageExecutionTime;
 
     /**
      * Total policy execution times.
      */
-    private double totalElapsedTime;
+    private volatile double totalElapsedTime;
 
     /**
      * Uptime of the entity holding the stats.
@@ -81,12 +81,12 @@ public class PolicyStats {
     /**
      * Time last transaction was started.
      */
-    private long lastStart;
+    private volatile long lastStart;
 
     /**
      * add a stat transaction record.
      */
-    public void stat(@NonNull TransMetric trans) {
+    public synchronized void stat(@NonNull TransMetric trans) {
         policyExecutedCount++;
         if (trans.isSuccess()) {
             policyExecutedSuccessCount++;
