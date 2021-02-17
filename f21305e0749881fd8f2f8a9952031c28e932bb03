@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a40e83f7_7cd46b9c",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-17T13:53:59Z",
+      "side": 1,
+      "message": "Should deploy counts be cumulative instead when UPDATE messages are received?    The reason why I have it reset when an update message is received, I thought this would make more sense for an admin to interpret them.",
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
