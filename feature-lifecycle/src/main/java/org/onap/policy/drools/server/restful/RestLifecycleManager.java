@@ -101,7 +101,7 @@ public class RestLifecycleManager {
     @ApiOperation(value = "Retrieves the Lifecycle subgroup",
             notes = "Lifecycle Subgroup", response = String.class)
     public Response subgroup() {
-        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSubgroup()).build();
+        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSubGroup()).build();
     }
 
     /**
@@ -114,8 +114,8 @@ public class RestLifecycleManager {
             notes = "Lifecycle Subgroup", response = String.class)
     public Response subgroup(
         @ApiParam(value = "Subgroup", required = true) @PathParam("subgroup") String subgroup) {
-        LifecycleFeature.getFsm().setSubgroup(subgroup);
-        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSubgroup()).build();
+        LifecycleFeature.getFsm().setSubGroup(subgroup);
+        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSubGroup()).build();
     }
 
     /**
@@ -153,7 +153,7 @@ public class RestLifecycleManager {
 
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup(LifecycleFeature.getFsm().getGroup());
-        change.setPdpSubgroup(LifecycleFeature.getFsm().getSubgroup());
+        change.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());
         change.setState(PdpState.valueOf(state));
         change.setName(LifecycleFeature.getFsm().getName());
 
@@ -440,7 +440,7 @@ public class RestLifecycleManager {
         PdpUpdate update = new PdpUpdate();
         update.setName(LifecycleFeature.getFsm().getName());
         update.setPdpGroup(LifecycleFeature.getFsm().getGroup());
-        update.setPdpSubgroup(LifecycleFeature.getFsm().getSubgroup());
+        update.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());
         update.setPolicies(policies);
         return update;
     }
