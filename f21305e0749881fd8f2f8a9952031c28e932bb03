@@ -243,6 +243,30 @@
     },
     {
       "key": {
+        "uuid": "6d2f2356_598e6bb9",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-17T21:10:12Z",
+      "side": 1,
+      "message": "yes, compile error without them",
+      "parentUuid": "337b9b98_7b42352f",
+      "range": {
+        "startLine": 181,
+        "startChar": 42,
+        "endLine": 181,
+        "endChar": 46
+      },
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9bee258c_9b0f0d87",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
         "patchSetId": 3
