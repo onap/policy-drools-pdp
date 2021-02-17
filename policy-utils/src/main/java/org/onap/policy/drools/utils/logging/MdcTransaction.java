@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 package org.onap.policy.drools.utils.logging;
 
 import java.time.Instant;
+import org.onap.policy.drools.metrics.Metric;
 
 /**
  * MDC Transaction Utility Class.
@@ -355,6 +356,11 @@ public interface MdcTransaction {
      * generate timestamp used for logging.
      */
     String timestamp(Instant time);
+
+    /**
+     * get companion metric.
+     */
+    Metric getMetric();
 
     /**
      * create new MDC Transaction.
