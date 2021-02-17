@@ -80,7 +80,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         change.setState(PdpState.ACTIVE);
         change.setName(fsm.getName());
 
-        fsm.setSubGroupAction("a");
+        fsm.setSubGroup("a");
         fsm.source.offer(new StandardCoder().encode(change));
         controllerSupport.getController().start();
     }

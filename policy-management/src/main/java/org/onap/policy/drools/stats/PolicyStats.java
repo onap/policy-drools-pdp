@@ -23,10 +23,12 @@ package org.onap.policy.drools.stats;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.Synchronized;
 import lombok.ToString;
 import org.onap.policy.drools.metrics.TransMetric;
 import org.slf4j.Logger;
@@ -35,7 +37,8 @@ import org.slf4j.Logger;
  * Basic policy execution statistics.
  */
 
-@Data
+@Setter(onMethod_ = @Synchronized)
+@Getter(onMethod_ = @Synchronized)
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
@@ -86,6 +89,8 @@ public class PolicyStats {
     /**
      * add a stat transaction record.
      */
+
+    @Synchronized
     public void stat(@NonNull TransMetric trans) {
         policyExecutedCount++;
         if (trans.isSuccess()) {
