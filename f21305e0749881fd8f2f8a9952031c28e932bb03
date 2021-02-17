@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "43b9bb5f_99bb2121",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-17T15:24:36Z",
+      "side": 1,
+      "message": "guess there\u0027s no distinction between deploy \u0026 undeploy counts",
+      "range": {
+        "startLine": 431,
+        "startChar": 19,
+        "endLine": 431,
+        "endChar": 46
+      },
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "05ae040d_8ec894ad",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 3
@@ -59,6 +82,70 @@
       "writtenOn": "2021-02-17T13:53:59Z",
       "side": 1,
       "message": "Should deploy counts be cumulative instead when UPDATE messages are received?    The reason why I have it reset when an update message is received, I thought this would make more sense for an admin to interpret them.",
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d360aee7_68c1de78",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-17T15:24:36Z",
+      "side": 1,
+      "message": "I\u0027m thinking they should be cumulative, but will defer to Ram \u0026 Ajith.",
+      "parentUuid": "a40e83f7_7cd46b9c",
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a968218_60c1cb02",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-17T15:24:36Z",
+      "side": 1,
+      "message": "are these casts necessary?",
+      "range": {
+        "startLine": 181,
+        "startChar": 42,
+        "endLine": 181,
+        "endChar": 46
+      },
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9bee258c_9b0f0d87",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/stats/PolicyStats.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-17T15:24:36Z",
+      "side": 1,
+      "message": "hmm.  sonar isn\u0027t going to like this.",
+      "range": {
+        "startLine": 49,
+        "startChar": 12,
+        "endLine": 49,
+        "endChar": 21
+      },
       "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
