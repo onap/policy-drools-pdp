@@ -21,8 +21,10 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -50,12 +53,14 @@ import org.onap.policy.common.endpoints.listeners.ScoListener;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
 import org.onap.policy.common.utils.network.NetworkUtil;
+import org.onap.policy.drools.metrics.Metric;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
+import org.onap.policy.models.pdp.concepts.PdpStatistics;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
@@ -125,12 +130,10 @@ public class LifecycleFsm implements Startable {
     protected long statusTimerSeconds = DEFAULT_STATUS_TIMER_SECONDS;
 
     @Getter
-    @Setter
     private String group;
 
     @Getter
-    @Setter
-    protected String subgroup;
+    protected String subGroup;
 
     @Getter
     protected Set<String> mandatoryPolicyTypes = new HashSet<>();
@@ -141,26 +144,31 @@ public class LifecycleFsm implements Startable {
     @Getter
     protected final Map<ToscaConceptIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
 
+    @Getter
+    protected final PdpStatistics stats = new PdpStatistics();
+
     /**
      * Constructor.
      */
     public LifecycleFsm() {
-        this.properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
-        this.group = this.properties.getProperty(GROUP_NAME, DEFAULT_PDP_GROUP);
+        properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
+        setGroup(properties.getProperty(GROUP_NAME, DEFAULT_PDP_GROUP));
 
-        this.policyTypesMap.put(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER,
+        policyTypesMap.put(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER,
                 new PolicyTypeNativeDroolsController(this, POLICY_TYPE_DROOLS_NATIVE_CONTROLLER));
-        this.policyTypesMap.put(
+        policyTypesMap.put(
                 POLICY_TYPE_DROOLS_NATIVE_RULES,
                  new PolicyTypeNativeArtifactController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
 
-        String commaSeparatedPolicyTypes = this.properties.getProperty(MANDATORY_POLICY_TYPES);
+        String commaSeparatedPolicyTypes = properties.getProperty(MANDATORY_POLICY_TYPES);
         if (!StringUtils.isBlank(commaSeparatedPolicyTypes)) {
-            Collections.addAll(this.mandatoryPolicyTypes, commaSeparatedPolicyTypes.split("\\s*,\\s*"));
+            Collections.addAll(mandatoryPolicyTypes, commaSeparatedPolicyTypes.split("\\s*,\\s*"));
         }
 
         logger.info("The mandatory Policy Types are {}. Compliance is {}",
-                this.mandatoryPolicyTypes, this.isMandatoryPolicyTypesCompliant());
+                mandatoryPolicyTypes, isMandatoryPolicyTypesCompliant());
+
+        stats.setPdpInstanceId(Metric.HOSTNAME);
     }
 
     @GsonJsonIgnore
@@ -180,6 +188,21 @@ public class LifecycleFsm implements Startable {
         return state.state();
     }
 
+    /**
+     * set group.
+     */
+    public synchronized void setGroup(String group) {
+        this.group = group;
+        this.stats.setPdpGroupName(group);
+    }
+
+    /**
+     * set subgroup.
+     */
+    public synchronized void setSubGroup(String subGroup) {
+        this.subGroup = subGroup;
+        this.stats.setPdpSubGroupName(subGroup);
+    }
 
     /* ** FSM events - entry points of events into the FSM ** */
 
@@ -274,7 +297,8 @@ public class LifecycleFsm implements Startable {
         logger.info("lifecycle event: update");
         return state.update(update);
     }
-    /* ** FSM State Actions ** */
+
+    /* FSM State Actions (executed sequentially) */
 
     protected boolean startAction() {
         if (isAlive()) {
@@ -300,7 +324,7 @@ public class LifecycleFsm implements Startable {
     }
 
     protected boolean statusAction() {
-        return statusAction(state(), null);
+        return statusAction(null);
     }
 
     protected boolean statusAction(PdpResponseDetails response) {
@@ -314,15 +338,11 @@ public class LifecycleFsm implements Startable {
 
         PdpStatus status = statusPayload(state);
         if (response != null) {
-            status.setRequestId(response.getResponseTo());     // for standard logging of transactions
+            status.setRequestId(response.getResponseTo());
             status.setResponse(response);
         }
 
         return client.send(status);
-    }
-
-    protected void setSubGroupAction(String subgroup) {
-        this.subgroup = subgroup;
     }
 
     protected synchronized void transitionToAction(@NonNull LifecycleState newState) {
@@ -403,14 +423,58 @@ public class LifecycleFsm implements Startable {
     }
 
     protected void deployedPolicyAction(@NonNull ToscaPolicy policy) {
-        policiesMap.put(policy.getIdentifier(), policy);
+        if (!policiesMap.containsKey(policy.getIdentifier())) {
+            // avoid counting reapplies in a second pass when a mix of native and non-native
+            // policies are present.
+            getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
+            getStats().setPolicyDeploySuccessCount(getStats().getPolicyDeploySuccessCount() + 1);
+            policiesMap.put(policy.getIdentifier(), policy);
+        }
     }
 
     protected void undeployedPolicyAction(@NonNull ToscaPolicy policy) {
-        policiesMap.remove(policy.getIdentifier());
+        if (policiesMap.containsKey(policy.getIdentifier())) {
+            // avoid counting reapplies in a second pass when a mix of native and non-native
+            // policies are present.
+            getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
+            getStats().setPolicyDeploySuccessCount(getStats().getPolicyDeploySuccessCount() + 1);
+            policiesMap.remove(policy.getIdentifier());
+        }
+    }
+
+    protected void failedDeployPolicyAction(ToscaPolicy failedPolicy) {
+        getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
+        getStats().setPolicyDeployFailCount(getStats().getPolicyDeployFailCount() + 1);
+    }
+
+    protected void failedUndeployPolicyAction(ToscaPolicy failedPolicy) {
+        failedDeployPolicyAction(failedPolicy);
+        policiesMap.remove(failedPolicy.getIdentifier());
+    }
+
+    protected void updateDeployCountsAction(Long deployCount, Long deploySuccesses, Long deployFailures) {
+        PdpStatistics statistics = getStats();
+        if (deployCount != null) {
+            statistics.setPolicyDeployCount(deployCount);
+        }
+
+        if (deploySuccesses != null) {
+            statistics.setPolicyDeploySuccessCount(deploySuccesses);
+        }
+
+        if (deployFailures != null) {
+            statistics.setPolicyDeployFailCount(deployFailures);
+        }
+    }
+
+    protected void resetDeployCountsAction() {
+        getStats().setPolicyDeployCount(0);
+        getStats().setPolicyDeployFailCount(0);
+        getStats().setPolicyDeploySuccessCount(0);
     }
 
     protected List<ToscaPolicy> resetPoliciesAction() {
+        resetDeployCountsAction();
         List<ToscaPolicy> policies = new ArrayList<>(getActivePolicies());
         policiesMap.clear();
         return policies;
@@ -509,16 +573,30 @@ public class LifecycleFsm implements Startable {
         scheduler.shutdownNow();
     }
 
-    private PdpStatus statusPayload(@NonNull PdpState state) {
+    protected PdpStatus statusPayload(@NonNull PdpState state) {
         PdpStatus status = new PdpStatus();
         status.setName(name);
         status.setPdpGroup(group);
-        status.setPdpSubgroup(subgroup);
+        status.setPdpSubgroup(subGroup);
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType("drools");
         status.setPolicies(new ArrayList<>(policiesMap.keySet()));
+        status.setStatistics(statisticsPayload());
         return status;
+    }
+
+    private PdpStatistics statisticsPayload() {
+        PdpStatistics updateStats = new PdpStatistics(stats);
+        updateStats.setTimeStamp(new Date());
+
+        try {
+            BeanUtils.copyProperties(updateStats, PolicyEngineConstants.getManager().getStats());
+        } catch (IllegalAccessException | InvocationTargetException ex) {
+            logger.debug("statistics mapping failure", ex);
+        }
+
+        return updateStats;
     }
 
     private boolean source() {
@@ -560,7 +638,7 @@ public class LifecycleFsm implements Startable {
 
         return name == null && group != null
             && Objects.equals(group, getGroup())
-            && Objects.equals(subgroup, getSubgroup());
+            && Objects.equals(subgroup, getSubGroup());
     }
 
     /* **** IO listeners ***** */
