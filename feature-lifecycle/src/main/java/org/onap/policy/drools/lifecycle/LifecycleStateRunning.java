@@ -122,6 +122,9 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
     @Override
     public boolean update(@NonNull PdpUpdate update) {
+        // UPDATE messages contain the complete universe of active policies in this PDP-D
+        // regardless if they were already functioning in the PDP-D or new.
+
         synchronized (fsm) {
             if (update.getPdpHeartbeatIntervalMs() != null
                     && !fsm.setStatusIntervalAction(update.getPdpHeartbeatIntervalMs() / 1000)) {
@@ -132,7 +135,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             // update subgroup if applicable per update message
 
-            fsm.setSubGroupAction(update.getPdpSubgroup());
+            fsm.setSubGroup(update.getPdpSubgroup());
 
             // snapshot the active policies previous to apply the new set of active
             // policies as given by the PAP in the update message
@@ -168,9 +171,12 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             failedPolicies.addAll(reApplyNonNativePolicies(activePoliciesPreUpdateMap));
 
-            return fsm.statusAction(response(update.getRequestId(),
-                            (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
-                            fsm.getPolicyIdsMessage(failedPolicies))) && failedPolicies.isEmpty();
+            PdpResponseDetails response =
+                response(update.getRequestId(),
+                        (failedPolicies.isEmpty()) ? PdpResponseStatus.SUCCESS : PdpResponseStatus.FAIL,
+                        fsm.getPolicyIdsMessage(failedPolicies));
+
+            return fsm.statusAction(response) && failedPolicies.isEmpty();
         }
     }
 
@@ -195,12 +201,13 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         List<ToscaPolicy> failedUndeployPolicies = undeployPolicies(policies);
         if (!failedUndeployPolicies.isEmpty()) {
             logger.warn("update-policies: undeployment failures: {}", fsm.getPolicyIdsMessage(failedUndeployPolicies));
-            failedUndeployPolicies.forEach(fsm::undeployedPolicyAction);
+            failedUndeployPolicies.forEach(fsm::failedUndeployPolicyAction);
         }
 
         List<ToscaPolicy> failedDeployPolicies = deployPolicies(policies);
         if (!failedDeployPolicies.isEmpty()) {
             logger.warn("update-policies: deployment failures: {}", fsm.getPolicyIdsMessage(failedDeployPolicies));
+            failedDeployPolicies.forEach(fsm::failedDeployPolicyAction);
         }
 
         return Pair.of(failedUndeployPolicies, failedDeployPolicies);
