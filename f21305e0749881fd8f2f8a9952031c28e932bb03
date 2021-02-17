@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "e3741706_f39e1518",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-02-17T22:26:53Z",
+      "side": 1,
+      "message": "Hmm...ideally they should be separated. We can do that improvement in models and affected repos later.",
+      "parentUuid": "acb5af90_0e3b21aa",
+      "range": {
+        "startLine": 431,
+        "startChar": 19,
+        "endLine": 431,
+        "endChar": 46
+      },
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "05ae040d_8ec894ad",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 3
@@ -190,6 +214,24 @@
       "side": 1,
       "message": "Let\u0027s see what Ram and Ajith say ..",
       "parentUuid": "d360aee7_68c1de78",
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59cba0e4_f40e3c39",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-02-17T22:26:53Z",
+      "side": 1,
+      "message": "I agree with Jim, they should be cumulative. And should be reset only when the PDP engine restarts.\nRegarding increment, it needs to skip the policies which are already deployed. As the PDP is already scanning the list and only deploying the one that is missing.\nMoreover, with the switch to delta policies from PAP, PDPs will only get the one that needs to de deployed. So, in that case you can increment based on the size of the list.",
+      "parentUuid": "a97eba0c_21f0e5ad",
       "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
