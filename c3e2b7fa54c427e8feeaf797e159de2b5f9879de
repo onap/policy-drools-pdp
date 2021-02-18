@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "dc8e63f3_70b8dbd1",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T16:49:29Z",
+      "side": 1,
+      "message": "Thanks Pam, I may give it a try, I think I did it in the past and connect it to the IDE but was very slow, may be I just ought to run it standalone.",
+      "parentUuid": "8597c51c_65edcce1",
+      "revId": "c3e2b7fa54c427e8feeaf797e159de2b5f9879de",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d9f5207a_24ca41c9",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 5
