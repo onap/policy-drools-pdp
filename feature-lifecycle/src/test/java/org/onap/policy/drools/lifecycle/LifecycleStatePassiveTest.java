@@ -158,6 +158,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         int qlength = fsm.client.getSink().getRecentEvents().length;
         PdpStatus lastStatus = new StandardCoder().decode(fsm.client.getSink().getRecentEvents()[qlength - 1],
                         PdpStatus.class);
+        assertEquals("foo", lastStatus.getPdpType());
         assertEquals(update.getRequestId(), lastStatus.getRequestId());
         assertEquals(update.getRequestId(), lastStatus.getResponse().getResponseTo());
 
@@ -327,7 +328,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         String[] events = fsm.client.getSink().getRecentEvents();
         PdpStatus status = new StandardCoder().decode(events[events.length - 1], PdpStatus.class);
-        assertEquals("drools", status.getPdpType());
+        assertEquals("foo", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
         assertEquals(NetworkUtil.getHostname(), status.getName());
