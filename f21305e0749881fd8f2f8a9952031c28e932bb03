@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "a4ccd9e6_9f983658",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T02:12:57Z",
+      "side": 1,
+      "message": "I think in general the PdpStatistics could be revamped a tad, for example the list of engine workers structure seems to be more relatable to apex than to the pdp-x and pdp-d.  It would be good to add documentation too to guide implementations.",
+      "parentUuid": "e3741706_f39e1518",
+      "range": {
+        "startLine": 431,
+        "startChar": 19,
+        "endLine": 431,
+        "endChar": 46
+      },
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "05ae040d_8ec894ad",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 3
@@ -235,6 +259,24 @@
       "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13ab5ef9_394c2284",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T02:12:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59cba0e4_f40e3c39",
+      "revId": "f21305e0749881fd8f2f8a9952031c28e932bb03",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
