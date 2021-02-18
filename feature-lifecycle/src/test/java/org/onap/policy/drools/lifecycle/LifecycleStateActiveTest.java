@@ -224,6 +224,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
                 "1.0.0")));
         PdpStatus cachedStatus = new StandardCoder()
                                     .decode(fsm.client.getSink().getRecentEvents()[qlength], PdpStatus.class);
+        assertEquals("foo", cachedStatus.getPdpType());
         assertEquals(new ArrayList<>(fsm.policiesMap.keySet()), cachedStatus.getPolicies());
 
         List<ToscaPolicy> factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
