@@ -85,8 +85,12 @@ public class LifecycleFsm implements Startable {
 
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String GROUP_NAME = "lifecycle.pdp.group";
+    protected static final String PDP_TYPE = "lifecycle.pdp.type";
     protected static final String MANDATORY_POLICY_TYPES = "lifecycle.pdp.policytypes";
+
     protected static final String DEFAULT_PDP_GROUP = "defaultGroup";
+    protected static final String DEFAULT_PDP_TYPE = "drools";
+
     protected static final long MIN_STATUS_INTERVAL_SECONDS = 5L;
     protected static final String PDP_MESSAGE_NAME = "messageName";
 
@@ -136,6 +140,10 @@ public class LifecycleFsm implements Startable {
     protected String subGroup;
 
     @Getter
+    @Setter
+    protected String pdpType;
+
+    @Getter
     protected Set<String> mandatoryPolicyTypes = new HashSet<>();
 
     @Getter
@@ -153,6 +161,7 @@ public class LifecycleFsm implements Startable {
     public LifecycleFsm() {
         properties = SystemPersistenceConstants.getManager().getProperties(CONFIGURATION_PROPERTIES_NAME);
         setGroup(properties.getProperty(GROUP_NAME, DEFAULT_PDP_GROUP));
+        setPdpType(properties.getProperty(PDP_TYPE, DEFAULT_PDP_TYPE));
 
         policyTypesMap.put(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER,
                 new PolicyTypeNativeDroolsController(this, POLICY_TYPE_DROOLS_NATIVE_CONTROLLER));
@@ -580,7 +589,7 @@ public class LifecycleFsm implements Startable {
         status.setPdpSubgroup(subGroup);
         status.setState(state);
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
-        status.setPdpType("drools");
+        status.setPdpType(getPdpType());
         status.setPolicies(new ArrayList<>(policiesMap.keySet()));
         status.setStatistics(statisticsPayload());
         return status;

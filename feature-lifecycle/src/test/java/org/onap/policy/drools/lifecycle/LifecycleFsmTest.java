@@ -178,6 +178,11 @@ public class LifecycleFsmTest {
     }
 
     @Test
+    public void testPdpType() {
+        assertEquals("foo", fsm.getPdpType());
+    }
+
+    @Test
     public void testDeployedPolicyAction() {
         fsm.deployedPolicyAction(controllerPolicy);
         assertEquals(1, fsm.getStats().getPolicyDeploySuccessCount());
