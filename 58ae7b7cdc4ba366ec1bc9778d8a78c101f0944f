@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a4bfe647_580076d0",
+        "filename": "feature-lifecycle/src/test/resources/feature-lifecycle.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T18:59:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "30d953cb_a0246772",
+      "range": {
+        "startLine": 4,
+        "startChar": 16,
+        "endLine": 4,
+        "endChar": 20
+      },
+      "revId": "58ae7b7cdc4ba366ec1bc9778d8a78c101f0944f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6eccfa9_263071df",
         "filename": "packages/install/src/files/base.conf",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "58ae7b7cdc4ba366ec1bc9778d8a78c101f0944f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a01219a_ab45b74e",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T18:59:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6eccfa9_263071df",
+      "range": {
+        "startLine": 13,
+        "startChar": 1,
+        "endLine": 13,
+        "endChar": 2
+      },
+      "revId": "58ae7b7cdc4ba366ec1bc9778d8a78c101f0944f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
