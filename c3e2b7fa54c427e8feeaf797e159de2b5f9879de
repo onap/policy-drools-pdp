@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1f836140_60c62155",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-02-18T15:08:08Z",
+      "side": 1,
+      "message": "interesting.  Maybe it was happy with this one - I\u0027ve seen cases where it doesn\u0027t flag this.  There are some other cases that show up in sonar but not sonarlint (e.g., duplicate code blocks); I don\u0027t know if there\u0027s a way to rectify that or not.\n\neither way, this is more efficient",
+      "parentUuid": "718442d9_3ae3b32a",
+      "revId": "c3e2b7fa54c427e8feeaf797e159de2b5f9879de",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d9f5207a_24ca41c9",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 5
