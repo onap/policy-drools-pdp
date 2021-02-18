@@ -79,7 +79,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setState(PdpState.ACTIVE);
         change.setName(fsm.getName());
 
-        fsm.setSubGroupAction("a");
+        fsm.setSubGroup("a");
         fsm.source.offer(new StandardCoder().encode(change));
         controllerSupport.getController().start();
     }
@@ -102,7 +102,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     private void assertActive() {
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
-        assertEquals("a", fsm.getSubgroup());
+        assertEquals("a", fsm.getSubGroup());
         assertTrue(fsm.isAlive());
         waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
     }
@@ -161,13 +161,13 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
-        assertNotEquals("b", fsm.getSubgroup());
+        assertNotEquals("b", fsm.getSubGroup());
 
         change.setName(fsm.getName());
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
-        assertEquals("a", fsm.getSubgroup());
+        assertEquals("a", fsm.getSubGroup());
 
         change.setState(PdpState.SAFE);
         fsm.source.offer(new StandardCoder().encode(change));
@@ -201,7 +201,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
-        assertEquals("w", fsm.getSubgroup());
+        assertEquals("w", fsm.getSubGroup());
 
         ToscaPolicy toscaPolicyRestartV1 =
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
