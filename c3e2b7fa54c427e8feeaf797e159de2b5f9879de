@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "718442d9_3ae3b32a",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T14:51:54Z",
+      "side": 1,
+      "message": "This does not show as a sonar with sonarlint.  I\u0027ll change it, but how do you set it up to report on sonars that don\u0027t show with sonarlint?",
+      "parentUuid": "7a607fd1_79481287",
+      "revId": "c3e2b7fa54c427e8feeaf797e159de2b5f9879de",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d9f5207a_24ca41c9",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "c3e2b7fa54c427e8feeaf797e159de2b5f9879de",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c986a03f_afb786b6",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-02-18T14:51:54Z",
+      "side": 1,
+      "message": "same question",
+      "parentUuid": "d9f5207a_24ca41c9",
+      "revId": "c3e2b7fa54c427e8feeaf797e159de2b5f9879de",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
