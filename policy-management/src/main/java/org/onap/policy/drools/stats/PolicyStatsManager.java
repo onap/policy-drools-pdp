@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
-import org.onap.policy.drools.metrics.TransMetric;
+import org.onap.policy.drools.metrics.Metric;
 
 /**
  * Policy Stats Manager that manages PDP-D statistics.
@@ -45,7 +45,7 @@ public class PolicyStatsManager {
     /**
      * stat a new transaction.
      */
-    public synchronized void stat(@NonNull String subGroupName, @NonNull TransMetric transaction) {
+    public synchronized void stat(@NonNull String subGroupName, @NonNull Metric transaction) {
         groupStat.stat(transaction);
         subgroupStats.computeIfAbsent(subGroupName, key -> new PolicyStats()).stat(transaction);
     }

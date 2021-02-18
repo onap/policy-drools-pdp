@@ -34,7 +34,6 @@ import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.metrics.Metric;
-import org.onap.policy.drools.metrics.TransMetric;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
@@ -362,5 +361,5 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @param policyName policy name
      * @param transaction transaction
      */
-    void transaction(String controllerName, String policyName, TransMetric transaction);
+    void transaction(String controllerName, String policyName, Metric transaction);
 }

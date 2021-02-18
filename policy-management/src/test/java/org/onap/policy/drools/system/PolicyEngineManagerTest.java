@@ -65,7 +65,6 @@ import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.metrics.Metric;
-import org.onap.policy.drools.metrics.TransMetric;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder;
@@ -1365,10 +1364,10 @@ public class PolicyEngineManagerTest {
         assertEquals(0, mgr.getStats().getGroupStat().getPolicyExecutedCount());
         assertEquals(0, mgr.getStats().getSubgroupStats().size());
 
-        mgr.transaction("foo", "bar", new TransMetric());
+        mgr.transaction("foo", "bar", new Metric());
         assertEquals(1, mgr.getStats().getGroupStat().getPolicyExecutedCount());
         assertEquals(1, mgr.getStats().getSubgroupStats().size());
-        assertEquals(1, mgr.getStats().getSubgroupStats().get("foo[bar]").getPolicyExecutedFailCount());
+        assertEquals(1, mgr.getStats().getSubgroupStats().get("bar").getPolicyExecutedFailCount());
     }
 
     @Test

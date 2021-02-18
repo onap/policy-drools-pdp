@@ -68,7 +68,6 @@ import org.onap.policy.drools.features.PolicyControllerFeatureApiConstants;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApiConstants;
 import org.onap.policy.drools.metrics.Metric;
-import org.onap.policy.drools.metrics.TransMetric;
 import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
@@ -255,13 +254,15 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     @Override
-    public void transaction(@NonNull String controllerName,
-            @NonNull String policyName, @NonNull TransMetric transaction) {
+    public void transaction(@NonNull String controllerName,                         // NOSONAR placeholder
+            @NonNull String controlLoopName, @NonNull Metric transaction) {
 
-        // will stat on a per policy name that for an admin would
-        // be more significant than a controller name.
+        // keeping stats on a per control loop name,
+        // applications must report the controller name too
+        // for completeness and to avoid being modified when/if
+        // the controller name is used for tracking purposes
 
-        getStats().stat(controllerName + "[" + policyName + "]", transaction);
+        getStats().stat(controlLoopName, transaction);
     }
 
     @Override
