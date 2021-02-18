@@ -30,7 +30,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.Synchronized;
 import lombok.ToString;
-import org.onap.policy.drools.metrics.TransMetric;
+import org.onap.policy.drools.metrics.Metric;
 import org.slf4j.Logger;
 
 /**
@@ -91,7 +91,7 @@ public class PolicyStats {
      */
 
     @Synchronized
-    public void stat(@NonNull TransMetric trans) {
+    public void stat(@NonNull Metric trans) {
         policyExecutedCount++;
         if (trans.isSuccess()) {
             policyExecutedSuccessCount++;

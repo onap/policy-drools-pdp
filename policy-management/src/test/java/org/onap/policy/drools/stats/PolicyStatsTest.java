@@ -24,13 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.onap.policy.drools.metrics.TransMetric;
+import org.onap.policy.drools.metrics.Metric;
 
 public class PolicyStatsTest {
 
     @Test
     public void testStat() {
-        TransMetric trans1 = createTrans();
+        Metric trans1 = createTrans();
         trans1.setSuccess(true);
 
         PolicyStats stats = new PolicyStats();
@@ -44,7 +44,7 @@ public class PolicyStatsTest {
         assertEquals(1, stats.getPolicyExecutedSuccessCount());
         assertThat(stats.getBirthTime()).isGreaterThanOrEqualTo(trans1.getStartTime().toEpochMilli());
 
-        TransMetric trans2 = createTrans();
+        Metric trans2 = createTrans();
         trans2.setSuccess(false);
         trans2.setEndTime(trans2.getStartTime().plusMillis(5));
         trans2.setElapsedTime(null);
@@ -58,7 +58,7 @@ public class PolicyStatsTest {
         assertEquals(1, stats.getPolicyExecutedSuccessCount());
         assertThat(stats.getBirthTime()).isLessThanOrEqualTo(trans2.getStartTime().toEpochMilli());
 
-        TransMetric trans3 = createTrans();
+        Metric trans3 = createTrans();
         trans3.setSuccess(false);
         trans3.setEndTime(trans3.getStartTime().plusMillis(9));
         trans3.setElapsedTime(null);
@@ -73,8 +73,8 @@ public class PolicyStatsTest {
         assertThat(stats.getBirthTime()).isLessThanOrEqualTo(trans2.getStartTime().toEpochMilli());
     }
 
-    private TransMetric createTrans() {
-        TransMetric trans = new TransMetric();
+    private Metric createTrans() {
+        Metric trans = new Metric();
         trans.setStartTime(null);
         trans.setEndTime(trans.getStartTime().plusMillis(1));
 
