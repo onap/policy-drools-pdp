@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4520a858_d391b2ea",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 591,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2021-02-18T16:43:23Z",
+      "side": 1,
+      "message": "Perhaps we should consider not using java.util.Date anymore everywhere. Not sure if its officially deprecated.",
+      "range": {
+        "startLine": 591,
+        "startChar": 33,
+        "endLine": 591,
+        "endChar": 43
+      },
+      "revId": "cd1d0fb2229af043c36f8225d6e5d8a8e8fe78dd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}

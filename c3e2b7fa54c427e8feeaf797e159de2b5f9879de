@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "8597c51c_65edcce1",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2021-02-18T16:43:23Z",
+      "side": 1,
+      "message": "I just install and run a local instance of sonar. It\u0027s easy but inconvenient, not sure how sonarlint keeps up with sonarqube installations.",
+      "parentUuid": "718442d9_3ae3b32a",
+      "revId": "c3e2b7fa54c427e8feeaf797e159de2b5f9879de",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d9f5207a_24ca41c9",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
         "patchSetId": 5
