@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02eb80f4_5717edc4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/system/PolicyEngineManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 57
+      },
+      "writtenOn": "2021-02-19T13:24:43Z",
+      "side": 1,
+      "message": "What is the NOSONAR for? We usually put in a comment so folks will know in the future.",
+      "range": {
+        "startLine": 257,
+        "startChar": 83,
+        "endLine": 257,
+        "endChar": 94
+      },
+      "revId": "597bfd364994d45dc90b9df2dc9bd1a58fa64eb3",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
