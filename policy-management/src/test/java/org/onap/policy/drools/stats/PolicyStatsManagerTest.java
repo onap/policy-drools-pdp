@@ -23,7 +23,7 @@ package org.onap.policy.drools.stats;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.onap.policy.drools.metrics.TransMetric;
+import org.onap.policy.drools.metrics.Metric;
 
 public class PolicyStatsManagerTest {
 
@@ -32,7 +32,7 @@ public class PolicyStatsManagerTest {
         PolicyStatsManager stats = new PolicyStatsManager();
         assertEquals(0, stats.getGroupStat().getPolicyExecutedCount());
 
-        TransMetric trans = new TransMetric();
+        Metric trans = new Metric();
         stats.stat("foo", trans);
         stats.stat("blah", trans);
         stats.stat("blah", trans);
