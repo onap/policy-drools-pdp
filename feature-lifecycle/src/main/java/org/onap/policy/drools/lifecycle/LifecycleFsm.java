@@ -591,7 +591,7 @@ public class LifecycleFsm implements Startable {
         updateStats.setTimeStamp(Instant.now());
 
         try {
-            BeanUtils.copyProperties(updateStats, PolicyEngineConstants.getManager().getStats());
+            BeanUtils.copyProperties(updateStats, PolicyEngineConstants.getManager().getStats().getGroupStat());
         } catch (IllegalAccessException | InvocationTargetException ex) {
             logger.debug("statistics mapping failure", ex);
         }
