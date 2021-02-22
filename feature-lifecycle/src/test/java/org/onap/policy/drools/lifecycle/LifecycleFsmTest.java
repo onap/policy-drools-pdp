@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
@@ -39,6 +40,7 @@ import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -98,7 +100,7 @@ public class LifecycleFsmTest {
      * Test initialization.
      */
     @Before
-    public void init() throws CoderException, IOException {
+    public void beforeTest() throws CoderException, IOException {
         LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
         LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
@@ -123,6 +125,26 @@ public class LifecycleFsmTest {
             getPolicyFromFile(EXAMPLE_OTHER_VAL_POLICY_JSON, EXAMPLE_OTHER_VAL_POLICY_NAME);
         unvalPolicy =
             getPolicyFromFile(EXAMPLE_OTHER_UNVAL_POLICY_JSON, EXAMPLE_OTHER_UNVAL_POLICY_NAME);
+
+        fsm.resetDeployCountsAction();
+        resetExecutionStats();
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        resetExecutionStats();
+    }
+
+    private static void resetExecutionStats() {
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedCount(0L);
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedFailCount(0L);
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedSuccessCount(0L);
+    }
+
+    private void setExecutionCounts() {
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedCount(7L);
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedFailCount(2L);
+        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedSuccessCount(5L);
     }
 
     @Test
@@ -204,6 +226,7 @@ public class LifecycleFsmTest {
 
     @Test
     public void testStatusPayload() {
+        setExecutionCounts();
         fsm.updateDeployCountsAction(8L, 6L, 2L);
         PdpStatus status = fsm.statusPayload(PdpState.ACTIVE);
 
@@ -214,6 +237,9 @@ public class LifecycleFsmTest {
         assertEquals(2, status.getStatistics().getPolicyDeployFailCount());
         assertEquals(8, status.getStatistics().getPolicyDeployCount());
         assertNotNull(status.getStatistics().getTimeStamp());
+        assertEquals(7, status.getStatistics().getPolicyExecutedCount());
+        assertEquals(2, status.getStatistics().getPolicyExecutedFailCount());
+        assertEquals(5, status.getStatistics().getPolicyExecutedSuccessCount());
     }
 
     protected void deployAllPolicies() {
