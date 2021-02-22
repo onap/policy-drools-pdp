@@ -22,9 +22,9 @@
 package org.onap.policy.drools.lifecycle;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -597,7 +597,7 @@ public class LifecycleFsm implements Startable {
 
     private PdpStatistics statisticsPayload() {
         PdpStatistics updateStats = new PdpStatistics(stats);
-        updateStats.setTimeStamp(new Date());
+        updateStats.setTimeStamp(Instant.now());
 
         try {
             BeanUtils.copyProperties(updateStats, PolicyEngineConstants.getManager().getStats());
