@@ -188,9 +188,9 @@ public class DroolsContainerTest {
 
             final LinkedBlockingQueue<String> lbq = new LinkedBlockingQueue<>();
             executor.execute(() -> lbq.add("DroolsRunnable String"));
-            executor.execute(() -> lbq.add("another DroolsRunnable String"));
-
             assertEquals("DroolsRunnable String", lbq.poll(TIMEOUT_SEC, TimeUnit.SECONDS));
+
+            executor.execute(() -> lbq.add("another DroolsRunnable String"));
             assertEquals("another DroolsRunnable String", lbq.poll(TIMEOUT_SEC, TimeUnit.SECONDS));
 
         } finally {
