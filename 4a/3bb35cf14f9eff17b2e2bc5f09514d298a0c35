@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Liam Fallon <liam.fallon@est.tech>
+Code-Review+2: Pamela Dragosh <pdragosh@research.att.com>
+Code-Review+2: Ram Krishna Verma <ram_krishna.verma@bell.ca>
+Submitted-by: Jorge Hernandez <jorge.hernandez-herrero@att.com>
+Submitted-at: Tue, 23 Feb 2021 20:10:22 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/policy/drools-pdp/+/118314
+Project: policy/drools-pdp
+Branch: refs/heads/master
