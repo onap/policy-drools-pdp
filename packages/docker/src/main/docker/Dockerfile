@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------------
 # Dockerfile
 # ============LICENSE_START=======================================================
-#  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+#  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # ============LICENSE_END=========================================================
 #-------------------------------------------------------------------------------
-FROM onap/policy-jdk-alpine:2.2.0
+FROM onap/policy-jdk-alpine:2.2.1
 
 LABEL maintainer="Policy Team"
 
