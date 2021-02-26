@@ -1,0 +1,3 @@
+# Test suites are relative paths under [policy/drools-pdp.git]/tests/.
+# Place the suites in run order.
+drools-pdp
