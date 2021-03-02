@@ -3,7 +3,7 @@
 # ============LICENSE_START=======================================================
 # ONAP
 # ================================================================================
-# Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -194,7 +194,7 @@ function is_upgrade
     local upgradeSqls
 
     upgradeSqls=$(ls "${UPGRADE_DIR}"/*"${UPGRADE_SQL_SUFFIX}" 2> /dev/null)
-    if [ -z ${upgradeSqls} ]; then
+    if [ -z "${upgradeSqls}" ]; then
         return 1
     else
         return 0
@@ -216,7 +216,7 @@ function is_downgrade
     local downgradeSqls
 
     downgradeSqls=$(ls "${DOWNGRADE_DIR}"/*"${DOWNGRADE_SQL_SUFFIX}" 2> /dev/null)
-    if [ -z ${downgradeSqls} ]; then
+    if [ -z "${downgradeSqls}" ]; then
         return 1
     else
         return 0
@@ -296,7 +296,7 @@ function track_script
 
 function run_script
 {
-    if [ "${DEBUG}" == "y" ]]; then
+    if [ "${DEBUG}" == "y" ]; then
         echo "-- run_script $* --"
         set -x
     fi
@@ -342,7 +342,7 @@ function upgrade
             sqlName=$(basename "${sqlFile}")
             schemaVersion="${sqlName%-*}"
             if [ "${schemaVersion}" -gt "${CURRENT_RELEASE}" ] && \
-                [ ! "${schemaVersion}" -le "${TARGET_UPGRADE_RELEASE}" ]; then
+                [ "${schemaVersion}" -le "${TARGET_UPGRADE_RELEASE}" ]; then
                 run_script "upgrade" "${sqlName}" "${sqlFile}"
                 rc=$?
                 if [ ${rc} -ne 0 ]; then
