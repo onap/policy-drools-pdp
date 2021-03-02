@@ -1,7 +1,7 @@
 #!/usr/bin/env ash
 
 # ########################################################################
-# Copyright 2019-2020 AT&T Intellectual Property. All rights reserved
+# Copyright 2019-2021 AT&T Intellectual Property. All rights reserved
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -205,7 +205,7 @@ function start {
 }
 
 function configure {
-    if [ "${DEBUG}" = "y" ]]; then
+    if [ "${DEBUG}" = "y" ]; then
         echo "-- configure --"
         set -x
     fi
