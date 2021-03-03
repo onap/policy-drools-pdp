@@ -45,6 +45,7 @@ import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.lifecycle.LifecycleFeature;
 import org.onap.policy.drools.lifecycle.PolicyTypeController;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
+import org.onap.policy.models.pdp.concepts.PdpStatistics;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
@@ -406,6 +407,17 @@ public class RestLifecycleManager {
         }
 
         return Response.status(Response.Status.OK).entity(Collections.emptyList()).build();
+    }
+
+    /**
+     * Get current counts.
+     */
+
+    @GET
+    @Path("statistics")
+    @ApiOperation(value = "Gets Policy Statistics", response = PdpStatistics.class)
+    public Response stats() {
+        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().statisticsPayload()).build();
     }
 
     private Response deployUndeployOperation(String policy, boolean deploy) {

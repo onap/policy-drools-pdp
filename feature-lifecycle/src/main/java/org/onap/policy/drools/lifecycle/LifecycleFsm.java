@@ -595,7 +595,10 @@ public class LifecycleFsm implements Startable {
         return status;
     }
 
-    private PdpStatistics statisticsPayload() {
+    /**
+     * provides a snapshot of the current statistics.
+     */
+    public PdpStatistics statisticsPayload() {
         PdpStatistics updateStats = new PdpStatistics(stats);
         updateStats.setTimeStamp(Instant.now());
 
