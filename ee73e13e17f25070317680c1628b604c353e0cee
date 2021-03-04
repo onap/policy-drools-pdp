@@ -22,6 +22,30 @@
       "revId": "ee73e13e17f25070317680c1628b604c353e0cee",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfd60b2d_6a944e96",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 599,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-03-04T01:45:55Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "19bf5fc2_f9fd2944",
+      "range": {
+        "startLine": 599,
+        "startChar": 7,
+        "endLine": 599,
+        "endChar": 8
+      },
+      "revId": "ee73e13e17f25070317680c1628b604c353e0cee",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
