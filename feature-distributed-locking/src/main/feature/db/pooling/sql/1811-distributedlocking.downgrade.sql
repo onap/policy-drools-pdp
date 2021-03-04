@@ -16,4 +16,4 @@
 #  limitations under the License.
 #  ============LICENSE_END=========================================================
 
-ALTER TABLE pooling.locks modify if exists expirationTime bigint(20);
+ALTER TABLE pooling.locks modify if exists expirationTime bigint(20) default 0;
