@@ -38,7 +38,7 @@ echo DROOLS IP IS ${POLICY_DROOLS_IP}
 echo MARIADB IP IS ${MARIADB_IP}
 
 # wait for the app to start up - looking for telemtry service on port 9696
-${SCRIPTS}/policy/wait_for_port.sh ${POLICY_DROOLS_IP} 9696
+${SCRIPTS}/wait_for_port.sh ${POLICY_DROOLS_IP} 9696
 
 # give enough time for the controllers to come up
 sleep 15
