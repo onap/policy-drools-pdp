@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9637a7ad_2f81e235",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/AlwaysSuccessLock.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-03-09T21:04:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f35227e3_5508a8f1",
+      "revId": "7aede6b63ef4afb320eb87754c494a1e9d8ad767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1e6dda9_07ba02a3",
         "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/AlwaysSuccessLock.java",
         "patchSetId": 4
@@ -39,6 +57,30 @@
       "revId": "7aede6b63ef4afb320eb87754c494a1e9d8ad767",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09b7a598_b5c748f3",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/AlwaysSuccessLock.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-03-09T21:04:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1e6dda9_07ba02a3",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 42
+      },
+      "revId": "7aede6b63ef4afb320eb87754c494a1e9d8ad767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
