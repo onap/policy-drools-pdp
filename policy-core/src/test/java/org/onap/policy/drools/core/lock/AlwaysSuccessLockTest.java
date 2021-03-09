@@ -21,34 +21,44 @@
 package org.onap.policy.drools.core.lock;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class AlwaysFailLockTest extends AlwaysLockBaseTest<AlwaysFailLock> {
+public class AlwaysSuccessLockTest extends AlwaysLockBaseTest<AlwaysSuccessLock> {
 
     @Before
     public void setUp() {
         callback = mock(LockCallback.class);
-        lock = new AlwaysFailLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback);
+        lock = new AlwaysSuccessLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback);
     }
 
     @Test
-    public void testAlwaysFailLockNoArgs() {
-        assertThatCode(AlwaysFailLock::new).doesNotThrowAnyException();
+    public void testAlwaysSuccessLockNoArgs() {
+        assertThatCode(AlwaysSuccessLock::new).doesNotThrowAnyException();
     }
 
     @Test
-    public void testUnavailableLock() {
-        assertTrue(lock.isUnavailable());
+    public void testActiveLock() {
+        assertTrue(lock.isActive());
     }
 
     @Test
     public void testFree() {
-        assertFalse(lock.free());
-        assertTrue(lock.isUnavailable());
+        assertTrue(lock.free());
+        assertTrue(lock.isActive());
+    }
+
+    @Test
+    public void testExtend() {
+        LockCallback callback2 = mock(LockCallback.class);
+        lock.extend(HOLD_SEC2, callback2);
+
+        assertEquals(HOLD_SEC2, lock.getHoldSec());
+        assertSame(callback2, lock.getCallback());
     }
 }

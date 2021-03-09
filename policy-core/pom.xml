@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ============LICENSE_START=======================================================
-  ONAP Policy Engine - Drools PDP
+  ONAP
   ================================================================================
-  Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
   Modifications Copyright (C) 2019 Bell Canada.
   Modifications Copyright (C) 2020 Nordix Foundation.
   ================================================================================
@@ -164,7 +164,7 @@
                             <excludes>
                             </excludes>
                             <consoleOutput>true</consoleOutput>
-                            <failsOnViolation>true</failsOnViolation>
+                            <failOnViolation>true</failOnViolation>
                             <violationSeverity>warning</violationSeverity>
                         </configuration>
                     </execution>

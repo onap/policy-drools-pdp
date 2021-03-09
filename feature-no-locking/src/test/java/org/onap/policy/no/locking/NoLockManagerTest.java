@@ -18,37 +18,55 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.core.lock;
+package org.onap.policy.no.locking;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
-import org.junit.Before;
 import org.junit.Test;
 
-public class AlwaysFailLockTest extends AlwaysLockBaseTest<AlwaysFailLock> {
+public class NoLockManagerTest {
 
-    @Before
-    public void setUp() {
-        callback = mock(LockCallback.class);
-        lock = new AlwaysFailLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback);
+    private final NoLockManager nlm = new NoLockManager();
+
+    @Test
+    public void testLock() {
+        assertTrue(nlm.lock());
     }
 
     @Test
-    public void testAlwaysFailLockNoArgs() {
-        assertThatCode(AlwaysFailLock::new).doesNotThrowAnyException();
+    public void testUnlock() {
+        assertTrue(nlm.unlock());
     }
 
     @Test
-    public void testUnavailableLock() {
-        assertTrue(lock.isUnavailable());
+    public void testIsLocked() {
+        assertFalse(nlm.isLocked());
     }
 
     @Test
-    public void testFree() {
-        assertFalse(lock.free());
-        assertTrue(lock.isUnavailable());
+    public void testStart() {
+        assertTrue(nlm.start());
+    }
+
+    @Test
+    public void testStop() {
+        assertTrue(nlm.stop());
+    }
+
+    @Test
+    public void testIsAlive() {
+        assertTrue(nlm.isAlive());
+    }
+
+    @Test
+    public void testGetSeqNo() {
+        assertEquals(NoLockManager.SEQNO, nlm.getSequenceNumber());
+    }
+
+    @Test
+    public void testBeforeCreateLockManager() {
+        assertEquals(nlm, nlm.beforeCreateLockManager(null, null));
     }
 }

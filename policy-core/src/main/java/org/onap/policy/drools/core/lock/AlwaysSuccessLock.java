@@ -20,35 +20,32 @@
 
 package org.onap.policy.drools.core.lock;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+/**
+ * Lock implementation whose operations always succeed.
+ */
+public class AlwaysSuccessLock extends LockImpl {
+    private static final long serialVersionUID = 1L;
 
-import org.junit.Before;
-import org.junit.Test;
-
-public class AlwaysFailLockTest extends AlwaysLockBaseTest<AlwaysFailLock> {
-
-    @Before
-    public void setUp() {
-        callback = mock(LockCallback.class);
-        lock = new AlwaysFailLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback);
+    /**
+     * Constructs the object.
+     */
+    public AlwaysSuccessLock() {
+        super();
+        setState(LockState.ACTIVE);
     }
 
-    @Test
-    public void testAlwaysFailLockNoArgs() {
-        assertThatCode(AlwaysFailLock::new).doesNotThrowAnyException();
+    /**
+     * Constructs the object.
+     */
+    public AlwaysSuccessLock(String resourceId, String ownerKey, int holdSec, LockCallback callback) {
+        super(LockState.ACTIVE, resourceId, ownerKey, holdSec, callback);
     }
 
-    @Test
-    public void testUnavailableLock() {
-        assertTrue(lock.isUnavailable());
-    }
-
-    @Test
-    public void testFree() {
-        assertFalse(lock.free());
-        assertTrue(lock.isUnavailable());
+    /**
+     * Always returns true.
+     */
+    @Override
+    public synchronized boolean free() {
+        return true;
     }
 }
