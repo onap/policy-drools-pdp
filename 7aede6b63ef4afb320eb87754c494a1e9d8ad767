@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f35227e3_5508a8f1",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/AlwaysSuccessLock.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-03-09T20:54:05Z",
+      "side": 1,
+      "message": "not needed",
+      "revId": "7aede6b63ef4afb320eb87754c494a1e9d8ad767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1e6dda9_07ba02a3",
+        "filename": "policy-core/src/main/java/org/onap/policy/drools/core/lock/AlwaysSuccessLock.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-03-09T20:54:05Z",
+      "side": 1,
+      "message": "could also use:\n\n  !isActive()",
+      "range": {
+        "startLine": 45,
+        "startChar": 12,
+        "endLine": 45,
+        "endChar": 42
+      },
+      "revId": "7aede6b63ef4afb320eb87754c494a1e9d8ad767",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
