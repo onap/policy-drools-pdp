@@ -74,6 +74,7 @@
         <module>feature-mdc-filters</module>
         <module>feature-lifecycle</module>
         <module>feature-drools-init</module>
+        <module>feature-no-locking</module>
         <module>packages</module>
     </modules>
 
