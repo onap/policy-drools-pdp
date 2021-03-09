@@ -290,6 +290,7 @@ class PolicyEngineManager implements PolicyEngine {
             try {
                 this.lockManager = feature.beforeCreateLockManager(this, properties);
                 if (this.lockManager != null) {
+                    logger.info("overridden lock manager is {}", this.lockManager);
                     return;
                 }
             } catch (RuntimeException e) {
@@ -304,6 +305,8 @@ class PolicyEngineManager implements PolicyEngine {
             logger.error("{}: cannot create simple lock manager because of {}", this, e.getMessage(), e);
             this.lockManager = new SimpleLockManager(this, new Properties());
         }
+
+        logger.info("lock manager is {}", this.lockManager);
 
         /* policy-engine dispatch post operation hook */
         FeatureApiUtils.apply(getEngineProviders(),
