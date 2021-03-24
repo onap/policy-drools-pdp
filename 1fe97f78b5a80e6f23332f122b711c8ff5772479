@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5789736_67f1f2a6",
+        "filename": "releases/1.8.2-container.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-03-24T15:53:47Z",
+      "side": 1,
+      "message": "I\u0027m showing 806f49890ac605c8d7c50fc913d6d35e1c599af3 from:\n\nhttps://jenkins.onap.org/job/policy-drools-pdp-maven-docker-stage-honolulu/17/",
+      "range": {
+        "startLine": 5,
+        "startChar": 5,
+        "endLine": 5,
+        "endChar": 45
+      },
+      "revId": "1fe97f78b5a80e6f23332f122b711c8ff5772479",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
