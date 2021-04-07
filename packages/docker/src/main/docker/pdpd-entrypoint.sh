@@ -1,4 +1,4 @@
-#!/usr/bin/env ash
+#!/usr/bin/env sh
 
 # ########################################################################
 # Copyright 2019-2021 AT&T Intellectual Property. All rights reserved
@@ -155,7 +155,7 @@ function db {
     fi
 
     echo "Wating for ${SQL_HOST} ."
-    timeout 120 ash -c 'until nc -vz "${SQL_HOST}" 3306; do echo -n "."; sleep 1; done'; echo $?
+    timeout 120 sh -c 'until nc -vz "${SQL_HOST}" 3306; do echo -n "."; sleep 1; done'; echo $?
 
     "${POLICY_HOME}"/bin/db-migrator -s ALL -o upgrade
 }

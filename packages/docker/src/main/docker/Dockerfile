@@ -60,7 +60,7 @@ COPY --chown=policy:policy /maven/install-drools.zip pdpd-entrypoint.sh $POLICY_
 WORKDIR $POLICY_INSTALL
 USER policy:policy
 
-SHELL ["/bin/ash", "-c"]
+SHELL ["/bin/sh", "-c"]
 RUN unzip -o install-drools.zip && \
     rm install-drools.zip && \
     chown -R policy:policy * && \
