@@ -75,6 +75,7 @@
         <module>feature-lifecycle</module>
         <module>feature-drools-init</module>
         <module>feature-no-locking</module>
+        <module>feature-legacy-config</module>
         <module>packages</module>
     </modules>
 

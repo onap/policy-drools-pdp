@@ -73,7 +73,7 @@ RUN unzip -o install-drools.zip && \
     chmod 600 $POLICY_HOME/config/* && \
     rm -f $POLICY_INSTALL/*.conf && \
     . $POLICY_HOME/etc/profile.d/env.sh && \
-    $POLICY_HOME/bin/features install healthcheck distributed-locking lifecycle no-locking && \
+    $POLICY_HOME/bin/features install healthcheck distributed-locking lifecycle no-locking legacy-config && \
     $POLICY_HOME/bin/features enable lifecycle && \
     find $HOME/.m2/ -name _maven.repositories -exec rm -v {} \; && \
     find $HOME/.m2/ -name _remote.repositories -exec rm -v {} \; && \
