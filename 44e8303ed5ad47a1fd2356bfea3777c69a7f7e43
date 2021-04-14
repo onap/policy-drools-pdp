@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4baf5211_6d3a6d34",
+        "filename": "feature-legacy-config/src/test/java/org/onap/policy/drools/legacy/config/LegacyConfigFeatureTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-14T14:47:24Z",
+      "side": 1,
+      "message": "don\u0027t need this\n\nsame comment in other test files",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 3
+      },
+      "revId": "44e8303ed5ad47a1fd2356bfea3777c69a7f7e43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad5fe316_4bb19d61",
+        "filename": "feature-legacy-config/src/test/java/org/onap/policy/drools/legacy/config/LegacyConfigTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-14T14:47:24Z",
+      "side": 1,
+      "message": "need to reset logger levels?",
+      "revId": "44e8303ed5ad47a1fd2356bfea3777c69a7f7e43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "761c3c4d_7bf0f0d3",
+        "filename": "feature-legacy-config/src/test/java/org/onap/policy/drools/server/restful/RestLegacyConfigTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-14T14:47:24Z",
+      "side": 1,
+      "message": "use NetworkUtils to allocate a port",
+      "range": {
+        "startLine": 68,
+        "startChar": 30,
+        "endLine": 68,
+        "endChar": 34
+      },
+      "revId": "44e8303ed5ad47a1fd2356bfea3777c69a7f7e43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96f63b6d_9168d960",
+        "filename": "feature-legacy-config/src/test/java/org/onap/policy/drools/server/restful/RestLegacyConfigTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-14T14:47:24Z",
+      "side": 1,
+      "message": "40, 250",
+      "range": {
+        "startLine": 81,
+        "startChar": 64,
+        "endLine": 81,
+        "endChar": 73
+      },
+      "revId": "44e8303ed5ad47a1fd2356bfea3777c69a7f7e43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "844bac33_7e310e3f",
+        "filename": "feature-legacy-config/src/test/java/org/onap/policy/drools/server/restful/RestLegacyConfigTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-14T14:47:24Z",
+      "side": 1,
+      "message": "restore logging levels?",
+      "revId": "44e8303ed5ad47a1fd2356bfea3777c69a7f7e43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e01c425_1373fbdb",
+        "filename": "feature-legacy-config/src/test/resources/properties-2/feature-legacy-config.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-14T14:47:24Z",
+      "side": 1,
+      "message": "add a newline",
+      "revId": "44e8303ed5ad47a1fd2356bfea3777c69a7f7e43",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
