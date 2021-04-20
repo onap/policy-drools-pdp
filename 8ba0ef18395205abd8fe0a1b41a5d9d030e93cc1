@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dcd9f521_492b0555",
+        "filename": "feature-no-locking/src/main/resources/META-INF/services/org.onap.policy.drools.features.PolicyEngineFeatureApi",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-20T14:07:02Z",
+      "side": 1,
+      "message": "oops, I never noticed the file name issue!",
+      "revId": "8ba0ef18395205abd8fe0a1b41a5d9d030e93cc1",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
