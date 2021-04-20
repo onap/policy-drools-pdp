@@ -20,6 +20,7 @@
 
 package org.onap.policy.no.locking;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,21 +29,29 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Before;
+import java.util.List;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.drools.core.lock.AlwaysSuccessLock;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
+import org.onap.policy.drools.features.PolicyEngineFeatureApi;
+import org.onap.policy.drools.features.PolicyEngineFeatureApiConstants;
 
 public class NoLockManagerTest {
 
-    private NoLockManager nlm;
-    private LockCallback callback;
+    private static NoLockManager nlm;
+    private static LockCallback callback;
 
-    @Before
-    public void setUp() {
+    /**
+     * Set up Junits.
+     */
+    @BeforeClass
+    public static void setUp() {
+        List<PolicyEngineFeatureApi> engineServices = PolicyEngineFeatureApiConstants.getProviders().getList();
+        assertThat(engineServices).hasSize(1);
+        nlm = (NoLockManager) engineServices.get(0);
         callback = mock(LockCallback.class);
-        nlm = new NoLockManager();
     }
 
     @Test
