@@ -209,148 +209,134 @@ public class LifecycleFsmUpdateTest {
 
     @Test
     public void testUpdate() throws CoderException {
-        assertEquals(0, fsm.getPoliciesMap().size());
-        assertEquals("ACTIVE", fsm.state().toString());
-        assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
-        verifyDeployStats(0, 0, 0);
+        verifyInitState();
 
         // native controller policy - deploy
         // Delta: +controllerPolicy
-        assertTrue(fsm.update(getPdpUpdate(List.of(controllerPolicy))));
-        verifyActivePolicies(List.of(controllerPolicy));
-        verifyDeployStats(1, 1, 0);
+        deltaUpdate(List.of(controllerPolicy), List.of(), List.of(controllerPolicy), 1, 1, 0);
 
         // no policies - undeploy
-        // Delta: []
-        assertTrue(fsm.update(getPdpUpdate(Collections.emptyList())));
-        verifyActivePolicies(Collections.emptyList());
-        verifyDeployStats(2, 2, 0);
+        // Delta: -controllerPolicy
+        deltaUpdate(List.of(), List.of(controllerPolicy), List.of(), 2, 2, 0);
 
         // native controller + artifact policy (out of order) - deploy
         // Delta: +artifactPolicy, +controllerPolicy
-        assertTrue(fsm.update(getPdpUpdate(List.of(artifactPolicy, controllerPolicy))));
-        verifyActivePolicies(List.of(artifactPolicy, controllerPolicy));
-        verifyDeployStats(4, 4, 0);
+        deltaUpdate(List.of(artifactPolicy, controllerPolicy), List.of(),
+                List.of(artifactPolicy, controllerPolicy), 4, 4, 0);
 
         // attempt to deploy opPolicy but invalid controller
         // Delta: +opPolicy
-        assertFalse(fsm.update(getPdpUpdate(List.of(artifactPolicy, opPolicy, controllerPolicy))));
+        assertFalse(fsm.update(getPdpUpdate(List.of(opPolicy), List.of())));
         assertEquals(1, PolicyControllerConstants.getFactory().inventory().size());
         assertFalse(fsm.getActivePolicies().contains(opPolicy));
         verifyExists(false, "lifecycle", List.of(opPolicy));
-        verifyActivePolicies(List.of(artifactPolicy, controllerPolicy));
-        verifyDeployStats(5, 4, 1);
+        verifyDeploy(List.of(artifactPolicy, controllerPolicy), 5, 4, 1);
 
         // Delta: +opPolicy
         opPolicy.getProperties().remove("controllerName");
-        assertTrue(fsm.update(getPdpUpdate(List.of(artifactPolicy, opPolicy, controllerPolicy))));
+        deltaUpdate(List.of(opPolicy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy), 6, 5, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy));
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy));
-        verifyDeployStats(6, 5, 1);
 
         // Delta: -opPolicy
-        assertTrue(fsm.update(getPdpUpdate(List.of(artifactPolicy, controllerPolicy))));
+        deltaUpdate(List.of(), List.of(opPolicy),
+                List.of(controllerPolicy, artifactPolicy), 7, 6, 1);
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().exists(opPolicy));
-        verifyActivePolicies(List.of(controllerPolicy, artifactPolicy));
-        verifyDeployStats(7, 6, 1);
 
         // Delta: -artifactPolicy
-        assertTrue(fsm.update(getPdpUpdate(List.of(controllerPolicy))));
+        deltaUpdate(List.of(), List.of(artifactPolicy), List.of(controllerPolicy), 8, 7, 1);
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
-        verifyActivePolicies(List.of(controllerPolicy));
-        verifyDeployStats(8, 7, 1);
 
         // Delta: -controllerPolicy
-        assertTrue(fsm.update(getPdpUpdate(Collections.emptyList())));
+        deltaUpdate(List.of(), List.of(controllerPolicy), List.of(), 9, 8, 1);
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
-        assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
-        verifyActivePolicies(Collections.emptyList());
-        verifyDeployStats(9, 8, 1);
 
         // Delta: +controllerPolicy, +artifactPolicy, and +opPolicy
-        assertTrue(fsm.update(getPdpUpdate(List.of(opPolicy, artifactPolicy, controllerPolicy))));
+        deltaUpdate(List.of(opPolicy, artifactPolicy, controllerPolicy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy), 12, 11, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy));
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy));
-        verifyDeployStats(12, 11, 1);
 
         // Delta: -artifactPolicy
-        assertTrue(fsm.update(getPdpUpdate(List.of(opPolicy, controllerPolicy))));
+        assertTrue(fsm.update(getPdpUpdate(List.of(), List.of(artifactPolicy))));
         assertEquals(1, PolicyControllerConstants.getFactory().inventory().size());
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
         verifyDeployStats(13, 12, 1);
 
         // Delta: +artifactPolicy
         // from deltas, all delta updates should be successfully applied
-        assertTrue(fsm.update(getPdpUpdate(List.of(opPolicy, controllerPolicy, artifactPolicy))));
+        deltaUpdate(List.of(artifactPolicy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy), 14, 13, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy));
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy));
-        verifyDeployStats(14, 13, 1);
 
         // Delta: -controllerPolicy
         // from deltas, all delta updates should be successfully applied
-        assertTrue(fsm.update(getPdpUpdate(List.of(opPolicy, artifactPolicy))));
+        assertTrue(fsm.update(getPdpUpdate(List.of(), List.of(controllerPolicy))));
         assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
         verifyDeployStats(15, 14, 1);
 
         // Delta: +controllerPolicy
         // from deltas, all delta updates should be successfully applied
-        assertTrue(fsm.update(getPdpUpdate(List.of(opPolicy, controllerPolicy, artifactPolicy))));
+        deltaUpdate(List.of(controllerPolicy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy), 16, 15, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy));
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy));
-        verifyDeployStats(16, 15, 1);
 
         // Delta: +op2Policy, +controller2Policy
         // from deltas, all delta updates should be successfully applied
         op2Policy.getProperties().put("controllerName", "lifecycle");
-        assertTrue(fsm.update(getPdpUpdate(
-                List.of(opPolicy, controllerPolicy, artifactPolicy, op2Policy, controller2Policy))));
+        deltaUpdate(List.of(op2Policy, controller2Policy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy),
+                18, 17, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy));
         assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy));
-        verifyDeployStats(18, 17, 1);
+
+        // same operation with duplicates - idempotent operation
+        deltaUpdate(List.of(op2Policy, controller2Policy, opPolicy), List.of(valPolicy, unvalPolicy),
+                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy),
+                18, 17, 1);
+        verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy));
+        assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
+
+        // same idempotent operation with legacy updates
+        legacyUpdate( List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy),
+                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy),
+                18, 17, 1);
+        verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy));
+        assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
 
         // Delta: +artifact2policy, +valPolicy, +unvalPolicy
         // from deltas, all delta updates should be successfully applied
-        assertTrue(fsm.update(getPdpUpdate(
-                List.of(opPolicy, controllerPolicy, artifactPolicy,
-                        op2Policy, controller2Policy, valPolicy, unvalPolicy, artifact2Policy))));
+        deltaUpdate(List.of(valPolicy, unvalPolicy, artifact2Policy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy, valPolicy,
+                        unvalPolicy, artifact2Policy), 21, 20, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy, valPolicy, unvalPolicy));
         verifyExists(true, "foo", List.of(valPolicy, unvalPolicy));
         verifyExists(false, "foo", List.of(opPolicy, op2Policy));
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy,
-                controller2Policy, valPolicy, unvalPolicy, artifact2Policy));
-        verifyDeployStats(21, 20, 1);
 
-        // Delta: -artifact2Policy, +valPolicy
+        // Delta: -artifact2Policy, -unvalPolicy
         // from deltas, all delta updates should be successfully applied, and unvalPolicy disabled
-        assertTrue(fsm.update(getPdpUpdate(
-                List.of(opPolicy, controllerPolicy, artifactPolicy,
-                        op2Policy, controller2Policy, valPolicy))));
+        deltaUpdate(List.of(), List.of(artifact2Policy, unvalPolicy),
+                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy, valPolicy),
+                23, 22, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy, valPolicy));
         verifyExists(false, "lifecycle", List.of(unvalPolicy));
         assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy,
-                controller2Policy, valPolicy));
-        verifyDeployStats(23, 22, 1);
 
         // Delta: +artifact2Policy
         // from deltas, all delta updates should be successfully applied, opPolicy, op2Policy and unvalPolicy
         // should be reapplied.
-        assertTrue(fsm.update(getPdpUpdate(
-                List.of(opPolicy, controllerPolicy, artifactPolicy,
-                        op2Policy, controller2Policy, valPolicy, artifact2Policy))));
+        assertTrue(fsm.update(getPdpUpdate(List.of(artifact2Policy), List.of())));
+        deltaUpdate(List.of(artifact2Policy), List.of(),
+                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy,
+                        valPolicy, artifact2Policy),
+                24, 23, 1);
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy, valPolicy));
         verifyExists(false, "lifecycle", List.of(unvalPolicy));
         verifyExists(true, "foo", List.of(valPolicy));
         verifyExists(false, "foo", List.of(opPolicy, op2Policy, unvalPolicy));
-        verifyActivePolicies(List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy,
-                controller2Policy, valPolicy, artifact2Policy));
-        verifyDeployStats(24, 23, 1);
 
-        // Delta: -controllerPolicy, +artifactPolicy, +unvalPolicy
+        // Delta: -controllerPolicy, -artifactPolicy, +unvalPolicy
         // from deltas, all delta updates should be successful
-        assertTrue(fsm.update(getPdpUpdate(
-                List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy))));
+        assertTrue(fsm.update(getPdpUpdate(List.of(unvalPolicy), List.of(controllerPolicy, artifactPolicy))));
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
         verifyExists(true, "foo", List.of(valPolicy, unvalPolicy));
         verifyExists(false, "foo", List.of(opPolicy, op2Policy));
@@ -364,23 +350,52 @@ public class LifecycleFsmUpdateTest {
         // Delta: -opPolicy, -op2Policy, -controller2Policy, -valPolicy, -artifact2Policy, -unvalPolicy
         // from deltas, -opPolicy and -op2Policy undeploys will fail since there is not controller with that
         // policy type supported
-        assertFalse(fsm.update(getPdpUpdate(Collections.emptyList())));
+        assertFalse(fsm.update(getPdpUpdate(List.of(),
+                List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy))));
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("foo"));
         assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
-        verifyActivePolicies(Collections.emptyList());
-        verifyDeployStats(33, 30, 3);
+        verifyDeploy(List.of(), 33, 30, 3);
 
         fsm.shutdown();
     }
 
-    protected PdpUpdate getPdpUpdate(List<ToscaPolicy> policies) {
+    private void verifyInitState() {
+        assertEquals(0, fsm.getPoliciesMap().size());
+        assertEquals("ACTIVE", fsm.state().toString());
+        assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
+        verifyDeployStats(0, 0, 0);
+    }
+
+    protected PdpUpdate getPdpUpdate(List<ToscaPolicy> policiesToDeploy, List<ToscaPolicy> policiesToUndeploy) {
         PdpUpdate update = new PdpUpdate();
         update.setName(NetworkUtil.getHostname());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
-        update.setPolicies(policies);
+        update.setPolicies(List.of());
+        update.setPoliciesToBeDeployed(policiesToDeploy);
+        update.setPoliciesToBeUndeployed(fsm.getPolicyIds(policiesToUndeploy));
         return update;
+    }
+
+    protected void deltaUpdate(List<ToscaPolicy> deploy, List<ToscaPolicy> undeploy, List<ToscaPolicy> active,
+            long count, long success, long failures) throws CoderException {
+        assertTrue(fsm.update(getPdpUpdate(deploy, undeploy)));
+        verifyDeploy(active, count, success, failures);
+    }
+
+    private void verifyDeploy(List<ToscaPolicy> active, long count, long success, long failures)
+            throws CoderException {
+        verifyActivePolicies(active);
+        verifyDeployStats(count, success, failures);
+    }
+
+    protected void legacyUpdate(List<ToscaPolicy> policies, List<ToscaPolicy> active,
+            long count, long success, long failures) throws CoderException {
+        PdpUpdate update = getPdpUpdate(List.of(), List.of());
+        update.setPolicies(policies);
+        assertTrue(fsm.update(update));
+        verifyDeploy(active, count, success, failures);
     }
 
     protected void verifyExists(boolean exists, String controller, List<ToscaPolicy> policies) {

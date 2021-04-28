@@ -268,7 +268,7 @@ public class LifecycleFsm implements Startable {
 
         List<PolicyTypeDroolsController> opControllers =
             policyTypesMap.values().stream()
-                .filter(typeController -> typeController instanceof PolicyTypeDroolsController)
+                .filter(PolicyTypeDroolsController.class::isInstance)
                 .map(PolicyTypeDroolsController.class::cast)
                 .filter(opController -> opController.getControllers().containsKey(controller.getName()))
                 .collect(Collectors.toList());
@@ -522,12 +522,41 @@ public class LifecycleFsm implements Startable {
                        .flatMap(entry -> entry.getValue().stream()).collect(Collectors.toList());
     }
 
-    protected String getPolicyIdsMessage(List<ToscaPolicy> policies) {
+    /**
+     * Get the policy identifiers.
+     */
+    public List<ToscaConceptIdentifier> getPolicyIds(List<ToscaPolicy> policies) {
         return policies.stream()
                        .distinct()
-                       .map(ToscaPolicy::getIdentifier).collect(Collectors.toList())
-                       .toString();
+                       .map(ToscaPolicy::getIdentifier).collect(Collectors.toList());
     }
+
+    protected String getPolicyIdsMessage(List<ToscaPolicy> policies) {
+        return getPolicyIds(policies).toString();
+    }
+
+    protected List<ToscaPolicy> removeByPolicyId(@NonNull List<ToscaPolicy> policies,
+            @NonNull List<ToscaConceptIdentifier> toRemoveList) {
+        policies.removeIf(policy -> toRemoveList.contains(policy.getIdentifier()));
+        return policies;
+    }
+
+    protected List<ToscaPolicy> removeByPolicyId(@NonNull List<ToscaConceptIdentifier> toRemoveList) {
+        return removeByPolicyId(getActivePolicies(), toRemoveList);
+    }
+
+    protected List<ToscaPolicy> mergePolicies(@NonNull List<ToscaPolicy> addPolicies,
+            @NonNull List<ToscaConceptIdentifier> removePolicies) {
+
+        if (addPolicies.isEmpty() && removePolicies.isEmpty()) {
+            return getActivePolicies();
+        }
+
+        List<ToscaPolicy> policies = getActivePolicies();
+        policies.addAll(addPolicies);
+        return removeByPolicyId(new ArrayList<>(new HashSet<>(policies)), removePolicies);
+    }
+
 
     /**
      * Do I support the mandatory policy types?.
