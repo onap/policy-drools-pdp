@@ -122,9 +122,6 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
     @Override
     public boolean update(@NonNull PdpUpdate update) {
-        // UPDATE messages contain the complete universe of active policies in this PDP-D
-        // regardless if they were already functioning in the PDP-D or new.
-
         synchronized (fsm) {
             if (update.getPdpHeartbeatIntervalMs() != null
                     && !fsm.setStatusIntervalAction(update.getPdpHeartbeatIntervalMs() / 1000)) {
@@ -137,6 +134,15 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
 
             fsm.setSubGroup(update.getPdpSubgroup());
 
+            // Compute the desired final policy set after processing this update.
+            // Delta policies allows for the PAP to send us just the policies to deploy and undeploy
+            // Note that in this mode of operation, there may be dependent policies in the
+            // active inventory.  For example a request to remove a controller policy in a
+            // delta request, may affect operational or artifact policies in use.
+
+            List<ToscaPolicy> desiredPolicyInventory =
+                fsm.mergePolicies(update.getPoliciesToBeDeployed(), update.getPoliciesToBeUndeployed());
+
             // snapshot the active policies previous to apply the new set of active
             // policies as given by the PAP in the update message
 
@@ -144,9 +150,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             Map<String, List<ToscaPolicy>> activePoliciesPreUpdateMap =
                     fsm.groupPoliciesByPolicyType(activePoliciesPreUpdate);
 
-            // update policies with the current set of active policies
-
-            Pair<List<ToscaPolicy>, List<ToscaPolicy>> results = updatePoliciesWithResults(update.getPolicies());
+            Pair<List<ToscaPolicy>, List<ToscaPolicy>> results = updatePoliciesWithResults(desiredPolicyInventory);
 
             // summary message to return in the update response to the PAP
 

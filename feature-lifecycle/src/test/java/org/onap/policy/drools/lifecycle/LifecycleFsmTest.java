@@ -242,6 +242,32 @@ public class LifecycleFsmTest {
         assertEquals(5, status.getStatistics().getPolicyExecutedSuccessCount());
     }
 
+    @Test
+    public void testMergePolicies() {
+        assertEquals(List.of(), fsm.getActivePolicies());
+        assertEquals(List.of(), fsm.mergePolicies(List.of(), List.of()));
+
+        fsm.deployedPolicyAction(opPolicy);
+        fsm.deployedPolicyAction(controllerPolicy);
+        assertEquals(List.of(opPolicy, controllerPolicy), fsm.getActivePolicies());
+        assertEquals(List.of(opPolicy, controllerPolicy), fsm.mergePolicies(List.of(), List.of()));
+        assertEquals(List.of(opPolicy), fsm.mergePolicies(List.of(), List.of(controllerPolicy.getIdentifier())));
+
+        assertEquals(List.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
+                fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy), List.of()));
+        assertEquals(List.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
+                fsm.mergePolicies(List.of(controllerPolicy, opPolicy, op2Policy, valPolicy, unvalPolicy), List.of()));
+        assertEquals(List.of(op2Policy, valPolicy, unvalPolicy),
+                fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy),
+                        List.of(controllerPolicy.getIdentifier(), opPolicy.getIdentifier())));
+    }
+
+    @Test
+    public void testGetPolicyIdsMessages() {
+        assertEquals("[operational.modifyconfig 1.0.0, example.controller 1.0.0]",
+                fsm.getPolicyIds(List.of(opPolicy, controllerPolicy)).toString());
+    }
+
     protected void deployAllPolicies() {
         fsm.deployedPolicyAction(controllerPolicy);
         fsm.deployedPolicyAction(controller2Policy);

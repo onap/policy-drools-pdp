@@ -30,8 +30,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
@@ -148,7 +147,6 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         update.setName(NetworkUtil.getHostname());
         update.setPdpGroup("Z");
         update.setPdpSubgroup("z");
-        update.setPolicies(Collections.emptyList());
 
         long interval = 2 * fsm.getStatusTimerSeconds();
         update.setPdpHeartbeatIntervalMs(interval * 1000L);
@@ -171,7 +169,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         ToscaPolicy toscaPolicy =
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
         toscaPolicy.getProperties().put("controllerName", "lifecycle");
-        update.setPolicies(Arrays.asList(toscaPolicy));
+        update.setPoliciesToBeDeployed(List.of(toscaPolicy));
 
         assertFalse(fsm.update(update));
 
@@ -229,7 +227,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         ToscaPolicy toscaPolicy2 =
                 getExamplesPolicy("policies/vFirewall.policy.operational.input.tosca.json", "operational.modifyconfig");
         toscaPolicy.getProperties().remove("controllerName");
-        update.setPolicies(Arrays.asList(toscaPolicy2));
+        update.setPoliciesToBeUndeployed(List.of(toscaPolicy.getIdentifier()));
+        update.setPoliciesToBeDeployed(List.of(toscaPolicy2));
         assertTrue(fsm.update(update));
         assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(1, fsm.policiesMap.size());
@@ -239,7 +238,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
         update.setPdpGroup(null);
         update.setPdpSubgroup(null);
-        update.setPolicies(Collections.emptyList());
+        update.setPoliciesToBeUndeployed(List.of(toscaPolicy2.getIdentifier()));
+        update.setPolicies(List.of());
         assertTrue(fsm.update(update));
         assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(0, fsm.policiesMap.size());
@@ -277,7 +277,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         ToscaPolicy toscaPolicy =
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
         toscaPolicy.getProperties().put("controllerName", "lifecycle");
-        update.setPolicies(Arrays.asList(toscaPolicy));
+        update.setPoliciesToBeDeployed(List.of(toscaPolicy));
 
         controllerSupport.getController().start();
         fsm.start(controllerSupport.getController());
