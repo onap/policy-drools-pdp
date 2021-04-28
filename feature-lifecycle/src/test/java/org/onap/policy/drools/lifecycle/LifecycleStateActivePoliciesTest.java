@@ -30,7 +30,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -120,7 +119,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         update.setName(NetworkUtil.getHostname());
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
-        update.setPolicies(List.of(policyNativeController));
+        update.setPoliciesToBeDeployed(List.of(policyNativeController));
 
         assertFalse(fsm.update(update));
         assertEquals(0, fsm.getPoliciesMap().size());
@@ -146,13 +145,13 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         Map<String, String> controllerMap =
                 (Map<String, String>) policyNativeArtifact.getProperties().get("controller");
         controllerMap.put("name", "xyz987");
-        update.setPolicies(List.of(policyNativeController, policyNativeArtifact));
+        update.setPoliciesToBeDeployed(List.of(policyNativeController, policyNativeArtifact));
         assertFalse(fsm.update(update));
 
         // add a registered controller
 
         controllerMap.put("name", "lifecycle");
-        update.setPolicies(List.of(policyNativeController, policyNativeArtifact));
+        update.setPoliciesToBeDeployed(List.of(policyNativeController, policyNativeArtifact));
         assertTrue(fsm.update(update));
 
         assertEquals(2, fsm.getPoliciesMap().size());
@@ -165,7 +164,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
 
         ToscaPolicy opPolicyRestart =
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
-        update.setPolicies(List.of(policyNativeController, policyNativeArtifact, opPolicyRestart));
+        update.setPoliciesToBeDeployed(List.of(policyNativeController, policyNativeArtifact, opPolicyRestart));
         assertFalse(fsm.update(update));
 
         assertEquals(2, fsm.getPoliciesMap().size());
@@ -212,7 +211,8 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
             getExamplesPolicy("policies/vCPE.policy.operational.input.tosca.json", "operational.restart");
         opPolicyRestartV2.setVersion("2.0.0");
         opPolicyRestartV2.getProperties().put("controllerName", "lifecycle");
-        update.setPolicies(List.of(policyNativeController, policyNativeArtifact, opPolicyRestartV2));
+        update.setPoliciesToBeDeployed(List.of(policyNativeController, policyNativeArtifact, opPolicyRestartV2));
+        update.setPoliciesToBeUndeployed(List.of(opPolicyRestart.getIdentifier()));
         assertTrue(fsm.update(update));
 
         assertEquals(3, fsm.getPoliciesMap().size());
@@ -225,7 +225,8 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         assertEquals(1, factPolicies.size());
         assertEquals(opPolicyRestartV2, factPolicies.get(0));
 
-        update.setPolicies(List.of(policyNativeController, policyNativeArtifact));
+        update.setPoliciesToBeDeployed(List.of());
+        update.setPoliciesToBeUndeployed(List.of(opPolicyRestartV2.getIdentifier()));
         assertTrue(fsm.update(update));
 
         assertEquals(2, fsm.getPoliciesMap().size());
@@ -238,7 +239,9 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         assertEquals(0, factPolicies.size());
         assertTrue(controllerSupport.getController().getDrools().isBrained());
 
-        update.setPolicies(List.of(policyNativeController));
+        update.setPoliciesToBeDeployed(List.of());
+        update.setPoliciesToBeUndeployed(List.of(policyNativeArtifact.getIdentifier(),
+                opPolicyRestartV2.getIdentifier()));
         assertTrue(fsm.update(update));
         assertFalse(controllerSupport.getController().getDrools().isBrained());
         assertEquals(1, fsm.getPoliciesMap().size());
@@ -249,13 +252,16 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
 
         ToscaPolicy policyNativeFooController =
                 getPolicyFromFile(FOO_NATIVE_DROOLS_POLICY_JSON, FOO_NATIVE_DROOLS_CONTROLLER_POLICY_NAME);
-        update.setPolicies(List.of(policyNativeController, policyNativeFooController));
+        update.setPoliciesToBeUndeployed(List.of());
+        update.setPoliciesToBeDeployed(List.of(policyNativeFooController));
         assertTrue(fsm.update(update));
         assertEquals(2, fsm.getPoliciesMap().size());
         assertEquals(policyNativeController, fsm.getPoliciesMap().get(policyNativeController.getIdentifier()));
         assertEquals(policyNativeFooController, fsm.getPoliciesMap().get(policyNativeFooController.getIdentifier()));
 
-        update.setPolicies(Collections.emptyList());
+        update.setPoliciesToBeDeployed(List.of());
+        update.setPoliciesToBeUndeployed(List.of(policyNativeController.getIdentifier(),
+                policyNativeFooController.getIdentifier()));
         assertTrue(fsm.update(update));
         assertThatIllegalArgumentException().isThrownBy(() -> controllerSupport.getController().getDrools());
         assertNull(fsm.getPoliciesMap().get(policyNativeController.getIdentifier()));
