@@ -26,7 +26,6 @@ import io.swagger.annotations.ApiParam;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -284,11 +283,7 @@ public class RestLifecycleManager {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        List<ToscaPolicy> policies =
-                LifecycleFeature.getFsm().getPoliciesMap().values().stream().collect(Collectors.toList());
-        policies.add(toscaPolicy);
-
-        boolean updateResult = LifecycleFeature.getFsm().update(getPolicyUpdate(policies));
+        boolean updateResult = LifecycleFeature.getFsm().update(getDeployPolicyUpdate(List.of(toscaPolicy)));
         return Response.status((updateResult ? Response.Status.OK : Response.Status.NOT_ACCEPTABLE))
                        .entity(updateResult)
                        .build();
@@ -345,11 +340,8 @@ public class RestLifecycleManager {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        List<ToscaPolicy> policies =
-                LifecycleFeature.getFsm().getPoliciesMap().values().stream().collect(Collectors.toList());
-        policies.removeIf(otherPolicy -> policy.getIdentifier().equals(otherPolicy.getIdentifier()));
         return Response.status(Response.Status.OK)
-                       .entity(LifecycleFeature.getFsm().update(getPolicyUpdate(policies)))
+                       .entity(LifecycleFeature.getFsm().update(getUndeployPolicyUpdate(List.of(policy))))
                        .build();
     }
 
@@ -448,12 +440,23 @@ public class RestLifecycleManager {
         return LifecycleFeature.getFsm().getPolicyTypesMap().get(policy.getTypeIdentifier());
     }
 
-    private PdpUpdate getPolicyUpdate(List<ToscaPolicy> policies) {
+    private PdpUpdate getPolicyUpdate() {
         PdpUpdate update = new PdpUpdate();
         update.setName(LifecycleFeature.getFsm().getName());
         update.setPdpGroup(LifecycleFeature.getFsm().getGroup());
         update.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());
-        update.setPolicies(policies);
+        return update;
+    }
+
+    private PdpUpdate getDeployPolicyUpdate(List<ToscaPolicy> policies) {
+        PdpUpdate update = getPolicyUpdate();
+        update.setPoliciesToBeDeployed(policies);
+        return update;
+    }
+
+    private PdpUpdate getUndeployPolicyUpdate(List<ToscaPolicy> policies) {
+        PdpUpdate update = getPolicyUpdate();
+        update.setPoliciesToBeUndeployed(LifecycleFeature.fsm.getPolicyIds(policies));
         return update;
     }
 
