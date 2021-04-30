@@ -117,6 +117,30 @@
       "revId": "3d58e46dda3c85c32b92f819b7117f90dbd45120",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05fd08f1_95c281d9",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-04-30T18:19:27Z",
+      "side": 1,
+      "message": "OK, we don\u0027t anticipate CSITs breakage, correct?",
+      "parentUuid": "5ece0bd8_1dcb3b31",
+      "range": {
+        "startLine": 147,
+        "startChar": 21,
+        "endLine": 147,
+        "endChar": 41
+      },
+      "revId": "3d58e46dda3c85c32b92f819b7117f90dbd45120",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
