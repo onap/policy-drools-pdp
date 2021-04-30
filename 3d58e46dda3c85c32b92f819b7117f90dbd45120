@@ -141,6 +141,30 @@
       "revId": "3d58e46dda3c85c32b92f819b7117f90dbd45120",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ec38b4a_4d4685b2",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-30T18:36:49Z",
+      "side": 1,
+      "message": "no, should be fine (once the CSITs start working again!), except for apex \u0026 distribution - apex now depends on change in PAP",
+      "parentUuid": "05fd08f1_95c281d9",
+      "range": {
+        "startLine": 147,
+        "startChar": 21,
+        "endLine": 147,
+        "endChar": 41
+      },
+      "revId": "3d58e46dda3c85c32b92f819b7117f90dbd45120",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
