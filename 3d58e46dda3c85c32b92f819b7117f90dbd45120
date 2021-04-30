@@ -93,6 +93,30 @@
       "revId": "3d58e46dda3c85c32b92f819b7117f90dbd45120",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ece0bd8_1dcb3b31",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleStateRunning.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-04-30T17:53:59Z",
+      "side": 1,
+      "message": "I\u0027d go ahead and stop using it now - just stick with the deploy \u0026 undeploy lists.  We plan to remove the \"policies\" list from the structure during this release.",
+      "parentUuid": "ce918835_14198b07",
+      "range": {
+        "startLine": 147,
+        "startChar": 21,
+        "endLine": 147,
+        "endChar": 41
+      },
+      "revId": "3d58e46dda3c85c32b92f819b7117f90dbd45120",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
