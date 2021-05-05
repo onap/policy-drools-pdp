@@ -54,6 +54,12 @@ public class OperationalProperties implements Serializable {
     private boolean abatement = false;
 
     /**
+     * Guard check should be disabled.
+     */
+    @Builder.Default
+    private boolean guardDisabled = false;
+
+    /**
      * Trigger Operation.
      */
     private String trigger;

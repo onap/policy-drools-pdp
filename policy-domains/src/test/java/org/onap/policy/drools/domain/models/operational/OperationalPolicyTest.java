@@ -79,6 +79,7 @@ public class OperationalPolicyTest {
                             OperationalProperties.builder()
                                     .id("ControlLoop-vCPE-48f0c2c3-a172-4192-9ae3-052274181b6e")
                                     .abatement(true)
+                                    .guardDisabled(true)
                                     .trigger("unique-policy-id-1-restart")
                                     .operations(
                                             List.of(Operation.builder()
