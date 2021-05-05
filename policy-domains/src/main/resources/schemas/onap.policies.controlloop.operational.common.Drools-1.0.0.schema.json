@@ -111,6 +111,15 @@
                         true
                     ]
                 },
+                "guardDisabled": {
+                    "$id": "#/properties/properties/properties/guardDisabled",
+                    "type": "boolean",
+                    "title": "Guard Check Disabled",
+                    "default": false,
+                    "examples": [
+                        true
+                    ]
+                },
                 "trigger": {
                     "$id": "#/properties/properties/properties/trigger",
                     "type": "string",
