@@ -76,7 +76,7 @@ class IndexedPolicyControllerFactory implements PolicyControllerFactory {
 
         /* A PolicyController does not exist */
 
-        PolicyController controller = newPolicyController(name, properties);
+        var controller = newPolicyController(name, properties);
 
         String coordinates = toKey(controller.getDrools().getGroupId(),
                                    controller.getDrools().getArtifactId());

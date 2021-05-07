@@ -56,7 +56,6 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.common.utils.services.FeatureApiUtils;
-import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.core.jmx.PdpJmxListener;
@@ -227,7 +226,7 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     public final Properties defaultTelemetryConfig() {
-        final Properties defaultConfig = new Properties();
+        final var defaultConfig = new Properties();
 
         defaultConfig.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES, "TELEMETRY");
         defaultConfig.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
@@ -379,7 +378,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         final String entity = config.getEntity();
 
-        MdcTransaction mdcTrans = MdcTransaction.newTransaction(config.getRequestId(), "brmsgw");
+        var mdcTrans = MdcTransaction.newTransaction(config.getRequestId(), "brmsgw");
         if (this.getSources().size() == 1) {
             Topic topic = this.getSources().get(0);
             mdcTrans.setServiceName(topic.getTopic()).setRemoteHost(topic.getServers().toString())
@@ -459,7 +458,7 @@ class PolicyEngineManager implements PolicyEngine {
                     .setTargetServiceName(configController.getOperation())
                     .setTargetVirtualEntity("" + configController.getDrools());
             try {
-                final PolicyController policyController = this.updatePolicyController(configController);
+                var policyController = this.updatePolicyController(configController);
                 policyControllers.add(policyController);
                 mdcTrans.setStatusCode(true).transaction();
             } catch (final Exception e) {
@@ -493,7 +492,7 @@ class PolicyEngineManager implements PolicyEngine {
                 throw new IllegalArgumentException("operation must be provided");
             }
 
-            PolicyController policyController = getController(controllerName);
+            var policyController = getController(controllerName);
             if (policyController == null) {
                 policyController = findController(controllerName, operation);
 
@@ -533,7 +532,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         logger.warn("controller {} does not exist. Attempting recovery from disk", controllerName);
 
-        final Properties controllerProperties =
+        var controllerProperties =
                 getPersistenceManager().getControllerProperties(controllerName);
 
         /*
@@ -795,7 +794,7 @@ class PolicyEngineManager implements PolicyEngine {
          * ..) are stuck
          */
 
-        Thread exitThread = makeShutdownThread();
+        var exitThread = makeShutdownThread();
         exitThread.start();
 
         /* policy-engine dispatch pre shutdown hook */
@@ -940,7 +939,7 @@ class PolicyEngineManager implements PolicyEngine {
 
         this.locked = true;
 
-        boolean success = true;
+        var success = true;
         final List<PolicyController> controllers = getControllerFactory().inventory();
         for (final PolicyController controller : controllers) {
             try {
@@ -1201,7 +1200,7 @@ class PolicyEngineManager implements PolicyEngine {
          * additional processing
          */
         try {
-            final DroolsController droolsController = getProtocolCoder().getDroolsController(topic, event);
+            var droolsController = getProtocolCoder().getDroolsController(topic, event);
             final PolicyController controller = getControllerFactory().get(droolsController);
             if (controller != null) {
                 return controller.deliver(busType, topic, event);
@@ -1246,7 +1245,7 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         try {
-            final TopicSink sink = getTopicEndpointManager().getTopicSink(busType, topic);
+            var sink = getTopicEndpointManager().getTopicSink(busType, topic);
 
             if (sink == null) {
                 throw new IllegalStateException("Inconsistent State: " + this);
@@ -1411,7 +1410,7 @@ class PolicyEngineManager implements PolicyEngine {
     }
 
     protected ScheduledExecutorService makeScheduledExecutor(int nthreads) {
-        ScheduledThreadPoolExecutor exsvc = new ScheduledThreadPoolExecutor(nthreads);
+        var exsvc = new ScheduledThreadPoolExecutor(nthreads);
         exsvc.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         exsvc.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         exsvc.setRemoveOnCancelPolicy(true);

@@ -34,7 +34,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
@@ -71,7 +70,7 @@ public class MavenDroolsController implements DroolsController {
     /**
      * logger.
      */
-    private static Logger  logger = LoggerFactory.getLogger(MavenDroolsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(MavenDroolsController.class);
 
     /**
      * Policy Container, the access object to the policy-core layer.
@@ -262,7 +261,7 @@ public class MavenDroolsController implements DroolsController {
         for (TopicCoderFilterConfiguration coderConfig: coderConfigurations) {
             String topic = coderConfig.getTopic();
 
-            CustomGsonCoder customGsonCoder = getCustomCoder(coderConfig);
+            var customGsonCoder = getCustomCoder(coderConfig);
 
             List<PotentialCoderFilter> coderFilters = coderConfig.getCoderFilters();
             if (coderFilters == null || coderFilters.isEmpty()) {
@@ -301,7 +300,7 @@ public class MavenDroolsController implements DroolsController {
     }
 
     private CustomGsonCoder getCustomCoder(TopicCoderFilterConfiguration coderConfig) {
-        CustomGsonCoder customGsonCoder = coderConfig.getCustomGsonCoder();
+        var customGsonCoder = coderConfig.getCustomGsonCoder();
         if (customGsonCoder != null
                 && customGsonCoder.getClassContainer() != null
                 && !customGsonCoder.getClassContainer().isEmpty()) {
@@ -745,8 +744,8 @@ public class MavenDroolsController implements DroolsController {
 
         Map<String, Integer> classNames = new HashMap<>();
 
-        PolicySession session = getSession(sessionName);
-        KieSession kieSession = session.getKieSession();
+        var session = getSession(sessionName);
+        var kieSession = session.getKieSession();
 
         Collection<FactHandle> facts = kieSession.getFactHandles();
         for (FactHandle fact : facts) {
@@ -775,8 +774,7 @@ public class MavenDroolsController implements DroolsController {
     public long factCount(String sessionName) {
         validateSessionName(sessionName);
 
-        PolicySession session = getSession(sessionName);
-        return session.getKieSession().getFactCount();
+        return getSession(sessionName).getKieSession().getFactCount();
     }
 
     @Override
@@ -793,8 +791,8 @@ public class MavenDroolsController implements DroolsController {
             throw new IllegalArgumentException("Class cannot be fetched in model's classloader: " + className);
         }
 
-        PolicySession session = getSession(sessionName);
-        KieSession kieSession = session.getKieSession();
+        var session = getSession(sessionName);
+        var kieSession = session.getKieSession();
 
         List<Object> factObjects = new ArrayList<>();
 
@@ -835,14 +833,14 @@ public class MavenDroolsController implements DroolsController {
             throw new IllegalArgumentException("Invalid Queried Entity: " + queriedEntity);
         }
 
-        PolicySession session = getSession(sessionName);
-        KieSession kieSession = session.getKieSession();
+        var session = getSession(sessionName);
+        var kieSession = session.getKieSession();
 
         validateQueryName(kieSession, queryName);
 
         List<Object> factObjects = new ArrayList<>();
 
-        QueryResults queryResults = kieSession.getQueryResults(queryName, queryParams);
+        var queryResults = kieSession.getQueryResults(queryName, queryParams);
         for (QueryResultsRow row : queryResults) {
             try {
                 factObjects.add(row.get(queriedEntity));
@@ -871,11 +869,11 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public <T> boolean delete(@NonNull String sessionName, @NonNull T objFact) {
-        KieSession kieSession = getSession(sessionName).getKieSession();
+        var kieSession = getSession(sessionName).getKieSession();
 
         // try first to get the object to delete first by reference
 
-        FactHandle quickFact = kieSession.getFactHandle(objFact);
+        var quickFact = kieSession.getFactHandle(objFact);
         if (quickFact != null) {
             logger.info("Fast delete of {} from {}", objFact, sessionName);
             kieSession.delete(quickFact);
@@ -906,10 +904,10 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public <T> boolean delete(@NonNull String sessionName, @NonNull Class<T> fact) {
-        PolicySession session = getSession(sessionName);
-        KieSession kieSession = session.getKieSession();
+        var session = getSession(sessionName);
+        var kieSession = session.getKieSession();
 
-        boolean success = true;
+        var success = true;
         Collection<FactHandle> factHandles = kieSession.getFactHandles(new ClassObjectFilter(fact));
         for (FactHandle factHandle : factHandles) {
             try {
@@ -929,7 +927,7 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public <T> boolean exists(@NonNull String sessionName, @NonNull T objFact) {
-        KieSession kieSession = getSession(sessionName).getKieSession();
+        var kieSession = getSession(sessionName).getKieSession();
         if (kieSession.getFactHandle(objFact) != null) {
             return true;
         }
@@ -965,7 +963,7 @@ public class MavenDroolsController implements DroolsController {
     @Override
     public Object[] getRecentSourceEvents() {
         synchronized (this.recentSourceEvents) {
-            Object[] events = new Object[recentSourceEvents.size()];
+            var events = new Object[recentSourceEvents.size()];
             return recentSourceEvents.toArray(events);
         }
     }
@@ -978,7 +976,7 @@ public class MavenDroolsController implements DroolsController {
     @Override
     public String[] getRecentSinkEvents() {
         synchronized (this.recentSinkEvents) {
-            String[] events = new String[recentSinkEvents.size()];
+            var events = new String[recentSinkEvents.size()];
             return recentSinkEvents.toArray(events);
         }
     }
@@ -991,18 +989,8 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder
-            .append("MavenDroolsController [policyContainer=")
-            .append(policyContainer.getName())
-            .append(":")
-            .append(", alive=")
-            .append(alive)
-            .append(", locked=")
-            .append(", modelClassLoaderHash=")
-            .append(modelClassLoaderHash)
-            .append("]");
-        return builder.toString();
+        return "MavenDroolsController [policyContainer=" + policyContainer.getName() + ":" + ", alive=" + alive
+                        + ", locked=" + ", modelClassLoaderHash=" + modelClassLoaderHash + "]";
     }
 
     // these may be overridden by junit tests

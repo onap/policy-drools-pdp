@@ -162,7 +162,7 @@ public class DomainMaker {
         // A known schema is one that embedded in a .jar in the classpath as a resource
         // matching the following syntax: <policy-type-name>-<policy-type-version>.schema.json.
         //
-        String schema =
+        var schema =
                 ResourceUtils
                         .getResourceAsString("schemas/"
                             + policyType.getName() + "-" + policyType.getVersion() + ".schema.json");

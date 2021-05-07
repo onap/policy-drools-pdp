@@ -29,7 +29,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
@@ -254,7 +253,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStateChange() throws CoderException, IOException {
+    public void testStateChange() throws CoderException {
         /* no name */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");

@@ -151,7 +151,7 @@ public class RestLifecycleManager {
     public Response updateState(
         @ApiParam(value = "state", required = true) @PathParam("state") String state) {
 
-        PdpStateChange change = new PdpStateChange();
+        var change = new PdpStateChange();
         change.setPdpGroup(LifecycleFeature.getFsm().getGroup());
         change.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());
         change.setState(PdpState.valueOf(state));
@@ -273,12 +273,12 @@ public class RestLifecycleManager {
     public Response deployTrackedPolicy(
             @ApiParam(value = "Tosca Policy", required = true) String policy) {
 
-        ToscaPolicy toscaPolicy = getToscaPolicy(policy);
+        var toscaPolicy = getToscaPolicy(policy);
         if (toscaPolicy == null) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
 
-        PolicyTypeController typeController = getPolicyTypeController(toscaPolicy);
+        var typeController = getPolicyTypeController(toscaPolicy);
         if (typeController == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -386,7 +386,7 @@ public class RestLifecycleManager {
     @Path("policies/operations/validation")
     @ApiOperation(value = "Validates a policy", responseContainer = "List")
     public Response validateOperation(@ApiParam(value = "Tosca Policy", required = true) String policy) {
-        ToscaPolicy toscaPolicy = getToscaPolicy(policy);
+        var toscaPolicy = getToscaPolicy(policy);
         if (toscaPolicy == null) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
@@ -413,12 +413,12 @@ public class RestLifecycleManager {
     }
 
     private Response deployUndeployOperation(String policy, boolean deploy) {
-        ToscaPolicy toscaPolicy = getToscaPolicy(policy);
+        var toscaPolicy = getToscaPolicy(policy);
         if (toscaPolicy == null) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
 
-        PolicyTypeController typeController = getPolicyTypeController(toscaPolicy);
+        var typeController = getPolicyTypeController(toscaPolicy);
         if (typeController == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -441,7 +441,7 @@ public class RestLifecycleManager {
     }
 
     private PdpUpdate getPolicyUpdate() {
-        PdpUpdate update = new PdpUpdate();
+        var update = new PdpUpdate();
         update.setName(LifecycleFeature.getFsm().getName());
         update.setPdpGroup(LifecycleFeature.getFsm().getGroup());
         update.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());

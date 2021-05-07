@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
-import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.onap.policy.common.utils.security.CryptoCoder;
@@ -50,8 +49,7 @@ public class PropertyUtil {
     private static Timer timer = null;
 
     // this table maps canonical file into a 'ListenerRegistration' instance
-    private static HashMap<File, ListenerRegistration> registrations =
-            new HashMap<>();
+    private static final HashMap<File, ListenerRegistration> registrations = new HashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(PropertyUtil.class.getName());
 
@@ -137,7 +135,7 @@ public class PropertyUtil {
      *     a problem loading the properties file.
      */
     public static Properties getProperties(File file, Listener listener) throws IOException {
-        File propFile = file;
+        var propFile = file;
         if (listener == null) {
             // no listener specified -- just fetch the properties
             return getProperties(propFile);
@@ -198,7 +196,7 @@ public class PropertyUtil {
      * @return Properties - interpolated properties object
      */
     public static Properties getInterpolatedProperties(Properties properties, CryptoCoder cryptoCoder) {
-        Configuration config = ConfigurationConverter.getConfiguration(properties);
+        var config = ConfigurationConverter.getConfiguration(properties);
         config.getInterpolator()
             .registerLookup(ENV_WITH_DEFAULT_PROPERTY_PREFIX, new EnvironmentVariableWithDefaultLookup());
 
@@ -207,7 +205,7 @@ public class PropertyUtil {
         }
 
         config.getInterpolator().registerLookup(CRYPTO_CODER_PROPERTY_PREFIX, new CryptoCoderValueLookup(cryptoCoder));
-        Properties props = ConfigurationConverter.getProperties(config);
+        var props = ConfigurationConverter.getProperties(config);
         props.stringPropertyNames().forEach(key -> props.setProperty(key, cryptoCoder.decrypt(props.getProperty(key))));
         return props;
     }
@@ -223,8 +221,8 @@ public class PropertyUtil {
      */
     protected static Properties getPropertiesFile(File file) throws IOException {
         // create an InputStream (may throw a FileNotFoundException)
-        Properties rval = new Properties();
-        try (FileInputStream fis = new FileInputStream(file)) {
+        var rval = new Properties();
+        try (var fis = new FileInputStream(file)) {
             // create the properties instance
 
             // load properties (may throw an IOException)
@@ -381,7 +379,7 @@ public class PropertyUtil {
                 lastModified = timestamp;
 
                 // Save old set, and initial set of changed properties.
-                Properties oldProperties = properties;
+                var oldProperties = properties;
                 HashSet<String> changedProperties =
                         new HashSet<>(oldProperties.stringPropertyNames());
 
@@ -418,19 +416,12 @@ public class PropertyUtil {
                     for (final Listener notify : listeners) {
                         // Copy 'properties' and 'changedProperties', so it doesn't
                         // cause problems if the recipient makes changes.
-                        final Properties tmpProperties =
-                                (Properties) properties.clone();
-                        final HashSet<String> tmpChangedProperties =
-                                new HashSet<>(changedProperties);
+                        final var tmpProperties = (Properties) properties.clone();
+                        final HashSet<String> tmpChangedProperties = new HashSet<>(changedProperties);
 
                         // Do the notification in a separate thread, so blocking
                         // won't cause any problems.
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                notify.propertiesChanged(tmpProperties, tmpChangedProperties);
-                            }
-                        }.start();
+                        new Thread(() -> notify.propertiesChanged(tmpProperties, tmpChangedProperties)).start();
                     }
                 }
             }
