@@ -33,13 +33,24 @@ if ! "${POLICY_HOME}"/bin/policy-management-controller status >/dev/null 2>&1; t
     exit 2
 fi
 
+CREDENTIALS=
+if [ -n "${TELEMETRY_USER}" ]; then
+	CREDENTIALS="--auth ${TELEMETRY_USER}:${TELEMETRY_PASSWORD}"
+fi
+
+PROTOCOL="http"
+if egrep "^http\.server\.services\..*CONFIG\.https=true" ${POLICY_HOME}/config/engine.properties; then
+	PROTOCOL="https"
+fi
+
 if [ ! -r "${TELEMETRY_SPEC}" ]; then
     echo "generating new spec .."
-    if ! http --verify=no -a "${TELEMETRY_USER}:${TELEMETRY_PASSWORD}" https://localhost:9696/swagger.json >${TELEMETRY_SPEC} 2>/dev/null; then
+    if ! http --verify=no ${CREDENTIALS} "${PROTOCOL}"://localhost:9696/swagger.json >${TELEMETRY_SPEC} 2>/dev/null; then
         echo "error: cannot generate telemetry spec"
         rm -f ${TELEMETRY_SPEC} 2>/dev/null
         exit 3
     fi
 fi
 
-exec http-prompt https://localhost:9696/policy/pdp/engine --verify=no --auth "${TELEMETRY_USER}:${TELEMETRY_PASSWORD}" --spec ${TELEMETRY_SPEC}
+exec http-prompt "${PROTOCOL}"://localhost:9696/policy/pdp/engine --verify=no ${CREDENTIALS} --spec ${TELEMETRY_SPEC}
+
