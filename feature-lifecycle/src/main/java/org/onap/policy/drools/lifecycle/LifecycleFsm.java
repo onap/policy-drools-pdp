@@ -595,7 +595,7 @@ public class LifecycleFsm implements Startable {
     }
 
     private boolean stopTimers() {
-        boolean success = true;
+        var success = true;
         if (statusTask != null) {
             success = statusTask.cancel(false);
         }
@@ -613,7 +613,7 @@ public class LifecycleFsm implements Startable {
     }
 
     protected PdpStatus statusPayload(@NonNull PdpState state) {
-        PdpStatus status = new PdpStatus();
+        var status = new PdpStatus();
         status.setName(name);
         status.setPdpGroup(group);
         status.setPdpSubgroup(subGroup);
@@ -629,7 +629,7 @@ public class LifecycleFsm implements Startable {
      * It provides a snapshot of the current statistics.
      */
     public PdpStatistics statisticsPayload() {
-        PdpStatistics updateStats = new PdpStatistics(stats);
+        var updateStats = new PdpStatistics(stats);
         updateStats.setTimeStamp(Instant.now());
 
         try {
@@ -754,7 +754,7 @@ public class LifecycleFsm implements Startable {
     // these may be overridden by junit tests
 
     protected ScheduledExecutorService makeExecutor() {
-        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        var exec = new ScheduledThreadPoolExecutor(1);
         exec.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         exec.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
         exec.setRemoveOnCancelPolicy(true);

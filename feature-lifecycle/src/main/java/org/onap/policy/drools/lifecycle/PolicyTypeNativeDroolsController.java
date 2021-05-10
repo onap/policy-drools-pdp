@@ -63,8 +63,8 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     @Override
     public boolean deploy(ToscaPolicy policy) {
-        Properties controllerProps = new Properties();
-        ControllerPolicy controllerPolicy = toDomainPolicy(policy);
+        var controllerProps = new Properties();
+        var controllerPolicy = toDomainPolicy(policy);
         if (controllerPolicy == null) {
             return false;
         }
