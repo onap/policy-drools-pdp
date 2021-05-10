@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b402c018_11c02fee",
+        "filename": "policy-management/src/main/server-gen/bin/telemetry",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-05-10T12:02:02Z",
+      "side": 1,
+      "message": "tabs \u003d\u003e spaces\n\nsame comment below",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 1
+      },
+      "revId": "b60215c6706f225e46b60d8679c2f5ae0ddae5e8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
