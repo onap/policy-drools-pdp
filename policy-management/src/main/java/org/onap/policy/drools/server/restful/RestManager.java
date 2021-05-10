@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 package org.onap.policy.drools.server.restful;
 
 import ch.qos.logback.classic.LoggerContext;
+import com.google.re2j.Pattern;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -340,7 +341,7 @@ public class RestManager {
                     + "and controllers are unlocked and started",
             response = PolicyEngine.class)
     public Response engineActivation() {
-        boolean success = true;
+        var success = true;
         try {
             PolicyEngineConstants.getManager().activate();
         } catch (final Exception e) {
@@ -369,7 +370,7 @@ public class RestManager {
                     + "and controllers are locked (with the exception of those resources defined as unmanaged)",
             response = PolicyEngine.class)
     public Response engineDeactivation() {
-        boolean success = true;
+        var success = true;
         try {
             PolicyEngineConstants.getManager().deactivate();
         } catch (final Exception e) {
@@ -710,7 +711,7 @@ public class RestManager {
         }
 
         return catchArgStateGenericEx(() -> {
-            PolicyController controller =
+            var controller =
                             PolicyEngineConstants.getManager().updatePolicyController(controllerConfiguration);
             if (controller == null) {
                 return Response.status(Response.Status.BAD_REQUEST)
@@ -752,7 +753,7 @@ public class RestManager {
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response controllerLock(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        final PolicyController policyController = PolicyControllerConstants.getFactory().get(controllerName);
+        var policyController = PolicyControllerConstants.getFactory().get(controllerName);
         final boolean success = policyController.lock();
         if (success) {
             return Response.status(Status.OK).entity(policyController).build();
@@ -775,7 +776,7 @@ public class RestManager {
             message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response controllerUnlock(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
-        final PolicyController policyController = PolicyControllerConstants.getFactory().get(controllerName);
+        var policyController = PolicyControllerConstants.getFactory().get(controllerName);
         final boolean success = policyController.unlock();
         if (success) {
             return Response.status(Status.OK).entity(policyController).build();
@@ -802,7 +803,7 @@ public class RestManager {
             required = true) @PathParam("controller") String controllerName) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             return Response.status(Response.Status.OK).entity(drools).build();
 
         }, e -> {
@@ -829,7 +830,7 @@ public class RestManager {
 
         return catchArgStateGenericEx(() -> {
             final Map<String, Long> sessionCounts = new HashMap<>();
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             for (final String session : drools.getSessionNames()) {
                 sessionCounts.put(session, drools.factCount(session));
             }
@@ -859,7 +860,7 @@ public class RestManager {
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             return drools.factClassNames(sessionName);
 
         }, e -> {
@@ -890,7 +891,7 @@ public class RestManager {
             @ApiParam(value = "Drools Fact Type", required = true) @PathParam("factType") String factType) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final List<Object> facts = drools.facts(sessionName, factType, false);
             return (count ? facts.size() : facts);
 
@@ -926,7 +927,7 @@ public class RestManager {
                     required = true) @PathParam("queriedEntity") String queriedEntity) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final List<Object> facts = drools.factQuery(sessionName, queryName, queriedEntity, false);
             return (count ? facts.size() : facts);
 
@@ -963,7 +964,7 @@ public class RestManager {
                     required = false) List<Object> queryParameters) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             if (queryParameters == null || queryParameters.isEmpty()) {
                 return drools.factQuery(sessionName, queryName, queriedEntity, false);
             } else {
@@ -1000,7 +1001,7 @@ public class RestManager {
             @ApiParam(value = "Drools Fact Type", required = true) @PathParam("factType") String factType) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             return drools.facts(sessionName, factType, true);
 
         }, e -> {
@@ -1037,7 +1038,7 @@ public class RestManager {
                     required = false) List<Object> queryParameters) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             if (queryParameters == null || queryParameters.isEmpty()) {
                 return drools.factQuery(sessionName, queryName, queriedEntity, true);
             } else {
@@ -1085,7 +1086,7 @@ public class RestManager {
             required = true) @PathParam("controller") String controllerName) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             return EventProtocolCoderConstants.getManager().getDecoders(drools.getGroupId(), drools.getArtifactId());
 
         }, e -> {
@@ -1116,7 +1117,7 @@ public class RestManager {
             required = true) @PathParam("controller") String controllerName) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             return EventProtocolCoderConstants.getManager()
                             .getDecoderFilters(drools.getGroupId(), drools.getArtifactId());
 
@@ -1147,7 +1148,7 @@ public class RestManager {
             @ApiParam(value = "Networked Topic Name", required = true) @PathParam("topic") String topic) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             return EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
 
@@ -1179,7 +1180,7 @@ public class RestManager {
             @ApiParam(value = "Networked Topic Name", required = true) @PathParam("topic") String topic) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
             if (decoder == null) {
@@ -1218,7 +1219,7 @@ public class RestManager {
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
             final CoderFilters filters = decoder.getCoder(factClass);
@@ -1267,7 +1268,7 @@ public class RestManager {
         }
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
             final CoderFilters filters = decoder.getCoder(factClass);
@@ -1306,7 +1307,7 @@ public class RestManager {
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
 
@@ -1353,7 +1354,7 @@ public class RestManager {
             @ApiParam(value = "Fact Type", required = true) @PathParam("factType") String factClass) {
 
         return catchArgStateGenericEx(() -> {
-            final DroolsController drools = this.getDroolsController(controllerName);
+            var drools = this.getDroolsController(controllerName);
             final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                             .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
 
@@ -1409,7 +1410,7 @@ public class RestManager {
     }
 
     private Object decoderFilterRule2(String controllerName, String topic, String factClass, String rule) {
-        final DroolsController drools = this.getDroolsController(controllerName);
+        var drools = this.getDroolsController(controllerName);
         final ProtocolCoderToolset decoder = EventProtocolCoderConstants.getManager()
                         .getDecoders(drools.getGroupId(), drools.getArtifactId(), topic);
 
@@ -1452,6 +1453,16 @@ public class RestManager {
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
             @ApiParam(value = "JSON String to decode", required = true) String json) {
 
+        if (!checkValidNameInput(controllerName)) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                           .entity(new Error("controllerName contains whitespaces " + NOT_ACCEPTABLE_MSG)).build();
+        }
+
+        if (!checkValidNameInput(topic)) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                           .entity(new Error("topic contains whitespaces " + NOT_ACCEPTABLE_MSG)).build();
+        }
+
         PolicyController policyController;
         try {
             policyController = PolicyControllerConstants.getFactory().get(controllerName);
@@ -1467,7 +1478,7 @@ public class RestManager {
                     .entity(new Error(controllerName + ":" + topic + ":" + NOT_ACCEPTABLE_MSG)).build();
         }
 
-        final CodingResult result = new CodingResult();
+        var result = new CodingResult();
         result.setDecoding(false);
         result.setEncoding(false);
         result.setJsonEncoding(null);
@@ -1512,7 +1523,7 @@ public class RestManager {
 
         return catchArgStateGenericEx(() -> {
             final PolicyController controller = PolicyControllerConstants.getFactory().get(controllerName);
-            final DroolsController drools = controller.getDrools();
+            var drools = controller.getDrools();
             return EventProtocolCoderConstants.getManager()
                             .getEncoderFilters(drools.getGroupId(), drools.getArtifactId());
 
@@ -1616,7 +1627,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
     ) {
         List<TopicSource> sources = new ArrayList<>();
-        Status status = Status.OK;
+        var status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
                 sources.addAll(TopicEndpointManager.getManager().getUebTopicSources());
@@ -1646,7 +1657,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
     ) {
         List<TopicSink> sinks = new ArrayList<>();
-        Status status = Status.OK;
+        var status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
                 sinks.addAll(TopicEndpointManager.getManager().getUebTopicSinks());
@@ -1776,7 +1787,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSource source =
+        var source =
             TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.lock(), source);
     }
@@ -1793,7 +1804,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSource source =
+        var source =
             TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.unlock(), source);
     }
@@ -1810,7 +1821,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSource source =
+        var source =
             TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.start(), source);
     }
@@ -1827,7 +1838,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSource source =
+        var source =
             TopicEndpointManager.getManager().getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, source.stop(), source);
     }
@@ -1844,7 +1855,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSink sink =
+        var sink =
             TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.lock(), sink);
     }
@@ -1861,7 +1872,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSink sink =
+        var sink =
             TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.unlock(), sink);
     }
@@ -1878,7 +1889,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSink sink =
+        var sink =
             TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.start(), sink);
     }
@@ -1895,7 +1906,7 @@ public class RestManager {
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
     ) {
-        TopicSink sink =
+        var sink =
             TopicEndpointManager.getManager().getTopicSink(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
         return getResponse(topic, sink.stop(), sink);
     }
@@ -1932,7 +1943,7 @@ public class RestManager {
             @ApiParam(value = "Network Message", required = true) String json) {
 
         return catchArgStateGenericEx(() -> {
-            TopicSource source = TopicEndpointManager.getManager()
+            var source = TopicEndpointManager.getManager()
                             .getTopicSource(CommInfrastructure.valueOf(comm.toUpperCase()), topic);
             if (source.offer(json)) {
                 return Arrays.asList(source.getRecentEvents());
@@ -2003,7 +2014,7 @@ public class RestManager {
         }
 
         final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        final ch.qos.logback.classic.Logger lgr = context.getLogger(loggerName);
+        var lgr = context.getLogger(loggerName);
         if (lgr == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -2056,7 +2067,7 @@ public class RestManager {
             throw new IllegalArgumentException(controllerName + DOES_NOT_EXIST_MSG);
         }
 
-        final DroolsController drools = controller.getDrools();
+        var drools = controller.getDrools();
         if (drools == null) {
             throw new IllegalArgumentException(controllerName + " has no drools configuration");
         }
@@ -2096,6 +2107,10 @@ public class RestManager {
             errorMsg.apply(e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Error(e.getMessage())).build();
         }
+    }
+
+    public static boolean checkValidNameInput(String test) {
+        return Pattern.matches("\\S+", test);
     }
 
     /*

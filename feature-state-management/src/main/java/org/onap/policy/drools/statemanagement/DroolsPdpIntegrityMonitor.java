@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * feature-state-management
+ * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
@@ -47,7 +47,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
     private static DroolsPdpIntegrityMonitor im = null;
 
     // list of audits to run
-    private static AuditBase[] audits = new AuditBase[] {DbAudit.getInstance(), RepositoryAudit.getInstance()};
+    private static final AuditBase[] audits = new AuditBase[] {DbAudit.getInstance(), RepositoryAudit.getInstance()};
 
     private static Properties subsystemTestProperties = null;
 
@@ -57,8 +57,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
      * Constructor - pass arguments to superclass, but remember properties.
      *
      * @param resourceName unique name of this Integrity Monitor
-     * @param url the JMX URL of the MBean server
-     * @param properties properties used locally, as well as by 'IntegrityMonitor'
+     * @param consolidatedProperties properties used locally, as well as by 'IntegrityMonitor'
      * @throws IntegrityMonitorException (passed from superclass)
      */
     private DroolsPdpIntegrityMonitor(String resourceName, Properties consolidatedProperties)
@@ -87,7 +86,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
         logger.info("init: Entering and invoking PropertyUtil.getProperties() on '{}'", configDir);
 
         // read in properties
-        Properties stateManagementProperties = getProperties(configDir);
+        var stateManagementProperties = getProperties(configDir);
 
         // fetch and verify definitions of some properties, adding defaults where
         // appropriate
@@ -241,7 +240,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
      *
      * @param props set of properties
      * @param name name of the property to check
-     * @param expected expected/default value
+     * @param dflt expected/default value
      */
     private static void addDefaultPropWarn(Properties props, String name, String dflt) {
         String val = props.getProperty(name);
@@ -282,7 +281,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
         }
 
         // will contain list of subsystems where the audit failed
-        String responseMsg = "";
+        var responseMsg = "";
 
         // Loop through all of the audits, and see which ones have failed.
         // NOTE: response information is stored within the audit objects
@@ -354,7 +353,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
          * Abstract method to invoke the audit.
          *
          * @param persistenceProperties Used for DB access
-         * @throws Exception passed in by the audit
+         * @throws IntegrityMonitorException passed in by the audit
          */
         abstract void invoke(Properties persistenceProperties) throws IntegrityMonitorException;
     }
@@ -392,6 +391,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
                 server.waitedStart(5);
             } catch (Exception e) {
                 logger.error("Exception waiting for servers to start: ", e);
+                Thread.currentThread().interrupt();
             }
         }
 

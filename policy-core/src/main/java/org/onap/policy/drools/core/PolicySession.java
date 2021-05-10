@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * policy-core
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -469,8 +469,9 @@ public class PolicySession
                 // one more interrupt, just in case the 'kieSession.halt()'
                 // didn't work for some reason
                 thread.interrupt();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 logger.error("stopThread in thread.join error", e);
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -497,7 +498,7 @@ public class PolicySession
 
             // We want to continue looping, despite any exceptions that occur
             // while rules are fired.
-            KieSession kieSession1 = session.getKieSession();
+            var kieSession1 = session.getKieSession();
             while (repeat) {
                 try {
                     kieSession1.fireUntilHalt();
