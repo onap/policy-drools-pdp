@@ -22,6 +22,30 @@
       "revId": "b60215c6706f225e46b60d8679c2f5ae0ddae5e8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c3899ec3_8be64b4d",
+        "filename": "policy-management/src/main/server-gen/bin/telemetry",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-05-10T13:24:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b402c018_11c02fee",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 1
+      },
+      "revId": "b60215c6706f225e46b60d8679c2f5ae0ddae5e8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
