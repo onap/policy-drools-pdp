@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3deb3d45_6a6fca25",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/GenericEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-05-12T22:23:52Z",
+      "side": 1,
+      "message": "it might be complaining about the event",
+      "revId": "20241c950c0e69ecbe10eb26f89cebb2d0ef91e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f81116d2_a234ea24",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/MultiplexorEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-05-12T22:23:52Z",
+      "side": 1,
+      "message": "it might be complaining about the json",
+      "revId": "20241c950c0e69ecbe10eb26f89cebb2d0ef91e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
