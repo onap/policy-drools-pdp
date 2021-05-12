@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
     /**
      * Logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(MultiplexorEventProtocolCoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(MultiplexorEventProtocolCoder.class);
 
     /**
      * Decoders.
@@ -124,7 +124,19 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public Object decode(String groupId, String artifactId, String topic, String json) {
-        logger.debug("{}: decode {}:{}:{}:{}", this, groupId, artifactId, topic, json);
+        logger.debug("{}: decode {}:{}:{}:{}", this, groupId, artifactId, topic, json);  // NOSONAR
+
+        /*
+         * It seems that sonar declares the previous logging line as a security vulnerability
+         * when logging the topic variable.   The static code analysis indicates that
+         * the path starts in org.onap.policy.drools.server.restful.RestManager::decode(),
+         * but the request is rejected if the topic contains invalid characters (the sonar description
+         * mentions "/r/n/t" characters) which are validated against in the checkValidNameInput(topic).
+         * Furthermore production instances are assumed not to have debug enabled, nor the REST telemetry API
+         * should be published externally.  An additional note is that Path URLs containing spaces and newlines
+         * will be failed earlier at the HTTP protocol libraries (jetty, etc ..) so an URL of the form
+         * "https://../to\npic" won't even make it here.
+         */
         return this.decoders.decode(groupId, artifactId, topic, json);
     }
 
@@ -142,7 +154,13 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public String encode(String topic, Object event) {
-        logger.debug("{}: encode {}:{}", this, topic, event);
+        logger.debug("{}: encode {}:{}", this, topic, event);  // NOSONAR
+
+        /*
+         * See explanation for decode(String groupId, String artifactId, String topic, String json).
+         * The same applies here as it is called from
+         * org.onap.policy.drools.server.restful.RestManager::encode(),
+         */
         return this.encoders.encode(topic, event);
     }
 

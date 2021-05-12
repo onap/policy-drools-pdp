@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2020, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ abstract class GenericEventProtocolCoder {
     private static final String UNSUPPORTED_EX_MSG = "Unsupported:";
     private static final String MISSING_CLASS = "class must be provided";
 
-    private static Logger logger = LoggerFactory.getLogger(GenericEventProtocolCoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericEventProtocolCoder.class);
 
     /**
      * Mapping topic:controller-id -> /<protocol-decoder-toolset/> where protocol-coder-toolset contains
@@ -64,9 +64,6 @@ abstract class GenericEventProtocolCoder {
 
     /**
      * Index a new coder.
-     *
-     * @param eventProtocolParams parameter object for event encoder
-     * @throw IllegalArgumentException if an invalid parameter is passed
      */
     public void add(EventProtocolParams eventProtocolParams) {
         if (eventProtocolParams.getGroupId() == null || eventProtocolParams.getGroupId().isEmpty()) {
@@ -117,8 +114,7 @@ abstract class GenericEventProtocolCoder {
                 return;
             }
 
-            GsonProtocolCoderToolset coderTools =
-                    new GsonProtocolCoderToolset(eventProtocolParams, key);
+            var coderTools = new GsonProtocolCoderToolset(eventProtocolParams, key);
 
             logger.info("{}: adding coders for new {}: {}", this, key, coderTools);
 
@@ -135,7 +131,7 @@ abstract class GenericEventProtocolCoder {
 
             List<ProtocolCoderToolset> toolsets =
                     reverseCoders.get(reverseKey);
-            boolean present = false;
+            var present = false;
             for (ProtocolCoderToolset parserSet : toolsets) {
                 // just doublecheck
                 present = parserSet.getControllerId().equals(key);
@@ -402,7 +398,19 @@ abstract class GenericEventProtocolCoder {
      */
     protected String encodeInternal(String key, Object event) {
 
-        logger.debug("{}: encode for {}: {}", this, key, event);
+        logger.debug("{}: encode for {}: {}", this, key, event);    // NOSONAR
+
+        /*
+         * It seems that sonar declares the previous logging line as a security vulnerability
+         * when logging the topic variable.   The static code analysis indicates that
+         * the path starts in org.onap.policy.drools.server.restful.RestManager::decode(),
+         * but the request is rejected if the topic contains invalid characters (the sonar description
+         * mentions "/r/n/t" characters) all of which are validated against in the checkValidNameInput(topic).
+         * Furthermore production instances are assumed not to have debug enabled, nor the REST telemetry API
+         * should be published externally.  An additional note is that Path URLs containing spaces and newlines
+         * will be rejected earlier in the HTTP protocol libraries (jetty) so an URL of the form
+         * "https://../to\npic" won't even make it here.
+         */
 
         ProtocolCoderToolset coderTools = coders.get(key);
         try {
@@ -476,7 +484,7 @@ abstract class GenericEventProtocolCoder {
         List<CoderFilters> coderFilters = encoderSet.getCoders();
         for (CoderFilters coder : coderFilters) {
             if (coder.getCodedClass().equals(encodedClass.getClass().getName())) {
-                DroolsController droolsController =
+                var droolsController =
                                 DroolsControllerConstants.getFactory().get(groupId, artifactId, "");
                 if (droolsController.ownsCoder(
                         encodedClass.getClass(), coder.getModelClassLoaderHash())) {

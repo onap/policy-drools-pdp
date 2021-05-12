@@ -32,6 +32,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +130,7 @@ public class RestManager {
     /**
      * Feed Ports into Resources.
      */
-    private static final List<String> INPUTS = Arrays.asList("configuration");
+    private static final List<String> INPUTS = Collections.singletonList("configuration");
 
     /**
      * Resource Toggles.
@@ -1626,6 +1627,13 @@ public class RestManager {
     public Response commSources(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
     ) {
+        if (!checkValidNameInput(comm)) {
+            return Response
+                .status(Response.Status.NOT_ACCEPTABLE)
+                .entity(new Error("source communication mechanism contains whitespaces " + NOT_ACCEPTABLE_MSG))
+                .build();
+        }
+
         List<TopicSource> sources = new ArrayList<>();
         var status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
@@ -1656,6 +1664,13 @@ public class RestManager {
     public Response commSinks(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm
     ) {
+        if (!checkValidNameInput(comm)) {
+            return Response
+                .status(Response.Status.NOT_ACCEPTABLE)
+                .entity(new Error("sink communication mechanism contains whitespaces " + NOT_ACCEPTABLE_MSG))
+                .build();
+        }
+
         List<TopicSink> sinks = new ArrayList<>();
         var status = Status.OK;
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
