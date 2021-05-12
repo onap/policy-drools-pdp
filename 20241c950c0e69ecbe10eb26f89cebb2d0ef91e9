@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f4029689_7abe4136",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/GenericEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-05-12T22:44:04Z",
+      "side": 1,
+      "message": "I thought it too, but it explicitly points out code paths to specific variables with the number markers (on the left), which are topic, and controllername.  The marker also changes  position depending on where these parameters are located in the method declaration.   If you don\u0027t mind, can you take a look to have another pair of eyes looking at the way it is reported: \nhttps://sonarcloud.io/project/issues?id\u003donap_policy-drools-pdp\u0026open\u003dAXk7iOzSWYA7040Iv2ET\u0026resolved\u003dfalse\u0026types\u003dVULNERABILITY\n(or the others in the same category).",
+      "parentUuid": "3deb3d45_6a6fca25",
+      "revId": "20241c950c0e69ecbe10eb26f89cebb2d0ef91e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f81116d2_a234ea24",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/MultiplexorEventProtocolCoder.java",
         "patchSetId": 1
