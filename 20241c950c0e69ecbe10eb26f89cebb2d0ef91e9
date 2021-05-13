@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "dbca2daa_6efe98e4",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/GenericEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-05-13T14:37:26Z",
+      "side": 1,
+      "message": "I was thinking we could sanitize it just for logging.  However, as you said in the comment, \"topic\" has already been validated, so it should be safe to log at this point.",
+      "parentUuid": "1dbc1d1a_8b7ed692",
+      "revId": "20241c950c0e69ecbe10eb26f89cebb2d0ef91e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f81116d2_a234ea24",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/MultiplexorEventProtocolCoder.java",
         "patchSetId": 1
