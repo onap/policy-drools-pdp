@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "1dbc1d1a_8b7ed692",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/GenericEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-05-13T13:29:04Z",
+      "side": 1,
+      "message": "In this context, I think it OK as is, as I don\u0027t want to sanitize this string, I just want to reject it with an http error response and abort the path of execution right at the start of it, in the jaxrs file.   Perhaps, move the pattern matching line that checks for whitespaces in common and returns a boolean, but it\u0027s just a simple 1-liner, not sure of its value.",
+      "parentUuid": "0fbe1080_a376c0b8",
+      "revId": "20241c950c0e69ecbe10eb26f89cebb2d0ef91e9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f81116d2_a234ea24",
         "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/MultiplexorEventProtocolCoder.java",
         "patchSetId": 1
