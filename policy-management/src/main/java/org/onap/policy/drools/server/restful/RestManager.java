@@ -1648,7 +1648,7 @@ public class RestManager {
                 break;
             default:
                 status = Status.BAD_REQUEST;
-                logger.debug("Invalid communication mechanism parameter: {}", comm);
+                logger.debug("Invalid communication mechanism");
                 break;
         }
         return Response.status(status).entity(sources).build();
@@ -1685,7 +1685,7 @@ public class RestManager {
                 break;
             default:
                 status = Status.BAD_REQUEST;
-                logger.debug("Invalid communication mechanism parameter: {}", comm);
+                logger.debug("Invalid communication mechanism");
                 break;
         }
         return Response.status(status).entity(sinks).build();
