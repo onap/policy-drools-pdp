@@ -238,7 +238,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         update.setPdpGroup(null);
         update.setPdpSubgroup(null);
         update.setPoliciesToBeUndeployed(List.of(toscaPolicy2.getIdentifier()));
-        update.setPolicies(List.of());
+        update.setPoliciesToBeDeployed(List.of());
         assertTrue(fsm.update(update));
         assertEquals(3, fsm.policyTypesMap.size());
         assertEquals(0, fsm.policiesMap.size());

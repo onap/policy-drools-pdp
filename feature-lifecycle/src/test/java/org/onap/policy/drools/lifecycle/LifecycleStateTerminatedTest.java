@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -141,7 +142,7 @@ public class LifecycleStateTerminatedTest {
         update.setName(NetworkUtil.getHostname());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
-        update.setPolicies(Collections.emptyList());
+        update.setPoliciesToBeDeployed(Collections.emptyList());
         update.setPdpHeartbeatIntervalMs(4 * 600000L);
 
         assertFalse(fsm.update(update));
