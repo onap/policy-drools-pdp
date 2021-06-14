@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@
 
 package org.onap.policy.drools.controller;
 
+import com.google.re2j.Pattern;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import lombok.NonNull;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -49,10 +50,8 @@ import org.slf4j.LoggerFactory;
  */
 class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
-    /**
-     * logger.
-     */
     private static final Logger logger = LoggerFactory.getLogger(IndexedDroolsControllerFactory.class);
+    private static final Pattern COMMA_SPACE_PAT = Pattern.compile("\\s*,\\s*");
 
     /**
      * Policy Controller Name Index.
@@ -299,13 +298,10 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     }
 
     private List<PotentialCoderFilter> getFilterExpressions(Properties properties, String propertyPrefix,
-                    String eventClasses) {
+                    @NonNull String eventClasses) {
 
         List<PotentialCoderFilter> classes2Filters = new ArrayList<>();
-
-        List<String> topicClasses = new ArrayList<>(Arrays.asList(eventClasses.split("\\s*,\\s*")));
-
-        for (String theClass : topicClasses) {
+        for (String theClass : COMMA_SPACE_PAT.split(eventClasses)) {
 
             // 4. for each coder class, get the filter expression
 

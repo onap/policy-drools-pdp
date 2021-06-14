@@ -21,6 +21,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
+import com.google.re2j.Pattern;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -82,6 +83,7 @@ public class LifecycleFsm implements Startable {
     public static final long DEFAULT_STATUS_TIMER_SECONDS = 120L;
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleFsm.class);
+    private static final Pattern COMMA_SPACE_PAT = Pattern.compile("\\s*,\\s*");
 
     protected static final String CONFIGURATION_PROPERTIES_NAME = "feature-lifecycle";
     protected static final String GROUP_NAME = "lifecycle.pdp.group";
@@ -171,7 +173,7 @@ public class LifecycleFsm implements Startable {
 
         String commaSeparatedPolicyTypes = properties.getProperty(MANDATORY_POLICY_TYPES);
         if (!StringUtils.isBlank(commaSeparatedPolicyTypes)) {
-            Collections.addAll(mandatoryPolicyTypes, commaSeparatedPolicyTypes.split("\\s*,\\s*"));
+            Collections.addAll(mandatoryPolicyTypes, COMMA_SPACE_PAT.split(commaSeparatedPolicyTypes));
         }
 
         logger.info("The mandatory Policy Types are {}. Compliance is {}",

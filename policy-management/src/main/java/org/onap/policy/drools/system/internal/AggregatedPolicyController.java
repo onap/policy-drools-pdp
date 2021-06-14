@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@
 
 package org.onap.policy.drools.system.internal;
 
+import com.google.re2j.Pattern;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -64,6 +64,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(AggregatedPolicyController.class);
+    private static final Pattern COMMA_SPACE_PAT = Pattern.compile("\\s*,\\s*");
 
     /**
      * identifier for this policy controller.
@@ -111,14 +112,14 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Policy Types.
      */
-    private List<ToscaConceptIdentifier> policyTypes;
+    private final List<ToscaConceptIdentifier> policyTypes;
 
     /**
      * Constructor version mainly used for bootstrapping at initialization time a policy engine
      * controller.
      *
      * @param name controller name
-     * @param properties
+     * @param properties controller properties
      *
      * @throws IllegalArgumentException when invalid arguments are provided
      */
@@ -170,8 +171,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             return policyTypeIds;
         }
 
-        List<String> ptiPropList = new ArrayList<>(Arrays.asList(ptiPropValue.split("\\s*,\\s*")));
-        for (String pti : ptiPropList) {
+        for (String pti : COMMA_SPACE_PAT.split(ptiPropValue)) {
             String[] ptv = pti.split(":");
             if (ptv.length == 1) {
                 policyTypeIds.add(new ToscaConceptIdentifier(ptv[0],
@@ -217,7 +217,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     @Override
     public boolean updateDrools(DroolsConfiguration newDroolsConfiguration) {
         DroolsController controller = this.droolsController.get();
-        DroolsConfiguration oldDroolsConfiguration = new DroolsConfiguration(controller.getArtifactId(),
+        var oldDroolsConfiguration = new DroolsConfiguration(controller.getArtifactId(),
                 controller.getGroupId(), controller.getVersion());
 
         if (oldDroolsConfiguration.getGroupId().equalsIgnoreCase(newDroolsConfiguration.getGroupId())
@@ -242,7 +242,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
             DroolsControllerConstants.getFactory().destroy(controller);
         }
 
-        boolean success = true;
+        var success = true;
         try {
             this.properties.setProperty(DroolsPropertyConstants.RULES_GROUPID, newDroolsConfiguration.getGroupId());
             this.properties.setProperty(DroolsPropertyConstants.RULES_ARTIFACTID,

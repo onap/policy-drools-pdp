@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * feature-mdc-filters
+ * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@
 
 package org.onap.policy.drools.mdc.filters;
 
-import com.att.aft.dme2.internal.apache.commons.lang3.StringUtils;
+import com.google.re2j.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,13 @@ import org.slf4j.LoggerFactory;
 public class MdcTopicFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(MdcTopicFilter.class);
+    private static final Pattern COMMA_SPACE_PAT = Pattern.compile("\\s*,\\s*");
+    private static final Pattern EQUAL_PAT = Pattern.compile("\\s*=\\s*");
 
     public static final String MDC_KEY_ERROR = "mdcKey must be provided";
     public static final String JSON_PATH_ERROR = "json path(s) must be provided";
 
-    private Map<String, FilterRule> rules = new HashMap<>();
+    private final Map<String, FilterRule> rules = new HashMap<>();
 
     @Getter
     public static class FilterRule {
@@ -91,14 +94,14 @@ public class MdcTopicFilter {
     }
 
     protected MdcTopicFilter(String rawFilters) {
-        for (String filter : rawFilters.split("\\s*,\\s*")) {
-            FilterRule rule = createFilterRule(filter);
+        for (String filter : COMMA_SPACE_PAT.split(rawFilters)) {
+            var rule = createFilterRule(filter);
             rules.put(rule.mdcKey, rule);
         }
     }
 
     private FilterRule createFilterRule(String filter) {
-        String[] filterKeyPaths = filter.split("\\s*=\\s*");
+        String[] filterKeyPaths = EQUAL_PAT.split(filter);
         if (filterKeyPaths.length != 2) {
             throw new IllegalArgumentException("could not parse filter rule");
         }
@@ -165,7 +168,7 @@ public class MdcTopicFilter {
             throw new IllegalArgumentException("a filter rule already exists for key: " + mdcKey);
         }
 
-        FilterRule rule = new FilterRule(mdcKey, paths);
+        var rule = new FilterRule(mdcKey, paths);
         rules.put(mdcKey, rule);
         return rule;
     }
