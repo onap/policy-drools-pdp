@@ -86,7 +86,11 @@ public class LoggerUtil {
             throw new IllegalArgumentException("no logger " + loggerName);
         }
 
-        logger.setLevel(ch.qos.logback.classic.Level.toLevel(loggerLevel));
+        // use the current log level if the string provided cannot be converted to a valid Level.
+
+        logger.setLevel(ch.qos.logback.classic.Level.toLevel(loggerLevel, logger.getLevel()));
+
+        // the previous operation is password
         return logger.getLevel().toString();
     }
 }

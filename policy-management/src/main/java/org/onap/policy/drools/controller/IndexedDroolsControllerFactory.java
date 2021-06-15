@@ -232,7 +232,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             // 2. check if there is a custom decoder for this topic that the user prefers to use
             // instead of the ones provided in the platform
 
-            CustomGsonCoder customGsonCoder = getCustomCoder(properties, propertyTopicEntityPrefix);
+            var customGsonCoder = getCustomCoder(properties, propertyTopicEntityPrefix);
 
             // 3. second the list of classes associated with each topic
 
@@ -247,9 +247,8 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             List<PotentialCoderFilter> classes2Filters =
                             getFilterExpressions(properties, propertyTopicEntityPrefix, eventClasses);
 
-            TopicCoderFilterConfiguration topic2Classes2Filters =
-                    new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder);
-            topics2DecodedClasses2Filters.add(topic2Classes2Filters);
+            topics2DecodedClasses2Filters
+                    .add(new TopicCoderFilterConfiguration(firstTopic, classes2Filters, customGsonCoder));
         }
 
         return topics2DecodedClasses2Filters;
@@ -257,7 +256,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     private String getPropertyTopicPrefix(Topic topic) {
         boolean isSource = topic instanceof TopicSource;
-        CommInfrastructure commInfra = topic.getTopicCommInfrastructure();
+        var commInfra = topic.getTopicCommInfrastructure();
         if (commInfra == CommInfrastructure.UEB) {
             if (isSource) {
                 return PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
@@ -310,8 +309,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                             + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX
                             + "." + theClass + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_FILTER_SUFFIX);
 
-            JsonProtocolFilter protocolFilter = new JsonProtocolFilter(filter);
-            PotentialCoderFilter class2Filters = new PotentialCoderFilter(theClass, protocolFilter);
+            var class2Filters = new PotentialCoderFilter(theClass, new JsonProtocolFilter(filter));
             classes2Filters.add(class2Filters);
         }
 
@@ -404,10 +402,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("IndexedDroolsControllerFactory [#droolsControllers=").append(droolsControllers.size())
-                .append("]");
-        return builder.toString();
+        return "IndexedDroolsControllerFactory [#droolsControllers=" + droolsControllers.size() + "]";
     }
 
 }

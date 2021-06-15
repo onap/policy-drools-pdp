@@ -2055,6 +2055,16 @@ public class RestManager {
 
         String newLevel;
         try {
+            if (!checkValidNameInput(loggerName)) {
+                return Response.status(Response.Status.NOT_ACCEPTABLE)
+                               .entity(new Error("logger name: " + NOT_ACCEPTABLE_MSG))
+                               .build();
+            }
+            if (!Pattern.matches("^[a-zA-Z]{3,5}$", loggerLevel)) {
+                return Response.status(Response.Status.NOT_ACCEPTABLE)
+                               .entity(new Error("logger level: " + NOT_ACCEPTABLE_MSG))
+                               .build();
+            }
             newLevel = LoggerUtil.setLevel(loggerName, loggerLevel);
         } catch (final IllegalArgumentException e) {
             logger.warn("{}: invalid operation for logger {} and level {}", this, loggerName, loggerLevel, e);
