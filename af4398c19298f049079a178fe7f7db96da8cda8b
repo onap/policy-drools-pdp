@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "02484160_ee6fa07e",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/LoggerUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-06-15T23:49:05Z",
+      "side": 1,
+      "message": "what does this actually accomplish?  Looks like it\u0027s doing setLevel(getLevel()), which is typically a NO-OP",
+      "revId": "af4398c19298f049079a178fe7f7db96da8cda8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
