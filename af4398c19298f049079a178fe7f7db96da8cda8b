@@ -16,6 +16,24 @@
       "revId": "af4398c19298f049079a178fe7f7db96da8cda8b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dcc86114_638732fc",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/LoggerUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-06-16T00:40:57Z",
+      "side": 1,
+      "message": "Wrt the previous version of the code that used toLevel(x), the way that worked is that when it couldn\u0027t convert it to an actual level, it will set the level to debug (this is the actual logback library implementation).  \nThere is this other method available in the same class:\npublic static Level toLevel(String x, Level defaultLevel)\nwhere if it cannot convert the xto an actual Level, it will take a \"defaultLevel\", so effectively, this would try to set it to the \"loggerLevel\" parameter and if it can\u0027t, it will set it to the existing one (rather than defaulting to debug as before), so it is no-op as you say but just for the case where the \"loggerLevel\" does not correspond to a logback level.",
+      "parentUuid": "02484160_ee6fa07e",
+      "revId": "af4398c19298f049079a178fe7f7db96da8cda8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
