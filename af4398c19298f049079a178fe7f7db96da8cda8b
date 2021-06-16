@@ -52,6 +52,24 @@
       "revId": "af4398c19298f049079a178fe7f7db96da8cda8b",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "377bed45_ee4b9ddb",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/LoggerUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-06-16T13:28:22Z",
+      "side": 1,
+      "message": "as far as I know it is not possible to do it programmatically with slf4j (it is just a facade to several logging frameworks) but was possible to do it to logback, the underlying logback framework all of our components use.  I think that was also working for eelf as it was also using logback under the hood.",
+      "parentUuid": "10c5c442_7a6de33e",
+      "revId": "af4398c19298f049079a178fe7f7db96da8cda8b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
