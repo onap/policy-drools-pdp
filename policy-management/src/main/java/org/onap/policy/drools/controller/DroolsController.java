@@ -22,7 +22,7 @@ package org.onap.policy.drools.controller;
 
 import java.util.List;
 import java.util.Map;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import org.onap.policy.common.capabilities.Lockable;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
