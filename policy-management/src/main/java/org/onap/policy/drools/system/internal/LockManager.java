@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,14 +143,14 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
                     boolean waitForLock) {
 
         if (hasInstanceChanged()) {
-            AlwaysFailLock lock = new AlwaysFailLock(resourceId, ownerKey, holdSec, callback);
+            var lock = new AlwaysFailLock(resourceId, ownerKey, holdSec, callback);
             lock.notifyUnavailable();
             return lock;
         }
 
         T lock = makeLock(LockState.WAITING, resourceId, ownerKey, holdSec, callback);
 
-        T existingLock = resource2lock.putIfAbsent(resourceId, lock);
+        var existingLock = resource2lock.putIfAbsent(resourceId, lock);
 
         if (existingLock == null) {
             logger.debug("added lock to map {}", lock);
@@ -192,6 +192,6 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
      *        lost; must not be {@code null}
      * @return a new lock
      */
-    protected abstract T makeLock(LockState waiting, String resourceId, String ownerKey, int holdSec,
+    protected abstract T makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
                     LockCallback callback);
 }

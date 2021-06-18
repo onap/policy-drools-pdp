@@ -40,6 +40,7 @@ public abstract class AlwaysLockBaseTest<T extends LockImpl> {
     protected T lock;
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSerializable() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {

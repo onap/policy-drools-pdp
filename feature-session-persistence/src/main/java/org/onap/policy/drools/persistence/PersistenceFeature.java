@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 package org.onap.policy.drools.persistence;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -152,7 +151,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
     @Override
     public PolicySession.ThreadModel selectThreadModel(PolicySession session) {
 
-        PolicyContainer policyContainer = session.getPolicyContainer();
+        var policyContainer = session.getPolicyContainer();
         if (isPersistenceEnabled(policyContainer, session.getName())) {
             return new PersistentThreadModel(session, getProperties(policyContainer));
         }
@@ -291,7 +290,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
             configureSysProps();
 
             BasicDataSource ds = makeDataSource(getDataSourceProperties());
-            DsEmf dsemf = new DsEmf(ds);
+            var dsemf = new DsEmf(ds);
 
             try {
                 EntityManagerFactory emf = dsemf.emf;
@@ -306,11 +305,11 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
                 logger.info(
                         "getPolicySession:session does not exist -- attempt to create one with name {}", name);
 
-                Environment env = kieSvcFact.newEnvironment();
+                var env = kieSvcFact.newEnvironment();
 
                 configureKieEnv(env, emf);
 
-                KieSessionConfiguration kieConf = kieSvcFact.newKieSessionConfiguration();
+                var kieConf = kieSvcFact.newKieSessionConfiguration();
 
                 KieSession kieSession =
                         (desiredSessionId >= 0
@@ -343,13 +342,13 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
          * @param kieBaseName the name of the 'KieBase' instance containing this session
          * @param desiredSessionId id of the desired KieSession
          * @param env Kie Environment for the session
-         * @param kConf Kie Configuration for the session
+         * @param kieConf Kie Configuration for the session
          * @return the persistent session, or {@code null} if it could not be loaded
          */
         private KieSession loadKieSession(
                 String kieBaseName, long desiredSessionId, Environment env, KieSessionConfiguration kieConf) {
             try {
-                KieSession kieSession =
+                var kieSession =
                         kieSvcFact
                         .getStoreServices()
                         .loadKieSession(
@@ -376,7 +375,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
          * @return a new, persistent session
          */
         private KieSession newKieSession(String kieBaseName, Environment env) {
-            KieSession kieSession =
+            var kieSession =
                     kieSvcFact
                     .getStoreServices()
                     .newKieSession(policyContainer.getKieContainer().getKieBase(kieBaseName), null, env);
@@ -461,7 +460,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
          */
         private void replaceSession(DroolsSessionConnector conn, String sessnm, KieSession kieSession) {
 
-            DroolsSessionEntity sess = new DroolsSessionEntity();
+            var sess = new DroolsSessionEntity();
 
             sess.setSessionName(sessnm);
             sess.setSessionId(kieSession.getIdentifier());
@@ -478,7 +477,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
      * @return the data source properties
      */
     private Properties getDataSourceProperties() {
-        Properties props = new Properties();
+        var props = new Properties();
         props.put("driverClassName", persistProps.getProperty(DroolsPersistenceProperties.DB_DRIVER));
         props.put("url", persistProps.getProperty(DroolsPersistenceProperties.DB_URL));
         props.put("username", persistProps.getProperty(DroolsPersistenceProperties.DB_USER));
@@ -512,7 +511,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
 
             // now do the record deletion
             try (BasicDataSource ds = makeDataSource(getDataSourceProperties());
-                    Connection connection = ds.getConnection();
+                    var connection = ds.getConnection();
                     PreparedStatement statement =
                             connection.prepareStatement(
                                 "DELETE FROM sessioninfo WHERE timestampdiff(second,lastmodificationdate,now()) > ?")) {
@@ -542,8 +541,8 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
      * @return {@code true} if persistence is enabled for this container, and {@code false} if not
      */
     private boolean isPersistenceEnabled(PolicyContainer container, String sessionName) {
-        Properties properties = getProperties(container);
-        boolean rval = false;
+        var properties = getProperties(container);
+        var rval = false;
 
         if (properties != null) {
             // fetch the 'type' property
@@ -635,7 +634,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
             String name = session.getName();
 
             // fetch 'minSleepTime' value, and update if defined
-            String sleepTimeString = getProperty(properties, name, "minSleepTime");
+            var sleepTimeString = getProperty(properties, name, "minSleepTime");
             if (sleepTimeString != null) {
                 try {
                     minSleepTime = Math.max(1, Integer.valueOf(sleepTimeString));
@@ -733,13 +732,13 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
             // set thread local variable
             session.setPolicySession();
 
-            KieSession kieSession = session.getKieSession();
+            var kieSession = session.getKieSession();
             long sleepTime = 2 * halfMaxSleepTime;
 
             // We want to continue, despite any exceptions that occur
             // while rules are fired.
 
-            boolean cont = true;
+            var cont = true;
             while (cont) {
 
                 try {
