@@ -39,6 +39,7 @@ public abstract class AlwaysLockBaseTest<T extends LockImpl> {
     protected LockCallback callback;
     protected T lock;
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testSerializable() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
