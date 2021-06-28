@@ -53,7 +53,6 @@ import org.onap.policy.common.endpoints.listeners.MessageTypeDispatcher;
 import org.onap.policy.common.endpoints.listeners.ScoListener;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
-import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.metrics.Metric;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
@@ -112,7 +111,7 @@ public class LifecycleFsm implements Startable {
     protected TopicSinkClient client;
 
     @Getter
-    protected final String name = NetworkUtil.getHostname();
+    protected final String name = PolicyEngineConstants.PDP_NAME;
 
     protected LifecycleState state = new LifecycleStateTerminated(this);
 
@@ -179,7 +178,7 @@ public class LifecycleFsm implements Startable {
         logger.info("The mandatory Policy Types are {}. Compliance is {}",
                 mandatoryPolicyTypes, isMandatoryPolicyTypesCompliant());
 
-        stats.setPdpInstanceId(Metric.HOSTNAME);
+        stats.setPdpInstanceId(PolicyEngineConstants.PDP_NAME);
     }
 
     @GsonJsonIgnore

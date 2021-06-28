@@ -40,7 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
-import org.onap.policy.common.utils.network.NetworkUtil;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -189,7 +189,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         // TODO: extract repeated similar assertion blocks into their own helper methods
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(NetworkUtil.getHostname());
+        update.setName(PolicyEngineConstants.PDP_NAME);
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
 

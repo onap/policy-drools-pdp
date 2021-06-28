@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
-import org.onap.policy.common.utils.network.NetworkUtil;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -116,7 +116,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
             getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_CONTROLLER_POLICY_NAME);
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(NetworkUtil.getHostname());
+        update.setName(PolicyEngineConstants.PDP_NAME);
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
         update.setPoliciesToBeDeployed(List.of(policyNativeController));
