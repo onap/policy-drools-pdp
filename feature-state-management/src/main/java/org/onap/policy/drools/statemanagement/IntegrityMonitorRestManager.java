@@ -3,6 +3,7 @@
  * feature-state-management
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,10 +51,10 @@ public class IntegrityMonitorRestManager {
                     + "subcomponent instance is functioning properly and able to respond to requests.",
                     response = String.class)
     @ApiResponses(value = {
-            @ApiResponse(
+        @ApiResponse(
                     code = 200,
                     message = "Integrity monitor sanity check passed"),
-            @ApiResponse(
+        @ApiResponse(
                     code = 500,
                     message = "Integrity monitor sanity check encountered an exception. "
                         + "This can indicate operational state disabled or administrative state locked")
