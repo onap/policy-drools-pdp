@@ -441,13 +441,13 @@ public class DistributedLockManagerTest {
         assertEquals(5, getRecordCount());
 
         // expire one record
-        updateRecord(RESOURCE, feature.getHostName(), feature.getUuidString(), -1);
+        updateRecord(RESOURCE, feature.getPdpName(), feature.getUuidString(), -1);
 
         // change host of another record
         updateRecord(RESOURCE3, OTHER_HOST, feature.getUuidString(), HOLD_SEC);
 
         // change uuid of another record
-        updateRecord(RESOURCE5, feature.getHostName(), OTHER_OWNER, HOLD_SEC);
+        updateRecord(RESOURCE5, feature.getPdpName(), OTHER_OWNER, HOLD_SEC);
 
 
         // run the checker
@@ -569,7 +569,7 @@ public class DistributedLockManagerTest {
         assertEquals(3, getRecordCount());
 
         // expire one record
-        updateRecord(RESOURCE, feature.getHostName(), feature.getUuidString(), -1);
+        updateRecord(RESOURCE, feature.getPdpName(), feature.getUuidString(), -1);
 
         // arrange to free lock4 while the checker is running
         freeLock.set(lock4);
@@ -1578,7 +1578,7 @@ public class DistributedLockManagerTest {
                                         + " WHERE resourceId=? AND host=? AND owner=?")) {
 
             stmt.setString(1, resourceId);
-            stmt.setString(2, feature.getHostName());
+            stmt.setString(2, feature.getPdpName());
             stmt.setString(3, uuidString);
 
             try (ResultSet result = stmt.executeQuery()) {
@@ -1603,7 +1603,7 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs accessing the DB
      */
     private void insertRecord(String resourceId, String uuidString, int expireOffset) throws SQLException {
-        this.insertRecord(resourceId, feature.getHostName(), uuidString, expireOffset);
+        this.insertRecord(resourceId, feature.getPdpName(), uuidString, expireOffset);
     }
 
     private void insertRecord(String resourceId, String hostName, String uuidString, int expireOffset)

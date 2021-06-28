@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,8 +33,8 @@ import java.util.Collections;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -139,7 +139,7 @@ public class LifecycleStateTerminatedTest {
     @Test
     public void testUpdate() {
         PdpUpdate update = new PdpUpdate();
-        update.setName(NetworkUtil.getHostname());
+        update.setName(PolicyEngineConstants.PDP_NAME);
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
         update.setPoliciesToBeDeployed(Collections.emptyList());

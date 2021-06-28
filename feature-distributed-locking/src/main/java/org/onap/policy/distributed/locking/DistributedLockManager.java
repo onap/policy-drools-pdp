@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
-import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
@@ -94,7 +93,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
      * Name of the host on which this JVM is running.
      */
     @Getter
-    private final String hostName;
+    private final String pdpName;
 
     /**
      * UUID of this object.
@@ -135,7 +134,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
      * Constructs the object.
      */
     public DistributedLockManager() {
-        this.hostName = NetworkUtil.getHostname();
+        this.pdpName = PolicyEngineConstants.PDP_NAME;
         this.resource2lock = getResource2lock();
     }
 
@@ -305,7 +304,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                         "SELECT resourceId FROM pooling.locks WHERE host=? AND owner=? AND expirationTime > now()")) {
             // @formatter:on
 
-            stmt.setString(1, hostName);
+            stmt.setString(1, pdpName);
             stmt.setString(2, uuidString);
 
             try (ResultSet resultSet = stmt.executeQuery()) {
@@ -415,7 +414,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
             super(state, resourceId, ownerKey, holdSec, callback);
 
             this.feature = feature;
-            this.hostName = feature.hostName;
+            this.hostName = feature.pdpName;
             this.uuidString = feature.uuidString;
         }
 
@@ -713,13 +712,13 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                                             + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
 
                 stmt.setString(1, getResourceId());
-                stmt.setString(2, feature.hostName);
+                stmt.setString(2, feature.pdpName);
                 stmt.setString(3, feature.uuidString);
                 stmt.setInt(4, getHoldSec());
 
                 stmt.executeUpdate();
 
-                this.hostName = feature.hostName;
+                this.hostName = feature.pdpName;
                 this.uuidString = feature.uuidString;
 
                 return true;
@@ -742,7 +741,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                                             + " AND ((host=? AND owner=?) OR expirationTime < now())")) {
 
                 stmt.setString(1, getResourceId());
-                stmt.setString(2, feature.hostName);
+                stmt.setString(2, feature.pdpName);
                 stmt.setString(3, feature.uuidString);
                 stmt.setInt(4, getHoldSec());
 
@@ -754,7 +753,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                     return false;
                 }
 
-                this.hostName = feature.hostName;
+                this.hostName = feature.pdpName;
                 this.uuidString = feature.uuidString;
 
                 return true;

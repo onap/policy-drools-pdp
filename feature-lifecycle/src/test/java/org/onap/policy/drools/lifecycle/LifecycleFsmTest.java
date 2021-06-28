@@ -232,7 +232,7 @@ public class LifecycleFsmTest {
 
         assertEquals(fsm.getGroup(), status.getStatistics().getPdpGroupName());
         assertEquals(fsm.getSubGroup(), status.getStatistics().getPdpSubGroupName());
-        assertEquals(NetworkUtil.getHostname(), status.getStatistics().getPdpInstanceId());
+        assertEquals(PolicyEngineConstants.PDP_NAME, status.getStatistics().getPdpInstanceId());
         assertEquals(6, status.getStatistics().getPolicyDeploySuccessCount());
         assertEquals(2, status.getStatistics().getPolicyDeployFailCount());
         assertEquals(8, status.getStatistics().getPolicyDeployCount());

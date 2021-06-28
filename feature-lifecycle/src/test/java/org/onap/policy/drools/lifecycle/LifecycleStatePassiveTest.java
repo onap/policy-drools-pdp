@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
-import org.onap.policy.common.utils.network.NetworkUtil;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -143,7 +143,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(NetworkUtil.getHostname());
+        update.setName(PolicyEngineConstants.PDP_NAME);
         update.setPdpGroup("Z");
         update.setPdpSubgroup("z");
 
@@ -269,7 +269,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertNull(fsm.getSubGroup());
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(NetworkUtil.getHostname());
+        update.setName(PolicyEngineConstants.PDP_NAME);
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
 
@@ -330,7 +330,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("foo", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
-        assertEquals(NetworkUtil.getHostname(), status.getName());
+        assertEquals(PolicyEngineConstants.PDP_NAME, status.getName());
         assertEquals(fsm.getName(), status.getName());
         assertEquals(PdpMessageType.PDP_STATUS, status.getMessageName());
     }

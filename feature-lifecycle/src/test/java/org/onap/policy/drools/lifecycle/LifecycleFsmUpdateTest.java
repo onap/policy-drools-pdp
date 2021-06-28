@@ -46,7 +46,6 @@ import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
-import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
@@ -54,6 +53,7 @@ import org.onap.policy.drools.domain.models.artifact.NativeArtifactPolicy;
 import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
+import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -363,7 +363,7 @@ public class LifecycleFsmUpdateTest {
 
     protected PdpUpdate getPdpUpdate(List<ToscaPolicy> policiesToDeploy, List<ToscaPolicy> policiesToUndeploy) {
         PdpUpdate update = new PdpUpdate();
-        update.setName(NetworkUtil.getHostname());
+        update.setName(PolicyEngineConstants.PDP_NAME);
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
         update.setPoliciesToBeDeployed(policiesToDeploy);
