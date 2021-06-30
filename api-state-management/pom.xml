@@ -33,11 +33,6 @@
   <name>api-state-management</name>
   <description>Separately loadable module for state management APIe</description>
 
-  <properties>
-          <swagger.version>1.5.0</swagger.version>
-  </properties>
-
-
   <dependencies>
     <dependency>
         <groupId>org.onap.policy.drools-pdp</groupId>
