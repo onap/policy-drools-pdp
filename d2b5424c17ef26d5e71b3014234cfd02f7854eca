@@ -16,6 +16,24 @@
       "revId": "d2b5424c17ef26d5e71b3014234cfd02f7854eca",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "faa5c8db_2d74dbd0",
+        "filename": "api-state-management/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-06-30T16:13:41Z",
+      "side": 0,
+      "message": "I think it should be OK Liam, thanks for doing the work!",
+      "parentUuid": "423b1afc_f0cedb63",
+      "revId": "d2b5424c17ef26d5e71b3014234cfd02f7854eca",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
