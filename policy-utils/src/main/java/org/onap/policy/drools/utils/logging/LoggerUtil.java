@@ -21,6 +21,7 @@
 package org.onap.policy.drools.utils.logging;
 
 import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -29,6 +30,8 @@ import org.slf4j.MarkerFactory;
  * Loger Utils.
  */
 public class LoggerUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoggerUtil.class);
 
     /**
      * Logback configuration file system property.
@@ -86,8 +89,15 @@ public class LoggerUtil {
             throw new IllegalArgumentException("no logger " + loggerName);
         }
 
+        LOGGER.warn("setting {} logger to level {}", loggerName, loggerLevel);
+
         // use the current log level if the string provided cannot be converted to a valid Level.
-        logger.setLevel(ch.qos.logback.classic.Level.toLevel(loggerLevel, logger.getLevel()));
+
+        // NOSONAR: this method is currently used by the telemetry api (which should be authenticated).
+        // It is no more or no less dangerous than an admin changing the logback level on the fly.
+        // This is a controlled admin function that should not cause any risks when the system
+        // is configured properly.
+        logger.setLevel(ch.qos.logback.classic.Level.toLevel(loggerLevel, logger.getLevel()));  // NOSONAR
 
         return logger.getLevel().toString();
     }
