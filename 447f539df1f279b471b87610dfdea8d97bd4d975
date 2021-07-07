@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "82913116_f8eca942",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-07-07T16:26:36Z",
+      "side": 1,
+      "message": "add one for undepoy counts too.",
+      "range": {
+        "startLine": 465,
+        "startChar": 19,
+        "endLine": 465,
+        "endChar": 43
+      },
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84636237_322ec731",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-07-07T16:26:36Z",
+      "side": 1,
+      "message": "may be create separate method for undeploy counts",
+      "range": {
+        "startLine": 484,
+        "startChar": 8,
+        "endLine": 487,
+        "endChar": 0
+      },
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d6e383b_607297c9",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleFsmTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-07-07T16:26:36Z",
+      "side": 1,
+      "message": "May be also check that undeploy counts are not changed here.",
+      "range": {
+        "startLine": 220,
+        "startChar": 8,
+        "endLine": 220,
+        "endChar": 70
+      },
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3f3365a2_e756f9ea",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleFsmTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-07-07T16:26:36Z",
+      "side": 1,
+      "message": "update the test case to assert undeploy counts as well.",
+      "range": {
+        "startLine": 229,
+        "startChar": 16,
+        "endLine": 229,
+        "endChar": 33
+      },
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
