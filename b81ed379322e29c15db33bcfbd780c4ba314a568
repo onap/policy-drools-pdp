@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4541d135_f8a1f614",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/LoggerUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-07-07T12:56:35Z",
+      "side": 1,
+      "message": "note: we are required to log a message whenever security logging (i.e., audit log) is turned off so might need to log a message just before this indicating that the logging level has been changed",
+      "revId": "b81ed379322e29c15db33bcfbd780c4ba314a568",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
