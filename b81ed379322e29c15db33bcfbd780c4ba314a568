@@ -16,6 +16,24 @@
       "revId": "b81ed379322e29c15db33bcfbd780c4ba314a568",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d01baa5_350a2911",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/logging/LoggerUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-07-07T14:44:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4541d135_f8a1f614",
+      "revId": "b81ed379322e29c15db33bcfbd780c4ba314a568",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
