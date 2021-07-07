@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
+import lombok.ToString;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
@@ -35,6 +36,7 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 /**
  * no-op Drools Controller.
  */
+@ToString
 public class NullDroolsController implements DroolsController {
 
     @Override
@@ -150,13 +152,6 @@ public class NullDroolsController implements DroolsController {
     @Override
     public boolean isBrained() {
         return false;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("NullDroolsController []");
-        return builder.toString();
     }
 
     @Override
