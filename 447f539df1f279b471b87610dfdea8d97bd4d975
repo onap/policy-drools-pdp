@@ -91,6 +91,57 @@
       "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36033ae7_67ae26be",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleFsmUpdateTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-07-07T16:57:39Z",
+      "side": 1,
+      "message": "I prefer the original line layout - maybe wrap in format:off/on",
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01b2e7c6_5b6e1a08",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleFsmUpdateTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-07-07T16:57:39Z",
+      "side": 1,
+      "message": "I prefer the original line layout - maybe wrap in format:off/on",
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2056543_6904487c",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleFsmUpdateTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 509,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-07-07T16:57:39Z",
+      "side": 1,
+      "message": "I prefer the original line layout for this whole block - maybe wrap in format:off/on",
+      "revId": "447f539df1f279b471b87610dfdea8d97bd4d975",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
