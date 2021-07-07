@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22006893_ba364cc3",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-07-07T21:22:29Z",
+      "side": 1,
+      "message": "Can we place the same directly at line 504?\nSame for undeploy one.",
+      "range": {
+        "startLine": 496,
+        "startChar": 8,
+        "endLine": 496,
+        "endChar": 45
+      },
+      "revId": "d987479aacaea8b3e41cd4dadb31ce7fb93b78a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
