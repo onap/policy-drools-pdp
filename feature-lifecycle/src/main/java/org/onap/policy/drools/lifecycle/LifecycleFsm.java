@@ -53,7 +53,6 @@ import org.onap.policy.common.endpoints.listeners.MessageTypeDispatcher;
 import org.onap.policy.common.endpoints.listeners.ScoListener;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
-import org.onap.policy.drools.metrics.Metric;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.system.PolicyController;
@@ -446,8 +445,8 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfPresent(policy.getIdentifier(), (key, value) -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
-            getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
-            getStats().setPolicyDeploySuccessCount(getStats().getPolicyDeploySuccessCount() + 1);
+            getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
+            getStats().setPolicyUndeploySuccessCount(getStats().getPolicyUndeploySuccessCount() + 1);
             return null;
         });
     }
@@ -458,7 +457,8 @@ public class LifecycleFsm implements Startable {
     }
 
     protected void failedUndeployPolicyAction(ToscaPolicy failedPolicy) {
-        failedDeployPolicyAction(failedPolicy);
+        getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
+        getStats().setPolicyUndeployFailCount(getStats().getPolicyUndeployFailCount() + 1);
         policiesMap.remove(failedPolicy.getIdentifier());
     }
 
@@ -481,6 +481,9 @@ public class LifecycleFsm implements Startable {
         getStats().setPolicyDeployCount(0);
         getStats().setPolicyDeployFailCount(0);
         getStats().setPolicyDeploySuccessCount(0);
+        getStats().setPolicyUndeployCount(0);
+        getStats().setPolicyUndeployFailCount(0);
+        getStats().setPolicyUndeploySuccessCount(0);
     }
 
     protected List<ToscaPolicy> resetPoliciesAction() {

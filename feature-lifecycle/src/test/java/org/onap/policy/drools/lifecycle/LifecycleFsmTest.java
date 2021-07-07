@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
-import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
@@ -210,7 +210,8 @@ public class LifecycleFsmTest {
         assertEquals(1, fsm.getStats().getPolicyDeploySuccessCount());
 
         fsm.undeployedPolicyAction(controllerPolicy);
-        assertEquals(2, fsm.getStats().getPolicyDeploySuccessCount());
+        assertEquals(1, fsm.getStats().getPolicyDeploySuccessCount());
+        assertEquals(1, fsm.getStats().getPolicyUndeploySuccessCount());
     }
 
     @Test
