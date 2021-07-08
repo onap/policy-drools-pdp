@@ -46,6 +46,30 @@
       "revId": "d987479aacaea8b3e41cd4dadb31ce7fb93b78a7",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ca1c47b_3afea4ca",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-07-08T13:16:44Z",
+      "side": 1,
+      "message": "I mean you can replace line 504 with below\nupdateDeployCountsAction(0L, 0L, 0L);\nAnd line 505 with below\nupdateUndeployCountsAction(0L, 0L, 0L);\n\nThere is no need for reset methods as we are only calling the updates with 0\u0027s.",
+      "parentUuid": "e72699fc_4e9dd4eb",
+      "range": {
+        "startLine": 496,
+        "startChar": 8,
+        "endLine": 496,
+        "endChar": 45
+      },
+      "revId": "d987479aacaea8b3e41cd4dadb31ce7fb93b78a7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
