@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dc7cfd5b_fb80e3fe",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-07-09T14:21:18Z",
+      "side": 1,
+      "message": "seems like we should probably add some \"bump\" or \"increment\" methods to the class in policy-models, as this type of code appears multiple times and seems error prone",
+      "revId": "1dbf657c3138a9026bb20f9da0412eee53499f44",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
