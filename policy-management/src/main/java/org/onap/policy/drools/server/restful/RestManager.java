@@ -65,6 +65,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.features.PolicyControllerFeatureApi;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
@@ -79,7 +80,6 @@ import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2071,7 +2071,7 @@ public class RestManager {
                                .entity(new Error("logger level: " + NOT_ACCEPTABLE_MSG))
                                .build();
             }
-            newLevel = LoggerUtil.setLevel(loggerName, loggerLevel);
+            newLevel = LoggerUtils.setLevel(loggerName, loggerLevel);
         } catch (final IllegalArgumentException e) {
             logger.warn("{}: invalid operation for logger {} and level {}", this, loggerName, loggerLevel, e);
             return Response.status(Status.NOT_FOUND).build();

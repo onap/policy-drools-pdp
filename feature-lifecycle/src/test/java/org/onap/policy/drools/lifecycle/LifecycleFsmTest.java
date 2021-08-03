@@ -36,12 +36,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
@@ -101,9 +101,9 @@ public class LifecycleFsmTest {
      */
     @Before
     public void beforeTest() throws CoderException, IOException {
-        LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
-        LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
-        LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
+        LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
+        LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
+        LoggerUtils.setLevel("org.onap.policy.drools", "INFO");
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
         fsm = new LifecycleFsm() {

@@ -28,6 +28,7 @@ import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.http.client.HttpClientConfigException;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.common.utils.resources.MessageConstants;
 import org.onap.policy.common.utils.security.CryptoUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
@@ -142,7 +143,7 @@ public class Main {
             if (!success) {
                 trans.setStatusCode(false).setResponseDescription("partial start").flush();
                 logger.warn(
-                        LoggerUtil.TRANSACTION_LOG_MARKER,
+                        LoggerUtils.TRANSACTION_LOG_MARKER,
                         "Main: {} has been partially started",
                         PolicyEngineConstants.getManager());
                 throw new PolicyDroolsPdpRuntimeException(
@@ -157,7 +158,7 @@ public class Main {
                 .setResponseDescription(e.getMessage())
                 .flush();
             logger.warn(
-                    LoggerUtil.TRANSACTION_LOG_MARKER,
+                    LoggerUtils.TRANSACTION_LOG_MARKER,
                     "Main: cannot start {} (bad state)",
                     PolicyEngineConstants.getManager());
             throw new PolicyDroolsPdpRuntimeException(
@@ -169,7 +170,7 @@ public class Main {
                 .setResponseDescription(e.getMessage())
                 .flush();
             logger.warn(
-                    LoggerUtil.TRANSACTION_LOG_MARKER,
+                    LoggerUtils.TRANSACTION_LOG_MARKER,
                     "Main: cannot start {}",
                     PolicyEngineConstants.getManager());
             throw new PolicyDroolsPdpRuntimeException(
@@ -205,7 +206,7 @@ public class Main {
                     .setResponseDescription(e.getMessage())
                     .flush();
                 logger.error(
-                        LoggerUtil.TRANSACTION_LOG_MARKER,
+                        LoggerUtils.TRANSACTION_LOG_MARKER,
                         "Main: cannot instantiate policy-controller {}",
                         controllerName);
                 throw new PolicyDroolsPdpRuntimeException(
@@ -217,7 +218,7 @@ public class Main {
                     .setResponseDescription(e.getMessage())
                     .flush();
                 logger.warn(
-                        LoggerUtil.TRANSACTION_LOG_MARKER,
+                        LoggerUtils.TRANSACTION_LOG_MARKER,
                         "Main: cannot instantiate policy-controller {} (linkage)",
                         controllerName);
                 throw new PolicyDroolsPdpRuntimeException(

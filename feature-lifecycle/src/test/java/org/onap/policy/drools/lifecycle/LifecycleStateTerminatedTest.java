@@ -33,9 +33,9 @@ import java.util.Collections;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -49,7 +49,7 @@ public class LifecycleStateTerminatedTest {
     @BeforeClass
     public static void setUp() {
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
-        LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
+        LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
     }
 
     @AfterClass

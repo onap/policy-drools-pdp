@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,9 +51,9 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.util.KieUtils;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,8 +105,8 @@ public class MavenDroolsControllerUpgradesTest {
                           Paths.get(DROOLS_RESOURCES_DIR + "rules2" + DRL_EXT).toFile())
                       .collect(Collectors.toList()));
 
-        LoggerUtil.setLevel("ROOT", "WARN");
-        LoggerUtil.setLevel("org.onap.policy.drools.controller.internal", "INFO");
+        LoggerUtils.setLevel("ROOT", "WARN");
+        LoggerUtils.setLevel("org.onap.policy.drools.controller.internal", "INFO");
     }
 
     /**

@@ -56,6 +56,7 @@ import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInst
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -398,7 +399,7 @@ class PolicyEngineManager implements PolicyEngine {
         } else {
             final String msg = "Configuration Entity is not supported: " + entity;
             mdcTrans.resetSubTransaction().setStatusCode(false).setResponseDescription(msg).flush();
-            logger.warn(LoggerUtil.TRANSACTION_LOG_MARKER, msg);
+            logger.warn(LoggerUtils.TRANSACTION_LOG_MARKER, msg);
             throw new IllegalArgumentException(msg);
         }
     }
@@ -468,7 +469,7 @@ class PolicyEngineManager implements PolicyEngine {
             } catch (final Exception e) {
                 mdcTrans.setStatusCode(false).setResponseCode(e.getClass().getName())
                         .setResponseDescription(e.getMessage()).flush();
-                logger.error(LoggerUtil.TRANSACTION_LOG_MARKER,
+                logger.error(LoggerUtils.TRANSACTION_LOG_MARKER,
                         "{}: cannot update-policy-controllers because of {}", this, e.getMessage(), e);
             }
         }
