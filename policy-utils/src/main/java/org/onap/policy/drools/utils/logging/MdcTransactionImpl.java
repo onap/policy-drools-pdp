@@ -54,6 +54,7 @@ import java.time.Instant;
 import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.onap.policy.common.logging.LoggerUtils;
 import org.onap.policy.drools.metrics.Metric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,14 +235,14 @@ class MdcTransactionImpl implements MdcTransaction {
     @Override
     public MdcTransaction metric() {
         flush();
-        logger.info(LoggerUtil.METRIC_LOG_MARKER, "");
+        logger.info(LoggerUtils.METRIC_LOG_MARKER, "");
         return this;
     }
 
     @Override
     public MdcTransaction transaction() {
         flush();
-        logger.info(LoggerUtil.TRANSACTION_LOG_MARKER, "");
+        logger.info(LoggerUtils.TRANSACTION_LOG_MARKER, "");
         return this;
     }
 

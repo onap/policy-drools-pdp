@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
+import org.onap.policy.common.logging.LoggerUtils;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.resources.ResourceUtils;
@@ -36,7 +37,6 @@ import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -56,9 +56,9 @@ public abstract class LifecycleStateRunningTest {
      */
     @BeforeClass
     public static void setUp() throws IOException {
-        LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
-        LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
-        LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
+        LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
+        LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
+        LoggerUtils.setLevel("org.onap.policy.drools", "INFO");
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         controllerSupport.createController();
     }
