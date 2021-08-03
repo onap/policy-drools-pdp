@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.onap.policy.common.logging.LoggerUtils;
 import org.onap.policy.common.utils.security.CryptoUtils;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,7 +244,7 @@ public class PropertyUtilTest {
         assertEquals(System.getenv("HOME"), props.getProperty(INTERPOLATION_ENVD));
         assertEquals(StringUtils.EMPTY, props.getProperty(INTERPOLATION_ENVD_NONE));
         assertEquals(StringUtils.EMPTY, props.getProperty(INTERPOLATION_ENVD_NO_DEFAULT));
-        assertEquals(LoggerUtil.ROOT_LOGGER, props.getProperty(INTERPOLATION_CONST));
+        assertEquals(LoggerUtils.ROOT_LOGGER, props.getProperty(INTERPOLATION_CONST));
         assertEquals(System.getProperty("user.home"), props.getProperty(INTERPOLATION_SYS));
         assertEquals(INTERPOLATION_ENVD_DEFAULT_VALUE, props.getProperty(INTERPOLATION_ENVD_DEFAULT));
     }

@@ -47,6 +47,7 @@ import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInst
 import org.onap.policy.common.endpoints.http.server.YamlJacksonHandler;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.JacksonHandler;
+import org.onap.policy.common.logging.LoggerUtils;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.network.NetworkUtil;
@@ -56,7 +57,6 @@ import org.onap.policy.drools.lifecycle.LifecycleFeature;
 import org.onap.policy.drools.lifecycle.LifecycleFsm;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
@@ -105,9 +105,9 @@ public class RestLifecycleManagerTest {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         fsm = newFsmInstance();
 
-        LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
-        LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
-        LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
+        LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
+        LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
+        LoggerUtils.setLevel("org.onap.policy.drools", "INFO");
 
         HttpServletServerFactoryInstance.getServerFactory().destroy();
         HttpClientFactoryInstance.getClientFactory().destroy();
