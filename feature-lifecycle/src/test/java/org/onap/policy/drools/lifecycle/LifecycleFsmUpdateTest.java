@@ -46,6 +46,7 @@ import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
@@ -54,7 +55,6 @@ import org.onap.policy.drools.domain.models.controller.ControllerPolicy;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -117,9 +117,9 @@ public class LifecycleFsmUpdateTest {
      */
     @BeforeClass
     public static void setUp() throws IOException {
-        LoggerUtil.setLevel(LoggerUtil.ROOT_LOGGER, "INFO");
-        LoggerUtil.setLevel("org.onap.policy.common.endpoints", "WARN");
-        LoggerUtil.setLevel("org.onap.policy.drools", "INFO");
+        LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
+        LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
+        LoggerUtils.setLevel("org.onap.policy.drools", "INFO");
 
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
