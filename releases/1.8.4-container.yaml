@@ -1,0 +1,8 @@
+distribution_type: 'container'
+container_release_tag: '1.8.4'
+project: 'policy-drools-pdp'
+log_dir: 'policy-drools-pdp-maven-docker-stage-honolulu/150/'
+ref: 83e2a37a75c67b1fa942a84254fedc7d83efa68d
+containers:
+    - name: 'policy-drools'
+      version: '1.8.4-20210804T1919'
