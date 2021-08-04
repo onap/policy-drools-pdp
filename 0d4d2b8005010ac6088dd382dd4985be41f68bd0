@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63bca15e_169b449b",
+        "filename": "releases/1.8.4-container.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-08-04T20:26:12Z",
+      "side": 1,
+      "message": "got it from the maven release instead of the one from stage-release",
+      "revId": "0d4d2b8005010ac6088dd382dd4985be41f68bd0",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
