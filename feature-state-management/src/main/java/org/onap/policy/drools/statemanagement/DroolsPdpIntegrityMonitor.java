@@ -23,6 +23,8 @@ package org.onap.policy.drools.statemanagement;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.http.server.HttpServletServer;
 import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
@@ -305,11 +307,13 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
     /**
      * This is the base class for audits invoked in 'subsystemTest'.
      */
+    @Getter
     public abstract static class AuditBase {
         // name of the audit
         protected String name;
 
         // non-null indicates the error response
+        @Setter
         protected String response;
 
         /**
@@ -320,33 +324,6 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
         protected AuditBase(String name) {
             this.name = name;
             this.response = null;
-        }
-
-        /**
-         * Get the name.
-         *
-         * @return the name of this audit
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Get the response.
-         *
-         * @return the response String (non-null indicates the error message)
-         */
-        public String getResponse() {
-            return response;
-        }
-
-        /**
-         * Set the response string to the specified value.
-         *
-         * @param value the new value of the response string (null = no errors)
-         */
-        public void setResponse(String value) {
-            response = value;
         }
 
         /**

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,16 @@ package org.onap.policy.drools.persistence;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@AllArgsConstructor
 public class JpaDroolsSessionConnector implements DroolsSessionConnector {
 
     private static Logger logger = LoggerFactory.getLogger(JpaDroolsSessionConnector.class);
 
     private final EntityManagerFactory emf;
-
-    public JpaDroolsSessionConnector(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
 
     @Override
     public DroolsSession get(String sessName) {

@@ -20,9 +20,12 @@
 
 package org.onap.policy.drools.persistence;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 
-public class DroolsPersistenceProperties {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DroolsPersistenceProperties {
     /*
      * feature-session-persistence.properties parameter key values
      */
@@ -32,8 +35,4 @@ public class DroolsPersistenceProperties {
     public static final String DB_PWD = PersistenceUnitProperties.JDBC_PASSWORD;
     public static final String DB_SESSIONINFO_TIMEOUT = "persistence.sessioninfo.timeout";
     public static final String JTA_OBJECTSTORE_DIR = "persistence.objectstore.dir";
-
-    private DroolsPersistenceProperties() {
-        super();
-    }
 }

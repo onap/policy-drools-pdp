@@ -151,7 +151,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
     @Override
     public PolicySession.ThreadModel selectThreadModel(PolicySession session) {
 
-        var policyContainer = session.getPolicyContainer();
+        var policyContainer = session.getContainer();
         if (isPersistenceEnabled(policyContainer, session.getName())) {
             return new PersistentThreadModel(session, getProperties(policyContainer));
         }
@@ -165,7 +165,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
     public void disposeKieSession(PolicySession policySession) {
 
         ContainerAdjunct contAdj =
-                (ContainerAdjunct) policySession.getPolicyContainer().getAdjunct(this);
+                (ContainerAdjunct) policySession.getContainer().getAdjunct(this);
         if (contAdj != null) {
             contAdj.disposeKieSession(policySession.getName());
         }
@@ -178,7 +178,7 @@ public class PersistenceFeature implements PolicySessionFeatureApi, PolicyEngine
     public void destroyKieSession(PolicySession policySession) {
 
         ContainerAdjunct contAdj =
-                (ContainerAdjunct) policySession.getPolicyContainer().getAdjunct(this);
+                (ContainerAdjunct) policySession.getContainer().getAdjunct(this);
         if (contAdj != null) {
             contAdj.destroyKieSession(policySession.getName());
         }

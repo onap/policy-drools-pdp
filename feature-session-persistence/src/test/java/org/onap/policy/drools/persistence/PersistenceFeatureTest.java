@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -188,7 +188,7 @@ public class PersistenceFeatureTest {
         KieContainer kiecont = mock(KieContainer.class);
         when(polcont.getKieContainer()).thenReturn(kiecont);
 
-        when(polsess.getPolicyContainer()).thenReturn(polcont);
+        when(polsess.getContainer()).thenReturn(polcont);
 
         when(kiecont.getKieBase(anyString())).thenReturn(kiebase);
     }
@@ -1167,7 +1167,7 @@ public class PersistenceFeatureTest {
 
         when(sess.getSessionId()).thenReturn(sessid);
 
-        when(polsess.getPolicyContainer()).thenReturn(polcont);
+        when(polsess.getContainer()).thenReturn(polcont);
         when(polsess.getName()).thenReturn(sessnm);
 
         if (loadOk) {

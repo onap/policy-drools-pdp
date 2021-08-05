@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ package org.onap.policy.drools.testtransaction;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
+import lombok.Getter;
+import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
@@ -32,6 +34,8 @@ import org.slf4j.LoggerFactory;
  * TtControllerTask implements the Runnabale interface Carries out the injection of an event into a
  * drools session and subsequent query of a counter to ensure that forward progress is occuring.
  */
+@Getter
+@ToString
 public class TtControllerTask implements Runnable {
 
     // get an instance of logger
@@ -53,14 +57,6 @@ public class TtControllerTask implements Runnable {
         this.thread.start();
     }
 
-    public PolicyController getController() {
-        return this.controller;
-    }
-
-    public synchronized boolean isAlive() {
-        return this.alive;
-    }
-
     /**
      * Stops the task.
      */
@@ -73,10 +69,6 @@ public class TtControllerTask implements Runnable {
             logger.error("TestTransaction thread threw", e);
             this.thread.interrupt();
         }
-    }
-
-    public Thread getThread() {
-        return this.thread;
     }
 
     @Override
@@ -171,19 +163,6 @@ public class TtControllerTask implements Runnable {
             fpcs.put(session, fpc);
             drools.getContainer().insert(session, new EventObject(TestTransactionConstants.TT_UUID));
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("TTControllerTask [controller=");
-        builder.append(this.controller);
-        builder.append(", alive=");
-        builder.append(this.alive);
-        builder.append(", thread=");
-        builder.append(this.thread.getName());
-        builder.append("]");
-        return builder.toString();
     }
 
     // these may be overridden by junit tests

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,12 @@
 
 package org.onap.policy.drools.core;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PolicySessionFeatureApiConstants {
     /**
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects
@@ -31,8 +34,4 @@ public class PolicySessionFeatureApiConstants {
     @Getter
     private static final OrderedServiceImpl<PolicySessionFeatureApi> impl =
             new OrderedServiceImpl<>(PolicySessionFeatureApi.class);
-
-    private PolicySessionFeatureApiConstants() {
-        // do nothing
-    }
 }
