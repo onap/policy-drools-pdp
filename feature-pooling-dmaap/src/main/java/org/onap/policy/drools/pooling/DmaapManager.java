@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.List;
+import lombok.Getter;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
@@ -40,6 +41,7 @@ public class DmaapManager {
     /**
      * Name of the DMaaP topic.
      */
+    @Getter
     private final String topic;
 
     /**
@@ -82,10 +84,6 @@ public class DmaapManager {
             logger.error("failed to attach to topic {}", topic);
             throw new PoolingFeatureException(e);
         }
-    }
-
-    public String getTopic() {
-        return topic;
     }
 
     /**

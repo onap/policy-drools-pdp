@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,9 @@ package org.onap.policy.drools.pooling.message;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.onap.policy.drools.pooling.PoolingFeatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Bucket assignments, which is simply an array of host names.
  */
+@Getter
+@Setter
+@NoArgsConstructor
 public class BucketAssignments {
 
     private static final Logger logger = LoggerFactory.getLogger(BucketAssignments.class);
@@ -54,12 +60,6 @@ public class BucketAssignments {
      */
     private String[] hostArray = null;
 
-    /**
-     * Constructor.
-     */
-    public BucketAssignments() {
-        super();
-    }
 
     /**
      * Constructor.
@@ -68,14 +68,6 @@ public class BucketAssignments {
      *        must be non-null
      */
     public BucketAssignments(String[] hostArray) {
-        this.hostArray = hostArray;
-    }
-
-    public String[] getHostArray() {
-        return hostArray;
-    }
-
-    public void setHostArray(String[] hostArray) {
         this.hostArray = hostArray;
     }
 

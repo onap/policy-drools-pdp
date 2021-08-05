@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +28,9 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.BucketAssignments;
 import org.onap.policy.drools.pooling.message.Leader;
@@ -38,6 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Any state in which events are being processed locally and forwarded, as appropriate.
  */
+@Getter
 public class ProcessingState extends State {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessingState.class);
@@ -45,11 +49,13 @@ public class ProcessingState extends State {
     /**
      * Current known leader, never {@code null}.
      */
+    @NonNull
+    @Setter
     private String leader;
 
     /**
      * Constructor.
-     * 
+     *
      * @param mgr pooling manager
      * @param leader current known leader, which need not be the same as the assignment
      *        leader. Never {@code null}
@@ -86,7 +92,7 @@ public class ProcessingState extends State {
 
     /**
      * Sets the assignments.
-     * 
+     *
      * @param assignments new assignments, or {@code null}
      */
     protected final void setAssignments(BucketAssignments assignments) {
@@ -95,27 +101,9 @@ public class ProcessingState extends State {
         }
     }
 
-    public String getLeader() {
-        return leader;
-    }
-
-    /**
-     * Sets the leader.
-     * 
-     * @param leader the new leader
-     * @throws IllegalArgumentException if an argument is invalid
-     */
-    protected void setLeader(String leader) {
-        if (leader == null) {
-            throw new IllegalArgumentException("null leader");
-        }
-
-        this.leader = leader;
-    }
-
     /**
      * Determines if this host is the leader, based on the current assignments.
-     * 
+     *
      * @return {@code true} if this host is the leader, {@code false} otherwise
      */
     public boolean isLeader() {
@@ -124,9 +112,9 @@ public class ProcessingState extends State {
 
     /**
      * Becomes the leader. Publishes a Leader message and enters the {@link ActiveState}.
-     * 
+     *
      * @param alive hosts that are known to be alive
-     * 
+     *
      * @return the new state
      */
     protected State becomeLeader(SortedSet<String> alive) {
@@ -147,9 +135,9 @@ public class ProcessingState extends State {
     /**
      * Makes a leader message. Assumes "this" host is the leader, and thus appears as the
      * first host in the set of hosts that are still alive.
-     * 
+     *
      * @param alive hosts that are known to be alive
-     * 
+     *
      * @return a new message
      */
     private Leader makeLeader(Set<String> alive) {
@@ -158,9 +146,9 @@ public class ProcessingState extends State {
 
     /**
      * Makes a set of bucket assignments. Assumes "this" host is the leader.
-     * 
+     *
      * @param alive hosts that are known to be alive
-     * 
+     *
      * @return a new set of bucket assignments
      */
     private BucketAssignments makeAssignments(Set<String> alive) {
@@ -191,7 +179,7 @@ public class ProcessingState extends State {
 
     /**
      * Makes a bucket array, copying the current assignments, if available.
-     * 
+     *
      * @return a new bucket array
      */
     private String[] makeBucketArray() {
@@ -214,7 +202,7 @@ public class ProcessingState extends State {
     /**
      * Removes excess hosts from the set of available hosts. Assumes "this" host is the
      * leader, and thus appears as the first host in the set.
-     * 
+     *
      * @param maxHosts maximum number of hosts to be retained
      * @param avail available hosts
      */
@@ -236,7 +224,7 @@ public class ProcessingState extends State {
      * Adds bucket indices to {@link HostBucket} objects. Buckets that are unassigned or
      * assigned to a host that does not appear within the map are re-assigned to a host
      * that appears within the map.
-     * 
+     *
      * @param bucket2host bucket assignments
      * @param host2data maps a host name to its {@link HostBucket}
      */
@@ -265,7 +253,7 @@ public class ProcessingState extends State {
 
     /**
      * Assigns null buckets (i.e., those having no assignment) to available hosts.
-     * 
+     *
      * @param buckets buckets that still need to be assigned to hosts
      * @param coll collection of current host-bucket assignments
      */
@@ -287,7 +275,7 @@ public class ProcessingState extends State {
      * Re-balances the buckets, taking from those that have a larger count and giving to
      * those that have a smaller count. Populates an output array with the new
      * assignments.
-     * 
+     *
      * @param coll current bucket assignment
      * @param bucket2host array to be populated with the new assignments
      */
@@ -323,7 +311,7 @@ public class ProcessingState extends State {
 
     /**
      * Fills the array with the host assignments.
-     * 
+     *
      * @param coll the host assignments
      * @param bucket2host array to be filled
      */
@@ -351,7 +339,7 @@ public class ProcessingState extends State {
 
         /**
          * Constructor.
-         * 
+         *
          * @param host host
          */
         public HostBucket(String host) {
@@ -360,7 +348,7 @@ public class ProcessingState extends State {
 
         /**
          * Removes the next bucket from the list.
-         * 
+         *
          * @return the next bucket
          */
         public final Integer remove() {
@@ -369,7 +357,7 @@ public class ProcessingState extends State {
 
         /**
          * Adds a bucket to the list.
-         * 
+         *
          * @param index index of the bucket to add
          */
         public final void add(Integer index) {
@@ -378,7 +366,7 @@ public class ProcessingState extends State {
 
         /**
          * Size.
-         * 
+         *
          * @return the number of buckets assigned to this host
          */
         public final int size() {

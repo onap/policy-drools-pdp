@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
         ToscaPolicy policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
         ControllerPolicy controllerPolicy = fsm.getDomainMaker().convertTo(policy, ControllerPolicy.class);
         PolicyTypeNativeDroolsController controller =
-                new PolicyTypeNativeDroolsController(fsm, policy.getTypeIdentifier());
+                new PolicyTypeNativeDroolsController(policy.getTypeIdentifier(), fsm);
         assertTrue(controller.undeploy(policy));
         assertThatIllegalArgumentException().isThrownBy(
             () -> PolicyControllerConstants.getFactory().get(controllerPolicy.getName()));
@@ -100,7 +100,7 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
         ToscaPolicy nativeControllerPolicy =
                 getExamplesPolicy("policies/usecases.native.controller.policy.input.tosca.json", "usecases");
         PolicyTypeNativeDroolsController controller =
-                new PolicyTypeNativeDroolsController(fsm, nativeControllerPolicy.getTypeIdentifier());
+                new PolicyTypeNativeDroolsController(nativeControllerPolicy.getTypeIdentifier(), fsm);
         assertTrue(controller.deploy(nativeControllerPolicy));
         Properties properties = PolicyControllerConstants.getFactory().get("usecases").getProperties();
 

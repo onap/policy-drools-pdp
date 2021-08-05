@@ -54,7 +54,7 @@ public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
         policy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
         fsm.getDomainMaker().convertTo(policy, OperationalPolicy.class);
         controller = new PolicyTypeDroolsController(
-            fsm, PolicyTypeDroolsController.compliantType, controllerSupport.getController());
+            PolicyTypeDroolsController.compliantType, fsm, controllerSupport.getController());
 
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().isAlive());

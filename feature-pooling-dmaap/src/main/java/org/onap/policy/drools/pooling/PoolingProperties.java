@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
 package org.onap.policy.drools.pooling;
 
 import java.util.Properties;
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.common.utils.properties.BeanConfigurator;
 import org.onap.policy.common.utils.properties.Property;
 import org.onap.policy.common.utils.properties.SpecProperties;
@@ -29,6 +31,8 @@ import org.onap.policy.common.utils.properties.exception.PropertyException;
 /**
  * Properties used by the pooling feature, specific to a controller.
  */
+@Getter
+@Setter
 public class PoolingProperties {
 
     /**
@@ -141,81 +145,5 @@ public class PoolingProperties {
         source = props;
 
         new BeanConfigurator().configureFromProperties(this, new SpecProperties(PREFIX, controllerName, props));
-    }
-
-    public Properties getSource() {
-        return source;
-    }
-
-    public String getPoolingTopic() {
-        return poolingTopic;
-    }
-
-    public int getOfflineLimit() {
-        return offlineLimit;
-    }
-
-    public long getOfflineAgeMs() {
-        return offlineAgeMs;
-    }
-
-    public long getOfflinePubWaitMs() {
-        return offlinePubWaitMs;
-    }
-
-    public long getStartHeartbeatMs() {
-        return startHeartbeatMs;
-    }
-
-    public long getReactivateMs() {
-        return reactivateMs;
-    }
-
-    public long getIdentificationMs() {
-        return identificationMs;
-    }
-
-    public long getActiveHeartbeatMs() {
-        return activeHeartbeatMs;
-    }
-
-    public long getInterHeartbeatMs() {
-        return interHeartbeatMs;
-    }
-
-    public void setPoolingTopic(String poolingTopic) {
-        this.poolingTopic = poolingTopic;
-    }
-
-    public void setOfflineLimit(int offlineLimit) {
-        this.offlineLimit = offlineLimit;
-    }
-
-    public void setOfflineAgeMs(long offlineAgeMs) {
-        this.offlineAgeMs = offlineAgeMs;
-    }
-
-    public void setOfflinePubWaitMs(long offlinePubWaitMs) {
-        this.offlinePubWaitMs = offlinePubWaitMs;
-    }
-
-    public void setStartHeartbeatMs(long startHeartbeatMs) {
-        this.startHeartbeatMs = startHeartbeatMs;
-    }
-
-    public void setReactivateMs(long reactivateMs) {
-        this.reactivateMs = reactivateMs;
-    }
-
-    public void setIdentificationMs(long identificationMs) {
-        this.identificationMs = identificationMs;
-    }
-
-    public void setActiveHeartbeatMs(long activeHeartbeatMs) {
-        this.activeHeartbeatMs = activeHeartbeatMs;
-    }
-
-    public void setInterHeartbeatMs(long interHeartbeatMs) {
-        this.interHeartbeatMs = interHeartbeatMs;
     }
 }

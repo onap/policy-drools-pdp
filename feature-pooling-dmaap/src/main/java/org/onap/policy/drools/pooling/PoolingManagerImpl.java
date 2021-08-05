@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import lombok.Getter;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicListener;
 import org.onap.policy.drools.controller.DroolsController;
@@ -65,12 +66,14 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * ID of this host.
      */
+    @Getter
     private final String host;
 
     /**
      * Properties with which this was configured.
      */
-    private final PoolingProperties props;
+    @Getter
+    private final PoolingProperties properties;
 
     /**
      * Associated controller.
@@ -90,6 +93,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Internal DMaaP topic used by this controller.
      */
+    @Getter
     private final String topic;
 
     /**
@@ -116,6 +120,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     /**
      * Current bucket assignments or {@code null}.
      */
+    @Getter
     private BucketAssignments assignments = null;
 
     /**
@@ -136,7 +141,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
                     CountDownLatch activeLatch) {
         this.host = host;
         this.controller = controller;
-        this.props = props;
+        this.properties = props;
         this.activeLatch = activeLatch;
 
         try {
@@ -166,21 +171,6 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
         synchronized (curLocker) {
             return current;
         }
-    }
-
-    @Override
-    public String getHost() {
-        return host;
-    }
-
-    @Override
-    public String getTopic() {
-        return topic;
-    }
-
-    @Override
-    public PoolingProperties getProperties() {
-        return props;
     }
 
     /**
@@ -257,7 +247,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
              * stop the publisher, but allow time for any Offline message to be
              * transmitted
              */
-            dmaapMgr.stopPublisher(props.getOfflinePubWaitMs());
+            dmaapMgr.stopPublisher(properties.getOfflinePubWaitMs());
         }
     }
 
@@ -548,11 +538,6 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             logger.info("new assignments for {} hosts on topic {}", sz, getTopic());
             assignments = asgn;
         }
-    }
-
-    @Override
-    public BucketAssignments getAssignments() {
-        return assignments;
     }
 
     @Override

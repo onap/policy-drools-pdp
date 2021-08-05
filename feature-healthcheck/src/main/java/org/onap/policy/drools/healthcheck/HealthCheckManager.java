@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javax.ws.rs.core.Response;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.ToString;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
@@ -40,6 +43,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Healthcheck Monitor.
  */
+@Getter
+@ToString
 public class HealthCheckManager implements HealthCheck {
 
     /**
@@ -60,6 +65,8 @@ public class HealthCheckManager implements HealthCheck {
     /**
      * Healthcheck configuration.
      */
+    @Getter(AccessLevel.NONE)
+    @ToString.Exclude
     protected Properties healthCheckProperties = null;
 
     /**
@@ -171,24 +178,6 @@ public class HealthCheckManager implements HealthCheck {
     }
 
     /**
-     * Get servers.
-     *
-     * @return list of attached Http Servers
-     */
-    public List<HttpServletServer> getServers() {
-        return this.servers;
-    }
-
-    /**
-     * Get clients.
-     *
-     * @return list of attached Http Clients
-     */
-    public List<HttpClient> getClients() {
-        return this.clients;
-    }
-
-    /**
      * Gets the body from the response.
      *
      * @param response response from which to get the body
@@ -218,17 +207,6 @@ public class HealthCheckManager implements HealthCheck {
         } catch (Exception e) {
             logger.warn("{}: cannot start http-server {}", this, server, e);
         }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("HealthCheckMonitor [servers=");
-        builder.append(servers);
-        builder.append(", clients=");
-        builder.append(clients);
-        builder.append("]");
-        return builder.toString();
     }
 
     // the following methods may be overridden by junit tests
