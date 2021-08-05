@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8c341b8_61a81bb9",
+        "filename": "feature-lifecycle/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-08-05T21:56:48Z",
+      "side": 1,
+      "message": "I think you can mark this as \u003cscope\u003eprovided\u003c/scope\u003e so doesn\u0027t package transitive dependencies with feature, already done in core build I believe.",
+      "revId": "43678dabeacf255a0c4069a8086dd27f55c74e45",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
