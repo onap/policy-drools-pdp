@@ -23,6 +23,7 @@ package org.onap.policy.drools.testtransaction;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
+import lombok.Getter;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.system.PolicyController;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * TtControllerTask implements the Runnabale interface Carries out the injection of an event into a
  * drools session and subsequent query of a counter to ensure that forward progress is occuring.
  */
+@Getter
 public class TtControllerTask implements Runnable {
 
     // get an instance of logger
@@ -53,14 +55,6 @@ public class TtControllerTask implements Runnable {
         this.thread.start();
     }
 
-    public PolicyController getController() {
-        return this.controller;
-    }
-
-    public synchronized boolean isAlive() {
-        return this.alive;
-    }
-
     /**
      * Stops the task.
      */
@@ -73,10 +67,6 @@ public class TtControllerTask implements Runnable {
             logger.error("TestTransaction thread threw", e);
             this.thread.interrupt();
         }
-    }
-
-    public Thread getThread() {
-        return this.thread;
     }
 
     @Override

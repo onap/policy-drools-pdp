@@ -22,6 +22,7 @@
 package org.onap.policy.drools.core;
 
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Getter;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -52,11 +53,18 @@ public class PolicySession
         implements AgendaEventListener, RuleRuntimeEventListener {
     // get an instance of logger
     private static Logger logger = LoggerFactory.getLogger(PolicySession.class);
+
+    // supports 'getCurrentSession()' method
+    private static ThreadLocal<PolicySession> policySess =
+            new ThreadLocal<>();
+
     // name of the 'PolicySession' and associated 'KieSession'
+    @Getter
     private String name;
 
     // the associated 'PolicyContainer', which may have additional
     // 'PolicySession' instances in addition to this one
+    @Getter
     private PolicyContainer container;
 
     // maps feature objects to per-PolicyContainer data
@@ -64,14 +72,11 @@ public class PolicySession
             new ConcurrentHashMap<>();
 
     // associated 'KieSession' instance
+    @Getter
     private KieSession kieSession;
 
     // if not 'null', this is the thread model processing the 'KieSession'
     private ThreadModel threadModel = null;
-
-    // supports 'getCurrentSession()' method
-    private static ThreadLocal<PolicySession> policySess =
-            new ThreadLocal<>();
 
     /**
      * Internal constructor - create a 'PolicySession' instance.
@@ -87,35 +92,6 @@ public class PolicySession
         this.kieSession = kieSession;
         kieSession.addEventListener((AgendaEventListener) this);
         kieSession.addEventListener((RuleRuntimeEventListener) this);
-    }
-
-    /**
-     * Get policy container.
-     *
-     * @return the 'PolicyContainer' object containing this session
-     */
-    public PolicyContainer getPolicyContainer() {
-        return container;
-    }
-
-    /**
-     * Get Kie Session.
-     *
-     * @return the associated 'KieSession' instance
-     */
-    public KieSession getKieSession() {
-        return kieSession;
-    }
-
-    /**
-     * Get name.
-     *
-     * @return the local name of this session, which should either match the
-     *     name specified in 'kmodule.xml' file associated with this session, or the
-     *     name passed on the 'PolicyContainer.adoptKieSession' method.
-     */
-    public String getName() {
-        return name;
     }
 
     /**

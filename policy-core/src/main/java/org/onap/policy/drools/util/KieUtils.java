@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -44,7 +46,6 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
@@ -56,7 +57,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Kie related utilities.
  */
-public class KieUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class KieUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(KieUtils.class);
 
@@ -64,25 +66,21 @@ public class KieUtils {
     private static final String RESOURCE_PREFIX = "src/main/resources/drools";
     private static final String RESOURCE_SUFFIX = ".drl";
 
-    private KieUtils() {
-        // Utility class
-    }
-
     /**
      * Installs a rules artifact in the local maven repository.
      */
     public static ReleaseId installArtifact(File kmodule, File pom, String drlKJarPath, @NonNull List<File> drls)
         throws IOException {
-        KieModuleModel kieModule = KieModuleModelImpl.fromXML(kmodule);
+        var kieModule = KieModuleModelImpl.fromXML(kmodule);
 
-        final KieFileSystem kieFileSystem = KieServices.Factory.get().newKieFileSystem();
+        final var kieFileSystem = KieServices.Factory.get().newKieFileSystem();
         kieFileSystem.writeKModuleXML(kieModule.toXML());
         kieFileSystem.writePomXML(new String(Files.readAllBytes(pom.toPath())));
         for (File drl : drls) {
             kieFileSystem.write(drlKJarPath + drl.getName(), new String(Files.readAllBytes(drl.toPath())));
         }
 
-        KieBuilder kieBuilder = build(kieFileSystem);
+        var kieBuilder = build(kieFileSystem);
         return getReleaseId(kieBuilder, pom);
     }
 
@@ -95,7 +93,7 @@ public class KieUtils {
     }
 
     private static ReleaseId getReleaseId(KieBuilder kieBuilder, File pomFile) {
-        ReleaseId releaseId = kieBuilder.getKieModule().getReleaseId();
+        var releaseId = kieBuilder.getKieModule().getReleaseId();
         KieMavenRepository
             .getKieMavenRepository()
             .installArtifact(releaseId,
@@ -164,7 +162,7 @@ public class KieUtils {
     }
 
     private static KieBuilder build(KieFileSystem kieFileSystem) {
-        KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(kieFileSystem);
+        var kieBuilder = KieServices.Factory.get().newKieBuilder(kieFileSystem);
         List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
         if (messages != null && !messages.isEmpty()) {
             throw new IllegalArgumentException(messages.toString());
@@ -198,11 +196,11 @@ public class KieUtils {
         }
 
         // generate a 'KieFileSystem' from these resources
-        KieServices kieServices = KieServices.Factory.get();
-        KieFileSystem kfs = kieServices.newKieFileSystem();
-        int index = 1;
+        var kieServices = KieServices.Factory.get();
+        var kfs = kieServices.newKieFileSystem();
+        var index = 1;
         while (resources.hasMoreElements()) {
-            URL url = resources.nextElement();
+            var url = resources.nextElement();
             try (InputStream is = url.openStream()) {
                 // convert a resource to a byte array
                 byte[] drl = IOUtils.toByteArray(is);
@@ -216,7 +214,7 @@ public class KieUtils {
         }
 
         // do a build of the 'KieFileSystem'
-        KieBuilder builder = kieServices.newKieBuilder(kfs, classLoader);
+        var builder = kieServices.newKieBuilder(kfs, classLoader);
         builder.buildAll();
         List<Message> results = builder.getResults().getMessages();
         if (!results.isEmpty()) {

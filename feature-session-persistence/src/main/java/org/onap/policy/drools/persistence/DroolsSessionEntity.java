@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,14 +29,23 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class DroolsSessionEntity implements Serializable, DroolsSession {
 
     private static final long serialVersionUID = -5495057038819948709L;
 
     @Id
     @Column(name = "sessionName", nullable = false)
+    @EqualsAndHashCode.Include
     private String sessionName = "-1";
 
     @Column(name = "sessionId", nullable = false)
@@ -49,9 +58,6 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updatedDate", nullable = false)
     private Date updatedDate;
-
-    public DroolsSessionEntity() {
-    }
 
     public DroolsSessionEntity(String sessionName, long sessionId) {
         this.sessionName = sessionName;
@@ -67,64 +73,6 @@ public class DroolsSessionEntity implements Serializable, DroolsSession {
     @PreUpdate
     public void preUpdate() {
         this.updatedDate = new Date();
-    }
-
-    @Override
-    public String getSessionName() {
-        return sessionName;
-    }
-
-    @Override
-    public void setSessionName(String sessionName) {
-        this.sessionName = sessionName;
-    }
-
-    @Override
-    public long getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public void setSessionId(long sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    @Override
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    @Override
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    @Override
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    @Override
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof DroolsSession) {
-            DroolsSession session = (DroolsSession) other;
-            return this.getSessionName().equals(session.getSessionName());
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + getSessionName().hashCode();
-        return result;
     }
 
     @Override

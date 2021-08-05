@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-test-transaction
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,12 @@
 
 package org.onap.policy.drools.testtransaction;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class TestTransactionConstants {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TestTransactionConstants {
 
     public static final String TT_FPC = "TT.FPC";
     public static final String TT_COUNTER = "$ttc";
@@ -31,8 +34,4 @@ public class TestTransactionConstants {
 
     @Getter
     private static final TestTransaction manager = new TtImpl();
-
-    private TestTransactionConstants() {
-        // do nothing
-    }
 }
