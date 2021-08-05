@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.common.im.StateManagement;
 import org.onap.policy.common.utils.time.CurrentTime;
@@ -39,15 +42,21 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
     // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(DroolsPdpsElectionHandler.class);
-    private DroolsPdpsConnector pdpsConnector;
-    private Object checkWaitTimerLock = new Object();
-    private Object designationWaiterLock = new Object();
 
     /*
      * Must be static, so it can be referenced by JpaDroolsPdpsConnector,
      * without requiring a reference to the election handler instantiation.
      */
     private static DroolsPdp myPdp;
+
+    @Setter
+    private static boolean unitTesting = false;
+    @Setter
+    private static boolean stalled = false;
+
+    private DroolsPdpsConnector pdpsConnector;
+    private Object checkWaitTimerLock = new Object();
+    private Object designationWaiterLock = new Object();
 
     private Date waitTimerLastRunDate;
 
@@ -56,7 +65,9 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
     private volatile boolean isDesignated;
 
+    @Getter
     private String pdpdNowActive;
+    @Getter
     private String pdpdLastActive;
 
     /*
@@ -69,9 +80,6 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
     private StateManagementFeatureApi stateManagementFeature;
 
     private final CurrentTime currentTime = MonitorTime.getInstance();
-
-    private static boolean isUnitTesting = false;
-    private static boolean isStalled = false;
 
     /**
      * Constructor.
@@ -156,14 +164,6 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         DroolsPdpsElectionHandler.myPdp = myPdp;
     }
 
-    public static void setIsUnitTesting(boolean val) {
-        isUnitTesting = val;
-    }
-
-    public static void setIsStalled(boolean val) {
-        isStalled = val;
-    }
-
     /**
      * When the JpaDroolsPdpsConnector.standDown() method is invoked, it needs
      * access to myPdp, so it can keep its designation status in sync with the
@@ -186,9 +186,9 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 logger.debug("DesignatedWaiter.run: Entering");
 
                 //This is for testing the checkWaitTimer
-                if (isUnitTesting && isStalled) {
+                if (unitTesting && stalled) {
                     logger.debug("DesignatedWaiter.run: isUnitTesting = {} isStalled = {}",
-                                    isUnitTesting, isStalled);
+                                    unitTesting, stalled);
                     return;
                 }
 
@@ -773,14 +773,14 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             DroolsPdp rejectedPdp;
 
             // We need to determine if another PDP is the lowest priority
-            if (nullSafeEquals(pdp.getSite(), mostRecentPrimary.getSite())) {
+            if (Objects.equals(pdp.getSite(), mostRecentPrimary.getSite())) {
                 rejectedPdp = data.compareSameSite(pdp);
             } else {
                 rejectedPdp = data.compareDifferentSite(pdp);
             }
             // If the rejectedPdp is myPdp, we need to stand it down and demote it.  Each pdp is responsible
             // for demoting itself
-            if (rejectedPdp != null && nullSafeEquals(rejectedPdp.getPdpId(), myPdp.getPdpId())) {
+            if (rejectedPdp != null && Objects.equals(rejectedPdp.getPdpId(), myPdp.getPdpId())) {
                 logger.debug("\n\nDesignatedWaiter.run: myPdp: {} listOfDesignated myPdp ID: {}"
                                 + " is NOT the lowest priority.  Executing stateManagement.demote()\n\n",
                                 myPdp.getPdpId(),
@@ -970,23 +970,5 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             startMs = pdpUpdateInterval + startMs;
         }
         return startMs;
-    }
-
-    private boolean nullSafeEquals(Object one, Object two) {
-        if (one == null && two == null) {
-            return true;
-        }
-        if (one != null && two != null) {
-            return one.equals(two);
-        }
-        return false;
-    }
-
-    public String getPdpdNowActive() {
-        return pdpdNowActive;
-    }
-
-    public String getPdpdLastActive() {
-        return pdpdLastActive;
     }
 }

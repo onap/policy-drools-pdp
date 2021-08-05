@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class AllSeemsWellTest {
         System.setProperty("com.sun.management.jmxremote.port", "9980");
         System.setProperty("com.sun.management.jmxremote.authenticate", "false");
 
-        DroolsPdpsElectionHandler.setIsUnitTesting(true);
+        DroolsPdpsElectionHandler.setUnitTesting(true);
 
         saveTime = Whitebox.getInternalState(MonitorTime.class, MONITOR_FIELD_NAME);
         saveFactory = Factory.getInstance();
@@ -157,7 +157,7 @@ public class AllSeemsWellTest {
         Whitebox.setInternalState(MonitorTime.class, MONITOR_FIELD_NAME, saveTime);
         Factory.setInstance(saveFactory);
 
-        DroolsPdpsElectionHandler.setIsUnitTesting(false);
+        DroolsPdpsElectionHandler.setUnitTesting(false);
 
         emd.close();
         emfd.close();
@@ -322,7 +322,7 @@ public class AllSeemsWellTest {
         //Now we want to stall the election handler and see the if AllSeemsWell will make the
         //standbystatus = coldstandby
 
-        DroolsPdpsElectionHandler.setIsStalled(true);
+        DroolsPdpsElectionHandler.setStalled(true);
 
         logger.debug("testAllSeemsWell: Sleeping {} s, to allow checkWaitTimer to recognize "
                 + "the election handler has stalled and for the testTransaction to fail to "
@@ -341,7 +341,7 @@ public class AllSeemsWellTest {
         assertEquals(StateManagement.COLD_STANDBY, smf.getStandbyStatus());
 
         //Now lets resume the election handler
-        DroolsPdpsElectionHandler.setIsStalled(false);
+        DroolsPdpsElectionHandler.setStalled(false);
 
         waitForCondition(() -> smf.getStandbyStatus().equals(StateManagement.PROVIDING_SERVICE),
             RESUMED_ELECTION_HANDLER_SLEEP_TIME_SEC);
