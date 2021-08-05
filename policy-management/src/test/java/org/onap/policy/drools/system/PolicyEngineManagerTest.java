@@ -1783,7 +1783,7 @@ public class PolicyEngineManagerTest {
 
     @Test
     public void testToString() {
-        assertTrue(mgr.toString().startsWith("PolicyEngineManager ["));
+        assertTrue(mgr.toString().startsWith("PolicyEngineManager("));
     }
 
     /**

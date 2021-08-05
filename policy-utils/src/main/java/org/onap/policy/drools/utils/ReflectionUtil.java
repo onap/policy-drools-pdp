@@ -2,14 +2,14 @@
  * ============LICENSE_START=======================================================
  * policy-utils
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,8 @@
 
 package org.onap.policy.drools.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,22 +29,20 @@ import org.slf4j.LoggerFactory;
  * Reflection utilities.
  *
  */
-public class ReflectionUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ReflectionUtil {
 
     protected static final Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
 
-    private ReflectionUtil() {
-    }
-
     /**
      * returns (if exists) a class fetched from a given classloader.
-     * 
+     *
      * @param classLoader the class loader
      * @param className the class name
      * @return the actual class
      * @throws IllegalArgumentException if an invalid parameter has been passed in
      */
-    public static Class<?> fetchClass(ClassLoader classLoader, 
+    public static Class<?> fetchClass(ClassLoader classLoader,
             String className) {
         if (classLoader == null) {
             throw new IllegalArgumentException("A class loader must be provided");
@@ -64,7 +64,7 @@ public class ReflectionUtil {
 
     /**
      * Is class.
-     * 
+     *
      * @param classLoader target class loader
      * @param classname class name to fetch
      * @return true if exists
@@ -76,7 +76,7 @@ public class ReflectionUtil {
 
     /**
      * Is it a sub class.
-     * 
+     *
      * @param parent superclass
      * @param presumedSubclass subclass
      * @return true if it is a sub class

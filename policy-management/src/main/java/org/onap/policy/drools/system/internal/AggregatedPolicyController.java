@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.ToString;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
@@ -55,6 +57,7 @@ import org.slf4j.LoggerFactory;
  * This implementation of the Policy Controller merely aggregates and tracks for management purposes
  * all underlying resources that this controller depends upon.
  */
+@ToString(onlyExplicitlyIncluded = true)
 public class AggregatedPolicyController implements PolicyController, TopicListener {
 
     private static final String BEFORE_OFFER_FAILURE = "{}: feature {} before-offer failure because of {}";
@@ -69,17 +72,21 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * identifier for this policy controller.
      */
+    @Getter
+    @ToString.Include
     private final String name;
 
     /**
      * Abstracted Event Sources List regardless communication technology.
      */
-    protected final List<TopicSource> sources;
+    @Getter
+    protected final List<TopicSource> topicSources;
 
     /**
      * Abstracted Event Sinks List regardless communication technology.
      */
-    protected final List<TopicSink> sinks;
+    @Getter
+    protected final List<TopicSink> topicSinks;
 
     /**
      * Mapping topics to sinks.
@@ -90,6 +97,8 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     /**
      * Is this Policy Controller running (alive) ? reflects invocation of start()/stop() only.
      */
+    @Getter
+    @ToString.Include
     private volatile boolean alive;
 
     /**
@@ -97,11 +106,14 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * are permitted, more specifically: start(), deliver() and onTopicEvent(). It does not affect
      * the ability to stop the underlying drools infrastructure
      */
+    @Getter
+    @ToString.Include
     private volatile boolean locked;
 
     /**
      * Policy Drools Controller.
      */
+    @ToString.Include
     protected final AtomicReference<DroolsController> droolsController = new AtomicReference<>();
 
     /**
@@ -135,8 +147,8 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         // Create/Reuse Readers/Writers for all event sources endpoints
 
-        this.sources = getEndpointManager().addTopicSources(properties);
-        this.sinks = getEndpointManager().addTopicSinks(properties);
+        this.topicSources = getEndpointManager().addTopicSources(properties);
+        this.topicSinks = getEndpointManager().addTopicSinks(properties);
 
         initDrools(properties);
         initSinks();
@@ -192,7 +204,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     protected void initDrools(Properties properties) {
         try {
             // Register with drools infrastructure
-            this.droolsController.set(getDroolsFactory().build(properties, sources, sinks));
+            this.droolsController.set(getDroolsFactory().build(properties, topicSources, topicSinks));
         } catch (Exception | LinkageError e) {
             logger.error("{}: cannot init-drools", this);
             throw new IllegalArgumentException(e);
@@ -206,7 +218,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      */
     private void initSinks() {
         this.topic2Sinks.clear();
-        for (TopicSink sink : sinks) {
+        for (TopicSink sink : topicSinks) {
             this.topic2Sinks.put(sink.getTopic(), sink);
         }
     }
@@ -284,14 +296,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * {@inheritDoc}.
      */
     @Override
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
     public boolean start() {
         logger.info("{}: start", this);
 
@@ -318,11 +322,11 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         // register for events
 
-        for (TopicSource source : sources) {
+        for (TopicSource source : topicSources) {
             source.register(this);
         }
 
-        for (TopicSink sink : sinks) {
+        for (TopicSink sink : topicSinks) {
             try {
                 sink.start();
             } catch (Exception e) {
@@ -364,7 +368,7 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
 
         // 1. Stop registration
 
-        for (TopicSource source : sources) {
+        for (TopicSource source : topicSources) {
             source.unregister(this);
         }
 
@@ -532,14 +536,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * {@inheritDoc}.
      */
     @Override
-    public boolean isAlive() {
-        return this.alive;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
     public boolean lock() {
         logger.info("{}: lock", this);
 
@@ -608,30 +604,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
      * {@inheritDoc}.
      */
     @Override
-    public boolean isLocked() {
-        return this.locked;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public List<TopicSource> getTopicSources() {
-        return this.sources;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public List<TopicSink> getTopicSinks() {
-        return this.sinks;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
     public DroolsController getDrools() {
         return this.droolsController.get();
     }
@@ -644,12 +616,6 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
     @GsonJsonIgnore
     public Properties getProperties() {
         return this.properties;
-    }
-
-    @Override
-    public String toString() {
-        return "AggregatedPolicyController [name=" + name + ", alive=" + alive
-                + ", locked=" + locked + ", droolsController=" + droolsController + "]";
     }
 
     // the following methods may be overridden by junit tests

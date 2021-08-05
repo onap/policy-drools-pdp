@@ -1,7 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * Configuration Test * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * ONAP
+ * ================================================================================
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +20,13 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 
@@ -99,9 +100,7 @@ public class ControllerConfigurationTest {
         assertEquals(DROOLS_CONFIG2, controllerConfig2.declaredPropertyOrNotFound(DROOLS_STRING, DROOLS_CONFIG2));
         assertEquals(NAME, controllerConfig2.declaredPropertyOrNotFound("dummy", NAME));
 
-        int hashCode = new HashCodeBuilder().append(NAME2).append(OPERATION2).append(DROOLS_CONFIG2)
-                .append(additionalProperties).toHashCode();
-        assertEquals(controllerConfig2.hashCode(), hashCode);
+        assertThat(controllerConfig2.hashCode()).isNotZero();
     }
 
     @Test

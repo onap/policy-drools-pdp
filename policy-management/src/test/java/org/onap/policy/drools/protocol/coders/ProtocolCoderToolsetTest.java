@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class ProtocolCoderToolsetTest {
                         new GsonProtocolCoderToolset(EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
                                         .groupId(releaseId.getGroupId()).artifactId(releaseId.getArtifactId())
                                         .eventClass(ThreeStrings.class.getName()).protocolFilter(protocolFilter)
-                                        .customGsonCoder(null).modelClassLoaderHash(12345678), CONTROLLER_ID);
+                                        .customGsonCoder(null).modelClassLoaderHash(12345678).build(), CONTROLLER_ID);
 
         Assert.assertNotNull(gsonToolset.getEncoder());
         Assert.assertNotNull(gsonToolset.getDecoder());
@@ -155,7 +155,7 @@ public class ProtocolCoderToolsetTest {
         }
 
         CoderFilters coderFilters = coderToolset.getCoder(ThreeStrings.class.getName());
-        Assert.assertSame(coderFilters.getCodedClass(), ThreeStrings.class.getName());
+        Assert.assertSame(coderFilters.getFactClass(), ThreeStrings.class.getName());
         Assert.assertSame(coderFilters.getFilter(), protocolFilter);
         Assert.assertNotNull(coderFilters.getFilter().getRule());
 

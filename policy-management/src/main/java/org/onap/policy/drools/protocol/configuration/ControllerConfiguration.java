@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ package org.onap.policy.drools.protocol.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
 import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
@@ -36,12 +36,16 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
  *
  */
 @ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 public class ControllerConfiguration {
 
     public static final String CONFIG_CONTROLLER_OPERATION_CREATE = "create";
     public static final String CONFIG_CONTROLLER_OPERATION_UPDATE = "update";
     public static final String CONFIG_CONTROLLER_OPERATION_LOCK = "lock";
     public static final String CONFIG_CONTROLLER_OPERATION_UNLOCK = "unlock";
+
+    protected static final Object NOT_FOUND_VALUE = new Object();
 
     /**
      * (Required).
@@ -66,15 +70,6 @@ public class ControllerConfiguration {
     @GsonJsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
-    protected static final Object NOT_FOUND_VALUE = new Object();
-
-    /**
-     * No args constructor for use in serialization.
-     *
-     */
-    public ControllerConfiguration() {
-        // Empty
-    }
 
     /**
      * Constructor.
@@ -258,25 +253,6 @@ public class ControllerConfiguration {
             getAdditionalProperties().put(name, value);
         }
         return this;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(name).append(operation).append(drools).append(additionalProperties)
-                .toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof ControllerConfiguration)) {
-            return false;
-        }
-        ControllerConfiguration rhs = ((ControllerConfiguration) other);
-        return new EqualsBuilder().append(name, rhs.name).append(operation, rhs.operation).append(drools, rhs.drools)
-                .append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
     /**

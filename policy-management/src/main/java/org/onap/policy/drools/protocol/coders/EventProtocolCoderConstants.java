@@ -21,17 +21,16 @@
 
 package org.onap.policy.drools.protocol.coders;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class EventProtocolCoderConstants {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class EventProtocolCoderConstants {
 
     /**
      * singleton reference to the global event protocol coder.
      */
     @Getter
     private static final EventProtocolCoder manager = new MultiplexorEventProtocolCoder();
-
-    private EventProtocolCoderConstants() {
-        // do nothing
-    }
 }

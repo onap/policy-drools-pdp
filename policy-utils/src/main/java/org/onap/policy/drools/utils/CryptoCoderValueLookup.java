@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.utils;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.configuration2.interpol.Lookup;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.utils.security.CryptoCoder;
@@ -27,18 +28,10 @@ import org.onap.policy.common.utils.security.CryptoCoder;
 /**
  * Crypto Coder value look up.  Syntax:  ${enc:encoded-value}.
  */
+@AllArgsConstructor
 public class CryptoCoderValueLookup implements Lookup {
 
     protected final CryptoCoder cryptoCoder;
-
-    /**
-     * Crypto Coder Lookup.
-     *
-     * @param crypto crypto coder
-     */
-    public CryptoCoderValueLookup(CryptoCoder crypto) {
-        this.cryptoCoder = crypto;
-    }
 
     @Override
     public String lookup(String key) {

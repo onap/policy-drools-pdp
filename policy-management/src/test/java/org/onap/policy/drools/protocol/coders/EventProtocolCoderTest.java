@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ package org.onap.policy.drools.protocol.coders;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
@@ -57,22 +59,10 @@ public class EventProtocolCoderTest {
     /**
      * Event Test Class.
      */
+    @Getter
+    @AllArgsConstructor
     public static class EventTest {
-
         private String field;
-
-        public EventTest(String field) {
-            super();
-            this.field = field;
-        }
-
-        public String getField() {
-            return this.field;
-        }
-
-        public void setField(String field) {
-            this.field = field;
-        }
     }
 
     @Test
@@ -87,7 +77,7 @@ public class EventProtocolCoderTest {
                 EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
                         .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getName())
                         .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
-                        .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
+                        .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()).build());
 
         final String json = EventProtocolCoderConstants.getManager().encode(NOOP_TOPIC,
                 new DroolsConfiguration(ENCODER_ARTIFACT, ENCODER_GROUP, ENCODER_VERSION));

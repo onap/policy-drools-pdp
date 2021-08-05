@@ -431,7 +431,7 @@ public class MavenDroolsController2Test {
         // validate parameters
         EventProtocolParams params = dec.getAllValues().get(0);
         assertEquals(ARTIFACT, params.getArtifactId());
-        assertEquals(gson1, params.getCustomCoder());
+        assertEquals(gson1, params.getCustomGsonCoder());
         assertEquals(Object.class.getName(), params.getEventClass());
         assertEquals(GROUP, params.getGroupId());
         assertEquals(CLASS_LOADER_HASHCODE, params.getModelClassLoaderHash());
@@ -440,7 +440,7 @@ public class MavenDroolsController2Test {
 
         params = dec.getAllValues().get(1);
         assertEquals(ARTIFACT, params.getArtifactId());
-        assertEquals(gson1, params.getCustomCoder());
+        assertEquals(gson1, params.getCustomGsonCoder());
         assertEquals(String.class.getName(), params.getEventClass());
         assertEquals(GROUP, params.getGroupId());
         assertEquals(CLASS_LOADER_HASHCODE, params.getModelClassLoaderHash());
@@ -449,7 +449,7 @@ public class MavenDroolsController2Test {
 
         params = enc.getAllValues().get(0);
         assertEquals(ARTIFACT, params.getArtifactId());
-        assertEquals(gson2, params.getCustomCoder());
+        assertEquals(gson2, params.getCustomGsonCoder());
         assertEquals(Integer.class.getName(), params.getEventClass());
         assertEquals(GROUP, params.getGroupId());
         assertEquals(CLASS_LOADER_HASHCODE, params.getModelClassLoaderHash());

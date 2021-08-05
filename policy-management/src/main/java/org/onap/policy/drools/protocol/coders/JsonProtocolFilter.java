@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,12 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** JSON Protocol Filter. */
+@Getter
 public class JsonProtocolFilter {
 
     /** Default filter to match anything. */
@@ -57,15 +59,6 @@ public class JsonProtocolFilter {
      */
     public JsonProtocolFilter(String rule) {
         this.setRule(rule);
-    }
-
-    /**
-     * Gets the filter expression rule.
-     *
-     * @return the filter expression associated with this JsonProtocolFilter
-     */
-    public String getRule() {
-        return this.rule;
     }
 
     /**

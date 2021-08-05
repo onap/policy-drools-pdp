@@ -286,14 +286,14 @@ public class MavenDroolsController implements DroolsController {
                             .eventClass(potentialCodedClass)
                             .protocolFilter(protocolFilter)
                             .customGsonCoder(customGsonCoder)
-                            .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
+                            .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()).build());
                 } else {
                     getCoderManager().addEncoder(
                             EventProtocolParams.builder().groupId(this.getGroupId())
                                     .artifactId(this.getArtifactId()).topic(topic)
                                     .eventClass(potentialCodedClass).protocolFilter(protocolFilter)
                                     .customGsonCoder(customGsonCoder)
-                                    .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()));
+                                    .modelClassLoaderHash(this.policyContainer.getClassLoader().hashCode()).build());
                 }
             }
         }

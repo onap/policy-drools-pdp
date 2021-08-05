@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * Configuration Test
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 
@@ -92,9 +92,7 @@ public class DroolsConfigurationTest {
         assertEquals(VERSION2, droolsConfig2.declaredPropertyOrNotFound(VERSION_STRING, VERSION2));
         assertEquals(ARTIFACT2, droolsConfig2.declaredPropertyOrNotFound("dummy", ARTIFACT2));
 
-        final int hashCode = new HashCodeBuilder().append(ARTIFACT2).append(GROUPID2).append(VERSION2)
-                .append(additionalProperties).toHashCode();
-        assertEquals(droolsConfig2.hashCode(), hashCode);
+        assertThat(droolsConfig2.hashCode()).isNotZero();
     }
 
     @Test

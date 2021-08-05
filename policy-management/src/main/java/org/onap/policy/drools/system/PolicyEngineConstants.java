@@ -20,9 +20,12 @@
 
 package org.onap.policy.drools.system;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.onap.policy.common.utils.network.NetworkUtil;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PolicyEngineConstants {
 
     /**
@@ -50,8 +53,4 @@ public final class PolicyEngineConstants {
      */
     @Getter
     private static final PolicyEngine manager = new PolicyEngineManager();
-
-    private PolicyEngineConstants() {
-        // do nothing
-    }
 }

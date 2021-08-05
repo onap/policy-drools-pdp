@@ -222,7 +222,7 @@ public class PolicyEngineTest {
                 EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
                         .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getName())
                         .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
-                        .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()));
+                        .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()).build());
 
         assertTrue(PolicyEngineConstants.getManager().deliver(NOOP_TOPIC,
                 new DroolsConfiguration(ENCODER_ARTIFACT, ENCODER_GROUP, ENCODER_VERSION)));

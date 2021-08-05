@@ -20,9 +20,12 @@
 
 package org.onap.policy.drools.persistence;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class SystemPersistenceConstants {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class SystemPersistenceConstants {
     /**
      * configuration directory.
      */
@@ -34,8 +37,4 @@ public class SystemPersistenceConstants {
      */
     @Getter
     private static final SystemPersistence manager = new FileSystemPersistence();
-
-    private SystemPersistenceConstants() {
-        // do nothing
-    }
 }

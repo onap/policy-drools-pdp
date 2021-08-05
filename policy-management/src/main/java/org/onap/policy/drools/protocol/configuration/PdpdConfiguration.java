@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.onap.policy.common.gson.annotation.GsonJsonAnyGetter;
 import org.onap.policy.common.gson.annotation.GsonJsonAnySetter;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
@@ -37,10 +37,14 @@ import org.onap.policy.common.gson.annotation.GsonJsonProperty;
  * ENGINE-CONFIGURATION.
  */
 @ToString
+@EqualsAndHashCode
+@NoArgsConstructor
 public class PdpdConfiguration {
 
     /** Controller Entity ID. */
     public static final String CONFIG_ENTITY_CONTROLLER = "controller";
+
+    protected static final Object NOT_FOUND_VALUE = new Object();
 
     /** Unique Transaction ID. This is an UUID. (Required) */
     @GsonJsonProperty("requestID")
@@ -53,12 +57,6 @@ public class PdpdConfiguration {
     private List<ControllerConfiguration> controllers = new ArrayList<>();
 
     @GsonJsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
-    protected static final Object NOT_FOUND_VALUE = new Object();
-
-    /** No args constructor for use in serialization. */
-    public PdpdConfiguration() {
-        // Empty
-    }
 
     /**
      * Constructor.
@@ -229,33 +227,6 @@ public class PdpdConfiguration {
             getAdditionalProperties().put(name, value);
         }
         return this;
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .append(requestId)
-                .append(entity)
-                .append(controllers)
-                .append(additionalProperties)
-                .toHashCode();
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof PdpdConfiguration)) {
-            return false;
-        }
-        PdpdConfiguration rhs = (PdpdConfiguration) other;
-        return new EqualsBuilder()
-                .append(requestId, rhs.requestId)
-                .append(entity, rhs.entity)
-                .append(controllers, rhs.controllers)
-                .append(additionalProperties, rhs.additionalProperties)
-                .isEquals();
     }
 
     /**

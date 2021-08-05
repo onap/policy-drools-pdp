@@ -19,7 +19,11 @@
 
 package org.onap.policy.drools.utils.logging;
 
-public class MdcTransactionConstants {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MdcTransactionConstants {
     /*
      * The fields must match the naming given at
      * https://wiki.onap.org/pages/viewpage.action?pageId=20087036
@@ -170,8 +174,4 @@ public class MdcTransactionConstants {
      * Status Code Error.
      */
     public static final String STATUS_CODE_FAILURE = "ERROR";
-
-    private MdcTransactionConstants() {
-        // do nothing
-    }
 }

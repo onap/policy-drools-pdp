@@ -23,19 +23,18 @@ package org.onap.policy.drools.utils.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.AbstractMatcherFilter;
 import ch.qos.logback.core.spi.FilterReply;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.slf4j.Marker;
 
 /**
  * Logger Marker Filters to be used in logback.xml configuration
  * to accept/deny metric or transaction (audit) events
  */
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class LoggerMarkerFilter extends AbstractMatcherFilter<ILoggingEvent> {
 
     protected final Marker marker;
-
-    protected LoggerMarkerFilter(Marker marker) {
-        this.marker = marker;
-    }
 
     @Override
     public FilterReply decide(ILoggingEvent event) {

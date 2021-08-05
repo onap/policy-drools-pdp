@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.configuration2.ConfigurationConverter;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.onap.policy.common.utils.security.CryptoCoder;
@@ -41,7 +43,8 @@ import org.slf4j.LoggerFactory;
  * This class provides utilities to read properties from a properties
  * file, and optionally get notifications of future changes.
  */
-public class PropertyUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class PropertyUtil {
     public static final String ENV_WITH_DEFAULT_PROPERTY_PREFIX = "envd";
     public static final String CRYPTO_CODER_PROPERTY_PREFIX = "enc";
 

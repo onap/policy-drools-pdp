@@ -22,6 +22,10 @@
 package org.onap.policy.drools.protocol.coders;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
 
 /**
@@ -29,6 +33,10 @@ import org.onap.policy.drools.controller.DroolsController;
  */
 public interface EventProtocolCoder {
 
+    @Getter
+    @Setter
+    @ToString
+    @AllArgsConstructor
     public static class CoderFilters {
 
         /**
@@ -45,73 +53,6 @@ public interface EventProtocolCoder {
          * classloader hash.
          */
         protected int modelClassLoaderHash;
-
-        /**
-         * constructor.
-         *
-         * @param codedClass coder class
-         * @param filter     filters to apply
-         */
-        public CoderFilters(String codedClass, JsonProtocolFilter filter, int modelClassLoaderHash) {
-            this.factClass = codedClass;
-            this.filter = filter;
-            this.modelClassLoaderHash = modelClassLoaderHash;
-        }
-
-        /**
-         * Get coded class.
-         *
-         * @return the codedClass
-         */
-        public String getCodedClass() {
-            return factClass;
-        }
-
-        /**
-         * Set coded class.
-         *
-         * @param codedClass the decodedClass to set
-         */
-        public void setCodedClass(String codedClass) {
-            this.factClass = codedClass;
-        }
-
-        /**
-         * Get filter.
-         *
-         * @return the filter
-         */
-        public JsonProtocolFilter getFilter() {
-            return filter;
-        }
-
-        /**
-         * Set filter.
-         *
-         * @param filter the filter to set
-         */
-        public void setFilter(JsonProtocolFilter filter) {
-            this.filter = filter;
-        }
-
-        public int getModelClassLoaderHash() {
-            return modelClassLoaderHash;
-        }
-
-        public void setFromClassLoaderHash(int fromClassLoaderHash) {
-            this.modelClassLoaderHash = fromClassLoaderHash;
-        }
-
-        @Override
-        public String toString() {
-            return "CoderFilters [factClass="
-                    + factClass
-                    + ", filter="
-                    + filter
-                    + ", modelClassLoaderHash="
-                    + modelClassLoaderHash
-                    + "]";
-        }
     }
 
     /**

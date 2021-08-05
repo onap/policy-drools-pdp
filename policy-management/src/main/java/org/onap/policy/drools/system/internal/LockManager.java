@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.onap.policy.drools.core.lock.AlwaysFailLock;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
@@ -45,6 +46,8 @@ import org.slf4j.LoggerFactory;
  * will be added to the map once free() or extend() is invoked, provided there isn't
  * already an entry.
  */
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class LockManager<T extends FeatureLockImpl> implements PolicyResourceLockManager {
 
     private static final Logger logger = LoggerFactory.getLogger(LockManager.class);
@@ -67,18 +70,6 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
      */
     private boolean locked = false;
 
-
-    /**
-     * Constructs the object.
-     */
-    protected LockManager() {
-        super();
-    }
-
-    @Override
-    public boolean isAlive() {
-        return alive;
-    }
 
     @Override
     public synchronized boolean start() {
@@ -106,11 +97,6 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
     @Override
     public void shutdown() {
         stop();
-    }
-
-    @Override
-    public boolean isLocked() {
-        return locked;
     }
 
     @Override

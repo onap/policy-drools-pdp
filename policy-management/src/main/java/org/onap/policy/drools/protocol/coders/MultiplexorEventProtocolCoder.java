@@ -22,6 +22,7 @@ package org.onap.policy.drools.protocol.coders;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * Protocol Coder that does its best attempt to decode/encode, selecting the best class and best fitted json parsing
  * tools.
  */
+@ToString
 class MultiplexorEventProtocolCoder implements EventProtocolCoder {
 
     /**
@@ -280,17 +282,5 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
     @Override
     public List<DroolsController> getDroolsControllers(String topic, Object encodedClass) {
         return this.encoders.getDroolsControllers(topic, encodedClass);
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public String toString() {
-        return "MultiplexorEventProtocolCoder [decoders="
-                + decoders
-                + ", encoders="
-                + encoders
-                + "]";
     }
 }

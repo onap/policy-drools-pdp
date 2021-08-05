@@ -20,14 +20,9 @@
 
 package org.onap.policy.drools.protocol.coders;
 
+import lombok.ToString;
+
+@ToString(callSuper = true)
 class EventProtocolDecoder extends GenericEventProtocolCoder {
 
-    public EventProtocolDecoder() {
-        super();
-    }
-
-    @Override
-    public String toString() {
-        return "EventProtocolDecoder [toString()=" + super.toString() + "]";
-    }
 }

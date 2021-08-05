@@ -21,6 +21,8 @@
 package org.onap.policy.drools.utils.logging;
 
 import ch.qos.logback.classic.LoggerContext;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -29,7 +31,8 @@ import org.slf4j.MarkerFactory;
 /**
  * Loger Utils.
  */
-public class LoggerUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class LoggerUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerUtil.class);
 
@@ -67,10 +70,6 @@ public class LoggerUtil {
      * Marks a logging record as an end-to-end transaction.
      */
     public static final Marker TRANSACTION_LOG_MARKER = MarkerFactory.getMarker(TRANSACTION_LOG_MARKER_NAME);
-
-    private LoggerUtil() {
-        // Empty constructor
-    }
 
     /**
      * Set the log level of a logger.

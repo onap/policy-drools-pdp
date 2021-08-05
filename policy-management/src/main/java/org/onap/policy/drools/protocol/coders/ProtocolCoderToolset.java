@@ -24,6 +24,9 @@ package org.onap.policy.drools.protocol.coders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
 import org.slf4j.Logger;
@@ -32,6 +35,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Protocol Coding/Decoding Toolset.
  */
+@Getter
+@ToString
 public abstract class ProtocolCoderToolset {
 
     /**
@@ -67,6 +72,7 @@ public abstract class ProtocolCoderToolset {
     /**
      * custom coder.
      */
+    @Setter
     protected CustomCoder customCoder;
 
     /**
@@ -90,7 +96,7 @@ public abstract class ProtocolCoderToolset {
                 eventProtocolParams.getEventClass(),
                 eventProtocolParams.getProtocolFilter(),
                 eventProtocolParams.getModelClassLoaderHash()));
-        this.customCoder = eventProtocolParams.getCustomCoder();
+        this.customCoder = eventProtocolParams.getCustomGsonCoder();
     }
 
     /**
@@ -133,9 +139,9 @@ public abstract class ProtocolCoderToolset {
         }
 
         for (final CoderFilters coder : this.coders) {
-            if (coder.getCodedClass().equals(eventClass)) {
+            if (coder.getFactClass().equals(eventClass)) {
                 coder.setFilter(filter);
-                coder.setFromClassLoaderHash(modelClassLoaderHash);
+                coder.setModelClassLoaderHash(modelClassLoaderHash);
                 return;
             }
         }
@@ -160,60 +166,6 @@ public abstract class ProtocolCoderToolset {
         }
 
         this.coders.removeAll(temp);
-    }
-
-    /**
-     * gets the topic.
-     *
-     * @return the topic
-     */
-    public String getTopic() {
-        return this.topic;
-    }
-
-    /**
-     * gets the controller id.
-     *
-     * @return the controller id
-     */
-    public String getControllerId() {
-        return this.controllerId;
-    }
-
-    /**
-     * Get group id.
-     *
-     * @return the groupId
-     */
-    public String getGroupId() {
-        return this.groupId;
-    }
-
-    /**
-     * Get artifact id.
-     *
-     * @return the artifactId
-     */
-    public String getArtifactId() {
-        return this.artifactId;
-    }
-
-    /**
-     * Get custom coder.
-     *
-     * @return the customCoder
-     */
-    public CustomCoder getCustomCoder() {
-        return this.customCoder;
-    }
-
-    /**
-     * Set custom coder.
-     *
-     * @param customCoder the customCoder to set.
-     */
-    public void setCustomCoder(CustomCoder customCoder) {
-        this.customCoder = customCoder;
     }
 
     /**
@@ -274,14 +226,4 @@ public abstract class ProtocolCoderToolset {
      * @throws UnsupportedOperationException if parsing into POJO is not possible
      */
     public abstract String encode(Object event);
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("ProtocolCoderToolset [topic=").append(this.topic).append(", controllerId=")
-        .append(this.controllerId).append(", groupId=").append(this.groupId).append(", artifactId=")
-        .append(this.artifactId).append(", coders=").append(this.coders)
-        .append(", customCoder=").append(this.customCoder).append("]");
-        return builder.toString();
-    }
 }

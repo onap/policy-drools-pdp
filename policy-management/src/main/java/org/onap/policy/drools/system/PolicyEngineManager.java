@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -88,6 +89,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Policy Engine Manager Implementation.
  */
+@ToString(onlyExplicitlyIncluded = true)
 class PolicyEngineManager implements PolicyEngine {
     /**
      * String literals.
@@ -110,12 +112,14 @@ class PolicyEngineManager implements PolicyEngine {
      * Is the Policy Engine running.
      */
     @Getter
+    @ToString.Include
     private volatile boolean alive = false;
 
     /**
      * Is the engine locked.
      */
     @Getter
+    @ToString.Include
     private volatile boolean locked = false;
 
     /**
@@ -1348,11 +1352,6 @@ class PolicyEngineManager implements PolicyEngine {
         final List<PolicyController> policyControllers = this.updatePolicyControllers(config.getControllers());
         return (policyControllers != null && !policyControllers.isEmpty()
                         && policyControllers.size() == configControllers.size());
-    }
-
-    @Override
-    public String toString() {
-        return "PolicyEngineManager [alive=" + this.alive + ", locked=" + this.locked + "]";
     }
 
     // these methods may be overridden by junit tests

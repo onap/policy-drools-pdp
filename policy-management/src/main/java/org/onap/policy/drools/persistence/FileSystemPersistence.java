@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.BiPredicate;
+import lombok.Getter;
+import lombok.ToString;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.slf4j.Logger;
@@ -41,6 +43,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Properties based Persistence.
  */
+@Getter
+@ToString
 public class FileSystemPersistence implements SystemPersistence {
 
     /**
@@ -104,14 +108,15 @@ public class FileSystemPersistence implements SystemPersistence {
     public static final String SYSTEM_PROPERTIES_FILE_SUFFIX = SYSTEM_PROPERTIES_SUFFIX + PROPERTIES_FILE_EXTENSION;
 
     /**
-     * Configuration directory.
-     */
-    protected Path configurationDirectory = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
-
-    /**
      * Logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(FileSystemPersistence.class);
+
+    /**
+     * Configuration directory.
+     */
+    protected Path configurationPath = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
+
 
     @Override
     public void setConfigurationDir(String configDir) {
@@ -119,11 +124,11 @@ public class FileSystemPersistence implements SystemPersistence {
 
         if (tempConfigDir == null) {
             tempConfigDir = SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR;
-            this.configurationDirectory = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
+            this.configurationPath = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
         }
 
         if (!tempConfigDir.equals(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR)) {
-            this.configurationDirectory = Paths.get(tempConfigDir);
+            this.configurationPath = Paths.get(tempConfigDir);
         }
 
         setConfigurationDir();
@@ -131,23 +136,18 @@ public class FileSystemPersistence implements SystemPersistence {
 
     @Override
     public void setConfigurationDir() {
-        if (Files.notExists(this.configurationDirectory)) {
+        if (Files.notExists(this.configurationPath)) {
             try {
-                Files.createDirectories(this.configurationDirectory);
+                Files.createDirectories(this.configurationPath);
             } catch (final IOException e) {
-                throw new IllegalStateException("cannot create " + this.configurationDirectory, e);
+                throw new IllegalStateException("cannot create " + this.configurationPath, e);
             }
         }
 
-        if (!Files.isDirectory(this.configurationDirectory)) {
+        if (!Files.isDirectory(this.configurationPath)) {
             throw new IllegalStateException(
-                "config directory: " + this.configurationDirectory + " is not a directory");
+                "config directory: " + this.configurationPath + " is not a directory");
         }
-    }
-
-    @Override
-    public Path getConfigurationPath() {
-        return this.configurationDirectory;
     }
 
     protected Properties getProperties(Path propertiesPath) {
@@ -168,7 +168,7 @@ public class FileSystemPersistence implements SystemPersistence {
             throw new IllegalArgumentException("properties name must be provided");
         }
 
-        Path propertiesPath = Paths.get(this.configurationDirectory.toString());
+        var propertiesPath = Paths.get(this.configurationPath.toString());
         if (name.endsWith(PROPERTIES_FILE_EXTENSION) || name.endsWith(ENV_FILE_EXTENSION)) {
             propertiesPath = propertiesPath.resolve(name);
         } else {
@@ -196,7 +196,7 @@ public class FileSystemPersistence implements SystemPersistence {
     private void addToPropertiesList(File file, List<Properties> properties,
                                      BiPredicate<String, Properties> preCondition) {
         try {
-            Properties proposedProps = getProperties(file.getName());
+            var proposedProps = getProperties(file.getName());
             if (preCondition.test(file.getName(), proposedProps)) {
                 properties.add(proposedProps);
             }
@@ -212,7 +212,7 @@ public class FileSystemPersistence implements SystemPersistence {
             throw new IllegalArgumentException("environment name must be provided");
         }
 
-        return this.getProperties(Paths.get(this.configurationDirectory.toString(), name + ENV_FILE_SUFFIX));
+        return this.getProperties(Paths.get(this.configurationPath.toString(), name + ENV_FILE_SUFFIX));
     }
 
     @Override
@@ -276,7 +276,7 @@ public class FileSystemPersistence implements SystemPersistence {
     }
 
     private boolean testControllerName(String controllerFilename, Properties controllerProperties) {
-        String controllerName = controllerFilename
+        var controllerName = controllerFilename
                 .substring(0, controllerFilename.length() - PROPERTIES_FILE_CONTROLLER_SUFFIX.length());
         String controllerPropName = controllerProperties.getProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME);
         if (controllerPropName == null) {
@@ -311,11 +311,11 @@ public class FileSystemPersistence implements SystemPersistence {
     }
 
     protected boolean backup(String name, String fileSuffix) {
-        Path path = Paths.get(this.configurationDirectory.toString(), name + fileSuffix);
+        var path = Paths.get(this.configurationPath.toString(), name + fileSuffix);
         if (Files.exists(path)) {
             try {
                 logger.info("{}: there is an existing configuration file @ {} ", this, path);
-                Path bakPath = Paths.get(this.configurationDirectory.toString(),
+                var bakPath = Paths.get(this.configurationPath.toString(),
                                             name + fileSuffix + FILE_BACKUP_SUFFIX);
                 Files.copy(path, bakPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
@@ -351,10 +351,10 @@ public class FileSystemPersistence implements SystemPersistence {
     }
 
     private boolean store(String name, Properties properties, String fileSuffix) {
-        Path path = Paths.get(this.configurationDirectory.toString(), name + fileSuffix);
+        var path = Paths.get(this.configurationPath.toString(), name + fileSuffix);
         if (Files.exists(path)) {
             try {
-                Properties oldProperties = PropertyUtil.getProperties(path.toFile());
+                var oldProperties = PropertyUtil.getProperties(path.toFile());
                 if (oldProperties.equals(properties)) {
                     logger.info("{}: noop: a properties file with the same contents exists for controller {}.", this,
                                 name);
@@ -368,8 +368,8 @@ public class FileSystemPersistence implements SystemPersistence {
             }
         }
 
-        File file = path.toFile();
-        try (FileWriter writer = new FileWriter(file)) {
+        var file = path.toFile();
+        try (var writer = new FileWriter(file)) {
             properties.store(writer, "Machine created Policy Controller Configuration");
         } catch (Exception e) {
             logger.warn("{}: {} cannot be saved", this, name, e);
@@ -408,11 +408,11 @@ public class FileSystemPersistence implements SystemPersistence {
     }
 
     protected boolean delete(String name, String fileSuffix) {
-        Path path = Paths.get(this.configurationDirectory.toString(), name + fileSuffix);
+        var path = Paths.get(this.configurationPath.toString(), name + fileSuffix);
 
         if (Files.exists(path)) {
             try {
-                Path bakPath = Paths.get(this.configurationDirectory.toString(),
+                var bakPath = Paths.get(this.configurationPath.toString(),
                                             name + fileSuffix + FILE_BACKUP_SUFFIX);
                 Files.move(path, bakPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (final Exception e) {
@@ -428,17 +428,12 @@ public class FileSystemPersistence implements SystemPersistence {
      * provides a list of files sorted by name in ascending order in the configuration directory.
      */
     private File[] sortedListFiles() {
-        File[] dirFiles = this.configurationDirectory.toFile().listFiles();
+        File[] dirFiles = this.configurationPath.toFile().listFiles();
         if (dirFiles != null) {
             Arrays.sort(dirFiles, Comparator.comparing(File::getName));
         } else {
             dirFiles = new File[]{};
         }
         return dirFiles;
-    }
-
-    @Override
-    public String toString() {
-        return "FileSystemPersistence [configurationDirectory=" + this.configurationDirectory + "]";
     }
 }

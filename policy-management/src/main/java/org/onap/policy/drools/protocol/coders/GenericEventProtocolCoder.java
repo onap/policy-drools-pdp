@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
@@ -35,6 +38,8 @@ import org.slf4j.LoggerFactory;
  * This protocol Coder that does its best attempt to decode/encode, selecting the best class and best fitted json
  * parsing tools.
  */
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class GenericEventProtocolCoder {
     private static final String INVALID_ARTIFACT_ID_MSG = "Invalid artifact id";
     private static final String INVALID_GROUP_ID_MSG = "Invalid group id";
@@ -57,10 +62,6 @@ abstract class GenericEventProtocolCoder {
      */
     protected final HashMap<String, List<ProtocolCoderToolset>>
             reverseCoders = new HashMap<>();
-
-    GenericEventProtocolCoder() {
-        super();
-    }
 
     /**
      * Index a new coder.
@@ -213,7 +214,7 @@ abstract class GenericEventProtocolCoder {
                 logger.info("{}: removed toolset for {}: {}", this, key, coderToolset);
 
                 for (CoderFilters codeFilter : coderToolset.getCoders()) {
-                    String className = codeFilter.getCodedClass();
+                    String className = codeFilter.getFactClass();
                     String reverseKey = this.reverseCodersKey(topic, className);
                     removeReverseCoder(key, reverseKey);
                 }
@@ -483,7 +484,7 @@ abstract class GenericEventProtocolCoder {
         String artifactId = encoderSet.getArtifactId();
         List<CoderFilters> coderFilters = encoderSet.getCoders();
         for (CoderFilters coder : coderFilters) {
-            if (coder.getCodedClass().equals(encodedClass.getClass().getName())) {
+            if (coder.getFactClass().equals(encodedClass.getClass().getName())) {
                 var droolsController =
                                 DroolsControllerConstants.getFactory().get(groupId, artifactId, "");
                 if (droolsController.ownsCoder(
@@ -718,14 +719,5 @@ abstract class GenericEventProtocolCoder {
             // continue
         }
         return droolsControllers;
-    }
-
-    @Override
-    public String toString() {
-        return "GenericEventProtocolCoder [coders="
-                + coders.keySet()
-                + ", reverseCoders="
-                + reverseCoders.keySet()
-                + "]";
     }
 }

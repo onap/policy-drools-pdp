@@ -1,7 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2018 Samsung Electronics Co., Ltd. All rights reserved.
- *  Modifications Copyright (C) 2019 AT&T Intellectual Property.
+ *  Modifications Copyright (C) 2019, 2021 AT&T Intellectual Property.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,11 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@Builder
 public class EventProtocolParams {
     private String groupId;
     private String artifactId;
@@ -31,118 +34,4 @@ public class EventProtocolParams {
     private JsonProtocolFilter protocolFilter;
     private TopicCoderFilterConfiguration.CustomGsonCoder customGsonCoder;
     private int modelClassLoaderHash;
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public String getEventClass() {
-        return eventClass;
-    }
-
-    public JsonProtocolFilter getProtocolFilter() {
-        return protocolFilter;
-    }
-
-    public TopicCoderFilterConfiguration.CustomGsonCoder getCustomGsonCoder() {
-        return customGsonCoder;
-    }
-
-    public int getModelClassLoaderHash() {
-        return modelClassLoaderHash;
-    }
-
-    public static EventProtocolParams builder() {
-        return new EventProtocolParams();
-    }
-
-    /**
-     * Setter method.
-     *
-     * @param groupId of the controller
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams groupId(String groupId) {
-        this.groupId = groupId;
-        return this;
-    }
-
-    /**
-     * Setter method.
-     *
-     * @param artifactId of the controller
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams artifactId(String artifactId) {
-        this.artifactId = artifactId;
-        return this;
-    }
-
-    /**
-     * Setter method.
-     *
-     * @param topic the topic
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams topic(String topic) {
-        this.topic = topic;
-        return this;
-    }
-
-    /**
-     * Setter method.
-     *
-     * @param eventClass the event class
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams eventClass(String eventClass) {
-        this.eventClass = eventClass;
-        return this;
-    }
-
-    /**
-     * Setter method.
-     *
-     * @param protocolFilter filters to selectively choose a particular decoder
-     *                       when there are multiples
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams protocolFilter(JsonProtocolFilter protocolFilter) {
-        this.protocolFilter = protocolFilter;
-        return this;
-    }
-
-    /**
-     * Setter method.
-     *
-     * @param customGsonCoder custom gscon coder
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams customGsonCoder(
-            TopicCoderFilterConfiguration.CustomGsonCoder customGsonCoder) {
-        this.customGsonCoder = customGsonCoder;
-        return this;
-    }
-
-    /**
-     * Setter method.
-     * @param modelClassLoaderHash integer representing model hash
-     * @return EventProtocolParams
-     */
-    public EventProtocolParams modelClassLoaderHash(int modelClassLoaderHash) {
-        this.modelClassLoaderHash = modelClassLoaderHash;
-        return this;
-    }
-
-    public CustomCoder getCustomCoder() {
-        return this.customGsonCoder;
-    }
 }

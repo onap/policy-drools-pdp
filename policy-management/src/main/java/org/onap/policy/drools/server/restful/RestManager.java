@@ -54,6 +54,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
@@ -92,6 +96,7 @@ import org.slf4j.LoggerFactory;
         produces = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML},
         schemes = {SwaggerDefinition.Scheme.HTTP},
         tags = {@Tag(name = "pdp-d-telemetry", description = "Drools PDP Telemetry Operations")})
+@ToString
 public class RestManager {
 
     private static final String OFFER_FAILED = "{}: cannot offer to topic {} because of {}";
@@ -2143,14 +2148,11 @@ public class RestManager {
      * Helper classes for aggregation of results
      */
 
-    @Override
-    public String toString() {
-        return "rest-telemetry-api []";
-    }
-
     /**
      * Coding/Encoding Results Aggregation Helper class.
      */
+    @Getter
+    @Setter
     public static class CodingResult {
         /**
          * serialized output.
@@ -2167,41 +2169,14 @@ public class RestManager {
          * decoding result.
          */
         private Boolean decoding;
-
-        public String getJsonEncoding() {
-            return jsonEncoding;
-        }
-
-        public void setJsonEncoding(String jsonEncoding) {
-            this.jsonEncoding = jsonEncoding;
-        }
-
-        public Boolean getEncoding() {
-            return encoding;
-        }
-
-        public void setEncoding(Boolean encoding) {
-            this.encoding = encoding;
-        }
-
-        public Boolean getDecoding() {
-            return decoding;
-        }
-
-        public void setDecoding(Boolean decoding) {
-            this.decoding = decoding;
-        }
     }
 
     /**
      * Generic Error Reporting class.
      */
+    @AllArgsConstructor
     public static class Error {
         private String msg;
-
-        public Error(String msg) {
-            this.setError(msg);
-        }
 
         public String getError() {
             return msg;
@@ -2212,4 +2187,3 @@ public class RestManager {
         }
     }
 }
-
