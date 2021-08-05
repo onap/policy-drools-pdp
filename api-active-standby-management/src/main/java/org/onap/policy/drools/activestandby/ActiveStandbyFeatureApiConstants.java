@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * api-active-standby-management
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,13 @@
 
 package org.onap.policy.drools.activestandby;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 
-public class ActiveStandbyFeatureApiConstants {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ActiveStandbyFeatureApiConstants {
     /**
      * 'FeatureAPI.impl.getList()' returns an ordered list of objects implementing the 'FeatureAPI'
      * interface.
@@ -31,8 +34,4 @@ public class ActiveStandbyFeatureApiConstants {
     @Getter
     private static final OrderedServiceImpl<ActiveStandbyFeatureApi> impl =
             new OrderedServiceImpl<>(ActiveStandbyFeatureApi.class);
-
-    private ActiveStandbyFeatureApiConstants() {
-        // do nothing
-    }
 }

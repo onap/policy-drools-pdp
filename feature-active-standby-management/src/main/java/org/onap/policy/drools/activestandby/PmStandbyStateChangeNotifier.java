@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package org.onap.policy.drools.activestandby;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import lombok.Getter;
 import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.common.im.StateChangeNotifier;
 import org.onap.policy.common.im.StateManagement;
@@ -68,6 +69,7 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
     private long startTimeWaitingForActivationMs;
     private long waitInterval;
     private boolean isNowActivating;
+    @Getter
     private String previousStandbyStatus;
     private final CurrentTime currentTime = MonitorTime.getInstance();
     private final Factory timerFactory = Factory.getInstance();
@@ -298,10 +300,6 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
                         + "calling PolicyEngineConstants.getManager().activate: ", e);
             }
         }
-    }
-
-    public String getPreviousStandbyStatus() {
-        return previousStandbyStatus;
     }
 
     // these may be overridden by junit tests
