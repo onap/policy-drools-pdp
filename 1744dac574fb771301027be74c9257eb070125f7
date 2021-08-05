@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ab815f83_e0867aa7",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/server/restful/RestManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2179,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-08-05T18:16:20Z",
+      "side": 1,
+      "message": "note: I tried renaming this to \"error\", but then sonar complained.  I then thought about renaming it to \"message\" and the get/set methods to get/setMessage, but then became concerned that it would change the field names in the json responses, thus left it as is",
+      "revId": "1744dac574fb771301027be74c9257eb070125f7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3f776cc4_d2088f0c",
+        "filename": "policy-utils/src/main/java/org/onap/policy/drools/utils/Reference.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-08-05T18:16:20Z",
+      "side": 1,
+      "message": "note: keeping the names of the get and set methods to mirror the methods in the AtomicReference class",
+      "revId": "1744dac574fb771301027be74c9257eb070125f7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
