@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7cb38552_160f1165",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-08-06T13:30:20Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "7c92f7af_68ef59ef",
+      "revId": "f9eaa709e739a1596fafe0d840c354087f7ed5ff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7374c4bd_4b9c2a2c",
         "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeArtifactController.java",
         "patchSetId": 1
