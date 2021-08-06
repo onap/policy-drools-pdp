@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c92f7af_68ef59ef",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeDroolsController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-08-06T12:59:47Z",
+      "side": 1,
+      "message": "note: reversed the argument order to match the new order in the other PolicyTypeNativeArtifactController classes",
+      "revId": "f9eaa709e739a1596fafe0d840c354087f7ed5ff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7374c4bd_4b9c2a2c",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeArtifactController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 811
+      },
+      "writtenOn": "2021-08-06T12:59:47Z",
+      "side": 1,
+      "message": "note: this puts policyType before fsm, thus the argument order is now reversed.  Thought about reversing the order of the fields so that the constructor would remain unchanged, but it just seemed like the policy type be first as it\u0027s more \"interesting\"",
+      "revId": "f9eaa709e739a1596fafe0d840c354087f7ed5ff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
