@@ -69,6 +69,24 @@
       "revId": "f9eaa709e739a1596fafe0d840c354087f7ed5ff",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12a99ccb_7be004ed",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/PolicyTypeNativeArtifactController.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-08-06T14:01:38Z",
+      "side": 1,
+      "message": "It\u0027s good, thank you for doing all this work!",
+      "parentUuid": "970fe629_8fa41db5",
+      "revId": "f9eaa709e739a1596fafe0d840c354087f7ed5ff",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
