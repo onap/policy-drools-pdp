@@ -62,7 +62,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
      * Creates a Policy Type Drools Controller.
      */
     public PolicyTypeDroolsController(
-            LifecycleFsm fsm, ToscaConceptIdentifier policyType, PolicyController controller) {
+            ToscaConceptIdentifier policyType, LifecycleFsm fsm, PolicyController controller) {
         this.policyType = policyType;
         this.controllers.put(controller.getName(), controller);
         this.fsm = fsm;

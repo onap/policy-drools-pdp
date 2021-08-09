@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,9 +60,8 @@ public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunnin
         fsm = makeFsmWithPseudoTime();
         policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
         nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
-        controller =
-                new PolicyTypeNativeArtifactController(fsm,
-                        new ToscaConceptIdentifier("onap.policies.native.drools.Artifact", "1.0.0"));
+        controller = new PolicyTypeNativeArtifactController(
+                        new ToscaConceptIdentifier("onap.policies.native.drools.Artifact", "1.0.0"), fsm);
 
         assertTrue(controllerSupport.getController().getDrools().isBrained());
         assertFalse(controllerSupport.getController().isAlive());

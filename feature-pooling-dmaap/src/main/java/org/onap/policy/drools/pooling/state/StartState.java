@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 package org.onap.policy.drools.pooling.state;
 
+import lombok.Getter;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.Heartbeat;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
  * to look for just that particular message. Once the message is seen, it goes into the
  * {@link QueryState}.
  */
+@Getter
 public class StartState extends State {
 
     private static final Logger logger = LoggerFactory.getLogger(StartState.class);
@@ -46,15 +48,6 @@ public class StartState extends State {
      */
     public StartState(PoolingManager mgr) {
         super(mgr);
-    }
-
-    /**
-     * Get Heart beat time stamp in milliseconds.
-     *
-     * @return the time stamp inserted into the heart beat message
-     */
-    public long getHbTimestampMs() {
-        return hbTimestampMs;
     }
 
     @Override

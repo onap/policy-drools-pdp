@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -47,6 +48,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@AllArgsConstructor
 public class PolicyTypeNativeDroolsController implements PolicyTypeController {
     private static final Logger logger = LoggerFactory.getLogger(PolicyTypeNativeDroolsController.class);
 
@@ -55,11 +57,6 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
 
     @GsonJsonIgnore
     protected final LifecycleFsm fsm;
-
-    public PolicyTypeNativeDroolsController(LifecycleFsm fsm, ToscaConceptIdentifier policyType) {
-        this.policyType = policyType;
-        this.fsm = fsm;
-    }
 
     @Override
     public boolean deploy(ToscaPolicy policy) {

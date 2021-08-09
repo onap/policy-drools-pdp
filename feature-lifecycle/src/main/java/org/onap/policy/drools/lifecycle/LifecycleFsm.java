@@ -164,10 +164,10 @@ public class LifecycleFsm implements Startable {
         setPdpType(properties.getProperty(PDP_TYPE, DEFAULT_PDP_TYPE));
 
         policyTypesMap.put(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER,
-                new PolicyTypeNativeDroolsController(this, POLICY_TYPE_DROOLS_NATIVE_CONTROLLER));
+                new PolicyTypeNativeDroolsController(POLICY_TYPE_DROOLS_NATIVE_CONTROLLER, this));
         policyTypesMap.put(
                 POLICY_TYPE_DROOLS_NATIVE_RULES,
-                 new PolicyTypeNativeArtifactController(this, POLICY_TYPE_DROOLS_NATIVE_RULES));
+                 new PolicyTypeNativeArtifactController(POLICY_TYPE_DROOLS_NATIVE_RULES, this));
 
         String commaSeparatedPolicyTypes = properties.getProperty(MANDATORY_POLICY_TYPES);
         if (!StringUtils.isBlank(commaSeparatedPolicyTypes)) {
@@ -234,7 +234,7 @@ public class LifecycleFsm implements Startable {
         for (ToscaConceptIdentifier id : controller.getPolicyTypes()) {
             PolicyTypeDroolsController ptDc = (PolicyTypeDroolsController) policyTypesMap.get(id); //NOSONAR
             if (ptDc == null) {
-                policyTypesMap.put(id, new PolicyTypeDroolsController(this, id, controller));
+                policyTypesMap.put(id, new PolicyTypeDroolsController(id, this, controller));
                 logger.info("policy-type {} added", id);
             } else {
                 ptDc.add(controller);

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
@@ -44,6 +45,7 @@ public class MdcTopicFilter {
     private final Map<String, FilterRule> rules = new HashMap<>();
 
     @Getter
+    @AllArgsConstructor
     public static class FilterRule {
         private String mdcKey;
         private List<String> paths;
@@ -51,17 +53,6 @@ public class MdcTopicFilter {
         public FilterRule(String mdcKey, String path) {
             this.mdcKey = mdcKey;
             this.paths = Arrays.asList(path);
-        }
-
-        /**
-         * Constructor.
-         *
-         * @param mdcKey the key to the filter rule
-         * @param paths the list of potential paths to the key
-         */
-        public FilterRule(String mdcKey, List<String> paths) {
-            this.mdcKey = mdcKey;
-            this.paths = paths;
         }
 
         protected void setMdcKey(String mdcKey) {

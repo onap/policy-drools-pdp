@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ package org.onap.policy.drools.pooling.state;
 
 import java.util.Arrays;
 import java.util.TreeSet;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.onap.policy.drools.pooling.PoolingManager;
 import org.onap.policy.drools.pooling.message.Heartbeat;
 import org.onap.policy.drools.pooling.message.Leader;
@@ -34,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * processes any events associated with one of its buckets. Other events are forwarded to
  * appropriate target hosts.
  */
+@Getter(AccessLevel.PROTECTED)
 public class ActiveState extends ProcessingState {
 
     private static final Logger logger = LoggerFactory.getLogger(ActiveState.class);
@@ -41,6 +44,7 @@ public class ActiveState extends ProcessingState {
     /**
      * Set of hosts that have been assigned a bucket.
      */
+    @Getter(AccessLevel.NONE)
     private final TreeSet<String> assigned = new TreeSet<>();
 
     /**
@@ -64,6 +68,7 @@ public class ActiveState extends ProcessingState {
      * {@code false} otherwise.
      */
     private boolean predHeartbeatSeen = false;
+
 
     /**
      * Constructor.
@@ -261,21 +266,4 @@ public class ActiveState extends ProcessingState {
             return null;
         }
     }
-
-    protected String getSuccHost() {
-        return succHost;
-    }
-
-    protected String getPredHost() {
-        return predHost;
-    }
-
-    protected boolean isMyHeartbeatSeen() {
-        return myHeartbeatSeen;
-    }
-
-    protected boolean isPredHeartbeatSeen() {
-        return predHeartbeatSeen;
-    }
-
 }

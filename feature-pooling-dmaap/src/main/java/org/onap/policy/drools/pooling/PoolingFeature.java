@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -59,6 +61,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
     /**
      * ID of this host.
      */
+    @Getter
     private final String host;
 
     /**
@@ -74,6 +77,7 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
     /**
      * Decremented each time a manager enters the Active state. Used by junit tests.
      */
+    @Getter(AccessLevel.PROTECTED)
     private final CountDownLatch activeLatch = new CountDownLatch(1);
 
     /**
@@ -90,19 +94,6 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
         super();
 
         this.host = UUID.randomUUID().toString();
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * Get active latch.
-     *
-     * @return a latch that will be decremented when a manager enters the active state
-     */
-    protected CountDownLatch getActiveLatch() {
-        return activeLatch;
     }
 
     @Override
