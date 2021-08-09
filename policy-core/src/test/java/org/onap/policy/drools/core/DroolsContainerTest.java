@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ public class DroolsContainerTest {
             }
 
             // verify session attributes
-            assertEquals(container, session.getPolicyContainer());
+            assertEquals(container, session.getContainer());
             assertEquals("session1", session.getName());
             assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.1.0-SNAPSHOT:session1",
                     session.getFullName());
@@ -158,7 +158,7 @@ public class DroolsContainerTest {
             assertEquals("17.2.0-SNAPSHOT", container.getVersion());
 
             // verify new session attributes
-            assertEquals(container, session.getPolicyContainer());
+            assertEquals(container, session.getContainer());
             assertEquals("session1", session.getName());
             assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.2.0-SNAPSHOT:session1",
                     session.getFullName());
@@ -290,7 +290,7 @@ public class DroolsContainerTest {
             }
 
             // verify session attributes
-            assertEquals(container, session.getPolicyContainer());
+            assertEquals(container, session.getContainer());
             assertEquals("session1", session.getName());
             assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.1.0-SNAPSHOT:session1",
                     session.getFullName());

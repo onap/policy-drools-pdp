@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-session-persistence
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.onap.policy.common.utils.jpa.EntityMgrCloser;
 
 /**
@@ -40,6 +43,8 @@ public class EntityMgrTrans extends EntityMgrCloser {
     /**
      * Transaction to be rolled back.
      */
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
     private static UserTransaction userTrans = com.arjuna.ats.jta.UserTransaction.userTransaction();
 
     /**
@@ -68,24 +73,6 @@ public class EntityMgrTrans extends EntityMgrCloser {
             em.close();
             throw new EntityMgrException(e);
         }
-    }
-
-    /**
-     * Gets the user transaction. For use by junit tests.
-     *
-     * @return the user transaction
-     */
-    protected static UserTransaction getUserTrans() {
-        return userTrans;
-    }
-
-    /**
-     * Sets the user transaction. For use by junit tests.
-     *
-     * @param userTrans the new user transaction
-     */
-    protected static void setUserTrans(UserTransaction userTrans) {
-        EntityMgrTrans.userTrans = userTrans;
     }
 
     /**
@@ -146,7 +133,7 @@ public class EntityMgrTrans extends EntityMgrCloser {
 
         /**
          * Constructor.
-         * 
+         *
          * @param ex exception to be wrapped
          */
         public EntityMgrException(Exception ex) {

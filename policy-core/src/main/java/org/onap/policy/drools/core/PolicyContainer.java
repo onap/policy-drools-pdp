@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import org.kie.api.KieBase;
+import lombok.Getter;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
@@ -57,6 +57,7 @@ public class PolicyContainer implements Startable {
     private ConcurrentHashMap<Object, Object> adjuncts = new ConcurrentHashMap<>();
 
     // 'KieContainer' associated with this 'PolicyContainer'
+    @Getter
     private KieContainer kieContainer;
 
     // indicates whether the PolicyContainer is 'started'
@@ -106,7 +107,7 @@ public class PolicyContainer implements Startable {
      * @param releaseId indicates the artifact that is to be installed in this container
      */
     public PolicyContainer(ReleaseId releaseId) {
-        ReleaseId newReleaseId = releaseId;
+        var newReleaseId = releaseId;
         if (newReleaseId.getVersion().contains(",")) {
             // this is actually a comma-separated list of release ids
             newReleaseId =
@@ -190,15 +191,6 @@ public class PolicyContainer implements Startable {
      */
     public String getName() {
         return kieContainer.getReleaseId().toString();
-    }
-
-    /**
-     * Get kie container.
-     *
-     * @return the associated 'KieContainer' instance
-     */
-    public KieContainer getKieContainer() {
-        return kieContainer;
     }
 
     /**
@@ -332,8 +324,8 @@ public class PolicyContainer implements Startable {
             logger.info("adoptKieSession:name: {} kieSession: {}", name, kieSession);
         }
         // fetch KieBase, and verify it belongs to this KieContainer
-        boolean match = false;
-        KieBase kieBase = kieSession.getKieBase();
+        var match = false;
+        var kieBase = kieSession.getKieBase();
         logger.info("adoptKieSession:kieBase: {}", kieBase);
         for (String kieBaseName : kieContainer.getKieBaseNames()) {
             logger.info("adoptKieSession:kieBaseName: {}", kieBaseName);
@@ -358,7 +350,7 @@ public class PolicyContainer implements Startable {
             // create the new 'PolicySession', add it to the table,
             // and return the object to the caller
             logger.info("adoptKieSession:create a new policySession with name {}", name);
-            PolicySession policySession = new PolicySession(name, this, kieSession);
+            var policySession = new PolicySession(name, this, kieSession);
             sessions.put(name, policySession);
 
             // notify features
@@ -383,8 +375,8 @@ public class PolicyContainer implements Startable {
      *         how to determine success/failure)
      */
     public String updateToVersion(String newVersion) {
-        ReleaseId releaseId = kieContainer.getReleaseId();
-        Results results = this.updateToVersion(
+        var releaseId = kieContainer.getReleaseId();
+        var results = this.updateToVersion(
                 kieServices.newReleaseId(releaseId.getGroupId(), releaseId.getArtifactId(), newVersion));
 
         List<Message> messages = results == null ? null : results.getMessages();
@@ -411,7 +403,7 @@ public class PolicyContainer implements Startable {
         }
 
         // update the version
-        Results results = kieContainer.updateToVersion(releaseId);
+        var results = kieContainer.updateToVersion(releaseId);
 
 
         // add common KiePackage instances
@@ -519,7 +511,7 @@ public class PolicyContainer implements Startable {
      * @return 'true' if the fact was inserted into at least one session, 'false' if not
      */
     public boolean insertAll(Object object) {
-        boolean rval = false;
+        var rval = false;
         synchronized (sessions) {
             for (PolicySession session : sessions.values()) {
                 session.insertDrools(object);
@@ -553,7 +545,7 @@ public class PolicyContainer implements Startable {
             for (String kieSessionName : kieContainer.getKieSessionNamesInKieBase(kieBaseName)) {
                 // if the 'PolicySession' does not currently exist, this method
                 // call will attempt to create it
-                PolicySession session = activatePolicySession(kieSessionName, kieBaseName);
+                var session = activatePolicySession(kieSessionName, kieBaseName);
                 if (session != null) {
                     session.startThread();
                 }
@@ -708,7 +700,7 @@ public class PolicyContainer implements Startable {
      * @param args standard 'main' arguments, which are currently ignored
      */
     public static void globalInit(String[] args) {
-        String configDir = "config";
+        var configDir = "config";
         logger.info("PolicyContainer.main: configDir={}", configDir);
 
         // invoke 'globalInit' on all of the features

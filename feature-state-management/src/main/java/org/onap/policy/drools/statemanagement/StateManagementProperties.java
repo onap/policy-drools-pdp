@@ -21,12 +21,16 @@
 package org.onap.policy.drools.statemanagement;
 
 import java.util.Properties;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StateManagementProperties {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class StateManagementProperties {
     // get an instance of logger
     private static final Logger logger = LoggerFactory.getLogger(StateManagementProperties.class);
 
@@ -62,10 +66,8 @@ public class StateManagementProperties {
     public static final String WRITE_FPC_INTERVAL = "write_fpc_interval";
     public static final String DEPENDENCY_GROUPS = "dependency_groups";
 
+    @Getter
     private static Properties properties = null;
-
-    private StateManagementProperties() {
-    }
 
     /**
      * Initialize the parameter values from the feature-state-management.properties file values.
@@ -87,9 +89,5 @@ public class StateManagementProperties {
 
     public static String getProperty(String key) {
         return properties.getProperty(key);
-    }
-
-    public static Properties getProperties() {
-        return properties;
     }
 }

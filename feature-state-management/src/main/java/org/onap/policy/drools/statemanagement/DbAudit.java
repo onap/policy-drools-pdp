@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +44,9 @@ public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     // invoked -- doing this avoids the need to create the table in advance.
     private static boolean createTableNeeded = true;
 
-    private static boolean isJunit = false;
+    @Getter
+    @Setter
+    private static boolean junit = false;
 
     /** Constructor - set the name to 'Database'. */
     private DbAudit() {
@@ -51,14 +55,6 @@ public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
     private static synchronized void setCreateTableNeeded(boolean isNeeded) {
         DbAudit.createTableNeeded = isNeeded;
-    }
-
-    public static synchronized void setIsJunit(boolean isJUnit) {
-        DbAudit.isJunit = isJUnit;
-    }
-
-    public static boolean isJunit() {
-        return DbAudit.isJunit;
     }
 
     /**
@@ -77,7 +73,7 @@ public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     @Override
     public void invoke(Properties properties) {
         logger.debug("Running 'DbAudit.invoke'");
-        boolean doCreate = createTableNeeded && !isJunit;
+        boolean doCreate = createTableNeeded && !isJunit();
 
         if (!isActive()) {
             logger.info("DbAudit.invoke: exiting because isActive = false");

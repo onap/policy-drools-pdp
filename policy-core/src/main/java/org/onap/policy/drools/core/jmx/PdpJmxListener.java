@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-core
  * ================================================================================
- * Copyright (C) 2017-2018 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,25 +24,24 @@ import java.lang.management.ManagementFactory;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PdpJmxListener {
 
     public static final Logger logger = LoggerFactory.getLogger(PdpJmxListener.class);
-
-    private PdpJmxListener() {
-    }
 
     /**
      * Stop the listener.
      */
     public static void stop() {
-        final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        final var server = ManagementFactory.getPlatformMBeanServer();
         try {
             server.unregisterMBean(new ObjectName("PolicyEngine:type=PdpJmx"));
         } catch (MBeanRegistrationException | InstanceNotFoundException
@@ -58,7 +57,7 @@ public class PdpJmxListener {
      *  Start.
      */
     public static void start() {
-        final MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+        final var server = ManagementFactory.getPlatformMBeanServer();
         try {
             server.registerMBean(PdpJmx.getInstance(), new ObjectName("PolicyEngine:type=PdpJmx"));
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException

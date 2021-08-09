@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,14 @@
 
 package org.onap.policy.drools.core.lock;
 
+import lombok.NoArgsConstructor;
 
 /**
  * Lock implementation whose operations always fail.
  */
+@NoArgsConstructor
 public class AlwaysFailLock extends LockImpl {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Constructs the object.
-     */
-    public AlwaysFailLock() {
-        super();
-    }
 
     /**
      * Constructs the object.

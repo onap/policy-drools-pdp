@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     private static final Logger logger = LoggerFactory.getLogger(RepositoryAudit.class);
 
     // single global instance of this audit object
+    @Getter
     private static RepositoryAudit instance = new RepositoryAudit();
 
     // Regex pattern used to find additional repos in the form "repository(number).id.url"
@@ -62,15 +65,6 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
      */
     private RepositoryAudit() {
         super("Repository");
-    }
-
-    /**
-     * Get the integrity monitor instance.
-     *
-     * @return the single 'RepositoryAudit' instance
-     */
-    public static DroolsPdpIntegrityMonitor.AuditBase getInstance() {
-        return instance;
     }
 
     /**
@@ -560,26 +554,12 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     /**
      * An instance of this class exists for each artifact that we are trying to download.
      */
+    @AllArgsConstructor
     static class Artifact {
         String groupId;
         String artifactId;
         String version;
         String type;
-
-        /**
-         * Constructor - populate the 'Artifact' instance.
-         *
-         * @param groupId groupId of artifact
-         * @param artifactId artifactId of artifact
-         * @param version version of artifact
-         * @param type type of the artifact (e.g. "jar")
-         */
-        Artifact(String groupId, String artifactId, String version, String type) {
-            this.groupId = groupId;
-            this.artifactId = artifactId;
-            this.version = version;
-            this.type = type;
-        }
 
         /**
          * Constructor - populate an 'Artifact' instance.
