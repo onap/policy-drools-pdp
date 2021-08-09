@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-active-standby-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import lombok.AllArgsConstructor;
 import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.common.utils.time.CurrentTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@AllArgsConstructor
 public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
     private static final String SELECT_PDP_BY_ID = "SELECT p FROM DroolsPdpEntity p WHERE p.pdpId=:pdpId";
@@ -44,13 +46,6 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     private EntityManagerFactory emf;
 
     private final CurrentTime currentTime = MonitorTime.getInstance();
-
-
-    //not sure if we want to use the same entity manager factory
-    //for drools session and pass it in here, or create a new one
-    public JpaDroolsPdpsConnector(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
 
     @Override
     public Collection<DroolsPdp> getDroolsPdps() {

@@ -21,11 +21,15 @@
 package org.onap.policy.drools.activestandby;
 
 import java.util.Properties;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActiveStandbyProperties {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ActiveStandbyProperties {
     // get an instance of logger
     private static final Logger  logger = LoggerFactory.getLogger(ActiveStandbyProperties.class);
 
@@ -46,11 +50,8 @@ public class ActiveStandbyProperties {
     public static final String DB_PWD = PersistenceUnitProperties.JDBC_PASSWORD;
     public static final String DB_TYPE = PersistenceUnitProperties.TARGET_DATABASE;
 
+    @Getter
     private static Properties properties = null;
-
-    private ActiveStandbyProperties() {
-        // do nothing
-    }
 
     /**
      * Initialize the parameter values from the droolsPersitence.properties file values.
@@ -71,9 +72,5 @@ public class ActiveStandbyProperties {
 
     public static String getProperty(String key) {
         return properties.getProperty(key);
-    }
-
-    public static Properties getProperties() {
-        return properties;
     }
 }
