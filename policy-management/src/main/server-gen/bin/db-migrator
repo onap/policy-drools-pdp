@@ -526,8 +526,12 @@ if [ -z "${SQL_HOST}" ] || [ -z "${SQL_USER}" ] || [ -z "${SQL_PASSWORD}" ]; the
     exit 4
 fi
 
-MYSQL="mysql -u${SQL_USER} -p${SQL_PASSWORD} -h ${SQL_HOST}";
-if ! ${MYSQL} -h"${SQL_HOST}" --execute "show databases;" > /dev/null 2>&1; then
+if [ -z "${SQL_PORT}" ]; then
+    SQL_PORT=3306
+fi
+
+MYSQL="mysql -u${SQL_USER} -p${SQL_PASSWORD} -h ${SQL_HOST} -P ${SQL_PORT};"
+if ! ${MYSQL} --execute "show databases;" > /dev/null 2>&1; then
     echo "error: No DB connectivity to ${SQL_HOST} for ${SQL_USER}"
     exit 5
 fi
