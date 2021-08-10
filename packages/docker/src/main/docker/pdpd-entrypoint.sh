@@ -154,8 +154,12 @@ function db {
         return 0
     fi
 
-    echo "Wating for ${SQL_HOST} ."
-    timeout 120 sh -c 'until nc -vz "${SQL_HOST}" 3306; do echo -n "."; sleep 1; done'; echo $?
+    if [ -z "${SQL_PORT}" ]; then
+        export SQL_PORT=3306
+    fi
+
+    echo "Waiting for ${SQL_HOST}:${SQL_PORT} ..."
+    timeout 120 sh -c 'until nc -vz -w 20 "${SQL_HOST}" "${SQL_PORT}"; do echo -n "."; sleep 1; done'
 
     "${POLICY_HOME}"/bin/db-migrator -s ALL -o upgrade
 }
