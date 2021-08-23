@@ -10,7 +10,8 @@
             "port": 9698,
             "user": null,
             "alive": true,
-            "aaf": false
+            "aaf": false,
+            "prometheus": false
         }
     ],
     "features": [],
