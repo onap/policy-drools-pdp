@@ -18,7 +18,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # ============LICENSE_END=========================================================
 #-------------------------------------------------------------------------------
-FROM onap/policy-jdk-alpine:2.2.1
+FROM onap/policy-jdk-alpine:2.3.0-SNAPSHOT
 
 LABEL maintainer="Policy Team"
 
@@ -42,15 +42,12 @@ ENV MVN_RELEASE_REPO_URL $MVN_RELEASE_REPO_URL
 ENV http_proxy $http_proxy
 
 RUN apk update && \
-    apk add --no-cache python3 \
-    mariadb-client py3-pip \
-    file dpkg httpie \
+    apk add --no-cache mariadb-client \
+    file httpie \
     net-tools netcat-openbsd sudo less vim openssl \
-    && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
-    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
-    && pip install --no-cache-dir --upgrade setuptools http-prompt \
-    && pip uninstall -y httpie \
-    && pip install --no-cache-dir httpie
+    && python3 -m pip install --no-cache-dir --upgrade setuptools http-prompt \
+    && python3 -m pip uninstall -y httpie \
+    && python3 -m pip install --no-cache-dir httpie
 
 RUN mkdir -p $POLICY_CONFIG $POLICY_LOGS $POLICY_INSTALL_INIT && \
     chown -R policy:policy $POLICY_HOME $POLICY_LOGS $POLICY_INSTALL
