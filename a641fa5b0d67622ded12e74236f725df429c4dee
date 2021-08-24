@@ -46,6 +46,30 @@
       "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5b9e63d_5703a151",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 4903
+      },
+      "writtenOn": "2021-08-24T13:21:29Z",
+      "side": 1,
+      "message": "Yes, agreed! It makes sense to keep the default as non https and just for reference, when we override them anyway in oom/csit.",
+      "parentUuid": "ec05aec9_01321f15",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 23
+      },
+      "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
