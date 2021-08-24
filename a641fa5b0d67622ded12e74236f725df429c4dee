@@ -94,6 +94,30 @@
       "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90c2ae0d_87ee491c",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2021-08-24T13:50:34Z",
+      "side": 1,
+      "message": "Not for the ones for the clients, this is just only for the servers that the drools opens.\nFor the clients is trickier since the remote server is in control of the protocol used, so AAI may be open for HTTP, and VFC for HTTPS only.\n\nNevertheless, I think what you are coming from the point of view that in some installations, components only use plain HTTP to talk to each other, and there is a sidecar or an ingress proxy that handles the https and the certs.   I think it will be a good addition, but we will need a new global flag to do it to be safe on configuration.   I could open a ticket for it, some flag like HTTP_CLIENT_HTTPS.   Sounds ok to you?",
+      "parentUuid": "c369362a_8bf4009b",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 23
+      },
+      "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
