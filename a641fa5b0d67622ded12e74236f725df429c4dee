@@ -70,6 +70,30 @@
       "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c369362a_8bf4009b",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-08-24T13:33:23Z",
+      "side": 1,
+      "message": "Jorge, can we use this environment variable as a global setting for turning https true/false for http based actor configurations (AAI, SDNC, VFC, XACML etc.)?\n\nSimilar to the one for dmaap based actors at line 138.",
+      "parentUuid": "d5b9e63d_5703a151",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 23
+      },
+      "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
