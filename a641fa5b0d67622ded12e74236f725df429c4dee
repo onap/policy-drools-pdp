@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d523746e_eec285ed",
+        "filename": "packages/install/src/files/base.conf",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 4903
+      },
+      "writtenOn": "2021-08-24T10:02:16Z",
+      "side": 1,
+      "message": "should this be true by default? In all other components, https is true by default.\nMaybe that is needed only in oom/csit, and can be kept as false here for easy debugging in standalone mode?",
+      "range": {
+        "startLine": 90,
+        "startChar": 0,
+        "endLine": 90,
+        "endChar": 23
+      },
+      "revId": "a641fa5b0d67622ded12e74236f725df429c4dee",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
