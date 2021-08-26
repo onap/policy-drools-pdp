@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 package org.onap.policy.drools.statemanagement;
 
 import java.io.IOException;
-import java.util.Properties;
 import org.onap.policy.common.im.AllSeemsWellException;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.onap.policy.common.im.StateChangeNotifier;
@@ -238,8 +237,7 @@ public class StateManagementFeature implements StateManagementFeatureApi,
     private static void initializeProperties(String configDir) {
         //Get the state management properties
         try {
-            Properties props =
-                    PropertyUtil.getProperties(configDir + "/feature-state-management.properties");
+            var props = PropertyUtil.getProperties(configDir + "/feature-state-management.properties");
             StateManagementProperties.initProperties(props);
             logger.info("initializeProperties: resourceName= {}",
                     StateManagementProperties.getProperty(StateManagementProperties.NODE_NAME));

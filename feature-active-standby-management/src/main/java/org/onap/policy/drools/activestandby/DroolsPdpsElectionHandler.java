@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
 import java.util.TimerTask;
 import lombok.Getter;
 import lombok.Setter;
@@ -104,7 +103,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         this.isDesignated = false;
 
         // The interval between checks of the DesignationWaiter to be sure it is running.
-        int pdpCheckInterval = 3000;
+        var pdpCheckInterval = 3000;
         try {
             pdpCheckInterval = Integer.parseInt(ActiveStandbyProperties.getProperty(
                     ActiveStandbyProperties.PDP_CHECK_INVERVAL));
@@ -119,14 +118,14 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
             logger.error("Could not get pdpUpdateInterval property. Using default {} ", pdpUpdateInterval, e);
         }
 
-        Date now = currentTime.getDate();
+        var now = currentTime.getDate();
 
         // Retrieve the ms since the epoch
         final long nowMs = now.getTime();
 
         // Create the timer which will update the updateDate in DroolsPdpEntity table.
         // This is the heartbeat
-        Timer updateWorker = Factory.getInstance().makeTimer();
+        var updateWorker = Factory.getInstance().makeTimer();
 
         // Schedule the TimerUpdateClass to run at 100 ms and run at pdpCheckInterval ms thereafter
         // NOTE: The first run of the TimerUpdateClass results in myPdp being added to the
@@ -134,12 +133,12 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         updateWorker.scheduleAtFixedRate(new TimerUpdateClass(), 100, pdpCheckInterval);
 
         // Create the timer which will run the election algorithm
-        Timer waitTimer = Factory.getInstance().makeTimer();
+        var waitTimer = Factory.getInstance().makeTimer();
 
         // Schedule it to start in startMs ms
         // (so it will run after the updateWorker and run at pdpUpdateInterval ms thereafter
         long startMs = getDWaiterStartMs();
-        DesignationWaiter designationWaiter = new DesignationWaiter();
+        var designationWaiter = new DesignationWaiter();
         waitTimer.scheduleAtFixedRate(designationWaiter, startMs, pdpUpdateInterval);
         waitTimerLastRunDate = new Date(nowMs + startMs);
 
@@ -267,7 +266,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
                 logger.debug("DesignatedWaiter.run: myPdp: {}; Returning, isDesignated= {}",
                                 isDesignated, myPdp.getPdpId());
 
-                Date tmpDate = currentTime.getDate();
+                var tmpDate = currentTime.getDate();
                 logger.debug("DesignatedWaiter.run (end of run) waitTimerLastRunDate = {}", tmpDate);
 
                 waitTimerLastRunDate = tmpDate;
@@ -631,8 +630,8 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
      */
     public List<DroolsPdp> santizeDesignatedList(List<DroolsPdp> listOfDesignated) {
 
-        boolean containsDesignated = false;
-        boolean containsHotStandby = false;
+        var containsDesignated = false;
+        var containsHotStandby = false;
         List<DroolsPdp> listForRemoval = new ArrayList<>();
         for (DroolsPdp pdp : listOfDesignated) {
             logger.debug("DesignatedWaiter.run sanitizing: pdp = {}"
@@ -768,7 +767,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
 
         logger.debug("DesignatedWaiter.run: myPdp: {} listOfDesignated.size(): {}", myPdp.getPdpId(),
                         listOfDesignated.size());
-        DesignatedData data = new DesignatedData();
+        var data = new DesignatedData();
         for (DroolsPdp pdp : listOfDesignated) {
             DroolsPdp rejectedPdp;
 
@@ -922,7 +921,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
         synchronized (checkWaitTimerLock) {
             try {
                 logger.debug("checkWaitTimer: entry");
-                Date now = currentTime.getDate();
+                var now = currentTime.getDate();
                 long nowMs = now.getTime();
                 long waitTimerMs = waitTimerLastRunDate.getTime();
 
@@ -953,7 +952,7 @@ public class DroolsPdpsElectionHandler implements ThreadRunningChecker {
     }
 
     private long getDWaiterStartMs() {
-        Date now = currentTime.getDate();
+        var now = currentTime.getDate();
 
         // Retrieve the ms since the epoch
         long nowMs = now.getTime();

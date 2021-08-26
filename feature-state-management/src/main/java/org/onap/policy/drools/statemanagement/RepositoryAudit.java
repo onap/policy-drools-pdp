@@ -35,7 +35,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -79,14 +78,14 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
      */
     private static TreeSet<Integer> countAdditionalNexusRepos() {
         TreeSet<Integer> returnIndices = new TreeSet<>();
-        Properties properties = StateManagementProperties.getProperties();
+        var properties = StateManagementProperties.getProperties();
         Set<String> propertyNames = properties.stringPropertyNames();
 
         for (String currName : propertyNames) {
-            Matcher matcher = repoPattern.matcher(currName);
+            var matcher = repoPattern.matcher(currName);
 
             if (matcher.matches()) {
-                int currRepoNum = Integer.parseInt(matcher.group(2));
+                var currRepoNum = Integer.parseInt(matcher.group(2));
                 if (propertyNames.contains(matcher.group(1) + ".audit.url")) {
                     returnIndices.add(currRepoNum);
                 }
@@ -104,7 +103,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     public void invoke(Properties properties) throws IntegrityMonitorException {
         logger.debug("Running 'RepositoryAudit.invoke'");
 
-        InvokeData data = new InvokeData();
+        var data = new InvokeData();
 
         logger.debug("RepositoryAudit.invoke: repoAuditIsActive = {}" + ", repoAuditIgnoreErrors = {}",
                 data.repoAuditIsActive, data.repoAuditIgnoreErrors);
@@ -179,7 +178,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
          */
 
         // output file = ${dir}/out (this supports step '4a')
-        File output = data.dir.resolve("out").toFile();
+        var output = data.dir.resolve("out").toFile();
 
         // invoke process, and wait for response
         int rval = data.runMaven(output);
@@ -319,7 +318,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         }
 
         public void initTimeout() {
-            String timeoutString = getProperty("audit.timeout", true);
+            var timeoutString = getProperty("audit.timeout", true);
             if (timeoutString != null && !timeoutString.isEmpty()) {
                 try {
                     timeoutInSeconds = Long.valueOf(timeoutString);
@@ -345,7 +344,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             }
 
             // create text file to write
-            try (FileOutputStream fos = new FileOutputStream(dir.resolve("repository-audit.txt").toFile())) {
+            try (var fos = new FileOutputStream(dir.resolve("repository-audit.txt").toFile())) {
                 fos.write(version.getBytes());
             }
 
@@ -372,7 +371,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
             artifacts.add(new Artifact("org.apache.maven/maven-embedder/3.2.2"));
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.append(
                     "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
                             + "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n"
@@ -399,7 +398,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
                     + "           </execution>\n" + "         </executions>\n" + "      </plugin>\n"
                     + "    </plugins>\n" + "  </build>\n" + "</project>\n");
 
-            try (FileOutputStream fos = new FileOutputStream(pom.toFile())) {
+            try (var fos = new FileOutputStream(pom.toFile())) {
                 fos.write(sb.toString().getBytes());
             }
         }
@@ -455,9 +454,9 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
     private void generateDownloadLogs(File output) throws IOException {
         // place output in 'fileContents' (replacing the Return characters
         // with Newline)
-        byte[] outputData = new byte[(int) output.length()];
+        var outputData = new byte[(int) output.length()];
         String fileContents;
-        try (FileInputStream fis = new FileInputStream(output)) {
+        try (var fis = new FileInputStream(output)) {
             //
             // Ideally this should be in a loop or even better use
             // Java 8 nio functionality.
@@ -469,7 +468,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
         // generate log messages from 'Downloading' and 'Downloaded'
         // messages within the 'mvn' output
-        int index = 0;
+        var index = 0;
         while ((index = fileContents.indexOf("\nDown", index)) > 0) {
             index += 5;
             if (fileContents.regionMatches(index, "loading: ", 0, 9)) {
@@ -502,7 +501,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
      */
     static int runProcess(long timeoutInSeconds, File directory, File stdout, String... command)
             throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder(command);
+        var pb = new ProcessBuilder(command);
         if (directory != null) {
             pb.directory(directory);
         }
@@ -510,7 +509,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
             pb.redirectOutput(stdout);
         }
 
-        Process process = pb.start();
+        var process = pb.start();
         if (process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)) {
             // process terminated before the timeout
             return process.exitValue();

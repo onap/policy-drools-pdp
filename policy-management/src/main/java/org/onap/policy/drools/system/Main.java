@@ -34,7 +34,6 @@ import org.onap.policy.common.utils.security.CryptoUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MdcTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

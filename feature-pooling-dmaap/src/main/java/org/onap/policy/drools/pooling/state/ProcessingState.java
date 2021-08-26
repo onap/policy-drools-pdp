@@ -124,7 +124,7 @@ public class ProcessingState extends State {
             throw new IllegalArgumentException(newLeader + " cannot replace " + alive.first());
         }
 
-        Leader msg = makeLeader(alive);
+        var msg = makeLeader(alive);
         logger.info("{}/{} hosts have an assignment", msg.getAssignments().getAllHosts().size(), alive.size());
 
         publish(msg);
@@ -193,7 +193,7 @@ public class ProcessingState extends State {
             return new String[BucketAssignments.MAX_BUCKETS];
         }
 
-        String[] newArray = new String[oldArray.length];
+        var newArray = new String[oldArray.length];
         System.arraycopy(oldArray, 0, newArray, 0, oldArray.length);
 
         return newArray;
@@ -231,7 +231,7 @@ public class ProcessingState extends State {
     private void addIndicesToHostBuckets(String[] bucket2host, Map<String, HostBucket> host2data) {
         LinkedList<Integer> nullBuckets = new LinkedList<>();
 
-        for (int x = 0; x < bucket2host.length; ++x) {
+        for (var x = 0; x < bucket2host.length; ++x) {
             String host = bucket2host[x];
             if (host == null) {
                 nullBuckets.add(x);

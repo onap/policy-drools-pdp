@@ -23,8 +23,6 @@ package org.onap.policy.drools.activestandby;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.onap.policy.common.im.MonitorTime;
@@ -107,7 +105,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
 
 
         //Create an instance of the Observer
-        PmStandbyStateChangeNotifier pmNotifier = new PmStandbyStateChangeNotifier();
+        var pmNotifier = new PmStandbyStateChangeNotifier();
 
         //Register the PMStandbyStateChangeNotifier Observer
         stateManagementFeature.addObserver(pmNotifier);
@@ -132,7 +130,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
     private static void initializePersistence(String configDir) {
         //Get the Active Standby properties
         try {
-            Properties activeStandbyProperties =
+            var activeStandbyProperties =
                     PropertyUtil.getProperties(configDir + "/feature-active-standby-management.properties");
             ActiveStandbyProperties.initProperties(activeStandbyProperties);
             logger.info("initializePersistence: ActiveStandbyProperties success");
@@ -140,7 +138,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
             logger.error("ActiveStandbyFeature: initializePersistence ActiveStandbyProperties", e);
         }
 
-        DroolsPdpsConnector conn = getDroolsPdpsConnector("activeStandbyPU");
+        var conn = getDroolsPdpsConnector("activeStandbyPU");
         String resourceName = ActiveStandbyProperties.getProperty(ActiveStandbyProperties.NODE_NAME);
         if (resourceName == null) {
             throw new NullPointerException();
@@ -199,8 +197,7 @@ public class ActiveStandbyFeature implements ActiveStandbyFeatureApi,
         propMap.put(PersistenceUnitProperties.TARGET_DATABASE,
                         ActiveStandbyProperties.getProperty(ActiveStandbyProperties.DB_TYPE));
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(
-                pu, propMap);
+        var emf = Persistence.createEntityManagerFactory(pu, propMap);
         return new JpaDroolsPdpsConnector(emf);
     }
 

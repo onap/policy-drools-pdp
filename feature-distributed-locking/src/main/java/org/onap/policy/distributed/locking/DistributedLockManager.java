@@ -22,7 +22,6 @@ package org.onap.policy.distributed.locking;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLTransientException;
 import java.util.HashSet;
@@ -181,7 +180,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
      * @throws Exception exception
      */
     protected BasicDataSource makeDataSource() throws Exception {
-        Properties props = new Properties();
+        var props = new Properties();
         props.put("driverClassName", featProps.getDbDriver());
         props.put("url", featProps.getDbUrl());
         props.put("username", featProps.getDbUser());
@@ -200,9 +199,8 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     private void deleteExpiredDbLocks() {
         logger.info("deleting all expired locks from the DB");
 
-        try (Connection conn = dataSource.getConnection();
-                        PreparedStatement stmt = conn
-                                        .prepareStatement("DELETE FROM pooling.locks WHERE expirationTime <= now()")) {
+        try (var conn = dataSource.getConnection();
+                var stmt = conn.prepareStatement("DELETE FROM pooling.locks WHERE expirationTime <= now()")) {
 
             int ndel = stmt.executeUpdate();
             logger.info("deleted {} expired locks from the DB", ndel);
@@ -299,7 +297,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
 
         // @formatter:off
-        try (Connection conn = dataSource.getConnection();
+        try (var conn = dataSource.getConnection();
                     PreparedStatement stmt = conn.prepareStatement(
                         "SELECT resourceId FROM pooling.locks WHERE host=? AND owner=? AND expirationTime > now()")) {
             // @formatter:on
@@ -307,9 +305,9 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
             stmt.setString(1, pdpName);
             stmt.setString(2, uuidString);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
+            try (var resultSet = stmt.executeQuery()) {
                 while (resultSet.next()) {
-                    String resourceId = resultSet.getString(1);
+                    var resourceId = resultSet.getString(1);
 
                     // we have now seen this resource id
                     expiredIds.remove(resourceId);
@@ -424,7 +422,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                 return false;
             }
 
-            AtomicBoolean result = new AtomicBoolean(false);
+            var result = new AtomicBoolean(false);
 
             feature.resource2lock.computeIfPresent(getResourceId(), (resourceId, curlock) -> {
                 if (curlock == this && !isUnavailable()) {
@@ -455,7 +453,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
                 return;
             }
 
-            AtomicBoolean success = new AtomicBoolean(false);
+            var success = new AtomicBoolean(false);
 
             feature.resource2lock.computeIfPresent(getResourceId(), (resourceId, curlock) -> {
                 if (curlock == this && !isUnavailable()) {
@@ -627,8 +625,8 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
              */
 
             logger.debug("doLock {}", this);
-            try (Connection conn = feature.dataSource.getConnection()) {
-                boolean success = false;
+            try (var conn = feature.dataSource.getConnection()) {
+                var success = false;
                 try {
                     success = doDbInsert(conn);
 
@@ -655,7 +653,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
         private void doUnlock() throws SQLException {
             logger.debug("unlock {}", this);
-            try (Connection conn = feature.dataSource.getConnection()) {
+            try (var conn = feature.dataSource.getConnection()) {
                 doDbDelete(conn);
             }
 
@@ -683,7 +681,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
              */
 
             logger.debug("doExtend {}", this);
-            try (Connection conn = feature.dataSource.getConnection()) {
+            try (var conn = feature.dataSource.getConnection()) {
                 /*
                  * invoker may have called extend() before free() had a chance to insert
                  * the record, thus we have to try to insert, if the update fails
@@ -707,8 +705,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
         protected boolean doDbInsert(Connection conn) throws SQLException {
             logger.debug("insert lock record {}", this);
-            try (PreparedStatement stmt =
-                            conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
+            try (var stmt = conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
                                             + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
 
                 stmt.setString(1, getResourceId());
@@ -735,8 +732,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
         protected boolean doDbUpdate(Connection conn) throws SQLException {
             logger.debug("update lock record {}", this);
-            try (PreparedStatement stmt =
-                            conn.prepareStatement("UPDATE pooling.locks SET resourceId=?, host=?, owner=?,"
+            try (var stmt = conn.prepareStatement("UPDATE pooling.locks SET resourceId=?, host=?, owner=?,"
                                             + " expirationTime=timestampadd(second, ?, now()) WHERE resourceId=?"
                                             + " AND ((host=? AND owner=?) OR expirationTime < now())")) {
 
@@ -768,7 +764,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
         protected void doDbDelete(Connection conn) throws SQLException {
             logger.debug("delete lock record {}", this);
-            try (PreparedStatement stmt = conn
+            try (var stmt = conn
                             .prepareStatement("DELETE FROM pooling.locks WHERE resourceId=? AND host=? AND owner=?")) {
 
                 stmt.setString(1, getResourceId());

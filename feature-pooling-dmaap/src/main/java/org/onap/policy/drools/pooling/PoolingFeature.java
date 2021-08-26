@@ -138,12 +138,12 @@ public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerF
 
         String name = controller.getName();
 
-        SpecProperties specProps = new SpecProperties(PoolingProperties.PREFIX, name, featProps);
+        var specProps = new SpecProperties(PoolingProperties.PREFIX, name, featProps);
 
         if (FeatureEnabledChecker.isFeatureEnabled(specProps, PoolingProperties.FEATURE_ENABLED)) {
             try {
                 // get & validate the properties
-                PoolingProperties props = new PoolingProperties(name, featProps);
+                var props = new PoolingProperties(name, featProps);
 
                 logger.info("pooling enabled for {}", name);
                 ctlr2pool.computeIfAbsent(name, xxx -> makeManager(host, controller, props, activeLatch));

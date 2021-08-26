@@ -22,7 +22,6 @@ package org.onap.policy.drools.pooling;
 
 import com.google.gson.JsonParseException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -516,7 +515,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
 
             msg.checkValidity();
 
-            Method meth = current.getClass().getMethod("process", msg.getClass());
+            var meth = current.getClass().getMethod("process", msg.getClass());
             changeState((State) meth.invoke(current, msg));
 
         } catch (JsonParseException e) {

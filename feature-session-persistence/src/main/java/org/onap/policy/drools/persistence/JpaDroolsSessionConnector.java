@@ -36,10 +36,10 @@ public class JpaDroolsSessionConnector implements DroolsSessionConnector {
     @Override
     public DroolsSession get(String sessName) {
 
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         DroolsSessionEntity entity = null;
 
-        try (EntityMgrTrans trans = new EntityMgrTrans(em)) {
+        try (var trans = new EntityMgrTrans(em)) {
 
             entity = em.find(DroolsSessionEntity.class, sessName);
             if (entity != null) {
@@ -58,9 +58,9 @@ public class JpaDroolsSessionConnector implements DroolsSessionConnector {
 
         logger.info("replace: Entering and manually updating session name= {}", sessName);
 
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
 
-        try (EntityMgrTrans trans = new EntityMgrTrans(em)) {
+        try (var trans = new EntityMgrTrans(em)) {
 
             if (!update(em, sess)) {
                 add(em, sess);
@@ -81,7 +81,7 @@ public class JpaDroolsSessionConnector implements DroolsSessionConnector {
     private void add(EntityManager em, DroolsSession sess) {
         logger.info("add: Inserting session id={}", sess.getSessionId());
 
-        DroolsSessionEntity ent = new DroolsSessionEntity(sess.getSessionName(), sess.getSessionId());
+        var ent = new DroolsSessionEntity(sess.getSessionName(), sess.getSessionId());
 
         em.persist(ent);
     }

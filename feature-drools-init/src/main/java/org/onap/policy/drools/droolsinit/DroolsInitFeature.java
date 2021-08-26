@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-drools-init
  * ================================================================================
- * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ package org.onap.policy.drools.droolsinit;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-import org.kie.api.runtime.rule.FactHandle;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.PolicySessionFeatureApi;
 import org.onap.policy.drools.system.PolicyEngineConstants;
@@ -68,7 +67,7 @@ public class DroolsInitFeature implements PolicySessionFeatureApi {
          */
         public Init(final PolicySession policySession) {
             // insert this instance into Drools memory
-            final FactHandle factHandle = policySession.getKieSession().insert(this);
+            final var factHandle = policySession.getKieSession().insert(this);
 
             // after 10 minutes, remove the object from Drools memory (if needed)
             PolicyEngineConstants.getManager().getExecutorService().schedule(() -> {

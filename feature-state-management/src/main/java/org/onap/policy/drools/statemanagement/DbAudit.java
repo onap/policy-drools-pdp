@@ -94,7 +94,7 @@ public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         // create connection to DB
         phase = "creating connection";
         logger.debug("DbAudit: Creating connection to {}", url);
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+        try (var connection = DriverManager.getConnection(url, user, password)) {
 
             // create audit table, if needed
             if (doCreate) {
@@ -104,7 +104,7 @@ public class DbAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
             // insert an entry into the table
             phase = "insert entry";
-            String key = UUID.randomUUID().toString();
+            var key = UUID.randomUUID().toString();
             insertEntry(connection, key);
 
             phase = "fetch entry";

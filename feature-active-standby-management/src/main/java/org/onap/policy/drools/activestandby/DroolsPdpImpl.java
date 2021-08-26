@@ -21,11 +21,13 @@
 package org.onap.policy.drools.activestandby;
 
 import java.util.Date;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class DroolsPdpImpl extends DroolsPdpObject {
 
     private boolean designated;

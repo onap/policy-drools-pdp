@@ -82,7 +82,7 @@ public class PmStandbyStateChangeNotifier extends StateChangeNotifier {
      *
      */
     public PmStandbyStateChangeNotifier() {
-        int pdpUpdateInterval =
+        var pdpUpdateInterval =
             Integer.parseInt(ActiveStandbyProperties.getProperty(ActiveStandbyProperties.PDP_UPDATE_INTERVAL));
         isWaitingForActivation = false;
         startTimeWaitingForActivationMs = currentTime.getMillis();

@@ -28,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.onap.policy.common.im.MonitorTime;
@@ -39,6 +40,7 @@ import org.onap.policy.common.im.MonitorTime;
 @NamedQuery(name = "DroolsPdpEntity.deleteAll", query = "DELETE FROM DroolsPdpEntity WHERE 1=1")
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class DroolsPdpEntity extends DroolsPdpObject implements Serializable {
 
     private static final long serialVersionUID = 1L;

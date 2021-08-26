@@ -55,7 +55,7 @@ public class StartState extends State {
 
         super.start();
 
-        Heartbeat hb = makeHeartbeat(hbTimestampMs);
+        var hb = makeHeartbeat(hbTimestampMs);
         publish(getHost(), hb);
 
         /*

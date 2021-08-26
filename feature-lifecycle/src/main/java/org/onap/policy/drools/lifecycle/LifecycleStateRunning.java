@@ -31,7 +31,6 @@ import lombok.NonNull;
 import org.apache.commons.lang3.tuple.Pair;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.domain.models.artifact.NativeArtifactPolicy;
-import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -326,7 +325,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     protected List<ToscaPolicy> syncPolicies(List<ToscaPolicy> policies,
                                    BiPredicate<PolicyTypeController, ToscaPolicy> sync) {
         List<ToscaPolicy> failedPolicies = new ArrayList<>();
-        DomainMaker domain = fsm.getDomainMaker();
+        var domain = fsm.getDomainMaker();
         for (ToscaPolicy policy : policies) {
             ToscaConceptIdentifier policyType = policy.getTypeIdentifier();
             PolicyTypeController controller = fsm.getController(policyType);
@@ -357,7 +356,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     }
 
     protected PdpResponseDetails response(String requestId, PdpResponseStatus responseStatus, String message) {
-        PdpResponseDetails response = new PdpResponseDetails();
+        var response = new PdpResponseDetails();
         response.setResponseTo(requestId);
         response.setResponseStatus(responseStatus);
         if (message != null) {

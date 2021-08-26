@@ -44,7 +44,7 @@ public class NoLockManager implements PolicyResourceLockManager, PolicyEngineFea
     @Override
     public Lock createLock(String resourceId, String ownerKey, int holdSec,
             LockCallback callback, boolean waitForLock) {
-        AlwaysSuccessLock successLock =  new AlwaysSuccessLock(resourceId, ownerKey, holdSec, callback);
+        var successLock =  new AlwaysSuccessLock(resourceId, ownerKey, holdSec, callback);
         successLock.notifyAvailable();
         return successLock;
     }
