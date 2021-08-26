@@ -53,7 +53,7 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
         PolicyController controller;
         try {
             nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
-            DroolsConfiguration droolsConfig =
+            var droolsConfig =
                     new DroolsConfiguration(
                             nativePolicy.getProperties().getRulesArtifact().getArtifactId(),
                             nativePolicy.getProperties().getRulesArtifact().getGroupId(),
@@ -77,7 +77,7 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
     public boolean undeploy(ToscaPolicy policy) {
         try {
             NativeArtifactPolicy nativePolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
-            DroolsConfiguration noConfig =
+            var noConfig =
                     new DroolsConfiguration(
                             DroolsControllerConstants.NO_ARTIFACT_ID,
                             DroolsControllerConstants.NO_GROUP_ID,
@@ -91,7 +91,7 @@ public class PolicyTypeNativeArtifactController implements PolicyTypeController 
     }
 
     private boolean update(NativeArtifactPolicy nativePolicy, DroolsConfiguration droolsConfig) {
-        ControllerConfiguration controllerConfig =
+        var controllerConfig =
                 new ControllerConfiguration(nativePolicy.getProperties().getController().getName(),
                         ControllerConfiguration.CONFIG_CONTROLLER_OPERATION_UPDATE, droolsConfig);
         return PolicyEngineConstants.getManager().updatePolicyController(controllerConfig) != null;

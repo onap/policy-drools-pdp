@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-eelf
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 package org.onap.policy.drools.eelf;
 
 import com.att.eelf.configuration.Configuration;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.onap.policy.common.logging.flexlogger.FlexLogger;
 import org.onap.policy.common.logging.flexlogger.Logger;
@@ -39,7 +38,7 @@ public class EelfFeature implements PolicyEngineFeatureApi {
 
         String logback = System.getProperty(LoggerUtil.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY,
                 LoggerUtil.LOGBACK_CONFIGURATION_FILE_DEFAULT);
-        Path logbackPath = Paths.get(logback);
+        var logbackPath = Paths.get(logback);
 
         if (System.getProperty(Configuration.PROPERTY_LOGGING_FILE_PATH) == null) {
             System.setProperty(Configuration.PROPERTY_LOGGING_FILE_PATH,
@@ -51,7 +50,7 @@ public class EelfFeature implements PolicyEngineFeatureApi {
                     logbackPath.getFileName().toString());
         }
 
-        Logger logger = FlexLogger.getLogger(this.getClass(), true);
+        var logger = FlexLogger.getLogger(this.getClass(), true);
 
         if (logger.isInfoEnabled()) {
             logProperty(logger, LoggerUtil.LOGBACK_CONFIGURATION_FILE_SYSTEM_PROPERTY);

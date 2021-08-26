@@ -176,7 +176,7 @@ public class ActiveState extends ProcessingState {
      * Generates a heart beat for this host and its successor.
      */
     private void genHeartbeat() {
-        Heartbeat msg = makeHeartbeat(System.currentTimeMillis());
+        var msg = makeHeartbeat(System.currentTimeMillis());
         publish(getHost(), msg);
 
         if (succHost != null) {

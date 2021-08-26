@@ -140,7 +140,7 @@ public class PolicyTypeDroolsController implements PolicyTypeController {
     private boolean perform(ToscaPolicy policy, Predicate<PolicyController> operation) {
         try {
             List<PolicyController> selected = selectControllers(policy);
-            boolean success = true;
+            var success = true;
             for (PolicyController controller : selected) {
                 success = modifyController(operation, controller) && success;
             }

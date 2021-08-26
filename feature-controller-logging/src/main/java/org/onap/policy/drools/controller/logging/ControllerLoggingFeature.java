@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-controller-logging
  * ================================================================================
- * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.system.PolicyEngine;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -64,7 +63,7 @@ public class ControllerLoggingFeature
      */
     @Override
     public boolean beforeOffer(PolicyController controller, CommInfrastructure protocol, String topic, String event) {
-        Logger controllerLogger = LoggerFactory.getLogger(controller.getName());
+        var controllerLogger = LoggerFactory.getLogger(controller.getName());
         controllerLogger.info("[IN|{}|{}]{}{}", protocol, topic, LINE_SEP, event);
         return false;
     }
@@ -77,7 +76,7 @@ public class ControllerLoggingFeature
     public boolean afterDeliver(DroolsController controller, TopicSink sink, Object fact, String json,
                     boolean success) {
         if (success) {
-            Logger controllerLogger = LoggerFactory
+            var controllerLogger = LoggerFactory
                             .getLogger(PolicyControllerConstants.getFactory().get(controller).getName());
             controllerLogger.info("[OUT|{}|{}]{}{}", sink.getTopicCommInfrastructure(), sink.getTopic(),
                             LINE_SEP, json);
@@ -93,7 +92,7 @@ public class ControllerLoggingFeature
     public boolean afterOnTopicEvent(PolicyEngine engine, PdpdConfiguration configuration, CommInfrastructure commType,
                     String topic, String event) {
         for (ControllerConfiguration controller : configuration.getControllers()) {
-            Logger controllerLogger = LoggerFactory.getLogger(controller.getName());
+            var controllerLogger = LoggerFactory.getLogger(controller.getName());
             controllerLogger.info("[IN|{}|{}]{}{}", commType, topic, LINE_SEP, event);
         }
         return false;

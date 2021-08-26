@@ -82,7 +82,6 @@ import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
 import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.utils.PropertyUtil;
-import org.onap.policy.drools.utils.logging.LoggerUtil;
 import org.onap.policy.drools.utils.logging.MdcTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

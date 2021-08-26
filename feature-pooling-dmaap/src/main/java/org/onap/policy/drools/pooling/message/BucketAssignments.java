@@ -172,7 +172,7 @@ public class BucketAssignments {
             throw new PoolingFeatureException("too many hosts in message bucket assignments");
         }
 
-        for (int x = 0; x < hostArray.length; ++x) {
+        for (var x = 0; x < hostArray.length; ++x) {
             if (hostArray[x] == null) {
                 throw new PoolingFeatureException("bucket " + x + " has no assignment");
             }
@@ -181,8 +181,8 @@ public class BucketAssignments {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+        final var prime = 31;
+        var result = 1;
         result = prime * result + Arrays.hashCode(hostArray);
         return result;
     }

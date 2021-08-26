@@ -74,11 +74,11 @@ public class HealthCheckManager implements HealthCheck {
      */
     @Override
     public Reports healthCheck() {
-        Reports reports = new Reports();
+        var reports = new Reports();
         boolean thisEngineIsAlive = getEngineManager().isAlive();
         reports.setHealthy(thisEngineIsAlive);
 
-        HealthCheck.Report engineReport = new Report();
+        var engineReport = new Report();
         engineReport.setHealthy(thisEngineIsAlive);
         engineReport.setName("PDP-D");
         engineReport.setUrl("self");
@@ -87,12 +87,12 @@ public class HealthCheckManager implements HealthCheck {
         reports.getDetails().add(engineReport);
 
         for (HttpClient client : clients) {
-            HealthCheck.Report report = new Report();
+            var report = new Report();
             report.setName(client.getName());
             report.setUrl(client.getBaseUrl());
             report.setHealthy(true);
             try {
-                Response response = client.get();
+                var response = client.get();
                 report.setCode(response.getStatus());
                 if (report.getCode() != 200) {
                     report.setHealthy(false);

@@ -21,14 +21,12 @@
 package org.onap.policy.drools.activestandby;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
-import javax.persistence.Query;
 import lombok.AllArgsConstructor;
 import org.onap.policy.common.im.MonitorTime;
 import org.onap.policy.common.utils.time.CurrentTime;
@@ -50,19 +48,15 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
     @Override
     public Collection<DroolsPdp> getDroolsPdps() {
         //return a list of all the DroolsPdps in the database
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            Query droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p");
-            List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
+            var droolsPdpsListQuery = em.createQuery("SELECT p FROM DroolsPdpEntity p", DroolsPdp.class);
+            List<DroolsPdp> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
                     .setFlushMode(FlushModeType.COMMIT).getResultList();
             LinkedList<DroolsPdp> droolsPdpsReturnList = new LinkedList<>();
-            for (Object o : droolsPdpsList) {
-                if (!(o instanceof DroolsPdp)) {
-                    continue;
-                }
+            for (DroolsPdp droolsPdp : droolsPdpsList) {
                 //Make sure it is not a cached version
-                DroolsPdp droolsPdp = (DroolsPdp) o;
                 em.refresh(droolsPdp);
                 droolsPdpsReturnList.add(droolsPdp);
                 if (logger.isDebugEnabled()) {
@@ -100,18 +94,18 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         logger.debug("update: Entering, pdpId={}", pdp.getPdpId());
 
         //this is to update our own pdp in the database
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            Query droolsPdpsListQuery = em.createQuery(SELECT_PDP_BY_ID);
+            var droolsPdpsListQuery = em.createQuery(SELECT_PDP_BY_ID, DroolsPdpEntity.class);
             droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdp.getPdpId());
-            List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
+            List<DroolsPdpEntity> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
                     .setFlushMode(FlushModeType.COMMIT).getResultList();
             DroolsPdpEntity droolsPdpEntity;
-            if (droolsPdpsList.size() == 1 && (droolsPdpsList.get(0) instanceof DroolsPdpEntity)) {
-                droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
+            if (droolsPdpsList.size() == 1) {
+                droolsPdpEntity = droolsPdpsList.get(0);
                 em.refresh(droolsPdpEntity); //Make sure we have current values
-                Date currentDate = currentTime.getDate();
+                var currentDate = currentTime.getDate();
                 long difference = currentDate.getTime() - droolsPdpEntity.getUpdatedDate().getTime();
                 //just set some kind of default here
                 long pdpTimeout = 15000;
@@ -175,18 +169,18 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
         boolean isCurrent = isCurrent(pdp);
 
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         try {
             if (!isCurrent && pdp.isDesignated()) {
                 em.getTransaction().begin();
-                Query droolsPdpsListQuery = em.createQuery(SELECT_PDP_BY_ID);
+                var droolsPdpsListQuery = em.createQuery(SELECT_PDP_BY_ID, DroolsPdpEntity.class);
                 droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdp.getPdpId());
-                List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
+                List<DroolsPdpEntity> droolsPdpsList = droolsPdpsListQuery.setLockMode(LockModeType.NONE)
                         .setFlushMode(FlushModeType.COMMIT).getResultList();
-                if (droolsPdpsList.size() == 1 && droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
+                if (droolsPdpsList.size() == 1) {
                     logger.debug("isPdpCurrent: PDP={}  designated but not current; setting designated to false",
                                     pdp.getPdpId());
-                    DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
+                    var droolsPdpEntity = droolsPdpsList.get(0);
                     droolsPdpEntity.setDesignated(false);
                     em.getTransaction().commit();
                 } else {
@@ -217,15 +211,13 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         try {
             em = emf.createEntityManager();
             em.getTransaction().begin();
-            Query droolsPdpsListQuery = em
-                    .createQuery(SELECT_PDP_BY_ID);
+            var droolsPdpsListQuery = em
+                    .createQuery(SELECT_PDP_BY_ID, DroolsPdpEntity.class);
             droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdp.getPdpId());
-            List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
+            List<DroolsPdpEntity> droolsPdpsList = droolsPdpsListQuery.setLockMode(
                     LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
-            if (droolsPdpsList.size() == 1
-                    && droolsPdpsList.get(0) instanceof DroolsPdpEntity) {
-                DroolsPdpEntity droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList
-                        .get(0);
+            if (droolsPdpsList.size() == 1) {
+                var droolsPdpEntity = droolsPdpsList.get(0);
 
                 logger.debug("setDesignated: PDP={}"
                         + " found, designated= {}"
@@ -275,15 +267,13 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
              * Get droolspdpentity record for this PDP and mark DESIGNATED as
              * false.
              */
-            Query droolsPdpsListQuery = em
-                    .createQuery(SELECT_PDP_BY_ID);
+            var droolsPdpsListQuery = em
+                    .createQuery(SELECT_PDP_BY_ID, DroolsPdpEntity.class);
             droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdpId);
-            List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
+            List<DroolsPdpEntity> droolsPdpsList = droolsPdpsListQuery.setLockMode(
                     LockModeType.NONE).setFlushMode(FlushModeType.COMMIT).getResultList();
-            DroolsPdpEntity droolsPdpEntity;
-            if (droolsPdpsList.size() == 1
-                    && (droolsPdpsList.get(0) instanceof DroolsPdpEntity)) {
-                droolsPdpEntity = (DroolsPdpEntity) droolsPdpsList.get(0);
+            if (droolsPdpsList.size() == 1) {
+                var droolsPdpEntity = droolsPdpsList.get(0);
                 droolsPdpEntity.setDesignated(false);
                 em.persist(droolsPdpEntity);
                 logger.debug("standDownPdp: PDP={} persisted as non-designated.", pdpId);
@@ -324,8 +314,8 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
         logger.debug("hasDesignatedPdpFailed: Entering, pdps.size()={}", pdps.size());
 
-        boolean failed = true;
-        boolean foundDesignatedPdp = false;
+        var failed = true;
+        var foundDesignatedPdp = false;
 
         for (DroolsPdp pdp : pdps) {
 
@@ -360,13 +350,13 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
 
         logger.debug("isCurrent: Entering, pdpId={}", pdp.getPdpId());
 
-        boolean current = false;
+        var current = false;
 
         // Return if the current PDP is considered "current" based on whatever
         // time box that may be.
         // If the the PDP is not current, we should mark it as not primary in
         // the database
-        Date currentDate = currentTime.getDate();
+        var currentDate = currentTime.getDate();
         long difference = currentDate.getTime()
                 - pdp.getUpdatedDate().getTime();
         // just set some kind of default here
@@ -402,7 +392,7 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         try {
             em = emf.createEntityManager();
             em.getTransaction().begin();
-            Query droolsPdpsListQuery = em
+            var droolsPdpsListQuery = em
                     .createQuery(SELECT_PDP_BY_ID);
             droolsPdpsListQuery.setParameter(PDP_ID_PARAM, pdpId);
             List<?> droolsPdpsList = droolsPdpsListQuery.setLockMode(
@@ -446,14 +436,14 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         /*
          * Start transaction
          */
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
             /*
              * Insert record.
              */
-            DroolsPdpEntity droolsPdpEntity = new DroolsPdpEntity();
+            var droolsPdpEntity = new DroolsPdpEntity();
             em.persist(droolsPdpEntity);
             droolsPdpEntity.setPdpId(pdp.getPdpId());
             droolsPdpEntity.setDesignated(pdp.isDesignated());
@@ -484,11 +474,11 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         /*
          * Start transaction
          */
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
-            Query droolsPdpsListQuery = em
+            var droolsPdpsListQuery = em
                     .createQuery("SELECT p FROM DroolsPdpEntity p");
             @SuppressWarnings("unchecked")
             List<DroolsPdp> droolsPdpsList = droolsPdpsListQuery.setLockMode(
@@ -521,14 +511,14 @@ public class JpaDroolsPdpsConnector implements DroolsPdpsConnector {
         /*
          * Start transaction
          */
-        EntityManager em = emf.createEntityManager();
+        var em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
 
             /*
              * Delete record.
              */
-            DroolsPdpEntity droolsPdpEntity = em.find(DroolsPdpEntity.class, pdpId);
+            var droolsPdpEntity = em.find(DroolsPdpEntity.class, pdpId);
             if (droolsPdpEntity != null) {
                 logger.debug("deletePdp: Removing PDP");
                 em.remove(droolsPdpEntity);

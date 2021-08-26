@@ -109,9 +109,6 @@ public class LifecycleFsm implements Startable {
     @Getter
     protected TopicSinkClient client;
 
-    @Getter
-    protected final String name = PolicyEngineConstants.PDP_NAME;
-
     protected LifecycleState state = new LifecycleStateTerminated(this);
 
     @GsonJsonIgnore
@@ -178,6 +175,10 @@ public class LifecycleFsm implements Startable {
                 mandatoryPolicyTypes, isMandatoryPolicyTypesCompliant());
 
         stats.setPdpInstanceId(PolicyEngineConstants.PDP_NAME);
+    }
+
+    public String getName() {
+        return PolicyEngineConstants.PDP_NAME;
     }
 
     @GsonJsonIgnore
@@ -625,7 +626,7 @@ public class LifecycleFsm implements Startable {
 
     protected PdpStatus statusPayload(@NonNull PdpState state) {
         var status = new PdpStatus();
-        status.setName(name);
+        status.setName(getName());
         status.setPdpGroup(group);
         status.setPdpSubgroup(subGroup);
         status.setState(state);
