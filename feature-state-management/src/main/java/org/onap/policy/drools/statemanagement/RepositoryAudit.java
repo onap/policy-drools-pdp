@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.io.FileUtils;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,6 +157,15 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
          */
         data.dir = Files.createTempDirectory("auditRepo");
         logger.info("RepositoryAudit: temporary directory = {}", data.dir);
+
+        // set its permissions
+        var file = data.dir.toFile();
+        if (!file.setReadable(true, true) || !file.setWritable(true, true) || !file.setExecutable(true, true)) {
+            logger.warn("cannot set directory permissions for {}", file);
+        }
+
+        // ensure nothing has been written to it
+        FileUtils.cleanDirectory(file);
 
         // nested 'pom.xml' file and 'repo' directory
         final Path pom = data.dir.resolve("pom.xml");
