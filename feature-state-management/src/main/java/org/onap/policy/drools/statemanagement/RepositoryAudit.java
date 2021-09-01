@@ -24,11 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -38,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.io.FileUtils;
 import org.onap.policy.common.im.IntegrityMonitorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,6 +155,15 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         data.dir = Files.createTempDirectory("auditRepo");
         logger.info("RepositoryAudit: temporary directory = {}", data.dir);
 
+        // set its permissions
+        var file = data.dir.toFile();
+        if (!file.setReadable(true, true) || !file.setWritable(true, true) || !file.setExecutable(true, true)) {
+            logger.warn("cannot set directory permissions for {}", file);
+        }
+
+        // ensure nothing has been written to it
+        FileUtils.cleanDirectory(file);
+
         // nested 'pom.xml' file and 'repo' directory
         final Path pom = data.dir.resolve("pom.xml");
         final Path repo = data.dir.resolve("repo");
@@ -206,7 +213,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         /*
          * 7) Remove the temporary directory
          */
-        Files.walkFileTree(data.dir, new RecursivelyDeleteDirectory());
+        FileUtils.forceDelete(file);
     }
 
 
@@ -518,34 +525,6 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         // process timed out -- kill it, and return -1
         process.destroyForcibly();
         return -1;
-    }
-
-    /**
-     * This class is used to recursively delete a directory and all of its contents.
-     */
-    private final class RecursivelyDeleteDirectory extends SimpleFileVisitor<Path> {
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-            return deletePath("file", file);
-        }
-
-        @Override
-        public FileVisitResult postVisitDirectory(Path file, IOException ex) throws IOException {
-            if (ex == null) {
-                return deletePath("directory", file);
-            } else {
-                throw ex;
-            }
-        }
-
-        private FileVisitResult deletePath(String type, Path file) {
-            try {
-                Files.delete(file);
-            } catch (IOException e) {
-                logger.warn("failed to delete {} {}", type, file, e);
-            }
-            return FileVisitResult.CONTINUE;
-        }
     }
 
     /* ============================================================ */
