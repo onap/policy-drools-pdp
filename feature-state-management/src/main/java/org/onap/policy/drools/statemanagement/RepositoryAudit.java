@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +36,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.onap.policy.common.im.IntegrityMonitorException;
+import org.onap.policy.common.utils.resources.DirectoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,17 +152,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         /*
          * 1) create temporary directory
          */
-        data.dir = Files.createTempDirectory("auditRepo");
-        logger.info("RepositoryAudit: temporary directory = {}", data.dir);
-
-        // set its permissions
-        var file = data.dir.toFile();
-        if (!file.setReadable(true, true) || !file.setWritable(true, true) || !file.setExecutable(true, true)) {
-            logger.warn("cannot set directory permissions for {}", file);
-        }
-
-        // ensure nothing has been written to it
-        FileUtils.cleanDirectory(file);
+        data.dir = DirectoryUtils.createTempDirectory("auditRepo");
 
         // nested 'pom.xml' file and 'repo' directory
         final Path pom = data.dir.resolve("pom.xml");
@@ -213,7 +203,7 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
         /*
          * 7) Remove the temporary directory
          */
-        FileUtils.forceDelete(file);
+        FileUtils.forceDelete(data.dir.toFile());
     }
 
 
