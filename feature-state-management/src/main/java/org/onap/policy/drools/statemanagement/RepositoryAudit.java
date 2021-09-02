@@ -151,8 +151,11 @@ public class RepositoryAudit extends DroolsPdpIntegrityMonitor.AuditBase {
 
         /*
          * 1) create temporary directory
+         *
+         * Disabling sonar, as the code below sets the permissions, just as sonar
+         * suggests it be fixed.
          */
-        data.dir = Files.createTempDirectory("auditRepo");
+        data.dir = Files.createTempDirectory("auditRepo");      // NOSONAR
         logger.info("RepositoryAudit: temporary directory = {}", data.dir);
 
         // set its permissions
