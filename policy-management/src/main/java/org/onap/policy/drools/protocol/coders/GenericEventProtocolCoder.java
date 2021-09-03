@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
@@ -38,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * This protocol Coder that does its best attempt to decode/encode, selecting the best class and best fitted json
  * parsing tools.
  */
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class GenericEventProtocolCoder {
     private static final String INVALID_ARTIFACT_ID_MSG = "Invalid artifact id";
@@ -719,5 +717,18 @@ abstract class GenericEventProtocolCoder {
             // continue
         }
         return droolsControllers;
+    }
+
+    /*
+     * Note: this only logs the KEYSETS, thus lombok ToString annotation is not used.
+     * Otherwise, it results in too much verbosity.
+     */
+    @Override
+    public String toString() {
+        return "GenericEventProtocolCoder [coders="
+                + coders.keySet()
+                + ", reverseCoders="
+                + reverseCoders.keySet()
+                + "]";
     }
 }
