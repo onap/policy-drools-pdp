@@ -101,7 +101,7 @@
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
-        <filter class="org.onap.policy.drools.utils.logging.LoggerMarkerFilter$MetricLoggerMarkerFilter" />
+        <filter class="org.onap.policy.common.utils.logging.LoggerMarkerFilter$MetricLoggerMarkerFilter" />
         <encoder>
             <pattern>${metricPattern}</pattern>
         </encoder>
@@ -119,7 +119,7 @@
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
-        <filter class="org.onap.policy.drools.utils.logging.LoggerMarkerFilter$TransactionLoggerMarkerFilter" />
+        <filter class="org.onap.policy.common.utils.logging.LoggerMarkerFilter$TransactionLoggerMarkerFilter" />
         <encoder>
             <pattern>${transactionPattern}</pattern>
         </encoder>
