@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf2144b7_6fa43793",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2021-09-09T17:21:03Z",
+      "side": 1,
+      "message": "remove the blank line",
+      "revId": "08098da150bd762155554697ea147cc68c8fad16",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
