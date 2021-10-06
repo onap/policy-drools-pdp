@@ -39,7 +39,7 @@ if [ -n "${TELEMETRY_USER}" ]; then
 fi
 
 PROTOCOL="http"
-if egrep "^http\.server\.services\..*CONFIG\.https.*=.*true" ${POLICY_HOME}/config/engine.properties; then
+if [ $HTTP_SERVER_HTTPS == "true" ]; then
     PROTOCOL="https"
 fi
 
