@@ -39,9 +39,17 @@ if [ -n "${TELEMETRY_USER}" ]; then
 fi
 
 PROTOCOL="http"
+
+# use environment flag if set
+if [ $HTTP_SERVER_HTTPS == "true" ]; then
+    PROTOCOL="https"
+fi
+
+# it takes precedence if https is explicitly set up in the configuration
 if egrep "^http\.server\.services\..*CONFIG\.https.*=.*true" ${POLICY_HOME}/config/engine.properties; then
     PROTOCOL="https"
 fi
+
 
 if [ ! -r "${TELEMETRY_SPEC}" ]; then
     echo "generating new spec .."
