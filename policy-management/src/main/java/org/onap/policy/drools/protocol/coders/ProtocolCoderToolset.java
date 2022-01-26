@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
 import org.slf4j.Logger;
@@ -36,13 +35,12 @@ import org.slf4j.LoggerFactory;
  * Protocol Coding/Decoding Toolset.
  */
 @Getter
-@ToString
 public abstract class ProtocolCoderToolset {
 
     /**
      * Logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
 
     /**
      * topic.
@@ -226,4 +224,12 @@ public abstract class ProtocolCoderToolset {
      * @throws UnsupportedOperationException if parsing into POJO is not possible
      */
     public abstract String encode(Object event);
+
+    @Override
+    public String toString() {
+        return "ProtocolCoderToolset [topic=" + this.topic + ", controllerId="
+                + this.controllerId + ", groupId=" + groupId + ", artifactId="
+                + this.artifactId + ", coders=" + this.coders
+                + ", customCoder=" + this.customCoder + "]";
+    }
 }
