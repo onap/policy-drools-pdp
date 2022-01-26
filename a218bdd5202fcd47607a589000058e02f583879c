@@ -22,6 +22,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "693b7d25_0952b89c",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-01-26T22:25:14Z",
+      "side": 1,
+      "message": "IMO it seems unnecessary to have the 6 prom. counters in distribution/apex just for deploy/undeploy:\n\nI took this approach with labels (with limited cardinality), to align with how I understood \nbest practices from here (source code gets less bulky too):\n\nhttps://prometheus.io/docs/practices/instrumentation/#use-labels\n\nQuote:\n\u003e When you have multiple metrics that you want to add/average/sum, they should usually be \n\u003e one metric with labels rather than multiple metrics.\n\u003e \n\u003e For example, rather than http_responses_500_total and http_responses_403_total, create a \n\u003e single metric \u003e called http_responses_total with a code label for the HTTP response code. \n\u003e You can then process the entire metric as one in rules and graphs\n\u003e \n\nIn theory I think it should allow aggregation of all labels or any combination subset of them with promql.\n\nI seem to understand the same from here:\n\nhttps://prometheus.io/docs/practices/naming/\n\nQuote:\n\u003e Use labels to differentiate the characteristics of the thing that is being measured:\n\u003e\n\u003e api_http_requests_total - differentiate request types: operation\u003d\"create|update|delete\"\n\u003e api_request_duration_seconds - differentiate request stages: \u003e stage\u003d\"extract|transform|load\"\n\u003e Do not put the label names in the metric name, as this introduces redundancy and will \n\u003e cause confusion if the respective labels are aggregated away.\n\nI also want to provide on drools side, state information of when the policy was deployed (state) label \nthat probably won\u0027t be expected in the distribution/apex side, so I don\u0027t think we\u0027ll have all components\nfully aligned on exact metric.",
+      "parentUuid": "475d567a_d39e95eb",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
