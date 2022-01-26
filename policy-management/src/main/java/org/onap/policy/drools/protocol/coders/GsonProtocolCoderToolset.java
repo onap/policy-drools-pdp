@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import lombok.ToString;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
@@ -42,7 +41,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Tools used for encoding/decoding using GSON.
  */
-@ToString(callSuper = true)
 class GsonProtocolCoderToolset extends ProtocolCoderToolset {
     private static final String CANNOT_FETCH_CLASS = "{}: cannot fetch application class {}";
     private static final String FETCH_CLASS_EX_MSG = "cannot fetch application class ";
@@ -57,9 +55,6 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
      */
     @GsonJsonIgnore
     public static final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSxxx");
-
-    @GsonJsonIgnore
-    public static final DateTimeFormatter zuluFormat = DateTimeFormatter.ISO_INSTANT;
 
     /**
      * Adapter for ZonedDateTime.
@@ -96,7 +91,6 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
         }
 
     }
-
 
     /**
      * decoder.
@@ -197,7 +191,7 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
             } catch (final Exception e) {
                 logger.warn("{} cannot decode {} into {}", this, json, decoderClass.getName());
                 throw new UnsupportedOperationException(
-                        "cannont decode into " + decoderFilter.getFactClass(), e);
+                        "cannot decode into " + decoderFilter.getFactClass(), e);
             }
         }
     }
@@ -231,5 +225,10 @@ class GsonProtocolCoderToolset extends ProtocolCoderToolset {
                 throw new UnsupportedOperationException("event cannot be encoded", e);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "GsonProtocolCoderToolset [toString()=" + super.toString() + "]";
     }
 }
