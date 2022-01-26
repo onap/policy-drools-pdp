@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import com.google.re2j.Pattern;
+import io.prometheus.client.Counter;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -99,6 +100,12 @@ public class LifecycleFsm implements Startable {
 
     protected static final ToscaConceptIdentifier POLICY_TYPE_DROOLS_NATIVE_CONTROLLER =
             new ToscaConceptIdentifier("onap.policies.native.drools.Controller", "1.0.0");
+
+    protected static final Counter promDeployRequests =
+            Counter.build().namespace("pdpd").name("policy_deploy_requests")
+                    .labelNames("state", "operation", "acceptance")
+                    .help("Total number of policy deployment requests")
+                    .register();
 
     @Getter
     protected final Properties properties;
@@ -436,6 +443,7 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfAbsent(policy.getIdentifier(), key -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
+            promDeployRequests.labels(state.state().name(), "deploy", "accepted").inc();
             getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
             getStats().setPolicyDeploySuccessCount(getStats().getPolicyDeploySuccessCount() + 1);
             return policy;
@@ -446,6 +454,7 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfPresent(policy.getIdentifier(), (key, value) -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
+            promDeployRequests.labels(state.state().name(), "undeploy", "accepted").inc();
             getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
             getStats().setPolicyUndeploySuccessCount(getStats().getPolicyUndeploySuccessCount() + 1);
             return null;
@@ -453,11 +462,13 @@ public class LifecycleFsm implements Startable {
     }
 
     protected void failedDeployPolicyAction(@NonNull ToscaPolicy failedPolicy) {    // NOSONAR
+        promDeployRequests.labels(state.state().name(), "deploy", "declined").inc();
         getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
         getStats().setPolicyDeployFailCount(getStats().getPolicyDeployFailCount() + 1);
     }
 
     protected void failedUndeployPolicyAction(ToscaPolicy failedPolicy) {
+        promDeployRequests.labels(state.state().name(), "undeploy", "declined").inc();
         getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
         getStats().setPolicyUndeployFailCount(getStats().getPolicyUndeployFailCount() + 1);
         policiesMap.remove(failedPolicy.getIdentifier());
