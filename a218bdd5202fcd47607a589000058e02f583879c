@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "475d567a_d39e95eb",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 3239
+      },
+      "writtenOn": "2022-01-26T20:59:32Z",
+      "side": 1,
+      "message": "The approach we are following in other components (distribution, apex-pdp) is to have separate counters for total, success \u0026 failure. I see that you are registering a single counter and using the labels instead.\nMay be we should align to one way.\n\nOne benefit of having them separate will be the ease of reading and creating dashboards in Grafana or similar tools.\n\n@Rashmi \u0026 @Ajith feel free to add your thoughts.",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
