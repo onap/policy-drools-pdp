@@ -70,6 +70,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4d9c0213_38e8371e",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 4903
+      },
+      "writtenOn": "2022-01-27T13:00:20Z",
+      "side": 1,
+      "message": "Sounds good to me.\n@Jorge: Thanks, that is informative. One comment though, wouldn\u0027t \"status: success/failure\" suit better than \"acceptance: accepted/declined\"?",
+      "parentUuid": "3b43906b_b3365de7",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
