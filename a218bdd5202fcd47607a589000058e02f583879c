@@ -46,6 +46,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b43906b_b3365de7",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2022-01-27T03:35:54Z",
+      "side": 1,
+      "message": "Indeed we cannot fully align on the metrics across all components, for instance only operation and acceptance apply to apex/distribution. However, I do think we can align on the label key/values e.g. \"operation:deploy/undeploy\", \"acceptance/status:accepted/declined or success/failure\" and name of the metrics themselves wherever applicable (mainly deployment stats and policy execution stats). I was not comfortable defining my own strings for labels in the first pass and let them evolve as we extend metrics supports across the FWK. What do you think?\n\nOtherwise the changes LGTM.",
+      "parentUuid": "693b7d25_0952b89c",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
