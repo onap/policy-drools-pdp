@@ -118,6 +118,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cdb1188_b218d0b2",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-01-28T15:43:40Z",
+      "side": 1,
+      "message": "That\u0027s good, I\u0027ll make this constants below ..\n\nIt seems to me a little bit more models oriented this type of data.   Thoughts?\n\n// cannot have \"-\" in the namespace\n// this I am not sure we should fix in a enum.  \n// Thoughts?\nPROMETHEUS_NAMESPACE \u003d enum { \"api\", \"pap\", \"distribution\", \"pdpa\", \"pdpx\", \"pdpd\" }   \n\n// prometheus library will generate for counters of the form:\n// \u003cPROMETHEUS_NAMESPACE\u003e_\u003cPROMETHEUS_COUNTER_DEPLOY_REQUESTS\u003e_total\n\nPROMETHEUS_DEPLOY_METRIC \u003d \"policy_deploy_requests\"\n\n// these labels can be applied to any object\nPROMETHEUS_OPERATION_LABEL \u003d \"operation\"\nPROMETHEUS_STATE_LABEL \u003d \"state\"  \nPROMETHEUS_STATUS_LABEL \u003d \"status\"    \n\n// The operation values not need to be defined and can be retrieve \n// from policy/models:\n\norg.onap.policy.models.pdp.enums.PdpResponseStatus\norg.onap.policy.models.pdp.enums.PdpState\n\nPROMETHEUS_OPERATION_VALUES \u003d enum { \"deploy\", \"undeploy\" }\n\nLet\u0027s just focus on metrics deploy/undeploy oriented for this exercise.\nComments?",
+      "parentUuid": "60c163fd_2fc1fc87",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
