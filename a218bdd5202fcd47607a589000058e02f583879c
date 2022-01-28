@@ -142,6 +142,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a446e5f9_bbb963e0",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2022-01-28T16:25:04Z",
+      "side": 1,
+      "message": "Thank you Jorge, those are very good suggestions! One nitpick, wondering of scenarios where state as a label for deploy/undeploy metrics could be used. Mostly the monitoring systems would want to monitor failure rate by the pdp type (or over all PDPs), so on Grafana we would mostly be aggregating.\n\nOn a side note for execution counters, we would need to also capture total counters. For instance, in APEX PDP the total counters may not always be the sum of success and total e.g. timeout scenarios, and helpful in catching anomalies. That likely means a new label value \"total\" under status label key? We can address that when we get there.",
+      "parentUuid": "7cdb1188_b218d0b2",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
