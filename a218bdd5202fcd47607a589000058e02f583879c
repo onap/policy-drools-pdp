@@ -166,6 +166,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "54a8f332_902532c9",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-01-29T14:54:14Z",
+      "side": 1,
+      "message": "Thanks Rashmi!   With regards to state, I think in terms of selection, you can leave in or out in a query to narrow the query down by it or not.   In some cases, it may provide important information as deploying policies in PASSIVE state is not the same as in ACTIVE in the sense that they are not functional yet, so that would be there if anybody needs more granularity in the selection.    To make it clear, the state is no mandatory and can be omitted, it may not make much sense for example in distribution.\n\nI think for the policy execution counters, the state values would be up to PDP to choose the right values for the labels, I don\u0027t think we need to standardize on it.  I think though querying the execution counter aggregating all labels should give the total (can apply the sum or rate for that). In the drools pdp, we\u0027ll peg transactions and operations, under some category but I still need to look at that based on the information available.\n\nAs an FYI, this is how the prometheus folks defined their http requests counter with at least 4 labels:\n\nprometheus_http_requests_total{code\u003d\"200\", handler\u003d\"/api/v1/alertmanagers\", instance\u003d\"localhost:9090\", job\u003d\"prometheus\"}\n\t1\nprometheus_http_requests_total{code\u003d\"200\", handler\u003d\"/api/v1/label/:name/values\", instance\u003d\"localhost:9090\", job\u003d\"prometheus\"}\n\t16\nprometheus_http_requests_total{code\u003d\"200\", handler\u003d\"/api/v1/metadata\", instance\u003d\"localhost:9090\", job\u003d\"prometheus\"}\n\t7",
+      "parentUuid": "a446e5f9_bbb963e0",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
