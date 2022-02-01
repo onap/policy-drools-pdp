@@ -190,6 +190,30 @@
       "revId": "a218bdd5202fcd47607a589000058e02f583879c",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "386a9163_fd2911cc",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 159
+      },
+      "writtenOn": "2022-02-01T15:01:45Z",
+      "side": 1,
+      "message": "Thanks for the explanation Jorge. Makes sense.",
+      "parentUuid": "54a8f332_902532c9",
+      "range": {
+        "startLine": 106,
+        "startChar": 20,
+        "endLine": 106,
+        "endChar": 67
+      },
+      "revId": "a218bdd5202fcd47607a589000058e02f583879c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
