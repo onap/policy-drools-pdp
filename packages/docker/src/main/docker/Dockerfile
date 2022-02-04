@@ -2,6 +2,7 @@
 # Dockerfile
 # ============LICENSE_START=======================================================
 #  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
+#  Modified Copyright (C) 2022 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,6 +46,7 @@ RUN apk update && \
     apk add --no-cache mariadb-client \
     file \
     net-tools netcat-openbsd sudo less vim openssl \
+    && pip install --upgrade pip==22.0.3 \
     && python3 -m pip install --no-cache-dir --upgrade setuptools http-prompt \
     && python3 -m pip install --no-cache-dir httpie
 
