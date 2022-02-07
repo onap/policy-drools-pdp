@@ -19,7 +19,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # ============LICENSE_END=========================================================
 #-------------------------------------------------------------------------------
-FROM onap/policy-jdk-alpine:2.4.0
+FROM onap/policy-jdk-alpine:2.4-SNAPSHOT-latest
 
 LABEL maintainer="Policy Team"
 
@@ -46,7 +46,6 @@ RUN apk update && \
     apk add --no-cache mariadb-client \
     file \
     net-tools netcat-openbsd sudo less vim openssl \
-    && pip install --upgrade pip==22.0.3 \
     && python3 -m pip install --no-cache-dir --upgrade setuptools http-prompt \
     && python3 -m pip install --no-cache-dir httpie
 
