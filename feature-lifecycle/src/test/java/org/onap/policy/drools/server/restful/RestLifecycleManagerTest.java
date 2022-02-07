@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import io.prometheus.client.CollectorRegistry;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -65,7 +66,6 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
  * REST Lifecycle Manager Test.
  */
 public class RestLifecycleManagerTest {
-
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON =
@@ -91,6 +91,13 @@ public class RestLifecycleManagerTest {
     private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
             "policies/vCPE.policy.operational.input.tosca.json";
 
+    public static final String PROM_DEPLOY_REQUESTS_TOTAL_UNDEPLOY_ACCEPTED =
+            "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"undeploy\",status=\"SUCCESS\",}";
+    public static final String PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_ACCEPTED =
+            "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"SUCCESS\",}";
+    public static final String PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_DECLINED =
+            "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"FAIL\",}";
+
     private static final StandardCoder coder = new StandardCoder();
     private static final ControllerSupport controllerSupport = new ControllerSupport("lifecycle");
 
@@ -102,6 +109,8 @@ public class RestLifecycleManagerTest {
      */
     @Before
      public void setUp() throws Exception {
+        CollectorRegistry.defaultRegistry.clear();
+
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         fsm = newFsmInstance();
 
@@ -123,8 +132,9 @@ public class RestLifecycleManagerTest {
                 .build());
 
         HttpServletServer server =
-                        HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/",
+            HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/",
                                         true, true);
+        server.setPrometheus("/policy/pdp/engine/lifecycle/metrics");
         server.setSerializationProvider(
                         String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
         server.addServletClass("/*", RestLifecycleManager.class.getName());
@@ -159,6 +169,8 @@ public class RestLifecycleManagerTest {
 
         PolicyControllerConstants.getFactory().destroy();
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
+
+        CollectorRegistry.defaultRegistry.clear();
     }
 
     @Test
@@ -329,6 +341,8 @@ public class RestLifecycleManagerTest {
         assertThat(
             listPost("policies/operations/validation", toString(opPolicy),
                     Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
+
+        metrics();
     }
 
     private void testNotNativePolicy(ToscaPolicy toscaPolicy) throws CoderException {
@@ -437,6 +451,15 @@ public class RestLifecycleManagerTest {
         response = HttpClientFactoryInstance.getClientFactory().get("lifecycle").get("group");
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
         assertEquals("GG", HttpClient.getBody(response, String.class));
+    }
+
+    private void metrics() {
+        Response response = client.get("metrics");
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        String body = HttpClient.getBody(response, String.class);
+        assertThat(body).contains(PROM_DEPLOY_REQUESTS_TOTAL_UNDEPLOY_ACCEPTED);
+        assertThat(body).contains(PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_ACCEPTED);
+        assertThat(body).contains(PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_DECLINED);
     }
 
     private LifecycleFsm newFsmInstance() throws NoSuchFieldException, IllegalAccessException {

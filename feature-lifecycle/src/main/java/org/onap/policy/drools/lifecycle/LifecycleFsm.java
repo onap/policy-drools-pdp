@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@
 package org.onap.policy.drools.lifecycle;
 
 import com.google.re2j.Pattern;
+import io.prometheus.client.Counter;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import org.onap.policy.common.endpoints.listeners.MessageTypeDispatcher;
 import org.onap.policy.common.endpoints.listeners.ScoListener;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.utils.coder.StandardCoderObject;
+import org.onap.policy.common.utils.resources.PrometheusUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.policies.DomainMaker;
 import org.onap.policy.drools.system.PolicyController;
@@ -64,6 +66,7 @@ import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
 import org.onap.policy.models.pdp.enums.PdpMessageType;
+import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
@@ -99,6 +102,16 @@ public class LifecycleFsm implements Startable {
 
     protected static final ToscaConceptIdentifier POLICY_TYPE_DROOLS_NATIVE_CONTROLLER =
             new ToscaConceptIdentifier("onap.policies.native.drools.Controller", "1.0.0");
+
+    protected static final String PROMETHEUS_NAMESPACE = "pdpd";
+
+    protected static final Counter deploymentsCounter =
+            Counter.build().namespace(PROMETHEUS_NAMESPACE).name(PrometheusUtils.POLICY_DEPLOYMENTS_METRIC)
+                    .labelNames(PrometheusUtils.STATE_METRIC_LABEL,
+                            PrometheusUtils.OPERATION_METRIC_LABEL,
+                            PrometheusUtils.STATUS_METRIC_LABEL)
+                    .help(PrometheusUtils.POLICY_DEPLOYMENT_HELP)
+                    .register();
 
     @Getter
     protected final Properties properties;
@@ -436,6 +449,9 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfAbsent(policy.getIdentifier(), key -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
+            deploymentsCounter.labels(state.state().name(),
+                    PrometheusUtils.DEPLOY_OPERATION,
+                    PdpResponseStatus.SUCCESS.name()).inc();
             getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
             getStats().setPolicyDeploySuccessCount(getStats().getPolicyDeploySuccessCount() + 1);
             return policy;
@@ -446,6 +462,9 @@ public class LifecycleFsm implements Startable {
         policiesMap.computeIfPresent(policy.getIdentifier(), (key, value) -> {
             // avoid counting reapplies in a second pass when a mix of native and non-native
             // policies are present.
+            deploymentsCounter.labels(state.state().name(),
+                    PrometheusUtils.UNDEPLOY_OPERATION,
+                    PdpResponseStatus.SUCCESS.name()).inc();
             getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
             getStats().setPolicyUndeploySuccessCount(getStats().getPolicyUndeploySuccessCount() + 1);
             return null;
@@ -453,11 +472,17 @@ public class LifecycleFsm implements Startable {
     }
 
     protected void failedDeployPolicyAction(@NonNull ToscaPolicy failedPolicy) {    // NOSONAR
+        deploymentsCounter.labels(state.state().name(),
+                PrometheusUtils.DEPLOY_OPERATION,
+                PdpResponseStatus.FAIL.name()).inc();
         getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
         getStats().setPolicyDeployFailCount(getStats().getPolicyDeployFailCount() + 1);
     }
 
     protected void failedUndeployPolicyAction(ToscaPolicy failedPolicy) {
+        deploymentsCounter.labels(state.state().name(),
+                PrometheusUtils.UNDEPLOY_OPERATION,
+                PdpResponseStatus.FAIL.name()).inc();
         getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
         getStats().setPolicyUndeployFailCount(getStats().getPolicyUndeployFailCount() + 1);
         policiesMap.remove(failedPolicy.getIdentifier());
