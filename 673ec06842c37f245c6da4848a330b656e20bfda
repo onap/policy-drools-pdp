@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ddf03ee_939fa045",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2022-02-08T09:20:01Z",
+      "side": 1,
+      "message": "Is this the only version that works? Generally we should avoid snapshots from other projects.",
+      "range": {
+        "startLine": 22,
+        "startChar": 32,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "673ec06842c37f245c6da4848a330b656e20bfda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
