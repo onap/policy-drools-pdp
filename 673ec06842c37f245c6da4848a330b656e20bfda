@@ -46,6 +46,30 @@
       "revId": "673ec06842c37f245c6da4848a330b656e20bfda",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f60c31a_5699e9fe",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2022-02-08T09:37:15Z",
+      "side": 1,
+      "message": "OK, it is one of our own docker images so that\u0027s fine.",
+      "parentUuid": "93a0e402_565b0f26",
+      "range": {
+        "startLine": 22,
+        "startChar": 32,
+        "endLine": 22,
+        "endChar": 40
+      },
+      "revId": "673ec06842c37f245c6da4848a330b656e20bfda",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
