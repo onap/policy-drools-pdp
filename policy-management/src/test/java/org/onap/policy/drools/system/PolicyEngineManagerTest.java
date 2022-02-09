@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.prometheus.client.CollectorRegistry;
+import io.prometheus.client.Summary;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,7 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -74,6 +77,7 @@ import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.system.internal.SimpleLockProperties;
+import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 
 public class PolicyEngineManagerTest {
     private static final String EXPECTED = "expected exception";
@@ -90,6 +94,8 @@ public class PolicyEngineManagerTest {
     private static final String MESSAGE = "my-message";
     private static final String MY_OWNER = "my-owner";
     private static final String MY_RESOURCE = "my-resource";
+    private static final String POLICY = "policy";
+    private static final String CONTROLLOOP = "controlloop";
 
     private static final Object MY_EVENT = new Object();
 
@@ -153,7 +159,7 @@ public class PolicyEngineManagerTest {
      */
     @Before
     public void setUp() throws Exception {
-
+        CollectorRegistry.defaultRegistry.clear();
         properties = new Properties();
         prov1 = mock(PolicyEngineFeatureApi.class);
         prov2 = mock(PolicyEngineFeatureApi.class);
@@ -315,6 +321,11 @@ public class PolicyEngineManagerTest {
         pdpConfigJson = gson.gsonEncode(pdpConfig);
 
         mgr = new PolicyEngineManagerImpl();
+    }
+
+    @After
+    public void tearDown() {
+        CollectorRegistry.defaultRegistry.clear();
     }
 
     @Test
@@ -1360,14 +1371,34 @@ public class PolicyEngineManagerTest {
 
     @Test
     public void testTransaction() {
-        mgr.metric("foo", "bar", new Metric());
+        mgr.metric(CONTROLLER1, POLICY, new Metric());
         assertEquals(0, mgr.getStats().getGroupStat().getPolicyExecutedCount());
         assertEquals(0, mgr.getStats().getSubgroupStats().size());
 
-        mgr.transaction("foo", "bar", new Metric());
+        Metric metric = new Metric();
+        mgr.transaction(CONTROLLER1, CONTROLLOOP, metric);
         assertEquals(1, mgr.getStats().getGroupStat().getPolicyExecutedCount());
         assertEquals(1, mgr.getStats().getSubgroupStats().size());
-        assertEquals(1, mgr.getStats().getSubgroupStats().get("bar").getPolicyExecutedFailCount());
+        assertEquals(1, mgr.getStats().getSubgroupStats().get(CONTROLLOOP).getPolicyExecutedFailCount());
+
+        Summary.Child.Value summary =
+                PolicyEngineManagerImpl.transLatencySecsSummary
+                        .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
+
+        assertEquals(0, summary.count, 0.0);
+        assertEquals(0, summary.sum, 0.0);
+
+        metric.setServiceInstanceId(POLICY);
+        metric.setElapsedTime(5000L);
+        metric.setSuccess(false);
+        mgr.transaction(CONTROLLER1, CONTROLLOOP, metric);
+
+        summary =
+                PolicyEngineManagerImpl.transLatencySecsSummary
+                        .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
+
+        assertEquals(1, summary.count, 0.0);
+        assertEquals(5, summary.sum, 0.0);
     }
 
     @Test

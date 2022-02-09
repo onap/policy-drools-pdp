@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,10 @@ import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERV
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.prometheus.client.Summary;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -57,6 +59,7 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.common.utils.logging.LoggerUtils;
+import org.onap.policy.common.utils.resources.PrometheusUtils;
 import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -83,6 +86,7 @@ import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.utils.PropertyUtil;
 import org.onap.policy.drools.utils.logging.MdcTransaction;
+import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,6 +174,20 @@ class PolicyEngineManager implements PolicyEngine {
      * gson parser to decode configuration requests.
      */
     private final Gson decoder = new GsonBuilder().disableHtmlEscaping().create();
+
+    protected static final String CONTROLLOOP_NAME_LABEL = "controlloop";
+    protected static final String CONTROLLER_LABEL = "controller";
+    protected static final String POLICY_LABEL = "policy";
+
+    protected static final Summary transLatencySecsSummary =
+            Summary.build().namespace(PrometheusUtils.PdpType.PDPD.getNamespace())
+                    .name(PrometheusUtils.POLICY_EXECUTIONS_LATENCY_SECONDS_METRIC)
+                    .labelNames(CONTROLLER_LABEL,
+                            CONTROLLOOP_NAME_LABEL,
+                            POLICY_LABEL,
+                            PrometheusUtils.STATUS_METRIC_LABEL)
+                    .help(PrometheusUtils.POLICY_EXECUTIONS_LATENCY_SECONDS_HELP)
+                    .register();
 
 
     @Override
@@ -266,6 +284,21 @@ class PolicyEngineManager implements PolicyEngine {
         // the controller name is used for tracking purposes
 
         getStats().stat(controlLoopName, transaction);
+
+        Long elapsedTime = transaction.getElapsedTime();
+        String policyName = transaction.getServiceInstanceId();
+        if (Objects.isNull(elapsedTime) || StringUtils.isEmpty(policyName)) {
+            logger.warn("{} transaction in controller {} incomplete transaction object: {}",
+                    controlLoopName, controllerName, transaction);
+            return;
+        }
+
+        transLatencySecsSummary
+            .labels(controllerName,
+                    controlLoopName,
+                    policyName,
+                    transaction.isSuccess() ? PdpResponseStatus.SUCCESS.name() : PdpResponseStatus.FAIL.name())
+            .observe(transaction.getElapsedTime() / 1000D);
     }
 
     @Override
