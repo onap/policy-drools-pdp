@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019,2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright(C) 2018 Samsung Electronics Co., Ltd.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
 
 /**
@@ -35,7 +34,6 @@ public interface EventProtocolCoder {
 
     @Getter
     @Setter
-    @ToString
     @AllArgsConstructor
     public static class CoderFilters {
 
@@ -53,13 +51,23 @@ public interface EventProtocolCoder {
          * classloader hash.
          */
         protected int modelClassLoaderHash;
+
+        @Override
+        public String toString() {
+            return "CoderFilters [factClass="
+                           + factClass
+                           + ", filter="
+                           + filter
+                           + ", modelClassLoaderHash="
+                           + modelClassLoaderHash
+                           + "]";
+        }
     }
 
     /**
      * Adds a Decoder class to decode the protocol over this topic.
      *
      * @param eventProtocolParams parameter object for event protocol
-     * @throw IllegalArgumentException if an invalid parameter is passed
      */
     void addDecoder(EventProtocolParams eventProtocolParams);
 
