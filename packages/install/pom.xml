@@ -2,7 +2,7 @@
   ============LICENSE_START=======================================================
   Policy Packages
   ================================================================================
-  Copyright (C) 2017 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017, 2022 AT&T Intellectual Property. All rights reserved.
   Modifications Copyright (C) 2020 Bell Canada.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,18 +94,6 @@
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>feature-test-transaction</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>org.onap.policy.drools-pdp</groupId>
-            <artifactId>feature-state-management</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>org.onap.policy.drools-pdp</groupId>
-            <artifactId>feature-active-standby-management</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
         </dependency>
