@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,13 @@
 
 package org.onap.policy.drools.protocol.coders;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
@@ -29,7 +36,6 @@ import java.util.Properties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,7 +61,7 @@ public class ProtocolCoderToolsetTest {
     private static final String JUNIT_PROTOCOL_CODER_TOPIC = JUNIT_PROTOCOL_CODER_ARTIFACT_ID;
     private static final String CONTROLLER_ID = "blah";
 
-    private static Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
 
     private static volatile ReleaseId releaseId;
 
@@ -110,8 +116,11 @@ public class ProtocolCoderToolsetTest {
                                         .eventClass(ThreeStrings.class.getName()).protocolFilter(protocolFilter)
                                         .customGsonCoder(null).modelClassLoaderHash(12345678).build(), CONTROLLER_ID);
 
-        Assert.assertNotNull(gsonToolset.getEncoder());
-        Assert.assertNotNull(gsonToolset.getDecoder());
+        assertNotNull(gsonToolset.getEncoder());
+        assertNotNull(gsonToolset.getDecoder());
+        assertThat(gsonToolset.toString()).startsWith("GsonProtocolCoderToolset [");
+        assertThat(gsonToolset.toString()).contains("=ProtocolCoderToolset [");
+        assertThat(gsonToolset.toString()).contains("[CoderFilters [");
 
         testToolset(protocolFilter, gsonToolset);
 
@@ -146,81 +155,80 @@ public class ProtocolCoderToolsetTest {
     private void decode(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset,
                     ThreeStrings triple, String tripleEncoded) {
 
-        ThreeStrings tripleDecoded = null;
         try {
-            tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
+            coderToolset.decode(tripleEncoded);
         } catch (UnsupportedOperationException e) {
             /* OK */
             logger.trace("Junit expected exception - decode does not pass filtering", e);
         }
 
         CoderFilters coderFilters = coderToolset.getCoder(ThreeStrings.class.getName());
-        Assert.assertSame(coderFilters.getFactClass(), ThreeStrings.class.getName());
-        Assert.assertSame(coderFilters.getFilter(), protocolFilter);
-        Assert.assertNotNull(coderFilters.getFilter().getRule());
+        assertSame(coderFilters.getFactClass(), ThreeStrings.class.getName());
+        assertSame(coderFilters.getFilter(), protocolFilter);
+        assertNotNull(coderFilters.getFilter().getRule());
 
         coderFilters.getFilter().setRule("[?($.second =~ /^v2$/ && $.third =~ /.*v3.*/)]");
 
-        tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
+        ThreeStrings tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
 
-        Assert.assertEquals(triple.getFirst(), tripleDecoded.getFirst());
-        Assert.assertEquals(triple.getSecond(), tripleDecoded.getSecond());
-        Assert.assertEquals(triple.getThird(), tripleDecoded.getThird());
+        assertEquals(triple.getFirst(), tripleDecoded.getFirst());
+        assertEquals(triple.getSecond(), tripleDecoded.getSecond());
+        assertEquals(triple.getThird(), tripleDecoded.getThird());
 
         coderFilters.getFilter().setRule(null);
-        Assert.assertEquals("[?($ =~ /.*/)]", coderFilters.getFilter().getRule());
+        assertEquals("[?($ =~ /.*/)]", coderFilters.getFilter().getRule());
 
         tripleDecoded = (ThreeStrings) coderToolset.decode(tripleEncoded);
 
-        Assert.assertEquals(tripleDecoded.getFirst(), triple.getFirst());
-        Assert.assertEquals(tripleDecoded.getSecond(), triple.getSecond());
-        Assert.assertEquals(tripleDecoded.getThird(), triple.getThird());
+        assertEquals(tripleDecoded.getFirst(), triple.getFirst());
+        assertEquals(tripleDecoded.getSecond(), triple.getSecond());
+        assertEquals(tripleDecoded.getThird(), triple.getThird());
 
         coderFilters.getFilter().setRule("[?($.third =~ /.*v3.*/)]");
     }
 
     private String encode(ProtocolCoderToolset coderToolset, ThreeStrings triple) {
         String tripleEncoded = coderToolset.encode(triple);
-        Assert.assertTrue(!tripleEncoded.isEmpty());
+        assertFalse(tripleEncoded.isEmpty());
         return tripleEncoded;
     }
 
     private void addRemoveCoder(ProtocolCoderToolset coderToolset) {
         coderToolset.addCoder(this.getClass().getName(), new JsonProtocolFilter("[?($.second =~ /.*/)]"), 654321);
-        Assert.assertEquals(2, coderToolset.getCoders().size());
+        assertEquals(2, coderToolset.getCoders().size());
 
         coderToolset.removeCoders(this.getClass().getName());
-        Assert.assertEquals(1, coderToolset.getCoders().size());
+        assertEquals(1, coderToolset.getCoders().size());
     }
 
     private void updateCoderFilterRule(ProtocolCoderToolset coderToolset) {
         coderToolset.addCoder(ThreeStrings.class.getName(), new JsonProtocolFilter("[?($.third =~ /.*/)]"), 654321);
 
-        Assert.assertEquals(1, coderToolset.getCoders().size());
+        assertEquals(1, coderToolset.getCoders().size());
 
-        Assert.assertEquals(654321, coderToolset.getCoder(ThreeStrings.class.getName()).getModelClassLoaderHash());
+        assertEquals(654321, coderToolset.getCoder(ThreeStrings.class.getName()).getModelClassLoaderHash());
 
-        Assert.assertNotNull(coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
+        assertNotNull(coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
 
-        Assert.assertEquals("[?($.third =~ /.*/)]",
+        assertEquals("[?($.third =~ /.*/)]",
                         coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
     }
 
     private void validateInitialization(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
-        Assert.assertEquals(CONTROLLER_ID, coderToolset.getControllerId());
-        Assert.assertEquals(releaseId.getGroupId(), coderToolset.getGroupId());
-        Assert.assertEquals(releaseId.getArtifactId(), coderToolset.getArtifactId());
-        Assert.assertNull(coderToolset.getCustomCoder());
+        assertEquals(CONTROLLER_ID, coderToolset.getControllerId());
+        assertEquals(releaseId.getGroupId(), coderToolset.getGroupId());
+        assertEquals(releaseId.getArtifactId(), coderToolset.getArtifactId());
+        assertNull(coderToolset.getCustomCoder());
 
-        Assert.assertEquals(1, coderToolset.getCoders().size());
+        assertEquals(1, coderToolset.getCoders().size());
 
         CoderFilters coderFilters = coderToolset.getCoder(CONTROLLER_ID);
-        Assert.assertNull(coderFilters);
+        assertNull(coderFilters);
 
         coderFilters = coderToolset.getCoder(ThreeStrings.class.getName());
-        Assert.assertNotNull(coderFilters);
+        assertNotNull(coderFilters);
 
-        Assert.assertEquals(coderFilters.getFilter(), protocolFilter);
+        assertEquals(coderFilters.getFilter(), protocolFilter);
     }
 
     private DroolsController createController() {
