@@ -254,7 +254,7 @@ public class RestLifecycleManagerTest {
         ToscaPolicy opPolicy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
         opPolicy.getProperties().put("controllerName", "lifecycle");
         if (StringUtils.isBlank(opPolicy.getName())) {
-            opPolicy.setName(opPolicy.getMetadata().get("policy-id"));
+            opPolicy.setName(String.valueOf(opPolicy.getMetadata().get("policy-id")));
         }
         testNotNativePolicy(opPolicy);
 
