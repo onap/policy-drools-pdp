@@ -86,7 +86,7 @@ public class DomainPolicyTypesTest {
         assertEquals("lifecycle", domainDroolsPolicy.getProperties().getRulesArtifact().getArtifactId());
         assertEquals("1.0.0", domainDroolsPolicy.getProperties().getRulesArtifact().getVersion());
 
-        String policyId = toscaPolicy.getMetadata().remove("policy-id");
+        String policyId = String.valueOf(toscaPolicy.getMetadata().remove("policy-id"));
         assertThatThrownBy(() -> domainMaker.convertTo(toscaPolicy, NativeArtifactPolicy.class))
                 .isInstanceOf(CoderException.class).hasCauseInstanceOf(ValidationFailedException.class);
 
