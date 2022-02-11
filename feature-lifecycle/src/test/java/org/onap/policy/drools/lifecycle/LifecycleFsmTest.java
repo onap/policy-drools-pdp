@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021-2022 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -263,13 +263,13 @@ public class LifecycleFsmTest {
         assertEquals(List.of(opPolicy, controllerPolicy), fsm.mergePolicies(List.of(), List.of()));
         assertEquals(List.of(opPolicy), fsm.mergePolicies(List.of(), List.of(controllerPolicy.getIdentifier())));
 
-        assertEquals(List.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
-                fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy), List.of()));
-        assertEquals(List.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
-                fsm.mergePolicies(List.of(controllerPolicy, opPolicy, op2Policy, valPolicy, unvalPolicy), List.of()));
-        assertEquals(List.of(op2Policy, valPolicy, unvalPolicy),
-                fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy),
-                        List.of(controllerPolicy.getIdentifier(), opPolicy.getIdentifier())));
+        assertEquals(List.of(controllerPolicy, valPolicy, opPolicy, op2Policy, unvalPolicy),
+            fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy), List.of()));
+        assertEquals(List.of(controllerPolicy, valPolicy, opPolicy, op2Policy, unvalPolicy),
+            fsm.mergePolicies(List.of(controllerPolicy, opPolicy, op2Policy, valPolicy, unvalPolicy), List.of()));
+        assertEquals(List.of(valPolicy, op2Policy, unvalPolicy),
+            fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy),
+                List.of(controllerPolicy.getIdentifier(), opPolicy.getIdentifier())));
     }
 
     @Test

@@ -1,6 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2022 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -254,7 +255,7 @@ public class RestLifecycleManagerTest {
         ToscaPolicy opPolicy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
         opPolicy.getProperties().put("controllerName", "lifecycle");
         if (StringUtils.isBlank(opPolicy.getName())) {
-            opPolicy.setName(opPolicy.getMetadata().get("policy-id"));
+            opPolicy.setName(String.valueOf(opPolicy.getMetadata().get("policy-id")));
         }
         testNotNativePolicy(opPolicy);
 
