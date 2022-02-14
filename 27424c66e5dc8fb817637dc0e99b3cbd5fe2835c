@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0c0726b1_a710bc90",
+        "filename": "feature-lifecycle/src/test/java/org/onap/policy/drools/lifecycle/LifecycleFsmTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-02-14T17:23:36Z",
+      "side": 1,
+      "message": "I think it should be ok, there is some other functionality that will order policies appropriately before applying them.",
+      "parentUuid": "0447178a_c21fd47c",
+      "revId": "27424c66e5dc8fb817637dc0e99b3cbd5fe2835c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fc1bbdd5_dc658fc0",
         "filename": "policy-domains/src/main/java/org/onap/policy/drools/domain/models/Metadata.java",
         "patchSetId": 3
@@ -47,6 +65,30 @@
       "writtenOn": "2022-02-14T12:57:15Z",
       "side": 1,
       "message": "We should accept both object and string for backward compatibility.",
+      "range": {
+        "startLine": 65,
+        "startChar": 0,
+        "endLine": 65,
+        "endChar": 21
+      },
+      "revId": "27424c66e5dc8fb817637dc0e99b3cbd5fe2835c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5c25e23_2433d9f6",
+        "filename": "policy-domains/src/main/resources/schemas/onap.policies.controlloop.operational.common.Drools-1.0.0.schema.json",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-02-14T17:23:36Z",
+      "side": 1,
+      "message": "I think we should be OK as it is with no changes for what I see in tests.   I think we can assume that policy-id and policy-version (right above) will always be a string.",
+      "parentUuid": "420937ad_963a7d81",
       "range": {
         "startLine": 65,
         "startChar": 0,
