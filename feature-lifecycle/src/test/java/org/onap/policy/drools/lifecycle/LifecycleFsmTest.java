@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -259,17 +260,23 @@ public class LifecycleFsmTest {
 
         fsm.deployedPolicyAction(opPolicy);
         fsm.deployedPolicyAction(controllerPolicy);
-        assertEquals(List.of(opPolicy, controllerPolicy), fsm.getActivePolicies());
-        assertEquals(List.of(opPolicy, controllerPolicy), fsm.mergePolicies(List.of(), List.of()));
-        assertEquals(List.of(opPolicy), fsm.mergePolicies(List.of(), List.of(controllerPolicy.getIdentifier())));
+        assertEquals(Set.of(opPolicy, controllerPolicy), toSet(fsm.getActivePolicies()));
+        assertEquals(Set.of(opPolicy, controllerPolicy), toSet(fsm.mergePolicies(List.of(), List.of())));
+        assertEquals(Set.of(opPolicy), toSet(fsm.mergePolicies(List.of(), List.of(controllerPolicy.getIdentifier()))));
 
-        assertEquals(List.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
-                fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy), List.of()));
-        assertEquals(List.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
-                fsm.mergePolicies(List.of(controllerPolicy, opPolicy, op2Policy, valPolicy, unvalPolicy), List.of()));
-        assertEquals(List.of(op2Policy, valPolicy, unvalPolicy),
-                fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy),
-                        List.of(controllerPolicy.getIdentifier(), opPolicy.getIdentifier())));
+        assertEquals(Set.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
+                toSet(fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy), List.of())));
+        assertEquals(Set.of(controllerPolicy, op2Policy, valPolicy, opPolicy, unvalPolicy),
+                toSet(fsm.mergePolicies(List.of(controllerPolicy, opPolicy, op2Policy, valPolicy, unvalPolicy),
+                        List.of())));
+        assertEquals(Set.of(op2Policy, valPolicy, unvalPolicy),
+                toSet(fsm.mergePolicies(List.of(op2Policy, valPolicy, unvalPolicy),
+                        List.of(controllerPolicy.getIdentifier(), opPolicy.getIdentifier()))));
+    }
+
+    private Set<ToscaPolicy> toSet(List<ToscaPolicy> policies) {
+        return Set.copyOf(policies);
+
     }
 
     @Test

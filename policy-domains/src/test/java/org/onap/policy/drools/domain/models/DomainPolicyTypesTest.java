@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ *  Copyright (C) 2020,2022 AT&T Intellectual Property. All rights reserved.
  *  Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,7 +86,7 @@ public class DomainPolicyTypesTest {
         assertEquals("lifecycle", domainDroolsPolicy.getProperties().getRulesArtifact().getArtifactId());
         assertEquals("1.0.0", domainDroolsPolicy.getProperties().getRulesArtifact().getVersion());
 
-        String policyId = toscaPolicy.getMetadata().remove("policy-id");
+        String policyId = "" + toscaPolicy.getMetadata().remove("policy-id");
         assertThatThrownBy(() -> domainMaker.convertTo(toscaPolicy, NativeArtifactPolicy.class))
                 .isInstanceOf(CoderException.class).hasCauseInstanceOf(ValidationFailedException.class);
 
