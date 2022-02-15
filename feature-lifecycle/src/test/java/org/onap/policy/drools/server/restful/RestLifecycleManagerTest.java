@@ -1,6 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2022 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +110,6 @@ public class RestLifecycleManagerTest {
      */
     @Before
      public void setUp() throws Exception {
-        CollectorRegistry.defaultRegistry.clear();
 
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         fsm = newFsmInstance();
@@ -170,7 +170,6 @@ public class RestLifecycleManagerTest {
         PolicyControllerConstants.getFactory().destroy();
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
-        CollectorRegistry.defaultRegistry.clear();
     }
 
     @Test
