@@ -18,7 +18,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # ============LICENSE_END=========================================================
 #-------------------------------------------------------------------------------
-FROM onap/policy-jdk-alpine:2.3.1
+FROM onap/policy-jdk-alpine:2.3.2
 
 LABEL maintainer="Policy Team"
 
