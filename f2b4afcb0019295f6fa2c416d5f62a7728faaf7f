@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "77e508b3_d2c41105",
+        "filename": "feature-healthcheck/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2022-03-01T21:19:25Z",
+      "side": 1,
+      "message": "License update?",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d397da7e_7b93b081",
         "filename": "feature-healthcheck/src/main/feature/config/feature-healthcheck.properties",
         "patchSetId": 1
@@ -43,6 +60,57 @@
         "endLine": 34,
         "endChar": 44
       },
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35558d04_f41ccf7d",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheckManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2022-03-01T21:19:25Z",
+      "side": 1,
+      "message": "typo: \"which as asynchronous\" \u003d\u003e \"which are asynchronous\"",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae1c09c9_3ccca658",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2022-03-01T21:19:25Z",
+      "side": 1,
+      "message": "remove commented out code",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22d712eb_ecb8a4b5",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/RestMockHealthCheck.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1677
+      },
+      "writtenOn": "2022-03-01T21:19:25Z",
+      "side": 1,
+      "message": "License update?",
       "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
