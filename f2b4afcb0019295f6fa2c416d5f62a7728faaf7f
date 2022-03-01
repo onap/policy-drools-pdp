@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d397da7e_7b93b081",
+        "filename": "feature-healthcheck/src/main/feature/config/feature-healthcheck.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4903
+      },
+      "writtenOn": "2022-03-01T18:52:06Z",
+      "side": 1,
+      "message": "question: Is this fine, or should it be 0.0.0.0?\nUsually when running in containers, localhost doesn\u0027t work and only 0.0.0.0 works if trying to be accessed.",
+      "range": {
+        "startLine": 34,
+        "startChar": 35,
+        "endLine": 34,
+        "endChar": 44
+      },
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
