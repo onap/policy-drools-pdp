@@ -81,18 +81,6 @@
         </dependency>
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
-            <artifactId>feature-eelf</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>org.onap.policy.drools-pdp</groupId>
-            <artifactId>feature-session-persistence</artifactId>
-            <version>${project.version}</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>feature-test-transaction</artifactId>
             <version>${project.version}</version>
             <type>zip</type>

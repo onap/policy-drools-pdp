@@ -61,9 +61,7 @@
         <module>policy-domains</module>
         <module>policy-management</module>
         <module>feature-healthcheck</module>
-        <module>feature-eelf</module>
         <module>feature-pooling-dmaap</module>
-        <module>feature-session-persistence</module>
         <module>feature-test-transaction</module>
         <module>feature-distributed-locking</module>
         <module>feature-controller-logging</module>
