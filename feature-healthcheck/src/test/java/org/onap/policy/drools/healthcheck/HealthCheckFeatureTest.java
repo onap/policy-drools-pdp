@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * feature-healthcheck
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019,2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,137 +23,148 @@ package org.onap.policy.drools.healthcheck;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+import org.eclipse.jetty.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
+import org.kie.api.builder.ReleaseId;
+import org.mockito.AdditionalAnswers;
+import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
+import org.onap.policy.common.endpoints.http.server.HttpServletServerFactoryInstance;
+import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.common.utils.network.NetworkUtil;
-import org.onap.policy.drools.healthcheck.HealthCheck.Report;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
+import org.onap.policy.drools.properties.DroolsPropertyConstants;
+import org.onap.policy.drools.system.PolicyController;
+import org.onap.policy.drools.system.PolicyControllerConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
+import org.onap.policy.drools.util.KieUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HealthCheckFeatureTest {
 
-    /**
-     * Healthcheck Configuration File.
-     */
-    private static final String HEALTH_CHECK_PROPERTIES_FILE = "feature-healthcheck.properties";
-
-    private static final Path healthCheckPropsPath =
-                    Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
-                                    HEALTH_CHECK_PROPERTIES_FILE);
-
-    private static final Path healthCheckPropsBackupPath =
-                    Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
-                                    HEALTH_CHECK_PROPERTIES_FILE + ".bak");
-
+    private static final Logger logger = LoggerFactory.getLogger(HealthCheckFeatureTest.class);
     private static final String EXPECTED = "expected exception";
-
-
-    /**
-     * logger.
-     */
-    private static Logger logger = LoggerFactory.getLogger(HealthCheckFeatureTest.class);
-
-    private static Properties httpProperties = new Properties();
 
     /**
      * Set up.
      */
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException {
+        SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES, "HEALTHCHECK");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
-        httpProperties.setProperty(
-                        PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                                        + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX,
-                        org.onap.policy.drools.healthcheck.RestMockHealthCheck.class.getName());
-        httpProperties.setProperty(
-                        PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                                        + PolicyEndPointProperties.PROPERTY_HTTP_FILTER_CLASSES_SUFFIX,
-                        org.onap.policy.drools.healthcheck.TestAafHealthCheckFilter.class.getName());
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
+        LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
+        LoggerUtils.setLevel("org.eclipse", "ERROR");
+        LoggerUtils.setLevel("org.onap.policy.drools.healthcheck", "DEBUG");
+        LoggerUtils.setLevel("ROOT", "INFO");
 
+        ReleaseId coords = KieUtils.installArtifact(Paths.get("src/test/resources/echo.kmodule").toFile(),
+            Paths.get("src/test/resources/echo.pom").toFile(),
+            "src/main/resources/kbecho/org/onap/policy/drools/healthcheck/",
+            List.of(Paths.get("src/test/resources/echo.drl").toFile()));
 
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES, "HEALTHCHECK");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_HOST_SUFFIX, "localhost");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "7777");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_URL_SUFFIX, "healthcheck/test");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_HTTPS_SUFFIX, "false");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX, "username");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX, "password");
-        httpProperties.setProperty(PolicyEndPointProperties.PROPERTY_HTTP_CLIENT_SERVICES + "." + "HEALTHCHECK"
-                        + PolicyEndPointProperties.PROPERTY_MANAGED_SUFFIX, "true");
+        Properties controllerProps = new Properties();
+        controllerProps.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, "echo");
+        controllerProps.put(DroolsPropertyConstants.RULES_GROUPID, coords.getGroupId());
+        controllerProps.put(DroolsPropertyConstants.RULES_ARTIFACTID, coords.getArtifactId());
+        controllerProps.put(DroolsPropertyConstants.RULES_VERSION, coords.getVersion());
 
-        configDirSetup();
-
+        PolicyController controller = PolicyControllerConstants.getFactory().build("echo", controllerProps);
+        controller.start();
     }
 
     /**
      * Tear down.
      */
     @AfterClass
-    public static void tearDown() {
-        logger.info("-- tearDown() --");
-
-        configDirCleanup();
+    public static void teardown() {
+        PolicyControllerConstants.getFactory().destroy();
+        HttpClientFactoryInstance.getClientFactory().destroy();
+        HttpServletServerFactoryInstance.getServerFactory().destroy();
     }
 
     @Test
-    public void test() throws IOException, InterruptedException {
+    public void test() throws InterruptedException {
+        var manager = spy(HealthCheckManager.class);
+        var feature = new HealthCheckFeatureImpl(manager);
+        when(manager.isEngineAlive()).thenReturn(true);
+        // doReturn(sleep()).when(manager).getFactTypes(any(), any());
 
-        HealthCheckFeature feature = new HealthCheckFeature();
         feature.afterStart(PolicyEngineConstants.getManager());
+        feature.afterOpen(PolicyEngineConstants.getManager());
 
-        if (!NetworkUtil.isTcpPortOpen("localhost", 7777, 5, 10000L)) {
-            throw new IllegalStateException("cannot connect to port " + 7777);
-        }
+        checkOpen(7777);
+        checkOpen(7776);
 
-        Reports reports = HealthCheckConstants.getManager().healthCheck();
+        var reports = healthcheck(manager);
+        serverChecks(reports);
+        checkReports(reports, List.of("STUCK"),
+                HttpStatus.OK_200, HttpStatus.getMessage(200));
+        checkReports(reports, List.of("echo"), 1, "[echo:{java.lang.String=1}]");
 
-        assertTrue(reports.getDetails().size() > 0);
+        /* mock controller and clients stuck */
 
-        for (Report rpt : reports.getDetails()) {
-            if ("HEALTHCHECK".equals(rpt.getName())) {
-                assertTrue(rpt.isHealthy());
-                assertEquals(200, rpt.getCode());
-                assertEquals("All Alive", rpt.getMessage());
-                break;
-            }
-        }
+        RestMockHealthCheck.stuck = true;   // make the server named STUCK unresponsive
+        doAnswer(AdditionalAnswers
+                .answersWithDelay((manager.getTimeoutSeconds() + 2) * 1000L,
+                        invocationOnMock -> new HashMap<String, Integer>()))
+                .when(manager).getFactTypes(any(), any());
+
+        reports = healthcheck(manager);
+        RestMockHealthCheck.stuck = false;  // unstuck the server named STUCK
+
+        serverChecks(reports);
+        checkReports(reports, List.of("STUCK"),
+                HealthCheckManager.TIMEOUT_CODE, HealthCheckManager.TIMEOUT_MESSAGE);
+
+        assertTrue(RestMockHealthCheck.WAIT * 1000 > HealthCheckManagerTest.select(reports, "STUCK",
+                        HealthCheckManager.TIMEOUT_CODE, HealthCheckManager.TIMEOUT_MESSAGE)
+                .get(0).getElapsedTime());
 
         feature.afterShutdown(PolicyEngineConstants.getManager());
+    }
 
+    private void checkReports(Reports reports, List<String> reportNames, int code, String message) {
+        reportNames
+                .forEach(name -> assertEquals(1,
+                        HealthCheckManagerTest.select(reports, name, code, message).size()));
+    }
+
+    private Reports healthcheck(HealthCheck manager) {
+        var reports = manager.healthCheck();
+        logger.info("{}", reports);
+        return reports;
+    }
+
+    private void checkOpen(int port) throws InterruptedException {
+        if (!NetworkUtil.isTcpPortOpen("localhost", port, 5, 10000L)) {
+            throw new IllegalStateException("cannot connect to port " + port);
+        }
+    }
+
+    private void serverChecks(Reports reports) {
+        checkReports(reports, List.of("HEALTHCHECK", "LIVENESS"),
+                HttpStatus.OK_200, HttpStatus.getMessage(200));
+        checkReports(reports, List.of("UNAUTH"),
+                HttpStatus.UNAUTHORIZED_401, HttpStatus.getMessage(401));
+        checkReports(reports, List.of(HealthCheckManager.ENGINE_NAME),
+                HealthCheckManager.SUCCESS_CODE, HealthCheckManager.ENABLED_MESSAGE);
     }
 
     @Test
@@ -177,6 +188,22 @@ public class HealthCheckFeatureTest {
     }
 
     @Test
+    public void testAfterOpen() {
+        HealthCheck checker = mock(HealthCheck.class);
+        HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
+
+        // without exception
+        assertFalse(feature.afterOpen(null));
+        verify(checker).open();
+        verify(checker, never()).stop();
+
+        // with exception
+        doThrow(new IllegalStateException(EXPECTED)).when(checker).open();
+        assertFalse(feature.afterOpen(null));
+
+    }
+
+    @Test
     public void testAfterShutdown() {
         HealthCheck checker = mock(HealthCheck.class);
         HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
@@ -189,49 +216,6 @@ public class HealthCheckFeatureTest {
         // with exception
         doThrow(new IllegalStateException(EXPECTED)).when(checker).stop();
         assertFalse(feature.afterShutdown(null));
-    }
-
-
-    /**
-     * setup up config directory.
-     */
-    private static void configDirSetup() {
-
-        File origPropsFile = new File(healthCheckPropsPath.toString());
-        File backupPropsFile = new File(healthCheckPropsBackupPath.toString());
-        Path configDir = Paths.get(SystemPersistenceConstants.DEFAULT_CONFIGURATION_DIR);
-
-        try {
-
-            if (Files.notExists(configDir)) {
-                Files.createDirectories(configDir);
-            }
-
-            Files.deleteIfExists(healthCheckPropsBackupPath);
-            origPropsFile.renameTo(backupPropsFile);
-
-            FileWriter writer = new FileWriter(origPropsFile);
-            httpProperties.store(writer, "Machine created healthcheck-feature Properties");
-
-        } catch (final Exception e) {
-            logger.info("Problem cleaning {}", healthCheckPropsPath, e);
-        }
-    }
-
-    /**
-     * cleanup up config directory.
-     */
-    private static void configDirCleanup() {
-
-        File origPropsFile = new File(healthCheckPropsBackupPath.toString());
-        File backupPropsFile = new File(healthCheckPropsPath.toString());
-
-        try {
-            Files.deleteIfExists(healthCheckPropsPath);
-            origPropsFile.renameTo(backupPropsFile);
-        } catch (final Exception e) {
-            logger.info("Problem cleaning {}", healthCheckPropsPath, e);
-        }
     }
 
     /**

@@ -1,6 +1,6 @@
 <!--
   ============LICENSE_START=======================================================
-  ONAP Policy Engine - Drools PDP
+  ONAP
   ================================================================================
   Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
   ================================================================================
@@ -66,7 +66,6 @@
                         </goals>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <transitive>false</transitive>
                             <outputDirectory>${project.build.directory}/assembly/lib</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
@@ -110,6 +109,11 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
