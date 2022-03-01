@@ -1,8 +1,8 @@
 /*-
  * ============LICENSE_START=======================================================
- * feature-healthcheck
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class HealthCheckFeature implements PolicyEngineFeatureApi {
     /**
      * Logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class);
+    private static final Logger logger = LoggerFactory.getLogger(HealthCheckFeature.class);
 
     /**
      * Properties Configuration Name.
@@ -51,6 +51,17 @@ public class HealthCheckFeature implements PolicyEngineFeatureApi {
             getManager().start();
         } catch (IllegalStateException e) {
             logger.error("Healthcheck Monitor cannot be started", e);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean afterOpen(PolicyEngine engine) {
+        try {
+            getManager().open();
+        } catch (IllegalStateException e) {
+            logger.error("Healthcheck Monitor cannot be opened", e);
         }
 
         return false;
