@@ -1,0 +1,8 @@
+distribution_type: 'container'
+container_release_tag: '1.9.2'
+project: 'policy-drools-pdp'
+log_dir: 'policy-drools-pdp-maven-docker-stage-istanbul/139'
+ref: a0eb1051b3d8aa78bae9e9e9c84b48193510ceb5
+containers:
+    - name: 'policy-drools'
+      version: '1.9.2-20220301T1522'
