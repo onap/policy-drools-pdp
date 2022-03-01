@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba7c282a_3a294746",
+        "filename": "feature-healthcheck/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-03-01T22:21:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77e508b3_d2c41105",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d397da7e_7b93b081",
         "filename": "feature-healthcheck/src/main/feature/config/feature-healthcheck.properties",
         "patchSetId": 1
@@ -66,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "7eca3f62_16db61fd",
+        "filename": "feature-healthcheck/src/main/feature/config/feature-healthcheck.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-03-01T22:21:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c7eeda56_7552b4f6",
+      "range": {
+        "startLine": 34,
+        "startChar": 35,
+        "endLine": 34,
+        "endChar": 44
+      },
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "35558d04_f41ccf7d",
         "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheckManager.java",
         "patchSetId": 1
@@ -80,6 +122,24 @@
       "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abdf3815_9a04eb2d",
+        "filename": "feature-healthcheck/src/main/java/org/onap/policy/drools/healthcheck/HealthCheckManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-03-01T22:21:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35558d04_f41ccf7d",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     },
     {
       "key": {
@@ -100,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "faa62902_ccad714f",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/HealthCheckFeatureTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-03-01T22:21:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae1c09c9_3ccca658",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "22d712eb_ecb8a4b5",
         "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/RestMockHealthCheck.java",
         "patchSetId": 1
@@ -114,6 +192,24 @@
       "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6ca3534_9139c35e",
+        "filename": "feature-healthcheck/src/test/java/org/onap/policy/drools/healthcheck/RestMockHealthCheck.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-03-01T22:21:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "22d712eb_ecb8a4b5",
+      "revId": "f2b4afcb0019295f6fa2c416d5f62a7728faaf7f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
