@@ -1,8 +1,8 @@
 /*
  * ============LICENSE_START=======================================================
- * feature-healthcheck
+ * ONAP
  * ================================================================================
- * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2019, 2021-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,11 @@ package org.onap.policy.drools.healthcheck;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.onap.policy.common.capabilities.Startable;
+import org.onap.policy.common.endpoints.http.client.HttpClient;
+import org.onap.policy.drools.system.PolicyController;
 
 /**
  * Healthcheck.
@@ -35,10 +36,9 @@ public interface HealthCheck extends Startable {
     /**
      * Healthcheck Report.
      */
-    @Getter
-    @Setter
-    @ToString
-    public static class Report {
+    @Data
+    @NoArgsConstructor
+    class Report {
         /**
          * Named Entity in the report.
          */
@@ -57,29 +57,98 @@ public interface HealthCheck extends Startable {
         /**
          * return code.
          */
-        private int code;
+        private long code;
+
+        /**
+         * start time.
+         */
+        private long startTime = System.currentTimeMillis();
+
+        /**
+         * end time.
+         */
+        private long endTime;
+
+        /**
+         * elapsed time.
+         */
+        private long elapsedTime;
 
         /**
          * Message from remote entity.
          */
         private String message;
+
+
+        public Report(Report report) {
+            this.startTime = report.startTime;
+            this.code = report.code;
+            this.elapsedTime = report.elapsedTime;
+            this.endTime = report.endTime;
+            this.healthy = report.healthy;
+            this.message = report.message;
+            this.name = report.name;
+            this.url = report.url;
+        }
+
+        public Report setEndTime() {
+            setEndTime(System.currentTimeMillis());
+            setElapsedTime(endTime - startTime);
+            return this;
+        }
     }
 
     /**
      * Report aggregation.
      */
-    @Getter
-    @Setter
-    @ToString
-    public static class Reports {
+    @Data
+    class Reports {
         private boolean healthy;
+        private final long startTime = System.currentTimeMillis();
+        private long endTime;
+        private long elapsedTime;
         private List<Report> details = new ArrayList<>();
+
+        public Reports setEndTime() {
+            this.endTime = System.currentTimeMillis();
+            this.elapsedTime = this.endTime - this.startTime;
+            return this;
+        }
     }
 
     /**
-     * Perform a healthcheck.
-     *
-     * @return a report
+     * Process engine open status.
+     */
+    void open();
+
+    /**
+     *  System healthcheck.
      */
     Reports healthCheck();
+
+    /**
+     * Engine only healthcheck.
+     */
+    Reports engineHealthcheck();
+
+    /**
+     * Controllers only healthcheck.
+     */
+    Reports controllerHealthcheck();
+
+    /**
+     * Healthcheck on a controller.
+     */
+    Reports controllerHealthcheck(PolicyController controller);
+
+    /**
+     * HTTP Clients only healthcheck.
+     */
+    Reports clientHealthcheck();
+
+    /**
+     * Healthcheck on an HTTP Client.
+     */
+    Reports clientHealthcheck(HttpClient client);
+
 }
