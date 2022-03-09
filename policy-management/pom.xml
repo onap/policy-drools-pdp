@@ -3,7 +3,7 @@
   ============LICENSE_START=======================================================
   ONAP Policy Engine - Drools PDP
   ================================================================================
-  Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+  Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
   Modifications Copyright (C) 2020 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -273,6 +273,11 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_logback</artifactId>
         </dependency>
 
         <dependency>
