@@ -64,10 +64,7 @@
         <module>feature-pooling-dmaap</module>
         <module>feature-test-transaction</module>
         <module>feature-distributed-locking</module>
-        <module>feature-controller-logging</module>
-        <module>feature-mdc-filters</module>
         <module>feature-lifecycle</module>
-        <module>feature-drools-init</module>
         <module>feature-no-locking</module>
         <module>feature-legacy-config</module>
         <module>packages</module>
