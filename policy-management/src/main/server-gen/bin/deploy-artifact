@@ -3,7 +3,7 @@
 # ============LICENSE_START=======================================================
 # ONAP
 # ================================================================================
-# Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2018-2022 AT&T Intellectual Property. All rights reserved.
 # Modifications Copyright (C) 2020 Bell Canada.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -500,7 +500,7 @@ function installDependencies
     echo "${file}: coordinates ${groupId} ${artifactId} ${version}"
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
-        org.apache.maven.plugins:maven-dependency-plugin:3.1.1:get \
+        org.apache.maven.plugins:maven-dependency-plugin:3.2.0:get \
         -DartifactId="${artifactId}" \
         -DgroupId="${groupId}" \
         -Dversion="${version}" \
