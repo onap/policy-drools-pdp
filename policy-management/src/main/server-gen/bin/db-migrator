@@ -3,7 +3,7 @@
 # ============LICENSE_START=======================================================
 # ONAP
 # ================================================================================
-# Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+# Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -530,7 +530,12 @@ if [ -z "${SQL_PORT}" ]; then
     export SQL_PORT=3306
 fi
 
-MYSQL="mysql -u${SQL_USER} -p${SQL_PASSWORD} -h ${SQL_HOST} -P ${SQL_PORT}"
+if [ -z "$MYSQL_CMD" ]; then
+    MYSQL_CMD="mysql"
+fi
+
+MYSQL="${MYSQL_CMD} -u${SQL_USER} -p${SQL_PASSWORD} -h ${SQL_HOST} -P ${SQL_PORT}"
+
 if ! ${MYSQL} --execute "show databases;" > /dev/null 2>&1; then
     echo "error: No DB connectivity to ${SQL_HOST} for ${SQL_USER}"
     exit 5
