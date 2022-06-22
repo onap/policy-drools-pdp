@@ -80,7 +80,7 @@
                             <name>onap/policy-drools</name>
                             <build>
                                 <cleanup>try</cleanup>
-                                <dockerFile>Dockerfile</dockerFile>
+                                <dockerFile>${dockerFile}</dockerFile>
                                 <tags>
                                     <tag>${project.version}</tag>
                                     <tag>${project.version}-${maven.build.timestamp}</tag>
