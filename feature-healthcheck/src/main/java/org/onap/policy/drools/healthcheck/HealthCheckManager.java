@@ -21,6 +21,7 @@
 package org.onap.policy.drools.healthcheck;
 
 import com.google.common.base.Strings;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -168,7 +169,7 @@ public class HealthCheckManager implements HealthCheck {
         }
 
         CompletableFuture<Report>[] reportFutures = futures(getControllers());
-        return summary(engineHealthcheck(), reportFutures);
+        return log(summary(engineHealthcheck(), reportFutures));
     }
 
     @Override
@@ -178,7 +179,7 @@ public class HealthCheckManager implements HealthCheck {
          * it could be useful for troubleshooting.
          */
         CompletableFuture<Report>[] reportFutures = futures(List.of(controller));
-        return summary(engineHealthcheck(), reportFutures);
+        return log(summary(engineHealthcheck(), reportFutures));
     }
 
     @Override
@@ -468,6 +469,22 @@ public class HealthCheckManager implements HealthCheck {
             logger.warn("cannot start http-server {}", server.getName(), e);
         }
         return false;
+    }
+
+    protected boolean isTimeout(Reports reports) {
+        return
+            reports.getDetails()
+                .stream()
+                .anyMatch(report -> report.getCode() == TIMEOUT_CODE);
+    }
+
+    protected Reports log(Reports reports) {
+        if (isTimeout(reports)) {
+            Arrays.stream(ManagementFactory.getThreadMXBean()
+                    .dumpAllThreads(true, true, 100))
+                .forEach(threadInfo -> logger.info("Healthcheck Timeout Encountered:\n{}", threadInfo));
+        }
+        return reports;
     }
 
     // the following methods may be overridden by junit tests
