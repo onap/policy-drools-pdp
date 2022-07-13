@@ -238,6 +238,9 @@ public class HealthCheckManagerTest {
 
         /* with argument */
 
+        reports = monitor.controllerHealthcheck(controller1);
+        logger.info("{}", reports);
+
         reports = monitor.controllerHealthcheck(controller2);
         logger.info("{}", reports);
 
