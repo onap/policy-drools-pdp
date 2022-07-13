@@ -2,6 +2,7 @@
 # Dockerfile
 # ============LICENSE_START=======================================================
 #  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
+#  Modifications Copyright (C) 2022 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,6 +49,8 @@ RUN apk update && \
     net-tools netcat-openbsd sudo less vim openssl \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3 0 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1 \
+    && pip install --upgrade pip \
+    && pip install discord \
     && pip install --no-cache-dir --upgrade setuptools http-prompt \
     && pip uninstall -y httpie \
     && pip install --no-cache-dir httpie
