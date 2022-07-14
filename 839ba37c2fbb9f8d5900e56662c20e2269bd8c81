@@ -34,6 +34,24 @@
       "revId": "839ba37c2fbb9f8d5900e56662c20e2269bd8c81",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2585bc78_75f8c6af",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2022-07-14T14:00:30Z",
+      "side": 1,
+      "message": "Yes, just doing the PIP upgrade was enough, the docker file builds now.",
+      "parentUuid": "19ce7ef6_a2d99bb0",
+      "revId": "839ba37c2fbb9f8d5900e56662c20e2269bd8c81",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
