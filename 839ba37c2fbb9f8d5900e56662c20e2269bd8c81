@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37ba996f_16eec493",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 477
+      },
+      "writtenOn": "2022-07-14T13:09:05Z",
+      "side": 1,
+      "message": "Why is the discord package need to be included, Liam?   I understand it to be a client for discord app (which is kind of organized chat rooms)?",
+      "revId": "839ba37c2fbb9f8d5900e56662c20e2269bd8c81",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
