@@ -16,6 +16,24 @@
       "revId": "839ba37c2fbb9f8d5900e56662c20e2269bd8c81",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19ce7ef6_a2d99bb0",
+        "filename": "packages/docker/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 2787
+      },
+      "writtenOn": "2022-07-14T13:36:04Z",
+      "side": 1,
+      "message": "I don\u0027t know, I was blindly following a Stack Overflow post. Maybe we don\u0027t need that package, it might be enough to just do the upgrade of PIP to fix the build, I\u0027ll try that.",
+      "parentUuid": "37ba996f_16eec493",
+      "revId": "839ba37c2fbb9f8d5900e56662c20e2269bd8c81",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
