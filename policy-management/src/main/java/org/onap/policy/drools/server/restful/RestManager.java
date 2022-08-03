@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2020,2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -466,11 +466,11 @@ public class RestManager {
     @ApiOperation(value = "Creates and starts a new Policy Controller",
             notes = "Controller creation based on properties", response = PolicyController.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Invalid configuration information has been provided"),
-            @ApiResponse(code = 304, message = "The controller already exists"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 304, message = "The controller already exists"),
+        @ApiResponse(code = 406,
                     message = "The administrative state of the system prevents it " + "from processing this request"),
-            @ApiResponse(code = 206, message = "The controller has been created " + "but cannot be started"),
-            @ApiResponse(code = 201, message = "The controller has been succesfully created and started")})
+        @ApiResponse(code = 206, message = "The controller has been created " + "but cannot be started"),
+        @ApiResponse(code = 201, message = "The controller has been succesfully created and started")})
     public Response controllerAdd(
             @ApiParam(value = "Configuration Properties to apply", required = true) Properties config) {
         if (config == null) {
@@ -615,9 +615,9 @@ public class RestManager {
                     + "as provides operational controls over drools applications",
             response = PolicyController.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A problem has occurred while deleting the Policy Controller")})
+        @ApiResponse(code = 500, message = "A problem has occurred while deleting the Policy Controller")})
     public Response controllerDelete(@ApiParam(value = "Policy Controller Name",
             required = true) @PathParam("controller") String controllerName) {
 
@@ -697,7 +697,7 @@ public class RestManager {
     @ApiOperation(value = "Policy Controller Input Configuration Requests",
             notes = "Feeds a configuration request input into the given Policy Controller")
     @ApiResponses(value = {@ApiResponse(code = 400, message = "The configuration request is invalid"),
-            @ApiResponse(code = 406, message = "The configuration request cannot be honored")})
+        @ApiResponse(code = 406, message = "The configuration request cannot be honored")})
     public Response controllerUpdate(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Configuration to apply",
@@ -852,7 +852,7 @@ public class RestManager {
             notes = "The fact types are the classnames of the objects inserted in the drools working memory",
             responseContainer = "Map")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller or session cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response droolsFacts(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -881,7 +881,7 @@ public class RestManager {
             notes = "The fact types are the classnames of the objects inserted in the drools working memory",
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, session, or fact type cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response droolsFacts(
             @ApiParam(value = "Fact count", required = false) @DefaultValue("false") @QueryParam("count") boolean count,
@@ -913,10 +913,10 @@ public class RestManager {
                     + "for a given controller and session",
             notes = "The DRL query must be defined in the DRL file", responseContainer = "List")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "The controller, session, or query information, cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 404, message = "The controller, session, or query information, cannot be found"),
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
+        @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
     public Response droolsFacts(
             @ApiParam(value = "Fact count", required = false) @DefaultValue("false") @QueryParam("count") boolean count,
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -949,10 +949,10 @@ public class RestManager {
                     + "for a given controller and session",
             notes = "The DRL query with parameters must be defined in the DRL file", responseContainer = "List")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "The controller, session, or query information, cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 404, message = "The controller, session, or query information, cannot be found"),
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
+        @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
     public Response droolsFacts(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
@@ -991,9 +991,9 @@ public class RestManager {
             notes = "The fact types are the classnames of the objects inserted in the drools working memory",
             responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, session, or fact type, cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
+        @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
     public Response droolsFactsDelete(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
@@ -1023,10 +1023,10 @@ public class RestManager {
                     + "for a given controller and session",
             notes = "The DRL query with parameters must be defined in the DRL file", responseContainer = "List")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "The controller, session, or query information, cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 404, message = "The controller, session, or query information, cannot be found"),
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
+        @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
     public Response droolsFactsDelete(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
             @ApiParam(value = "Drools Session Name", required = true) @PathParam("session") String sessionName,
@@ -1140,7 +1140,7 @@ public class RestManager {
                     + " memory of the controlled drools application.",
             responseContainer = "List", response = ProtocolCoderToolset.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller or topic cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoder(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1172,7 +1172,7 @@ public class RestManager {
                     + "Acceptance filters are used to filter out undesired network messages for the given controller",
             responseContainer = "List", response = CoderFilters.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller or topic cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilter(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1210,7 +1210,7 @@ public class RestManager {
                     + "Filters are applied on a per fact type (classname).",
             responseContainer = "List", response = CoderFilters.class)
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilter(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1250,10 +1250,10 @@ public class RestManager {
                     + "Filters are applied on a per fact type (classname).",
             responseContainer = "List", response = CoderFilters.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 404,
+        @ApiResponse(code = 404,
                     message = "The controller, topic, fact type, cannot be found, "
                             + "or a filter has not been provided"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilter(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1298,7 +1298,7 @@ public class RestManager {
                     + "A Policy Controller uses filters to further specify the fact mapping.  "
                     + "Filters are applied on a per fact type using a jsonpath expression rule. ")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilterRules(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1344,8 +1344,8 @@ public class RestManager {
                     + "A Policy Controller uses filters to further specify the fact mapping.  "
                     + "Filters are applied on a per fact type using a jsonpath expression rule. ")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilterRuleDelete(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1392,7 +1392,7 @@ public class RestManager {
                     + "A Policy Controller uses filters to further specify the fact mapping.  "
                     + "Filters are applied on a per fact type using a jsonpath expression rule. ")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The controller, topic, or fact type cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decoderFilterRule(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1445,7 +1445,7 @@ public class RestManager {
     @ApiOperation(value = "Decodes a string into a fact object, and encodes it back into a string",
             notes = "Tests the decode/encode functions of a controller", response = CodingResult.class)
     @ApiResponses(value = {@ApiResponse(code = 400, message = "Bad input has been provided"),
-            @ApiResponse(code = 404, message = "The controller cannot be found"), @ApiResponse(code = 406,
+        @ApiResponse(code = 404, message = "The controller cannot be found"), @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response decode(
             @ApiParam(value = "Policy Controller Name", required = true) @PathParam("controller") String controllerName,
@@ -1805,7 +1805,7 @@ public class RestManager {
     @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
     @ApiOperation(value = "Starts a topic", response = TopicSource.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
-        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response commSourceTopicActivation(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
@@ -1822,7 +1822,7 @@ public class RestManager {
     @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
     @ApiOperation(value = "Stops a topic", response = TopicSource.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
-        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response commSourceTopicDeactivation(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
@@ -1839,7 +1839,7 @@ public class RestManager {
     @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
     @ApiOperation(value = "Locks a topic sink", response = TopicSink.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
-        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response commSinkTopicLock(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
@@ -1856,7 +1856,7 @@ public class RestManager {
     @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
     @ApiOperation(value = "Unlocks a topic sink", response = TopicSink.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
-        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response commSinkTopicUnlock(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
@@ -1873,7 +1873,7 @@ public class RestManager {
     @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
     @ApiOperation(value = "Starts a topic sink", response = TopicSink.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
-        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response commSinkTopicActivation(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
@@ -1890,7 +1890,7 @@ public class RestManager {
     @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
     @ApiOperation(value = "Stops a topic", response = TopicSource.class)
     @ApiResponses(value = {@ApiResponse(code = 406,
-        message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
+            message = "The system is an administrative state that prevents " + "this request to be fulfilled")})
     public Response commSinkTopicDeactivation(
         @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
         @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic
@@ -1923,9 +1923,9 @@ public class RestManager {
     @ApiOperation(value = "Offers an event to a topic for internal processing by the engine",
             notes = "The offered event is treated as it was incoming from the network", responseContainer = "List")
     @ApiResponses(value = {@ApiResponse(code = 404, message = "The topic information cannot be found"),
-            @ApiResponse(code = 406,
+        @ApiResponse(code = 406,
                     message = "The system is an administrative state that prevents " + "this request to be fulfilled"),
-            @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
+        @ApiResponse(code = 500, message = "A server error has occurred processing this request")})
     public Response commEventOffer(
             @ApiParam(value = "Communication Mechanism", required = true) @PathParam("comm") String comm,
             @ApiParam(value = "Topic Name", required = true) @PathParam("topic") String topic,
@@ -1994,7 +1994,7 @@ public class RestManager {
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(value = "logging level of a logger")
     @ApiResponses(value = {@ApiResponse(code = 500, message = "logging misconfiguration"),
-            @ApiResponse(code = 404, message = "logger not found")})
+        @ApiResponse(code = 404, message = "logger not found")})
     public Response loggerName(
             @ApiParam(value = "Logger Name", required = true) @PathParam("logger") String loggerName) {
         if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
@@ -2023,7 +2023,7 @@ public class RestManager {
     @Consumes(MediaType.TEXT_PLAIN)
     @ApiOperation(value = "sets the logger level", notes = "Please use the SLF4J logger levels")
     @ApiResponses(value = {@ApiResponse(code = 500, message = "logging misconfiguration"),
-            @ApiResponse(code = 404, message = "logger not found")})
+        @ApiResponse(code = 404, message = "logger not found")})
     public Response loggerName(@ApiParam(value = "Logger Name", required = true) @PathParam("logger") String loggerName,
             @ApiParam(value = "Logger Level", required = true) @PathParam("level") String loggerLevel) {
 

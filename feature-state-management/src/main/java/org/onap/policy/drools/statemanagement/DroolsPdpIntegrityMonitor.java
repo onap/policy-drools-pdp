@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * feature-state-management
  * ================================================================================
- * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
      * Constructor - pass arguments to superclass, but remember properties.
      *
      * @param resourceName unique name of this Integrity Monitor
-     * @param url the JMX URL of the MBean server
-     * @param properties properties used locally, as well as by 'IntegrityMonitor'
+     * @param consolidatedProperties properties used locally, as well as by 'IntegrityMonitor'
      * @throws IntegrityMonitorException (passed from superclass)
      */
     private DroolsPdpIntegrityMonitor(String resourceName, Properties consolidatedProperties)
@@ -241,7 +240,7 @@ public class DroolsPdpIntegrityMonitor extends IntegrityMonitor {
      *
      * @param props set of properties
      * @param name name of the property to check
-     * @param expected expected/default value
+     * @param dflt expected/default value
      */
     private static void addDefaultPropWarn(Properties props, String name, String dflt) {
         String val = props.getProperty(name);
