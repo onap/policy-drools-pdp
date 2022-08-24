@@ -1,7 +1,7 @@
 #  ============LICENSE_START=======================================================
 #  feature-distributed-locking
 # ================================================================================
-#  Copyright (C) 2018, 2021 AT&T Intellectual Property. All rights reserved.
+#  Copyright (C) 2018, 2021-2022 AT&T Intellectual Property. All rights reserved.
 #  ================================================================================
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,6 +18,6 @@
 
  set foreign_key_checks=0;
 
- ALTER TABLE pooling.locks modify if exists expirationTime timestamp default '1971-01-01 00:00:00.000000';
+ ALTER TABLE pooling.locks modify expirationTime timestamp default '1971-01-01 00:00:00.000000';
 
  set foreign_key_checks=1;
