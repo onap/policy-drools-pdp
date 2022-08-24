@@ -18,6 +18,6 @@
 
  set foreign_key_checks=0;
 
- ALTER TABLE pooling.locks modify if exists expirationTime timestamp default '1971-01-01 00:00:00.000000';
+ ALTER TABLE pooling.locks modify expirationTime timestamp default '1971-01-01 00:00:00.000000';
 
  set foreign_key_checks=1;
