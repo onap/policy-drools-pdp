@@ -43,6 +43,7 @@
         <docker.skip.build>false</docker.skip.build>
         <docker.skip.push>false</docker.skip.push>
         <docker.skip.deployconfig>true</docker.skip.deployconfig>
+        <docker.contextDir>${project.basedir}/src/main/docker</docker.contextDir>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
         <docker.buildArg.BUILD_VERSION_DROOLS>${project.version}</docker.buildArg.BUILD_VERSION_DROOLS>
         <docker.buildArg.MVN_SNAPSHOT_REPO_URL>${nexusproxy}/${snapshots.path}</docker.buildArg.MVN_SNAPSHOT_REPO_URL>
@@ -107,6 +108,7 @@
                             <build>
                                 <cleanup>try</cleanup>
                                 <dockerFile>${dockerFile}</dockerFile>
+                                <contextDir>${docker.contextDir}</contextDir>
                                 <tags>
                                     <tag>${project.version}</tag>
                                     <tag>${project.version}-${maven.build.timestamp}</tag>
