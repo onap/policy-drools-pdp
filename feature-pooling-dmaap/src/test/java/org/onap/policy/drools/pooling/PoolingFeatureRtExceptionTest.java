@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.onap.policy.common.utils.test.ExceptionsTester;
-import org.onap.policy.drools.pooling.PoolingFeatureRtException;
 
 public class PoolingFeatureRtExceptionTest extends ExceptionsTester {
 

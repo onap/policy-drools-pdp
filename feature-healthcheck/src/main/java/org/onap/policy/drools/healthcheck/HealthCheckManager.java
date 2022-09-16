@@ -229,6 +229,7 @@ public class HealthCheckManager implements HealthCheck {
         return report;
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> CompletableFuture<Report>[] futures(List<T> entities) {
         return entities.stream()
                 .map(this::supplier)

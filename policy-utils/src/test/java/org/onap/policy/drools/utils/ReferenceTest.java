@@ -26,7 +26,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.onap.policy.drools.utils.Reference;
 
 public class ReferenceTest {
 

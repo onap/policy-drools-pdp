@@ -80,6 +80,11 @@ public interface HealthCheck extends Startable {
         private String message;
 
 
+        /**
+         * Create a report.
+         *
+         * @param report the report to create
+         */
         public Report(Report report) {
             this.startTime = report.startTime;
             this.code = report.code;
@@ -91,6 +96,11 @@ public interface HealthCheck extends Startable {
             this.url = report.url;
         }
 
+        /**
+         * Set the end time on the report as now.
+         *
+         * @return the report
+         */
         public Report setEndTime() {
             setEndTime(System.currentTimeMillis());
             setElapsedTime(endTime - startTime);
@@ -109,6 +119,11 @@ public interface HealthCheck extends Startable {
         private long elapsedTime;
         private List<Report> details = new ArrayList<>();
 
+        /**
+         * Set the end time on the report as now.
+         *
+         * @return the report
+         */
         public Reports setEndTime() {
             this.endTime = System.currentTimeMillis();
             this.elapsedTime = this.endTime - this.startTime;
