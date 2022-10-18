@@ -39,6 +39,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -153,6 +154,8 @@ public class LifecycleFsm implements Startable {
     @Setter
     protected String pdpType;
 
+    protected volatile String pdpName;
+
     @Getter
     protected Set<String> mandatoryPolicyTypes = new HashSet<>();
 
@@ -186,12 +189,6 @@ public class LifecycleFsm implements Startable {
 
         logger.info("The mandatory Policy Types are {}. Compliance is {}",
                 mandatoryPolicyTypes, isMandatoryPolicyTypesCompliant());
-
-        stats.setPdpInstanceId(PolicyEngineConstants.PDP_NAME);
-    }
-
-    public String getName() {
-        return PolicyEngineConstants.PDP_NAME;
     }
 
     @GsonJsonIgnore
@@ -202,6 +199,18 @@ public class LifecycleFsm implements Startable {
     @Override
     public boolean isAlive() {
         return client != null && client.getSink().isAlive();
+    }
+
+    /**
+     * Returns the PDP Name.
+     */
+    public String getPdpName() {
+        if (this.pdpName == null) {
+            this.pdpName = PolicyEngineConstants.getManager().getPdpName();
+            this.stats.setPdpInstanceId(pdpName);
+        }
+
+        return this.pdpName;
     }
 
     /**
@@ -231,6 +240,8 @@ public class LifecycleFsm implements Startable {
 
     @Override
     public synchronized boolean start() {
+        this.pdpName = PolicyEngineConstants.getManager().getPdpName();
+        stats.setPdpInstanceId(pdpName);
         logger.info("lifecycle event: start engine");
         return state.start();
     }
@@ -651,7 +662,7 @@ public class LifecycleFsm implements Startable {
 
     protected PdpStatus statusPayload(@NonNull PdpState state) {
         var status = new PdpStatus();
-        status.setName(getName());
+        status.setName(getPdpName());
         status.setPdpGroup(group);
         status.setPdpSubgroup(subGroup);
         status.setState(state);
@@ -711,7 +722,7 @@ public class LifecycleFsm implements Startable {
     }
 
     protected boolean isItMe(String name, String group, String subgroup) {
-        if (Objects.equals(name, getName())) {
+        if (Objects.equals(name, getPdpName())) {
             return true;
         }
 

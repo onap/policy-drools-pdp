@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,7 +77,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");
         change.setState(PdpState.ACTIVE);
-        change.setName(fsm.getName());
+        change.setName(fsm.getPdpName());
 
         fsm.setSubGroup("a");
         fsm.source.offer(new StandardCoder().encode(change));
@@ -116,7 +116,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
             getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_CONTROLLER_POLICY_NAME);
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
         update.setPoliciesToBeDeployed(List.of(policyNativeController));
