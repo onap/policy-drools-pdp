@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -160,7 +160,7 @@ public class LifecycleFsmUpdateTest {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                     "foo-controller.properties.bak"));
         } catch (IOException ignored) { // NOSONAR
-            ; // checkstyle
+            // checkstyle
         }
 
         ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", savedFsm);
@@ -359,7 +359,7 @@ public class LifecycleFsmUpdateTest {
 
     protected PdpUpdate getPdpUpdate(List<ToscaPolicy> policiesToDeploy, List<ToscaPolicy> policiesToUndeploy) {
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
         update.setPoliciesToBeDeployed(policiesToDeploy);

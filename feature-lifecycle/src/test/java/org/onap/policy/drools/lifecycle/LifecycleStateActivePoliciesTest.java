@@ -116,7 +116,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
             getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_CONTROLLER_POLICY_NAME);
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
         update.setPoliciesToBeDeployed(List.of(policyNativeController));

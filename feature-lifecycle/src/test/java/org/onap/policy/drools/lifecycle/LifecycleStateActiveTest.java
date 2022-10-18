@@ -189,7 +189,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         // TODO: extract repeated similar assertion blocks into their own helper methods
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
 

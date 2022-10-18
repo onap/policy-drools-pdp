@@ -187,11 +187,11 @@ public class LifecycleFsm implements Startable {
         logger.info("The mandatory Policy Types are {}. Compliance is {}",
                 mandatoryPolicyTypes, isMandatoryPolicyTypesCompliant());
 
-        stats.setPdpInstanceId(PolicyEngineConstants.PDP_NAME);
+        stats.setPdpInstanceId(getName());
     }
 
     public String getName() {
-        return PolicyEngineConstants.PDP_NAME;
+        return PolicyEngineConstants.getManager().getPdpName();
     }
 
     @GsonJsonIgnore

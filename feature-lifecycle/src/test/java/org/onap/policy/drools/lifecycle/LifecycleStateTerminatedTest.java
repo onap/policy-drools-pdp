@@ -139,7 +139,7 @@ public class LifecycleStateTerminatedTest {
     @Test
     public void testUpdate() {
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
         update.setPoliciesToBeDeployed(Collections.emptyList());

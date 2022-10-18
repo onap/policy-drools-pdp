@@ -1,6 +1,9 @@
 {
     "alive": true,
     "locked": false,
+    "hostName": "foo",
+    "clusterName": "0",
+    "pdpName": "foo@0",
     "sources": [],
     "sinks": [],
     "httpServers": [
