@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,6 +156,7 @@ public class DistributedLockManagerTest {
     @BeforeClass
     public static void setUpBeforeClass() throws SQLException {
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
+        PolicyEngineConstants.getManager().configure(new Properties());
 
         conn = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
 
@@ -311,10 +312,9 @@ public class DistributedLockManagerTest {
     /**
      * Tests deleteExpiredDbLocks(), when getConnection() throws an exception.
      *
-     * @throws SQLException if an error occurs
      */
     @Test
-    public void testDeleteExpiredDbLocksEx() throws SQLException {
+    public void testDeleteExpiredDbLocksEx() {
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
         // get the clean-up function and execute it
@@ -342,16 +342,15 @@ public class DistributedLockManagerTest {
     /**
      * Tests afterStop(), when the data source throws an exception when close() is called.
      *
-     * @throws SQLException if an error occurs
      */
     @Test
-    public void testAfterStopEx() throws SQLException {
+    public void testAfterStopEx() {
         shutdownFeature();
 
         // use a data source that throws an exception when closed
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
-        assertThatCode(() -> shutdownFeature()).doesNotThrowAnyException();
+        assertThatCode(this::shutdownFeature).doesNotThrowAnyException();
     }
 
     @Test
@@ -877,7 +876,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockRescheduleRequest() throws SQLException {
+    public void testDistributedLockRescheduleRequest() {
         // use a data source that throws an exception when getConnection() is called
         InvalidDbLockingFeature invfeat = new InvalidDbLockingFeature(TRANSIENT);
         feature = invfeat;
@@ -937,7 +936,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockDoRequest() throws SQLException {
+    public void testDistributedLockDoRequest() {
         lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
 
         assertTrue(lock.isWaiting());
@@ -1019,7 +1018,7 @@ public class DistributedLockManagerTest {
         // use a data source that throws an exception when getConnection() is called
         feature = new MyLockingFeature(true) {
             @Override
-            protected BasicDataSource makeDataSource() throws Exception {
+            protected BasicDataSource makeDataSource() {
                 return datasrc;
             }
         };
@@ -1052,7 +1051,7 @@ public class DistributedLockManagerTest {
         // use a data source that throws an exception when getConnection() is called
         feature = new MyLockingFeature(true) {
             @Override
-            protected BasicDataSource makeDataSource() throws Exception {
+            protected BasicDataSource makeDataSource() {
                 return datasrc;
             }
         };
@@ -1232,10 +1231,9 @@ public class DistributedLockManagerTest {
     /**
      * Tests doUnlock() when a DB exception is thrown.
      *
-     * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoUnlockEx() throws SQLException {
+    public void testDistributedLockDoUnlockEx() {
         feature = new InvalidDbLockingFeature(PERMANENT);
 
         lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
@@ -1338,10 +1336,9 @@ public class DistributedLockManagerTest {
     /**
      * Tests doExtend() when both update and insert fail.
      *
-     * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoExtendNeitherSucceeds() throws SQLException {
+    public void testDistributedLockDoExtendNeitherSucceeds() {
         /*
          * this feature will create a lock that returns false when doDbUpdate() is
          * invoked, or when doDbInsert() is invoked a second time
@@ -1441,7 +1438,7 @@ public class DistributedLockManagerTest {
         feature.beforeCreateLockManager(engine, new Properties());
         feature.afterStart(engine);
 
-        assertThatCode(() -> shutdownFeature()).doesNotThrowAnyException();
+        assertThatCode(this::shutdownFeature).doesNotThrowAnyException();
     }
 
     /**

@@ -1,6 +1,6 @@
 /*
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,8 @@ public abstract class LifecycleStateRunningTest {
         try {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));
-        } catch (IOException e) {
-            ;
+        } catch (IOException ignored) {
+            // ignored
         }
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }

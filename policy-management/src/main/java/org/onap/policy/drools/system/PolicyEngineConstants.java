@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * policy-management
  * ================================================================================
- * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019, 2021-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,6 @@ public final class PolicyEngineConstants {
      * Default Telemetry Server Name.
      */
     public static final String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
-
-    /**
-     * Unique name of this drools-pdp JVM.
-     */
-    public static final String PDP_NAME = NetworkUtil.genUniqueName("drools");
 
     /**
      * Policy Engine Manager.

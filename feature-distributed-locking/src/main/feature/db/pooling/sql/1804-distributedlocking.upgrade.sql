@@ -1,7 +1,7 @@
 #  ============LICENSE_START=======================================================
 #  feature-distributed-locking
 # ================================================================================
-#  Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+#  Copyright (C) 2018, 2022 AT&T Intellectual Property. All rights reserved.
 #  ================================================================================
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,8 +16,15 @@
 #  limitations under the License.
 #  ============LICENSE_END=========================================================
 
- set foreign_key_checks=0; 
- 
- CREATE TABLE if not exists pooling.locks (resourceId VARCHAR(128), host VARCHAR(128), owner VARCHAR(128), expirationTime BIGINT, PRIMARY KEY (resourceId), INDEX idx_expirationTime(expirationTime), INDEX idx_host(host));
+SET foreign_key_checks=0;
 
- set foreign_key_checks=1;
+CREATE TABLE if NOT EXISTS pooling.locks(
+    resourceId VARCHAR(128),
+    host VARCHAR(128),
+    owner VARCHAR(128),
+    expirationTime BIGINT,
+    PRIMARY KEY (resourceId),
+    INDEX idx_expirationTime(expirationTime),
+    INDEX idx_host(host));
+
+SET foreign_key_checks=1;

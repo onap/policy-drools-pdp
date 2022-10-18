@@ -16,8 +16,8 @@
 #  limitations under the License.
 #  ============LICENSE_END=========================================================
 
- set foreign_key_checks=0;
+SET foreign_key_checks=0;
 
- ALTER TABLE pooling.locks modify expirationTime timestamp default '1971-01-01 00:00:00.000000';
+ALTER TABLE pooling.locks MODIFY expirationTime TIMESTAMP DEFAULT '1971-01-01 00:00:00.000000';
 
- set foreign_key_checks=1;
+SET foreign_key_checks=1;

@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,17 +155,18 @@ public class PolicyEngineTest {
 
     @Test
     public void test100Configure() {
-        logger.info("enter");
-
-        final Properties engineProps = PolicyEngineConstants.getManager().defaultTelemetryConfig();
+        var manager = (PolicyEngineManager) PolicyEngineConstants.getManager();
+        var engineProps = manager.defaultTelemetryConfig();
 
         /* override default port */
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
                         + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                         + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
 
-        assertFalse(PolicyEngineConstants.getManager().isAlive());
-        PolicyEngineConstants.getManager().configure(engineProps);
+        assertFalse(manager.isAlive());
+        manager.setHostName("foo");
+        manager.setClusterName("0");
+        manager.configure(engineProps);
         assertFalse(PolicyEngineConstants.getManager().isAlive());
 
         logger.info("engine {} has configuration {}", PolicyEngineConstants.getManager(), engineProps);

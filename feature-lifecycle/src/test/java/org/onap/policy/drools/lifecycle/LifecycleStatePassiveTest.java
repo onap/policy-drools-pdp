@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -143,7 +143,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("Z");
         update.setPdpSubgroup("z");
 
@@ -269,7 +269,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertNull(fsm.getSubGroup());
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
 
@@ -294,7 +294,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
         /* correct name */
-        change.setName(fsm.getName());
+        change.setName(fsm.getPdpName());
         fsm.source.offer(new StandardCoder().encode(change));
 
         assertEquals(PdpState.ACTIVE, fsm.state());
@@ -330,8 +330,8 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("foo", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
-        assertEquals(PolicyEngineConstants.PDP_NAME, status.getName());
-        assertEquals(fsm.getName(), status.getName());
+        assertEquals(PolicyEngineConstants.getManager().getPdpName(), status.getName());
+        assertEquals(fsm.getPdpName(), status.getName());
         assertEquals(PdpMessageType.PDP_STATUS, status.getMessageName());
     }
 

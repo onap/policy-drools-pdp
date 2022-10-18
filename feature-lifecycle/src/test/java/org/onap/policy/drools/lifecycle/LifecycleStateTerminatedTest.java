@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -139,7 +139,7 @@ public class LifecycleStateTerminatedTest {
     @Test
     public void testUpdate() {
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
         update.setPoliciesToBeDeployed(Collections.emptyList());

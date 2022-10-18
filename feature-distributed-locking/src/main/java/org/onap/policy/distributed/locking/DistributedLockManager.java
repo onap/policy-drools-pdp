@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,17 +87,16 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     @Setter(AccessLevel.PROTECTED)
     private static DistributedLockManager latestInstance = null;
 
-
     /**
      * Name of the host on which this JVM is running.
      */
-    @Getter
-    private final String pdpName;
+    @Getter(AccessLevel.PUBLIC)
+    private String pdpName;
 
     /**
      * UUID of this object.
      */
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private final String uuidString = UUID.randomUUID().toString();
 
     /**
@@ -133,7 +132,6 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
      * Constructs the object.
      */
     public DistributedLockManager() {
-        this.pdpName = PolicyEngineConstants.PDP_NAME;
         this.resource2lock = getResource2lock();
     }
 
@@ -146,6 +144,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     public PolicyResourceLockManager beforeCreateLockManager(PolicyEngine engine, Properties properties) {
 
         try {
+            this.pdpName = PolicyEngineConstants.getManager().getPdpName();
             this.featProps = new DistributedLockProperties(getProperties(CONFIGURATION_PROPERTIES_NAME));
             this.dataSource = makeDataSource();
 
@@ -256,8 +255,9 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
      */
     private void checkExpired() {
         try {
-            logger.info("checking for expired locks");
             Set<String> expiredIds = new HashSet<>(resource2lock.keySet());
+            logger.info("checking for expired locks: {}", this);
+
             identifyDbLocks(expiredIds);
             expireLocks(expiredIds);
 
@@ -337,7 +337,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
 
             DistributedLock lock = lockref.get();
             if (lock != null) {
-                logger.debug("removed lock from map {}", lock);
+                logger.info("lost lock: removed lock from map {}", lock);
                 lock.deny(FeatureLockImpl.LOCK_LOST_MSG);
             }
         }
@@ -704,7 +704,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * @throws SQLException if a DB error occurs
          */
         protected boolean doDbInsert(Connection conn) throws SQLException {
-            logger.debug("insert lock record {}", this);
+            logger.info("insert lock record {}", this);
             try (var stmt = conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
                                             + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
 
@@ -731,7 +731,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * @throws SQLException if a DB error occurs
          */
         protected boolean doDbUpdate(Connection conn) throws SQLException {
-            logger.debug("update lock record {}", this);
+            logger.info("update lock record {}", this);
             try (var stmt = conn.prepareStatement("UPDATE pooling.locks SET resourceId=?, host=?, owner=?,"
                                             + " expirationTime=timestampadd(second, ?, now()) WHERE resourceId=?"
                                             + " AND ((host=? AND owner=?) OR expirationTime < now())")) {
@@ -763,7 +763,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * @throws SQLException if a DB error occurs
          */
         protected void doDbDelete(Connection conn) throws SQLException {
-            logger.debug("delete lock record {}", this);
+            logger.info("delete lock record {}", this);
             try (var stmt = conn
                             .prepareStatement("DELETE FROM pooling.locks WHERE resourceId=? AND host=? AND owner=?")) {
 
@@ -780,7 +780,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * thread.
          */
         private void removeFromMap() {
-            logger.debug("remove lock from map {}", this);
+            logger.info("remove lock from map {}", this);
             feature.resource2lock.remove(getResourceId(), this);
 
             synchronized (this) {
@@ -799,8 +799,14 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     }
 
     @FunctionalInterface
-    private static interface RunnableWithEx {
+    private interface RunnableWithEx {
         void run() throws SQLException;
+    }
+
+    @Override
+    public String toString() {
+        return "DistributedLockManager [" + "pdpName=" + pdpName + ", uuidString=" + uuidString
+            + ", resource2lock=" + resource2lock + "]";
     }
 
     // these may be overridden by junit tests

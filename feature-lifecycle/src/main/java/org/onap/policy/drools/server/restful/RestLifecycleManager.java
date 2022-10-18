@@ -1,6 +1,6 @@
 /*-
  * ============LICENSE_START=======================================================
- * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2021 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -155,7 +155,7 @@ public class RestLifecycleManager {
         change.setPdpGroup(LifecycleFeature.getFsm().getGroup());
         change.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());
         change.setState(PdpState.valueOf(state));
-        change.setName(LifecycleFeature.getFsm().getName());
+        change.setName(LifecycleFeature.getFsm().getPdpName());
 
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().stateChange(change)).build();
     }
@@ -442,7 +442,7 @@ public class RestLifecycleManager {
 
     private PdpUpdate getPolicyUpdate() {
         var update = new PdpUpdate();
-        update.setName(LifecycleFeature.getFsm().getName());
+        update.setName(LifecycleFeature.getFsm().getPdpName());
         update.setPdpGroup(LifecycleFeature.getFsm().getGroup());
         update.setPdpSubgroup(LifecycleFeature.getFsm().getSubGroup());
         return update;
