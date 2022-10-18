@@ -143,7 +143,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("Z");
         update.setPdpSubgroup("z");
 
@@ -269,7 +269,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertNull(fsm.getSubGroup());
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("A");
         update.setPdpSubgroup("a");
 
@@ -330,7 +330,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
         assertEquals("foo", status.getPdpType());
         assertEquals(PdpState.TERMINATED, status.getState());
         assertEquals(PdpHealthStatus.HEALTHY, status.getHealthy());
-        assertEquals(PolicyEngineConstants.PDP_NAME, status.getName());
+        assertEquals(PolicyEngineConstants.getManager().getPdpName(), status.getName());
         assertEquals(fsm.getName(), status.getName());
         assertEquals(PdpMessageType.PDP_STATUS, status.getMessageName());
     }

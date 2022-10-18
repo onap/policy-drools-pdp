@@ -39,6 +39,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -153,6 +154,9 @@ public class LifecycleFsm implements Startable {
     @Setter
     protected String pdpType;
 
+    @Getter(AccessLevel.PUBLIC)
+    protected final String name = PolicyEngineConstants.getManager().getPdpName();
+
     @Getter
     protected Set<String> mandatoryPolicyTypes = new HashSet<>();
 
@@ -187,11 +191,8 @@ public class LifecycleFsm implements Startable {
         logger.info("The mandatory Policy Types are {}. Compliance is {}",
                 mandatoryPolicyTypes, isMandatoryPolicyTypesCompliant());
 
-        stats.setPdpInstanceId(PolicyEngineConstants.PDP_NAME);
-    }
 
-    public String getName() {
-        return PolicyEngineConstants.PDP_NAME;
+        stats.setPdpInstanceId(getName());
     }
 
     @GsonJsonIgnore

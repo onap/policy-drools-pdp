@@ -23,6 +23,7 @@ package org.onap.policy.drools.system;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -46,6 +47,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -330,6 +332,8 @@ public class PolicyEngineManagerTest {
 
     @Test
     public void testSerialize() {
+        mgr.setHostName("foo");
+        mgr.setClusterName("bar");
         mgr.configure(properties);
         assertThatCode(() -> gson.compareGson(mgr, PolicyEngineManagerTest.class)).doesNotThrowAnyException();
     }
@@ -441,6 +445,35 @@ public class PolicyEngineManagerTest {
         Properties config = mgr.defaultTelemetryConfig();
         assertNotNull(config);
         assertFalse(config.isEmpty());
+    }
+
+    @Test
+    public void testGetPdpName() {
+        properties.setProperty(PolicyEngineManager.CLUSTER_NAME_PROP, "east1");
+        mgr.configure(properties);
+
+        var pdpName = mgr.getPdpName();
+        assertEquals("east1", extractCluster(pdpName));
+        assertEquals(mgr.getClusterName(), extractCluster(pdpName));
+        assertEquals(mgr.getHostName(), extractHostname(pdpName));
+
+        mgr.setHostName("foo");
+        mgr.setClusterName("bar");
+        mgr.setPdpName("foo@bar");
+
+        pdpName = mgr.getPdpName();
+        assertEquals("bar", extractCluster(pdpName));
+        assertEquals(mgr.getClusterName(), extractCluster(pdpName));
+        assertEquals("foo", extractHostname(pdpName));
+        assertEquals(mgr.getHostName(), extractHostname(pdpName));
+    }
+
+    private String extractCluster(String name) {
+        return name.substring(name.lastIndexOf("@") + 1);
+    }
+
+    private String extractHostname(String name) {
+        return name.substring(0, name.lastIndexOf("@"));
     }
 
     /**
