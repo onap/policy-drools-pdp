@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,6 +120,25 @@ public interface PolicyEngine extends Startable, Lockable, TopicListener {
      * @return property string
      */
     String setEnvironmentProperty(String key, String value);
+
+    /**
+     * Gets the hostname used by this PDP-D.
+     */
+    String getHostName();
+
+    /**
+     * Gets the cluster name as configured in $CLUSTER_NAME,
+     * otherwise it will assume an UUID as the cluster name.
+     */
+    String getClusterName();
+
+    /**
+     * Gets the PDP Name from hostname and $CLUSTER_NAME,
+     * otherwise if CLUSTER_NAME is not set, the PdpName
+     * will be the concatenation of the hostname and a
+     * UUID.
+     */
+    String getPdpName();
 
     /**
      * registers a new Policy Controller with the Policy Engine initialized per properties.

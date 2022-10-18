@@ -75,8 +75,8 @@ public abstract class LifecycleStateRunningTest {
         try {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
                                      CONTROLLER_NAME + "-controller.properties.bak"));
-        } catch (IOException e) {
-            ;
+        } catch (IOException ignored) {
+            // ignored
         }
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }

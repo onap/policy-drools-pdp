@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import org.junit.AfterClass;
@@ -106,6 +107,7 @@ public class LifecycleFsmTest {
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtils.setLevel("org.onap.policy.drools", "INFO");
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
+        PolicyEngineConstants.getManager().configure(new Properties());
 
         fsm = new LifecycleFsm() {
             @Override
@@ -240,7 +242,7 @@ public class LifecycleFsmTest {
 
         assertEquals(fsm.getGroup(), status.getStatistics().getPdpGroupName());
         assertEquals(fsm.getSubGroup(), status.getStatistics().getPdpSubGroupName());
-        assertEquals(PolicyEngineConstants.PDP_NAME, status.getStatistics().getPdpInstanceId());
+        assertEquals(PolicyEngineConstants.getManager().getPdpName(), status.getStatistics().getPdpInstanceId());
         assertEquals(6, status.getStatistics().getPolicyDeploySuccessCount());
         assertEquals(2, status.getStatistics().getPolicyDeployFailCount());
         assertEquals(8, status.getStatistics().getPolicyDeployCount());

@@ -13,6 +13,9 @@
         { "port": 1002 }
     ],
     "locked": false,
+    "hostName": "foo",
+    "clusterName": "bar",
+    "pdpName": "foo@bar",
     "sinks": [
         { "name": "sink1-topic" },
         { "name": "sink2-topic" }

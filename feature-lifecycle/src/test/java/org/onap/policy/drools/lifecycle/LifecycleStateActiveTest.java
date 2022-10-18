@@ -75,7 +75,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");
         change.setState(PdpState.ACTIVE);
-        change.setName(fsm.getName());
+        change.setName(fsm.getPdpName());
 
         fsm.setSubGroup("a");
         fsm.source.offer(new StandardCoder().encode(change));
@@ -161,7 +161,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
         assertNotEquals("b", fsm.getSubGroup());
 
-        change.setName(fsm.getName());
+        change.setName(fsm.getPdpName());
         fsm.source.offer(new StandardCoder().encode(change));
         assertEquals(PdpState.ACTIVE, fsm.state());
         assertEquals(LifecycleFsm.DEFAULT_PDP_GROUP, fsm.getGroup());
@@ -189,7 +189,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
         // TODO: extract repeated similar assertion blocks into their own helper methods
 
         PdpUpdate update = new PdpUpdate();
-        update.setName(PolicyEngineConstants.PDP_NAME);
+        update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("W");
         update.setPdpSubgroup("w");
 

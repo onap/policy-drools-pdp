@@ -44,11 +44,6 @@ public final class PolicyEngineConstants {
     public static final String TELEMETRY_SERVER_DEFAULT_NAME = "TELEMETRY";
 
     /**
-     * Unique name of this drools-pdp JVM.
-     */
-    public static final String PDP_NAME = NetworkUtil.genUniqueName("drools");
-
-    /**
      * Policy Engine Manager.
      */
     @Getter

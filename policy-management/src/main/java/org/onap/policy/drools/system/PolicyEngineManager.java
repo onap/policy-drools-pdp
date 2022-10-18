@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,6 +42,8 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.Synchronized;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.endpoints.event.comm.Topic;
@@ -59,6 +62,7 @@ import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.gson.annotation.GsonJsonIgnore;
 import org.onap.policy.common.gson.annotation.GsonJsonProperty;
 import org.onap.policy.common.utils.logging.LoggerUtils;
+import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.common.utils.resources.PrometheusUtils;
 import org.onap.policy.common.utils.services.FeatureApiUtils;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
@@ -106,6 +110,8 @@ class PolicyEngineManager implements PolicyEngine {
 
     public static final String EXECUTOR_THREAD_PROP = "executor.threads";
     protected static final int DEFAULT_EXECUTOR_THREADS = 5;
+
+    public static final String CLUSTER_NAME_PROP = "engine.cluster";
 
     /**
      * logger.
@@ -169,6 +175,18 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Getter
     private final PolicyStatsManager stats = new PolicyStatsManager();
+
+    @Getter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    @Setter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    private String clusterName = UUID.randomUUID().toString();
+
+    @Getter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    @Setter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    private String hostName = NetworkUtil.getHostname();
+
+    @Getter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    @Setter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    private String pdpName;
 
     /**
      * gson parser to decode configuration requests.
@@ -368,6 +386,10 @@ class PolicyEngineManager implements PolicyEngine {
         }
 
         this.properties = properties;
+        if (!StringUtils.isBlank(this.properties.getProperty(CLUSTER_NAME_PROP))) {
+            this.clusterName = this.properties.getProperty(CLUSTER_NAME_PROP, this.clusterName);
+        }
+        this.pdpName = hostName + "@" + this.clusterName;
 
         try {
             this.sources = getTopicEndpointManager().addTopicSources(properties);
@@ -438,7 +460,6 @@ class PolicyEngineManager implements PolicyEngine {
 
     @Override
     public synchronized PolicyController createPolicyController(String name, Properties properties) {
-
         String tempName = name;
         // check if a PROPERTY_CONTROLLER_NAME property is present
         // if so, override the given name
