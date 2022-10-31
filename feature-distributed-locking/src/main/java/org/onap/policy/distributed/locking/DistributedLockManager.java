@@ -90,13 +90,13 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     /**
      * Name of the host on which this JVM is running.
      */
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private String pdpName;
 
     /**
      * UUID of this object.
      */
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private final String uuidString = UUID.randomUUID().toString();
 
     /**
