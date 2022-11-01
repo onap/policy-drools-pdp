@@ -176,16 +176,16 @@ class PolicyEngineManager implements PolicyEngine {
     @Getter
     private final PolicyStatsManager stats = new PolicyStatsManager();
 
-    @Getter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
-    @Setter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    @Getter(onMethod_ = {@Synchronized})
+    @Setter(onMethod_ = {@Synchronized})
     private String clusterName = UUID.randomUUID().toString();
 
-    @Getter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
-    @Setter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    @Getter(onMethod_ = {@Synchronized})
+    @Setter(onMethod_ = {@Synchronized})
     private String hostName = NetworkUtil.getHostname();
 
-    @Getter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
-    @Setter(onMethod_ = {@Synchronized}, value = AccessLevel.PUBLIC)
+    @Getter(onMethod_ = {@Synchronized})
+    @Setter(onMethod_ = {@Synchronized})
     private String pdpName;
 
     /**
