@@ -2,7 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * ================================================================================
- * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2018-2021, 2023 AT&T Intellectual Property. All rights reserved.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import lombok.NonNull;
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -242,7 +242,7 @@ public final class KieUtils {
         if (!stillNeeded.isEmpty()) {
             // there are still packages we need to add --
             // this code makes use of an internal class and method
-            ((KnowledgeBaseImpl) kieBase).addPackages(stillNeeded);
+            ((SessionsAwareKnowledgeBase) kieBase).addPackages(stillNeeded);
         }
     }
 }
