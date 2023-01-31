@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +54,7 @@ import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.powermock.reflect.Whitebox;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FeatureLockImplTest {
@@ -71,13 +72,13 @@ public class FeatureLockImplTest {
     @Mock
     private LockCallback callback;
 
-
     /**
      * Saves static fields and configures the location of the property files.
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        saveExec = Whitebox.getInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD);
+        saveExec = (ScheduledExecutorService) ReflectionTestUtils.getField(PolicyEngineConstants.getManager(),
+            POLICY_ENGINE_EXECUTOR_FIELD);
     }
 
     /**
@@ -85,7 +86,7 @@ public class FeatureLockImplTest {
      */
     @AfterClass
     public static void tearDownAfterClass() {
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
     }
 
     /**
@@ -94,7 +95,7 @@ public class FeatureLockImplTest {
      */
     @Before
     public void setUp() {
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
     }
 
     @Test
@@ -396,7 +397,7 @@ public class FeatureLockImplTest {
         }
 
         public MyLockStdSession(LockState state, String resourceId, String ownerKey, int holdSec,
-                        LockCallback callback) {
+            LockCallback callback) {
             super(state, resourceId, ownerKey, holdSec, callback);
         }
 
@@ -447,7 +448,7 @@ public class FeatureLockImplTest {
         }
 
         public MyLockNoFeature(LockState state, String resourceId, String ownerKey, int holdSec,
-                        LockCallback callback) {
+            LockCallback callback) {
             super(state, resourceId, ownerKey, holdSec, callback);
         }
 

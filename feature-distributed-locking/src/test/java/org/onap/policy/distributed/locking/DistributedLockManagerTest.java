@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +86,7 @@ import org.onap.policy.drools.features.PolicyEngineFeatureApi;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.powermock.reflect.Whitebox;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DistributedLockManagerTest {
@@ -96,7 +97,7 @@ public class DistributedLockManagerTest {
     private static final String OTHER_OWNER = "other-owner";
     private static final String EXPECTED_EXCEPTION = "expected exception";
     private static final String DB_CONNECTION =
-                    "jdbc:h2:mem:pooling;INIT=CREATE SCHEMA IF NOT EXISTS pooling\\;SET SCHEMA pooling";
+        "jdbc:h2:mem:pooling;INIT=CREATE SCHEMA IF NOT EXISTS pooling\\;SET SCHEMA pooling";
     private static final String DB_USER = "user";
     private static final String DB_PASSWORD = "password";
     private static final String OWNER_KEY = "my key";
@@ -147,7 +148,6 @@ public class DistributedLockManagerTest {
     private AtomicInteger nsuccesses;
     private DistributedLockManager feature;
 
-
     /**
      * Configures the location of the property files and creates the DB.
      *
@@ -161,12 +161,13 @@ public class DistributedLockManagerTest {
         conn = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
 
         try (PreparedStatement createStmt = conn.prepareStatement("create table pooling.locks "
-                        + "(resourceId VARCHAR(128), host VARCHAR(128), owner VARCHAR(128), "
-                        + "expirationTime TIMESTAMP DEFAULT 0, PRIMARY KEY (resourceId))")) {
+            + "(resourceId VARCHAR(128), host VARCHAR(128), owner VARCHAR(128), "
+            + "expirationTime TIMESTAMP DEFAULT 0, PRIMARY KEY (resourceId))")) {
             createStmt.executeUpdate();
         }
 
-        saveExec = Whitebox.getInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD);
+        saveExec = (ScheduledExecutorService) ReflectionTestUtils.getField(PolicyEngineConstants.getManager(),
+            POLICY_ENGINE_EXECUTOR_FIELD);
 
         realExec = Executors.newScheduledThreadPool(3);
     }
@@ -176,7 +177,7 @@ public class DistributedLockManagerTest {
      */
     @AfterClass
     public static void tearDownAfterClass() throws SQLException {
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
         realExec.shutdown();
         conn.close();
     }
@@ -232,7 +233,7 @@ public class DistributedLockManagerTest {
     @Test
     public void testServiceApis() {
         assertTrue(new OrderedServiceImpl<>(PolicyEngineFeatureApi.class).getList().stream()
-                        .anyMatch(obj -> obj instanceof DistributedLockManager));
+            .anyMatch(obj -> obj instanceof DistributedLockManager));
     }
 
     @Test
@@ -261,7 +262,7 @@ public class DistributedLockManagerTest {
 
         Properties props = new Properties();
         assertThatThrownBy(() -> feature.beforeCreateLockManager(engine, props))
-                        .isInstanceOf(DistributedLockManagerException.class);
+            .isInstanceOf(DistributedLockManagerException.class);
     }
 
     @Test
@@ -448,10 +449,8 @@ public class DistributedLockManagerTest {
         // change uuid of another record
         updateRecord(RESOURCE5, feature.getPdpName(), OTHER_OWNER, HOLD_SEC);
 
-
         // run the checker
         runChecker(0, 0, EXPIRE_SEC);
-
 
         // check lock states
         assertTrue(lock.isUnavailable());
@@ -471,7 +470,6 @@ public class DistributedLockManagerTest {
         verify(callback2, never()).lockUnavailable(lock2);
         verify(callback4, never()).lockUnavailable(lock4);
 
-
         // another check should have been scheduled, with the normal interval
         runChecker(1, 0, EXPIRE_SEC);
     }
@@ -483,7 +481,7 @@ public class DistributedLockManagerTest {
     public void testCheckExpiredExecRejected() {
         // arrange for execution to be rejected
         when(exsvc.schedule(any(Runnable.class), anyLong(), any()))
-                        .thenThrow(new RejectedExecutionException(EXPECTED_EXCEPTION));
+            .thenThrow(new RejectedExecutionException(EXPECTED_EXCEPTION));
 
         runChecker(0, 0, EXPIRE_SEC);
     }
@@ -576,7 +574,6 @@ public class DistributedLockManagerTest {
         // run the checker
         runChecker(0, 0, EXPIRE_SEC);
 
-
         // check lock states
         assertTrue(lock.isUnavailable());
         assertTrue(lock2.isActive());
@@ -604,8 +601,8 @@ public class DistributedLockManagerTest {
     @Test
     public void testDistributedLock() {
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> feature.createLock(RESOURCE, OWNER_KEY, -1, callback, false))
-                        .withMessageContaining("holdSec");
+            .isThrownBy(() -> feature.createLock(RESOURCE, OWNER_KEY, -1, callback, false))
+            .withMessageContaining("holdSec");
 
         // should generate no exception
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
@@ -755,12 +752,12 @@ public class DistributedLockManagerTest {
         verify(callback, times(2)).lockUnavailable(lock2);
 
         // force lock2 to be active - should still be denied
-        Whitebox.setInternalState(lock2, "state", LockState.ACTIVE);
+        ReflectionTestUtils.setField(lock2, "state", LockState.ACTIVE);
         lock2.extend(HOLD_SEC, callback);
         verify(callback, times(3)).lockUnavailable(lock2);
 
         assertThatIllegalArgumentException().isThrownBy(() -> lock.extend(-1, callback))
-                        .withMessageContaining("holdSec");
+            .withMessageContaining("holdSec");
 
         // execute doLock()
         runLock(0, 0);
@@ -962,7 +959,7 @@ public class DistributedLockManagerTest {
         feature = new MyLockingFeature(true) {
             @Override
             protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
-                            LockCallback callback) {
+                LockCallback callback) {
                 return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
                     private static final long serialVersionUID = 1L;
 
@@ -1346,7 +1343,7 @@ public class DistributedLockManagerTest {
         feature = new MyLockingFeature(true) {
             @Override
             protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
-                            LockCallback callback) {
+                LockCallback callback) {
                 return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
                     private static final long serialVersionUID = 1L;
                     private int ntimes = 0;
@@ -1449,7 +1446,7 @@ public class DistributedLockManagerTest {
      */
     @Test
     public void testMultiThreaded() throws InterruptedException {
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
 
         feature = new DistributedLockManager();
         feature.beforeCreateLockManager(PolicyEngineConstants.getManager(), new Properties());
@@ -1477,7 +1474,7 @@ public class DistributedLockManagerTest {
     }
 
     private DistributedLock getLock(String resource, String ownerKey, int holdSec, LockCallback callback,
-                    boolean waitForLock) {
+        boolean waitForLock) {
         return (DistributedLock) feature.createLock(resource, ownerKey, holdSec, callback, waitForLock);
     }
 
@@ -1546,7 +1543,7 @@ public class DistributedLockManagerTest {
      */
     private int getRecordCount() throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement("SELECT count(*) FROM pooling.locks");
-                        ResultSet result = stmt.executeQuery()) {
+            ResultSet result = stmt.executeQuery()) {
 
             if (result.next()) {
                 return result.getInt(1);
@@ -1571,8 +1568,8 @@ public class DistributedLockManagerTest {
      */
     private boolean recordInRange(String resourceId, String uuidString, int holdSec, long tbegin) throws SQLException {
         try (PreparedStatement stmt =
-                        conn.prepareStatement("SELECT timestampdiff(second, now(), expirationTime) FROM pooling.locks"
-                                        + " WHERE resourceId=? AND host=? AND owner=?")) {
+            conn.prepareStatement("SELECT timestampdiff(second, now(), expirationTime) FROM pooling.locks"
+                + " WHERE resourceId=? AND host=? AND owner=?")) {
 
             stmt.setString(1, resourceId);
             stmt.setString(2, feature.getPdpName());
@@ -1604,10 +1601,10 @@ public class DistributedLockManagerTest {
     }
 
     private void insertRecord(String resourceId, String hostName, String uuidString, int expireOffset)
-                    throws SQLException {
+        throws SQLException {
         try (PreparedStatement stmt =
-                        conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
-                                        + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
+            conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
+                + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
 
             stmt.setString(1, resourceId);
             stmt.setString(2, hostName);
@@ -1628,7 +1625,7 @@ public class DistributedLockManagerTest {
      */
     private void updateRecord(String resourceId, String newHost, String newUuid, int expireOffset) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement("UPDATE pooling.locks SET host=?, owner=?,"
-                        + " expirationTime=timestampadd(second, ?, now()) WHERE resourceId=?")) {
+            + " expirationTime=timestampadd(second, ?, now()) WHERE resourceId=?")) {
 
             stmt.setString(1, newHost);
             stmt.setString(2, newUuid);
@@ -1649,7 +1646,7 @@ public class DistributedLockManagerTest {
 
             exsvc = mock(ScheduledExecutorService.class);
             when(exsvc.schedule(any(Runnable.class), anyLong(), any())).thenAnswer(ans -> checker);
-            Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
+            ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
             if (init) {
                 beforeCreateLockManager(engine, new Properties());
@@ -1717,7 +1714,7 @@ public class DistributedLockManagerTest {
 
         @Override
         protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
-                        LockCallback callback) {
+            LockCallback callback) {
 
             return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
                 private static final long serialVersionUID = 1L;

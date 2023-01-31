@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +70,7 @@ import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.system.internal.SimpleLockManager.SimpleLock;
-import org.powermock.reflect.Whitebox;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleLockManagerTest {
@@ -108,14 +109,14 @@ public class SimpleLockManagerTest {
     @Mock
     private LockCallback callback;
 
-
     /**
      * Saves static fields and configures the location of the property files.
      */
     @BeforeClass
     public static void setUpBeforeClass() {
-        saveTime = Whitebox.getInternalState(SimpleLockManager.class, TIME_FIELD);
-        saveExec = Whitebox.getInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD);
+        saveTime = (CurrentTime) ReflectionTestUtils.getField(SimpleLockManager.class, TIME_FIELD);
+        saveExec = (ScheduledExecutorService) ReflectionTestUtils.getField(PolicyEngineConstants.getManager(),
+            POLICY_ENGINE_EXECUTOR_FIELD);
 
         realExec = Executors.newScheduledThreadPool(3);
     }
@@ -125,8 +126,8 @@ public class SimpleLockManagerTest {
      */
     @AfterClass
     public static void tearDownAfterClass() {
-        Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, saveTime);
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
+        ReflectionTestUtils.setField(SimpleLockManager.class, TIME_FIELD, saveTime);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
 
         realExec.shutdown();
     }
@@ -151,9 +152,9 @@ public class SimpleLockManagerTest {
         nactive = new AtomicInteger(0);
         nsuccesses = new AtomicInteger(0);
 
-        Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, testTime);
+        ReflectionTestUtils.setField(SimpleLockManager.class, TIME_FIELD, testTime);
 
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
         feature = new MyLockingFeature();
         feature.start();
@@ -210,7 +211,6 @@ public class SimpleLockManagerTest {
 
         verify(callback).lockAvailable(lock);
         verify(callback, never()).lockUnavailable(lock);
-
 
         // this time it should be busy
         Lock lock2 = feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
@@ -299,7 +299,7 @@ public class SimpleLockManagerTest {
         feature = new MyLockingFeature() {
             @Override
             protected SimpleLock makeLock(LockState waiting, String resourceId, String ownerKey, int holdSec,
-                            LockCallback callback) {
+                LockCallback callback) {
                 return new SimpleLock(waiting, resourceId, ownerKey, holdSec, callback, feature) {
                     private static final long serialVersionUID = 1L;
 
@@ -349,7 +349,7 @@ public class SimpleLockManagerTest {
 
             @Override
             protected SimpleLock makeLock(LockState waiting, String resourceId, String ownerKey, int holdSec,
-                            LockCallback callback) {
+                LockCallback callback) {
                 if (madeLock) {
                     return new SimpleLock(waiting, resourceId, ownerKey, holdSec, callback, feature);
                 }
@@ -422,8 +422,8 @@ public class SimpleLockManagerTest {
         assertEquals(HOLD_SEC, lock.getHoldSec());
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> feature.createLock(RESOURCE, OWNER_KEY, -1, callback, false))
-                        .withMessageContaining("holdSec");
+            .isThrownBy(() -> feature.createLock(RESOURCE, OWNER_KEY, -1, callback, false))
+            .withMessageContaining("holdSec");
     }
 
     @Test
@@ -462,7 +462,7 @@ public class SimpleLockManagerTest {
         assertFalse(lock2.free());
 
         // force lock2 to be active - still nothing should happen
-        Whitebox.setInternalState(lock2, "state", LockState.ACTIVE);
+        ReflectionTestUtils.setField(lock2, "state", LockState.ACTIVE);
         assertFalse(lock2.free());
 
         // now free the first lock
@@ -508,12 +508,12 @@ public class SimpleLockManagerTest {
         verify(callback, times(2)).lockUnavailable(lock2);
 
         // force lock2 to be active - should still be denied
-        Whitebox.setInternalState(lock2, "state", LockState.ACTIVE);
+        ReflectionTestUtils.setField(lock2, "state", LockState.ACTIVE);
         lock2.extend(HOLD_SEC, callback);
         verify(callback, times(3)).lockUnavailable(lock2);
 
         assertThatIllegalArgumentException().isThrownBy(() -> lock.extend(-1, callback))
-                        .withMessageContaining("holdSec");
+            .withMessageContaining("holdSec");
 
         // now extend the first lock
         lock.extend(HOLD_SEC2, callback);
@@ -581,8 +581,8 @@ public class SimpleLockManagerTest {
      */
     @Test
     public void testMultiThreaded() throws InterruptedException {
-        Whitebox.setInternalState(SimpleLockManager.class, TIME_FIELD, testTime);
-        Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
+        ReflectionTestUtils.setField(SimpleLockManager.class, TIME_FIELD, testTime);
+        ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
         feature = new SimpleLockManager(null, new Properties());
         feature.start();
 
@@ -608,7 +608,7 @@ public class SimpleLockManagerTest {
     }
 
     private SimpleLock getLock(String resource, String ownerKey, int holdSec, LockCallback callback,
-                    boolean waitForLock) {
+        boolean waitForLock) {
         return (SimpleLock) feature.createLock(resource, ownerKey, holdSec, callback, waitForLock);
     }
 
@@ -637,7 +637,7 @@ public class SimpleLockManagerTest {
             super(null, props);
 
             exsvc = mock(ScheduledExecutorService.class);
-            Whitebox.setInternalState(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
+            ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
             when(exsvc.scheduleWithFixedDelay(any(), anyLong(), anyLong(), any())).thenAnswer(answer -> {
                 return future;
