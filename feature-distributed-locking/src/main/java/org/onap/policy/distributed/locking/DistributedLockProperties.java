@@ -23,7 +23,6 @@ package org.onap.policy.distributed.locking;
 import java.util.Properties;
 import lombok.Getter;
 import lombok.Setter;
-import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.onap.policy.common.utils.properties.BeanConfigurator;
 import org.onap.policy.common.utils.properties.Property;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
@@ -34,13 +33,15 @@ import org.onap.policy.common.utils.properties.exception.PropertyException;
 public class DistributedLockProperties {
     public static final String PREFIX = "distributed.locking.";
 
-    public static final String DB_DRIVER = PersistenceUnitProperties.JDBC_DRIVER;
-    public static final String DB_URL = PersistenceUnitProperties.JDBC_URL;
-    public static final String DB_USER = PersistenceUnitProperties.JDBC_USER;
-    public static final String DB_PASS = PersistenceUnitProperties.JDBC_PASSWORD;
+    // @formatter:off
+    public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
+    public static final String DB_URL    = "javax.persistence.jdbc.url";
+    public static final String DB_USER   = "javax.persistence.jdbc.user";
+    public static final String DB_PASS   = "javax.persistence.jdbc.password";
     public static final String EXPIRE_CHECK_SEC = PREFIX + "expire.check.seconds";
     public static final String RETRY_SEC = PREFIX + "retry.seconds";
     public static final String MAX_RETRIES = PREFIX + "max.retries";
+    // @formatter:on
 
     /**
      * Database driver.
