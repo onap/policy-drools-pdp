@@ -80,6 +80,43 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Controllers interfaces generation -->
+            <plugin>
+                <groupId>io.swagger.codegen.v3</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>3.0.27</version>
+                <executions>
+                    <execution>
+                        <id>code-gen</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openapi/openapi.yaml</inputSpec>
+                            <invokerPackage>org.onap.policy.drools.healthcheck</invokerPackage>
+                            <modelPackage>org.onap.policy.drools.healthcheck.model</modelPackage>
+                            <apiPackage>org.onap.policy.drools.healthcheck</apiPackage>
+                            <language>jaxrs-spec</language>
+                            <generateModels>false</generateModels>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <sortParamsByRequiredFlag>false</sortParamsByRequiredFlag>
+                            <importMappings>
+                                Response=javax.ws.rs.core.Response
+                            </importMappings>
+                            <typeMappings>
+                                <typeMapping>boolean=boolean</typeMapping>
+                            </typeMappings>
+                            <configOptions>
+                                <sourceFolder>src/gen/java</sourceFolder>
+                                <dateLibrary>java11</dateLibrary>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
+                                <skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -116,6 +153,12 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
+        </dependency>
+                <!-- Swagger v3 annotations -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>${version.swagger.core.v3}</version>
         </dependency>
     </dependencies>
 
