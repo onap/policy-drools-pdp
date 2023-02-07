@@ -59,6 +59,10 @@
 			</excludes>
 		</fileSet>
 		<fileSet>
+			<directory>target/generated-sources/swagger</directory>
+			<outputDirectory>bin</outputDirectory>
+		</fileSet>
+		<fileSet>
 			<directory>src/main/server/bin</directory>
 			<outputDirectory>bin</outputDirectory>
 			<fileMode>0744</fileMode>

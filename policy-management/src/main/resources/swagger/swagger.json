@@ -1,0 +1,6048 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "PDP-D Telemetry Services Documentation",
+    "description" : "PDP-D Telemetry Services",
+    "version" : "Swagger Server"
+  },
+  "servers" : [ {
+    "url" : "http://{drools-ip}:9696/policy/pdp/engine",
+    "variables" : {
+      "drools-ip" : {
+        "default" : "0.0.0.0"
+      }
+    }
+  } ],
+  "tags" : [ {
+    "name" : "pdp-d-telemetry",
+    "description" : "Drools PDP Telemetry Operations"
+  }, {
+    "name" : "pdp-d-lifecycle",
+    "description" : "Drools PDP Lifecycle Operations"
+  }, {
+    "name" : "pdp-d-legacy",
+    "description" : "Drools PDP Legacy Operations"
+  } ],
+  "paths" : {
+    "/swagger" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the json swagger documentation",
+        "description" : "Lifecycle Group",
+        "operationId" : "swagger",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "resource not found",
+            "content" : { }
+          },
+          "501" : {
+            "description" : "swagger.json file not found",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/lifecycle/group" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle group",
+        "description" : "Lifecycle Group",
+        "operationId" : "group",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/group/{group}" : {
+      "put" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Updates the Lifecycle group",
+        "description" : "Lifecycle Group",
+        "operationId" : "updateGroup",
+        "parameters" : [ {
+          "name" : "group",
+          "in" : "path",
+          "description" : "Group",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/status/interval" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle Status Timer Interval in seconds",
+        "description" : "Lifecycle Status Timer Interval in seconds",
+        "operationId" : "updateStatusTimer",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/status/interval/{timeout}" : {
+      "put" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Updates the Lifecycle Status Timer Interval in seconds",
+        "description" : "Lifecycle Status Timer Interval in seconds",
+        "operationId" : "statusTimer",
+        "parameters" : [ {
+          "name" : "timeout",
+          "in" : "path",
+          "description" : "timeout",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/policyTypes" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "List of supported policy types",
+        "description" : "Lifecycle Policy Types",
+        "operationId" : "policyTypes",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/policies" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "List of policies",
+        "operationId" : "policies",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Deploy a policy",
+        "operationId" : "deployTrackedPolicy",
+        "requestBody" : {
+          "description" : "Tosca Policy",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/lifecycle/policyTypes/{policyType}/{policyTypeVersion}" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Entities associated with a policy type",
+        "description" : "Lifecycle policy Types",
+        "operationId" : "policyType",
+        "parameters" : [ {
+          "name" : "policyType",
+          "in" : "path",
+          "description" : "Policy Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "policyTypeVersion",
+          "in" : "path",
+          "description" : "Policy Type Version",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/policies/operations" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Gets Policy Operations",
+        "operationId" : "policiesOperations",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/policies/operations/deployment" : {
+      "post" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Deploys a policy",
+        "description" : "Deploys a policy",
+        "operationId" : "deployOperation",
+        "requestBody" : {
+          "description" : "Tosca Policy",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/lifecycle/policies/operations/undeployment" : {
+      "post" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Undeploys a policy",
+        "operationId" : "undeployOperation",
+        "requestBody" : {
+          "description" : "Tosca Policy",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/lifecycle/policies/operations/validation" : {
+      "post" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Validates a policy",
+        "operationId" : "validateOperation",
+        "requestBody" : {
+          "description" : "Tosca Policy",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/lifecycle/policies/{policyName}/{policyVersion}" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves a policy",
+        "operationId" : "policy",
+        "parameters" : [ {
+          "name" : "policyName",
+          "in" : "path",
+          "description" : "Policy Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "policyVersion",
+          "in" : "path",
+          "description" : "Policy Version",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Deletes a Lifecycle tracked policy",
+        "operationId" : "undeployPolicy",
+        "parameters" : [ {
+          "name" : "policyName",
+          "in" : "path",
+          "description" : "Policy",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "policyVersion",
+          "in" : "path",
+          "description" : "Policy Version",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/state" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle state",
+        "description" : "Lifecycle State",
+        "operationId" : "state",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/state/{state}" : {
+      "put" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "updates the Lifecycle state",
+        "description" : "Lifecycle State",
+        "operationId" : "updateState",
+        "parameters" : [ {
+          "name" : "state",
+          "in" : "path",
+          "description" : "state",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/subgroup/{subgroup}" : {
+      "put" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle subgroup",
+        "description" : "Lifecycle Subgroup",
+        "operationId" : "subgroup",
+        "parameters" : [ {
+          "name" : "subgroup",
+          "in" : "path",
+          "description" : "Subgroup",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/subgroup" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle subgroup",
+        "description" : "Lifecycle Subgroup",
+        "operationId" : "subgroup_1",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/statistics" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Gets Policy Statistics",
+        "operationId" : "stats",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/properties" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle properties",
+        "description" : "Lifecycle Properties",
+        "operationId" : "propertiesLifecycle",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/topic/sink" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle topic sink",
+        "description" : "Lifecycle Topic Sink",
+        "operationId" : "sink",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lifecycle/topic/source" : {
+      "get" : {
+        "tags" : [ "pdp-d-lifecycle" ],
+        "summary" : "Retrieves the Lifecycle topic source",
+        "description" : "Lifecycle Topic Source",
+        "operationId" : "sourceLifecycle",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the Engine Operational Status",
+        "description" : "Top-level abstraction.  Provides a global view of resources",
+        "operationId" : "engine",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Shuts down the Engine",
+        "description" : "Deleting the engine, the top-level abstraction, equivalenty shuts it down",
+        "operationId" : "engineShutdown",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Features",
+        "description" : "Provides the list of loaded features using the PolicyEngineFeatureAPI",
+        "operationId" : "engineFeatures",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/features/{featureName}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Feature",
+        "description" : "Provides Details for a given feature Engine Provider",
+        "operationId" : "engineFeature",
+        "parameters" : [ {
+          "name" : "featureName",
+          "in" : "path",
+          "description" : "Feature Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The feature cannot be found",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/features/inventory" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Detailed Feature Inventory",
+        "description" : "Provides detailed list of loaded features using the PolicyEngineFeatureAPI",
+        "operationId" : "engineFeaturesInventory",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inputs" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Input Ports",
+        "description" : "List of input ports",
+        "operationId" : "engineInputs",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inputs/configuration" : {
+      "post" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Input Configuration Requests",
+        "description" : "Feeds a configuration request input into the Engine",
+        "operationId" : "engineUpdate",
+        "requestBody" : {
+          "description" : "Configuration to apply",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PdpdConfiguration"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PdpdConfiguration"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The configuration request cannot be honored",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/environment/{envProperty}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets an environment variable",
+        "operationId" : "engineEnvironmentProperty",
+        "parameters" : [ {
+          "name" : "envProperty",
+          "in" : "path",
+          "description" : "Environment Property",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Adds a new environment value to the engine",
+        "operationId" : "engineEnvironmentAdd",
+        "parameters" : [ {
+          "name" : "envProperty",
+          "in" : "path",
+          "description" : "Environment Property",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Environment Value",
+          "content" : {
+            "text/plain" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/environment" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Environment Properties",
+        "description" : "Installation and OS environment properties used by the engine",
+        "operationId" : "engineEnvironment",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/switches" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Control Switches",
+        "description" : "List of the Engine Control Switches",
+        "operationId" : "engineSwitches",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/switches/activation" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Switches on the Engine Activation Switch",
+        "description" : "Turns on Activation Switch on the Engine. This order entails that the engine and controllers are unlocked and started",
+        "operationId" : "engineActivation",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Switches off Engine Activation Switch",
+        "description" : "Turns off the Activation Switch on the Engine. This order entails that the engine and controllers are locked (with the exception of those resources defined as unmanaged)",
+        "operationId" : "engineDeactivation",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/switches/lock" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Switches on the Engine Lock Control",
+        "description" : "This switch locks all the engine resources as a whole, except those that are defined unmanaged",
+        "operationId" : "engineLock",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Switches off the Lock control",
+        "description" : "This switch locks all the engine resources as a whole, except those that are defined unmanaged",
+        "operationId" : "engineUnlock",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/properties" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Engine Configuration Properties",
+        "description" : "Used for booststrapping the engine",
+        "operationId" : "engineProperties",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controllers" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Lists the Policy Controllers Names",
+        "description" : "Unique Policy Controller Identifiers",
+        "operationId" : "controllers",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Creates and starts a new Policy Controller",
+        "description" : "Controller creation based on properties",
+        "operationId" : "controllerAdd",
+        "requestBody" : {
+          "description" : "Configuration Properties to apply",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Properties"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Properties"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "The controller has been succesfully created and started",
+            "content" : { }
+          },
+          "206" : {
+            "description" : "The controller has been created but cannot be started",
+            "content" : { }
+          },
+          "304" : {
+            "description" : "The controller already exists",
+            "content" : { }
+          },
+          "400" : {
+            "description" : "Invalid configuration information has been provided",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The administrative state of the system prevents it from processing this request",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/controllers/features" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Lists of Feature Providers Identifiers",
+        "description" : "Unique Policy Controller Identifiers",
+        "operationId" : "controllerFeatures",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controllers/features/{featureName}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Controller Feature",
+        "description" : "Provides Details for a given Policy Controller feature provider",
+        "operationId" : "controllerFeature",
+        "parameters" : [ {
+          "name" : "featureName",
+          "in" : "path",
+          "description" : "Feature Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The feature cannot be found",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/inventory" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Lists the Policy Controllers",
+        "description" : "Detailed list of Policy Controllers",
+        "operationId" : "controllerInventory",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controllers/features/inventory" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Detailed Controllers Feature Inventory",
+        "description" : "Provides detailed list of loaded features using the PolicyControllerFeatureAPI",
+        "operationId" : "controllerFeaturesInventory",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves a Policy Controller",
+        "description" : "A Policy Controller is a concrete drools application abstraction.  It aggregates networking, drools, and other resources,as provides operational controls over drools applications",
+        "operationId" : "controller",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Deletes a Policy Controller",
+        "description" : "A Policy Controller is a concrete drools application abstraction.  It aggregates networking, drools, and other resources,as provides operational controls over drools applications",
+        "operationId" : "controllerDelete",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "A problem has occurred while deleting the Policy Controller",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/inputs" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Policy Controller Input Ports",
+        "description" : "List of input ports",
+        "operationId" : "controllerInputs",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/inputs/configuration" : {
+      "post" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Policy Controller Input Configuration Requests",
+        "description" : "Feeds a configuration request input into the given Policy Controller",
+        "operationId" : "controllerUpdate",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Configuration to apply",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ControllerConfiguration"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ControllerConfiguration"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "The configuration request is invalid",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The configuration request cannot be honored",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/controllers/{controller}/switches" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Policy Controller Switches",
+        "description" : "List of the Policy Controller Switches",
+        "operationId" : "controllerSwitches",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/switches/lock" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Switches on the Policy Controller Lock Control",
+        "description" : "This action on the switch locks the Policy Controller",
+        "operationId" : "controllerLock",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Switches off the Policy Controller Lock Control",
+        "description" : "This action on the switch unlocks the Policy Controller",
+        "operationId" : "controllerUnlock",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/drools/facts/{session}/{factType}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves fact objects of a given type in the drools working memoryfor a given controller and session",
+        "description" : "The fact types are the classnames of the objects inserted in the drools working memory",
+        "operationId" : "droolsFacts",
+        "parameters" : [ {
+          "name" : "count",
+          "in" : "query",
+          "description" : "Fact count",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        }, {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "session",
+          "in" : "path",
+          "description" : "Drools Session Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Drools Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, session, or fact type cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Deletes all the fact objects of a given type from the drools working memoryfor a given controller and session.   The objects retracted from the working memory are provided in the response.",
+        "description" : "The fact types are the classnames of the objects inserted in the drools working memory",
+        "operationId" : "droolsFactsDelete_1",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "session",
+          "in" : "path",
+          "description" : "Drools Session Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Drools Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, session, or fact type, cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "A server error has occurred processing this request",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/drools/facts/{session}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves Fact Types (classnames) for a given controller and its count",
+        "description" : "The fact types are the classnames of the objects inserted in the drools working memory",
+        "operationId" : "droolsFacts_1",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "session",
+          "in" : "path",
+          "description" : "Drools Session Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller or session cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/drools/facts" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves Facts Summary information for a given controller",
+        "description" : "Provides the session names, and a count of fact object in the drools working memory",
+        "operationId" : "droolsFacts_2",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/drools/facts/{session}/{query}/{queriedEntity}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all the fact objects returned by a DRL query with no parameters from the drools working memoryfor a given controller and session",
+        "description" : "The DRL query must be defined in the DRL file",
+        "operationId" : "droolsFacts_3",
+        "parameters" : [ {
+          "name" : "count",
+          "in" : "query",
+          "description" : "Fact count",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        }, {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "session",
+          "in" : "path",
+          "description" : "Drools Session Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "query",
+          "in" : "path",
+          "description" : "Query Name Present in DRL",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "queriedEntity",
+          "in" : "path",
+          "description" : "Query Identifier Present in the DRL Query",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, session, or query information, cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "A server error has occurred processing this request",
+            "content" : { }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all the fact objects returned by a DRL query with parameters from the drools working memoryfor a given controller and session",
+        "description" : "The DRL query with parameters must be defined in the DRL file",
+        "operationId" : "droolsFacts_4",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "session",
+          "in" : "path",
+          "description" : "Drools Session Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "query",
+          "in" : "path",
+          "description" : "Query Name Present in DRL",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "queriedEntity",
+          "in" : "path",
+          "description" : "Query Identifier Present in the DRL Query",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Query Parameter Values to pass in the DRL Query",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "object",
+                  "properties" : { }
+                }
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "object",
+                  "properties" : { }
+                }
+              }
+            }
+          },
+          "required" : false
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, session, or query information, cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "A server error has occurred processing this request",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Deletes all the fact objects returned by a DRL query with parameters from the drools working memory for a given controller and session",
+        "description" : "The DRL query with parameters must be defined in the DRL file",
+        "operationId" : "droolsFactsDelete",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "session",
+          "in" : "path",
+          "description" : "Drools Session Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "query",
+          "in" : "path",
+          "description" : "Query Name Present in DRL",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "queriedEntity",
+          "in" : "path",
+          "description" : "Query Identifier Present in the DRL Query",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, session, or query information, cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "A server error has occurred processing this request",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/controllers/{controller}/decoders" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all the decoders used by a controller",
+        "description" : "A Policy Controller uses decoders to deserialize incoming network messages from subscribed network topics into specific (fact) objects. The deserialized (fact) object will typically be inserted in the drools working  memory of the controlled drools application.",
+        "operationId" : "decoders",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/decoders/filters" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all the filters used by a controller",
+        "description" : "A Policy Controller uses decoders to deserialize incoming network messages from subscribed network topics into specific (fact) objects. The deserialized (fact) object will typically be inserted in the drools working  memory of the controlled drools application.Acceptance filters are used to filter out undesired network messages for the given controller",
+        "operationId" : "decoderFilters",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/decoders/{topic}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all the decoders in use by a controller for a networked topic",
+        "description" : "A Policy Controller uses decoders to deserialize incoming network messages from subscribed network topics into specific (fact) objects. The deserialized (fact) object will typically be inserted in the drools working  memory of the controlled drools application.",
+        "operationId" : "decoder",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Networked Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller or topic cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Decodes a string into a fact object, and encodes it back into a string",
+        "description" : "Tests the decode/encode functions of a controller",
+        "operationId" : "decode",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "JSON String to decode",
+          "content" : {
+            "text/plain" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad input has been provided",
+            "content" : { }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/controllers/{controller}/decoders/{topic}/filters/{factType}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all filters attached to decoders for a given subscribed networked topic and fact type",
+        "description" : "Decoders are associated with networked topics. A Policy Controller manages multiple topics and therefore its attached decoders. A Policy Controller uses filters to further specify the fact mapping.  Filters are applied on a per fact type (classname).",
+        "operationId" : "decoderFilter_1",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Networked Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, topic, or fact type cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Attaches filters to the decoder for a given networked topic and fact type",
+        "description" : "Decoders are associated with networked topics. A Policy Controller manages multiple topics and therefore its attached decoders. A Policy Controller uses filters to further specify the fact mapping.  Filters are applied on a per fact type (classname).",
+        "operationId" : "decoderFilter",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Configuration Filter",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JsonProtocolFilter"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JsonProtocolFilter"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, topic, fact type, cannot be found, or a filter has not been provided",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/controllers/{controller}/decoders/{topic}/filters" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets all filters attached to decoders for a given networked topic in use by a controller",
+        "description" : "A Policy Controller uses decoders to deserialize incoming network messages from subscribed network topics into specific (fact) objects. The deserialized (fact) object will typically be inserted in the drools working  memory of the controlled drools application.Acceptance filters are used to filter out undesired network messages for the given controller",
+        "operationId" : "decoderFilter_2",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Networked Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller or topic cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/decoders/{topic}/filters/{factType}/rule" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Gets the filter rule attached to a topic decoder of a controller",
+        "description" : "Decoders are associated with networked topics. A Policy Controller manages multiple topics and therefore its attached decoders. A Policy Controller uses filters to further specify the fact mapping.  Filters are applied on a per fact type using a jsonpath expression rule. ",
+        "operationId" : "decoderFilterRules",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, topic, or fact type cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Places a new filter rule in a topic decoder",
+        "description" : "Decoders are associated with networked topics. A Policy Controller manages multiple topics and therefore its attached decoders. A Policy Controller uses filters to further specify the fact mapping.  Filters are applied on a per fact type using a jsonpath expression rule. ",
+        "operationId" : "decoderFilterRule",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "JsonPath filter expression",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, topic, or fact type cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Deletes the filter rule attached to a topic decoder of a controller",
+        "description" : "Decoders are associated with networked topics. A Policy Controller manages multiple topics and therefore its attached decoders. A Policy Controller uses filters to further specify the fact mapping.  Filters are applied on a per fact type using a jsonpath expression rule. ",
+        "operationId" : "decoderFilterRuleDelete",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "factType",
+          "in" : "path",
+          "description" : "Fact Type",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller, topic, or fact type cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/encoders" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the encoder filters of a controller",
+        "description" : "The encoders serializes a fact object, typically for network transmission",
+        "operationId" : "encoderFilters",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad input has been provided",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/drools" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the Drools Controller subcomponent of the Policy Controller",
+        "description" : "The Drools Controller provides an abstraction over the Drools subsystem",
+        "operationId" : "drools",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/{controller}/properties" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the configuration properties of a Policy Controller",
+        "description" : "Configuration resources used by the controller if Properties format",
+        "operationId" : "controllerProperties",
+        "parameters" : [ {
+          "name" : "controller",
+          "in" : "path",
+          "description" : "Policy Controller Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The controller cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/controllers/tools/coders/decoders/filters/rule" : {
+      "post" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Produces a Decoder Rule Filter in a format that the Policy Controller can understand",
+        "description" : "The result can be used with other APIs to attach a filter to a decoder",
+        "operationId" : "rules",
+        "requestBody" : {
+          "description" : "JsonPath expression",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/yaml" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/tools/uuid" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Produces an UUID",
+        "description" : "UUID generation utility",
+        "operationId" : "uuid",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/loggers/{logger}/{level}" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "sets the logger level",
+        "description" : "Please use the SLF4J logger levels",
+        "operationId" : "loggerName",
+        "parameters" : [ {
+          "name" : "logger",
+          "in" : "path",
+          "description" : "Logger Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "level",
+          "in" : "path",
+          "description" : "Logger Level",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "logger not found",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "logging misconfiguration",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/tools/loggers/{logger}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "logging level of a logger",
+        "operationId" : "loggerName_1",
+        "parameters" : [ {
+          "name" : "logger",
+          "in" : "path",
+          "description" : "Logger Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "logger not found",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "logging misconfiguration",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/tools/loggers" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "all active loggers",
+        "operationId" : "loggers",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "logging misconfiguration",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/topics" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the managed topics",
+        "description" : "Network Topics Aggregation",
+        "operationId" : "topics",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sources" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the managed topic sources",
+        "description" : "Network Topic Sources Agregation",
+        "operationId" : "sources",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sinks" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the managed topic sinks",
+        "description" : "Network Topic Sinks Agregation",
+        "operationId" : "sinks",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/switches" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Topics Control Switches",
+        "description" : "List of the Topic Control Switches",
+        "operationId" : "topicSwitches",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/switches/lock" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Locks all the managed topics",
+        "description" : "The operation affects all managed sources and sinks",
+        "operationId" : "topicsLock",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Unlocks all the managed topics",
+        "description" : "The operation affects all managed sources and sinks",
+        "operationId" : "topicsUnlock",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/topics/sources/{comm}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves managed topic sources",
+        "description" : "Sources for a communication infrastructure",
+        "operationId" : "commSources",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sinks/{comm}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves managed topic sinks",
+        "description" : "Communication Infrastructure Sinks",
+        "operationId" : "commSinks",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sources/{comm}/{topic}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves a managed topic source",
+        "description" : "This is an Network Communication Endpoint source of messages for the Engine",
+        "operationId" : "sourceTopic",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sinks/{comm}/{topic}" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves a managed topic sink",
+        "description" : "This is a Network Communicaton Endpoint destination of messages from the Engine",
+        "operationId" : "sinkTopic",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sources/{comm}/{topic}/events" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the latest events received by an UEB topic",
+        "description" : "This is a Network Communicaton Endpoint source of messages for the Engine",
+        "operationId" : "sourceEvents",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Offers an event to a topic for internal processing by the engine",
+        "description" : "The offered event is treated as it was incoming from the network",
+        "operationId" : "commEventOffer",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Network Message",
+          "content" : {
+            "text/plain" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "The topic information cannot be found",
+            "content" : { }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          },
+          "500" : {
+            "description" : "A server error has occurred processing this request",
+            "content" : { }
+          }
+        },
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/topics/sinks/{comm}/{topic}/events" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Retrieves the latest events received by an UEB topic",
+        "description" : "This is a Network Communicaton Endpoint source of messages for the Engine",
+        "operationId" : "sinkEvents",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sinks/{comm}/{topic}/switches/lock" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Locks a topic sink",
+        "operationId" : "commSinkTopicLock",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Unlocks a topic sink",
+        "operationId" : "commSinkTopicUnlock",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/topics/sources/{comm}/{topic}/switches" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Topic Control Switches",
+        "description" : "List of the Topic Control Switches",
+        "operationId" : "commSourceTopicSwitches",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sinks/{comm}/{topic}/switches" : {
+      "get" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Topic Control Switches",
+        "description" : "List of the Topic Control Switches",
+        "operationId" : "commSinkTopicSwitches",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/topics/sources/{comm}/{topic}/switches/lock" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Locks a topic",
+        "operationId" : "commSourceTopicLock",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Unlocks topic",
+        "operationId" : "commSourceTopicUnlock",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/topics/sources/{comm}/{topic}/switches/activation" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Starts a topic",
+        "operationId" : "commSourceTopicActivation",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Stops a topic",
+        "operationId" : "commSourceTopicDeactivation",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/topics/sinks/{comm}/{topic}/switches/activation" : {
+      "put" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Starts a topic sink",
+        "operationId" : "commSinkTopicActivation",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pdp-d-telemetry" ],
+        "summary" : "Stops a topic",
+        "operationId" : "commSinkTopicDeactivation",
+        "parameters" : [ {
+          "name" : "comm",
+          "in" : "path",
+          "description" : "Communication Mechanism",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "pattern" : "ueb|dmaap|noop",
+            "type" : "string"
+          }
+        }, {
+          "name" : "topic",
+          "in" : "path",
+          "description" : "Topic Name",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "406" : {
+            "description" : "The system is an administrative state that prevents this request to be fulfilled",
+            "content" : { }
+          }
+        }
+      }
+    },
+    "/legacy/config/properties" : {
+      "get" : {
+        "tags" : [ "pdp-d-legacy" ],
+        "summary" : "Legacy Engine Configuration Properties",
+        "description" : "Used for booststrapping the engine",
+        "operationId" : "properties",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/legacy/config/topic/source" : {
+      "get" : {
+        "tags" : [ "pdp-d-legacy" ],
+        "summary" : "Retrieves the legacy configuration topic source",
+        "description" : "Legacy Topic Source",
+        "operationId" : "source",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              },
+              "application/yaml" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "TopicSink" : {
+        "type" : "object",
+        "properties" : {
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PolicyTypeController" : {
+        "type" : "object",
+        "properties" : {
+          "policyType" : {
+            "$ref" : "#/components/schemas/ToscaConceptIdentifier"
+          }
+        }
+      },
+      "ToscaConceptIdentifier" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PdpEngineWorkerStatistics" : {
+        "type" : "object",
+        "properties" : {
+          "engineId" : {
+            "type" : "string"
+          },
+          "engineWorkerState" : {
+            "type" : "string",
+            "enum" : [ "UNDEFINED", "STOPPED", "READY", "EXECUTING", "STOPPING" ]
+          },
+          "engineTimeStamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "eventCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastExecutionTime" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "averageExecutionTime" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "upTime" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastEnterTime" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastStart" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PdpStatistics" : {
+        "type" : "object",
+        "properties" : {
+          "pdpInstanceId" : {
+            "type" : "string"
+          },
+          "timeStamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "generatedId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "pdpGroupName" : {
+            "type" : "string"
+          },
+          "pdpSubGroupName" : {
+            "type" : "string"
+          },
+          "policyExecutedCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyExecutedSuccessCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyExecutedFailCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyDeployCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyDeploySuccessCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyDeployFailCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyUndeployCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyUndeploySuccessCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyUndeployFailCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "engineStats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PdpEngineWorkerStatistics"
+            }
+          }
+        }
+      },
+      "TopicSource" : {
+        "type" : "object",
+        "properties" : {
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ToscaEntityKey" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ToscaPolicy" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "derived_from" : {
+            "type" : "string"
+          },
+          "metadata" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "type_version" : {
+            "type" : "string"
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "identifier" : {
+            "$ref" : "#/components/schemas/ToscaConceptIdentifier"
+          },
+          "typeIdentifier" : {
+            "$ref" : "#/components/schemas/ToscaConceptIdentifier"
+          },
+          "definedName" : {
+            "type" : "string"
+          },
+          "definedVersion" : {
+            "type" : "string"
+          },
+          "key" : {
+            "$ref" : "#/components/schemas/ToscaEntityKey"
+          }
+        }
+      },
+      "Agenda" : {
+        "type" : "object"
+      },
+      "AgendaEventListener" : {
+        "type" : "object"
+      },
+      "Annotation" : {
+        "type" : "object"
+      },
+      "Calendars" : {
+        "type" : "object"
+      },
+      "Channel" : {
+        "type" : "object"
+      },
+      "ClassLoader" : {
+        "type" : "object",
+        "properties" : {
+          "parent" : {
+            "$ref" : "#/components/schemas/ClassLoader"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "unnamedModule" : {
+            "$ref" : "#/components/schemas/Module"
+          },
+          "registeredAsParallelCapable" : {
+            "type" : "boolean"
+          },
+          "definedPackages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Package"
+            }
+          }
+        }
+      },
+      "DomainMaker" : {
+        "type" : "object"
+      },
+      "DroolsController" : {
+        "type" : "object",
+        "properties" : {
+          "baseDomainNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "recentSourceEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "recentSinkEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "sessionNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "container" : {
+            "$ref" : "#/components/schemas/PolicyContainer"
+          },
+          "artifactId" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "type" : "string"
+          },
+          "brained" : {
+            "type" : "boolean"
+          },
+          "canonicalSessionNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "EntryPoint" : {
+        "type" : "object",
+        "properties" : {
+          "entryPointId" : {
+            "type" : "string"
+          },
+          "objects" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "factHandles" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FactHandle"
+            }
+          },
+          "factCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Environment" : {
+        "type" : "object"
+      },
+      "FactField" : {
+        "type" : "object",
+        "properties" : {
+          "fieldAnnotations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "key" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "index" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "FactHandle" : {
+        "type" : "object"
+      },
+      "FactType" : {
+        "type" : "object",
+        "properties" : {
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "superClass" : {
+            "type" : "string"
+          },
+          "classAnnotations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "simpleName" : {
+            "type" : "string"
+          },
+          "fields" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FactField"
+            }
+          }
+        }
+      },
+      "Global" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Globals" : {
+        "type" : "object",
+        "properties" : {
+          "globalKeys" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "HttpServletServer" : {
+        "type" : "object",
+        "properties" : {
+          "prometheus" : {
+            "type" : "boolean"
+          },
+          "aaf" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "port" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "alive" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "InputStream" : {
+        "type" : "object"
+      },
+      "KieBase" : {
+        "type" : "object",
+        "properties" : {
+          "processes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Process"
+            }
+          },
+          "kieSessions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KieSession"
+            }
+          },
+          "entryPointIds" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "kiePackages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KiePackage"
+            }
+          },
+          "kieBaseEventListeners" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KieBaseEventListener"
+            }
+          }
+        }
+      },
+      "KieBaseEventListener" : {
+        "type" : "object"
+      },
+      "KieContainer" : {
+        "type" : "object",
+        "properties" : {
+          "kieSessionConfiguration" : {
+            "$ref" : "#/components/schemas/KieSessionConfiguration"
+          },
+          "releaseId" : {
+            "$ref" : "#/components/schemas/ReleaseId"
+          },
+          "kieBase" : {
+            "$ref" : "#/components/schemas/KieBase"
+          },
+          "kieBaseNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "classLoader" : {
+            "$ref" : "#/components/schemas/ClassLoader"
+          }
+        }
+      },
+      "KiePackage" : {
+        "type" : "object",
+        "properties" : {
+          "processes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Process"
+            }
+          },
+          "factTypes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FactType"
+            }
+          },
+          "queries" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Query"
+            }
+          },
+          "functionNames" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "globalVariables" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Global"
+            }
+          },
+          "rules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Rule"
+            }
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KieRuntimeLogger" : {
+        "type" : "object"
+      },
+      "KieSession" : {
+        "type" : "object",
+        "properties" : {
+          "identifier" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "globals" : {
+            "$ref" : "#/components/schemas/Globals"
+          },
+          "kieBase" : {
+            "$ref" : "#/components/schemas/KieBase"
+          },
+          "sessionClock" : {
+            "$ref" : "#/components/schemas/SessionClock"
+          },
+          "sessionConfiguration" : {
+            "$ref" : "#/components/schemas/KieSessionConfiguration"
+          },
+          "calendars" : {
+            "$ref" : "#/components/schemas/Calendars"
+          },
+          "channels" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/Channel"
+            }
+          },
+          "environment" : {
+            "$ref" : "#/components/schemas/Environment"
+          },
+          "agenda" : {
+            "$ref" : "#/components/schemas/Agenda"
+          },
+          "entryPoints" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EntryPoint"
+            }
+          },
+          "entryPointId" : {
+            "type" : "string"
+          },
+          "objects" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "factHandles" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FactHandle"
+            }
+          },
+          "factCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "processInstances" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcessInstance"
+            }
+          },
+          "workItemManager" : {
+            "$ref" : "#/components/schemas/WorkItemManager"
+          },
+          "logger" : {
+            "$ref" : "#/components/schemas/KieRuntimeLogger"
+          },
+          "ruleRuntimeEventListeners" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RuleRuntimeEventListener"
+            }
+          },
+          "agendaEventListeners" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AgendaEventListener"
+            }
+          },
+          "processEventListeners" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ProcessEventListener"
+            }
+          }
+        }
+      },
+      "KieSessionConfiguration" : {
+        "type" : "object"
+      },
+      "Module" : {
+        "type" : "object",
+        "properties" : {
+          "layer" : {
+            "$ref" : "#/components/schemas/ModuleLayer"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "descriptor" : {
+            "$ref" : "#/components/schemas/ModuleDescriptor"
+          },
+          "classLoader" : {
+            "$ref" : "#/components/schemas/ClassLoader"
+          },
+          "annotations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "declaredAnnotations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "named" : {
+            "type" : "boolean"
+          },
+          "packages" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "ModuleDescriptor" : {
+        "type" : "object",
+        "properties" : {
+          "open" : {
+            "type" : "boolean"
+          },
+          "automatic" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ModuleLayer" : {
+        "type" : "object"
+      },
+      "Package" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "specificationTitle" : {
+            "type" : "string"
+          },
+          "specificationVersion" : {
+            "type" : "string"
+          },
+          "specificationVendor" : {
+            "type" : "string"
+          },
+          "implementationTitle" : {
+            "type" : "string"
+          },
+          "implementationVersion" : {
+            "type" : "string"
+          },
+          "implementationVendor" : {
+            "type" : "string"
+          },
+          "annotations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "declaredAnnotations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Annotation"
+            }
+          },
+          "sealed" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PolicyContainer" : {
+        "type" : "object",
+        "properties" : {
+          "kieContainer" : {
+            "$ref" : "#/components/schemas/KieContainer"
+          },
+          "policySessions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PolicySession"
+            }
+          },
+          "artifactId" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "classLoader" : {
+            "$ref" : "#/components/schemas/ClassLoader"
+          },
+          "alive" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PolicyController" : {
+        "type" : "object",
+        "properties" : {
+          "topicSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TopicSource"
+            }
+          },
+          "policyTypes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ToscaConceptIdentifier"
+            }
+          },
+          "topicSinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TopicSink"
+            }
+          },
+          "drools" : {
+            "$ref" : "#/components/schemas/DroolsController"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PolicyEngine" : {
+        "type" : "object",
+        "properties" : {
+          "httpServers" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/HttpServletServer"
+            }
+          },
+          "policyControllers" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PolicyController"
+            }
+          },
+          "policyControllerIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "featureProviders" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PolicyEngineFeatureApi"
+            }
+          },
+          "features" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "domainMaker" : {
+            "$ref" : "#/components/schemas/DomainMaker"
+          },
+          "stats" : {
+            "$ref" : "#/components/schemas/PolicyStatsManager"
+          },
+          "environment" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "clusterName" : {
+            "type" : "string"
+          },
+          "pdpName" : {
+            "type" : "string"
+          },
+          "sources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TopicSource"
+            }
+          },
+          "sinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TopicSink"
+            }
+          },
+          "executorService" : {
+            "$ref" : "#/components/schemas/ScheduledExecutorService"
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "hostName" : {
+            "type" : "string"
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PolicyEngineFeatureApi" : {
+        "type" : "object",
+        "properties" : {
+          "sequenceNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PolicySession" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "container" : {
+            "$ref" : "#/components/schemas/PolicyContainer"
+          },
+          "kieSession" : {
+            "$ref" : "#/components/schemas/KieSession"
+          },
+          "fullName" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PolicyStats" : {
+        "type" : "object",
+        "properties" : {
+          "policyExecutedCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyExecutedSuccessCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "policyExecutedFailCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastExecutionTime" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "averageExecutionTime" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "totalElapsedTime" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "birthTime" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "lastStart" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "PolicyStatsManager" : {
+        "type" : "object",
+        "properties" : {
+          "groupStat" : {
+            "$ref" : "#/components/schemas/PolicyStats"
+          },
+          "subgroupStats" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/PolicyStats"
+            }
+          }
+        }
+      },
+      "Process" : {
+        "type" : "object",
+        "properties" : {
+          "resource" : {
+            "$ref" : "#/components/schemas/Resource"
+          },
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "knowledgeType" : {
+            "type" : "string",
+            "enum" : [ "RULE", "TYPE", "WINDOW", "ENUM", "PROCESS", "FUNCTION", "QUERY" ]
+          },
+          "namespace" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProcessEventListener" : {
+        "type" : "object"
+      },
+      "ProcessInstance" : {
+        "type" : "object",
+        "properties" : {
+          "parentProcessInstanceId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "processName" : {
+            "type" : "string"
+          },
+          "process" : {
+            "$ref" : "#/components/schemas/Process"
+          },
+          "processId" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "state" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "eventTypes" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Query" : {
+        "type" : "object",
+        "properties" : {
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "knowledgeType" : {
+            "type" : "string",
+            "enum" : [ "RULE", "TYPE", "WINDOW", "ENUM", "PROCESS", "FUNCTION", "QUERY" ]
+          },
+          "namespace" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Reader" : {
+        "type" : "object"
+      },
+      "ReleaseId" : {
+        "type" : "object",
+        "properties" : {
+          "artifactId" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "type" : "string"
+          },
+          "snapshot" : {
+            "type" : "boolean"
+          },
+          "version" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Resource" : {
+        "type" : "object",
+        "properties" : {
+          "configuration" : {
+            "$ref" : "#/components/schemas/ResourceConfiguration"
+          },
+          "targetPath" : {
+            "type" : "string"
+          },
+          "resourceType" : {
+            "$ref" : "#/components/schemas/ResourceType"
+          },
+          "sourcePath" : {
+            "type" : "string"
+          },
+          "reader" : {
+            "$ref" : "#/components/schemas/Reader"
+          },
+          "inputStream" : {
+            "$ref" : "#/components/schemas/InputStream"
+          }
+        }
+      },
+      "ResourceConfiguration" : {
+        "type" : "object"
+      },
+      "ResourceType" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "defaultExtension" : {
+            "type" : "string"
+          },
+          "defaultPath" : {
+            "type" : "string"
+          },
+          "fullyCoveredByExecModel" : {
+            "type" : "boolean"
+          },
+          "allExtensions" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Rule" : {
+        "type" : "object",
+        "properties" : {
+          "metaData" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "knowledgeType" : {
+            "type" : "string",
+            "enum" : [ "RULE", "TYPE", "WINDOW", "ENUM", "PROCESS", "FUNCTION", "QUERY" ]
+          },
+          "namespace" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RuleRuntimeEventListener" : {
+        "type" : "object"
+      },
+      "ScheduledExecutorService" : {
+        "type" : "object",
+        "properties" : {
+          "terminated" : {
+            "type" : "boolean"
+          },
+          "shutdown" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SessionClock" : {
+        "type" : "object",
+        "properties" : {
+          "currentTime" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "WorkItemManager" : {
+        "type" : "object"
+      },
+      "PolicyControllerFeatureApi" : {
+        "type" : "object",
+        "properties" : {
+          "sequenceNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ControllerConfiguration" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "operation" : {
+            "type" : "string"
+          },
+          "drools" : {
+            "$ref" : "#/components/schemas/DroolsConfiguration"
+          },
+          "additionalProperties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          }
+        }
+      },
+      "DroolsConfiguration" : {
+        "type" : "object",
+        "properties" : {
+          "artifactId" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "type" : "string"
+          },
+          "version" : {
+            "type" : "string"
+          },
+          "additionalProperties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          }
+        }
+      },
+      "CoderFilters" : {
+        "type" : "object",
+        "properties" : {
+          "factClass" : {
+            "type" : "string"
+          },
+          "filter" : {
+            "$ref" : "#/components/schemas/JsonProtocolFilter"
+          },
+          "modelClassLoaderHash" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "CustomCoder" : {
+        "type" : "object",
+        "properties" : {
+          "classContainer" : {
+            "type" : "string"
+          },
+          "staticCoderField" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JsonProtocolFilter" : {
+        "type" : "object",
+        "properties" : {
+          "rule" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProtocolCoderToolset" : {
+        "type" : "object",
+        "properties" : {
+          "topic" : {
+            "type" : "string"
+          },
+          "controllerId" : {
+            "type" : "string"
+          },
+          "groupId" : {
+            "type" : "string"
+          },
+          "artifactId" : {
+            "type" : "string"
+          },
+          "coders" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CoderFilters"
+            }
+          },
+          "customCoder" : {
+            "$ref" : "#/components/schemas/CustomCoder"
+          }
+        }
+      },
+      "DmaapTopicSink" : {
+        "type" : "object",
+        "properties" : {
+          "partitionKey" : {
+            "type" : "string"
+          },
+          "apiKey" : {
+            "type" : "string"
+          },
+          "apiSecret" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DmaapTopicSource" : {
+        "type" : "object",
+        "properties" : {
+          "consumerInstance" : {
+            "type" : "string"
+          },
+          "consumerGroup" : {
+            "type" : "string"
+          },
+          "fetchTimeout" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fetchLimit" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "apiKey" : {
+            "type" : "string"
+          },
+          "apiSecret" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "KafkaTopicSink" : {
+        "type" : "object",
+        "properties" : {
+          "partitionKey" : {
+            "type" : "string"
+          },
+          "apiKey" : {
+            "type" : "string"
+          },
+          "apiSecret" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "KafkaTopicSource" : {
+        "type" : "object",
+        "properties" : {
+          "consumerInstance" : {
+            "type" : "string"
+          },
+          "consumerGroup" : {
+            "type" : "string"
+          },
+          "fetchTimeout" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fetchLimit" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "apiKey" : {
+            "type" : "string"
+          },
+          "apiSecret" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "NoopTopicSink" : {
+        "type" : "object",
+        "properties" : {
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          }
+        }
+      },
+      "NoopTopicSource" : {
+        "type" : "object",
+        "properties" : {
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          }
+        }
+      },
+      "TopicEndpoint" : {
+        "type" : "object",
+        "properties" : {
+          "uebTopicSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UebTopicSource"
+            }
+          },
+          "uebTopicSinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UebTopicSink"
+            }
+          },
+          "dmaapTopicSinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DmaapTopicSink"
+            }
+          },
+          "kafkaTopicSinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KafkaTopicSink"
+            }
+          },
+          "noopTopicSinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/NoopTopicSink"
+            }
+          },
+          "dmaapTopicSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DmaapTopicSource"
+            }
+          },
+          "kafkaTopicSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KafkaTopicSource"
+            }
+          },
+          "noopTopicSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/NoopTopicSource"
+            }
+          },
+          "topicSources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TopicSource"
+            }
+          },
+          "topicSinks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TopicSink"
+            }
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "UebTopicSink" : {
+        "type" : "object",
+        "properties" : {
+          "partitionKey" : {
+            "type" : "string"
+          },
+          "apiKey" : {
+            "type" : "string"
+          },
+          "apiSecret" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "UebTopicSource" : {
+        "type" : "object",
+        "properties" : {
+          "consumerInstance" : {
+            "type" : "string"
+          },
+          "consumerGroup" : {
+            "type" : "string"
+          },
+          "fetchTimeout" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fetchLimit" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "apiKey" : {
+            "type" : "string"
+          },
+          "apiSecret" : {
+            "type" : "string"
+          },
+          "effectiveTopic" : {
+            "type" : "string"
+          },
+          "recentEvents" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topic" : {
+            "type" : "string"
+          },
+          "servers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "topicCommInfrastructure" : {
+            "type" : "string",
+            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+          },
+          "alive" : {
+            "type" : "boolean"
+          },
+          "locked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "PdpdConfiguration" : {
+        "type" : "object",
+        "properties" : {
+          "requestId" : {
+            "type" : "string"
+          },
+          "entity" : {
+            "type" : "string"
+          },
+          "controllers" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ControllerConfiguration"
+            }
+          },
+          "additionalProperties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "properties" : { }
+            }
+          }
+        }
+      },
+      "CodingResult" : {
+        "type" : "object",
+        "properties" : {
+          "jsonEncoding" : {
+            "type" : "string"
+          },
+          "encoding" : {
+            "type" : "boolean"
+          },
+          "decoding" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Response" : {
+        "type" : "object"
+      },
+      "Properties" : {
+        "type" : "object"
+      }
+    }
+  }
+}

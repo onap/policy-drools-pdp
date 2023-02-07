@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019, 2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +21,6 @@
 
 package org.onap.policy.drools.healthcheck;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -43,35 +38,16 @@ import org.onap.policy.drools.system.PolicyControllerFactory;
  * REST Healthcheck JAX-RS.
  */
 @Path("/")
-@Api
 @Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
-@SwaggerDefinition(
-    info = @Info(
-        description = "PDP-D Healthcheck Service",
-        version = "v1.0",
-        title = "PDP-D Healthcheck"
-    ),
-    consumes = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML},
-    produces = {MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML},
-    schemes = {SwaggerDefinition.Scheme.HTTP},
-    tags = {
-        @Tag(name = "pdp-d-healthcheck", description = "Drools PDP Healthcheck Operations")
-    }
-    )
-public class RestHealthCheck {
+public class RestHealthCheck implements HealthcheckApi {
 
     /**
      * System healthcheck per configuration.
      */
 
+    @Override
     @GET
     @Path("healthcheck")
-    @ApiOperation(
-            value = "Perform a system healthcheck",
-            notes = "Provides healthy status of the PDP-D plus the components defined in its "
-                + "configuration by using a REST interface",
-            response = Reports.class
-            )
     public Response healthcheck() {
         var summary = getHealthcheckManager().healthCheck();
         return getResponse(summary);
@@ -81,13 +57,9 @@ public class RestHealthCheck {
      * Engine Healthcheck.
      */
 
+    @Override
     @GET
     @Path("healthcheck/engine")
-    @ApiOperation(
-            value = "Engine Healthcheck",
-            notes = "Provides a Healthcheck on the engine",
-            response = HealthCheck.class
-    )
     public Response engine() {
         var summary = getHealthcheckManager().engineHealthcheck();
         return getResponse(summary);
@@ -97,13 +69,9 @@ public class RestHealthCheck {
      * Healthcheck on the controllers.
      */
 
+    @Override
     @GET
     @Path("healthcheck/controllers")
-    @ApiOperation(
-            value = "Controllers Healthcheck",
-            notes = "Provides a Healthcheck on the configured controllers",
-            response = Reports.class
-    )
     public Response controllers() {
         var summary = getHealthcheckManager().controllerHealthcheck();
         return getResponse(summary);
@@ -113,15 +81,10 @@ public class RestHealthCheck {
      * Healthcheck a controller.
      */
 
+    @Override
     @GET
     @Path("healthcheck/controllers/{controllerName}")
-    @ApiOperation(
-            value = "Controller Healthcheck",
-            notes = "Provides a Healthcheck on a configured controller",
-            response = Reports.class
-    )
-    public Response controllers(@ApiParam(value = "Policy Controller Name",
-            required = true) @PathParam("controllerName") String controllerName) {
+    public Response controllersName(@PathParam("controllerName") String controllerName) {
         try {
             var controller = getControllerFactory().get(controllerName);
             var summary = getHealthcheckManager().controllerHealthcheck(controller);
@@ -137,13 +100,9 @@ public class RestHealthCheck {
      * Healthcheck on the Http Clients per configuration.
      */
 
+    @Override
     @GET
     @Path("healthcheck/clients")
-    @ApiOperation(
-            value = "Http Clients Healthcheck",
-            notes = "Provides a Healthcheck on the configured HTTP clients",
-            response = Reports.class
-    )
     public Response clients() {
         var summary = getHealthcheckManager().clientHealthcheck();
         return getResponse(summary);
@@ -153,15 +112,10 @@ public class RestHealthCheck {
      * Healthcheck a on a Http Client.
      */
 
+    @Override
     @GET
     @Path("healthcheck/clients/{clientName}")
-    @ApiOperation(
-            value = "Http Client Healthcheck",
-            notes = "Provides a Healthcheck on a configured HTTP client",
-            response = Reports.class
-    )
-    public Response clients(@ApiParam(value = "Http Client Name",
-            required = true) @PathParam("clientName") String clientName) {
+    public Response clientsName(@PathParam("clientName") String clientName) {
         try {
             var client = getClientFactory().get(clientName);
             var summary = getHealthcheckManager().clientHealthcheck(client);

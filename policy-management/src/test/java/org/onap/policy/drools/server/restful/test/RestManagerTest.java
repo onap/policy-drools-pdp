@@ -337,6 +337,17 @@ public class RestManagerTest {
     }
 
     @Test
+    public void testGetSwagger() throws IOException {
+        HttpGet httpGet;
+        CloseableHttpResponse response;
+        httpGet = new HttpGet(HOST_URL + "/engine/swagger");
+        response = client.execute(httpGet);
+        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+    }
+
+    @Test
     public void testGet() throws IOException {
         HttpGet httpGet;
         CloseableHttpResponse response;

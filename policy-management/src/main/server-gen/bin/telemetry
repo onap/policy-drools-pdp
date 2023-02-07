@@ -52,7 +52,7 @@ fi
 
 if [ ! -r "${TELEMETRY_SPEC}" ]; then
     echo "generating new spec .."
-    if ! http --verify=no ${CREDENTIALS} "${PROTOCOL}"://localhost:9696/swagger.json >${TELEMETRY_SPEC} 2>/dev/null; then
+    if ! http --verify=no ${CREDENTIALS} "${PROTOCOL}"://localhost:9696/policy/pdp/engine/swagger >${TELEMETRY_SPEC} 2>/dev/null; then
         echo "error: cannot generate telemetry spec"
         rm -f ${TELEMETRY_SPEC} 2>/dev/null
         exit 3

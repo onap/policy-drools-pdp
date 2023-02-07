@@ -1,7 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021,2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,8 @@
 package org.onap.policy.drools.server.restful;
 
 import com.worldturner.medeia.api.ValidationFailedException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -36,15 +32,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.onap.policy.common.endpoints.event.comm.TopicSink;
-import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.lifecycle.LifecycleFeature;
 import org.onap.policy.drools.lifecycle.PolicyTypeController;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
-import org.onap.policy.models.pdp.concepts.PdpStatistics;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
@@ -59,8 +52,7 @@ import org.slf4j.LoggerFactory;
 @Path("/policy/pdp/engine/lifecycle")
 @Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
 @Consumes({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
-@Api
-public class RestLifecycleManager {
+public class RestLifecycleManager implements LifecycleApi {
 
     private static final Logger logger = LoggerFactory.getLogger(RestLifecycleManager.class);
 
@@ -70,10 +62,9 @@ public class RestLifecycleManager {
      * GET group.
      */
 
+    @Override
     @GET
     @Path("group")
-    @ApiOperation(value = "Retrieves the Lifecycle group",
-        notes = "Lifecycle Group", response = String.class)
     public Response group() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getGroup()).build();
     }
@@ -82,12 +73,10 @@ public class RestLifecycleManager {
      * PUT group.
      */
 
+    @Override
     @PUT
     @Path("group/{group}")
-    @ApiOperation(value = "Updates the Lifecycle group",
-            notes = "Lifecycle Group", response = String.class)
-    public Response updateGroup(
-        @ApiParam(value = "Group", required = true) @PathParam("group") String group) {
+    public Response updateGroup(@PathParam("group") String group) {
         LifecycleFeature.getFsm().setGroup(group);
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getGroup()).build();
     }
@@ -96,11 +85,10 @@ public class RestLifecycleManager {
      * GET subgroup.
      */
 
+    @Override
     @GET
     @Path("subgroup")
-    @ApiOperation(value = "Retrieves the Lifecycle subgroup",
-            notes = "Lifecycle Subgroup", response = String.class)
-    public Response subgroup() {
+    public Response subgroup1() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSubGroup()).build();
     }
 
@@ -108,12 +96,10 @@ public class RestLifecycleManager {
      * PUT subgroup.
      */
 
+    @Override
     @PUT
     @Path("subgroup/{subgroup}")
-    @ApiOperation(value = "Retrieves the Lifecycle subgroup",
-            notes = "Lifecycle Subgroup", response = String.class)
-    public Response subgroup(
-        @ApiParam(value = "Subgroup", required = true) @PathParam("subgroup") String subgroup) {
+    public Response subgroup(@PathParam("subgroup") String subgroup) {
         LifecycleFeature.getFsm().setSubGroup(subgroup);
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSubGroup()).build();
     }
@@ -122,11 +108,10 @@ public class RestLifecycleManager {
      * GET properties.
      */
 
+    @Override
     @GET
     @Path("properties")
-    @ApiOperation(value = "Retrieves the Lifecycle properties",
-            notes = "Lifecycle Properties", response = Properties.class)
-    public Response properties() {
+    public Response propertiesLifecycle() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getProperties()).build();
     }
 
@@ -134,9 +119,9 @@ public class RestLifecycleManager {
      * GET state.
      */
 
+    @Override
     @GET
     @Path("state")
-    @ApiOperation(value = "Retrieves the Lifecycle state", notes = "Lifecycle State", response = PdpState.class)
     public Response state() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().state()).build();
     }
@@ -145,11 +130,10 @@ public class RestLifecycleManager {
      * PUT state.
      */
 
+    @Override
     @PUT
     @Path("state/{state}")
-    @ApiOperation(value = "updates the Lifecycle state", notes = "Lifecycle State", response = Boolean.class)
-    public Response updateState(
-        @ApiParam(value = "state", required = true) @PathParam("state") String state) {
+    public Response updateState(@PathParam("state") String state) {
 
         var change = new PdpStateChange();
         change.setPdpGroup(LifecycleFeature.getFsm().getGroup());
@@ -164,11 +148,10 @@ public class RestLifecycleManager {
      * GET topic source.
      */
 
+    @Override
     @GET
     @Path("topic/source")
-    @ApiOperation(value = "Retrieves the Lifecycle topic source",
-            notes = "Lifecycle Topic Source", response = TopicSource.class)
-    public Response source() {
+    public Response sourceLifecycle() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getSource()).build();
     }
 
@@ -176,10 +159,9 @@ public class RestLifecycleManager {
      * GET topic sink.
      */
 
+    @Override
     @GET
     @Path("topic/sink")
-    @ApiOperation(value = "Retrieves the Lifecycle topic sink",
-            notes = "Lifecycle Topic Sink", response = TopicSink.class)
     public Response sink() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getClient()).build();
     }
@@ -188,10 +170,9 @@ public class RestLifecycleManager {
      * GET status interval.
      */
 
+    @Override
     @GET
     @Path("status/interval")
-    @ApiOperation(value = "Retrieves the Lifecycle Status Timer Interval in seconds",
-            notes = "Lifecycle Status Timer Interval in seconds", response = Long.class)
     public Response updateStatusTimer() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getStatusTimerSeconds()).build();
     }
@@ -200,12 +181,10 @@ public class RestLifecycleManager {
      * PUT timeout.
      */
 
+    @Override
     @PUT
     @Path("status/interval/{timeout}")
-    @ApiOperation(value = "Updates the Lifecycle Status Timer Interval in seconds",
-            notes = "Lifecycle Status Timer Interval in seconds", response = Long.class)
-    public Response statusTimer(
-            @ApiParam(value = "timeout", required = true) @PathParam("timeout") Long timeout) {
+    public Response statusTimer(@PathParam("timeout") Long timeout) {
         LifecycleFeature.getFsm().setStatusTimerSeconds(timeout);
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().getStatusTimerSeconds()).build();
     }
@@ -214,52 +193,48 @@ public class RestLifecycleManager {
      * GET policy types.
      */
 
+    @Override
     @GET
     @Path("policyTypes")
-    @ApiOperation(value = "List of supported policy types",
-            notes = "Lifecycle Policy Types", responseContainer = "List")
     public Response policyTypes() {
         return Response.status(Response.Status.OK)
-                       .entity(LifecycleFeature.getFsm().getPolicyTypesMap().keySet())
-                       .build();
+            .entity(LifecycleFeature.getFsm().getPolicyTypesMap().keySet())
+            .build();
     }
 
     /**
      * GET controllers.
      */
 
+    @Override
     @GET
     @Path("policyTypes/{policyType}/{policyTypeVersion}")
-    @ApiOperation(value = "Entities associated with a policy type",
-            notes = "Lifecycle policy Types", response = PolicyTypeController.class)
     public Response policyType(
-        @ApiParam(value = "Policy Type", required = true)
-            @PathParam("policyType") String policyType,
-        @ApiParam(value = "Policy Type Version", required = true)
-            @PathParam("policyTypeVersion") String policyTypeVersion) {
+        @PathParam("policyType") String policyType,
+        @PathParam("policyTypeVersion") String policyTypeVersion) {
         PolicyTypeController typeController =
             LifecycleFeature.getFsm().getPolicyTypesMap()
-                    .get(new ToscaConceptIdentifier(policyType, policyTypeVersion));
+                .get(new ToscaConceptIdentifier(policyType, policyTypeVersion));
         if (typeController == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         return Response.status(Response.Status.OK)
-                       .entity(typeController)
-                       .build();
+            .entity(typeController)
+            .build();
     }
 
     /**
      * GET policies.
      */
 
+    @Override
     @GET
     @Path("policies")
-    @ApiOperation(value = "List of policies", responseContainer = "List")
     public Response policies() {
         return Response.status(Response.Status.OK)
-                       .entity(LifecycleFeature.getFsm().getPoliciesMap().keySet())
-                       .build();
+            .entity(LifecycleFeature.getFsm().getPoliciesMap().keySet())
+            .build();
 
     }
 
@@ -267,11 +242,10 @@ public class RestLifecycleManager {
      * POST a Policy.
      */
 
+    @Override
     @POST
     @Path("policies")
-    @ApiOperation(value = "Deploy a policy", response = Boolean.class)
-    public Response deployTrackedPolicy(
-            @ApiParam(value = "Tosca Policy", required = true) String policy) {
+    public Response deployTrackedPolicy(String policy) {
 
         var toscaPolicy = getToscaPolicy(policy);
         if (toscaPolicy == null) {
@@ -285,20 +259,20 @@ public class RestLifecycleManager {
 
         boolean updateResult = LifecycleFeature.getFsm().update(getDeployPolicyUpdate(List.of(toscaPolicy)));
         return Response.status((updateResult ? Response.Status.OK : Response.Status.NOT_ACCEPTABLE))
-                       .entity(updateResult)
-                       .build();
+            .entity(updateResult)
+            .build();
     }
 
     /**
      * GET a policy.
      */
 
+    @Override
     @GET
     @Path("policies/{policyName}/{policyVersion}")
-    @ApiOperation(value = "Retrieves a policy", response = ToscaPolicy.class)
     public Response policy(
-            @ApiParam(value = "Policy Name", required = true) @PathParam("policyName") String policyName,
-            @ApiParam(value = "Policy Version", required = true) @PathParam("policyVersion") String policyVersion) {
+        @PathParam("policyName") String policyName,
+        @PathParam("policyVersion") String policyVersion) {
 
         ToscaPolicy policy;
         try {
@@ -320,12 +294,12 @@ public class RestLifecycleManager {
      * DELETE a policy.
      */
 
+    @Override
     @DELETE
     @Path("policies/{policyName}/{policyVersion}")
-    @ApiOperation(value = "Deletes a Lifecycle tracked policy", response = Boolean.class)
     public Response undeployPolicy(
-            @ApiParam(value = "Policy", required = true) @PathParam("policyName") String policyName,
-            @ApiParam(value = "Policy Version", required = true) @PathParam("policyVersion") String policyVersion) {
+        @PathParam("policyName") String policyName,
+        @PathParam("policyVersion") String policyVersion) {
 
         ToscaPolicy policy;
         try {
@@ -341,17 +315,17 @@ public class RestLifecycleManager {
         }
 
         return Response.status(Response.Status.OK)
-                       .entity(LifecycleFeature.getFsm().update(getUndeployPolicyUpdate(List.of(policy))))
-                       .build();
+            .entity(LifecycleFeature.getFsm().update(getUndeployPolicyUpdate(List.of(policy))))
+            .build();
     }
 
     /**
      * List of policies individual Operations supported.
      */
 
+    @Override
     @GET
     @Path("policies/operations")
-    @ApiOperation(value = "Gets Policy Operations", responseContainer = "List")
     public Response policiesOperations() {
         return Response.status(Response.Status.OK).entity(List.of("deployment", "undeployment", "validation")).build();
     }
@@ -360,10 +334,10 @@ public class RestLifecycleManager {
      * POST a deployment operation on a policy.
      */
 
+    @Override
     @POST
     @Path("policies/operations/deployment")
-    @ApiOperation(value = "Deploys a policy", notes = "Deploys a policy", response = Boolean.class)
-    public Response deployOperation(@ApiParam(value = "Tosca Policy", required = true) String policy) {
+    public Response deployOperation(String policy) {
         return deployUndeployOperation(policy, true);
     }
 
@@ -371,10 +345,10 @@ public class RestLifecycleManager {
      * POST an undeployment operation on a policy.
      */
 
+    @Override
     @POST
     @Path("policies/operations/undeployment")
-    @ApiOperation(value = "Undeploys a policy", response = Boolean.class)
-    public Response undeployOperation(@ApiParam(value = "Tosca Policy", required = true) String policy) {
+    public Response undeployOperation(String policy) {
         return deployUndeployOperation(policy, false);
     }
 
@@ -382,10 +356,10 @@ public class RestLifecycleManager {
      * POST a policy for validation.
      */
 
+    @Override
     @POST
     @Path("policies/operations/validation")
-    @ApiOperation(value = "Validates a policy", responseContainer = "List")
-    public Response validateOperation(@ApiParam(value = "Tosca Policy", required = true) String policy) {
+    public Response validateOperation(String policy) {
         var toscaPolicy = getToscaPolicy(policy);
         if (toscaPolicy == null) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -405,9 +379,9 @@ public class RestLifecycleManager {
      * Get current counts.
      */
 
+    @Override
     @GET
     @Path("statistics")
-    @ApiOperation(value = "Gets Policy Statistics", response = PdpStatistics.class)
     public Response stats() {
         return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().statisticsPayload()).build();
     }
@@ -424,8 +398,8 @@ public class RestLifecycleManager {
         }
 
         return Response.status(Response.Status.OK)
-                       .entity((deploy) ? typeController.deploy(toscaPolicy) : typeController.undeploy(toscaPolicy))
-                       .build();
+            .entity((deploy) ? typeController.deploy(toscaPolicy) : typeController.undeploy(toscaPolicy))
+            .build();
     }
 
     private ToscaPolicy getToscaPolicy(String policy) {
