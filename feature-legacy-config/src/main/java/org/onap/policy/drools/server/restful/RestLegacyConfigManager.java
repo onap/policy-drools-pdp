@@ -2,6 +2,7 @@
  * ============LICENSE_START=======================================================
  * ONAP
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +20,12 @@
 
 package org.onap.policy.drools.server.restful;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import java.util.Properties;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.onap.policy.common.endpoints.event.comm.TopicSource;
 import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.drools.legacy.config.LegacyConfigFeature;
 
@@ -39,16 +36,14 @@ import org.onap.policy.drools.legacy.config.LegacyConfigFeature;
 @Path("/policy/pdp/engine/legacy/config")
 @Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
 @Consumes({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
-@Api
-public class RestLegacyConfigManager {
+public class RestLegacyConfigManager implements LegacyApi {
 
     /**
      * GET properties.
      */
+    @Override
     @GET
     @Path("properties")
-    @ApiOperation(value = "Retrieves the legacy configuration properties",
-            notes = "Legacy Configuration Properties", response = Properties.class)
     public Response properties() {
         return Response.status(Response.Status.OK)
                        .entity(LegacyConfigFeature.getLegacyConfig().getProperties()).build();
@@ -57,10 +52,9 @@ public class RestLegacyConfigManager {
     /**
      * GET the topic source.
      */
+    @Override
     @GET
     @Path("topic/source")
-    @ApiOperation(value = "Retrieves the legacy configuration topic source",
-            notes = "Legacy Configuration Source", response = TopicSource.class)
     public Response source() {
         return Response.status(Response.Status.OK)
                        .entity(LegacyConfigFeature.getLegacyConfig().getSource()).build();
