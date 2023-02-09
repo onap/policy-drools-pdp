@@ -16,6 +16,24 @@
       "revId": "76f12eac93fa5e897ae5415f4602239279e2e2f5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d09c0ba5_a4bcdf8a",
+        "filename": "policy-management/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7629
+      },
+      "writtenOn": "2023-02-09T11:35:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e79b3eb5_5b957af1",
+      "revId": "76f12eac93fa5e897ae5415f4602239279e2e2f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
