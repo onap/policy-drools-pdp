@@ -50,9 +50,11 @@ ENV MVN_SNAPSHOT_REPO_URL $MVN_SNAPSHOT_REPO_URL
 ENV MVN_RELEASE_REPO_URL $MVN_RELEASE_REPO_URL
 ENV http_proxy $http_proxy
 
+USER root
 RUN apk update && \
     apk add --no-cache mariadb-client \
     file \
+    maven \
     net-tools netcat-openbsd sudo less vim openssl \
     && python3 -m pip install --no-cache-dir --upgrade setuptools http-prompt \
     && python3 -m pip install --no-cache-dir httpie
