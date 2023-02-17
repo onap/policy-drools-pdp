@@ -147,7 +147,6 @@
             <plugin>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
-                <version>3.0.27</version>
                 <executions>
                     <execution>
                         <id>code-gen</id>
@@ -162,7 +161,6 @@
                             <language>jaxrs-spec</language>
                             <generateModels>false</generateModels>
                             <generateSupportingFiles>false</generateSupportingFiles>
-                            <sortParamsByRequiredFlag>false</sortParamsByRequiredFlag>
                             <importMappings>
                                 CoderFilters=org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters,
                                 CodingResult=org.onap.policy.drools.server.restful.RestManager.CodingResult,
@@ -268,7 +266,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
         </dependency>
 
         <!-- if we don't explicitly specify the version here, we seem to end up
@@ -361,12 +358,11 @@
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Swagger v3 annotations -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${version.swagger.core.v3}</version>
+            <artifactId>swagger-annotations</artifactId>
         </dependency>
 
     </dependencies>
