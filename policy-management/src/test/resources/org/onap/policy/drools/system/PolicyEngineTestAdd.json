@@ -11,6 +11,7 @@
             "name": "TELEMETRY",
             "host": "localhost",
             "port": 9698,
+            "sniHostCheck": false,
             "user": null,
             "alive": true,
             "aaf": false,
