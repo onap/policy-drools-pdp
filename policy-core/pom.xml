@@ -21,14 +21,15 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>policy-core</artifactId>
     <parent>
         <groupId>org.onap.policy.drools-pdp</groupId>
         <artifactId>drools-pdp</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.10.12</version>
+            <version>1.10.13</version>
         </dependency>
 
         <dependency>
@@ -88,16 +89,6 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
-            <!--
-            Exclude this because it's incompatible with eclipselink, which already
-            includes the same classes.
-             -->
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.persistence</groupId>
-                    <artifactId>javax.persistence-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -124,30 +115,34 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Provided dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>4.0.3</version>
         </dependency>
-
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>4.0.3</version>
         </dependency>
-
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>4.0.3</version>
         </dependency>
-
         <dependency>
-            <groupId>org.onap.policy.common</groupId>
-            <artifactId>utils-test</artifactId>
-            <version>${policy.common.version}</version>
-            <scope>test</scope>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
     </dependencies>
+
 </project>

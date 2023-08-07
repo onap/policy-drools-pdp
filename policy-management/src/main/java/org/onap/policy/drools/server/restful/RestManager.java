@@ -23,6 +23,19 @@ package org.onap.policy.drools.server.restful;
 
 import ch.qos.logback.classic.LoggerContext;
 import com.google.re2j.Pattern;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,24 +46,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -145,7 +146,8 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     public Response swagger() {
 
         try (InputStream inputStream = getClass().getResourceAsStream(SWAGGER);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(Objects.requireNonNull(inputStream)))) {
             String contents = reader.lines()
                     .collect(Collectors.joining(System.lineSeparator()));
             return Response.status(Response.Status.OK)
@@ -1720,12 +1722,11 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/loggers")
     public Response loggers() {
         final List<String> names = new ArrayList<>();
-        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
+        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext context)) {
             logger.warn("The SLF4J logger factory is not configured for logback");
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(names).build();
         }
 
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         for (final Logger lgr : context.getLoggerList()) {
             names.add(lgr.getName());
         }
@@ -1743,12 +1744,11 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/loggers/{logger}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loggerName1(@PathParam("logger") String loggerName) {
-        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
+        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext context)) {
             logger.warn("The SLF4J logger factory is not configured for logback");
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
-        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         var lgr = context.getLogger(loggerName);
         if (lgr == null) {
             return Response.status(Status.NOT_FOUND).build();

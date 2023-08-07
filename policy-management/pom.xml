@@ -20,13 +20,14 @@
   ============LICENSE_END=========================================================
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.onap.policy.drools-pdp</groupId>
         <artifactId>drools-pdp</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>policy-management</artifactId>
@@ -74,7 +75,6 @@
                             <useRepositoryLayout>false</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                            <excludeGroupIds>javax.inject</excludeGroupIds>
                             <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>
@@ -175,7 +175,7 @@
                                 PolicyTypeController=org.onap.policy.drools.lifecycle.PolicyTypeController,
                                 Properties=java.util.Properties,
                                 ProtocolCoderToolset=org.onap.policy.drools.protocol.coders.ProtocolCoderToolset,
-                                Response=javax.ws.rs.core.Response,
+                                Response=jakarta.ws.rs.core.Response,
                                 TopicEndpoint=org.onap.policy.common.endpoints.event.comm.TopicEndpoint,
                                 TopicSink=org.onap.policy.common.endpoints.event.comm.TopicSink,
                                 TopicSource=org.onap.policy.common.endpoints.event.comm.TopicSource,
@@ -186,10 +186,11 @@
                             </typeMappings>
                             <configOptions>
                                 <sourceFolder>src/gen/java</sourceFolder>
-                                <dateLibrary>java11</dateLibrary>
+                                <dateLibrary>java17</dateLibrary>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useTags>true</useTags>
                                 <skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>
+                                <jakarta>true</jakarta>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -199,13 +200,11 @@
     </build>
 
     <dependencies>
-
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>policy-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>policy-domains</artifactId>
@@ -217,7 +216,11 @@
             <artifactId>policy-endpoints</artifactId>
             <version>${policy.common.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.onap.policy.common</groupId>
+            <artifactId>gson</artifactId>
+            <version>${policy.common.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils</artifactId>
@@ -234,34 +237,24 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.onap.policy.common</groupId>
-            <artifactId>gson</artifactId>
-            <version>${policy.common.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.fatboyindustrial.gson-javatime-serialisers</groupId>
             <artifactId>gson-javatime-serialisers</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
-
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
@@ -275,34 +268,13 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.onap.policy.common</groupId>
-            <artifactId>utils-test</artifactId>
-            <version>${policy.common.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -315,47 +287,21 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <!--
-            Exclude this because it's incompatible with eclipselink, which already
-            includes the same classes.
-             -->
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.persistence</groupId>
-                    <artifactId>javax.persistence-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate.common</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
         </dependency>
-
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_logback</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <!-- Swagger v3 annotations -->
@@ -363,6 +309,6 @@
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
         </dependency>
-
     </dependencies>
+
 </project>

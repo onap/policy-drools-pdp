@@ -38,7 +38,7 @@ ARG MVN_RELEASE_REPO_URL
 ARG http_proxy
 
 ENV BUILD_VERSION_DROOLS $BUILD_VERSION_DROOLS
-ENV JAVA_HOME /usr/lib64/jvm/java-11-openjdk
+ENV JAVA_HOME /usr/lib64/jvm/java-17-openjdk
 ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV POLICY_INSTALL $POLICY_INSTALL
 ENV POLICY_INSTALL_INIT $POLICY_INSTALL/config
@@ -54,7 +54,7 @@ ENV http_proxy $http_proxy
 RUN zypper -n -q install --no-recommends \
         curl \
         gzip \
-        java-11-openjdk-devel \
+        java-17-openjdk-devel \
         maven \
         mariadb-client \
         netcat-openbsd \

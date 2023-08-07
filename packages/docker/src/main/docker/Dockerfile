@@ -2,7 +2,7 @@
 # Dockerfile
 # ============LICENSE_START=======================================================
 #  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
-#  Modifications Copyright (C) 2022 Nordix Foundation.
+#  Modifications Copyright (C) 2022-2023 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # ============LICENSE_END=========================================================
 #-------------------------------------------------------------------------------
-FROM onap/policy-jdk-alpine:3.0.0-SNAPSHOT
+FROM onap/policy-jdk-alpine:3.0.1-SNAPSHOT
 
 LABEL maintainer="Policy Team"
 LABEL org.opencontainers.image.title="Policy Drools PDP"
@@ -39,7 +39,7 @@ ARG MVN_RELEASE_REPO_URL
 ARG http_proxy
 
 ENV BUILD_VERSION_DROOLS $BUILD_VERSION_DROOLS
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk
+ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
 ENV POLICY_INSTALL $POLICY_INSTALL
 ENV POLICY_INSTALL_INIT $POLICY_INSTALL/config
 ENV POLICY_LOGS $POLICY_LOGS

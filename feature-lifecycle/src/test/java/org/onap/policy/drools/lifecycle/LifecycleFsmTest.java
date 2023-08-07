@@ -202,7 +202,6 @@ public class LifecycleFsmTest {
         assertEquals("foo", fsm.getPdpType());
     }
 
-
     @Test
     public void testMergePolicies() {
         assertEquals(List.of(), fsm.getActivePolicies());

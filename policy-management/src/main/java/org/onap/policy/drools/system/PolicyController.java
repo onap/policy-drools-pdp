@@ -85,7 +85,7 @@ public interface PolicyController extends Startable, Lockable {
     <T> boolean offer(T event);
 
     /**
-     * Attempts delivering of an String over communication infrastructure "busType".
+     * Attempts delivering of a String over communication infrastructure "busType".
      *
      * @param busType bus type
      * @param topic topic

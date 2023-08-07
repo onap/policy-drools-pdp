@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;

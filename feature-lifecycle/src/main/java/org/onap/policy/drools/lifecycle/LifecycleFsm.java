@@ -623,7 +623,6 @@ public class LifecycleFsm implements Startable {
         return status;
     }
 
-
     private boolean source() {
         List<TopicSource> sources = TopicEndpointManager.getManager().addTopicSources(properties);
         if (sources.isEmpty()) {
