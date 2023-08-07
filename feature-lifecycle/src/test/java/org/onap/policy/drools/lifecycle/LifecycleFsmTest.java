@@ -22,7 +22,6 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,8 +43,6 @@ import org.onap.policy.common.utils.time.PseudoScheduledExecutorService;
 import org.onap.policy.common.utils.time.TestTimeMulti;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
-import org.onap.policy.models.pdp.concepts.PdpStatus;
-import org.onap.policy.models.pdp.enums.PdpState;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
@@ -231,28 +228,6 @@ public class LifecycleFsmTest {
         assertEquals(0, fsm.getStats().getPolicyDeploySuccessCount());
         assertEquals(0, fsm.getStats().getPolicyDeployFailCount());
         assertEquals(0, fsm.getStats().getPolicyDeployCount());
-    }
-
-    @Test
-    public void testStatusPayload() {
-        setExecutionCounts();
-        fsm.updateDeployCountsAction(8L, 6L, 2L);
-        fsm.updateUndeployCountsAction(4L, 3L, 1L);
-        PdpStatus status = fsm.statusPayload(PdpState.ACTIVE);
-
-        assertEquals(fsm.getGroup(), status.getStatistics().getPdpGroupName());
-        assertEquals(fsm.getSubGroup(), status.getStatistics().getPdpSubGroupName());
-        assertEquals(PolicyEngineConstants.getManager().getPdpName(), status.getStatistics().getPdpInstanceId());
-        assertEquals(6, status.getStatistics().getPolicyDeploySuccessCount());
-        assertEquals(2, status.getStatistics().getPolicyDeployFailCount());
-        assertEquals(8, status.getStatistics().getPolicyDeployCount());
-        assertNotNull(status.getStatistics().getTimeStamp());
-        assertEquals(7, status.getStatistics().getPolicyExecutedCount());
-        assertEquals(2, status.getStatistics().getPolicyExecutedFailCount());
-        assertEquals(5, status.getStatistics().getPolicyExecutedSuccessCount());
-        assertEquals(3, status.getStatistics().getPolicyUndeploySuccessCount());
-        assertEquals(1, status.getStatistics().getPolicyUndeployFailCount());
-        assertEquals(4, status.getStatistics().getPolicyUndeployCount());
     }
 
     @Test

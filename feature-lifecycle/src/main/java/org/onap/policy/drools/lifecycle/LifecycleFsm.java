@@ -668,7 +668,6 @@ public class LifecycleFsm implements Startable {
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType(getPdpType());
         status.setPolicies(new ArrayList<>(policiesMap.keySet()));
-        status.setStatistics(statisticsPayload());
         return status;
     }
 
