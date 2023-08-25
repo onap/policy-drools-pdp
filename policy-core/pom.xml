@@ -28,7 +28,7 @@
     <parent>
         <groupId>org.onap.policy.drools-pdp</groupId>
         <artifactId>drools-pdp</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -41,6 +41,7 @@
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
+            <version>8.43.0.Final</version>
         </dependency>
 
         <dependency>
@@ -52,6 +53,7 @@
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
+            <version>8.43.0.Final</version>
             <!--
             Issue: 2 of 2
             Excluding these 2 dependencies in order to force upgrade security fixes
@@ -73,29 +75,33 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-engine</artifactId>
+            <version>8.43.0.Final</version>
         </dependency>
 
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
+            <version>8.43.0.Final</version>
         </dependency>
 
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-xml-support</artifactId>
+            <version>8.43.0.Final</version>
         </dependency>
 
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-persistence-jpa</artifactId>
+            <version>8.43.0.Final</version>
             <!--
             Exclude this because it's incompatible with eclipselink, which already
             includes the same classes.
              -->
             <exclusions>
                 <exclusion>
-                    <groupId>javax.persistence</groupId>
-                    <artifactId>javax.persistence-api</artifactId>
+                    <groupId>jakarta.persistence</groupId>
+                    <artifactId>jakarta.persistence-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

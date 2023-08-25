@@ -20,7 +20,7 @@
 
 package org.onap.policy.drools.server.restful.test;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.onap.policy.common.utils.network.NetworkUtil;
 import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
 

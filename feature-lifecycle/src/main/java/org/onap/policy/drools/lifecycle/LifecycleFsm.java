@@ -23,8 +23,6 @@ package org.onap.policy.drools.lifecycle;
 
 import com.google.re2j.Pattern;
 import io.prometheus.client.Counter;
-import java.lang.reflect.InvocationTargetException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +40,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -61,7 +58,6 @@ import org.onap.policy.drools.system.PolicyController;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.models.pdp.concepts.PdpResponseDetails;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
-import org.onap.policy.models.pdp.concepts.PdpStatistics;
 import org.onap.policy.models.pdp.concepts.PdpStatus;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
 import org.onap.policy.models.pdp.enums.PdpHealthStatus;
@@ -164,8 +160,6 @@ public class LifecycleFsm implements Startable {
     @Getter
     protected final Map<ToscaConceptIdentifier, ToscaPolicy> policiesMap = new HashMap<>();
 
-    @Getter
-    protected final PdpStatistics stats = new PdpStatistics();
 
     /**
      * Constructor.
@@ -206,7 +200,6 @@ public class LifecycleFsm implements Startable {
     public String getPdpName() {
         if (this.pdpName == null) {
             this.pdpName = PolicyEngineConstants.getManager().getPdpName();
-            this.stats.setPdpInstanceId(pdpName);
         }
 
         return this.pdpName;
@@ -224,7 +217,6 @@ public class LifecycleFsm implements Startable {
      */
     public synchronized void setGroup(String group) {
         this.group = group;
-        this.stats.setPdpGroupName(group);
     }
 
     /**
@@ -232,7 +224,6 @@ public class LifecycleFsm implements Startable {
      */
     public synchronized void setSubGroup(String subGroup) {
         this.subGroup = subGroup;
-        this.stats.setPdpSubGroupName(subGroup);
     }
 
     /* ** FSM events - entry points of events into the FSM ** */
@@ -240,7 +231,6 @@ public class LifecycleFsm implements Startable {
     @Override
     public synchronized boolean start() {
         this.pdpName = PolicyEngineConstants.getManager().getPdpName();
-        stats.setPdpInstanceId(pdpName);
         logger.info("lifecycle event: start engine");
         return state.start();
     }
@@ -462,8 +452,6 @@ public class LifecycleFsm implements Startable {
             deploymentsCounter.labels(state.state().name(),
                     PrometheusUtils.DEPLOY_OPERATION,
                     PdpResponseStatus.SUCCESS.name()).inc();
-            getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
-            getStats().setPolicyDeploySuccessCount(getStats().getPolicyDeploySuccessCount() + 1);
             return policy;
         });
     }
@@ -475,8 +463,6 @@ public class LifecycleFsm implements Startable {
             deploymentsCounter.labels(state.state().name(),
                     PrometheusUtils.UNDEPLOY_OPERATION,
                     PdpResponseStatus.SUCCESS.name()).inc();
-            getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
-            getStats().setPolicyUndeploySuccessCount(getStats().getPolicyUndeploySuccessCount() + 1);
             return null;
         });
     }
@@ -485,52 +471,16 @@ public class LifecycleFsm implements Startable {
         deploymentsCounter.labels(state.state().name(),
                 PrometheusUtils.DEPLOY_OPERATION,
                 PdpResponseStatus.FAIL.name()).inc();
-        getStats().setPolicyDeployCount(getStats().getPolicyDeployCount() + 1);
-        getStats().setPolicyDeployFailCount(getStats().getPolicyDeployFailCount() + 1);
     }
 
     protected void failedUndeployPolicyAction(ToscaPolicy failedPolicy) {
         deploymentsCounter.labels(state.state().name(),
                 PrometheusUtils.UNDEPLOY_OPERATION,
                 PdpResponseStatus.FAIL.name()).inc();
-        getStats().setPolicyUndeployCount(getStats().getPolicyUndeployCount() + 1);
-        getStats().setPolicyUndeployFailCount(getStats().getPolicyUndeployFailCount() + 1);
         policiesMap.remove(failedPolicy.getIdentifier());
     }
 
-    protected void updateDeployCountsAction(Long deployCount, Long deploySuccesses, Long deployFailures) {
-        PdpStatistics statistics = getStats();
-        if (deployCount != null) {
-            statistics.setPolicyDeployCount(deployCount);
-        }
-
-        if (deploySuccesses != null) {
-            statistics.setPolicyDeploySuccessCount(deploySuccesses);
-        }
-
-        if (deployFailures != null) {
-            statistics.setPolicyDeployFailCount(deployFailures);
-        }
-    }
-
-    protected void updateUndeployCountsAction(Long undeployCount, Long undeploySuccesses, Long undeployFailures) {
-        PdpStatistics statistics = getStats();
-        if (undeployCount != null) {
-            statistics.setPolicyUndeployCount(undeployCount);
-        }
-
-        if (undeploySuccesses != null) {
-            statistics.setPolicyUndeploySuccessCount(undeploySuccesses);
-        }
-
-        if (undeployFailures != null) {
-            statistics.setPolicyUndeployFailCount(undeployFailures);
-        }
-    }
-
     protected List<ToscaPolicy> resetPoliciesAction() {
-        updateDeployCountsAction(0L, 0L, 0L);
-        updateUndeployCountsAction(0L, 0L, 0L);
         List<ToscaPolicy> policies = new ArrayList<>(getActivePolicies());
         policiesMap.clear();
         return policies;
@@ -668,25 +618,9 @@ public class LifecycleFsm implements Startable {
         status.setHealthy(isAlive() ? PdpHealthStatus.HEALTHY : PdpHealthStatus.NOT_HEALTHY);
         status.setPdpType(getPdpType());
         status.setPolicies(new ArrayList<>(policiesMap.keySet()));
-        status.setStatistics(statisticsPayload());
         return status;
     }
 
-    /**
-     * It provides a snapshot of the current statistics.
-     */
-    public PdpStatistics statisticsPayload() {
-        var updateStats = new PdpStatistics(stats);
-        updateStats.setTimeStamp(Instant.now());
-
-        try {
-            BeanUtils.copyProperties(updateStats, PolicyEngineConstants.getManager().getStats().getGroupStat());
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            logger.debug("statistics mapping failure", ex);
-        }
-
-        return updateStats;
-    }
 
     private boolean source() {
         List<TopicSource> sources = TopicEndpointManager.getManager().addTopicSources(properties);

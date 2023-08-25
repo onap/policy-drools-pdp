@@ -21,6 +21,7 @@
 package org.onap.policy.drools.healthcheck;
 
 import com.google.common.base.Strings;
+import jakarta.ws.rs.core.Response;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +34,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.ws.rs.core.Response;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;

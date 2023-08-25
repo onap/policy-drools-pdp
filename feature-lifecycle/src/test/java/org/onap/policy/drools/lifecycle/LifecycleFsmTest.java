@@ -130,24 +130,6 @@ public class LifecycleFsmTest {
             getPolicyFromFile(EXAMPLE_OTHER_UNVAL_POLICY_JSON, EXAMPLE_OTHER_UNVAL_POLICY_NAME);
 
         fsm.resetPoliciesAction();
-        resetExecutionStats();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        resetExecutionStats();
-    }
-
-    private static void resetExecutionStats() {
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedCount(0L);
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedFailCount(0L);
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedSuccessCount(0L);
-    }
-
-    private void setExecutionCounts() {
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedCount(7L);
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedFailCount(2L);
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedSuccessCount(5L);
     }
 
     @Test
@@ -192,14 +174,12 @@ public class LifecycleFsmTest {
     public void testSetGroup() {
         fsm.setGroup("bar");
         assertEquals("bar", fsm.getGroup());
-        assertEquals("bar", fsm.getStats().getPdpGroupName());
     }
 
     @Test
     public void testSetSubGroup() {
         fsm.setSubGroup("foo");
         assertEquals("foo", fsm.getSubGroup());
-        assertEquals("foo", fsm.getStats().getPdpSubGroupName());
     }
 
     @Test
@@ -207,53 +187,6 @@ public class LifecycleFsmTest {
         assertEquals("foo", fsm.getPdpType());
     }
 
-    @Test
-    public void testDeployedPolicyAction() {
-        fsm.deployedPolicyAction(controllerPolicy);
-        assertEquals(1, fsm.getStats().getPolicyDeploySuccessCount());
-
-        fsm.undeployedPolicyAction(controllerPolicy);
-        assertEquals(1, fsm.getStats().getPolicyDeploySuccessCount());
-        assertEquals(1, fsm.getStats().getPolicyUndeploySuccessCount());
-
-        fsm.resetPoliciesAction();
-        assertEquals(0, fsm.getStats().getPolicyUndeployCount());
-        assertEquals(0, fsm.getStats().getPolicyUndeploySuccessCount());
-    }
-
-    @Test
-    public void testRestDeployCountsAction() {
-        deployAllPolicies();
-        assertEquals(8, fsm.getStats().getPolicyDeploySuccessCount());
-        assertEquals(0, fsm.getStats().getPolicyUndeployCount());
-
-        fsm.resetPoliciesAction();
-        assertEquals(0, fsm.getStats().getPolicyDeploySuccessCount());
-        assertEquals(0, fsm.getStats().getPolicyDeployFailCount());
-        assertEquals(0, fsm.getStats().getPolicyDeployCount());
-    }
-
-    @Test
-    public void testStatusPayload() {
-        setExecutionCounts();
-        fsm.updateDeployCountsAction(8L, 6L, 2L);
-        fsm.updateUndeployCountsAction(4L, 3L, 1L);
-        PdpStatus status = fsm.statusPayload(PdpState.ACTIVE);
-
-        assertEquals(fsm.getGroup(), status.getStatistics().getPdpGroupName());
-        assertEquals(fsm.getSubGroup(), status.getStatistics().getPdpSubGroupName());
-        assertEquals(PolicyEngineConstants.getManager().getPdpName(), status.getStatistics().getPdpInstanceId());
-        assertEquals(6, status.getStatistics().getPolicyDeploySuccessCount());
-        assertEquals(2, status.getStatistics().getPolicyDeployFailCount());
-        assertEquals(8, status.getStatistics().getPolicyDeployCount());
-        assertNotNull(status.getStatistics().getTimeStamp());
-        assertEquals(7, status.getStatistics().getPolicyExecutedCount());
-        assertEquals(2, status.getStatistics().getPolicyExecutedFailCount());
-        assertEquals(5, status.getStatistics().getPolicyExecutedSuccessCount());
-        assertEquals(3, status.getStatistics().getPolicyUndeploySuccessCount());
-        assertEquals(1, status.getStatistics().getPolicyUndeployFailCount());
-        assertEquals(4, status.getStatistics().getPolicyUndeployCount());
-    }
 
     @Test
     public void testMergePolicies() {
@@ -285,38 +218,6 @@ public class LifecycleFsmTest {
     public void testGetPolicyIdsMessages() {
         assertEquals("[operational.modifyconfig 1.0.0, example.controller 1.0.0]",
                 fsm.getPolicyIds(List.of(opPolicy, controllerPolicy)).toString());
-    }
-
-    @Test
-    public void testUpdateCountsAction() {
-        fsm.resetPoliciesAction();
-
-        assertDeployUndeployValues(0, 0, 0, 0, 0, 0);
-
-        fsm.updateDeployCountsAction(3L, 2L, 1L);
-        assertDeployUndeployValues(3, 2, 1, 0, 0, 0);
-
-        fsm.updateUndeployCountsAction(1L, 1L, 0L);
-        assertDeployUndeployValues(3, 2, 1, 1, 1, 0);
-
-        // shouldn't update values
-        fsm.updateDeployCountsAction(null, null, null);
-        fsm.updateUndeployCountsAction(null, null, null);
-
-        assertDeployUndeployValues(3, 2, 1, 1, 1, 0);
-        fsm.resetPoliciesAction();
-
-        assertDeployUndeployValues(0, 0, 0, 0, 0, 0);
-    }
-
-    protected void assertDeployUndeployValues(long deployCount, long deploySuccess, long deployFail,
-            long undeployCount, long undeploySuccess, long undeployFail) {
-        assertEquals(deployCount, fsm.getStats().getPolicyDeployCount());
-        assertEquals(deploySuccess, fsm.getStats().getPolicyDeploySuccessCount());
-        assertEquals(deployFail, fsm.getStats().getPolicyDeployFailCount());
-        assertEquals(undeployCount, fsm.getStats().getPolicyUndeployCount());
-        assertEquals(undeploySuccess, fsm.getStats().getPolicyUndeploySuccessCount());
-        assertEquals(undeployFail, fsm.getStats().getPolicyUndeployFailCount());
     }
 
     protected void deployAllPolicies() {

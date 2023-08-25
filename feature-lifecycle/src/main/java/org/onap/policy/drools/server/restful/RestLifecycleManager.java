@@ -20,18 +20,18 @@
 package org.onap.policy.drools.server.restful;
 
 import com.worldturner.medeia.api.ValidationFailedException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.onap.policy.common.endpoints.http.server.YamlMessageBodyHandler;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
@@ -375,16 +375,6 @@ public class RestLifecycleManager implements LifecycleApi {
         return Response.status(Response.Status.OK).entity(Collections.emptyList()).build();
     }
 
-    /**
-     * Get current counts.
-     */
-
-    @Override
-    @GET
-    @Path("statistics")
-    public Response stats() {
-        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().statisticsPayload()).build();
-    }
 
     private Response deployUndeployOperation(String policy, boolean deploy) {
         var toscaPolicy = getToscaPolicy(policy);
