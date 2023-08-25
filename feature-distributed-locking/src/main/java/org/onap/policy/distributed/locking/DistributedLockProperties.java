@@ -35,10 +35,10 @@ public class DistributedLockProperties {
     public static final String PREFIX = "distributed.locking.";
 
     // @formatter:off
-    public static final String DB_DRIVER = "javax.persistence.jdbc.driver";
-    public static final String DB_URL    = "javax.persistence.jdbc.url";
-    public static final String DB_USER   = "javax.persistence.jdbc.user";
-    public static final String DB_PASS   = "javax.persistence.jdbc.password";
+    public static final String DB_DRIVER = "jakarta.persistence.jdbc.driver";
+    public static final String DB_URL    = "jakarta.persistence.jdbc.url";
+    public static final String DB_USER   = "jakarta.persistence.jdbc.user";
+    public static final String DB_PASS   = "jakarta.persistence.jdbc.password";
     public static final String EXPIRE_CHECK_SEC = PREFIX + "expire.check.seconds";
     public static final String RETRY_SEC = PREFIX + "retry.seconds";
     public static final String MAX_RETRIES = PREFIX + "max.retries";

@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.onap.policy.drools-pdp</groupId>
         <artifactId>drools-pdp</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>policy-management</artifactId>
@@ -74,7 +74,7 @@
                             <useRepositoryLayout>false</useRepositoryLayout>
                             <addParentPoms>false</addParentPoms>
                             <copyPom>false</copyPom>
-                            <excludeGroupIds>javax.inject</excludeGroupIds>
+                            <excludeGroupIds>jakarta.inject</excludeGroupIds>
                             <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>
@@ -147,6 +147,7 @@
             <plugin>
                 <groupId>io.swagger.codegen.v3</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>3.0.46</version>
                 <executions>
                     <execution>
                         <id>code-gen</id>
@@ -167,7 +168,6 @@
                                 ControllerConfiguration=org.onap.policy.drools.protocol.configuration.ControllerConfiguration,
                                 DroolsController=org.onap.policy.drools.controller.DroolsController,
                                 JsonProtocolFilter=org.onap.policy.drools.protocol.coders.JsonProtocolFilter,
-                                PdpStatistics=org.onap.policy.models.pdp.concepts.PdpStatistics,
                                 PdpdConfiguration=org.onap.policy.drools.protocol.configuration.PdpdConfiguration,
                                 PolicyController=org.onap.policy.drools.system.PolicyController,
                                 PolicyControllerFeatureApi=org.onap.policy.drools.features.PolicyControllerFeatureApi,
@@ -176,7 +176,7 @@
                                 PolicyTypeController=org.onap.policy.drools.lifecycle.PolicyTypeController,
                                 Properties=java.util.Properties,
                                 ProtocolCoderToolset=org.onap.policy.drools.protocol.coders.ProtocolCoderToolset,
-                                Response=javax.ws.rs.core.Response,
+                                Response=jakarta.ws.rs.core.Response,
                                 TopicEndpoint=org.onap.policy.common.endpoints.event.comm.TopicEndpoint,
                                 TopicSink=org.onap.policy.common.endpoints.event.comm.TopicSink,
                                 TopicSource=org.onap.policy.common.endpoints.event.comm.TopicSource,
@@ -191,6 +191,7 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <useTags>true</useTags>
                                 <skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>
+                                <jakarta>true</jakarta>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -219,7 +220,7 @@
             <version>${policy.common.version}</version>
         </dependency>
 
-        <dependency>
+      <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils</artifactId>
             <version>${policy.common.version}</version>
@@ -318,7 +319,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <!--
             Exclude this because it's incompatible with eclipselink, which already
@@ -326,8 +327,8 @@
              -->
             <exclusions>
                 <exclusion>
-                    <groupId>javax.persistence</groupId>
-                    <artifactId>javax.persistence-api</artifactId>
+                    <groupId>jakarta.persistence</groupId>
+                    <artifactId>jakarta.persistence-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -363,6 +364,7 @@
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
+            <version>2.2.15</version>
         </dependency>
 
     </dependencies>

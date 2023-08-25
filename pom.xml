@@ -26,13 +26,13 @@
     <parent>
         <groupId>org.onap.policy.parent</groupId>
         <artifactId>integration</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>4.0.1-SNAPSHOT</version>
         <relativePath />
     </parent>
 
     <groupId>org.onap.policy.drools-pdp</groupId>
     <artifactId>drools-pdp</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>policy-drools-pdp</name>
 
@@ -48,11 +48,11 @@
 
         <!-- Project common dependency versions -->
         <json.path.version>2.4.0</json.path.version>
-        <hibernate.core.version>5.4.28.Final</hibernate.core.version>
+        <hibernate.core.version>6.3.0.CR1</hibernate.core.version>
         <hibernate.commons.annotations.version>5.1.2.Final</hibernate.commons.annotations.version>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <policy.common.version>2.0.0-SNAPSHOT</policy.common.version>
-        <policy.models.version>3.0.0-SNAPSHOT</policy.models.version>
+        <policy.common.version>2.0.1-SNAPSHOT</policy.common.version>
+        <policy.models.version>3.0.1-SNAPSHOT</policy.models.version>
     </properties>
 
     <modules>
@@ -73,14 +73,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>2.1.1</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>3.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.hk2.external</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>2.5.0-b62</version>
+                <artifactId>jakarta.inject</artifactId>
+                <version>2.6.1</version>
             </dependency>
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
@@ -88,7 +88,7 @@
                 <version>${json.path.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.core.version}</version>
             </dependency>
