@@ -258,7 +258,6 @@ public class LifecycleFsmUpdateTest {
         assertTrue(fsm.update(getPdpUpdate(List.of(), List.of(artifactPolicy))));
         assertEquals(1, PolicyControllerConstants.getFactory().inventory().size());
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
-        verifyUndeployStats(5, 5, 0);
 
         // Delta: +artifactPolicy
         // from deltas, all delta updates should be successfully applied
@@ -270,7 +269,6 @@ public class LifecycleFsmUpdateTest {
         // from deltas, all delta updates should be successfully applied
         assertTrue(fsm.update(getPdpUpdate(List.of(), List.of(controllerPolicy))));
         assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
-        verifyUndeployStats(6, 6, 0);
 
         // Delta: +controllerPolicy
         // from deltas, all delta updates should be successfully applied
@@ -333,8 +331,6 @@ public class LifecycleFsmUpdateTest {
         verifyActivePoliciesWithDisables(
                 List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy),
                 List.of(opPolicy.getIdentifier(), op2Policy.getIdentifier()));
-        verifyDeployStats(17, 16, 1);
-        verifyUndeployStats(10, 10, 0);
 
         // Delta: -opPolicy, -op2Policy, -controller2Policy, -valPolicy, -artifact2Policy, -unvalPolicy
         // from deltas, -opPolicy and -op2Policy undeploys will fail since there is not controller with that
@@ -346,7 +342,6 @@ public class LifecycleFsmUpdateTest {
         assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
         verifyDeploy(List.of(), 17, 16, 1, 16, 14, 2);
 
-        verifyFullStats(33, 30, 3);
         fsm.shutdown();
     }
 
@@ -354,7 +349,6 @@ public class LifecycleFsmUpdateTest {
         assertEquals(0, fsm.getPoliciesMap().size());
         assertEquals("ACTIVE", fsm.state().toString());
         assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
-        verifyDeployStats(0, 0, 0);
     }
 
     protected PdpUpdate getPdpUpdate(List<ToscaPolicy> policiesToDeploy, List<ToscaPolicy> policiesToUndeploy) {
@@ -377,8 +371,6 @@ public class LifecycleFsmUpdateTest {
     private void verifyDeploy(List<ToscaPolicy> active, long deployCount, long deploySuccess, long deployFail,
             long undeployCount, long undeploySuccess, long undeployFail) throws CoderException {
         verifyActivePolicies(active);
-        verifyDeployStats(deployCount, deploySuccess, deployFail);
-        verifyUndeployStats(undeployCount, undeploySuccess, undeployFail);
     }
 
     protected void verifyExists(boolean exists, String controller, List<ToscaPolicy> policies) {
@@ -531,25 +523,6 @@ public class LifecycleFsmUpdateTest {
 
         assertTrue("There is more than 1 native artifact policy for " + controllerName,
                 candidateNativeArtifactPolicies.isEmpty());
-    }
-
-    protected void verifyDeployStats(long count, long success, long fail) {
-        assertEquals(count, fsm.getStats().getPolicyDeployCount());
-        assertEquals(success, fsm.getStats().getPolicyDeploySuccessCount());
-        assertEquals(fail, fsm.getStats().getPolicyDeployFailCount());
-    }
-
-    protected void verifyUndeployStats(long count, long success, long fail) {
-        assertEquals(count, fsm.getStats().getPolicyUndeployCount());
-        assertEquals(success, fsm.getStats().getPolicyUndeploySuccessCount());
-        assertEquals(fail, fsm.getStats().getPolicyUndeployFailCount());
-    }
-
-    protected void verifyFullStats(long count, long success, long fail) {
-        assertEquals(count, fsm.getStats().getPolicyDeployCount() + fsm.getStats().getPolicyUndeployCount());
-        assertEquals(success,
-                fsm.getStats().getPolicyDeploySuccessCount() + fsm.getStats().getPolicyUndeploySuccessCount());
-        assertEquals(fail, fsm.getStats().getPolicyDeployFailCount() + fsm.getStats().getPolicyUndeployFailCount());
     }
 
     protected List<NativeArtifactPolicy> getNativeArtifactPoliciesBut(List<ToscaPolicy> nativePolicies,

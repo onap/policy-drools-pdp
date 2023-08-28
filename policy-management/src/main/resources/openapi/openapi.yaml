@@ -465,22 +465,6 @@ paths:
             application/yaml:
               schema:
                 $ref: '#/components/schemas/Response'
-  /lifecycle/statistics:
-    get:
-      tags:
-        - pdp-d-lifecycle
-      summary: Gets Policy Statistics
-      operationId: stats
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
-            application/yaml:
-              schema:
-                $ref: '#/components/schemas/Response'
   /lifecycle/properties:
     get:
       tags:
@@ -3006,52 +2990,6 @@ components:
         lastStart:
           type: integer
           format: int64
-    PdpStatistics:
-      type: object
-      properties:
-        pdpInstanceId:
-          type: string
-        timeStamp:
-          type: integer
-          format: int64
-        generatedId:
-          type: integer
-          format: int64
-        pdpGroupName:
-          type: string
-        pdpSubGroupName:
-          type: string
-        policyExecutedCount:
-          type: integer
-          format: int64
-        policyExecutedSuccessCount:
-          type: integer
-          format: int64
-        policyExecutedFailCount:
-          type: integer
-          format: int64
-        policyDeployCount:
-          type: integer
-          format: int64
-        policyDeploySuccessCount:
-          type: integer
-          format: int64
-        policyDeployFailCount:
-          type: integer
-          format: int64
-        policyUndeployCount:
-          type: integer
-          format: int64
-        policyUndeploySuccessCount:
-          type: integer
-          format: int64
-        policyUndeployFailCount:
-          type: integer
-          format: int64
-        engineStats:
-          type: array
-          items:
-            $ref: '#/components/schemas/PdpEngineWorkerStatistics'
     TopicSource:
       type: object
       properties:
