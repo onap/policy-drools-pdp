@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8ea08235_4373d96c",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2023-08-28T13:12:53Z",
+      "side": 1,
+      "message": "Drools version needs to be upgraded to 8.43.0.Final in policy-parent before this review.",
+      "revId": "37661ecbc902c58649ace03f200b6e708a7bf24a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
