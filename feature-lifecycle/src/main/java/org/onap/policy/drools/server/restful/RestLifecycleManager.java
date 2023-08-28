@@ -375,16 +375,6 @@ public class RestLifecycleManager implements LifecycleApi {
         return Response.status(Response.Status.OK).entity(Collections.emptyList()).build();
     }
 
-    /**
-     * Get current counts.
-     */
-
-    @Override
-    @GET
-    @Path("statistics")
-    public Response stats() {
-        return Response.status(Response.Status.OK).entity(LifecycleFeature.getFsm().statisticsPayload()).build();
-    }
 
     private Response deployUndeployOperation(String policy, boolean deploy) {
         var toscaPolicy = getToscaPolicy(policy);

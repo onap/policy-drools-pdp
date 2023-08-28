@@ -245,7 +245,6 @@ public class RestLifecycleManagerTest {
         resourceLists("policies", 2);
         get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
-        get("statistics", Status.OK.getStatusCode());
 
         /* add tosca compliant operational policy */
 

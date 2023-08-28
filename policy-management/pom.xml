@@ -167,7 +167,6 @@
                                 ControllerConfiguration=org.onap.policy.drools.protocol.configuration.ControllerConfiguration,
                                 DroolsController=org.onap.policy.drools.controller.DroolsController,
                                 JsonProtocolFilter=org.onap.policy.drools.protocol.coders.JsonProtocolFilter,
-                                PdpStatistics=org.onap.policy.models.pdp.concepts.PdpStatistics,
                                 PdpdConfiguration=org.onap.policy.drools.protocol.configuration.PdpdConfiguration,
                                 PolicyController=org.onap.policy.drools.system.PolicyController,
                                 PolicyControllerFeatureApi=org.onap.policy.drools.features.PolicyControllerFeatureApi,
