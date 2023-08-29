@@ -46,6 +46,30 @@
       },
       "revId": "fe600f6935b5260a7f15c3e6f4a3b821605897e2",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2997a500_38300636",
+        "filename": "feature-lifecycle/src/main/java/org/onap/policy/drools/lifecycle/LifecycleFsm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 671,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2023-08-29T11:16:19Z",
+      "side": 0,
+      "message": "Looks like java-17 branch of drools-pdp is not aligned with master",
+      "parentUuid": "345ed4f0_868a6fb2",
+      "range": {
+        "startLine": 671,
+        "startChar": 0,
+        "endLine": 671,
+        "endChar": 50
+      },
+      "revId": "fe600f6935b5260a7f15c3e6f4a3b821605897e2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
