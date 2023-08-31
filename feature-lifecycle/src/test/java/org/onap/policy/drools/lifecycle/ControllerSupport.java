@@ -135,13 +135,9 @@ public class ControllerSupport {
      * Change final marker in static field.
      */
     public static <T> Field unsetFinalStaticAccess(Class<T> clazz, String fieldName)
-            throws NoSuchFieldException, IllegalAccessException {
+            throws NoSuchFieldException {
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
-
-        Field modifiers = Field.class.getDeclaredField("modifiers");
-        modifiers.setAccessible(true);
-        modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
         return field;
     }

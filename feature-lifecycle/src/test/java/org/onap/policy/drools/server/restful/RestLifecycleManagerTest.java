@@ -158,24 +158,20 @@ public class RestLifecycleManagerTest {
      */
     @After
     public void tearDown() {
-        if (fsm != null) {
-            fsm.shutdown();
+        fsm.shutdown();
 
-            NoopTopicFactories.getSourceFactory().destroy();
-            NoopTopicFactories.getSinkFactory().destroy();
+        NoopTopicFactories.getSourceFactory().destroy();
+        NoopTopicFactories.getSinkFactory().destroy();
 
-            HttpClientFactoryInstance.getClientFactory().destroy();
-            HttpServletServerFactoryInstance.getServerFactory().destroy();
+        HttpClientFactoryInstance.getClientFactory().destroy();
+        HttpServletServerFactoryInstance.getServerFactory().destroy();
 
-            PolicyControllerConstants.getFactory().destroy();
-            SystemPersistenceConstants.getManager().setConfigurationDir(null);
-        }
+        PolicyControllerConstants.getFactory().destroy();
+        SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
     }
 
-
-    //TODO The below test needs to be enabled in java-17 branch
-
+    @Test
     public void testMultiPolicyFlow() throws IOException, CoderException {
         /* group assignments */
 

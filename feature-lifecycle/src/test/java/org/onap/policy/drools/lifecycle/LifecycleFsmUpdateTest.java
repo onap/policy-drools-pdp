@@ -163,7 +163,7 @@ public class LifecycleFsmUpdateTest {
             // checkstyle
         }
 
-        //ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", savedFsm);
+        ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", savedFsm);
     }
 
     /**
@@ -177,7 +177,7 @@ public class LifecycleFsmUpdateTest {
                 return new PseudoScheduledExecutorService(new TestTimeMulti());
             }
         };
-        //ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", fsm);
+        ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", fsm);
 
         fsm.setStatusTimerSeconds(15);
         assertTrue(fsm.start());
@@ -206,8 +206,7 @@ public class LifecycleFsmUpdateTest {
         unvalPolicy = getPolicyFromFile(EXAMPLE_OTHER_UNVAL_POLICY_JSON, EXAMPLE_OTHER_UNVAL_POLICY_NAME);
     }
 
-
-    //TODO This test needs to be enabled in java-17 branch
+    @Test
     public void testUpdate() throws CoderException {
         verifyInitState();
 
@@ -365,7 +364,7 @@ public class LifecycleFsmUpdateTest {
     protected void deltaUpdate(List<ToscaPolicy> deploy, List<ToscaPolicy> undeploy, List<ToscaPolicy> active,
             long deployCount, long deploySuccess, long deployFail, long undeployCount, long undeploySuccess,
             long undeployFail) throws CoderException {
-        //assertTrue(fsm.update(getPdpUpdate(deploy, undeploy)));
+        assertTrue(fsm.update(getPdpUpdate(deploy, undeploy)));
         verifyDeploy(active, deployCount, deploySuccess, deployFail, undeployCount, undeploySuccess, undeployFail);
     }
 
