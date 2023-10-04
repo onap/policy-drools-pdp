@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Query state. In this state, the host waits for the other hosts to identify
  * themselves. Eventually, a leader should come forth. If not, it will transition to the
- * active or inactive state, depending on whether or not it has an assignment in the
+ * active or inactive state, depending on whether it has an assignment in the
  * current bucket assignments. The other possibility is that it may <i>become</i> the
  * leader, in which case it will also transition to the active state.
  */
@@ -43,7 +44,7 @@ public class QueryState extends ProcessingState {
     /**
      * Hosts that have sent an "Identification" message. Always includes this host.
      */
-    private TreeSet<String> alive = new TreeSet<>();
+    private final TreeSet<String> alive = new TreeSet<>();
 
     /**
      * {@code True} if we saw our own Identification method, {@code false} otherwise.

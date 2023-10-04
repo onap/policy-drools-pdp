@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.drools.core.ClassObjectFilter;
@@ -117,7 +119,10 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * original Drools Model/Rules classloader hash.
+     * -- GETTER --
+     *  Get model class loader hash.
      */
+    @Getter
     protected int modelClassLoaderHash;
 
     /**
@@ -272,7 +277,7 @@ public class MavenDroolsController implements DroolsController {
                 String potentialCodedClass = coderFilter.getCodedClass();
                 JsonProtocolFilter protocolFilter = coderFilter.getFilter();
 
-                if (!isClass(potentialCodedClass)) {
+                if (isNotAClass(potentialCodedClass)) {
                     throw makeRetrieveEx(potentialCodedClass);
                 } else {
                     logClassFetched(potentialCodedClass);
@@ -306,7 +311,7 @@ public class MavenDroolsController implements DroolsController {
                 && !customGsonCoder.getClassContainer().isEmpty()) {
 
             String customGsonCoderClass = customGsonCoder.getClassContainer();
-            if (!isClass(customGsonCoderClass)) {
+            if (isNotAClass(customGsonCoderClass)) {
                 throw makeRetrieveEx(customGsonCoderClass);
             } else {
                 logClassFetched(customGsonCoderClass);
@@ -371,7 +376,7 @@ public class MavenDroolsController implements DroolsController {
 
     @Override
     public boolean ownsCoder(Class<?> coderClass, int modelHash) {
-        if (!isClass(coderClass.getName())) {
+        if (isNotAClass(coderClass.getName())) {
             logger.error("{}{} cannot be retrieved. ", this, coderClass.getName());
             return false;
         }
@@ -624,15 +629,6 @@ public class MavenDroolsController implements DroolsController {
         return this.policyContainer.getGroupId();
     }
 
-    /**
-     * Get model class loader hash.
-     *
-     * @return the modelClassLoaderHash
-     */
-    public int getModelClassLoaderHash() {
-        return modelClassLoaderHash;
-    }
-
     @Override
     public synchronized boolean lock() {
         logger.info("LOCK: {}",  this);
@@ -706,9 +702,7 @@ public class MavenDroolsController implements DroolsController {
      * @return the attached Policy Container
      */
     protected List<PolicySession> getSessions() {
-        List<PolicySession> sessions = new ArrayList<>();
-        sessions.addAll(this.policyContainer.getPolicySessions());
-        return sessions;
+        return new ArrayList<>(this.policyContainer.getPolicySessions());
     }
 
     /**
@@ -1007,7 +1001,7 @@ public class MavenDroolsController implements DroolsController {
         return new PolicyContainer(groupId, artifactId, version);
     }
 
-    protected boolean isClass(String className) {
-        return ReflectionUtil.isClass(this.policyContainer.getClassLoader(), className);
+    protected boolean isNotAClass(String className) {
+        return !ReflectionUtil.isClass(this.policyContainer.getClassLoader(), className);
     }
 }

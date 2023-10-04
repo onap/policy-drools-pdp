@@ -21,6 +21,8 @@
 
 source ${POLICY_HOME}/etc/profile.d/env.sh
 
+export MVN_PLUGIN_VERSION=3.1.1
+
 ##############################################################################
 # Usage: usage
 ##############################################################################
@@ -400,7 +402,8 @@ function installJar
     fi
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
-    org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file -Dfile=${file}
+    org.apache.maven.plugins:maven-install-plugin:${MVN_PLUGIN_VERSION}:install-file \
+    -Dfile=${file}
 
     return $?
 }
@@ -425,7 +428,7 @@ function installPom
     fi
 
     mvn ${CUSTOM_SETTINGS} ${MVN_PROXY_SETTINGS} \
-        org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+        org.apache.maven.plugins:maven-install-plugin:${MVN_PLUGIN_VERSION}:install-file \
         -Dpackaging=pom \
         -Dfile="${file}" \
         -DpomFile="${file}"

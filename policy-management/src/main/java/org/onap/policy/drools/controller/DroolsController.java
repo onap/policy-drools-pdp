@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +132,7 @@ public interface DroolsController extends Startable, Lockable {
     PolicyContainer getContainer();
 
     /**
-     * Does it owns the coder.
+     * Does it own the coder.
      *
      * @param coderClass the encoder object
      * @param modelHash the hash for the model
@@ -161,7 +162,6 @@ public interface DroolsController extends Startable, Lockable {
      * @param decoderConfigurations - decoder configurations
      * @param encoderConfigurations - encoder configurations
      *
-     * @throws Exception from within drools libraries
      * @throws LinkageError from within drools libraries
      */
     void updateToVersion(String newGroupId, String newArtifactId, String newVersion,

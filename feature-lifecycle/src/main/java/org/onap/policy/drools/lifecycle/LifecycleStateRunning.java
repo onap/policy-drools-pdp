@@ -4,7 +4,7 @@
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,10 +157,10 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             failedPolicies.addAll(results.getRight());
 
             // If there are *new* native controller policies deployed, there may
-            // existing native artifact policies (previous to the update event
+            // be existing native artifact policies (previous to the update event
             // processing) that would need to be reapplied.   This requires
             // going through the list of those native artifact policies that
-            // were neither deployed or undeployed and re-apply them on top
+            // were neither deployed nor undeployed and re-apply them on top
             // of the controllers.
 
             failedPolicies.addAll(reApplyNativeArtifactPolicies(activePoliciesPreUpdate, activePoliciesPreUpdateMap));
@@ -169,7 +169,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             // non-native policies (previous to the update event processing)
             // that will need to be reapplied as the new controllers don't know about them.
             // This requires going through the list of those non-native policies
-            // which neither were undeployed or deployed and re-apply them on top of the
+            // which neither were undeployed nor deployed and re-apply them on top of the
             // new "brained" controllers.
 
             failedPolicies.addAll(reApplyNonNativePolicies(activePoliciesPreUpdateMap));
@@ -228,11 +228,11 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
             return Collections.emptyList();
         }
 
-        // need to re-apply non native policies
+        // need to re-apply non-native policies
 
         // get the non-native policies to be reapplied, this is just the intersection of
-        // the original active set, and the new active set (i.e policies that have not changed,
-        // or in other words, have not been neither deployed or undeployed.
+        // the original active set, and the new active set (i.e. policies that have not changed,
+        // or in other words, have not been deployed or undeployed).
 
         List<ToscaPolicy> preNonNativePolicies = fsm.getNonNativePolicies(preActivePoliciesMap);
         preNonNativePolicies.retainAll(fsm.getNonNativePolicies(activePoliciesByType));
@@ -262,8 +262,8 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
         // need to re-apply native artifact policies
 
         // get the native artifact policies to be reapplied, this is just the intersection of
-        // the original active set, and the new active set (i.e policies that have not changed,
-        // or in other words, have not been neither deployed or undeployed).
+        // the original active set, and the new active set (i.e. policies that have not changed,
+        // or in other words, have not been deployed or undeployed).
 
         List<ToscaPolicy> preNativeArtifactPolicies = fsm.getNativeArtifactPolicies(preActivePoliciesMap);
         preNativeArtifactPolicies.retainAll(fsm.getNativeArtifactPolicies(activePoliciesByType));

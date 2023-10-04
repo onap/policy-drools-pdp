@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,34 +69,34 @@ public class LifecycleFsmUpdateTest {
 
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-controller-example.json";
+        "src/test/resources/tosca-policy-native-controller-example.json";
 
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_NAME = "example.artifact";
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-artifact-example.json";
+        "src/test/resources/tosca-policy-native-artifact-example.json";
 
     private static final String EXAMPLE_OTHER_UNVAL_POLICY_NAME = "other-unvalidated";
     private static final String EXAMPLE_OTHER_UNVAL_POLICY_JSON =
-            "src/test/resources/tosca-policy-other-unvalidated.json";
+        "src/test/resources/tosca-policy-other-unvalidated.json";
 
     private static final String EXAMPLE_OTHER_VAL_POLICY_NAME = "other-validated";
     private static final String EXAMPLE_OTHER_VAL_POLICY_JSON = "src/test/resources/tosca-policy-other-validated.json";
 
     private static final String FOO_NATIVE_CONTROLLER_POLICY_NAME = "foo.controller";
     private static final String FOO_NATIVE_CONTROLLER_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-controller-foo.json";
+        "src/test/resources/tosca-policy-native-controller-foo.json";
 
     private static final String FOO_NATIVE_ARTIFACT_POLICY_NAME = "foo.artifact";
     private static final String FOO_NATIVE_ARTIFACT_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-artifact-foo.json";
+        "src/test/resources/tosca-policy-native-artifact-foo.json";
 
     private static final String VCPE_OP_POLICY_NAME = "operational.restart";
     private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
-            "policies/vCPE.policy.operational.input.tosca.json";
+        "policies/vCPE.policy.operational.input.tosca.json";
 
     private static final String VFW_OP_POLICY_NAME = "operational.modifyconfig";
     private static final String VFW_OPERATIONAL_DROOLS_POLICY_JSON =
-            "policies/vFirewall.policy.operational.input.tosca.json";
+        "policies/vFirewall.policy.operational.input.tosca.json";
 
     private static final StandardCoder coder = new StandardCoder();
 
@@ -156,9 +156,9 @@ public class LifecycleFsmUpdateTest {
         NoopTopicFactories.getSinkFactory().destroy();
         try {
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
-                    "lifecycle-controller.properties.bak"));
+                "lifecycle-controller.properties.bak"));
             Files.deleteIfExists(Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
-                    "foo-controller.properties.bak"));
+                "foo-controller.properties.bak"));
         } catch (IOException ignored) { // NOSONAR
             // checkstyle
         }
@@ -198,7 +198,7 @@ public class LifecycleFsmUpdateTest {
         opPolicy = getExamplesPolicy(VFW_OPERATIONAL_DROOLS_POLICY_JSON, VFW_OP_POLICY_NAME);
         op2Policy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, VCPE_OP_POLICY_NAME);
         controllerPolicy =
-                getPolicyFromFile(EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON, EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME);
+            getPolicyFromFile(EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON, EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME);
         controller2Policy = getPolicyFromFile(FOO_NATIVE_CONTROLLER_POLICY_JSON, FOO_NATIVE_CONTROLLER_POLICY_NAME);
         artifactPolicy = getPolicyFromFile(EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON, EXAMPLE_NATIVE_ARTIFACT_POLICY_NAME);
         artifact2Policy = getExamplesPolicy(FOO_NATIVE_ARTIFACT_POLICY_JSON, FOO_NATIVE_ARTIFACT_POLICY_NAME);
@@ -212,16 +212,16 @@ public class LifecycleFsmUpdateTest {
 
         // native controller policy - deploy
         // Delta: +controllerPolicy
-        deltaUpdate(List.of(controllerPolicy), List.of(), List.of(controllerPolicy), 1, 1, 0, 0, 0, 0);
+        deltaUpdate(List.of(controllerPolicy), List.of(), List.of(controllerPolicy));
 
         // no policies - undeploy
         // Delta: -controllerPolicy
-        deltaUpdate(List.of(), List.of(controllerPolicy), List.of(), 1, 1, 0, 1, 1, 0);
+        deltaUpdate(List.of(), List.of(controllerPolicy), List.of());
 
         // native controller + artifact policy (out of order) - deploy
         // Delta: +artifactPolicy, +controllerPolicy
-        deltaUpdate(List.of(artifactPolicy, controllerPolicy), List.of(), List.of(artifactPolicy, controllerPolicy), 3,
-                3, 0, 1, 1, 0);
+        deltaUpdate(List.of(artifactPolicy, controllerPolicy), List.of(),
+            List.of(artifactPolicy, controllerPolicy));
 
         // attempt to deploy opPolicy but invalid controller
         // Delta: +opPolicy
@@ -229,29 +229,28 @@ public class LifecycleFsmUpdateTest {
         assertEquals(1, PolicyControllerConstants.getFactory().inventory().size());
         assertFalse(fsm.getActivePolicies().contains(opPolicy));
         verifyExists(false, "lifecycle", List.of(opPolicy));
-        verifyDeploy(List.of(artifactPolicy, controllerPolicy), 4, 3, 1, 1, 1, 0);
+        verifyDeploy(List.of(artifactPolicy, controllerPolicy));
 
         // Delta: +opPolicy
         opPolicy.getProperties().remove("controllerName");
-        deltaUpdate(List.of(opPolicy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy), 5, 4, 1, 1, 1,
-                0);
+        deltaUpdate(List.of(opPolicy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy));
         verifyExists(true, "lifecycle", List.of(opPolicy));
 
         // Delta: -opPolicy
-        deltaUpdate(List.of(), List.of(opPolicy), List.of(controllerPolicy, artifactPolicy), 5, 4, 1, 2, 2, 0);
+        deltaUpdate(List.of(), List.of(opPolicy), List.of(controllerPolicy, artifactPolicy));
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().exists(opPolicy));
 
         // Delta: -artifactPolicy
-        deltaUpdate(List.of(), List.of(artifactPolicy), List.of(controllerPolicy), 5, 4, 1, 3, 3, 0);
+        deltaUpdate(List.of(), List.of(artifactPolicy), List.of(controllerPolicy));
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
 
         // Delta: -controllerPolicy
-        deltaUpdate(List.of(), List.of(controllerPolicy), List.of(), 5, 4, 1, 4, 4, 0);
+        deltaUpdate(List.of(), List.of(controllerPolicy), List.of());
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
 
         // Delta: +controllerPolicy, +artifactPolicy, and +opPolicy
         deltaUpdate(List.of(opPolicy, artifactPolicy, controllerPolicy), List.of(),
-                List.of(opPolicy, artifactPolicy, controllerPolicy), 8, 7, 1, 4, 4, 0);
+            List.of(opPolicy, artifactPolicy, controllerPolicy));
         verifyExists(true, "lifecycle", List.of(opPolicy));
 
         // Delta: -artifactPolicy
@@ -261,8 +260,7 @@ public class LifecycleFsmUpdateTest {
 
         // Delta: +artifactPolicy
         // from deltas, all delta updates should be successfully applied
-        deltaUpdate(List.of(artifactPolicy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy), 9, 8, 1, 5,
-                5, 0);
+        deltaUpdate(List.of(artifactPolicy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy));
         verifyExists(true, "lifecycle", List.of(opPolicy));
 
         // Delta: -controllerPolicy
@@ -272,30 +270,27 @@ public class LifecycleFsmUpdateTest {
 
         // Delta: +controllerPolicy
         // from deltas, all delta updates should be successfully applied
-        deltaUpdate(List.of(controllerPolicy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy), 10, 9, 1,
-                6, 6, 0);
+        deltaUpdate(List.of(controllerPolicy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy));
         verifyExists(true, "lifecycle", List.of(opPolicy));
 
         // Delta: +op2Policy, +controller2Policy
         // from deltas, all delta updates should be successfully applied
         op2Policy.getProperties().put("controllerName", "lifecycle");
         deltaUpdate(List.of(op2Policy, controller2Policy), List.of(),
-                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy), 12, 11, 1, 6, 6, 0);
+            List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy));
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy));
         assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
 
         // same operation with duplicates - idempotent operation
         deltaUpdate(List.of(op2Policy, controller2Policy, opPolicy), List.of(valPolicy, unvalPolicy),
-                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy), 12, 11, 1, 6, 6, 0);
+            List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy));
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy));
         assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
 
         // Delta: +artifact2policy, +valPolicy, +unvalPolicy
         // from deltas, all delta updates should be successfully applied
-        deltaUpdate(
-                List.of(valPolicy, unvalPolicy, artifact2Policy), List.of(), List.of(opPolicy, artifactPolicy,
-                        controllerPolicy, op2Policy, controller2Policy, valPolicy, unvalPolicy, artifact2Policy),
-                15, 14, 1, 6, 6, 0);
+        deltaUpdate(List.of(valPolicy, unvalPolicy, artifact2Policy), List.of(), List.of(opPolicy, artifactPolicy,
+            controllerPolicy, op2Policy, controller2Policy, valPolicy, unvalPolicy, artifact2Policy));
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy, valPolicy, unvalPolicy));
         verifyExists(true, "foo", List.of(valPolicy, unvalPolicy));
         verifyExists(false, "foo", List.of(opPolicy, op2Policy));
@@ -303,8 +298,7 @@ public class LifecycleFsmUpdateTest {
         // Delta: -artifact2Policy, -unvalPolicy
         // from deltas, all delta updates should be successfully applied, and unvalPolicy disabled
         deltaUpdate(List.of(), List.of(artifact2Policy, unvalPolicy),
-                List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy, valPolicy), 15, 14, 1,
-                8, 8, 0);
+            List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy, controller2Policy, valPolicy));
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy, valPolicy));
         verifyExists(false, "lifecycle", List.of(unvalPolicy));
         assertFalse(PolicyControllerConstants.getFactory().get("foo").getDrools().isBrained());
@@ -314,7 +308,7 @@ public class LifecycleFsmUpdateTest {
         // should be re-applied.
         assertTrue(fsm.update(getPdpUpdate(List.of(artifact2Policy), List.of())));
         deltaUpdate(List.of(artifact2Policy), List.of(), List.of(opPolicy, artifactPolicy, controllerPolicy, op2Policy,
-                controller2Policy, valPolicy, artifact2Policy), 16, 15, 1, 8, 8, 0);
+            controller2Policy, valPolicy, artifact2Policy));
         verifyExists(true, "lifecycle", List.of(opPolicy, op2Policy, valPolicy));
         verifyExists(false, "lifecycle", List.of(unvalPolicy));
         verifyExists(true, "foo", List.of(valPolicy));
@@ -329,18 +323,18 @@ public class LifecycleFsmUpdateTest {
         // since -controllerPolicy delta => the existing artifact2Policy, opPolicy, op2Policy become disabled as no
         // policy type is readily available to host them until there is a host.
         verifyActivePoliciesWithDisables(
-                List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy),
-                List.of(opPolicy.getIdentifier(), op2Policy.getIdentifier()));
+            List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy),
+            List.of(opPolicy.getIdentifier(), op2Policy.getIdentifier()));
 
         // Delta: -opPolicy, -op2Policy, -controller2Policy, -valPolicy, -artifact2Policy, -unvalPolicy
-        // from deltas, -opPolicy and -op2Policy undeploys will fail since there is not controller with that
+        // from deltas, -opPolicy and -op2Policy undeploys will fail since there is no controller with that
         // policy type supported
         assertFalse(fsm.update(getPdpUpdate(List.of(),
-                List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy))));
+            List.of(opPolicy, op2Policy, controller2Policy, valPolicy, artifact2Policy, unvalPolicy))));
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("foo"));
         assertEquals(0, PolicyControllerConstants.getFactory().inventory().size());
-        verifyDeploy(List.of(), 17, 16, 1, 16, 14, 2);
+        verifyDeploy(List.of());
 
         fsm.shutdown();
     }
@@ -361,15 +355,13 @@ public class LifecycleFsmUpdateTest {
         return update;
     }
 
-    protected void deltaUpdate(List<ToscaPolicy> deploy, List<ToscaPolicy> undeploy, List<ToscaPolicy> active,
-            long deployCount, long deploySuccess, long deployFail, long undeployCount, long undeploySuccess,
-            long undeployFail) throws CoderException {
+    protected void deltaUpdate(List<ToscaPolicy> deploy, List<ToscaPolicy> undeploy, List<ToscaPolicy> active)
+        throws CoderException {
         assertTrue(fsm.update(getPdpUpdate(deploy, undeploy)));
-        verifyDeploy(active, deployCount, deploySuccess, deployFail, undeployCount, undeploySuccess, undeployFail);
+        verifyDeploy(active);
     }
 
-    private void verifyDeploy(List<ToscaPolicy> active, long deployCount, long deploySuccess, long deployFail,
-            long undeployCount, long undeploySuccess, long undeployFail) throws CoderException {
+    private void verifyDeploy(List<ToscaPolicy> active) throws CoderException {
         verifyActivePolicies(active);
     }
 
@@ -377,7 +369,7 @@ public class LifecycleFsmUpdateTest {
         assertTrue(PolicyControllerConstants.getFactory().get(controller).getDrools().isBrained());
         for (ToscaPolicy policy : policies) {
             assertEquals("ID: " + controller + ":" + policy.getIdentifier(), exists,
-                    PolicyControllerConstants.getFactory().get(controller).getDrools().exists(policy));
+                PolicyControllerConstants.getFactory().get(controller).getDrools().exists(policy));
         }
     }
 
@@ -386,14 +378,14 @@ public class LifecycleFsmUpdateTest {
     }
 
     protected void verifyActivePoliciesWithDisables(List<ToscaPolicy> testPolicies,
-            List<ToscaConceptIdentifier> nativeDisables) throws CoderException {
+                                                    List<ToscaConceptIdentifier> nativeDisables) throws CoderException {
         // verify that each policy is tracked in the active lists
 
         for (ToscaPolicy policy : testPolicies) {
             assertTrue(policy.getIdentifier().toString(), fsm.getActivePolicies().contains(policy));
             if (!nativeDisables.contains(policy.getIdentifier())) {
                 assertTrue(policy.getIdentifier().toString(),
-                        fsm.getPolicyTypesMap().containsKey(policy.getTypeIdentifier()));
+                    fsm.getPolicyTypesMap().containsKey(policy.getTypeIdentifier()));
             }
         }
         assertEquals(testPolicies.size(), fsm.getActivePolicies().size());
@@ -407,7 +399,7 @@ public class LifecycleFsmUpdateTest {
 
         // verify that a controller exists for each controller policy
         assertEquals(fsm.getNativeControllerPolicies(testPoliciesMap).size(),
-                PolicyControllerConstants.getFactory().inventory().size());
+            PolicyControllerConstants.getFactory().inventory().size());
 
         // verify that a brained controller with same application coordinates exist for
         // each native artifact policy
@@ -428,21 +420,21 @@ public class LifecycleFsmUpdateTest {
             String controllerName = artifactPolicy.getProperties().getController().getName();
             assertTrue(PolicyControllerConstants.getFactory().get(controllerName).getDrools().isBrained());
             assertEquals(artifactPolicy.getProperties().getRulesArtifact().getGroupId(),
-                    PolicyControllerConstants.getFactory().get(controllerName).getDrools().getGroupId());
+                PolicyControllerConstants.getFactory().get(controllerName).getDrools().getGroupId());
             assertEquals(artifactPolicy.getProperties().getRulesArtifact().getArtifactId(),
-                    PolicyControllerConstants.getFactory().get(controllerName).getDrools().getArtifactId());
+                PolicyControllerConstants.getFactory().get(controllerName).getDrools().getArtifactId());
             assertEquals(artifactPolicy.getProperties().getRulesArtifact().getVersion(),
-                    PolicyControllerConstants.getFactory().get(controllerName).getDrools().getVersion());
+                PolicyControllerConstants.getFactory().get(controllerName).getDrools().getVersion());
         }
     }
 
     protected void verifyNonNativePolicy(ToscaPolicy testPolicy, List<ToscaConceptIdentifier> nativeDisables)
-            throws CoderException {
+        throws CoderException {
         List<ToscaPolicy> nativeArtifactPolicies =
-                fsm.getNativeArtifactPolicies(fsm.groupPoliciesByPolicyType(fsm.getActivePolicies()));
+            fsm.getNativeArtifactPolicies(fsm.groupPoliciesByPolicyType(fsm.getActivePolicies()));
 
         List<ToscaPolicy> nativeControllerPolicies =
-                fsm.getNativeControllerPolicies(fsm.groupPoliciesByPolicyType(fsm.getActivePolicies()));
+            fsm.getNativeControllerPolicies(fsm.groupPoliciesByPolicyType(fsm.getActivePolicies()));
 
         String controllerName = (String) testPolicy.getProperties().get("controllerName");
 
@@ -454,21 +446,21 @@ public class LifecycleFsmUpdateTest {
 
             for (ToscaPolicy nativePolicy : nativeArtifactPolicies) {
                 NativeArtifactPolicy artifactPolicy =
-                        fsm.getDomainMaker().convertTo(nativePolicy, NativeArtifactPolicy.class);
+                    fsm.getDomainMaker().convertTo(nativePolicy, NativeArtifactPolicy.class);
                 String artifactControllerName = artifactPolicy.getProperties().getController().getName();
 
                 // brained controller check
                 assertTrue(artifactControllerName + ":" + testPolicy.getIdentifier(),
-                        PolicyControllerConstants.getFactory().get(artifactControllerName).getDrools().isBrained());
+                    PolicyControllerConstants.getFactory().get(artifactControllerName).getDrools().isBrained());
 
                 // non native tosca policy as a fact in drools
                 if (PolicyControllerConstants.getFactory().get(artifactControllerName).getPolicyTypes()
-                        .contains(testPolicy.getTypeIdentifier())) {
+                    .contains(testPolicy.getTypeIdentifier())) {
                     assertTrue(artifactControllerName + ":" + testPolicy.getIdentifier(), PolicyControllerConstants
-                            .getFactory().get(artifactControllerName).getDrools().exists(testPolicy));
+                        .getFactory().get(artifactControllerName).getDrools().exists(testPolicy));
                 } else {
                     assertFalse(artifactControllerName + ":" + testPolicy.getIdentifier(), PolicyControllerConstants
-                            .getFactory().get(artifactControllerName).getDrools().exists(testPolicy));
+                        .getFactory().get(artifactControllerName).getDrools().exists(testPolicy));
                 }
 
                 // there should always be a controller policy for each artifact policy
@@ -493,13 +485,13 @@ public class LifecycleFsmUpdateTest {
         // verify the policy is present as a fact if there is matching artifact policy
 
         List<NativeArtifactPolicy> candidateNativeArtifactPolicies =
-                getNativeArtifactPolicies(nativeArtifactPolicies, controllerName);
+            getNativeArtifactPolicies(nativeArtifactPolicies, controllerName);
 
         if (candidateNativeArtifactPolicies.size() == 1) {
             assertTrue(controllerName + ":" + testPolicy.getIdentifier(),
-                    PolicyControllerConstants.getFactory().get(controllerName).getDrools().isBrained());
+                PolicyControllerConstants.getFactory().get(controllerName).getDrools().isBrained());
             assertTrue(controllerName + ":" + testPolicy.getIdentifier(),
-                    PolicyControllerConstants.getFactory().get(controllerName).getDrools().exists(testPolicy));
+                PolicyControllerConstants.getFactory().get(controllerName).getDrools().exists(testPolicy));
 
             // verify that the other brained controllers don't have this non-native policy
 
@@ -522,11 +514,11 @@ public class LifecycleFsmUpdateTest {
         // at this point the only valid possibility is that there is no native artifact policies
 
         assertTrue("There is more than 1 native artifact policy for " + controllerName,
-                candidateNativeArtifactPolicies.isEmpty());
+            candidateNativeArtifactPolicies.isEmpty());
     }
 
     protected List<NativeArtifactPolicy> getNativeArtifactPoliciesBut(List<ToscaPolicy> nativePolicies,
-            String controllerName) {
+                                                                      String controllerName) {
         return nativePolicies.stream().map(nativePolicy -> {
             try {
                 return fsm.getDomainMaker().convertTo(nativePolicy, NativeArtifactPolicy.class);
@@ -534,11 +526,11 @@ public class LifecycleFsmUpdateTest {
                 throw new RuntimeException(nativePolicy.getIdentifier().toString(), ex);
             }
         }).filter(nativeArtifactPolicy -> !controllerName
-                .equals(nativeArtifactPolicy.getProperties().getController().getName())).collect(Collectors.toList());
+            .equals(nativeArtifactPolicy.getProperties().getController().getName())).collect(Collectors.toList());
     }
 
     protected List<NativeArtifactPolicy> getNativeArtifactPolicies(List<ToscaPolicy> nativePolicies,
-            String controllerName) {
+                                                                   String controllerName) {
         return nativePolicies.stream().map(nativePolicy -> {
             try {
                 return fsm.getDomainMaker().convertTo(nativePolicy, NativeArtifactPolicy.class);
@@ -546,11 +538,11 @@ public class LifecycleFsmUpdateTest {
                 throw new RuntimeException(nativePolicy.getIdentifier().toString(), ex);
             }
         }).filter(nativeArtifactPolicy -> controllerName
-                .equals(nativeArtifactPolicy.getProperties().getController().getName())).collect(Collectors.toList());
+            .equals(nativeArtifactPolicy.getProperties().getController().getName())).collect(Collectors.toList());
     }
 
     protected List<ControllerPolicy> getNativeControllerPolicies(List<ToscaPolicy> nativePolicies,
-            String controllerName) {
+                                                                 String controllerName) {
         return nativePolicies.stream().map(controllerPolicy -> {
             try {
                 return fsm.getDomainMaker().convertTo(controllerPolicy, ControllerPolicy.class);

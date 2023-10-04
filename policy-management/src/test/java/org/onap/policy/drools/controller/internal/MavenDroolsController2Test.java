@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +37,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -191,14 +191,14 @@ public class MavenDroolsController2Test {
      */
     @Before
     public void setUp() {
-        when(droolsProviders.getList()).thenReturn(Arrays.asList(prov1, prov2));
+        when(droolsProviders.getList()).thenReturn(List.of(prov1, prov2));
 
         when(coderMgr.isDecodingSupported(GROUP, ARTIFACT, TOPIC)).thenReturn(true);
         when(coderMgr.decode(GROUP, ARTIFACT, TOPIC, EVENT_TEXT)).thenReturn(EVENT);
 
         when(kieSess.getFactCount()).thenReturn(FACT_COUNT);
-        when(kieSess.getFactHandles()).thenReturn(Arrays.asList(fact1, fact2, factex, fact3));
-        when(kieSess.getFactHandles(any())).thenReturn(Arrays.asList(fact1, fact3));
+        when(kieSess.getFactHandles()).thenReturn(List.of(fact1, fact2, factex, fact3));
+        when(kieSess.getFactHandles(any())).thenReturn(List.of(fact1, fact3));
         when(kieSess.getKieBase()).thenReturn(kieBase);
         when(kieSess.getQueryResults(QUERY, PARM1, PARM2)).thenReturn(queryResults);
 
@@ -209,15 +209,15 @@ public class MavenDroolsController2Test {
         when(kieSess.getObject(fact3)).thenReturn(FACT3_OBJECT);
         when(kieSess.getObject(factex)).thenThrow(RUNTIME_EX);
 
-        when(kieBase.getKiePackages()).thenReturn(Arrays.asList(pkg1, pkg2));
+        when(kieBase.getKiePackages()).thenReturn(List.of(pkg1, pkg2));
 
-        when(pkg1.getQueries()).thenReturn(Arrays.asList(query3));
-        when(pkg2.getQueries()).thenReturn(Arrays.asList(query2, query1));
+        when(pkg1.getQueries()).thenReturn(List.of(query3));
+        when(pkg2.getQueries()).thenReturn(List.of(query2, query1));
 
         when(query1.getName()).thenReturn(QUERY);
         when(query2.getName()).thenReturn(QUERY2);
 
-        when(queryResults.iterator()).thenReturn(Arrays.asList(row1, row2).iterator());
+        when(queryResults.iterator()).thenReturn(List.of(row1, row2).iterator());
 
         when(row1.get(ENTITY)).thenReturn(FACT1_OBJECT);
         when(row2.get(ENTITY)).thenReturn(FACT3_OBJECT);
@@ -235,7 +235,7 @@ public class MavenDroolsController2Test {
         when(sess2.getFullName()).thenReturn(FULL_SESSION2);
 
         when(container.getClassLoader()).thenReturn(CLASS_LOADER);
-        when(container.getPolicySessions()).thenReturn(Arrays.asList(sess1, sess2));
+        when(container.getPolicySessions()).thenReturn(List.of(sess1, sess2));
         when(container.insertAll(EVENT)).thenReturn(true);
 
         when(decoder1.getTopic()).thenReturn(TOPIC);
@@ -244,8 +244,8 @@ public class MavenDroolsController2Test {
         when(encoder1.getTopic()).thenReturn(TOPIC);
         when(encoder2.getTopic()).thenReturn(TOPIC2);
 
-        decoders = Arrays.asList(decoder1, decoder2);
-        encoders = Arrays.asList(encoder1, encoder2);
+        decoders = List.of(decoder1, decoder2);
+        encoders = List.of(encoder1, encoder2);
 
         when(decoder1.getCustomGsonCoder()).thenReturn(gson1);
         when(encoder2.getCustomGsonCoder()).thenReturn(gson2);
@@ -259,11 +259,11 @@ public class MavenDroolsController2Test {
         when(filter2.getCodedClass()).thenReturn(Integer.class.getName());
         when(filter2.getFilter()).thenReturn(jsonFilter2);
 
-        when(decoder1.getCoderFilters()).thenReturn(Arrays.asList(filter1a, filter1b));
+        when(decoder1.getCoderFilters()).thenReturn(List.of(filter1a, filter1b));
         when(decoder2.getCoderFilters()).thenReturn(Collections.emptyList());
 
         when(encoder1.getCoderFilters()).thenReturn(Collections.emptyList());
-        when(encoder2.getCoderFilters()).thenReturn(Arrays.asList(filter2));
+        when(encoder2.getCoderFilters()).thenReturn(List.of(filter2));
 
         when(sink.getTopic()).thenReturn(TOPIC);
         when(sink.send(EVENT_TEXT)).thenReturn(true);
@@ -470,8 +470,8 @@ public class MavenDroolsController2Test {
         // unknown class
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, null, null) {
             @Override
-            protected boolean isClass(String className) {
-                return false;
+            protected boolean isNotAClass(String className) {
+                return true;
             }
         };
         assertFalse(drools.ownsCoder(String.class, hc));
@@ -880,7 +880,7 @@ public class MavenDroolsController2Test {
         assertEquals(GROUP, drools.getGroupId());
         assertEquals(CLASS_LOADER_HASHCODE, drools.getModelClassLoaderHash());
         assertSame(container, drools.getContainer());
-        assertEquals(Arrays.asList(sess1, sess2), drools.getSessions());
+        assertEquals(List.of(sess1, sess2), drools.getSessions());
 
         // test junit methods - need a controller with fewer overrides
         drools = new MavenDroolsController(GROUP, ARTIFACT, VERSION, null, null) {
@@ -929,7 +929,7 @@ public class MavenDroolsController2Test {
     @Test
     public void testGetBaseDomainNames() {
         KieContainer kiecont = mock(KieContainer.class);
-        when(kiecont.getKieBaseNames()).thenReturn(Arrays.asList("kieA", "kieB"));
+        when(kiecont.getKieBaseNames()).thenReturn(List.of("kieA", "kieB"));
         when(container.getKieContainer()).thenReturn(kiecont);
 
         assertEquals("[kieA, kieB]", drools.getBaseDomainNames().toString());

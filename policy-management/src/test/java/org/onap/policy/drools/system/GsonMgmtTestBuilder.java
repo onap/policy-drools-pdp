@@ -3,6 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +51,7 @@ public class GsonMgmtTestBuilder extends GsonTestUtilsBuilder {
                 Class<? super T> clazz = type.getRawType();
 
                 if (TopicSource.class.isAssignableFrom(clazz)) {
-                    return new GsonSerializer<T>() {
+                    return new GsonSerializer<>() {
                         @Override
                         public void write(JsonWriter out, T value) throws IOException {
                             TopicSource obj = (TopicSource) value;
@@ -80,7 +81,7 @@ public class GsonMgmtTestBuilder extends GsonTestUtilsBuilder {
                 Class<? super T> clazz = type.getRawType();
 
                 if (TopicSink.class.isAssignableFrom(clazz)) {
-                    return new GsonSerializer<T>() {
+                    return new GsonSerializer<>() {
                         @Override
                         public void write(JsonWriter out, T value) throws IOException {
                             TopicSink obj = (TopicSink) value;
@@ -110,13 +111,13 @@ public class GsonMgmtTestBuilder extends GsonTestUtilsBuilder {
                 Class<? super T> clazz = type.getRawType();
 
                 if (DroolsController.class.isAssignableFrom(clazz)) {
-                    return new GsonSerializer<T>() {
+                    return new GsonSerializer<>() {
                         @Override
                         public void write(JsonWriter out, T value) throws IOException {
                             DroolsController obj = (DroolsController) value;
                             out.beginObject().name("group").value(obj.getGroupId()).name("artifact")
-                                            .value(obj.getArtifactId()).name("version").value(obj.getVersion())
-                                            .endObject();
+                                .value(obj.getArtifactId()).name("version").value(obj.getVersion())
+                                .endObject();
                         }
                     };
                 }
