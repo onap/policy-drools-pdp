@@ -271,6 +271,12 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             } else {
                 return PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + ".";
             }
+        } else if (commInfra == CommInfrastructure.KAFKA) {
+            if (isSource) {
+                return PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS + ".";
+            } else {
+                return PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + ".";
+            }
         } else {
             throw new IllegalArgumentException("Invalid Communication Infrastructure: " + commInfra);
         }

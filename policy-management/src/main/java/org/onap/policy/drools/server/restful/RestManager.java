@@ -1414,6 +1414,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
             case NOOP:
                 sources.addAll(TopicEndpointManager.getManager().getNoopTopicSources());
                 break;
+            case KAFKA:
+                sources.addAll(TopicEndpointManager.getManager().getKafkaTopicSources());
+                break;
             default:
                 status = Status.BAD_REQUEST;
                 logger.debug("Invalid communication mechanism");
@@ -1448,6 +1451,9 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
                 break;
             case NOOP:
                 sinks.addAll(TopicEndpointManager.getManager().getNoopTopicSinks());
+                break;
+            case KAFKA:
+                sinks.addAll(TopicEndpointManager.getManager().getKafkaTopicSinks());
                 break;
             default:
                 status = Status.BAD_REQUEST;
