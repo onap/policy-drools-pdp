@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,5 +36,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class ControllerSinkTopic extends ControllerTopic implements Serializable {
+    @Serial
     private static final long serialVersionUID = 8770353732981476267L;
+
+    @Override
+    public void setTopicName(String topicName) {
+        this.topicName = topicName.toLowerCase();
+    }
+
+    @Override
+    public String getTopicName() {
+        return topicName.toLowerCase();
+    }
 }

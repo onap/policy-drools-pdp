@@ -1,7 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2022 Nordix Foundation.
+ * Modifications Copyright (C) 2022, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,34 +69,34 @@ public class RestLifecycleManagerTest {
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-controller-example.json";
+        "src/test/resources/tosca-policy-native-controller-example.json";
 
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_NAME = "example.artifact";
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-artifact-example.json";
+        "src/test/resources/tosca-policy-native-artifact-example.json";
 
     private static final String EXAMPLE_OTHER_UNVAL_POLICY_NAME = "other-unvalidated";
     private static final String EXAMPLE_OTHER_UNVAL_POLICY_JSON =
-            "src/test/resources/tosca-policy-other-unvalidated.json";
+        "src/test/resources/tosca-policy-other-unvalidated.json";
 
     private static final String EXAMPLE_OTHER_VAL_POLICY_NAME = "other-validated";
     private static final String EXAMPLE_OTHER_VAL_POLICY_JSON =
-            "src/test/resources/tosca-policy-other-validated.json";
+        "src/test/resources/tosca-policy-other-validated.json";
 
     private static final String EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME = "other-validation-error";
     private static final String EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON =
-            "src/test/resources/tosca-policy-other-validation-error.json";
+        "src/test/resources/tosca-policy-other-validation-error.json";
 
     private static final String OP_POLICY_NAME_VCPE = "operational.restart";
     private static final String VCPE_OPERATIONAL_DROOLS_POLICY_JSON =
-            "policies/vCPE.policy.operational.input.tosca.json";
+        "policies/vCPE.policy.operational.input.tosca.json";
 
     public static final String PROM_DEPLOY_REQUESTS_TOTAL_UNDEPLOY_ACCEPTED =
-            "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"undeploy\",status=\"SUCCESS\",}";
+        "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"undeploy\",status=\"SUCCESS\",}";
     public static final String PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_ACCEPTED =
-            "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"SUCCESS\",}";
+        "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"SUCCESS\",}";
     public static final String PDPD_DEPLOY_REQUESTS_TOTAL_DEPLOY_DECLINED =
-            "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"FAIL\",}";
+        "pdpd_policy_deployments_total{state=\"ACTIVE\",operation=\"deploy\",status=\"FAIL\",}";
 
     private static final StandardCoder coder = new StandardCoder();
     private static final ControllerSupport controllerSupport = new ControllerSupport("lifecycle");
@@ -108,7 +108,7 @@ public class RestLifecycleManagerTest {
      * Set up.
      */
     @Before
-     public void setUp() throws Exception {
+    public void setUp() throws Exception {
 
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         fsm = newFsmInstance();
@@ -132,10 +132,10 @@ public class RestLifecycleManagerTest {
 
         HttpServletServer server =
             HttpServletServerFactoryInstance.getServerFactory().build("lifecycle", "localhost", 8765, "/",
-                                        true, true);
+                true, true);
         server.setPrometheus("/policy/pdp/engine/lifecycle/metrics");
         server.setSerializationProvider(
-                        String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
+            String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
         server.addServletClass("/*", RestLifecycleManager.class.getName());
         server.waitedStart(5000L);
 
@@ -145,9 +145,11 @@ public class RestLifecycleManagerTest {
 
         Properties noopTopicProperties = new Properties();
         noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS,
-                "DCAE_TOPIC,APPC-CL,APPC-LCM-WRITE,SDNR-CL-RSP");
+            String.join(",", TestConstants.DCAE_TOPIC, TestConstants.APPC_CL_TOPIC,
+                TestConstants.APPC_LCM_WRITE_TOPIC, TestConstants.SDNR_CL_RSP_TOPIC));
         noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS,
-                "APPC-CL,APPC-LCM-READ,POLICY-CL-MGT,SDNR-CL,DCAE_CL_RSP");
+            String.join(",", TestConstants.APPC_CL_TOPIC, TestConstants.APPC_LCM_READ_TOPIC,
+                TestConstants.POLICY_CL_MGT_TOPIC, TestConstants.SDNR_CL_TOPIC, TestConstants.DCAE_CL_RSP_TOPIC));
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
         client = HttpClientFactoryInstance.getClientFactory().get("lifecycle");
@@ -204,7 +206,7 @@ public class RestLifecycleManagerTest {
 
         booleanPut("state/ACTIVE", "", Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(PdpState.ACTIVE,
-                HttpClient.getBody(get("state", Status.OK.getStatusCode()), PdpState.class));
+            HttpClient.getBody(get("state", Status.OK.getStatusCode()), PdpState.class));
 
         /* add native controller policy */
 
@@ -248,7 +250,7 @@ public class RestLifecycleManagerTest {
 
         /* add tosca compliant operational policy */
 
-        ToscaPolicy opPolicy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
+        ToscaPolicy opPolicy = getExamplesPolicy();
         opPolicy.getProperties().put("controllerName", "lifecycle");
         if (StringUtils.isBlank(opPolicy.getName())) {
             opPolicy.setName("" + opPolicy.getMetadata().get("policy-id"));
@@ -266,13 +268,13 @@ public class RestLifecycleManagerTest {
         /* try to add invalid tosca policy "other-validation-error" of policy type "typeA" */
 
         ToscaPolicy toscaPolicyValError =
-                getPolicyFromFile(EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON, EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME);
+            getPolicyFromFile(EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON, EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME);
         assertThat(
-                listPost("policies/operations/validation", toString(toscaPolicyValError),
-                        Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
+            listPost("policies/operations/validation", toString(toscaPolicyValError),
+                Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
 
         booleanPost("policies", toString(toscaPolicyValError),
-                Status.NOT_ACCEPTABLE.getStatusCode(), Boolean.FALSE);
+            Status.NOT_ACCEPTABLE.getStatusCode(), Boolean.FALSE);
 
         /* individual deploy/undeploy operations */
 
@@ -289,7 +291,7 @@ public class RestLifecycleManagerTest {
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
 
         booleanPost(
-                "policies/operations/undeployment", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
+            "policies/operations/undeployment", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(0,
             PolicyControllerConstants
                 .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
@@ -337,7 +339,7 @@ public class RestLifecycleManagerTest {
         opPolicy.getMetadata().remove("policy-id");
         assertThat(
             listPost("policies/operations/validation", toString(opPolicy),
-                    Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
+                Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
 
         metrics();
     }
@@ -345,7 +347,7 @@ public class RestLifecycleManagerTest {
     private void testNotNativePolicy(ToscaPolicy toscaPolicy) throws CoderException {
         assertThat(
             listPost("policies/operations/validation", toString(toscaPolicy),
-                    Status.OK.getStatusCode())).isEmpty();
+                Status.OK.getStatusCode())).isEmpty();
 
         booleanPost("policies", toString(toscaPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
@@ -360,7 +362,7 @@ public class RestLifecycleManagerTest {
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
 
         booleanDelete("policies/" + toscaPolicy.getName() + "/" + toscaPolicy.getVersion(),
-                Status.OK.getStatusCode(), Boolean.TRUE);
+            Status.OK.getStatusCode(), Boolean.TRUE);
         assertEquals(0,
             PolicyControllerConstants
                 .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
@@ -475,9 +477,11 @@ public class RestLifecycleManagerTest {
         return coder.encode(policy);
     }
 
-    private ToscaPolicy getExamplesPolicy(String resourcePath, String policyName) throws CoderException {
-        String policyJson = ResourceUtils.getResourceAsString(resourcePath);
+    private ToscaPolicy getExamplesPolicy() throws CoderException {
+        String policyJson = ResourceUtils.getResourceAsString(
+            RestLifecycleManagerTest.VCPE_OPERATIONAL_DROOLS_POLICY_JSON);
         ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
-        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
+        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(
+            RestLifecycleManagerTest.OP_POLICY_NAME_VCPE);
     }
 }

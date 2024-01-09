@@ -3,6 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,9 +70,9 @@ public class RestManagerTest {
     private static final String TELEMETRY_PASSWORD = "y";
     private static final String FOO_CONTROLLER = "foo";
 
-    private static final String UEB_TOPIC = "UEB-TOPIC-TEST";
-    private static final String DMAAP_TOPIC = "DMAAP-TOPIC-TEST";
-    private static final String NOOP_TOPIC = "NOOP_TOPIC";
+    private static final String UEB_TOPIC = "ueb-topic-test";
+    private static final String DMAAP_TOPIC = "dmaap-topic-test";
+    private static final String NOOP_TOPIC = "noop_topic";
 
     private static final String UEB_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "."
             + UEB_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;

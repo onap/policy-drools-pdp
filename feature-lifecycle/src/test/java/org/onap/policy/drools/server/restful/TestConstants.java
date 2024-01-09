@@ -1,7 +1,6 @@
-/*
+/*-
  * ============LICENSE_START=======================================================
- * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2024 Nordix Foundation.
+ * Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +13,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * SPDX-License-Identifier: Apache-2.0
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.policy.drools.domain.models.controller;
+package org.onap.policy.drools.server.restful;
 
-import java.io.Serial;
-import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
-import org.onap.policy.drools.domain.models.DroolsPolicy;
+public class TestConstants {
 
-/**
- * Controller Policy model root object.
- */
-
-@Data
-@SuperBuilder
-@EqualsAndHashCode(callSuper = true)
-public class ControllerPolicy extends DroolsPolicy implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = -8171337852833516581L;
-
-    private ControllerProperties properties;
+    public static final String DCAE_TOPIC = "dcae_topic";
+    public static final String APPC_CL_TOPIC = "appc-cl";
+    public static final String APPC_LCM_WRITE_TOPIC = "appc-lcm-write";
+    public static final String APPC_LCM_READ_TOPIC = "appc-lcm-read";
+    public static final String SDNR_CL_RSP_TOPIC = "sdnr-cl-rsp";
+    public static final String POLICY_CL_MGT_TOPIC = "policy-cl-mgt";
+    public static final String SDNR_CL_TOPIC = "sdnr-cl";
+    public static final String DCAE_CL_RSP_TOPIC = "dcae_cl_rsp";
 }

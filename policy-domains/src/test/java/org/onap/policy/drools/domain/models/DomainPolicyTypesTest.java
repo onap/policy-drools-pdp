@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020,2022 AT&T Intellectual Property. All rights reserved.
- *  Modifications Copyright (C) 2021 Nordix Foundation.
+ *  Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class DomainPolicyTypesTest {
     @Test
     public void testToscaNativeDroolsPolicy() throws CoderException, IOException {
         String rawNativeDroolsPolicy =
-            getPolicyFromFileString(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
+            getPolicyFromFileString();
         ToscaPolicy toscaPolicy =
             getExamplesPolicy(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
 
@@ -135,7 +135,7 @@ public class DomainPolicyTypesTest {
         assertEquals("1.0.0", controllerPolicy.getTypeVersion());
         assertEquals("example", controllerPolicy.getMetadata().getPolicyId());
         assertEquals("lifecycle", controllerPolicy.getProperties().getControllerName());
-        assertEquals("DCAE_TOPIC", controllerPolicy.getProperties().getSourceTopics().get(0).getTopicName());
+        assertEquals("dcae_topic", controllerPolicy.getProperties().getSourceTopics().get(0).getTopicName());
         assertEquals("org.onap.policy.controlloop.CanonicalOnset",
             controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0).getEventClass());
         assertEquals("[?($.closedLoopEventStatus == 'ONSET')]",
@@ -146,7 +146,7 @@ public class DomainPolicyTypesTest {
         assertEquals("gson",
                 controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
                         .getCustomSerialization().getJsonParser());
-        assertEquals("APPC-CL", controllerPolicy.getProperties().getSinkTopics().get(0).getTopicName());
+        assertEquals("appc-cl", controllerPolicy.getProperties().getSinkTopics().get(0).getTopicName());
         assertEquals("org.onap.policy.appc.Response",
                 controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventClass());
         assertEquals("[?($.CommonHeader && $.Status)]",
@@ -160,18 +160,19 @@ public class DomainPolicyTypesTest {
         assertEquals("value1", controllerPolicy.getProperties().getCustomConfig().get("field1"));
     }
 
-    private String getJsonFromFile(String filePath) throws IOException {
-        return Files.readString(Paths.get(filePath));
+    private String getJsonFromFile() throws IOException {
+        return Files.readString(Paths.get(DomainPolicyTypesTest.EXAMPLE_NATIVE_DROOLS_POLICY_JSON));
     }
 
     private String getJsonFromResource(String resourcePath) {
         return ResourceUtils.getResourceAsString(resourcePath);
     }
 
-    private String getPolicyFromFileString(String filePath, String policyName) throws CoderException, IOException {
-        String policyJson = getJsonFromFile(filePath);
+    private String getPolicyFromFileString() throws CoderException, IOException {
+        String policyJson = getJsonFromFile();
         ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
-        return nonValCoder.encode(serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName));
+        return nonValCoder.encode(serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(
+            DomainPolicyTypesTest.EXAMPLE_NATIVE_DROOLS_POLICY_NAME));
     }
 
     private ToscaPolicy getExamplesPolicy(String resourcePath, String policyName) throws CoderException {

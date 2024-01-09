@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +36,8 @@ import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 
 public class LegacyConfigTest {
 
+    private static final String PDPD_CONFIGURATION_TOPIC = "pdpd-configuration";
+
     /**
      * Set up.
      */
@@ -61,7 +64,7 @@ public class LegacyConfigTest {
         assertTrue(config.start());
         assertTrue(config.isAlive());
 
-        config.onTopicEvent(Topic.CommInfrastructure.NOOP, "PDPD-CONFIGURATION", "{}");
+        config.onTopicEvent(Topic.CommInfrastructure.NOOP, PDPD_CONFIGURATION_TOPIC, "{}");
         assertTrue(config.isAlive());
 
         assertTrue(config.stop());
@@ -75,7 +78,7 @@ public class LegacyConfigTest {
     public void testConstructors() {
         LegacyConfig config = new LegacyConfig();
         assertNotNull(config.getProperties());
-        assertEquals("PDPD-CONFIGURATION", config.getSource().getTopic());
+        assertEquals(PDPD_CONFIGURATION_TOPIC, config.getSource().getTopic());
 
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes/bad-properties-1");
         assertThatIllegalStateException().isThrownBy(LegacyConfig::new);
