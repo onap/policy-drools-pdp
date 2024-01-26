@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
- *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +21,16 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.domain.models.Metadata;
 
-public class ControllerPolicyTest {
+class ControllerPolicyTest {
 
     @Test
-    public void testBuildDomainPolicyController() {
+    void testBuildDomainPolicyController() {
         /* manually create a controller policy */
 
         // @formatter:off

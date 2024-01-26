@@ -3,6 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +57,8 @@ public class PdpdConfiguration {
     @GsonJsonProperty("controllers")
     private List<ControllerConfiguration> controllers = new ArrayList<>();
 
-    @GsonJsonIgnore private Map<String, Object> additionalProperties = new HashMap<>();
+    @GsonJsonIgnore
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * Constructor.
@@ -163,32 +165,30 @@ public class PdpdConfiguration {
     }
 
     protected boolean declaredProperty(String name, Object value) {
-        switch (name) {
-            case "requestID":
+        return switch (name) {
+            case "requestID" -> {
                 callSetRequestId(value);
-                return true;
-            case "entity":
+                yield true;
+            }
+            case "entity" -> {
                 callSetEntity(value);
-                return true;
-            case "controllers":
+                yield true;
+            }
+            case "controllers" -> {
                 callSetControllers(value);
-                return true;
-            default:
-                return false;
-        }
+                yield true;
+            }
+            default -> false;
+        };
     }
 
     protected Object declaredPropertyOrNotFound(String name, Object notFoundValue) {
-        switch (name) {
-            case "requestID":
-                return getRequestId();
-            case "entity":
-                return getEntity();
-            case "controllers":
-                return getControllers();
-            default:
-                return notFoundValue;
-        }
+        return switch (name) {
+            case "requestID" -> getRequestId();
+            case "entity" -> getEntity();
+            case "controllers" -> getControllers();
+            default -> notFoundValue;
+        };
     }
 
     /**
@@ -273,7 +273,7 @@ public class PdpdConfiguration {
                     "property \"controllers\" is of type "
                             + "\"java.util.List<org.onap.policy.drools.protocol.configuration.Controller>\", "
                             + "but got "
-                            + value.getClass().toString());
+                            + value.getClass());
         }
     }
 }

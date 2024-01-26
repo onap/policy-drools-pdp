@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +21,10 @@
 
 package org.onap.policy.drools.system.internal;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -31,10 +33,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.Serial;
 import java.util.concurrent.ScheduledExecutorService;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.onap.policy.drools.core.lock.AlwaysFailLock;
@@ -42,7 +45,7 @@ import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.LockState;
 
-public class LockManagerTest {
+class LockManagerTest {
     private static final String OWNER_KEY = "my key";
     private static final String RESOURCE = "my resource";
     private static final String RESOURCE2 = "my resource #2";
@@ -56,12 +59,14 @@ public class LockManagerTest {
 
     private MyManager mgr;
 
+    private AutoCloseable closeable;
+
     /**
      * Resets fields and creates {@link #mgr}.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
 
         doAnswer(args -> {
             args.getArgument(0, Runnable.class).run();
@@ -71,13 +76,13 @@ public class LockManagerTest {
         mgr = new MyManager();
     }
 
-    @After
-    public void tearDown() {
-
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     @Test
-    public void testIsAlive() {
+    void testIsAlive() {
         assertFalse(mgr.isAlive());
         assertFalse(mgr.isLocked());
 
@@ -90,7 +95,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         assertTrue(mgr.start());
         assertTrue(mgr.isAlive());
 
@@ -103,7 +108,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testStop() {
+    void testStop() {
         assertFalse(mgr.stop());
 
         mgr.start();
@@ -112,7 +117,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         mgr.start();
         mgr.shutdown();
         assertFalse(mgr.isAlive());
@@ -122,7 +127,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testIsLocked() {
+    void testIsLocked() {
         assertFalse(mgr.isLocked());
         assertFalse(mgr.isAlive());
 
@@ -135,7 +140,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testLock() {
+    void testLock() {
         assertTrue(mgr.lock());
         assertTrue(mgr.isLocked());
 
@@ -148,7 +153,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testUnlock() {
+    void testUnlock() {
         assertFalse(mgr.unlock());
 
         mgr.lock();
@@ -157,7 +162,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testCreateLock() {
+    void testCreateLock() {
         Lock lock = mgr.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
         assertTrue(lock.isActive());
         verify(callback).lockAvailable(lock);
@@ -182,12 +187,12 @@ public class LockManagerTest {
      * Tests createLock() when the feature instance has changed.
      */
     @Test
-    public void testCreateLockInstanceChanged() {
+    void testCreateLockInstanceChanged() {
         mgr = spy(mgr);
         when(mgr.hasInstanceChanged()).thenReturn(true);
 
         Lock lock = mgr.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        assertTrue(lock instanceof AlwaysFailLock);
+        assertInstanceOf(AlwaysFailLock.class, lock);
         assertTrue(lock.isUnavailable());
 
         verify(callback, never()).lockAvailable(lock);
@@ -195,7 +200,7 @@ public class LockManagerTest {
     }
 
     @Test
-    public void testGetResource2lock() {
+    void testGetResource2lock() {
         assertNotNull(mgr.getResource2lock());
     }
 
@@ -220,6 +225,7 @@ public class LockManagerTest {
     }
 
     private class MyLock extends FeatureLockImpl {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public MyLock(LockState waiting, String resourceId, String ownerKey, int holdSec, LockCallback callback) {

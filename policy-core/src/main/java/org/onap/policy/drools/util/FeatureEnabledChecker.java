@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +26,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Checks whether or not a feature is enabled.
+ * Checks whether a feature is enabled.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FeatureEnabledChecker {
@@ -40,6 +41,6 @@ public class FeatureEnabledChecker {
      */
     public static boolean isFeatureEnabled(Properties props, String propName) {
         String val = props.getProperty(propName);
-        return (val != null && Boolean.valueOf(val));
+        return (Boolean.parseBoolean(val));
     }
 }

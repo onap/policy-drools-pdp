@@ -179,7 +179,7 @@ public class PolicyTypeNativeDroolsController implements PolicyTypeController {
             List<TopicSink> sinks =
                     TopicEndpointManager.getManager().getTopicSinks(List.of(configSinkTopic.getTopicName()));
             if (sinks.size() != 1) {
-                logger.warn("Topic {} is not present or ambigous {}", configSinkTopic.getTopicName(), sinks);
+                logger.warn("Topic {} is not present or ambiguous {}", configSinkTopic.getTopicName(), sinks);
                 return false;
             }
 

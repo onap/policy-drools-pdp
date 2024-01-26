@@ -4,7 +4,7 @@
   ONAP Policy Engine - Drools PDP
   ================================================================================
   Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
-  Modifications Copyright (C) 2020, 2023 Nordix Foundation.
+  Modifications Copyright (C) 2020, 2023-2024 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@
         <staging.path>content/repositories/staging/</staging.path>
 
         <!-- Project common dependency versions -->
-        <json.path.version>2.8.0</json.path.version>
+        <json.path.version>2.9.0</json.path.version>
         <hibernate.commons.annotations.version>6.0.6.Final</hibernate.commons.annotations.version>
         <xml.apis.version>1.4.01</xml.apis.version>
         <policy.common.version>2.1.1-SNAPSHOT</policy.common.version>
@@ -61,7 +61,7 @@
         <module>policy-domains</module>
         <module>policy-management</module>
         <module>feature-healthcheck</module>
-        <module>feature-pooling-dmaap</module>
+        <module>feature-pooling-messages</module>
         <module>feature-test-transaction</module>
         <module>feature-distributed-locking</module>
         <module>feature-lifecycle</module>
@@ -90,14 +90,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>

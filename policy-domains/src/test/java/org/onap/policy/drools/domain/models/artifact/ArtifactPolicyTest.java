@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +21,15 @@
 
 package org.onap.policy.drools.domain.models.artifact;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.domain.models.Metadata;
 
-public class ArtifactPolicyTest {
+class ArtifactPolicyTest {
 
     @Test
-    public void testBuildDomainPolicyNativeArtifact() {
+    void testBuildDomainPolicyNativeArtifact() {
         /* manually create a native drools policy */
 
         // @formatter:off

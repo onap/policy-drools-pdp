@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,17 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.system.PolicyEngineConstants;
@@ -48,12 +48,12 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 /**
  * Lifecycle State Passive Tests.
  */
-public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
+class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
 
     /**
      * Start tests in the Passive state.
      */
-    @Before
+    @BeforeEach
     public void startPassive() {
         /* start every test in passive mode */
         fsm = makeFsmWithPseudoTime();
@@ -62,13 +62,13 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void constructor() {
+    void constructor() {
         assertThatIllegalArgumentException().isThrownBy(() -> new LifecycleStatePassive(null));
         fsm.shutdown();
     }
 
     @Test
-    public void testController() {
+    void testController() {
         fsm.start(controllerSupport.getController());
         assertSame(controllerSupport.getController(),
             ((PolicyTypeDroolsController) fsm.getController(
@@ -84,7 +84,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         assertEquals(0, fsm.client.getSink().getRecentEvents().length);
         assertFalse(fsm.start());
         assertBasicPassive();
@@ -93,7 +93,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void stop() {
+    void stop() {
         simpleStop();
         assertBasicTerminated();
     }
@@ -109,7 +109,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testShutdown() throws Exception {
+    void testShutdown() throws Exception {
         simpleStop();
 
         fsm.shutdown();
@@ -117,28 +117,28 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStatus() {
+    void testStatus() {
         assertTrue(fsm.client.getSink().isAlive());
         assertTrue(fsm.status());
         assertSame(1, fsm.client.getSink().getRecentEvents().length);
 
 
         fsm.start(controllerSupport.getController());
-        status(PdpState.PASSIVE, 1);
+        status();
         fsm.stop(controllerSupport.getController());
         fsm.shutdown();
     }
 
-    private void status(PdpState state, int initial) {
-        waitUntil(5, TimeUnit.SECONDS, isStatus(state, initial));
-        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, initial + 1));
-        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(state, initial + 2));
+    private void status() {
+        waitUntil(5, TimeUnit.SECONDS, isStatus(PdpState.PASSIVE, 1));
+        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(PdpState.PASSIVE, 1 + 1));
+        waitUntil(fsm.statusTimerSeconds + 2, TimeUnit.SECONDS, isStatus(PdpState.PASSIVE, 1 + 2));
         assertTrue(fsm.status());
-        waitUntil(200, TimeUnit.MILLISECONDS, isStatus(state, initial + 3));
+        waitUntil(200, TimeUnit.MILLISECONDS, isStatus(PdpState.PASSIVE, 1 + 3));
     }
 
     @Test
-    public void testUpdate() throws CoderException {
+    void testUpdate() throws CoderException {
         controllerSupport.getController().getDrools().delete(ToscaPolicy.class);
         assertEquals(0, controllerSupport.getController().getDrools().factCount("junits"));
 
@@ -253,7 +253,7 @@ public class LifecycleStatePassiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStateChange() throws CoderException {
+    void testStateChange() throws CoderException {
         /* no name */
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");

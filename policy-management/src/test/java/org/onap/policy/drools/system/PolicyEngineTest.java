@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +22,9 @@
 package org.onap.policy.drools.system;
 
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +33,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
@@ -55,8 +56,8 @@ import org.slf4j.LoggerFactory;
  * PolicyEngine unit tests.
  */
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class PolicyEngineTest {
+@TestMethodOrder(MethodOrderer.DisplayName.class)
+class PolicyEngineTest {
     /**
      * Default Telemetry port for JUnits.
      */
@@ -132,9 +133,9 @@ public class PolicyEngineTest {
      *
      * @throws IOException throws IO exception
      */
-    @BeforeClass
-    public static void startUp() throws IOException {
-        logger.info("enter");
+    @BeforeAll
+    static void startUp() throws IOException {
+        logger.info("startUp");
 
         gson = new GsonTestUtils();
 
@@ -147,14 +148,8 @@ public class PolicyEngineTest {
         }
     }
 
-    @AfterClass
-    public static void tearDown() {
-        logger.info("enter");
-        cleanUpWorkingDir();
-    }
-
     @Test
-    public void test100Configure() {
+    void test100Configure() {
         var manager = (PolicyEngineManager) PolicyEngineConstants.getManager();
         var engineProps = manager.defaultTelemetryConfig();
 
@@ -177,7 +172,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test200Start() {
+    void test200Start() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().start();
@@ -189,7 +184,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test300Lock() {
+    void test300Lock() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().lock();
@@ -201,7 +196,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test301Unlock() {
+    void test301Unlock() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().unlock();
@@ -213,7 +208,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test350TopicDeliver() {
+    void test350TopicDeliver() {
         final Properties noopSinkProperties = new Properties();
         noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
 
@@ -236,7 +231,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test400ControllerAdd() {
+    void test400ControllerAdd() {
         logger.info("enter");
 
         final Properties controllerProperties = new Properties();
@@ -251,7 +246,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test401ControllerVerify() {
+    void test401ControllerVerify() {
         logger.info("enter");
 
         final PolicyController testController = PolicyControllerConstants.getFactory().get(TEST_CONTROLLER_NAME);
@@ -266,7 +261,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test500Deactivate() {
+    void test500Deactivate() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().deactivate();
@@ -279,7 +274,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test501Activate() {
+    void test501Activate() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().activate();
@@ -292,7 +287,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test900ControllerRemove() {
+    void test900ControllerRemove() {
         logger.info("enter");
 
         PolicyEngineConstants.getManager().removePolicyController(TEST_CONTROLLER_NAME);
@@ -300,7 +295,7 @@ public class PolicyEngineTest {
     }
 
     @Test
-    public void test901Stop() {
+    void test901Stop() {
         logger.info("enter");
 
         /* Shutdown managed resources */

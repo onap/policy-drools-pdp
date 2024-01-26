@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +22,18 @@
 package org.onap.policy.no.locking;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.core.lock.AlwaysSuccessLock;
 import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
@@ -46,7 +48,7 @@ public class NoLockManagerTest {
     /**
      * Set up Junits.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         List<PolicyEngineFeatureApi> engineServices = PolicyEngineFeatureApiConstants.getProviders().getList();
         assertThat(engineServices).hasSize(1);
@@ -55,50 +57,50 @@ public class NoLockManagerTest {
     }
 
     @Test
-    public void testLock() {
+    void testLock() {
         assertTrue(nlm.lock());
     }
 
     @Test
-    public void testUnlock() {
+    void testUnlock() {
         assertTrue(nlm.unlock());
     }
 
     @Test
-    public void testIsLocked() {
+    void testIsLocked() {
         assertFalse(nlm.isLocked());
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         assertTrue(nlm.start());
     }
 
     @Test
-    public void testStop() {
+    void testStop() {
         assertTrue(nlm.stop());
     }
 
     @Test
-    public void testIsAlive() {
+    void testIsAlive() {
         assertTrue(nlm.isAlive());
     }
 
     @Test
-    public void testGetSeqNo() {
+    void testGetSeqNo() {
         assertEquals(NoLockManager.SEQNO, nlm.getSequenceNumber());
     }
 
     @Test
-    public void testBeforeCreateLockManager() {
+    void testBeforeCreateLockManager() {
         assertEquals(nlm, nlm.beforeCreateLockManager(null, null));
     }
 
     @Test
-    public void testCreateLock() {
+    void testCreateLock() {
         Lock lock = nlm.createLock("x", "y", 1, callback, false);
         assertTrue(lock.isActive());
-        assertTrue(lock instanceof AlwaysSuccessLock);
+        assertInstanceOf(AlwaysSuccessLock.class, lock);
         verify(callback).lockAvailable(lock);
         verify(callback, never()).lockUnavailable(any());
     }

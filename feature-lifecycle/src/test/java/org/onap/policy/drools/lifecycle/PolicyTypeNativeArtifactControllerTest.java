@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,15 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.controller.DroolsControllerConstants;
 import org.onap.policy.drools.controller.internal.MavenDroolsController;
@@ -42,7 +43,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 /**
  * Rules Controller Test.
  */
-public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunningTest {
+class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunningTest {
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example.artifact";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
@@ -55,7 +56,7 @@ public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunnin
     /**
      * Test Set initialization.
      */
-    @Before
+    @BeforeEach
     public void init() throws IOException, CoderException {
         fsm = makeFsmWithPseudoTime();
         policy = getPolicyFromFile(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
@@ -88,7 +89,7 @@ public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunnin
     }
 
     @Test
-    public void testUndeployDeploy() {
+    void testUndeployDeploy() {
         undeploy();
         deploy();
 
@@ -128,7 +129,7 @@ public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunnin
                                                                               nativePolicy.getProperties()
                                                                                       .getRulesArtifact()
                                                                                       .getArtifactId()));
-        assertTrue(controllerSupport.getController().getDrools() instanceof NullDroolsController);
+        assertInstanceOf(NullDroolsController.class, controllerSupport.getController().getDrools());
         assertEquals(DroolsControllerConstants.NO_GROUP_ID, controllerSupport.getController().getDrools().getGroupId());
         assertEquals(DroolsControllerConstants.NO_ARTIFACT_ID,
                 controllerSupport.getController().getDrools().getArtifactId());
@@ -144,7 +145,7 @@ public class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunnin
                 PolicyControllerConstants.getFactory().get(
                         nativePolicy.getProperties().getRulesArtifact().getGroupId(),
                         nativePolicy.getProperties().getRulesArtifact().getArtifactId()));
-        assertTrue(controllerSupport.getController().getDrools() instanceof MavenDroolsController);
+        assertInstanceOf(MavenDroolsController.class, controllerSupport.getController().getDrools());
     }
 
 }

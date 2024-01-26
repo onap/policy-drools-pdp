@@ -3,6 +3,7 @@
  * policy-utils
  * ================================================================================
  * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ReflectionUtil {
 
-    protected static final Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
 
     /**
      * returns (if exists) a class fetched from a given classloader.
@@ -75,11 +76,11 @@ public final class ReflectionUtil {
     }
 
     /**
-     * Is it a sub class.
+     * Is it a subclass.
      *
      * @param parent superclass
      * @param presumedSubclass subclass
-     * @return true if it is a sub class
+     * @return true if it is a subclass
      */
     public static boolean isSubclass(Class<?> parent, Class<?> presumedSubclass) {
         return parent.isAssignableFrom(presumedSubclass);

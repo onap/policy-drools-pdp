@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +21,12 @@
 
 package org.onap.policy.drools.controller.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,10 +35,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -93,15 +95,16 @@ public class MavenDroolsControllerUpgradesTest {
     /**
      * Test Class Initialization.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws IOException {
+        Path path = Paths.get(DROOLS_RESOURCES_DIR + "rules1" + DRL_EXT);
         rulesDescriptor1 =
             install("rules1",
-                Stream.of(Paths.get(DROOLS_RESOURCES_DIR + "rules1" + DRL_EXT).toFile()).collect(Collectors.toList()));
+                Stream.of(path.toFile()).collect(Collectors.toList()));
 
         rulesDescriptor2 =
             install("rules2",
-                Stream.of(Paths.get(DROOLS_RESOURCES_DIR + "rules1" + DRL_EXT).toFile(),
+                Stream.of(path.toFile(),
                           Paths.get(DROOLS_RESOURCES_DIR + "rules2" + DRL_EXT).toFile())
                       .collect(Collectors.toList()));
 
@@ -112,7 +115,7 @@ public class MavenDroolsControllerUpgradesTest {
     /**
      * Creates a controller before each test.
      */
-    @Before
+    @BeforeEach
     public void beforeTest() {
         controller =
             new MavenDroolsController(
@@ -123,7 +126,7 @@ public class MavenDroolsControllerUpgradesTest {
     /**
      * Shuts down the controller after each test.
      */
-    @After
+    @AfterEach
     public void afterTest() {
         if (controller != null) {
             controller.halt();
@@ -134,13 +137,13 @@ public class MavenDroolsControllerUpgradesTest {
      * Upgrades test.
      */
     @Test
-    public void upgrades() throws InterruptedException {
+    void upgrades() throws InterruptedException {
         assertTrue(controller.start());
         logKieEvents();
 
         assertTrue(running1a.await(30, TimeUnit.SECONDS));
         summary();
-        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12"), 1);
+        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12"));
 
         controller.updateToVersion(
             rulesDescriptor2.getGroupId(),
@@ -152,7 +155,7 @@ public class MavenDroolsControllerUpgradesTest {
         assertTrue(running2b.await(30, TimeUnit.SECONDS));
         assertTrue(running1b.await(30, TimeUnit.SECONDS));
         summary();
-        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12", "SETUP.2", "VERSION.2"), 1);
+        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12", "SETUP.2", "VERSION.2"));
 
         controller.updateToVersion(
             rulesDescriptor1.getGroupId(),
@@ -161,7 +164,7 @@ public class MavenDroolsControllerUpgradesTest {
             null, null);
 
         summary();
-        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12"), 1);
+        assertKie(Arrays.asList("run-drools-runnable", "SETUP.1", "VERSION.12"));
     }
 
     private void summary() {
@@ -176,11 +179,11 @@ public class MavenDroolsControllerUpgradesTest {
         logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
-    private void assertKie(List<String> expectedRuleNames, long expectedFactCount) {
+    private void assertKie(List<String> expectedRuleNames) {
         assertEquals(Collections.singletonList("kbRules"),
             KieUtils.getBases(controller.getContainer().getKieContainer()));
         assertEquals(expectedRuleNames, KieUtils.getRuleNames(controller.getContainer().getKieContainer()));
-        assertEquals(expectedFactCount, controller.factCount(controller.getSessionNames().get(0)));
+        assertEquals(1, controller.factCount(controller.getSessionNames().get(0)));
     }
 
     private void logKieEvents() {

@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,14 @@ package org.onap.policy.drools.controller.internal;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -41,9 +42,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Query;
@@ -54,7 +56,8 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.drools.core.PolicyContainer;
@@ -69,8 +72,8 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomGsonCoder;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.PotentialCoderFilter;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MavenDroolsController2Test {
+@ExtendWith(MockitoExtension.class)
+class MavenDroolsController2Test {
     private static final int FACT1_OBJECT = 1000;
     private static final int FACT3_OBJECT = 1001;
 
@@ -186,113 +189,121 @@ public class MavenDroolsController2Test {
 
     private MavenDroolsController drools;
 
+    AutoCloseable autoCloseable;
+
     /**
      * Initializes objects, including the drools controller.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
-        when(droolsProviders.getList()).thenReturn(List.of(prov1, prov2));
+        autoCloseable = MockitoAnnotations.openMocks(this);
+        lenient().when(droolsProviders.getList()).thenReturn(List.of(prov1, prov2));
 
-        when(coderMgr.isDecodingSupported(GROUP, ARTIFACT, TOPIC)).thenReturn(true);
-        when(coderMgr.decode(GROUP, ARTIFACT, TOPIC, EVENT_TEXT)).thenReturn(EVENT);
+        lenient().when(coderMgr.isDecodingSupported(GROUP, ARTIFACT, TOPIC)).thenReturn(true);
+        lenient().when(coderMgr.decode(GROUP, ARTIFACT, TOPIC, EVENT_TEXT)).thenReturn(EVENT);
 
-        when(kieSess.getFactCount()).thenReturn(FACT_COUNT);
-        when(kieSess.getFactHandles()).thenReturn(List.of(fact1, fact2, factex, fact3));
-        when(kieSess.getFactHandles(any())).thenReturn(List.of(fact1, fact3));
-        when(kieSess.getKieBase()).thenReturn(kieBase);
-        when(kieSess.getQueryResults(QUERY, PARM1, PARM2)).thenReturn(queryResults);
+        lenient().when(kieSess.getFactCount()).thenReturn(FACT_COUNT);
+        lenient().when(kieSess.getFactHandles()).thenReturn(List.of(fact1, fact2, factex, fact3));
+        lenient().when(kieSess.getFactHandles(any())).thenReturn(List.of(fact1, fact3));
+        lenient().when(kieSess.getKieBase()).thenReturn(kieBase);
+        lenient().when(kieSess.getQueryResults(QUERY, PARM1, PARM2)).thenReturn(queryResults);
 
-        when(kieSess.getFactHandle(FACT3_OBJECT)).thenReturn(fact3);
+        lenient().when(kieSess.getFactHandle(FACT3_OBJECT)).thenReturn(fact3);
 
-        when(kieSess.getObject(fact1)).thenReturn(FACT1_OBJECT);
-        when(kieSess.getObject(fact2)).thenReturn("");
-        when(kieSess.getObject(fact3)).thenReturn(FACT3_OBJECT);
-        when(kieSess.getObject(factex)).thenThrow(RUNTIME_EX);
+        lenient().when(kieSess.getObject(fact1)).thenReturn(FACT1_OBJECT);
+        lenient().when(kieSess.getObject(fact2)).thenReturn("");
+        lenient().when(kieSess.getObject(fact3)).thenReturn(FACT3_OBJECT);
+        lenient().when(kieSess.getObject(factex)).thenThrow(RUNTIME_EX);
 
-        when(kieBase.getKiePackages()).thenReturn(List.of(pkg1, pkg2));
+        lenient().when(kieBase.getKiePackages()).thenReturn(List.of(pkg1, pkg2));
 
-        when(pkg1.getQueries()).thenReturn(List.of(query3));
-        when(pkg2.getQueries()).thenReturn(List.of(query2, query1));
+        lenient().when(pkg1.getQueries()).thenReturn(List.of(query3));
+        lenient().when(pkg2.getQueries()).thenReturn(List.of(query2, query1));
 
-        when(query1.getName()).thenReturn(QUERY);
-        when(query2.getName()).thenReturn(QUERY2);
+        lenient().when(query1.getName()).thenReturn(QUERY);
+        lenient().when(query2.getName()).thenReturn(QUERY2);
 
-        when(queryResults.iterator()).thenReturn(List.of(row1, row2).iterator());
+        lenient().when(queryResults.iterator()).thenReturn(List.of(row1, row2).iterator());
 
-        when(row1.get(ENTITY)).thenReturn(FACT1_OBJECT);
-        when(row2.get(ENTITY)).thenReturn(FACT3_OBJECT);
+        lenient().when(row1.get(ENTITY)).thenReturn(FACT1_OBJECT);
+        lenient().when(row2.get(ENTITY)).thenReturn(FACT3_OBJECT);
 
-        when(row1.getFactHandle(ENTITY)).thenReturn(fact1);
-        when(row2.getFactHandle(ENTITY)).thenReturn(fact3);
+        lenient().when(row1.getFactHandle(ENTITY)).thenReturn(fact1);
+        lenient().when(row2.getFactHandle(ENTITY)).thenReturn(fact3);
 
-        when(sess1.getKieSession()).thenReturn(kieSess);
-        when(sess2.getKieSession()).thenReturn(kieSess2);
+        lenient().when(sess1.getKieSession()).thenReturn(kieSess);
+        lenient().when(sess2.getKieSession()).thenReturn(kieSess2);
 
-        when(sess1.getName()).thenReturn(SESSION1);
-        when(sess2.getName()).thenReturn(SESSION2);
+        lenient().when(sess1.getName()).thenReturn(SESSION1);
+        lenient().when(sess2.getName()).thenReturn(SESSION2);
 
-        when(sess1.getFullName()).thenReturn(FULL_SESSION1);
-        when(sess2.getFullName()).thenReturn(FULL_SESSION2);
+        lenient().when(sess1.getFullName()).thenReturn(FULL_SESSION1);
+        lenient().when(sess2.getFullName()).thenReturn(FULL_SESSION2);
 
-        when(container.getClassLoader()).thenReturn(CLASS_LOADER);
-        when(container.getPolicySessions()).thenReturn(List.of(sess1, sess2));
-        when(container.insertAll(EVENT)).thenReturn(true);
+        lenient().when(container.getClassLoader()).thenReturn(CLASS_LOADER);
+        lenient().when(container.getPolicySessions()).thenReturn(List.of(sess1, sess2));
+        lenient().when(container.insertAll(EVENT)).thenReturn(true);
 
-        when(decoder1.getTopic()).thenReturn(TOPIC);
-        when(decoder2.getTopic()).thenReturn(TOPIC2);
+        lenient().when(decoder1.getTopic()).thenReturn(TOPIC);
+        lenient().when(decoder2.getTopic()).thenReturn(TOPIC2);
 
-        when(encoder1.getTopic()).thenReturn(TOPIC);
-        when(encoder2.getTopic()).thenReturn(TOPIC2);
+        lenient().when(encoder1.getTopic()).thenReturn(TOPIC);
+        lenient().when(encoder2.getTopic()).thenReturn(TOPIC2);
 
         decoders = List.of(decoder1, decoder2);
         encoders = List.of(encoder1, encoder2);
 
-        when(decoder1.getCustomGsonCoder()).thenReturn(gson1);
-        when(encoder2.getCustomGsonCoder()).thenReturn(gson2);
+        lenient().when(decoder1.getCustomGsonCoder()).thenReturn(gson1);
+        lenient().when(encoder2.getCustomGsonCoder()).thenReturn(gson2);
 
-        when(filter1a.getCodedClass()).thenReturn(Object.class.getName());
-        when(filter1a.getFilter()).thenReturn(jsonFilter1a);
+        lenient().when(filter1a.getCodedClass()).thenReturn(Object.class.getName());
+        lenient().when(filter1a.getFilter()).thenReturn(jsonFilter1a);
 
-        when(filter1b.getCodedClass()).thenReturn(String.class.getName());
-        when(filter1b.getFilter()).thenReturn(jsonFilter1b);
+        lenient().when(filter1b.getCodedClass()).thenReturn(String.class.getName());
+        lenient().when(filter1b.getFilter()).thenReturn(jsonFilter1b);
 
-        when(filter2.getCodedClass()).thenReturn(Integer.class.getName());
-        when(filter2.getFilter()).thenReturn(jsonFilter2);
+        lenient().when(filter2.getCodedClass()).thenReturn(Integer.class.getName());
+        lenient().when(filter2.getFilter()).thenReturn(jsonFilter2);
 
-        when(decoder1.getCoderFilters()).thenReturn(List.of(filter1a, filter1b));
-        when(decoder2.getCoderFilters()).thenReturn(Collections.emptyList());
+        lenient().when(decoder1.getCoderFilters()).thenReturn(List.of(filter1a, filter1b));
+        lenient().when(decoder2.getCoderFilters()).thenReturn(Collections.emptyList());
 
-        when(encoder1.getCoderFilters()).thenReturn(Collections.emptyList());
-        when(encoder2.getCoderFilters()).thenReturn(List.of(filter2));
+        lenient().when(encoder1.getCoderFilters()).thenReturn(Collections.emptyList());
+        lenient().when(encoder2.getCoderFilters()).thenReturn(List.of(filter2));
 
-        when(sink.getTopic()).thenReturn(TOPIC);
-        when(sink.send(EVENT_TEXT)).thenReturn(true);
+        lenient().when(sink.getTopic()).thenReturn(TOPIC);
+        lenient().when(sink.send(EVENT_TEXT)).thenReturn(true);
 
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, null, null);
 
-        when(coderMgr.encode(TOPIC, EVENT, drools)).thenReturn(EVENT_TEXT);
+        lenient().when(coderMgr.encode(TOPIC, EVENT, drools)).thenReturn(EVENT_TEXT);
+    }
+
+    @AfterEach
+    void closeMocks() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
-    public void testMavenDroolsController_InvalidArgs() {
+    void testMavenDroolsController_InvalidArgs() {
         assertThatIllegalArgumentException().isThrownBy(() -> new MyDrools(null, ARTIFACT, VERSION, null, null))
-                        .withMessageContaining("group");
+            .withMessageContaining("group");
         assertThatIllegalArgumentException().isThrownBy(() -> new MyDrools("", ARTIFACT, VERSION, null, null))
-                        .withMessageContaining("group");
+            .withMessageContaining("group");
 
         assertThatIllegalArgumentException().isThrownBy(() -> new MyDrools(GROUP, null, VERSION, null, null))
-                        .withMessageContaining("artifact");
+            .withMessageContaining("artifact");
         assertThatIllegalArgumentException().isThrownBy(() -> new MyDrools(GROUP, "", VERSION, null, null))
-                        .withMessageContaining("artifact");
+            .withMessageContaining("artifact");
 
         assertThatIllegalArgumentException().isThrownBy(() -> new MyDrools(GROUP, ARTIFACT, null, null, null))
-                        .withMessageContaining("version");
+            .withMessageContaining("version");
         assertThatIllegalArgumentException().isThrownBy(() -> new MyDrools(GROUP, ARTIFACT, "", null, null))
-                        .withMessageContaining("version");
+            .withMessageContaining("version");
     }
 
     @Test
-    public void testUpdateToVersion() {
+    void testUpdateToVersion() {
         // add coders
         drools.updateToVersion(GROUP, ARTIFACT, VERSION2, decoders, encoders);
 
@@ -320,7 +331,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testUpdateToVersion_Unchanged() {
+    void testUpdateToVersion_Unchanged() {
         drools.updateToVersion(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
         verify(coderMgr, never()).addDecoder(any());
@@ -328,53 +339,53 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testUpdateToVersion_InvalidArgs() {
+    void testUpdateToVersion_InvalidArgs() {
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.updateToVersion(null, ARTIFACT, VERSION, null, null))
-                        .withMessageContaining("group");
+            .isThrownBy(() -> drools.updateToVersion(null, ARTIFACT, VERSION, null, null))
+            .withMessageContaining("group");
         assertThatIllegalArgumentException().isThrownBy(() -> drools.updateToVersion("", ARTIFACT, VERSION, null, null))
-                        .withMessageContaining("group");
+            .withMessageContaining("group");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.updateToVersion(GROUP, null, VERSION, null, null))
-                        .withMessageContaining("artifact");
+            .withMessageContaining("artifact");
         assertThatIllegalArgumentException().isThrownBy(() -> drools.updateToVersion(GROUP, "", VERSION, null, null))
-                        .withMessageContaining("artifact");
+            .withMessageContaining("artifact");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.updateToVersion(GROUP, ARTIFACT, null, null, null))
-                        .withMessageContaining("version");
+            .withMessageContaining("version");
         assertThatIllegalArgumentException().isThrownBy(() -> drools.updateToVersion(GROUP, ARTIFACT, "", null, null))
-                        .withMessageContaining("version");
+            .withMessageContaining("version");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.updateToVersion("no-group-id", ARTIFACT, VERSION, null, null))
-                        .withMessageContaining("BRAINLESS");
+            .isThrownBy(() -> drools.updateToVersion("no-group-id", ARTIFACT, VERSION, null, null))
+            .withMessageContaining("BRAINLESS");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.updateToVersion(GROUP, "no-artifact-id", VERSION, null, null))
-                        .withMessageContaining("BRAINLESS");
+            .isThrownBy(() -> drools.updateToVersion(GROUP, "no-artifact-id", VERSION, null, null))
+            .withMessageContaining("BRAINLESS");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.updateToVersion(GROUP, ARTIFACT, "no-version", null, null))
-                        .withMessageContaining("BRAINLESS");
+            .isThrownBy(() -> drools.updateToVersion(GROUP, ARTIFACT, "no-version", null, null))
+            .withMessageContaining("BRAINLESS");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.updateToVersion(GROUP2, ARTIFACT, VERSION, null, null))
-                        .withMessageContaining("coordinates must be identical");
+            .isThrownBy(() -> drools.updateToVersion(GROUP2, ARTIFACT, VERSION, null, null))
+            .withMessageContaining("coordinates must be identical");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.updateToVersion(GROUP, ARTIFACT2, VERSION, null, null))
-                        .withMessageContaining("coordinates must be identical");
+            .isThrownBy(() -> drools.updateToVersion(GROUP, ARTIFACT2, VERSION, null, null))
+            .withMessageContaining("coordinates must be identical");
     }
 
     @Test
-    public void testInitCoders_NullCoders() {
+    void testInitCoders_NullCoders() {
         // already constructed with null coders
         verify(coderMgr, never()).addDecoder(any());
         verify(coderMgr, never()).addEncoder(any());
     }
 
     @Test
-    public void testInitCoders_NullOrEmptyFilters() {
+    void testInitCoders_NullOrEmptyFilters() {
         when(decoder1.getCoderFilters()).thenReturn(Collections.emptyList());
         when(decoder2.getCoderFilters()).thenReturn(null);
 
@@ -388,7 +399,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testInitCoders_GsonClass() {
+    void testInitCoders_GsonClass() {
         when(gson1.getClassContainer()).thenReturn("");
         when(gson2.getClassContainer()).thenReturn(Long.class.getName());
 
@@ -400,25 +411,25 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testInitCoders_InvalidGsonClass() {
+    void testInitCoders_InvalidGsonClass() {
         when(gson1.getClassContainer()).thenReturn(UNKNOWN_CLASS);
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders))
-                        .withMessageContaining("cannot be retrieved");
+            .isThrownBy(() -> new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders))
+            .withMessageContaining("cannot be retrieved");
     }
 
     @Test
-    public void testInitCoders_InvalidFilterClass() {
+    void testInitCoders_InvalidFilterClass() {
         when(filter2.getCodedClass()).thenReturn(UNKNOWN_CLASS);
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders))
-                        .withMessageContaining("cannot be retrieved");
+            .isThrownBy(() -> new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders))
+            .withMessageContaining("cannot be retrieved");
     }
 
     @Test
-    public void testInitCoders_Filters() {
+    void testInitCoders_Filters() {
 
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
@@ -458,7 +469,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOwnsCoder() {
+    void testOwnsCoder() {
         int hc = CLASS_LOADER_HASHCODE;
 
         // wrong hash code
@@ -478,7 +489,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testStart_testStop_testIsAlive() {
+    void testStart_testStop_testIsAlive() {
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
         when(container.start()).thenReturn(true);
@@ -525,7 +536,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
         // start it
@@ -546,7 +557,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testShutdown_Ex() {
+    void testShutdown_Ex() {
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
         // start it
@@ -564,7 +575,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testHalt() {
+    void testHalt() {
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
         // start it
@@ -584,7 +595,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testHalt_Ex() {
+    void testHalt_Ex() {
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders);
 
         // start it
@@ -601,7 +612,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testRemoveCoders_Ex() {
+    void testRemoveCoders_Ex() {
         drools = new MyDrools(GROUP, ARTIFACT, VERSION, decoders, encoders) {
             @Override
             protected void removeDecoders() {
@@ -618,7 +629,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferStringString() {
+    void testOfferStringString() {
         drools.start();
         assertTrue(drools.offer(TOPIC, EVENT_TEXT));
 
@@ -626,7 +637,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferStringString_NoDecode() {
+    void testOfferStringString_NoDecode() {
         when(coderMgr.isDecodingSupported(GROUP, ARTIFACT, TOPIC)).thenReturn(false);
 
         drools.start();
@@ -636,9 +647,9 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferStringString_DecodeUnsupported() {
+    void testOfferStringString_DecodeUnsupported() {
         when(coderMgr.decode(GROUP, ARTIFACT, TOPIC, EVENT_TEXT))
-                        .thenThrow(new UnsupportedOperationException(EXPECTED_EXCEPTION));
+            .thenThrow(new UnsupportedOperationException(EXPECTED_EXCEPTION));
 
         drools.start();
         assertTrue(drools.offer(TOPIC, EVENT_TEXT));
@@ -647,7 +658,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferStringString_DecodeEx() {
+    void testOfferStringString_DecodeEx() {
         when(coderMgr.decode(GROUP, ARTIFACT, TOPIC, EVENT_TEXT)).thenThrow(RUNTIME_EX);
 
         drools.start();
@@ -657,7 +668,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferStringString_Ignored() {
+    void testOfferStringString_Ignored() {
         drools.start();
 
         drools.lock();
@@ -677,7 +688,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferT() {
+    void testOfferT() {
         drools.start();
         assertTrue(drools.offer(EVENT));
         assertEquals(1, drools.getRecentSourceEvents().length);
@@ -692,7 +703,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferT_Ex() {
+    void testOfferT_Ex() {
         when(prov1.beforeInsert(drools, EVENT)).thenThrow(RUNTIME_EX);
         when(prov1.afterInsert(drools, EVENT, true)).thenThrow(RUNTIME_EX);
 
@@ -709,7 +720,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferT_NotInserted() {
+    void testOfferT_NotInserted() {
         when(container.insertAll(EVENT)).thenReturn(false);
 
         drools.start();
@@ -726,7 +737,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferT_BeforeInsertIntercept() {
+    void testOfferT_BeforeInsertIntercept() {
         drools.start();
         when(prov1.beforeInsert(drools, EVENT)).thenReturn(true);
 
@@ -744,7 +755,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferT_AfterInsertIntercept() {
+    void testOfferT_AfterInsertIntercept() {
         drools.start();
 
         when(prov1.afterInsert(drools, EVENT, true)).thenReturn(true);
@@ -764,7 +775,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testOfferT_Ignored() {
+    void testOfferT_Ignored() {
         drools.start();
 
         drools.lock();
@@ -784,7 +795,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeliver() {
+    void testDeliver() {
         drools.start();
         assertTrue(drools.deliver(sink, EVENT));
         assertEquals(1, drools.getRecentSinkEvents().length);
@@ -800,14 +811,14 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeliver_InvalidArgs() {
+    void testDeliver_InvalidArgs() {
         drools.start();
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.deliver(null, EVENT))
-                        .withMessageContaining("sink");
+            .withMessageContaining("sink");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.deliver(sink, null))
-                        .withMessageContaining("event");
+            .withMessageContaining("event");
 
         drools.lock();
         assertThatIllegalStateException().isThrownBy(() -> drools.deliver(sink, EVENT)).withMessageContaining("locked");
@@ -815,14 +826,14 @@ public class MavenDroolsController2Test {
 
         drools.stop();
         assertThatIllegalStateException().isThrownBy(() -> drools.deliver(sink, EVENT))
-                        .withMessageContaining("stopped");
+            .withMessageContaining("stopped");
         drools.start();
 
         assertEquals(0, drools.getRecentSinkEvents().length);
     }
 
     @Test
-    public void testDeliver_BeforeIntercept() {
+    void testDeliver_BeforeIntercept() {
         when(prov1.beforeDeliver(drools, sink, EVENT)).thenReturn(true);
 
         drools.start();
@@ -839,7 +850,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeliver_AfterIntercept() {
+    void testDeliver_AfterIntercept() {
         when(prov1.afterDeliver(drools, sink, EVENT, EVENT_TEXT, true)).thenReturn(true);
 
         drools.start();
@@ -859,7 +870,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeliver_InterceptEx() {
+    void testDeliver_InterceptEx() {
         when(prov1.beforeDeliver(drools, sink, EVENT)).thenThrow(RUNTIME_EX);
         when(prov1.afterDeliver(drools, sink, EVENT, EVENT_TEXT, true)).thenThrow(RUNTIME_EX);
 
@@ -874,7 +885,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testGetXxx() {
+    void testGetXxx() {
         assertEquals(VERSION, drools.getVersion());
         assertEquals(ARTIFACT, drools.getArtifactId());
         assertEquals(GROUP, drools.getGroupId());
@@ -895,7 +906,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testLock_testUnlock_testIsLocked() {
+    void testLock_testUnlock_testIsLocked() {
         assertFalse(drools.isLocked());
 
         assertTrue(drools.lock());
@@ -913,7 +924,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testGetSessionNames_testGetCanonicalSessionNames() {
+    void testGetSessionNames_testGetCanonicalSessionNames() {
         assertEquals("[session-A, session-B]", drools.getSessionNames(true).toString());
         assertEquals("[full-A, full-B]", drools.getSessionNames(false).toString());
 
@@ -927,7 +938,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testGetBaseDomainNames() {
+    void testGetBaseDomainNames() {
         KieContainer kiecont = mock(KieContainer.class);
         when(kiecont.getKieBaseNames()).thenReturn(List.of("kieA", "kieB"));
         when(container.getKieContainer()).thenReturn(kiecont);
@@ -936,12 +947,12 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testGetSession() {
+    void testGetSession() {
         assertThatIllegalArgumentException().isThrownBy(() -> drools.getSession(null))
-                        .withMessageContaining("must be provided");
+            .withMessageContaining("must be provided");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.getSession(""))
-                        .withMessageContaining("must be provided");
+            .withMessageContaining("must be provided");
 
         assertSame(sess1, drools.getSession(SESSION1));
         assertSame(sess1, drools.getSession(FULL_SESSION1));
@@ -949,35 +960,35 @@ public class MavenDroolsController2Test {
         assertSame(sess2, drools.getSession(SESSION2));
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.getSession("unknown session"))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
     }
 
     @Test
-    public void testFactClassNames() {
+    void testFactClassNames() {
         // copy to a sorted map so the order remains unchanged
         Map<String, Integer> map = new TreeMap<>(drools.factClassNames(SESSION1));
         assertEquals("{java.lang.Integer=2, java.lang.String=1}", map.toString());
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.factClassNames(null))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.factClassNames(""))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
     }
 
     @Test
-    public void testFactCount() {
+    void testFactCount() {
         assertEquals(FACT_COUNT, drools.factCount(SESSION1));
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.factCount(null))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.factCount(""))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
     }
 
     @Test
-    public void testFactsStringStringBoolean() {
+    void testFactsStringStringBoolean() {
         assertEquals("[1000, 1001]", drools.facts(SESSION1, Integer.class.getName(), false).toString());
         verify(kieSess, never()).delete(fact1);
         verify(kieSess, never()).delete(fact2);
@@ -992,23 +1003,23 @@ public class MavenDroolsController2Test {
         verify(kieSess, never()).delete(factex);
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.facts(null, Integer.class.getName(), false))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.facts("", Integer.class.getName(), false))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.facts(SESSION1, null, false))
-                        .withMessageContaining("Invalid Class Name");
+            .withMessageContaining("Invalid Class Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.facts(SESSION1, "", false))
-                        .withMessageContaining("Invalid Class Name");
+            .withMessageContaining("Invalid Class Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.facts(SESSION1, UNKNOWN_CLASS, false))
-                        .withMessageContaining("classloader");
+            .withMessageContaining("classloader");
     }
 
     @Test
-    public void testFactsStringStringBoolean_DeleteEx() {
+    void testFactsStringStringBoolean_DeleteEx() {
         doThrow(RUNTIME_EX).when(kieSess).delete(fact1);
 
         assertEquals("[1000, 1001]", drools.facts(SESSION1, Integer.class.getName(), true).toString());
@@ -1018,47 +1029,47 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testFactsStringClassOfT() {
+    void testFactsStringClassOfT() {
         assertEquals("[1000, 1001]", drools.facts(SESSION1, Integer.class).toString());
     }
 
     @Test
-    public void testFactQuery() {
+    void testFactQuery() {
         assertEquals("[1000, 1001]", drools.factQuery(SESSION1, QUERY, ENTITY, false, PARM1, PARM2).toString());
 
         verify(kieSess, never()).delete(fact1);
         verify(kieSess, never()).delete(fact3);
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.factQuery(null, QUERY, ENTITY, false, PARM1, PARM2))
-                        .withMessageContaining("Invalid Session Name");
+            .isThrownBy(() -> drools.factQuery(null, QUERY, ENTITY, false, PARM1, PARM2))
+            .withMessageContaining("Invalid Session Name");
 
         assertThatIllegalArgumentException().isThrownBy(() -> drools.factQuery("", QUERY, ENTITY, false, PARM1, PARM2))
-                        .withMessageContaining("Invalid Session Name");
+            .withMessageContaining("Invalid Session Name");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.factQuery(SESSION1, null, ENTITY, false, PARM1, PARM2))
-                        .withMessageContaining("Invalid Query Name");
+            .isThrownBy(() -> drools.factQuery(SESSION1, null, ENTITY, false, PARM1, PARM2))
+            .withMessageContaining("Invalid Query Name");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.factQuery(SESSION1, "", ENTITY, false, PARM1, PARM2))
-                        .withMessageContaining("Invalid Query Name");
+            .isThrownBy(() -> drools.factQuery(SESSION1, "", ENTITY, false, PARM1, PARM2))
+            .withMessageContaining("Invalid Query Name");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.factQuery(SESSION1, QUERY, null, false, PARM1, PARM2))
-                        .withMessageContaining("Invalid Queried Entity");
+            .isThrownBy(() -> drools.factQuery(SESSION1, QUERY, null, false, PARM1, PARM2))
+            .withMessageContaining("Invalid Queried Entity");
 
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> drools.factQuery(SESSION1, QUERY, "", false, PARM1, PARM2))
-                        .withMessageContaining("Invalid Queried Entity");
+            .isThrownBy(() -> drools.factQuery(SESSION1, QUERY, "", false, PARM1, PARM2))
+            .withMessageContaining("Invalid Queried Entity");
 
         assertThatIllegalArgumentException().isThrownBy(
-            () -> drools.factQuery(SESSION1, QUERY + "-unknown-query", ENTITY, false, PARM1, PARM2))
+                () -> drools.factQuery(SESSION1, QUERY + "-unknown-query", ENTITY, false, PARM1, PARM2))
             .withMessageContaining("Invalid Query Name");
     }
 
     @Test
-    public void testFactQuery_Delete() {
+    void testFactQuery_Delete() {
         doThrow(RUNTIME_EX).when(kieSess).delete(fact1);
 
         assertEquals("[1000, 1001]", drools.factQuery(SESSION1, QUERY, ENTITY, true, PARM1, PARM2).toString());
@@ -1068,7 +1079,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeleteStringT() {
+    void testDeleteStringT() {
         assertTrue(drools.delete(SESSION1, FACT3_OBJECT));
 
         verify(kieSess, never()).delete(fact1);
@@ -1087,14 +1098,14 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeleteT() {
+    void testDeleteT() {
         assertTrue(drools.delete(FACT3_OBJECT));
 
         verify(kieSess).delete(fact3);
     }
 
     @Test
-    public void testDeleteStringClassOfT() {
+    void testDeleteStringClassOfT() {
         assertTrue(drools.delete(SESSION1, Integer.class));
 
         verify(kieSess).delete(fact1);
@@ -1102,7 +1113,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeleteStringClassOfT_Ex() {
+    void testDeleteStringClassOfT_Ex() {
         doThrow(RUNTIME_EX).when(kieSess).delete(fact1);
 
         assertFalse(drools.delete(SESSION1, Integer.class));
@@ -1112,7 +1123,7 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testDeleteClassOfT() {
+    void testDeleteClassOfT() {
         assertTrue(drools.delete(Integer.class));
 
         verify(kieSess).delete(fact1);
@@ -1120,17 +1131,17 @@ public class MavenDroolsController2Test {
     }
 
     @Test
-    public void testFetchModelClass() {
+    void testFetchModelClass() {
         assertSame(Long.class, drools.fetchModelClass(Long.class.getName()));
     }
 
     @Test
-    public void testIsBrained() {
+    void testIsBrained() {
         assertTrue(drools.isBrained());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertNotNull(drools.toString());
     }
 
@@ -1155,9 +1166,9 @@ public class MavenDroolsController2Test {
 
         @Override
         protected PolicyContainer makePolicyContainer(String groupId, String artifactId, String version) {
-            when(container.getGroupId()).thenReturn(groupId);
-            when(container.getArtifactId()).thenReturn(artifactId);
-            when(container.getVersion()).thenReturn(version);
+            lenient().when(container.getGroupId()).thenReturn(groupId);
+            lenient().when(container.getArtifactId()).thenReturn(artifactId);
+            lenient().when(container.getVersion()).thenReturn(version);
 
             return container;
         }

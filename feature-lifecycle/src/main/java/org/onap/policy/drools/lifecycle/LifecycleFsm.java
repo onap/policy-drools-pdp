@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021,2023 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ package org.onap.policy.drools.lifecycle;
 
 import com.google.re2j.Pattern;
 import io.prometheus.client.Counter;
-import java.lang.reflect.InvocationTargetException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +40,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.capabilities.Startable;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
@@ -286,8 +283,7 @@ public class LifecycleFsm implements Startable {
             policyTypesMap.values().stream()
                 .filter(PolicyTypeDroolsController.class::isInstance)
                 .map(PolicyTypeDroolsController.class::cast)
-                .filter(opController -> opController.getControllers().containsKey(controller.getName()))
-                .collect(Collectors.toList());
+                .filter(opController -> opController.getControllers().containsKey(controller.getName())).toList();
 
         for (PolicyTypeDroolsController opController : opControllers) {
             opController.remove(controller);

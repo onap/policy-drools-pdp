@@ -3,6 +3,7 @@
  * feature-test-transaction
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +21,10 @@
 
 package org.onap.policy.drools.testtransaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,13 +41,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.core.PolicyContainer;
 import org.onap.policy.drools.system.PolicyController;
 
-public class TestTransactionAdditionalTest {
+class TestTransactionAdditionalTest {
 
     private static final int MAX_SLEEP_COUNT = 3;
     private static final String EXPECTED = "expected exception";
@@ -56,7 +57,7 @@ public class TestTransactionAdditionalTest {
     private static final String SESSION1 = "session-a";
     private static final String SESSION2 = "session-b";
     private static final List<String> sessions = Arrays.asList(SESSION1, SESSION2);
-    private static final List<Object> facts = Arrays.asList(0L);
+    private static final List<Object> facts = List.of(0L);
 
     private Thread theThread;
     private PolicyController controller;
@@ -76,7 +77,7 @@ public class TestTransactionAdditionalTest {
     /**
      * Initialize objects for each test.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         theThread = mock(Thread.class);
         controller = mock(PolicyController.class);
@@ -118,12 +119,12 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionImpl() {
+    void testTestTransactionImpl() {
         assertNotNull(TestTransactionConstants.getManager());
     }
 
     @Test
-    public void testTestTransactionImplRegister_testTestTransactionImplUnregister() {
+    void testTestTransactionImplRegister_testTestTransactionImplUnregister() {
         task = mock(TtControllerTask.class);
         when(task.isAlive()).thenReturn(true);
         name2task.put(CONTROLLER1, task);
@@ -162,7 +163,7 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionControllerTaskFactory() throws Exception {
+    void testTestTransactionControllerTaskFactory() throws Exception {
         task = new TtControllerTask(controller) {
             @Override
             protected Thread makeThread(Runnable action) {
@@ -170,7 +171,7 @@ public class TestTransactionAdditionalTest {
             }
 
             @Override
-            protected void joinThread(long waitTimeMs) throws InterruptedException {
+            protected void joinThread(long waitTimeMs) {
                 // do nothing
             }
         };
@@ -180,7 +181,7 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionControllerTask() {
+    void testTestTransactionControllerTask() {
         assertEquals(task, theAction);
         assertTrue(task.isAlive());
         assertEquals(controller, task.getController());
@@ -190,17 +191,17 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionControllerTaskGetController() {
+    void testTestTransactionControllerTaskGetController() {
         assertEquals(controller, task.getController());
     }
 
     @Test
-    public void testTestTransactionControllerTaskGetThread() {
+    void testTestTransactionControllerTaskGetThread() {
         assertEquals(theThread, task.getThread());
     }
 
     @Test
-    public void testTestTransactionControllerTaskStop() throws Exception {
+    void testTestTransactionControllerTaskStop() {
         task.stop();
         assertFalse(task.isAlive());
         verify(theThread).interrupt();
@@ -222,7 +223,7 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionControllerTaskRun() {
+    void testTestTransactionControllerTaskRun() {
         task.run();
         assertFalse(task.isAlive());
         verify(theThread, never()).interrupt();
@@ -338,7 +339,7 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionControllerTaskInjectTxIntoSessions() {
+    void testTestTransactionControllerTaskInjectTxIntoSessions() {
         task.run();
         verify(container, times(MAX_SLEEP_COUNT * sessions.size())).insert(anyString(), any(EventObject.class));
 
@@ -356,7 +357,7 @@ public class TestTransactionAdditionalTest {
     }
 
     @Test
-    public void testTestTransactionControllerTaskToString() {
+    void testTestTransactionControllerTaskToString() {
         assertTrue(task.toString().startsWith("TTControllerTask ["));
     }
 

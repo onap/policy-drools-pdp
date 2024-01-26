@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -36,8 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.system.PolicyEngineConstants;
@@ -51,7 +51,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 /**
  * Lifecycle State Active Test.
  */
-public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
+class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
     private static final String POLICY_COMPLIANT_VCPE_BAD_INTEGER_JSON =
             "src/test/resources/tosca-policy-compliant-vcpe-bad-integer.json";
@@ -59,7 +59,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     /**
      * Start tests in the Active state.
      */
-    @Before
+    @BeforeEach
     public void startActive() throws CoderException {
         fsm = makeFsmWithPseudoTime();
 
@@ -83,13 +83,13 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void constructor() {
+    void constructor() {
         assertThatIllegalArgumentException().isThrownBy(() -> new LifecycleStateActive(null));
         fsm.shutdown();
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         assertActive();
         assertFalse(fsm.start());
         assertActive();
@@ -106,7 +106,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStop() {
+    void testStop() {
         assertTrue(fsm.stop());
         assertBasicTerminated();
 
@@ -121,7 +121,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         fsm.shutdown();
 
         assertBasicTerminated();
@@ -131,7 +131,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStatus() {
+    void testStatus() {
         waitUntil(fsm.getStatusTimerSeconds() + 1, TimeUnit.SECONDS, isStatus(PdpState.ACTIVE));
         int preCount = fsm.client.getSink().getRecentEvents().length;
 
@@ -147,7 +147,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testStateChange() throws CoderException {
+    void testStateChange() throws CoderException {
         assertActive();
 
         /* no name and mismatching group info */
@@ -184,7 +184,7 @@ public class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testUpdate() throws IOException, CoderException {
+    void testUpdate() throws IOException, CoderException {
 
         // TODO: extract repeated similar assertion blocks into their own helper methods
 

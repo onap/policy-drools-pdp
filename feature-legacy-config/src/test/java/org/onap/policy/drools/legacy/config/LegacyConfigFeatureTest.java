@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,25 +21,25 @@
 
 package org.onap.policy.drools.legacy.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 
-public class LegacyConfigFeatureTest {
+class LegacyConfigFeatureTest {
 
     private LegacyConfigFeature configF;
 
     /**
      * Set up.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
         configF = new LegacyConfigFeature();
@@ -47,7 +48,7 @@ public class LegacyConfigFeatureTest {
     /**
      * Tear down.
      */
-    @After
+    @AfterEach
     public void tearDown() {
         NoopTopicFactories.getSourceFactory().destroy();
         NoopTopicFactories.getSinkFactory().destroy();
@@ -55,12 +56,12 @@ public class LegacyConfigFeatureTest {
     }
 
     @Test
-    public void getSequenceNumber() {
+    void getSequenceNumber() {
         assertEquals(LegacyConfigFeature.SEQNO, new LegacyConfigFeature().getSequenceNumber());
     }
 
     @Test
-    public void afterOpenBeforeShutdown() {
+    void afterOpenBeforeShutdown() {
         assertFalse(LegacyConfigFeature.getLegacyConfig().isAlive());
         configF.afterOpen(PolicyEngineConstants.getManager());
         assertTrue(LegacyConfigFeature.getLegacyConfig().isAlive());

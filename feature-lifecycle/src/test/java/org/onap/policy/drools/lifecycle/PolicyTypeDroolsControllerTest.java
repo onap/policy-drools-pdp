@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +21,13 @@
 
 package org.onap.policy.drools.lifecycle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.drools.domain.models.operational.OperationalPolicy;
 import org.onap.policy.drools.system.PolicyControllerConstants;
@@ -35,7 +36,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 /**
  * Drools Controller Policy Test.
  */
-public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
+class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
 
     // Operational vCPE Policies
     private static final String OP_POLICY_NAME_VCPE = "operational.restart";
@@ -48,7 +49,7 @@ public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
     /**
      * Test initialization.
      */
-    @Before
+    @BeforeEach
     public void init() throws CoderException {
         fsm = makeFsmWithPseudoTime();
         policy = getExamplesPolicy(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
@@ -71,7 +72,7 @@ public class PolicyTypeDroolsControllerTest extends LifecycleStateRunningTest {
     }
 
     @Test
-    public void testDeployUndeploy() {
+    void testDeployUndeploy() {
         /* non-existing controller */
         assertFalse(controller.undeploy(policy));
         assertFalse(controller.deploy(policy));

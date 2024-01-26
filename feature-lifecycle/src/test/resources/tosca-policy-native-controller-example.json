@@ -15,7 +15,7 @@
                         "controllerName": "lifecycle",
                         "sourceTopics": [
                             {
-                                "topicName": "DCAE_TOPIC",
+                                "topicName": "dcae_topic",
                                 "events": [
                                     {
                                         "eventClass": "java.util.HashMap",
@@ -30,7 +30,7 @@
                         ],
                         "sinkTopics": [
                             {
-                                "topicName": "APPC-CL",
+                                "topicName": "appc-cl",
                                 "events": [
                                     {
                                         "eventClass": "java.util.HashMap",

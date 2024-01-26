@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 package org.onap.policy.drools.lifecycle;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.logging.LoggerUtils;
@@ -98,7 +98,7 @@ public class LifecycleFsmTest {
     /**
      * Test initialization.
      */
-    @Before
+    @BeforeEach
     public void beforeTest() throws CoderException, IOException {
         LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
@@ -130,7 +130,7 @@ public class LifecycleFsmTest {
         resetExecutionStats();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         resetExecutionStats();
     }
@@ -141,14 +141,8 @@ public class LifecycleFsmTest {
         PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedSuccessCount(0L);
     }
 
-    private void setExecutionCounts() {
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedCount(7L);
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedFailCount(2L);
-        PolicyEngineConstants.getManager().getStats().getGroupStat().setPolicyExecutedSuccessCount(5L);
-    }
-
     @Test
-    public void testGetDeployableActions() {
+    void testGetDeployableActions() {
         List<ToscaPolicy> expectedDeployOrder =
             List.of(controllerPolicy, controller2Policy, artifact2Policy, artifactPolicy,
                 op2Policy, opPolicy, unvalPolicy, valPolicy);
@@ -165,7 +159,7 @@ public class LifecycleFsmTest {
     }
 
     @Test
-    public void testGetUndeployableActions() {
+    void testGetUndeployableActions() {
         deployAllPolicies();
         List<ToscaPolicy> expectedUndeployOrder =
                 List.of(opPolicy, op2Policy, unvalPolicy, valPolicy, artifactPolicy,
@@ -177,7 +171,7 @@ public class LifecycleFsmTest {
     }
 
     @Test
-    public void testGetNativeArtifactPolicies() {
+    void testGetNativeArtifactPolicies() {
         deployAllPolicies();
 
         Map<String, List<ToscaPolicy>> deployedPolicies = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
@@ -186,24 +180,24 @@ public class LifecycleFsmTest {
     }
 
     @Test
-    public void testSetGroup() {
+    void testSetGroup() {
         fsm.setGroup("bar");
         assertEquals("bar", fsm.getGroup());
     }
 
     @Test
-    public void testSetSubGroup() {
+    void testSetSubGroup() {
         fsm.setSubGroup("foo");
         assertEquals("foo", fsm.getSubGroup());
     }
 
     @Test
-    public void testPdpType() {
+    void testPdpType() {
         assertEquals("foo", fsm.getPdpType());
     }
 
     @Test
-    public void testMergePolicies() {
+    void testMergePolicies() {
         assertEquals(List.of(), fsm.getActivePolicies());
         assertEquals(List.of(), fsm.mergePolicies(List.of(), List.of()));
 
@@ -229,7 +223,7 @@ public class LifecycleFsmTest {
     }
 
     @Test
-    public void testGetPolicyIdsMessages() {
+    void testGetPolicyIdsMessages() {
         assertEquals("[operational.modifyconfig 1.0.0, example.controller 1.0.0]",
                 fsm.getPolicyIds(List.of(opPolicy, controllerPolicy)).toString());
     }

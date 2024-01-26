@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +23,9 @@ package org.onap.policy.drools.system;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -35,10 +36,11 @@ import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
@@ -48,7 +50,7 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.internal.AggregatedPolicyController;
 
-public class PolicyControllerFactoryTest {
+class PolicyControllerFactoryTest {
     private static final String POLICY_CONTROLLER_BUILDER_TAG = "PolicyControllerFactoryTest";
 
     private static final String MY_NAME = "my-name-a";
@@ -79,7 +81,7 @@ public class PolicyControllerFactoryTest {
     /**
      * Initializes the object to be tested.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         controller = mock(PolicyController.class);
         controller2 = mock(PolicyController.class);
@@ -114,14 +116,14 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testFactory() {
+    void testFactory() {
         // use a REAL object instead of an Impl
         ipc = new IndexedPolicyControllerFactory();
         assertNotNull(ipc.getProviders());
     }
 
     @Test
-    public void testBuild() {
+    void testBuild() {
         assertEquals(controller, ipc.build(MY_NAME, properties));
 
         // re-build - should not create another one
@@ -134,14 +136,14 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testSerialize() {
+    void testSerialize() {
         assertEquals(controller, ipc.build(MY_NAME, properties));
 
         new GsonTestUtils().compareGson(ipc, PolicyControllerFactoryTest.class);
     }
 
     @Test
-    public void testPatchStringDroolsConfiguration() {
+    void testPatchStringDroolsConfiguration() {
         // unknown controller
         assertThatIllegalArgumentException().isThrownBy(() -> ipc.patch(MY_NAME, config));
 
@@ -173,7 +175,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testPatchPolicyControllerDroolsConfiguration() {
+    void testPatchPolicyControllerDroolsConfiguration() {
         ipc.patch(controller, config);
         verify(controller).updateDrools(config);
 
@@ -194,7 +196,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testShutdownString() {
+    void testShutdownString() {
         // null name
         String nullName = null;
         assertThatIllegalArgumentException().isThrownBy(() -> ipc.shutdown(nullName));
@@ -213,7 +215,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testShutdownPolicyController() {
+    void testShutdownPolicyController() {
         ipc.build(MY_NAME, properties);
 
         ipc.shutdown(controller);
@@ -225,7 +227,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         ipc.build(MY_NAME, properties);
         ipc.build(MY_NAME2, properties);
 
@@ -240,7 +242,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testUnmanage() {
+    void testUnmanage() {
         ipc.build(MY_NAME, properties);
         ipc.build(MY_NAME2, properties);
 
@@ -265,7 +267,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testDestroyString() {
+    void testDestroyString() {
         // null name
         String nullName = null;
         assertThatIllegalArgumentException().isThrownBy(() -> ipc.destroy(nullName));
@@ -284,7 +286,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testDestroyPolicyController() {
+    void testDestroyPolicyController() {
         ipc.build(MY_NAME, properties);
 
         ipc.destroy(controller);
@@ -296,7 +298,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testDestroy() {
+    void testDestroy() {
         ipc.build(MY_NAME, properties);
         ipc.build(MY_NAME2, properties);
 
@@ -311,7 +313,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testGetString() {
+    void testGetString() {
         // unknown name
         assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(MY_NAME));
 
@@ -330,7 +332,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testGetStringString_testToKey() {
+    void testGetStringString_testToKey() {
         // unknown controller
         assertThatIllegalArgumentException().isThrownBy(() -> ipc.get(GROUP1, ARTIFACT1));
 
@@ -357,7 +359,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testGetDroolsController() {
+    void testGetDroolsController() {
         // unknown controller
         assertThatIllegalStateException().isThrownBy(() -> ipc.get(drools));
 
@@ -376,27 +378,27 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testInventory() {
+    void testInventory() {
         ipc.build(MY_NAME, properties);
         ipc.build(MY_NAME2, properties);
 
         List<PolicyController> lst = ipc.inventory();
-        Collections.sort(lst, (left, right) -> left.getName().compareTo(right.getName()));
+        lst.sort(Comparator.comparing(PolicyController::getName));
         assertEquals(Arrays.asList(controller, controller2), lst);
     }
 
     @Test
-    public void testGetFeatures() {
+    void testGetFeatures() {
         assertEquals(Arrays.asList(FEATURE1, FEATURE2), ipc.getFeatures());
     }
 
     @Test
-    public void testGetFeatureProviders() {
+    void testGetFeatureProviders() {
         assertEquals(providers, ipc.getFeatureProviders());
     }
 
     @Test
-    public void testGetFeatureProvider() {
+    void testGetFeatureProvider() {
         // null name
         assertThatIllegalArgumentException().isThrownBy(() -> ipc.getFeatureProvider(null));
 
@@ -411,7 +413,7 @@ public class PolicyControllerFactoryTest {
     }
 
     @Test
-    public void testControllerType() {
+    void testControllerType() {
         PolicyControllerFactory factory = new IndexedPolicyControllerFactory();
         Properties props = new Properties();
 

@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,14 +50,12 @@ import org.slf4j.LoggerFactory;
  * 2) Access to UEB
  * 3) Logging of events
  */
-public class PolicySession
-        implements AgendaEventListener, RuleRuntimeEventListener {
+public class PolicySession implements AgendaEventListener, RuleRuntimeEventListener {
     // get an instance of logger
-    private static Logger logger = LoggerFactory.getLogger(PolicySession.class);
+    private static final Logger logger = LoggerFactory.getLogger(PolicySession.class);
 
     // supports 'getCurrentSession()' method
-    private static ThreadLocal<PolicySession> policySess =
-            new ThreadLocal<>();
+    private static ThreadLocal<PolicySession> policySess = new ThreadLocal<>();
 
     // name of the 'PolicySession' and associated 'KieSession'
     @Getter
@@ -115,7 +114,7 @@ public class PolicySession
             return;
         }
 
-        // loop through all of the features, and give each one
+        // loop through all the features, and give each one
         // a chance to create the 'ThreadModel'
         for (PolicySessionFeatureApi feature :
                 PolicySessionFeatureApiConstants.getImpl().getList()) {

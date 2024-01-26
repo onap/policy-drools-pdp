@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +27,8 @@ import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
@@ -54,7 +55,7 @@ public abstract class LifecycleStateRunningTest {
     /**
      * Set up.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws IOException {
         LoggerUtils.setLevel(LoggerUtils.ROOT_LOGGER, "INFO");
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
@@ -66,7 +67,7 @@ public abstract class LifecycleStateRunningTest {
     /**
      * Tear Down.
      */
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         controllerSupport.destroyController();
         NoopTopicFactories.getSourceFactory().destroy();

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +21,9 @@
 
 package org.onap.policy.drools.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,17 +33,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 
 /**
  * (File) System Persistence Tests.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class SystemPersistenceTest {
     /**
      * sample configuration dir.
@@ -124,18 +125,18 @@ public class SystemPersistenceTest {
     private static final String SYSTEM_PROPS = TEST_CONTROLLER_NAME;
     private static final String SYSTEM_PROPS_FILE =  SYSTEM_PROPS + "-system.properties";
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws IOException {
         cleanUpWorkingDirs();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() throws IOException {
         cleanUpWorkingDirs();
     }
 
     @Test
-    public void test1NonDefaultConfigDir() {
+    void test1NonDefaultConfigDir() {
         SystemPersistenceConstants.getManager().setConfigurationDir(OTHER_CONFIG_DIR);
         assertEquals(OTHER_CONFIG_DIR, SystemPersistenceConstants.getManager().getConfigurationPath().toString());
 
@@ -149,7 +150,7 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test2Engine_Environment_System() throws IOException {
+    void test2Engine_Environment_System() throws IOException {
         SystemPersistenceConstants.getManager().setConfigurationDir(OTHER_CONFIG_DIR);
 
         final Path policyEnginePropsPath =
@@ -191,7 +192,7 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test3Topic() {
+    void test3Topic() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
         Path topicPath = Paths
@@ -221,7 +222,7 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test4HttpServer() {
+    void test4HttpServer() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
         Path httpServerPath = Paths
@@ -251,7 +252,7 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test5HttpClient() {
+    void test5HttpClient() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
         Path httpClientPath = Paths
@@ -281,7 +282,7 @@ public class SystemPersistenceTest {
     }
 
     @Test
-    public void test6Controller() {
+    void test6Controller() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
 
         Path controllerPath = Paths

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +21,21 @@
 
 package org.onap.policy.drools.testtransaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.controller.DroolsController;
 import org.onap.policy.drools.system.PolicyController;
 
-public class TestTransactionFeatureTest {
+class TestTransactionFeatureTest {
 
     private AtomicInteger regCount;
     private AtomicInteger unregCount;
@@ -46,7 +47,7 @@ public class TestTransactionFeatureTest {
     /**
      * Initialize objects for each test.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         regCount = new AtomicInteger(0);
         unregCount = new AtomicInteger(0);
@@ -75,34 +76,34 @@ public class TestTransactionFeatureTest {
     }
 
     @Test
-    public void testAfterStart() {
+    void testAfterStart() {
         // try each combination of alive, locked, and brained
         checkCombos(regCount, ctlr -> feat.afterStart(ctlr));
     }
 
     @Test
-    public void testAfterLock() {
+    void testAfterLock() {
         checkSimple(unregCount, ctlr -> feat.afterLock(ctlr));
     }
 
     @Test
-    public void testAfterUnlock() {
+    void testAfterUnlock() {
         // try each combination of alive, locked, and brained
         checkCombos(regCount, ctlr -> feat.afterUnlock(ctlr));
     }
 
     @Test
-    public void testBeforeStop() {
+    void testBeforeStop() {
         checkSimple(unregCount, ctlr -> feat.beforeStop(ctlr));
     }
 
     @Test
-    public void testGetSequenceNumber() {
+    void testGetSequenceNumber() {
         assertEquals(1000, feat.getSequenceNumber());
     }
 
     @Test
-    public void testGetTestTransMgr() {
+    void testGetTestTransMgr() {
         assertNotNull(new TestTransactionFeature().getTestTransMgr());
     }
 

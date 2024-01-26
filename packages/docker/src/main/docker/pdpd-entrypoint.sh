@@ -2,6 +2,7 @@
 
 # ########################################################################
 # Copyright 2019-2021 AT&T Intellectual Property. All rights reserved
+# Modifications Copyright (C) 2024 Nordix Foundation.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -115,13 +116,6 @@ function security {
         if ! cmp -s "${POLICY_INSTALL_INIT}"/policy-truststore "${POLICY_HOME}"/etc/ssl/policy-truststore; then
             echo "overriding policy-truststore"
             cp -f "${POLICY_INSTALL_INIT}"/policy-truststore "${POLICY_HOME}"/etc/ssl
-        fi
-    fi
-
-    if [ -f "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile ]; then
-        if ! cmp -s "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile "${POLICY_HOME}"/config/aaf-cadi.keyfile; then
-            echo "overriding aaf-cadi.keyfile"
-            cp -f "${POLICY_INSTALL_INIT}"/aaf-cadi.keyfile "${POLICY_HOME}"/config/aaf-cadi.keyfile
         fi
     fi
 }

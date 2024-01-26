@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +21,11 @@
 
 package org.onap.policy.drools.healthcheck;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -41,8 +42,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
@@ -57,7 +58,7 @@ import org.onap.policy.drools.system.PolicyEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HealthCheckManagerTest {
+class HealthCheckManagerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HealthCheckManagerTest.class);
 
@@ -101,7 +102,7 @@ public class HealthCheckManagerTest {
     /**
      * Initializes the object to be tested.
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         properties = new Properties();
         mocks();
@@ -186,7 +187,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testHealthcheck() {
+    void testHealthcheck() {
         /* engine not alive */
 
         when(engineMgr.isAlive()).thenReturn(false);
@@ -210,7 +211,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testControllerHealthcheck() {
+    void testControllerHealthcheck() {
         /* engine not alive */
 
         when(engineMgr.isAlive()).thenReturn(false);
@@ -248,7 +249,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testClientHealthcheck() {
+    void testClientHealthcheck() {
         /* engine not alive */
 
         when(engineMgr.isAlive()).thenReturn(false);
@@ -278,7 +279,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void reportOnController() {
+    void reportOnController() {
 
         /* controller not alive */
 
@@ -336,7 +337,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testReportOnUnknown() {
+    void testReportOnUnknown() {
         var reports = monitor.summary(monitor.engineHealthcheck(), monitor.futures(List.of(1)));
         logger.info("{}", reports);
 
@@ -346,7 +347,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         // good start
 
         when(server1.start()).thenReturn(true);
@@ -381,7 +382,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testOpen() {
+    void testOpen() {
 
         /* nothing done */
 
@@ -412,7 +413,7 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         monitor.healthcheckServer = server1;
         monitor.livenessServer = server2;
         monitor.clients = List.of(client1, client2, client3);
@@ -429,12 +430,12 @@ public class HealthCheckManagerTest {
     }
 
     @Test
-    public void testIsAlive() {
+    void testIsAlive() {
         assertFalse(monitor.isAlive());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertTrue(monitor.toString().contains("HealthCheckManager"));
     }
 

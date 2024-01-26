@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +21,17 @@
 
 package org.onap.policy.drools.controller.internal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.onap.policy.drools.controller.DroolsController;
@@ -49,7 +53,7 @@ public class MavenDroolsControllerTest {
      *
      * @throws IOException throws an IO exception
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUpBeforeClass() throws IOException {
         releaseId =
             KieUtils.installArtifact(Paths.get(JUNIT_ECHO_KMODULE_PATH).toFile(),
@@ -58,7 +62,7 @@ public class MavenDroolsControllerTest {
                 Paths.get(JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         running = new CountDownLatch(1);
     }
@@ -68,58 +72,58 @@ public class MavenDroolsControllerTest {
     }
 
     @Test
-    public void stop() throws InterruptedException {
+    void stop() throws InterruptedException {
         createDroolsController(10000L).stop();
     }
 
     @Test
-    public void shutdown() throws InterruptedException {
+    void shutdown() throws InterruptedException {
         createDroolsController(10000L).shutdown();
     }
 
     @Test
-    public void testLock() throws InterruptedException {
+    void testLock() throws InterruptedException {
         DroolsController controller = createDroolsController(30000L);
 
         controller.lock();
-        Assert.assertTrue(controller.isLocked());
+        assertTrue(controller.isLocked());
 
         controller.unlock();
-        Assert.assertFalse(controller.isLocked());
+        assertFalse(controller.isLocked());
 
         controller.halt();
-        Assert.assertFalse(controller.isAlive());
+        assertFalse(controller.isAlive());
 
         new GsonTestUtils().compareGson(controller, MavenDroolsControllerTest.class);
     }
 
     @Test
-    public void testFact() throws InterruptedException {
+    void testFact() throws InterruptedException {
         DroolsController controller = createDroolsController(30000L);
 
         Integer one = 1;
         Integer two = 2;
 
-        Assert.assertTrue(controller.offer(one));
-        Assert.assertTrue(controller.exists(one));
-        Assert.assertFalse(controller.exists(two));
+        assertTrue(controller.offer(one));
+        assertTrue(controller.exists(one));
+        assertFalse(controller.exists(two));
 
-        Assert.assertTrue(controller.offer(two));
-        Assert.assertTrue(controller.exists(one));
-        Assert.assertTrue(controller.exists(two));
+        assertTrue(controller.offer(two));
+        assertTrue(controller.exists(one));
+        assertTrue(controller.exists(two));
 
         Integer three = 3;
-        Assert.assertFalse(controller.delete(three));
-        Assert.assertTrue(controller.exists(one));
-        Assert.assertTrue(controller.exists(two));
+        assertFalse(controller.delete(three));
+        assertTrue(controller.exists(one));
+        assertTrue(controller.exists(two));
 
-        Assert.assertTrue(controller.delete(two));
-        Assert.assertTrue(controller.exists(one));
-        Assert.assertFalse(controller.exists(two));
+        assertTrue(controller.delete(two));
+        assertTrue(controller.exists(one));
+        assertFalse(controller.exists(two));
 
-        Assert.assertTrue(controller.delete(one));
-        Assert.assertFalse(controller.exists(one));
-        Assert.assertFalse(controller.exists(two));
+        assertTrue(controller.delete(one));
+        assertFalse(controller.exists(one));
+        assertFalse(controller.exists(two));
     }
 
     private DroolsController createDroolsController(long courtesyStartTimeMs) throws InterruptedException {
@@ -130,31 +134,31 @@ public class MavenDroolsControllerTest {
         DroolsController controller = new MavenDroolsController(releaseId.getGroupId(),
             releaseId.getArtifactId(), releaseId.getVersion(), null, null);
 
-        Assert.assertFalse(controller.isAlive());
-        Assert.assertTrue(controller.isBrained());
+        assertFalse(controller.isAlive());
+        assertTrue(controller.isBrained());
 
         controller.start();
 
-        Assert.assertTrue(controller.isAlive());
-        Assert.assertTrue(controller.isBrained());
+        assertTrue(controller.isAlive());
+        assertTrue(controller.isBrained());
 
-        Assert.assertEquals(releaseId.getGroupId(), controller.getGroupId());
-        Assert.assertEquals(releaseId.getArtifactId(), controller.getArtifactId());
-        Assert.assertEquals(releaseId.getVersion(), controller.getVersion());
+        assertEquals(releaseId.getGroupId(), controller.getGroupId());
+        assertEquals(releaseId.getArtifactId(), controller.getArtifactId());
+        assertEquals(releaseId.getVersion(), controller.getVersion());
 
-        Assert.assertEquals(releaseId.getGroupId(), controller.getContainer().getGroupId());
-        Assert.assertEquals(releaseId.getArtifactId(), controller.getContainer().getArtifactId());
-        Assert.assertEquals(releaseId.getVersion(), controller.getContainer().getVersion());
+        assertEquals(releaseId.getGroupId(), controller.getContainer().getGroupId());
+        assertEquals(releaseId.getArtifactId(), controller.getContainer().getArtifactId());
+        assertEquals(releaseId.getVersion(), controller.getContainer().getVersion());
 
         /* allow full initialization from local maven repository */
-        Assert.assertTrue(running.await(courtesyStartTimeMs, TimeUnit.MILLISECONDS));
+        assertTrue(running.await(courtesyStartTimeMs, TimeUnit.MILLISECONDS));
 
-        Assert.assertEquals(1, controller.getSessionNames().size());
-        Assert.assertEquals(JUNIT_ECHO_KSESSION, controller.getSessionNames().get(0));
-        Assert.assertEquals(1, controller.getCanonicalSessionNames().size());
-        Assert.assertTrue(controller.getCanonicalSessionNames().get(0).contains(JUNIT_ECHO_KSESSION));
+        assertEquals(1, controller.getSessionNames().size());
+        assertEquals(JUNIT_ECHO_KSESSION, controller.getSessionNames().get(0));
+        assertEquals(1, controller.getCanonicalSessionNames().size());
+        assertTrue(controller.getCanonicalSessionNames().get(0).contains(JUNIT_ECHO_KSESSION));
 
-        Assert.assertEquals(JUNIT_ECHO_KBASE, String.join(",", controller.getBaseDomainNames()));
+        assertEquals(JUNIT_ECHO_KBASE, String.join(",", controller.getBaseDomainNames()));
 
         return controller;
     }

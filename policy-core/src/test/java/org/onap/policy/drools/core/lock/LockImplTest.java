@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -40,10 +41,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class LockImplTest {
+class LockImplTest {
     private static final LockState STATE = LockState.WAITING;
     private static final String RESOURCE = "hello";
     private static final String OWNER_KEY = "world";
@@ -57,7 +58,7 @@ public class LockImplTest {
     /**
      * Populates {@link #lock}.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         callback = mock(LockCallback.class);
 
@@ -65,7 +66,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testSerializable() throws Exception {
+    void testSerializable() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(lock);
@@ -86,7 +87,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testLockImplNoArgs() {
+    void testLockImplNoArgs() {
         // use no-arg constructor
         lock = new LockImpl();
         assertEquals(LockState.UNAVAILABLE, lock.getState());
@@ -97,7 +98,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testLockImpl_testGetters() {
+    void testLockImpl_testGetters() {
         assertEquals(STATE, lock.getState());
         assertEquals(RESOURCE, lock.getResourceId());
         assertEquals(OWNER_KEY, lock.getOwnerKey());
@@ -118,7 +119,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testFree() {
+    void testFree() {
         assertTrue(lock.free());
         assertTrue(lock.isUnavailable());
 
@@ -132,7 +133,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testExtend() {
+    void testExtend() {
         lock.setState(LockState.WAITING);
 
         LockCallback callback2 = mock(LockCallback.class);
@@ -181,7 +182,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testNotifyAvailable() {
+    void testNotifyAvailable() {
         lock.notifyAvailable();
 
         verify(callback).lockAvailable(any());
@@ -189,7 +190,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testNotifyAvailable_Ex() {
+    void testNotifyAvailable_Ex() {
         doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockAvailable(any());
         doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockUnavailable(any());
 
@@ -198,7 +199,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testNotifyUnavailable() {
+    void testNotifyUnavailable() {
         lock.notifyUnavailable();
 
         verify(callback, never()).lockAvailable(any());
@@ -206,7 +207,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testNotifyUnavailable_Ex() {
+    void testNotifyUnavailable_Ex() {
         doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockAvailable(any());
         doThrow(new IllegalArgumentException(EXPECTED_EXCEPTION)).when(callback).lockUnavailable(any());
 
@@ -215,7 +216,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testSetState_testIsActive_testIsWaiting_testIsUnavailable() {
+    void testSetState_testIsActive_testIsWaiting_testIsUnavailable() {
         lock.setState(LockState.WAITING);
         assertEquals(LockState.WAITING, lock.getState());
         assertFalse(lock.isActive());
@@ -236,7 +237,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testSetHoldSec() {
+    void testSetHoldSec() {
         assertEquals(HOLD_SEC, lock.getHoldSec());
 
         lock.setHoldSec(HOLD_SEC2);
@@ -244,7 +245,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testSetCallback() {
+    void testSetCallback() {
         assertSame(callback, lock.getCallback());
 
         LockCallback callback2 = mock(LockCallback.class);
@@ -253,7 +254,7 @@ public class LockImplTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         String text = lock.toString();
 
         assertNotNull(text);

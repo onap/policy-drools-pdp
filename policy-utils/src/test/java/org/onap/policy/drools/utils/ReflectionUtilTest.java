@@ -3,6 +3,7 @@
  * policy-utils
  * ================================================================================
  * Copyright (C) 2017-2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,26 +21,27 @@
 
 package org.onap.policy.drools.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ReflectionUtilTest {
+class ReflectionUtilTest {
 
     public class ParentClass {
 
     }
 
-    public class ChildClass extends ParentClass{
+    class ChildClass extends ParentClass{
 
     }
 
     @Test
-    public void testReflection() {
+    void testReflection() {
 
         try {
 
@@ -61,25 +63,27 @@ public class ReflectionUtilTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testException1() {
-        ReflectionUtil.fetchClass(null, "org.onap.policy.drools.utils.ReflectionUtil");
+    @Test
+    void testException1() {
+        assertThrows(IllegalArgumentException.class, () ->
+            ReflectionUtil.fetchClass(null, "org.onap.policy.drools.utils.ReflectionUtil"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testException2() {
+    @Test
+    void testException2() {
         Class<?> class1;
         try {
             class1 = Class.forName("org.onap.policy.drools.utils.ReflectionUtil");
             ClassLoader classLoader = class1.getClassLoader();
-            ReflectionUtil.fetchClass(classLoader, null);
+            assertThrows(IllegalArgumentException.class, () ->
+                ReflectionUtil.fetchClass(classLoader, null));
         } catch (ClassNotFoundException e) {
             fail();
         }
     }
 
     @Test
-    public void testException3() throws ClassNotFoundException {
+    void testException3() {
         assertNull(ReflectionUtil.fetchClass(ClassLoader.getSystemClassLoader(), "foo.bar"));
     }
 }

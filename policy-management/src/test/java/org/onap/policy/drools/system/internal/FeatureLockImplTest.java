@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ package org.onap.policy.drools.system.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,15 +40,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.concurrent.ScheduledExecutorService;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.onap.policy.drools.core.DroolsRunnable;
 import org.onap.policy.drools.core.PolicySession;
 import org.onap.policy.drools.core.lock.LockCallback;
@@ -56,8 +59,8 @@ import org.onap.policy.drools.core.lock.LockState;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FeatureLockImplTest {
+@ExtendWith(MockitoExtension.class)
+class FeatureLockImplTest {
     private static final String POLICY_ENGINE_EXECUTOR_FIELD = "executorService";
     private static final String OWNER_KEY = "my key";
     private static final String RESOURCE = "my resource";
@@ -72,11 +75,13 @@ public class FeatureLockImplTest {
     @Mock
     private LockCallback callback;
 
+    AutoCloseable closeable;
+
     /**
      * Saves static fields and configures the location of the property files.
      */
-    @BeforeClass
-    public static void setUpBeforeClass() {
+    @BeforeAll
+    static void setUpBeforeClass() {
         saveExec = (ScheduledExecutorService) ReflectionTestUtils.getField(PolicyEngineConstants.getManager(),
             POLICY_ENGINE_EXECUTOR_FIELD);
     }
@@ -84,8 +89,8 @@ public class FeatureLockImplTest {
     /**
      * Restores static fields.
      */
-    @AfterClass
-    public static void tearDownAfterClass() {
+    @AfterAll
+    static void tearDownAfterClass() {
         ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
     }
 
@@ -93,13 +98,19 @@ public class FeatureLockImplTest {
      * Initializes the mocks and creates a feature that uses {@link #exsvc} to execute
      * tasks.
      */
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        closeable = MockitoAnnotations.openMocks(this);
         ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
     }
 
+    @AfterEach
+    void closeMocks() throws Exception {
+        closeable.close();
+    }
+
     @Test
-    public void testNoArgs() {
+    void testNoArgs() {
         MyLock lock = new MyLock();
         assertNull(lock.getResourceId());
         assertNull(lock.getOwnerKey());
@@ -108,7 +119,7 @@ public class FeatureLockImplTest {
     }
 
     @Test
-    public void testFeatureLockImpl() {
+    void testFeatureLockImpl() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         assertTrue(lock.isWaiting());
         assertEquals(RESOURCE, lock.getResourceId());
@@ -118,7 +129,7 @@ public class FeatureLockImplTest {
     }
 
     @Test
-    public void testSerializable() throws Exception {
+    void testSerializable() throws Exception {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         lock = roundTrip(lock);
 
@@ -131,14 +142,14 @@ public class FeatureLockImplTest {
     }
 
     @Test
-    public void testGrant() {
+    void testGrant() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         lock.grant();
 
         assertTrue(lock.isActive());
         assertEquals(1, lock.nupdates);
 
-        invokeCallback(1);
+        invokeCallback();
         verify(callback).lockAvailable(any());
         verify(callback, never()).lockUnavailable(any());
     }
@@ -147,7 +158,7 @@ public class FeatureLockImplTest {
      * Tests grant() when the lock is already unavailable.
      */
     @Test
-    public void testGrantUnavailable() {
+    void testGrantUnavailable() {
         MyLock lock = new MyLock(LockState.UNAVAILABLE, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         lock.setState(LockState.UNAVAILABLE);
         lock.grant();
@@ -159,13 +170,13 @@ public class FeatureLockImplTest {
     }
 
     @Test
-    public void testDeny() {
+    void testDeny() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         lock.deny("my reason");
 
         assertTrue(lock.isUnavailable());
 
-        invokeCallback(1);
+        invokeCallback();
         verify(callback, never()).lockAvailable(any());
         verify(callback).lockUnavailable(any());
     }
@@ -174,10 +185,11 @@ public class FeatureLockImplTest {
      * Tests doNotify() when a session exists.
      */
     @Test
-    public void testDoNotifySession() {
+    void testDoNotifySession() {
         PolicySession session = mock(PolicySession.class);
 
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback) {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -207,20 +219,20 @@ public class FeatureLockImplTest {
      * Tests doNotify() when there is no session.
      */
     @Test
-    public void testDoNotifyNoSession() {
+    void testDoNotifyNoSession() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         lock.grant();
 
         assertTrue(lock.isActive());
         assertEquals(1, lock.nupdates);
 
-        invokeCallback(1);
+        invokeCallback();
         verify(callback).lockAvailable(any());
         verify(callback, never()).lockUnavailable(any());
     }
 
     @Test
-    public void testFreeAllowed() {
+    void testFreeAllowed() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         assertTrue(lock.freeAllowed());
     }
@@ -229,7 +241,7 @@ public class FeatureLockImplTest {
      * Tests freeAllowed() when the lock is unavailable.
      */
     @Test
-    public void testFreeAllowedUnavailable() {
+    void testFreeAllowedUnavailable() {
         MyLock lock = new MyLock(LockState.UNAVAILABLE, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
         assertFalse(lock.freeAllowed());
         assertTrue(lock.isUnavailable());
@@ -241,7 +253,7 @@ public class FeatureLockImplTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testFreeAllowedSerialized() throws Exception {
+    void testFreeAllowedSerialized() throws Exception {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         lock = roundTrip(lock);
@@ -254,7 +266,7 @@ public class FeatureLockImplTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testFreeAllowedNoFeature() throws Exception {
+    void testFreeAllowedNoFeature() throws Exception {
         MyLock lock = new MyLockNoFeature(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         lock = roundTrip(lock);
@@ -263,7 +275,7 @@ public class FeatureLockImplTest {
     }
 
     @Test
-    public void testExtendAllowed() {
+    void testExtendAllowed() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         LockCallback scallback = mock(LockCallback.class);
@@ -288,7 +300,7 @@ public class FeatureLockImplTest {
      * Tests extendAllowed() when the lock is unavailable.
      */
     @Test
-    public void testExtendAllowedUnavailable() {
+    void testExtendAllowedUnavailable() {
         MyLock lock = new MyLock(LockState.UNAVAILABLE, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         LockCallback scallback = mock(LockCallback.class);
@@ -297,7 +309,7 @@ public class FeatureLockImplTest {
         assertEquals(HOLD_SEC2, lock.getHoldSec());
         assertSame(scallback, lock.getCallback());
 
-        invokeCallback(1);
+        invokeCallback();
         verify(scallback, never()).lockAvailable(lock);
         verify(scallback).lockUnavailable(lock);
     }
@@ -308,7 +320,7 @@ public class FeatureLockImplTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testExtendAllowedSerialized() throws Exception {
+    void testExtendAllowedSerialized() throws Exception {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         lock = roundTrip(lock);
@@ -328,7 +340,7 @@ public class FeatureLockImplTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testExtendAllowedNoFeature() throws Exception {
+    void testExtendAllowedNoFeature() throws Exception {
         MyLock lock = new MyLockNoFeature(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         lock = roundTrip(lock);
@@ -339,21 +351,21 @@ public class FeatureLockImplTest {
         assertEquals(HOLD_SEC2, lock.getHoldSec());
         assertSame(scallback, lock.getCallback());
 
-        invokeCallback(1);
+        invokeCallback();
         verify(scallback, never()).lockAvailable(lock);
         verify(scallback).lockUnavailable(lock);
     }
 
     @Test
-    public void testGetSession() {
+    void testGetSession() {
         MyLockStdSession lock = new MyLockStdSession(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
 
         // this should invoke the real policy session without throwing an exception
-        assertThatCode(() -> lock.grant()).doesNotThrowAnyException();
+        assertThatCode(lock::grant).doesNotThrowAnyException();
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         String text = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback).toString();
         assertNotNull(text);
         assertThat(text).contains("LockImpl");
@@ -374,21 +386,18 @@ public class FeatureLockImplTest {
     /**
      * Invokes the last call-back in the work queue.
      *
-     * @param nexpected number of call-backs expected in the work queue
      */
-    private void invokeCallback(int nexpected) {
+    private void invokeCallback() {
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(nexpected)).execute(captor.capture());
-
-        if (nexpected > 0) {
-            captor.getAllValues().get(nexpected - 1).run();
-        }
+        verify(exsvc, times(1)).execute(captor.capture());
+        captor.getAllValues().get(0).run();
     }
 
     /**
      * Lock that inherits the normal getSession() method.
      */
     public static class MyLockStdSession extends FeatureLockImpl {
+        @Serial
         private static final long serialVersionUID = 1L;
         protected int nupdates = 0;
 
@@ -424,6 +433,7 @@ public class FeatureLockImplTest {
     }
 
     public static class MyLock extends MyLockStdSession {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public MyLock() {
@@ -441,6 +451,7 @@ public class FeatureLockImplTest {
     }
 
     public static class MyLockNoFeature extends MyLock {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         public MyLockNoFeature() {

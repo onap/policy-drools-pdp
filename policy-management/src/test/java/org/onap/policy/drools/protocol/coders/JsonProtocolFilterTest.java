@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +21,14 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class JsonProtocolFilterTest {
+class JsonProtocolFilterTest {
 
     private static final String JSON =
                     "{\"requestID\":\"38adde30-cc22-11e8-a8d5-f2801f1b9fd1\",\"entity\":\"controller\","
@@ -38,7 +40,7 @@ public class JsonProtocolFilterTest {
      * Tests getting the rule expression of the filter.
      */
     @Test
-    public void getRuleTest() {
+    void getRuleTest() {
         assertEquals("$.test", new JsonProtocolFilter("$.test").getRule());
     }
 
@@ -46,7 +48,7 @@ public class JsonProtocolFilterTest {
      * Tests setting the rule expression of the filter.
      */
     @Test
-    public void setRuleTest() {
+    void setRuleTest() {
         JsonProtocolFilter filter = new JsonProtocolFilter();
         assertEquals(JsonProtocolFilter.MATCH_ANY, filter.getRule());
         filter.setRule("$.test");
@@ -57,7 +59,7 @@ public class JsonProtocolFilterTest {
      * Tests that the rule expression will be set to match anything if an empty string is passed.
      */
     @Test
-    public void setRuleEmptyTest() {
+    void setRuleEmptyTest() {
         assertEquals(JsonProtocolFilter.MATCH_ANY, new JsonProtocolFilter("").getRule());
     }
 
@@ -65,7 +67,7 @@ public class JsonProtocolFilterTest {
      * Tests that the rule expression will be set to match anything if a null string is passed.
      */
     @Test
-    public void setRuleNullTest() {
+    void setRuleNullTest() {
         assertEquals(JsonProtocolFilter.MATCH_ANY, new JsonProtocolFilter(null).getRule());
     }
 
@@ -73,7 +75,7 @@ public class JsonProtocolFilterTest {
      * Tests accepting a message if all filter rules pass.
      */
     @Test
-    public void acceptPassTest() {
+    void acceptPassTest() {
         assertTrue(new JsonProtocolFilter(
                         "$.controllers[?(@.drools.version =~ /\\d\\.\\d\\.\\d/ && @.operation == 'update')]")
                                         .accept(JSON));
@@ -83,7 +85,7 @@ public class JsonProtocolFilterTest {
      * Tests accepting a message without having to filter if the rule is set to match anything.
      */
     @Test
-    public void acceptAnyTest() {
+    void acceptAnyTest() {
         assertTrue(new JsonProtocolFilter(null).accept(JSON));
     }
 
@@ -91,7 +93,7 @@ public class JsonProtocolFilterTest {
      * Tests rejecting a message if one or more of the filter rules fail.
      */
     @Test
-    public void acceptFailTest() {
+    void acceptFailTest() {
         assertFalse(
             new JsonProtocolFilter("$.controllers[?(@.drools.version =~ /\\\\d\\\\.\\\\d\\\\.2/)]")
                 .accept(JSON));
@@ -101,7 +103,7 @@ public class JsonProtocolFilterTest {
      * Tests finding field matches for a filter rule corresponding to a topic.
      */
     @Test
-    public void filterPassTest() {
+    void filterPassTest() {
         assertEquals("38adde30-cc22-11e8-a8d5-f2801f1b9fd1", new JsonProtocolFilter("$.requestID").filter(JSON).get(0));
     }
 
@@ -109,7 +111,7 @@ public class JsonProtocolFilterTest {
      * Tests that an empty list is returned when no matches are found.
      */
     @Test
-    public void filterFailTest() {
+    void filterFailTest() {
         assertTrue(new JsonProtocolFilter("$.test").filter(JSON).isEmpty());
     }
 
@@ -117,7 +119,7 @@ public class JsonProtocolFilterTest {
      * Tests static method for filtering a JSON string with an arbitrary expression.
      */
     @Test
-    public void staticFilterPassTest() {
+    void staticFilterPassTest() {
         assertEquals("controller", JsonProtocolFilter.filter(JSON, "$.entity").get(0));
     }
 
@@ -125,39 +127,39 @@ public class JsonProtocolFilterTest {
      * Tests that an empty list is returned when the static filter() method does not find any matches.
      */
     @Test
-    public void staticFilterFailTest() {
+    void staticFilterFailTest() {
         assertTrue(JsonProtocolFilter.filter(JSON, "$.test").isEmpty());
     }
 
     /**
      * Tests that an exception is thrown if a null JSON string is passed.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void staticFilterNullJsonTest() {
-        JsonProtocolFilter.filter(null, "[?($ =~ /.*/");
+    @Test
+    void staticFilterNullJsonTest() {
+        assertThrows(IllegalArgumentException.class, () -> JsonProtocolFilter.filter(null, "[?($ =~ /.*/"));
     }
 
     /**
      * Tests that an exception is thrown if an empty JSON string is passed.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void staticFilterEmptyJsonTest() {
-        JsonProtocolFilter.filter("", "[?($ =~ /.*/");
+    @Test
+    void staticFilterEmptyJsonTest() {
+        assertThrows(IllegalArgumentException.class, () -> JsonProtocolFilter.filter("", "[?($ =~ /.*/"));
     }
 
     /**
      * Tests that an exception is thrown if a null expression string is passed.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void staticFilterNullExpressionTest() {
-        JsonProtocolFilter.filter("{\"hello\":\"world\"}", null);
+    @Test
+    void staticFilterNullExpressionTest() {
+        assertThrows(IllegalArgumentException.class, () -> JsonProtocolFilter.filter("{\"hello\":\"world\"}", null));
     }
 
     /**
      * Tests that an exception is thrown if an empty expression string is passed.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void staticFilterEmptyExpressionTest() {
-        JsonProtocolFilter.filter("{\"hello\":\"world\"}", "");
+    @Test
+    void staticFilterEmptyExpressionTest() {
+        assertThrows(IllegalArgumentException.class, () -> JsonProtocolFilter.filter("{\"hello\":\"world\"}", ""));
     }
 }

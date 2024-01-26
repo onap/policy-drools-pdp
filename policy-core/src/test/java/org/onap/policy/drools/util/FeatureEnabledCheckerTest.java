@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +21,18 @@
 
 package org.onap.policy.drools.util;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class FeatureEnabledCheckerTest {
+class FeatureEnabledCheckerTest {
 
     private static final String PROP_NAME = "enable.it";
 
     @Test
-    public void test() {
+    void test() {
         assertFalse(check(null));
         assertTrue(check(true));
         assertFalse(check(false));

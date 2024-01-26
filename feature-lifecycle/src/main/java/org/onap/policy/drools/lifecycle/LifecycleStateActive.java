@@ -4,7 +4,7 @@
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2019 Bell Canada.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ package org.onap.policy.drools.lifecycle;
 import java.util.Collections;
 import lombok.NonNull;
 import lombok.ToString;
-import org.jetbrains.annotations.NotNull;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 import org.onap.policy.models.pdp.enums.PdpState;
@@ -46,12 +45,12 @@ public class LifecycleStateActive extends LifecycleStateRunning {
     }
 
     @Override
-    protected boolean stateChangeToActive(@NotNull PdpStateChange change) {
+    protected boolean stateChangeToActive(@NonNull PdpStateChange change) {
         return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS, null));
     }
 
     @Override
-    protected boolean stateChangeToPassive(@NotNull PdpStateChange change) {
+    protected boolean stateChangeToPassive(@NonNull PdpStateChange change) {
         undeployPolicies(Collections.emptyList());
         fsm.transitionToAction(new LifecycleStatePassive(fsm));
         return fsm.statusAction(response(change.getRequestId(), PdpResponseStatus.SUCCESS, null));

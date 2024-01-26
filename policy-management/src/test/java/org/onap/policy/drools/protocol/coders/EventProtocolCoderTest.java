@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +22,12 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
@@ -34,7 +35,7 @@ import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 /**
  * Tests Coders.
  */
-public class EventProtocolCoderTest {
+class EventProtocolCoderTest {
 
     /**
      * Coder Group.
@@ -66,7 +67,7 @@ public class EventProtocolCoderTest {
     }
 
     @Test
-    public void test() {
+    void test() {
 
         final Properties noopSinkProperties = new Properties();
         noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);

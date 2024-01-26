@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +21,15 @@
 
 package org.onap.policy.drools.core;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class PolicySessionFeatureApiTest {
+class PolicySessionFeatureApiTest {
 
     @Test
-    public void test() {
-        PolicySessionFeatureApi api = new PolicySessionFeatureApi() {
-            @Override
-            public int getSequenceNumber() {
-                return 0;
-            }
-        };
+    void test() {
+        PolicySessionFeatureApi api = () -> 0;
 
         // test default methods
         api.globalInit(null, null);

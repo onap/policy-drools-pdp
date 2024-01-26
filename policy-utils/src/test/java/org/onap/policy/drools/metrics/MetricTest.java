@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
- *  Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +23,10 @@ package org.onap.policy.drools.metrics;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.openpojo.reflection.PojoClass;
 import com.openpojo.reflection.impl.PojoClassFactory;
@@ -39,12 +40,12 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MetricTest {
+class MetricTest {
 
     @Test
-    public void testPojo() {
+    void testPojo() {
         PojoClass metric = PojoClassFactory.getPojoClass(Metric.class);
         Validator val = ValidatorBuilder
                 .create()
@@ -57,7 +58,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testEndTimeSetter() {
+    void testEndTimeSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getEndTime());
@@ -66,7 +67,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testStartTimeSetter() {
+    void testStartTimeSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getStartTime());
@@ -75,7 +76,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testElapsedTimeSetter() {
+    void testElapsedTimeSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getElapsedTime());
@@ -96,7 +97,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testInvocationIdSetter() {
+    void testInvocationIdSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getInvocationId());
@@ -105,7 +106,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testServiceNameSetter() {
+    void testServiceNameSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getServiceName());
@@ -114,7 +115,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testInstanceUuidSetter() {
+    void testInstanceUuidSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getInstanceUuid());
@@ -123,7 +124,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testRequestIdSetter() {
+    void testRequestIdSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getRequestId());
@@ -132,7 +133,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testPartnerSetter() {
+    void testPartnerSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getPartner());
@@ -141,7 +142,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testServerNameSetter() {
+    void testServerNameSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getServerName());
@@ -150,7 +151,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testServerFqdnSetter() {
+    void testServerFqdnSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getServerFqdn());
@@ -159,7 +160,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testVirtualServerNameSetter() {
+    void testVirtualServerNameSetter() {
         Metric metric = new Metric();
 
         assertNull(metric.getVirtualServerName());
@@ -168,7 +169,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testEqualsToString() {
+    void testEqualsToString() {
         Metric metric1 = new Metric();
         Metric metric2 = new Metric();
 
@@ -185,7 +186,7 @@ public class MetricTest {
     }
 
     @Test
-    public void testToTimestamp() {
+    void testToTimestamp() {
         Instant now = Instant.now();
         assertEquals(new SimpleDateFormat(Metric.DATE_FORMAT).format(Date.from(now)), Metric.toTimestamp(now));
     }
