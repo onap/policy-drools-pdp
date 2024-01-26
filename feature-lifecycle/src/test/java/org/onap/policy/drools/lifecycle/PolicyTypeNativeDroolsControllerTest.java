@@ -22,16 +22,16 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Properties;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
@@ -43,7 +43,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 /**
  * Native Controller Policy Test.
  */
-public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
+class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningTest {
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
             "src/test/resources/tosca-policy-native-controller-example.json";
@@ -51,13 +51,13 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
     /**
      * Test initialization.
      */
-    @Before
+    @BeforeEach
     public void init() {
         fsm = makeFsmWithPseudoTime();
     }
 
     @Test
-    public void testDeployUndeploy() throws IOException, CoderException {
+    void testDeployUndeploy() throws IOException, CoderException {
         fsm = makeFsmWithPseudoTime();
 
         assertTrue(controllerSupport.getController().getDrools().isBrained());
@@ -91,7 +91,7 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
     }
 
     @Test
-    public void testControllerProperties() throws CoderException {
+    void testControllerProperties() throws CoderException {
         Properties noopTopicProperties = new Properties();
         String noopSources = String.join(",", TestConstants.DCAE_TOPIC, TestConstants.APPC_CL_TOPIC,
             TestConstants.APPC_LCM_WRITE_TOPIC, TestConstants.SDNR_CL_RSP_TOPIC);
@@ -139,12 +139,12 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
         assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
                 properties.getProperty("noop.source.topics.appc-cl.events.custom.gson"));
 
-        assertEquals("org.onap.policy.appclcm.AppcLcmDmaapWrapper",
+        assertEquals("org.onap.policy.appclcm.AppcLcmMessageWrapper",
                 properties.getProperty("noop.source.topics.appc-lcm-write.events"));
         assertEquals("[?($.type == 'response')]",
             properties
                 .getProperty("noop.source.topics.appc-lcm-write.events."
-                        + "org.onap.policy.appclcm.AppcLcmDmaapWrapper.filter"));
+                        + "org.onap.policy.appclcm.AppcLcmMessageWrapper.filter"));
         assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
                 properties.getProperty("noop.source.topics.appc-lcm-write.events.custom.gson"));
 
@@ -161,7 +161,7 @@ public class PolicyTypeNativeDroolsControllerTest extends LifecycleStateRunningT
         assertEquals("org.onap.policy.appc.util.Serialization,gsonPretty",
                 properties.getProperty("noop.sink.topics.appc-cl.events.custom.gson"));
 
-        assertEquals("org.onap.policy.appclcm.AppcLcmDmaapWrapper",
+        assertEquals("org.onap.policy.appclcm.AppcLcmMessageWrapper",
                 properties.getProperty("noop.sink.topics.appc-lcm-read.events"));
         assertEquals("org.onap.policy.appclcm.util.Serialization,gson",
                 properties.getProperty("noop.sink.topics.appc-lcm-read.events.custom.gson"));

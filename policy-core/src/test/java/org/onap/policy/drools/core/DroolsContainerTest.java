@@ -3,6 +3,7 @@
  * policy-core
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +21,11 @@
 
 package org.onap.policy.drools.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,11 +33,13 @@ import static org.mockito.Mockito.when;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import org.drools.core.WorkingMemory;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.util.KieUtils;
 
 /**
@@ -54,7 +57,7 @@ public class DroolsContainerTest {
      * and 'PolicySession', and the updating of that container to a new
      * version.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -75,13 +78,13 @@ public class DroolsContainerTest {
      * version.
      */
     @Test
-    public void createAndUpdate() throws Exception {
+    void createAndUpdate() throws Exception {
         // make sure feature log starts out clean
         PolicySessionFeatureApiMock.getLog();
 
         // run 'globalInit', and verify expected feature hook fired
         PolicyContainer.globalInit(new String[0]);
-        assertEquals(Arrays.asList("globalInit"),
+        assertEquals(List.of("globalInit"),
                 PolicySessionFeatureApiMock.getLog());
 
         // initial conditions -- there should be no containers
@@ -139,15 +142,15 @@ public class DroolsContainerTest {
             session.getKieSession().insert(result);
 
             // the Drools rules should add 3 + 8 + 2, and store 13 in a[0]
-            assertEquals(13, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
+            assertEquals(13, Objects.requireNonNull(result.poll(TIMEOUT_SEC, TimeUnit.SECONDS)).intValue());
 
             // update the container to a new version --
             // the rules will then multiply values rather than add them
             assertEquals("[]",
-                    container.updateToVersion("17.2.0-SNAPSHOT").toString());
+                container.updateToVersion("17.2.0-SNAPSHOT"));
 
             // verify expected feature hooks fired
-            assertEquals(Arrays.asList("selectThreadModel"),
+            assertEquals(List.of("selectThreadModel"),
                     PolicySessionFeatureApiMock.getLog());
 
             // verify new container attributes
@@ -169,7 +172,7 @@ public class DroolsContainerTest {
             container.insert("session1", Arrays.asList(3, 8, 2));
             container.insert("session1", result);
 
-            assertEquals(48, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
+            assertEquals(48, Objects.requireNonNull(result.poll(TIMEOUT_SEC, TimeUnit.SECONDS)).intValue());
 
             /*
              * verify that default KiePackages have been added by testing that
@@ -198,7 +201,7 @@ public class DroolsContainerTest {
             assertFalse(container.isAlive());
 
             // verify expected feature hooks fired
-            assertEquals(Arrays.asList("disposeKieSession"),
+            assertEquals(List.of("disposeKieSession"),
                     PolicySessionFeatureApiMock.getLog());
         }
 
@@ -213,7 +216,7 @@ public class DroolsContainerTest {
      * test, also to increase code coverage.
      */
     @Test
-    public void versionList() throws Exception {
+    void versionList() throws Exception {
         // make sure feature log starts out clean
         PolicySessionFeatureApiMock.getLog();
 
@@ -222,7 +225,7 @@ public class DroolsContainerTest {
 
         // run 'globalInit', and verify expected feature hook fired
         PolicyContainer.globalInit(new String[0]);
-        assertEquals(Arrays.asList("globalInit-exception"),
+        assertEquals(List.of("globalInit-exception"),
                 PolicySessionFeatureApiMock.getLog());
 
         // initial conditions -- there should be no containers
@@ -317,7 +320,7 @@ public class DroolsContainerTest {
             container.insertAll(result);
 
             // the Drools rules should add 7 + 3 + 4, and store 14 in a[0]
-            assertEquals(14, result.poll(TIMEOUT_SEC, TimeUnit.SECONDS).intValue());
+            assertEquals(14, Objects.requireNonNull(result.poll(TIMEOUT_SEC, TimeUnit.SECONDS)).intValue());
 
             // exercise some more API methods
             assertEquals(container.getClassLoader(),
@@ -328,7 +331,7 @@ public class DroolsContainerTest {
             assertFalse(container.isAlive());
 
             // verify expected feature hooks fired
-            assertEquals(Arrays.asList("destroyKieSession-exception"),
+            assertEquals(List.of("destroyKieSession-exception"),
                     PolicySessionFeatureApiMock.getLog());
 
             // clear exception trigger

@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,11 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
      * Policy Controller Name Index.
      */
     protected Map<String, DroolsController> droolsControllers = new HashMap<>();
+
+    /**
+     * Null Drools Controller.
+     */
+    protected NullDroolsController nullDroolsController = new NullDroolsController();
 
     /**
      * Constructs the object.
@@ -258,12 +263,6 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                 return PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
             } else {
                 return PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + ".";
-            }
-        } else if (commInfra == CommInfrastructure.DMAAP) {
-            if (isSource) {
-                return PolicyEndPointProperties.PROPERTY_DMAAP_SOURCE_TOPICS + ".";
-            } else {
-                return PolicyEndPointProperties.PROPERTY_DMAAP_SINK_TOPICS + ".";
             }
         } else if (commInfra == CommInfrastructure.NOOP) {
             if (isSource) {

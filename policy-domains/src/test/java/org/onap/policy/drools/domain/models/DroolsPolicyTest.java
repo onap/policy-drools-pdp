@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
- *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,26 +30,28 @@ import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class DroolsPolicyTest {
+class DroolsPolicyTest {
 
     @Data
     @SuperBuilder
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class DerivedDomainPolicy extends DroolsPolicy implements Serializable {
+        @Serial
         private static final long serialVersionUID = -1027974819756498893L;
     }
 
     @Test
-    public void testDerivedClass() {
+    void testDerivedClass() {
         /* validate model pojos */
         Validator validator = ValidatorBuilder.create()
                                       .with(new SetterTester(), new GetterTester()).build();
@@ -57,7 +60,7 @@ public class DroolsPolicyTest {
     }
 
     @Test
-    public void testPackage() {
+    void testPackage() {
         /* validate model pojos */
         List<PojoClass> pojoClasses =
                 PojoClassFactory

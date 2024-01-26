@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,13 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -50,9 +51,9 @@ import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -80,7 +81,7 @@ import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.system.internal.SimpleLockProperties;
 import org.onap.policy.models.pdp.enums.PdpResponseStatus;
 
-public class PolicyEngineManagerTest {
+class PolicyEngineManagerTest {
     private static final String EXPECTED = "expected exception";
 
     private static final String NOOP_STR = CommInfrastructure.NOOP.name();
@@ -158,7 +159,7 @@ public class PolicyEngineManagerTest {
      *
      * @throws Exception if an error occurs
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         CollectorRegistry.defaultRegistry.clear();
         properties = new Properties();
@@ -324,13 +325,13 @@ public class PolicyEngineManagerTest {
         mgr = new PolicyEngineManagerImpl();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         CollectorRegistry.defaultRegistry.clear();
     }
 
     @Test
-    public void testSerialize() {
+    void testSerialize() {
         mgr.setHostName("foo");
         mgr.setClusterName("bar");
         mgr.configure(properties);
@@ -338,7 +339,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testFactory() {
+    void testFactory() {
         mgr = new PolicyEngineManager();
 
         assertNotNull(mgr.getEngineProviders());
@@ -353,7 +354,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testBoot() throws Exception {
+    void testBoot() throws Exception {
         String[] args = {"boot-a", "boot-b"};
 
         // arrange for first provider to throw exceptions
@@ -392,7 +393,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testSetEnvironment_testGetEnvironment_testGetEnvironmentProperty_setEnvironmentProperty() {
+    void testSetEnvironment_testGetEnvironment_testGetEnvironmentProperty_setEnvironmentProperty() {
         Properties props1 = new Properties();
         props1.put("prop1-a", "value1-a");
         props1.put("prop1-b", "value1-b");
@@ -440,14 +441,14 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testDefaultTelemetryConfig() {
+    void testDefaultTelemetryConfig() {
         Properties config = mgr.defaultTelemetryConfig();
         assertNotNull(config);
         assertFalse(config.isEmpty());
     }
 
     @Test
-    public void testGetPdpName() {
+    void testGetPdpName() {
         properties.setProperty(PolicyEngineManager.CLUSTER_NAME_PROP, "east1");
         mgr.configure(properties);
 
@@ -480,7 +481,7 @@ public class PolicyEngineManagerTest {
      * property.
      */
     @Test
-    public void testMakeExecutorServicePropertyProvided() {
+    void testMakeExecutorServicePropertyProvided() {
         PolicyEngineManager mgrspy = spy(mgr);
 
         properties.setProperty(PolicyEngineManager.EXECUTOR_THREAD_PROP, "3");
@@ -494,7 +495,7 @@ public class PolicyEngineManagerTest {
      * property is provided.
      */
     @Test
-    public void testMakeExecutorServiceNoProperty() {
+    void testMakeExecutorServiceNoProperty() {
         PolicyEngineManager mgrspy = spy(mgr);
 
         mgrspy.configure(properties);
@@ -507,7 +508,7 @@ public class PolicyEngineManagerTest {
      * property is invalid.
      */
     @Test
-    public void testMakeExecutorServiceInvalidProperty() {
+    void testMakeExecutorServiceInvalidProperty() {
         PolicyEngineManager mgrspy = spy(mgr);
 
         properties.setProperty(PolicyEngineManager.EXECUTOR_THREAD_PROP, "abc");
@@ -521,7 +522,7 @@ public class PolicyEngineManagerTest {
      * manager.
      */
     @Test
-    public void testCreateLockManagerHaveProvider() {
+    void testCreateLockManagerHaveProvider() {
         // first provider throws an exception
         when(prov1.beforeCreateLockManager(any(), any())).thenThrow(new RuntimeException(EXPECTED));
 
@@ -533,7 +534,7 @@ public class PolicyEngineManagerTest {
      * Tests createLockManager() when SimpleLockManager throws an exception.
      */
     @Test
-    public void testCreateLockManagerSimpleEx() {
+    void testCreateLockManagerSimpleEx() {
         when(prov2.beforeCreateLockManager(any(), any())).thenReturn(null);
 
         // invalid property for SimpleLockManager
@@ -541,22 +542,22 @@ public class PolicyEngineManagerTest {
         mgr.configure(properties);
 
         // should create a manager using default properties
-        assertTrue(mgr.getLockManager() instanceof SimpleLockManager);
+        assertInstanceOf(SimpleLockManager.class, mgr.getLockManager());
     }
 
     /**
      * Tests createLockManager() when SimpleLockManager is returned.
      */
     @Test
-    public void testCreateLockManagerSimple() {
+    void testCreateLockManagerSimple() {
         when(prov2.beforeCreateLockManager(any(), any())).thenReturn(null);
 
         mgr.configure(properties);
-        assertTrue(mgr.getLockManager() instanceof SimpleLockManager);
+        assertInstanceOf(SimpleLockManager.class, mgr.getLockManager());
     }
 
     @Test
-    public void testConfigureProperties() throws Exception {
+    void testConfigureProperties() throws Exception {
         // arrange for first provider to throw exceptions
         when(prov1.beforeConfigure(mgr, properties)).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterConfigure(mgr)).thenThrow(new RuntimeException(EXPECTED));
@@ -605,7 +606,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testConfigurePdpdConfiguration() throws Exception {
+    void testConfigurePdpdConfiguration() throws Exception {
         mgr.configure(properties);
         assertTrue(mgr.configure(pdpConfig));
 
@@ -630,7 +631,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testCreatePolicyController() throws Exception {
+    void testCreatePolicyController() throws Exception {
         assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
 
         verify(contProv1).beforeCreate(MY_NAME, properties);
@@ -698,7 +699,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testUpdatePolicyControllers() throws Exception {
+    void testUpdatePolicyControllers() throws Exception {
         assertEquals(Arrays.asList(controller3, controller4), mgr.updatePolicyControllers(pdpConfig.getControllers()));
 
         // controller3 was CREATE
@@ -730,7 +731,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testUpdatePolicyController() throws Exception {
+    void testUpdatePolicyController() throws Exception {
         assertEquals(controller3, mgr.updatePolicyController(config3));
         verify(engine).createPolicyController(CONTROLLER3, properties);
 
@@ -825,7 +826,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testStart() throws Throwable {
+    void testStart() throws Throwable {
         // normal success case
         testStart(true, () -> {
             // arrange for first provider, server, source, and sink to throw exceptions
@@ -935,7 +936,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testStop() throws Throwable {
+    void testStop() throws Throwable {
         // normal success case
         testStop(true, () -> {
             // arrange for first provider, server, source, and sink to throw exceptions
@@ -1043,7 +1044,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testShutdown() throws Throwable {
+    void testShutdown() throws Throwable {
         // normal success case
         testShutdown(() -> {
             // arrange for first provider, source, and sink to throw exceptions
@@ -1112,7 +1113,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testShutdownThreadRun() throws Throwable {
+    void testShutdownThreadRun() throws Throwable {
         // arrange for first server to throw exceptions
         testShutdownThreadRun(() -> doThrow(new RuntimeException(EXPECTED)).when(server1).shutdown());
 
@@ -1148,7 +1149,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testIsAlive() {
+    void testIsAlive() {
         mgr.configure(properties);
         assertFalse(mgr.isAlive());
 
@@ -1160,7 +1161,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testLock() throws Throwable {
+    void testLock() throws Throwable {
         // normal success case
         testLock(true, () -> {
             // arrange for first provider to throw exceptions
@@ -1237,7 +1238,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testUnlock() throws Throwable {
+    void testUnlock() throws Throwable {
         // normal success case
         testUnlock(true, () -> {
             // arrange for first provider to throw exceptions
@@ -1314,7 +1315,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testIsLocked() {
+    void testIsLocked() {
         mgr.configure(properties);
         assertFalse(mgr.isLocked());
 
@@ -1326,31 +1327,31 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testRemovePolicyControllerString() {
+    void testRemovePolicyControllerString() {
         mgr.removePolicyController(MY_NAME);
 
         verify(controllerFactory).destroy(MY_NAME);
     }
 
     @Test
-    public void testRemovePolicyControllerPolicyController() {
+    void testRemovePolicyControllerPolicyController() {
         mgr.removePolicyController(controller);
 
         verify(controllerFactory).destroy(controller);
     }
 
     @Test
-    public void testGetPolicyControllers() {
+    void testGetPolicyControllers() {
         assertEquals(controllers, mgr.getPolicyControllers());
     }
 
     @Test
-    public void testGetPolicyControllerIds() {
+    void testGetPolicyControllerIds() {
         assertEquals(Arrays.asList(CONTROLLER1, CONTROLLER2), mgr.getPolicyControllerIds());
     }
 
     @Test
-    public void testGetProperties() {
+    void testGetProperties() {
         properties.setProperty("prop-x", "value-x");
         properties.setProperty("prop-y", "value-y");
 
@@ -1359,35 +1360,35 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testGetSources() {
+    void testGetSources() {
         mgr.configure(properties);
         assertEquals(sources, mgr.getSources());
     }
 
     @Test
-    public void testGetSinks() {
+    void testGetSinks() {
         mgr.configure(properties);
         assertEquals(sinks, mgr.getSinks());
     }
 
     @Test
-    public void testGetHttpServers() {
+    void testGetHttpServers() {
         mgr.configure(properties);
         assertEquals(servers, mgr.getHttpServers());
     }
 
     @Test
-    public void testGetFeatures() {
+    void testGetFeatures() {
         assertEquals(Arrays.asList(FEATURE1, FEATURE2), mgr.getFeatures());
     }
 
     @Test
-    public void testGetFeatureProviders() {
+    void testGetFeatureProviders() {
         assertEquals(providers, mgr.getFeatureProviders());
     }
 
     @Test
-    public void testGetFeatureProvider() {
+    void testGetFeatureProvider() {
         assertEquals(prov1, mgr.getFeatureProvider(FEATURE1));
         assertEquals(prov2, mgr.getFeatureProvider(FEATURE2));
 
@@ -1402,7 +1403,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testTransaction() {
+    void testTransaction() {
         mgr.metric(CONTROLLER1, POLICY, new Metric());
         assertEquals(0, mgr.getStats().getGroupStat().getPolicyExecutedCount());
         assertEquals(0, mgr.getStats().getSubgroupStats().size());
@@ -1434,7 +1435,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testOnTopicEvent() {
+    void testOnTopicEvent() {
         mgr.onTopicEvent(CommInfrastructure.NOOP, MY_TOPIC, pdpConfigJson);
 
         verify(controllerFactory).patch(controller3, drools3);
@@ -1448,7 +1449,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testDeliverStringObject() throws Exception {
+    void testDeliverStringObject() throws Exception {
         mgr.configure(properties);
         mgr.start();
 
@@ -1492,7 +1493,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testDeliverStringStringObject() {
+    void testDeliverStringStringObject() {
         mgr.configure(properties);
         mgr.start();
 
@@ -1523,7 +1524,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testDeliverCommInfrastructureStringObject() throws Exception {
+    void testDeliverCommInfrastructureStringObject() throws Exception {
         mgr.configure(properties);
         mgr.start();
 
@@ -1590,7 +1591,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testDeliverCommInfrastructureStringString() {
+    void testDeliverCommInfrastructureStringString() {
         mgr.configure(properties);
 
         // not started yet
@@ -1622,7 +1623,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testActivate() throws Throwable {
+    void testActivate() throws Throwable {
         // normal success case
         testActivate(() -> {
             // arrange for first provider and controller to throw exceptions
@@ -1679,7 +1680,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testDeactivate() throws Throwable {
+    void testDeactivate() throws Throwable {
         // normal success case
         testDeactivate(() -> {
             // arrange for first provider and controller to throw exceptions
@@ -1733,7 +1734,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testCreateLock() {
+    void testCreateLock() {
         Lock lock = mock(Lock.class);
         LockCallback callback = mock(LockCallback.class);
         when(lockmgr.createLock(MY_RESOURCE, MY_OWNER, 10, callback, false)).thenReturn(lock);
@@ -1759,7 +1760,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testOpen() throws Throwable {
+    void testOpen() throws Throwable {
         when(prov1.beforeOpen(mgr)).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterOpen(mgr)).thenThrow(new RuntimeException(EXPECTED));
 
@@ -1814,7 +1815,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testControllerConfig() throws Exception {
+    void testControllerConfig() throws Exception {
         mgr.configure(properties);
         assertTrue(mgr.configure(pdpConfig));
 
@@ -1845,7 +1846,7 @@ public class PolicyEngineManagerTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertTrue(mgr.toString().startsWith("PolicyEngineManager("));
     }
 

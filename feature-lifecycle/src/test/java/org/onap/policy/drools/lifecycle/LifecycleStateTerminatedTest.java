@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,17 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.system.PolicyEngineConstants;
@@ -46,19 +46,19 @@ import org.onap.policy.models.pdp.enums.PdpState;
 public class LifecycleStateTerminatedTest {
     private LifecycleFsm fsm = new LifecycleFsm();
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         assertThatIllegalArgumentException().isThrownBy(() -> new LifecycleStateTerminated(null));
 
         LifecycleState state = new LifecycleStateTerminated(new LifecycleFsm());
@@ -72,7 +72,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void testStop() {
+    void testStop() {
         assertEquals(PdpState.TERMINATED, fsm.state.state());
         assertFalse(fsm.isAlive());
 
@@ -90,7 +90,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void testBounce() {
+    void testBounce() {
         assertBasicTerminated();
         simpleStart();
         simpleStop();
@@ -101,13 +101,13 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void doubleBounce() {
+    void doubleBounce() {
         testBounce();
         testBounce();
     }
 
     @Test
-    public void testDoubleStartBounce() {
+    void testDoubleStartBounce() {
         simpleStart();
         assertFalse(fsm.start());
         assertBasicPassive();
@@ -115,7 +115,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         assertBasicTerminated();
         fsm.shutdown();
         assertBasicTerminated();
@@ -124,20 +124,20 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void testStatus() {
+    void testStatus() {
         assertBasicTerminated();
         assertFalse(fsm.status());
         assertBasicTerminated();
     }
 
     @Test
-    public void changeState() {
+    void changeState() {
         assertFalse(fsm.state.transitionToState(new LifecycleStateTerminated(fsm)));
         assertEquals(PdpState.TERMINATED, fsm.state.state());
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         PdpUpdate update = new PdpUpdate();
         update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("A");
@@ -152,7 +152,7 @@ public class LifecycleStateTerminatedTest {
     }
 
     @Test
-    public void testStateChange() {
+    void testStateChange() {
         PdpStateChange change = new PdpStateChange();
         change.setPdpGroup("A");
         change.setPdpSubgroup("a");

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +24,9 @@ package org.onap.policy.drools.lifecycle;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.models.pdp.concepts.PdpStateChange;
 import org.onap.policy.models.pdp.concepts.PdpUpdate;
@@ -37,12 +38,12 @@ public abstract class LifecycleStateUnsupportedTest {
 
     protected final LifecycleState state;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         SystemPersistenceConstants.getManager().setConfigurationDir(null);
     }

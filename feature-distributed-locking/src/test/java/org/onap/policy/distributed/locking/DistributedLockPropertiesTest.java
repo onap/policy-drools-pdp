@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +21,22 @@
 
 package org.onap.policy.distributed.locking;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Properties;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.properties.exception.PropertyException;
 
-public class DistributedLockPropertiesTest {
+class DistributedLockPropertiesTest {
 
     private Properties props;
 
     /**
      * Populates {@link #props}.
      */
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         props = new Properties();
 
         props.setProperty(DistributedLockProperties.DB_DRIVER, "my driver");
@@ -48,7 +49,7 @@ public class DistributedLockPropertiesTest {
     }
 
     @Test
-    public void test() throws PropertyException {
+    void test() throws PropertyException {
         DistributedLockProperties dlp = new DistributedLockProperties(props);
 
         assertEquals("my driver", dlp.getDbDriver());

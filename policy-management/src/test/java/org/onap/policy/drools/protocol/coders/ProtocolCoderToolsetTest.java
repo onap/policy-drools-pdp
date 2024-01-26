@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +22,11 @@
 package org.onap.policy.drools.protocol.coders;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,10 +36,10 @@ import java.util.List;
 import java.util.Properties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -73,7 +74,7 @@ public class ProtocolCoderToolsetTest {
     /**
      * Test Class Initialization.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws IOException {
         releaseId = KieUtils.installArtifact(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
                         Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
@@ -84,7 +85,7 @@ public class ProtocolCoderToolsetTest {
     /**
      * Test Set Up.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         controller = createController();
     }
@@ -92,7 +93,7 @@ public class ProtocolCoderToolsetTest {
     /**
      * Test Termination.
      */
-    @After
+    @AfterEach
     public void tearDown() {
         if (controller != null) {
             DroolsControllerConstants.getFactory().destroy(controller);
@@ -100,7 +101,7 @@ public class ProtocolCoderToolsetTest {
     }
 
     @Test
-    public void testToolsets() {
+    void testToolsets() {
         testGsonToolset(createFilterSet());
     }
 

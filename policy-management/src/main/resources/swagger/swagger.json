@@ -4593,9 +4593,6 @@
           "prometheus" : {
             "type" : "boolean"
           },
-          "aaf" : {
-            "type" : "boolean"
-          },
           "name" : {
             "type" : "string"
           },

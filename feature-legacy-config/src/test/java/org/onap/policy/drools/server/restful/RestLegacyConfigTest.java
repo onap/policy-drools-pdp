@@ -1,6 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +19,14 @@
 
 package org.onap.policy.drools.server.restful;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.ws.rs.core.Response;
 import java.util.Properties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
@@ -45,7 +46,7 @@ public class RestLegacyConfigTest {
     /**
      * Set up.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
@@ -79,7 +80,7 @@ public class RestLegacyConfigTest {
     /**
      * Tear down.
      */
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         LegacyConfigFeature.getLegacyConfig().shutdown();
         HttpClientFactoryInstance.getClientFactory().destroy();
@@ -88,7 +89,7 @@ public class RestLegacyConfigTest {
     }
 
     @Test
-    public void properties() {
+    void properties() {
         Response response = client.get("properties");
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         assertEquals(LegacyConfigFeature.getLegacyConfig().getProperties(),
@@ -96,7 +97,7 @@ public class RestLegacyConfigTest {
     }
 
     @Test
-    public void topic() {
+    void topic() {
         Response response = client.get("source");
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }

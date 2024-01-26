@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,18 +25,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -47,6 +48,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -66,16 +68,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.onap.policy.common.utils.services.OrderedServiceImpl;
 import org.onap.policy.distributed.locking.DistributedLockManager.DistributedLock;
 import org.onap.policy.drools.core.PolicySession;
@@ -88,8 +91,8 @@ import org.onap.policy.drools.system.PolicyEngine;
 import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DistributedLockManagerTest {
+@ExtendWith(MockitoExtension.class)
+class DistributedLockManagerTest {
     private static final long EXPIRE_SEC = 900L;
     private static final long RETRY_SEC = 60L;
     private static final String POLICY_ENGINE_EXECUTOR_FIELD = "executorService";
@@ -142,19 +145,20 @@ public class DistributedLockManagerTest {
     private BasicDataSource datasrc;
 
     private DistributedLock lock;
-    private PolicySession session;
 
     private AtomicInteger nactive;
     private AtomicInteger nsuccesses;
     private DistributedLockManager feature;
+
+    AutoCloseable closeable;
 
     /**
      * Configures the location of the property files and creates the DB.
      *
      * @throws SQLException if the DB cannot be created
      */
-    @BeforeClass
-    public static void setUpBeforeClass() throws SQLException {
+    @BeforeAll
+    static void setUpBeforeClass() throws SQLException {
         SystemPersistenceConstants.getManager().setConfigurationDir("src/test/resources");
         PolicyEngineConstants.getManager().configure(new Properties());
 
@@ -175,8 +179,8 @@ public class DistributedLockManagerTest {
     /**
      * Restores static fields.
      */
-    @AfterClass
-    public static void tearDownAfterClass() throws SQLException {
+    @AfterAll
+    static void tearDownAfterClass() throws SQLException {
         ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
         realExec.shutdown();
         conn.close();
@@ -188,10 +192,11 @@ public class DistributedLockManagerTest {
      *
      * @throws SQLException if the lock records cannot be deleted from the DB
      */
-    @Before
-    public void setUp() throws SQLException {
+    @BeforeEach
+    void setUp() throws SQLException {
+        closeable = MockitoAnnotations.openMocks(this);
         // grant() and deny() calls will come through here and be immediately executed
-        session = new PolicySession(null, null, kieSess) {
+        PolicySession session = new PolicySession(null, null, kieSess) {
             @Override
             public void insertDrools(Object object) {
                 ((Runnable) object).run();
@@ -208,10 +213,11 @@ public class DistributedLockManagerTest {
         feature = new MyLockingFeature(true);
     }
 
-    @After
-    public void tearDown() throws SQLException {
+    @AfterEach
+    void tearDown() throws Exception {
         shutdownFeature();
         cleanDb();
+        closeable.close();
     }
 
     private void cleanDb() throws SQLException {
@@ -231,18 +237,18 @@ public class DistributedLockManagerTest {
      * Tests that the feature is found in the expected service sets.
      */
     @Test
-    public void testServiceApis() {
+    void testServiceApis() {
         assertTrue(new OrderedServiceImpl<>(PolicyEngineFeatureApi.class).getList().stream()
             .anyMatch(obj -> obj instanceof DistributedLockManager));
     }
 
     @Test
-    public void testGetSequenceNumber() {
+    void testGetSequenceNumber() {
         assertEquals(1000, feature.getSequenceNumber());
     }
 
     @Test
-    public void testBeforeCreateLockManager() {
+    void testBeforeCreateLockManager() {
         assertSame(feature, feature.beforeCreateLockManager(engine, new Properties()));
     }
 
@@ -250,7 +256,7 @@ public class DistributedLockManagerTest {
      * Tests beforeCreate(), when getProperties() throws a runtime exception.
      */
     @Test
-    public void testBeforeCreateLockManagerEx() {
+    void testBeforeCreateLockManagerEx() {
         shutdownFeature();
 
         feature = new MyLockingFeature(false) {
@@ -266,7 +272,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testAfterStart() {
+    void testAfterStart() {
         // verify that cleanup & expire check are both added to the queue
         verify(exsvc).execute(any());
         verify(exsvc).schedule(any(Runnable.class), anyLong(), any());
@@ -276,7 +282,7 @@ public class DistributedLockManagerTest {
      * Tests afterStart(), when thread pool throws a runtime exception.
      */
     @Test
-    public void testAfterStartExInThreadPool() {
+    void testAfterStartExInThreadPool() {
         shutdownFeature();
 
         feature = new MyLockingFeature(false);
@@ -287,7 +293,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDeleteExpiredDbLocks() throws SQLException {
+    void testDeleteExpiredDbLocks() throws SQLException {
         // add records: two expired, one not
         insertRecord(RESOURCE, feature.getUuidString(), -1);
         insertRecord(RESOURCE2, feature.getUuidString(), HOLD_SEC2);
@@ -315,7 +321,7 @@ public class DistributedLockManagerTest {
      *
      */
     @Test
-    public void testDeleteExpiredDbLocksEx() {
+    void testDeleteExpiredDbLocksEx() {
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
         // get the clean-up function and execute it
@@ -329,7 +335,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testAfterStop() {
+    void testAfterStop() {
         shutdownFeature();
         verify(checker).cancel(anyBoolean());
 
@@ -345,7 +351,7 @@ public class DistributedLockManagerTest {
      *
      */
     @Test
-    public void testAfterStopEx() {
+    void testAfterStopEx() {
         shutdownFeature();
 
         // use a data source that throws an exception when closed
@@ -355,24 +361,24 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testCreateLock() throws SQLException {
+    void testCreateLock() throws SQLException {
         verify(exsvc).execute(any());
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
         assertTrue(lock.isWaiting());
 
         verify(exsvc, times(PRE_LOCK_EXECS + 1)).execute(any());
 
         // this lock should fail
         LockCallback callback2 = mock(LockCallback.class);
-        DistributedLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback2, false);
+        DistributedLock lock2 = getLock(RESOURCE, callback2);
         assertTrue(lock2.isUnavailable());
         verify(callback2, never()).lockAvailable(lock2);
         verify(callback2).lockUnavailable(lock2);
 
         // this should fail, too
         LockCallback callback3 = mock(LockCallback.class);
-        DistributedLock lock3 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback3, false);
+        DistributedLock lock3 = getLock(RESOURCE, callback3);
         assertTrue(lock3.isUnavailable());
         verify(callback3, never()).lockAvailable(lock3);
         verify(callback3).lockUnavailable(lock3);
@@ -395,11 +401,11 @@ public class DistributedLockManagerTest {
         verify(callback, never()).lockUnavailable(lock);
 
         // this should succeed
-        DistributedLock lock4 = getLock(RESOURCE2, OWNER_KEY, HOLD_SEC, callback, false);
+        DistributedLock lock4 = getLock(RESOURCE2, callback);
         assertTrue(lock4.isWaiting());
 
         // after running checker, original records should still remain
-        runChecker(0, 0, EXPIRE_SEC);
+        runChecker(0, EXPIRE_SEC);
         assertEquals(1, getRecordCount());
         verify(callback, never()).lockUnavailable(lock);
     }
@@ -408,7 +414,7 @@ public class DistributedLockManagerTest {
      * Tests createLock() when the feature is not the latest instance.
      */
     @Test
-    public void testCreateLockNotLatestInstance() {
+    void testCreateLockNotLatestInstance() {
         DistributedLockManager.setLatestInstance(null);
 
         Lock lock = feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
@@ -418,24 +424,24 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testCheckExpired() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testCheckExpired() throws SQLException {
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         LockCallback callback2 = mock(LockCallback.class);
-        final DistributedLock lock2 = getLock(RESOURCE2, OWNER_KEY, HOLD_SEC, callback2, false);
+        final DistributedLock lock2 = getLock(RESOURCE2, callback2);
         runLock(1, 0);
 
         LockCallback callback3 = mock(LockCallback.class);
-        final DistributedLock lock3 = getLock(RESOURCE3, OWNER_KEY, HOLD_SEC, callback3, false);
+        final DistributedLock lock3 = getLock(RESOURCE3, callback3);
         runLock(2, 0);
 
         LockCallback callback4 = mock(LockCallback.class);
-        final DistributedLock lock4 = getLock(RESOURCE4, OWNER_KEY, HOLD_SEC, callback4, false);
+        final DistributedLock lock4 = getLock(RESOURCE4, callback4);
         runLock(3, 0);
 
         LockCallback callback5 = mock(LockCallback.class);
-        final DistributedLock lock5 = getLock(RESOURCE5, OWNER_KEY, HOLD_SEC, callback5, false);
+        final DistributedLock lock5 = getLock(RESOURCE5, callback5);
         runLock(4, 0);
 
         assertEquals(5, getRecordCount());
@@ -450,7 +456,7 @@ public class DistributedLockManagerTest {
         updateRecord(RESOURCE5, feature.getPdpName(), OTHER_OWNER, HOLD_SEC);
 
         // run the checker
-        runChecker(0, 0, EXPIRE_SEC);
+        runChecker(0, EXPIRE_SEC);
 
         // check lock states
         assertTrue(lock.isUnavailable());
@@ -471,33 +477,33 @@ public class DistributedLockManagerTest {
         verify(callback4, never()).lockUnavailable(lock4);
 
         // another check should have been scheduled, with the normal interval
-        runChecker(1, 0, EXPIRE_SEC);
+        runChecker(1, EXPIRE_SEC);
     }
 
     /**
      * Tests checkExpired(), when schedule() throws an exception.
      */
     @Test
-    public void testCheckExpiredExecRejected() {
+    void testCheckExpiredExecRejected() {
         // arrange for execution to be rejected
         when(exsvc.schedule(any(Runnable.class), anyLong(), any()))
             .thenThrow(new RejectedExecutionException(EXPECTED_EXCEPTION));
 
-        runChecker(0, 0, EXPIRE_SEC);
+        runChecker(0, EXPIRE_SEC);
     }
 
     /**
      * Tests checkExpired(), when getConnection() throws an exception.
      */
     @Test
-    public void testCheckExpiredSqlEx() {
+    void testCheckExpiredSqlEx() {
         // use a data source that throws an exception when getConnection() is called
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
-        runChecker(0, 0, EXPIRE_SEC);
+        runChecker(0, EXPIRE_SEC);
 
         // it should have scheduled another check, sooner
-        runChecker(0, 0, RETRY_SEC);
+        runChecker(0, RETRY_SEC);
     }
 
     /**
@@ -505,7 +511,7 @@ public class DistributedLockManagerTest {
      * no longer alive.
      */
     @Test
-    public void testCheckExpiredSqlExFeatureStopped() {
+    void testCheckExpiredSqlExFeatureStopped() {
         // use a data source that throws an exception when getConnection() is called
         feature = new InvalidDbLockingFeature(TRANSIENT) {
             @Override
@@ -515,14 +521,14 @@ public class DistributedLockManagerTest {
             }
         };
 
-        runChecker(0, 0, EXPIRE_SEC);
+        runChecker(0, EXPIRE_SEC);
 
         // it should NOT have scheduled another check
         verify(exsvc, times(1)).schedule(any(Runnable.class), anyLong(), any());
     }
 
     @Test
-    public void testExpireLocks() throws SQLException {
+    void testExpireLocks() throws SQLException {
         AtomicReference<DistributedLock> freeLock = new AtomicReference<>(null);
 
         feature = new MyLockingFeature(true) {
@@ -548,19 +554,19 @@ public class DistributedLockManagerTest {
             }
         };
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         LockCallback callback2 = mock(LockCallback.class);
-        final DistributedLock lock2 = getLock(RESOURCE2, OWNER_KEY, HOLD_SEC, callback2, false);
+        final DistributedLock lock2 = getLock(RESOURCE2, callback2);
         runLock(1, 0);
 
         LockCallback callback3 = mock(LockCallback.class);
-        final DistributedLock lock3 = getLock(RESOURCE3, OWNER_KEY, HOLD_SEC, callback3, false);
+        final DistributedLock lock3 = getLock(RESOURCE3, callback3);
         // don't run doLock for lock3 - leave it in the waiting state
 
         LockCallback callback4 = mock(LockCallback.class);
-        final DistributedLock lock4 = getLock(RESOURCE4, OWNER_KEY, HOLD_SEC, callback4, false);
+        final DistributedLock lock4 = getLock(RESOURCE4, callback4);
         runLock(3, 0);
 
         assertEquals(3, getRecordCount());
@@ -572,7 +578,7 @@ public class DistributedLockManagerTest {
         freeLock.set(lock4);
 
         // run the checker
-        runChecker(0, 0, EXPIRE_SEC);
+        runChecker(0, EXPIRE_SEC);
 
         // check lock states
         assertTrue(lock.isUnavailable());
@@ -590,7 +596,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockNoArgs() {
+    void testDistributedLockNoArgs() {
         DistributedLock lock = new DistributedLock();
         assertNull(lock.getResourceId());
         assertNull(lock.getOwnerKey());
@@ -599,7 +605,7 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLock() {
+    void testDistributedLock() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> feature.createLock(RESOURCE, OWNER_KEY, -1, callback, false))
             .withMessageContaining("holdSec");
@@ -609,8 +615,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockSerializable() throws Exception {
-        DistributedLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockSerializable() throws Exception {
+        DistributedLock lock = getLock(RESOURCE, callback);
         lock = roundTrip(lock);
 
         assertTrue(lock.isWaiting());
@@ -622,8 +628,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testGrant() {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testGrant() {
+        lock = getLock(RESOURCE, callback);
         assertFalse(lock.isActive());
 
         // execute the doLock() call
@@ -636,12 +642,12 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockDeny() {
+    void testDistributedLockDeny() {
         // get a lock
         feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
 
         // get another lock - should fail
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         assertTrue(lock.isUnavailable());
 
@@ -653,8 +659,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockFree() {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockFree() {
+        lock = getLock(RESOURCE, callback);
 
         assertTrue(lock.free());
         assertTrue(lock.isUnavailable());
@@ -673,7 +679,7 @@ public class DistributedLockManagerTest {
         verify(exsvc, times(PRE_LOCK_EXECS + 2)).execute(any());
 
         // new lock should succeed
-        DistributedLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        DistributedLock lock2 = getLock(RESOURCE, callback);
         assertNotSame(lock2, lock);
         assertTrue(lock2.isWaiting());
     }
@@ -684,8 +690,8 @@ public class DistributedLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testDistributedLockFreeSerialized() throws Exception {
-        DistributedLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockFreeSerialized() throws Exception {
+        DistributedLock lock = getLock(RESOURCE, callback);
 
         feature = new MyLockingFeature(true);
 
@@ -700,8 +706,8 @@ public class DistributedLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testDistributedLockFreeNoFeature() throws Exception {
-        DistributedLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockFreeNoFeature() throws Exception {
+        DistributedLock lock = getLock(RESOURCE, callback);
 
         DistributedLockManager.setLatestInstance(null);
 
@@ -715,10 +721,10 @@ public class DistributedLockManagerTest {
      * isUnavailable() and the call to compute().
      */
     @Test
-    public void testDistributedLockFreeUnlocked() {
+    void testDistributedLockFreeUnlocked() {
         feature = new FreeWithFreeLockingFeature(true);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         assertFalse(lock.free());
         assertTrue(lock.isUnavailable());
@@ -729,21 +735,21 @@ public class DistributedLockManagerTest {
      * call to isUnavailable() and the call to compute().
      */
     @Test
-    public void testDistributedLockFreeLockFreed() {
+    void testDistributedLockFreeLockFreed() {
         feature = new FreeWithFreeLockingFeature(false);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         assertFalse(lock.free());
         assertTrue(lock.isUnavailable());
     }
 
     @Test
-    public void testDistributedLockExtend() {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockExtend() {
+        lock = getLock(RESOURCE, callback);
 
         // lock2 should be denied - called back by this thread
-        DistributedLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        DistributedLock lock2 = getLock(RESOURCE, callback);
         verify(callback, never()).lockAvailable(lock2);
         verify(callback).lockUnavailable(lock2);
 
@@ -782,8 +788,8 @@ public class DistributedLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testDistributedLockExtendSerialized() throws Exception {
-        DistributedLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockExtendSerialized() throws Exception {
+        DistributedLock lock = getLock(RESOURCE, callback);
 
         // run doLock
         runLock(0, 0);
@@ -813,8 +819,8 @@ public class DistributedLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testDistributedLockExtendNoFeature() throws Exception {
-        DistributedLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockExtendNoFeature() throws Exception {
+        DistributedLock lock = getLock(RESOURCE, callback);
 
         // run doLock
         runLock(0, 0);
@@ -839,10 +845,10 @@ public class DistributedLockManagerTest {
      * isUnavailable() and the call to compute().
      */
     @Test
-    public void testDistributedLockExtendUnlocked() {
+    void testDistributedLockExtendUnlocked() {
         feature = new FreeWithFreeLockingFeature(true);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         lock.extend(HOLD_SEC2, callback);
         assertTrue(lock.isUnavailable());
@@ -854,10 +860,10 @@ public class DistributedLockManagerTest {
      * call to isUnavailable() and the call to compute().
      */
     @Test
-    public void testDistributedLockExtendLockFreed() {
+    void testDistributedLockExtendLockFreed() {
         feature = new FreeWithFreeLockingFeature(false);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         lock.extend(HOLD_SEC2, callback);
         assertTrue(lock.isUnavailable());
@@ -865,20 +871,20 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockScheduleRequest() {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockScheduleRequest() {
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         verify(callback).lockAvailable(lock);
     }
 
     @Test
-    public void testDistributedLockRescheduleRequest() {
+    void testDistributedLockRescheduleRequest() {
         // use a data source that throws an exception when getConnection() is called
         InvalidDbLockingFeature invfeat = new InvalidDbLockingFeature(TRANSIENT);
         feature = invfeat;
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should fail and reschedule
         runLock(0, 0);
@@ -891,7 +897,7 @@ public class DistributedLockManagerTest {
         invfeat.freeLock = true;
 
         // try scheduled request - should just invoke doUnlock
-        runSchedule(0, 0);
+        runSchedule(0);
 
         // should still be waiting
         assertTrue(lock.isUnavailable());
@@ -902,8 +908,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockGetNextRequest() {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockGetNextRequest() {
+        lock = getLock(RESOURCE, callback);
 
         /*
          * run doLock. This should cause getNextRequest() to be called twice, once with a
@@ -917,11 +923,11 @@ public class DistributedLockManagerTest {
      * time it's called.
      */
     @Test
-    public void testDistributedLockGetNextRequestSameRequest() {
+    void testDistributedLockGetNextRequestSameRequest() {
         // force reschedule to be invoked
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         /*
          * run doLock. This should cause getNextRequest() to be called twice, once with a
@@ -933,8 +939,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockDoRequest() {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoRequest() {
+        lock = getLock(RESOURCE, callback);
 
         assertTrue(lock.isWaiting());
 
@@ -948,7 +954,7 @@ public class DistributedLockManagerTest {
      * Tests doRequest(), when doRequest() is already running within another thread.
      */
     @Test
-    public void testDistributedLockDoRequestBusy() {
+    void testDistributedLockDoRequestBusy() {
         /*
          * this feature will invoke a request in a background thread while it's being run
          * in a foreground thread.
@@ -961,6 +967,7 @@ public class DistributedLockManagerTest {
             protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
                 LockCallback callback) {
                 return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
+                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -994,7 +1001,7 @@ public class DistributedLockManagerTest {
             }
         };
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // run doLock
         runLock(0, 0);
@@ -1008,7 +1015,7 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoRequestRunExWaiting() throws SQLException {
+    void testDistributedLockDoRequestRunExWaiting() throws SQLException {
         // throw run-time exception
         when(datasrc.getConnection()).thenThrow(new IllegalStateException(EXPECTED_EXCEPTION));
 
@@ -1020,7 +1027,7 @@ public class DistributedLockManagerTest {
             }
         };
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should NOT reschedule
         runLock(0, 0);
@@ -1038,7 +1045,7 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoRequestRunExUnavailable() throws SQLException {
+    void testDistributedLockDoRequestRunExUnavailable() throws SQLException {
         // throw run-time exception
         when(datasrc.getConnection()).thenAnswer(answer -> {
             lock.free();
@@ -1053,7 +1060,7 @@ public class DistributedLockManagerTest {
             }
         };
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should NOT reschedule
         runLock(0, 0);
@@ -1068,11 +1075,11 @@ public class DistributedLockManagerTest {
      * Tests doRequest() when the retry count gets exhausted.
      */
     @Test
-    public void testDistributedLockDoRequestRetriesExhaustedWhileLocking() {
+    void testDistributedLockDoRequestRetriesExhaustedWhileLocking() {
         // use a data source that throws an exception when getConnection() is called
         feature = new InvalidDbLockingFeature(TRANSIENT);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should fail and reschedule
         runLock(0, 0);
@@ -1082,14 +1089,14 @@ public class DistributedLockManagerTest {
         verify(callback, never()).lockUnavailable(lock);
 
         // try again, via SCHEDULER - first retry fails
-        runSchedule(0, 0);
+        runSchedule(0);
 
         // should still be waiting
         assertTrue(lock.isWaiting());
         verify(callback, never()).lockUnavailable(lock);
 
         // try again, via SCHEDULER - final retry fails
-        runSchedule(1, 0);
+        runSchedule(1);
         assertTrue(lock.isUnavailable());
 
         // now callback should have been called
@@ -1100,14 +1107,14 @@ public class DistributedLockManagerTest {
      * Tests doRequest() when a non-transient DB exception is thrown.
      */
     @Test
-    public void testDistributedLockDoRequestNotTransient() {
+    void testDistributedLockDoRequestNotTransient() {
         /*
          * use a data source that throws a PERMANENT exception when getConnection() is
          * called
          */
         feature = new InvalidDbLockingFeature(PERMANENT);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should fail
         runLock(0, 0);
@@ -1121,8 +1128,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockDoLock() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoLock() throws SQLException {
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should simply do an insert
         long tbegin = System.currentTimeMillis();
@@ -1139,8 +1146,8 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoLockFreed() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoLockFreed() throws SQLException {
+        lock = getLock(RESOURCE, callback);
 
         lock.setState(LockState.UNAVAILABLE);
 
@@ -1156,11 +1163,11 @@ public class DistributedLockManagerTest {
      * Tests doLock() when a DB exception is thrown.
      */
     @Test
-    public void testDistributedLockDoLockEx() {
+    void testDistributedLockDoLockEx() {
         // use a data source that throws an exception when getConnection() is called
         feature = new InvalidDbLockingFeature(PERMANENT);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should simply do an insert
         runLock(0, 0);
@@ -1174,11 +1181,11 @@ public class DistributedLockManagerTest {
      * to be called.
      */
     @Test
-    public void testDistributedLockDoLockNeedingUpdate() throws SQLException {
+    void testDistributedLockDoLockNeedingUpdate() throws SQLException {
         // insert an expired record
         insertRecord(RESOURCE, feature.getUuidString(), 0);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock - should simply do an update
         runLock(0, 0);
@@ -1189,11 +1196,11 @@ public class DistributedLockManagerTest {
      * Tests doLock() when a locked record already exists.
      */
     @Test
-    public void testDistributedLockDoLockAlreadyLocked() throws SQLException {
+    void testDistributedLockDoLockAlreadyLocked() throws SQLException {
         // insert an expired record
         insertRecord(RESOURCE, OTHER_OWNER, HOLD_SEC);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock
         runLock(0, 0);
@@ -1203,8 +1210,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockDoUnlock() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoUnlock() throws SQLException {
+        lock = getLock(RESOURCE, callback);
 
         // invoke doLock()
         runLock(0, 0);
@@ -1230,10 +1237,10 @@ public class DistributedLockManagerTest {
      *
      */
     @Test
-    public void testDistributedLockDoUnlockEx() {
+    void testDistributedLockDoUnlockEx() {
         feature = new InvalidDbLockingFeature(PERMANENT);
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
 
         // do NOT invoke doLock() - it will fail without a DB connection
 
@@ -1250,8 +1257,8 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockDoExtend() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoExtend() throws SQLException {
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         LockCallback callback2 = mock(LockCallback.class);
@@ -1281,8 +1288,8 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoExtendFreed() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoExtendFreed() throws SQLException {
+        lock = getLock(RESOURCE, callback);
         lock.extend(HOLD_SEC2, callback);
 
         lock.setState(LockState.UNAVAILABLE);
@@ -1302,8 +1309,8 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoExtendInsertNeeded() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoExtendInsertNeeded() throws SQLException {
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         LockCallback callback2 = mock(LockCallback.class);
@@ -1335,7 +1342,7 @@ public class DistributedLockManagerTest {
      *
      */
     @Test
-    public void testDistributedLockDoExtendNeitherSucceeds() {
+    void testDistributedLockDoExtendNeitherSucceeds() {
         /*
          * this feature will create a lock that returns false when doDbUpdate() is
          * invoked, or when doDbInsert() is invoked a second time
@@ -1345,6 +1352,7 @@ public class DistributedLockManagerTest {
             protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
                 LockCallback callback) {
                 return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
+                    @Serial
                     private static final long serialVersionUID = 1L;
                     private int ntimes = 0;
 
@@ -1365,7 +1373,7 @@ public class DistributedLockManagerTest {
             }
         };
 
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         LockCallback callback2 = mock(LockCallback.class);
@@ -1391,8 +1399,8 @@ public class DistributedLockManagerTest {
      * @throws SQLException if an error occurs
      */
     @Test
-    public void testDistributedLockDoExtendEx() throws SQLException {
-        lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testDistributedLockDoExtendEx() throws SQLException {
+        lock = getLock(RESOURCE, callback);
         runLock(0, 0);
 
         /*
@@ -1420,14 +1428,14 @@ public class DistributedLockManagerTest {
     }
 
     @Test
-    public void testDistributedLockToString() {
-        String text = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false).toString();
+    void testDistributedLockToString() {
+        String text = getLock(RESOURCE, callback).toString();
         assertNotNull(text);
         assertThat(text).doesNotContain("ownerInfo").doesNotContain("callback");
     }
 
     @Test
-    public void testMakeThreadPool() {
+    void testMakeThreadPool() {
         // use a REAL feature to test this
         feature = new DistributedLockManager();
 
@@ -1439,13 +1447,13 @@ public class DistributedLockManagerTest {
     }
 
     /**
-     * Performs a multi-threaded test of the locking facility.
+     * Performs a multithreaded test of the locking facility.
      *
      * @throws InterruptedException if the current thread is interrupted while waiting for
      *         the background threads to complete
      */
     @Test
-    public void testMultiThreaded() throws InterruptedException {
+    void testMultiThreaded() throws InterruptedException {
         ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
 
         feature = new DistributedLockManager();
@@ -1473,9 +1481,9 @@ public class DistributedLockManagerTest {
         assertTrue(nsuccesses.get() > 0);
     }
 
-    private DistributedLock getLock(String resource, String ownerKey, int holdSec, LockCallback callback,
-        boolean waitForLock) {
-        return (DistributedLock) feature.createLock(resource, ownerKey, holdSec, callback, waitForLock);
+    private DistributedLock getLock(String resource, LockCallback callback) {
+        return (DistributedLock) feature.createLock(resource, DistributedLockManagerTest.OWNER_KEY,
+            DistributedLockManagerTest.HOLD_SEC, callback, false);
     }
 
     private DistributedLock roundTrip(DistributedLock lock) throws Exception {
@@ -1493,14 +1501,12 @@ public class DistributedLockManagerTest {
     /**
      * Runs the checkExpired() action.
      *
-     * @param nskip number of actions in the work queue to skip
-     * @param nadditional number of additional actions that appear in the work queue
-     *        <i>after</i> the checkExpired action
+     * @param nskip    number of actions in the work queue to skip
      * @param schedSec number of seconds for which the checker should have been scheduled
      */
-    private void runChecker(int nskip, int nadditional, long schedSec) {
+    private void runChecker(int nskip, long schedSec) {
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(nskip + nadditional + 1)).schedule(captor.capture(), eq(schedSec), eq(TimeUnit.SECONDS));
+        verify(exsvc, times(nskip + 1)).schedule(captor.capture(), eq(schedSec), eq(TimeUnit.SECONDS));
         Runnable action = captor.getAllValues().get(nskip);
         action.run();
     }
@@ -1524,12 +1530,10 @@ public class DistributedLockManagerTest {
      * Runs a scheduled action (e.g., "retry" action).
      *
      * @param nskip number of actions in the work queue to skip
-     * @param nadditional number of additional actions that appear in the work queue
-     *        <i>after</i> the desired action
      */
-    void runSchedule(int nskip, int nadditional) {
+    void runSchedule(int nskip) {
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(exsvc, times(PRE_SCHED_EXECS + nskip + nadditional + 1)).schedule(captor.capture(), anyLong(), any());
+        verify(exsvc, times(PRE_SCHED_EXECS + nskip + 1)).schedule(captor.capture(), anyLong(), any());
 
         Runnable action = captor.getAllValues().get(PRE_SCHED_EXECS + nskip);
         action.run();
@@ -1645,7 +1649,7 @@ public class DistributedLockManagerTest {
             shutdownFeature();
 
             exsvc = mock(ScheduledExecutorService.class);
-            when(exsvc.schedule(any(Runnable.class), anyLong(), any())).thenAnswer(ans -> checker);
+            lenient().when(exsvc.schedule(any(Runnable.class), anyLong(), any())).thenAnswer(ans -> checker);
             ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, exsvc);
 
             if (init) {
@@ -1660,10 +1664,10 @@ public class DistributedLockManagerTest {
      * Feature whose data source all throws exceptions.
      */
     private class InvalidDbLockingFeature extends MyLockingFeature {
-        private boolean isTransient;
+        private final boolean isTransient;
         private boolean freeLock = false;
 
-        public InvalidDbLockingFeature(boolean isTransient) {
+        InvalidDbLockingFeature(boolean isTransient) {
             // pass "false" because we have to set the error code BEFORE calling
             // afterStart()
             super(false);
@@ -1677,7 +1681,7 @@ public class DistributedLockManagerTest {
 
         @Override
         protected BasicDataSource makeDataSource() throws Exception {
-            when(datasrc.getConnection()).thenAnswer(answer -> {
+            lenient().when(datasrc.getConnection()).thenAnswer(answer -> {
                 if (freeLock) {
                     freeLock = false;
                     lock.free();
@@ -1705,7 +1709,7 @@ public class DistributedLockManagerTest {
      * Feature whose locks free themselves while free() is already running.
      */
     private class FreeWithFreeLockingFeature extends MyLockingFeature {
-        private boolean relock;
+        private final boolean relock;
 
         public FreeWithFreeLockingFeature(boolean relock) {
             super(true);
@@ -1717,6 +1721,7 @@ public class DistributedLockManagerTest {
             LockCallback callback) {
 
             return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
+                @Serial
                 private static final long serialVersionUID = 1L;
                 private boolean checked = false;
 
@@ -1746,7 +1751,7 @@ public class DistributedLockManagerTest {
     }
 
     /**
-     * Thread used with the multi-threaded test. It repeatedly attempts to get a lock,
+     * Thread used with the multithreaded test. It repeatedly attempts to get a lock,
      * extend it, and then unlock it.
      */
     private class MyThread extends Thread {

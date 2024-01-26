@@ -21,9 +21,9 @@ package org.onap.policy.drools.server.restful;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Response;
@@ -35,9 +35,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;
@@ -107,7 +107,7 @@ public class RestLifecycleManagerTest {
     /**
      * Set up.
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
@@ -158,7 +158,7 @@ public class RestLifecycleManagerTest {
     /**
      * Tear down.
      */
-    @After
+    @AfterEach
     public void tearDown() {
         fsm.shutdown();
 
@@ -174,7 +174,7 @@ public class RestLifecycleManagerTest {
     }
 
     @Test
-    public void testMultiPolicyFlow() throws IOException, CoderException {
+    void testMultiPolicyFlow() throws IOException, CoderException {
         /* group assignments */
 
         group();
@@ -204,7 +204,7 @@ public class RestLifecycleManagerTest {
 
         assertTrue(fsm.start());
 
-        booleanPut("state/ACTIVE", "", Status.OK.getStatusCode(), Boolean.TRUE);
+        booleanPut(Status.OK.getStatusCode());
         assertEquals(PdpState.ACTIVE,
             HttpClient.getBody(get("state", Status.OK.getStatusCode()), PdpState.class));
 
@@ -270,7 +270,7 @@ public class RestLifecycleManagerTest {
         ToscaPolicy toscaPolicyValError =
             getPolicyFromFile(EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON, EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME);
         assertThat(
-            listPost("policies/operations/validation", toString(toscaPolicyValError),
+            listPost(toString(toscaPolicyValError),
                 Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
 
         booleanPost("policies", toString(toscaPolicyValError),
@@ -338,7 +338,7 @@ public class RestLifecycleManagerTest {
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
         opPolicy.getMetadata().remove("policy-id");
         assertThat(
-            listPost("policies/operations/validation", toString(opPolicy),
+            listPost(toString(opPolicy),
                 Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
 
         metrics();
@@ -346,7 +346,7 @@ public class RestLifecycleManagerTest {
 
     private void testNotNativePolicy(ToscaPolicy toscaPolicy) throws CoderException {
         assertThat(
-            listPost("policies/operations/validation", toString(toscaPolicy),
+            listPost(toString(toscaPolicy),
                 Status.OK.getStatusCode())).isEmpty();
 
         booleanPost("policies", toString(toscaPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
@@ -384,13 +384,13 @@ public class RestLifecycleManagerTest {
         assertEquals(bool, HttpClient.getBody(response, Boolean.class));
     }
 
-    private void booleanPut(String contextPath, String body, int statusCode, Boolean bool) {
-        Response response = client.put(contextPath, Entity.json(body), Collections.emptyMap());
-        booleanResponse(response, statusCode, bool);
+    private void booleanPut(int statusCode) {
+        Response response = client.put("state/ACTIVE", Entity.json(""), Collections.emptyMap());
+        booleanResponse(response, statusCode, Boolean.TRUE);
     }
 
-    private List<?> listPost(String contextPath, String body, int statusCode) {
-        Response response = client.post(contextPath, Entity.json(body), Collections.emptyMap());
+    private List<?> listPost(String body, int statusCode) {
+        Response response = client.post("policies/operations/validation", Entity.json(body), Collections.emptyMap());
         assertEquals(statusCode, response.getStatus());
         return HttpClient.getBody(response, List.class);
     }

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +21,19 @@
 
 package org.onap.policy.drools.protocol.configuration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PdpdConfigurationTest {
+class PdpdConfigurationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(PdpdConfigurationTest.class);
 
@@ -64,7 +64,7 @@ public class PdpdConfigurationTest {
     private static final String OPERATION2 = "operation2";
 
     @Test
-    public void test() {
+    void test() {
         //
         // Empty constructor test
         //
@@ -246,14 +246,14 @@ public class PdpdConfigurationTest {
     }
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
         PdpdConfiguration config = new PdpdConfiguration(REQUEST_ID, ENTITY, null);
         assertEquals(REQUEST_ID, config.getRequestId());
         assertEquals(ENTITY, config.getEntity());
     }
 
     @Test
-    public void testSerialize() throws IOException {
+    void testSerialize() {
         List<ControllerConfiguration> controllers = Arrays.asList(new ControllerConfiguration(NAME, OPERATION, null),
                         new ControllerConfiguration(NAME2, OPERATION2, null));
         PdpdConfiguration pdpConfig = new PdpdConfiguration(REQUEST_ID, ENTITY, controllers);

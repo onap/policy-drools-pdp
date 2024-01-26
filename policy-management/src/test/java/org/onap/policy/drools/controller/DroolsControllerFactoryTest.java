@@ -3,6 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +21,16 @@
 
 package org.onap.policy.drools.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_TYPE;
 
 import java.util.List;
 import java.util.Properties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.controller.internal.NullDroolsController;
 import org.onap.policy.drools.features.DroolsControllerFeatureApi;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
@@ -43,7 +44,7 @@ public class DroolsControllerFactoryTest {
     public static final String TEST_VERSION = "testVersion";
 
     @Test
-    public void testBuildNullController() {
+    void testBuildNullController() {
         Properties droolsProps = new Properties();
         DroolsController droolsController = DroolsControllerConstants.getFactory().build(droolsProps, null, null);
 
@@ -53,7 +54,7 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void testGetNullController() {
+    void testGetNullController() {
         DroolsController controller =
             DroolsControllerConstants.getFactory().get(DroolsControllerConstants.NO_GROUP_ID,
                 DroolsControllerConstants.NO_ARTIFACT_ID, DroolsControllerConstants.NO_VERSION);
@@ -65,26 +66,26 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void testInventory() {
+    void testInventory() {
         List<DroolsController> controllers = DroolsControllerConstants.getFactory().inventory();
         assertNotNull(controllers);
 
-        for (int i = 0; i < controllers.size(); i++) {
-            if (!isNullController(controllers.get(i)) && !isActualController(controllers.get(i))) {
+        for (DroolsController controller : controllers) {
+            if (!isNullController(controller) && !isActualController(controller)) {
                 fail("drools controller is not a null controller");
             }
         }
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         droolsFactory.shutdown();
         assertTrue(droolsFactory.inventory().isEmpty());
     }
 
     @Test
-    public void testDestroy() {
+    void testDestroy() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         droolsFactory.destroy();
         assertTrue(droolsFactory.inventory().isEmpty());
@@ -107,7 +108,7 @@ public class DroolsControllerFactoryTest {
     }
 
     @Test
-    public void testControllerType() {
+    void testControllerType() {
         DroolsControllerFactory droolsFactory = new IndexedDroolsControllerFactory();
         Properties props = new Properties();
 

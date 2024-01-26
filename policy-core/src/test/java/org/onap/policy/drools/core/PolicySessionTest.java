@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018, 2020-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,22 +22,22 @@
 package org.onap.policy.drools.core;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.Semaphore;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.onap.policy.drools.core.PolicySession.ThreadModel;
 
-public class PolicySessionTest {
+class PolicySessionTest {
 
     private static final String MY_NAME = "my-name";
     private static final String CONTAINER = "my-container";
@@ -49,7 +50,7 @@ public class PolicySessionTest {
     /**
      * Initialize test objects.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         container = mock(PolicyContainer.class);
         kie = mock(KieSession.class);
@@ -60,7 +61,7 @@ public class PolicySessionTest {
     }
 
     @Test
-    public void test_Simple() {
+    void test_Simple() {
         // verify constructor operations
         AgendaEventListener agenda = session;
         verify(kie).addEventListener(agenda);
@@ -92,7 +93,7 @@ public class PolicySessionTest {
     }
 
     @Test
-    public void testStartThread() {
+    void testStartThread() {
         session.startThread();
 
         // re-start
@@ -102,7 +103,7 @@ public class PolicySessionTest {
     }
 
     @Test
-    public void testSetPolicySession_testGetCurrentSession_testRemovePolicySession() {
+    void testSetPolicySession_testGetCurrentSession_testRemovePolicySession() {
         PolicySession sess2 = new PolicySession(MY_NAME + "-b", container, kie);
 
         session.setPolicySession();
@@ -121,7 +122,7 @@ public class PolicySessionTest {
     }
 
     @Test
-    public void testGetAdjunct_testSetAdjunct() {
+    void testGetAdjunct_testSetAdjunct() {
         Object adjnm1 = "adjunct-a";
         Object adjval1 = "value-a";
         session.setAdjunct(adjnm1, adjval1);
@@ -136,7 +137,7 @@ public class PolicySessionTest {
     }
 
     @Test
-    public void testThreadModel() {
+    void testThreadModel() {
         ThreadModel model = new PolicySession.ThreadModel() {
             @Override
             public void stop() {
@@ -149,11 +150,11 @@ public class PolicySessionTest {
             }
         };
 
-        assertThatCode(() -> model.updated()).doesNotThrowAnyException();
+        assertThatCode(model::updated).doesNotThrowAnyException();
     }
 
     @Test
-    public void testDefaultThreadModelRun() throws Exception {
+    void testDefaultThreadModelRun() throws Exception {
         testDefaultThreadModelRun_Ex(() -> {
             throw new RuntimeException(EXPECTED);
         });

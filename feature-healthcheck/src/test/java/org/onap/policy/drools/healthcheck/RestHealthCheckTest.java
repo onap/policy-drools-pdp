@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +21,15 @@
 
 package org.onap.policy.drools.healthcheck;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import jakarta.ws.rs.core.Response;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.bus.internal.BusTopicParams;
 import org.onap.policy.common.endpoints.http.client.HttpClient;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactory;
@@ -60,7 +61,7 @@ public class RestHealthCheckTest {
      * Set up.
      */
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws Exception {
         LoggerUtils.setLevel("org.onap.policy.common.endpoints", "WARN");
         LoggerUtils.setLevel("org.eclipse", "ERROR");
@@ -103,26 +104,26 @@ public class RestHealthCheckTest {
      * Tear down.
      */
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         HttpClientFactoryInstance.getClientFactory().destroy();
         HttpServletServerFactoryInstance.getServerFactory().destroy();
     }
 
     @Test
-    public void healthcheck() {
+    void healthcheck() {
         when(healthcheckManager.healthCheck()).thenReturn(summary);
         assertHttp("/");
     }
 
     @Test
-    public void engine() {
+    void engine() {
         when(healthcheckManager.engineHealthcheck()).thenReturn(summary);
         assertHttp("engine");
     }
 
     @Test
-    public void controllers() {
+    void controllers() {
         when(healthcheckManager.controllerHealthcheck()).thenReturn(summary);
         assertHttp("controllers");
 
@@ -140,7 +141,7 @@ public class RestHealthCheckTest {
     }
 
     @Test
-    public void clients() {
+    void clients() {
         when(healthcheckManager.clientHealthcheck()).thenReturn(summary);
         assertHttp("clients");
 

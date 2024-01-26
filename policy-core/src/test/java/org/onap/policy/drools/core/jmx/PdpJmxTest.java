@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018, 2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,45 +21,45 @@
 
 package org.onap.policy.drools.core.jmx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class PdpJmxTest {
+class PdpJmxTest {
 
     private PdpJmx jmx;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         jmx = new PdpJmx();
     }
 
     @Test
-    public void testGetInstance() {
+    void testGetInstance() {
         jmx = PdpJmx.getInstance();
         assertNotNull(jmx);
         assertSame(jmx, PdpJmx.getInstance());
     }
 
     @Test
-    public void testGetUpdates_testUpdateOccured() {
+    void testGetUpdates_testUpdateOccurred() {
         assertEquals(0, jmx.getUpdates());
         assertEquals(0, jmx.getRulesFired());
 
-        jmx.updateOccured();
+        jmx.updateOccurred();
         assertEquals(1, jmx.getUpdates());
         assertEquals(0, jmx.getRulesFired());
 
-        jmx.updateOccured();
+        jmx.updateOccurred();
         assertEquals(2, jmx.getUpdates());
         assertEquals(0, jmx.getRulesFired());
     }
 
     @Test
-    public void testGetRulesFired_testRuleFired() {
+    void testGetRulesFired_testRuleFired() {
         assertEquals(0, jmx.getUpdates());
         assertEquals(0, jmx.getRulesFired());
 

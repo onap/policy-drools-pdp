@@ -3,6 +3,7 @@
  * policy-core
  * ================================================================================
  * Copyright (C) 2017-2018, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +42,7 @@ public class PdpJmx implements PdpJmxMBean  {
         return actions.longValue();
     }
 
-    public void updateOccured() {
+    public void updateOccurred() {
         updates.incrementAndGet();
     }
 

@@ -22,16 +22,16 @@
 package org.onap.policy.drools.domain.models;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.worldturner.medeia.api.ValidationFailedException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.resources.ResourceUtils;
@@ -45,7 +45,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
-public class DomainPolicyTypesTest {
+class DomainPolicyTypesTest {
 
     // Policy Types
     private static final String NATIVE_DROOLS_POLICY_TYPE = "onap.policies.native.drools.Artifact";
@@ -63,14 +63,14 @@ public class DomainPolicyTypesTest {
     private DomainMaker domainMaker;
     private StandardCoder nonValCoder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         domainMaker = new DomainMaker();
         nonValCoder = new StandardCoder();
     }
 
     @Test
-    public void testToscaNativeDroolsPolicy() throws CoderException, IOException {
+    void testToscaNativeDroolsPolicy() throws CoderException, IOException {
         String rawNativeDroolsPolicy =
             getPolicyFromFileString();
         ToscaPolicy toscaPolicy =
@@ -122,7 +122,7 @@ public class DomainPolicyTypesTest {
     }
 
     @Test
-    public void testToscaControllerPolicy() throws CoderException {
+    void testToscaControllerPolicy() throws CoderException {
         ToscaPolicy toscaPolicy =
                 getExamplesPolicy(EXAMPLE_CONTROLLER_DROOLS_POLICY_JSON, EXAMPLE_CONTROLLER_DROOLS_POLICY_NAME);
 

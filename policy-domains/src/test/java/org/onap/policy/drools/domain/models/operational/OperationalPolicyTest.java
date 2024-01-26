@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@
 
 package org.onap.policy.drools.domain.models.operational;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.resources.ResourceUtils;
@@ -36,7 +36,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaServiceTemplate;
 
-public class OperationalPolicyTest {
+class OperationalPolicyTest {
     // Policy Types
     private static final String OPERATIONAL_DROOLS_POLICY_TYPE = "onap.policies.controlloop.operational.common.Drools";
 
@@ -48,15 +48,15 @@ public class OperationalPolicyTest {
     private DomainMaker domainMaker;
     private StandardCoder nonValCoder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         domainMaker = new DomainMaker();
         nonValCoder = new StandardCoder();
     }
 
     @Test
-    public void testToscaCompliantOperationalPolicyType() throws CoderException {
-        String rawVcpeToscaPolicy = getExamplesPolicyString(VCPE_OPERATIONAL_DROOLS_POLICY_JSON, OP_POLICY_NAME_VCPE);
+    void testToscaCompliantOperationalPolicyType() throws CoderException {
+        String rawVcpeToscaPolicy = getExamplesPolicyString();
 
         // valid "known" policy type with implicit schema
         ToscaConceptIdentifier operationalCompliantType =
@@ -66,7 +66,7 @@ public class OperationalPolicyTest {
     }
 
     @Test
-    public void testOperationalCompliantModel() {
+    void testOperationalCompliantModel() {
         // @formatter:off
         OperationalPolicy policy =
                 OperationalPolicy.builder()
@@ -100,17 +100,15 @@ public class OperationalPolicyTest {
         assertNotNull(policy);
     }
 
-    private String getJsonFromResource(String resourcePath) {
-        return ResourceUtils.getResourceAsString(resourcePath);
-    }
-
-    private ToscaPolicy getExamplesPolicy(String resourcePath, String policyName) throws CoderException {
-        String policyJson = getJsonFromResource(resourcePath);
+    private ToscaPolicy getExamplesPolicy() throws CoderException {
+        String policyJson = ResourceUtils
+            .getResourceAsString(OperationalPolicyTest.VCPE_OPERATIONAL_DROOLS_POLICY_JSON);
         ToscaServiceTemplate serviceTemplate = new StandardCoder().decode(policyJson, ToscaServiceTemplate.class);
-        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(policyName);
+        return serviceTemplate.getToscaTopologyTemplate().getPolicies().get(0).get(
+            OperationalPolicyTest.OP_POLICY_NAME_VCPE);
     }
 
-    private String getExamplesPolicyString(String resourcePath, String policyName) throws CoderException {
-        return nonValCoder.encode(getExamplesPolicy(resourcePath, policyName));
+    private String getExamplesPolicyString() throws CoderException {
+        return nonValCoder.encode(getExamplesPolicy());
     }
 }

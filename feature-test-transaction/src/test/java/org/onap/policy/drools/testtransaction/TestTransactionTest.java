@@ -3,6 +3,7 @@
  * feature-test-transaction
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +21,9 @@
 
 package org.onap.policy.drools.testtransaction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,8 +33,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.system.PolicyController;
@@ -52,15 +54,14 @@ public class TestTransactionTest {
             TEST_CONTROLLER_NAME + "-controller.properties.bak";
 
     /** logger. */
-    private static Logger logger = LoggerFactory.getLogger(TestTransactionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestTransactionTest.class);
 
     /**
      * Start up.
      *
-     * @throws IOException exception
      */
-    @BeforeClass
-    public static void startUp() throws IOException {
+    @BeforeAll
+    public static void startUp() {
         logger.info("enter");
 
         cleanUpWorkingDir();
@@ -70,7 +71,7 @@ public class TestTransactionTest {
     }
 
     @Test
-    public void testRegisterUnregister() throws InterruptedException {
+    void testRegisterUnregister() throws InterruptedException {
         final Properties controllerProperties = new Properties();
         controllerProperties.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
         final PolicyController controller =
@@ -80,7 +81,7 @@ public class TestTransactionTest {
 
         CountDownLatch latch = new CountDownLatch(1);
 
-        // use our own impl so we can decrement the latch when run() completes
+        // use our own impl, so we can decrement the latch when run() completes
         TtImpl impl = new TtImpl() {
             @Override
             protected TtControllerTask makeControllerTask(PolicyController controller) {
@@ -104,7 +105,7 @@ public class TestTransactionTest {
         impl.unregister(controller);
 
         Thread ttThread = getThread(latch, "tt-controller-task-" + TEST_CONTROLLER_NAME);
-        assertEquals(null, ttThread);
+        assertNull(ttThread);
     }
 
     /**

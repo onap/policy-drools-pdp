@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +24,11 @@ package org.onap.policy.drools.system.internal;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,8 +41,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpoint;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -53,7 +55,7 @@ import org.onap.policy.drools.persistence.SystemPersistence;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
 import org.onap.policy.drools.system.GsonMgmtTestBuilder;
 
-public class AggregatedPolicyControllerTest {
+class AggregatedPolicyControllerTest {
 
     private static final String AGG_NAME = "agg-name";
     private static final String SINK_TOPIC1 = "sink-a";
@@ -93,7 +95,7 @@ public class AggregatedPolicyControllerTest {
     /**
      * Initializes the object to be tested.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         properties = new Properties();
 
@@ -144,7 +146,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testFactory() {
+    void testFactory() {
         apc = new AggregatedPolicyController(AGG_NAME, properties);
         assertNotNull(apc.getDroolsFactory());
         assertNotNull(apc.getEndpointManager());
@@ -153,32 +155,34 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testAggregatedPolicyController_() {
+    void testAggregatedPolicyController_() {
         verify(persist).storeController(AGG_NAME, properties);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInitDrools_Ex() {
+    @Test
+    void testInitDrools_Ex() {
+        assertThrows(IllegalArgumentException.class, () ->
         new AggregatedPolicyControllerImpl(AGG_NAME, properties) {
             @Override
             protected DroolsControllerFactory getDroolsFactory() {
                 throw new RuntimeException(EXPECTED);
             }
-        };
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInitDrools_Error() {
+    @Test
+    void testInitDrools_Error() {
+        assertThrows(IllegalArgumentException.class, () ->
         new AggregatedPolicyControllerImpl(AGG_NAME, properties) {
             @Override
             protected DroolsControllerFactory getDroolsFactory() {
                 throw new LinkageError(EXPECTED);
             }
-        };
+        });
     }
 
     @Test
-    public void testUpdateDrools_ConfigVariations() {
+    void testUpdateDrools_ConfigVariations() {
 
         // config should return same values as current controller
         when(config.getArtifactId()).thenReturn(ARTIFACT1.toUpperCase());
@@ -233,7 +237,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testUpdateDrools_LockVariations() {
+    void testUpdateDrools_LockVariations() {
         // not locked
         apc.updateDrools(config);
         verify(drools, never()).lock();
@@ -248,7 +252,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testUpdateDrools_AliveVariations() {
+    void testUpdateDrools_AliveVariations() {
         // not started
         apc.updateDrools(config);
         verify(drools, never()).start();
@@ -263,19 +267,19 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testSerialize() {
+    void testSerialize() {
         GsonTestUtils gson = new GsonMgmtTestBuilder().addDroolsControllerMock().addTopicSinkMock().addTopicSourceMock()
                         .build();
         assertThatCode(() -> gson.compareGson(apc, AggregatedPolicyControllerTest.class)).doesNotThrowAnyException();
     }
 
     @Test
-    public void testGetName() {
+    void testGetName() {
         assertEquals(AGG_NAME, apc.getName());
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeStart(any())).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterStart(any())).thenThrow(new RuntimeException(EXPECTED));
@@ -310,7 +314,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testStart_AlreadyStarted() {
+    void testStart_AlreadyStarted() {
         apc.start();
 
         // re-start it
@@ -329,7 +333,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testStart_Locked() {
+    void testStart_Locked() {
         apc.lock();
 
         // start it
@@ -347,7 +351,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testStop() {
+    void testStop() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeStop(any())).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterStop(any())).thenThrow(new RuntimeException(EXPECTED));
@@ -387,7 +391,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testStop_AlreadyStopped() {
+    void testStop_AlreadyStopped() {
         apc.start();
         apc.stop();
 
@@ -404,7 +408,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeShutdown(any())).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterShutdown(any())).thenThrow(new RuntimeException(EXPECTED));
@@ -444,7 +448,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testHalt() {
+    void testHalt() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeHalt(any())).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterHalt(any())).thenThrow(new RuntimeException(EXPECTED));
@@ -485,7 +489,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testOnTopicEvent() {
+    void testOnTopicEvent() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeOffer(apc, CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT))
                         .thenThrow(new RuntimeException(EXPECTED));
@@ -522,7 +526,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testOnTopicEvent_Locked() {
+    void testOnTopicEvent_Locked() {
         // start it
         apc.start();
 
@@ -540,7 +544,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testOnTopicEvent_NotStarted() {
+    void testOnTopicEvent_NotStarted() {
 
         // offer it
         apc.onTopicEvent(CommInfrastructure.NOOP, SOURCE_TOPIC1, MY_EVENT);
@@ -554,7 +558,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testDeliver_testInitSinks() {
+    void testDeliver_testInitSinks() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeDeliver(apc, CommInfrastructure.NOOP, SINK_TOPIC1, MY_EVENT))
                         .thenThrow(new RuntimeException(EXPECTED));
@@ -598,42 +602,43 @@ public class AggregatedPolicyControllerTest {
             prov -> verify(prov).afterDeliver(apc, CommInfrastructure.NOOP, SINK_TOPIC1, MY_EVENT, true));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testDeliver_NullTopic() {
-        validateDeliverFailure(null, MY_EVENT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testDeliver_EmptyTopic() {
-        validateDeliverFailure("", MY_EVENT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testDeliver_NullEvent() {
-        validateDeliverFailure(SINK_TOPIC1, null);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testDeliver_NotStarted() {
-        // do NOT start
-        apc.deliver(CommInfrastructure.NOOP, SINK_TOPIC1, MY_EVENT);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testDeliver_Locked() {
-        apc.start();
-        apc.lock();
-        apc.deliver(CommInfrastructure.NOOP, SINK_TOPIC1, MY_EVENT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testDeliver_UnknownTopic() {
-        apc.start();
-        apc.deliver(CommInfrastructure.NOOP, "unknown-topic", MY_EVENT);
+    @Test
+    void testDeliver_NullTopic() {
+        assertThrows(IllegalArgumentException.class, () -> validateDeliverFailure(null, MY_EVENT));
     }
 
     @Test
-    public void testIsAlive() {
+    void testDeliver_EmptyTopic() {
+        assertThrows(IllegalArgumentException.class, () -> validateDeliverFailure("", MY_EVENT));
+    }
+
+    @Test
+    void testDeliver_NullEvent() {
+        assertThrows(IllegalArgumentException.class, () -> validateDeliverFailure(SINK_TOPIC1, null));
+    }
+
+    @Test
+    void testDeliver_NotStarted() {
+        // do NOT start
+        assertThrows(IllegalStateException.class, () -> apc.deliver(CommInfrastructure.NOOP, SINK_TOPIC1, MY_EVENT));
+    }
+
+    @Test
+    void testDeliver_Locked() {
+        apc.start();
+        apc.lock();
+        assertThrows(IllegalStateException.class, () -> apc.deliver(CommInfrastructure.NOOP, SINK_TOPIC1, MY_EVENT));
+    }
+
+    @Test
+    void testDeliver_UnknownTopic() {
+        apc.start();
+        assertThrows(IllegalArgumentException.class,
+            () -> apc.deliver(CommInfrastructure.NOOP, "unknown-topic", MY_EVENT));
+    }
+
+    @Test
+    void testIsAlive() {
         assertFalse(apc.isAlive());
 
         apc.start();
@@ -644,7 +649,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testLock() {
+    void testLock() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeLock(any())).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterLock(any())).thenThrow(new RuntimeException(EXPECTED));
@@ -678,7 +683,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testLock_AlreadyLocked() {
+    void testLock_AlreadyLocked() {
         apc.start();
         apc.lock();
 
@@ -697,7 +702,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testUnlock() {
+    void testUnlock() {
         // arrange for first provider to throw exceptions
         when(prov1.beforeUnlock(any())).thenThrow(new RuntimeException(EXPECTED));
         when(prov1.afterUnlock(any())).thenThrow(new RuntimeException(EXPECTED));
@@ -733,7 +738,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testUnlock_NotLocked() {
+    void testUnlock_NotLocked() {
         apc.start();
 
         // now unlock it
@@ -750,7 +755,7 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testIsLocked() {
+    void testIsLocked() {
         assertFalse(apc.isLocked());
 
         apc.lock();
@@ -761,27 +766,27 @@ public class AggregatedPolicyControllerTest {
     }
 
     @Test
-    public void testGetTopicSources() {
+    void testGetTopicSources() {
         assertEquals(sources, apc.getTopicSources());
     }
 
     @Test
-    public void testGetTopicSinks() {
+    void testGetTopicSinks() {
         assertEquals(sinks, apc.getTopicSinks());
     }
 
     @Test
-    public void testGetDrools() {
+    void testGetDrools() {
         assertEquals(drools, apc.getDrools());
     }
 
     @Test
-    public void testGetProperties() {
+    void testGetProperties() {
         assertEquals(properties, apc.getProperties());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         assertTrue(apc.toString().startsWith("AggregatedPolicyController("));
     }
 

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2018, 2021-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,27 +21,27 @@
 
 package org.onap.policy.drools.healthcheck;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.drools.healthcheck.HealthCheck.Report;
 import org.onap.policy.drools.healthcheck.HealthCheck.Reports;
 
-public class HealthCheckTest {
+class HealthCheckTest {
     private static final long RPT_CODE = 100;
     private static final String RPT_MSG = "report-message";
     private static final String RPT_NAME = "report-name";
     private static final String RPT_URL = "report-url";
 
     @Test
-    public void testReport() {
+    void testReport() {
         Report rpt = new Report();
 
         assertNotNull(rpt.toString());
@@ -73,7 +74,7 @@ public class HealthCheckTest {
     }
 
     @Test
-    public void testReports() {
+    void testReports() {
         Reports reports = new Reports();
 
         // toString should work with un-populated data

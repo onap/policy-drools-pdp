@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
- *  Modifications Copyright (C) 2021 Nordix Foundation.
+ *  Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,17 @@
 package org.onap.policy.drools.policies;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.worldturner.medeia.api.ValidationFailedException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.coder.CoderException;
 import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.drools.models.domains.a.DomainAPolicy;
@@ -43,17 +43,17 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyType;
 
-public class DomainMakerTest {
+class DomainMakerTest {
 
     private DomainMaker domainMaker;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         domainMaker = new DomainMaker();
     }
 
     @Test
-    public void testIsConformantString() throws IOException {
+    void testIsConformantString() throws IOException {
         ToscaConceptIdentifier policyTypeId =
             new ToscaConceptIdentifier("policy.type.A", "1.0.0");
         String rawJsonPolicyType =
@@ -66,7 +66,7 @@ public class DomainMakerTest {
     }
 
     @Test
-    public void testIsConformantToscaPolicy() throws IOException, CoderException {
+    void testIsConformantToscaPolicy() throws IOException, CoderException {
         ToscaPolicy policy = getToscaPolicy("src/test/resources/policyA.json");
         assertTrue(domainMaker.isConformant(policy));
 
@@ -75,7 +75,7 @@ public class DomainMakerTest {
     }
 
     @Test
-    public void testIsDomainConformant() {
+    void testIsDomainConformant() {
         ToscaConceptIdentifier policyTypeId =
                 new ToscaConceptIdentifier("policy.type.A", "1.0.0");
 
@@ -95,7 +95,7 @@ public class DomainMakerTest {
 
 
     @Test
-    public void testConformance() throws IOException, CoderException {
+    void testConformance() throws IOException, CoderException {
         ToscaPolicy policy1 = getToscaPolicy("src/test/resources/policyA.json");
         assertTrue(domainMaker.conformance(policy1));
 
@@ -116,7 +116,7 @@ public class DomainMakerTest {
     }
 
     @Test
-    public void testRegisterValidator() throws IOException, CoderException {
+    void testRegisterValidator() throws IOException, CoderException {
         ToscaConceptIdentifier policyTypeId =
                 new ToscaConceptIdentifier("policy.type.external", "9.9.9");
 
@@ -133,7 +133,7 @@ public class DomainMakerTest {
     }
 
     @Test
-    public void testConvertToDomainPolicy() throws IOException, CoderException {
+    void testConvertToDomainPolicy() throws IOException, CoderException {
         DomainAPolicy domainAPolicy =
                 domainMaker.convertTo(getToscaPolicy("src/test/resources/policyA.json"), DomainAPolicy.class);
         assertDomainPolicy(domainAPolicy);
@@ -143,7 +143,7 @@ public class DomainMakerTest {
     }
 
     @Test
-    public void testConvertToSchema() {
+    void testConvertToSchema() {
         ToscaPolicyType type = new ToscaPolicyType();
         assertThatThrownBy(() -> domainMaker
             .convertToSchema(type))
@@ -151,7 +151,7 @@ public class DomainMakerTest {
     }
 
     @Test
-    public void testIsRegistered() {
+    void testIsRegistered() {
         ToscaConceptIdentifier policyTypeId1 =
                 new ToscaConceptIdentifier("policy.type.A", "1.0.0");
         assertTrue(domainMaker.isRegistered(policyTypeId1));
@@ -189,7 +189,7 @@ public class DomainMakerTest {
         assertEquals("policy.type.A", domainAPolicy.getType());
         assertEquals("A", domainAPolicy.getMetadata().getPolicyId());
         assertEquals("nested1", domainAPolicy.getProperties().getNested().getNested1());
-        assertEquals(true, domainAPolicy.getProperties().getNested().isNested2());
+        assertTrue(domainAPolicy.getProperties().getNested().isNested2());
         assertEquals(50, domainAPolicy.getProperties().getNested().getNested3());
     }
 }

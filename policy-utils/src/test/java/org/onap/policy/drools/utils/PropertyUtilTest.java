@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +21,22 @@
 
 package org.onap.policy.drools.utils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.logging.LoggerUtils;
 import org.onap.policy.common.utils.security.CryptoUtils;
 import org.slf4j.Logger;
@@ -84,7 +87,7 @@ public class PropertyUtilTest {
     /**
      * Test Setup -- Create a directory for temporary files.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         logger.info("setup: creating a temporary directory");
 
@@ -96,15 +99,15 @@ public class PropertyUtilTest {
     /**
      * Test Cleanup -- Remove temporary files.
      */
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         logger.info("teardown: remove the temporary directory");
 
         // the assumption is that we only have one level of temporary files
-        for (File file : directory.listFiles()) {
-            file.delete();
+        for (File file : Objects.requireNonNull(directory.listFiles())) {
+            assertTrue(file.delete());
         }
-        directory.delete();
+        assertTrue(directory.delete());
     }
 
     /**
@@ -153,7 +156,7 @@ public class PropertyUtilTest {
      * Test the basic properties file interface.
      */
     @Test
-    public void testGetProperties() throws Exception {
+    void testGetProperties() throws Exception {
         logger.info("testGetProperties: test the basic properties file interface");
 
         // copy system properties
@@ -253,7 +256,7 @@ public class PropertyUtilTest {
      * This tests the 'PropertyUtil.Listener' interface.
      */
     @Test
-    public void testListenerInterface() throws Exception {
+    void testListenerInterface() throws Exception {
         logger.info("testListenerInterface: test receipt of dynamic updates");
 
         // create initial property file

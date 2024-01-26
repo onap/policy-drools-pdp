@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,16 +37,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Legacy Configurator.
  */
+@Getter
 public class LegacyConfig implements Startable, TopicListener {
 
     private static final Logger logger = LoggerFactory.getLogger(LegacyConfig.class);
     private static final String CONFIGURATION_PROPERTIES_NAME = "feature-legacy-config";
 
-    @Getter
     private final Properties properties;
 
-    @Getter
-    private TopicSource source;
+    private final TopicSource source;
 
     /**
      * Constructor.

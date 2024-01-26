@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +22,16 @@
 package org.onap.policy.drools.protocol.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 
-public class ControllerConfigurationTest {
+class ControllerConfigurationTest {
 
     private static final String NAME = "name";
     private static final String OPERATION = "operation";
@@ -60,7 +61,7 @@ public class ControllerConfigurationTest {
      * Test.
      */
     @Test
-    public void test() {
+    void test() {
 
         Properties additionalProperties = new Properties();
         additionalProperties.put(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
@@ -104,7 +105,7 @@ public class ControllerConfigurationTest {
     }
 
     @Test
-    public void testSerialize() {
+    void testSerialize() {
         ControllerConfiguration controllerConfig = new ControllerConfiguration(NAME, OPERATION, DROOLS_CONFIG);
         controllerConfig.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
         controllerConfig.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY2, ADDITIONAL_PROPERTY_VALUE2);

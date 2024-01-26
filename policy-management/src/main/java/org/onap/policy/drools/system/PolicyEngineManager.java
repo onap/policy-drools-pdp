@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +86,6 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.configuration.ControllerConfiguration;
 import org.onap.policy.drools.protocol.configuration.PdpdConfiguration;
 import org.onap.policy.drools.server.restful.RestManager;
-import org.onap.policy.drools.server.restful.aaf.AafTelemetryAuthFilter;
 import org.onap.policy.drools.stats.PolicyStatsManager;
 import org.onap.policy.drools.system.internal.SimpleLockManager;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -408,11 +408,6 @@ class PolicyEngineManager implements PolicyEngine {
 
         try {
             this.httpServers = getServletFactory().build(properties);
-            for (HttpServletServer server : this.httpServers) {
-                if (server.isAaf()) {
-                    server.addFilterClass(null, AafTelemetryAuthFilter.class.getName());
-                }
-            }
         } catch (final IllegalArgumentException e) {
             logger.error("{}: add-http-servers failed", this, e);
         }

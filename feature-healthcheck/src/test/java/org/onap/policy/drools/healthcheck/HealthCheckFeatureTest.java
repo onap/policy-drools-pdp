@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019,2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +21,9 @@
 
 package org.onap.policy.drools.healthcheck;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
@@ -38,9 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import org.eclipse.jetty.http.HttpStatus;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.mockito.AdditionalAnswers;
 import org.onap.policy.common.endpoints.http.client.HttpClientFactoryInstance;
@@ -65,7 +66,7 @@ public class HealthCheckFeatureTest {
     /**
      * Set up.
      */
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
 
@@ -92,7 +93,7 @@ public class HealthCheckFeatureTest {
     /**
      * Tear down.
      */
-    @AfterClass
+    @AfterAll
     public static void teardown() {
         PolicyControllerConstants.getFactory().destroy();
         HttpClientFactoryInstance.getClientFactory().destroy();
@@ -100,7 +101,7 @@ public class HealthCheckFeatureTest {
     }
 
     @Test
-    public void test() throws InterruptedException {
+    void test() throws InterruptedException {
         var manager = spy(HealthCheckManager.class);
         var feature = new HealthCheckFeatureImpl(manager);
         when(manager.isEngineAlive()).thenReturn(true);
@@ -167,12 +168,12 @@ public class HealthCheckFeatureTest {
     }
 
     @Test
-    public void testGetSequenceNumber() {
+    void testGetSequenceNumber() {
         assertEquals(1000, new HealthCheckFeature().getSequenceNumber());
     }
 
     @Test
-    public void testAfterStart() {
+    void testAfterStart() {
         HealthCheck checker = mock(HealthCheck.class);
         HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
 
@@ -187,7 +188,7 @@ public class HealthCheckFeatureTest {
     }
 
     @Test
-    public void testAfterOpen() {
+    void testAfterOpen() {
         HealthCheck checker = mock(HealthCheck.class);
         HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
 
@@ -203,7 +204,7 @@ public class HealthCheckFeatureTest {
     }
 
     @Test
-    public void testAfterShutdown() {
+    void testAfterShutdown() {
         HealthCheck checker = mock(HealthCheck.class);
         HealthCheckFeature feature = new HealthCheckFeatureImpl(checker);
 

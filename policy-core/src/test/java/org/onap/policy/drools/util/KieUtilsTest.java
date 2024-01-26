@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +21,9 @@
 
 package org.onap.policy.drools.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,8 +33,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.stream.Collectors;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
@@ -51,7 +52,7 @@ public class KieUtilsTest {
     /**
      * Test class initialization.
      */
-    @BeforeClass
+    @BeforeAll
     public static void createArtifact() throws Exception {
         ReleaseId releaseId =
             KieUtils.installArtifact(
@@ -65,7 +66,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void testInstallArtifact() throws IOException {
+    void testInstallArtifact() throws IOException {
         ReleaseId releaseId =
             KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -77,7 +78,7 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void testInstallArtifactList() throws IOException {
+    void testInstallArtifactList() throws IOException {
         ReleaseId releaseId =
             KieUtils.installArtifact(
                 Paths.get("src/test/resources/drools-artifact-1.1/src/main/resources/META-INF/kmodule.xml").toFile(),
@@ -90,41 +91,41 @@ public class KieUtilsTest {
     }
 
     @Test
-    public void getBases() {
+    void getBases() {
         assertEquals(Collections.singletonList("rules"), KieUtils.getBases(container));
     }
 
     @Test
-    public void getPackages() {
+    void getPackages() {
         assertEquals(Arrays.asList("java.util", "java.util.concurrent", "org.onap.policy.drools.core.test"),
                         KieUtils.getPackages(container).stream().map(KiePackage::getName).collect(Collectors.toList()));
     }
 
     @Test
-    public void getPackageNames() {
+    void getPackageNames() {
         assertEquals(Arrays.asList("java.util", "java.util.concurrent", "org.onap.policy.drools.core.test"),
             new ArrayList<>(KieUtils.getPackageNames(container)));
     }
 
     @Test
-    public void getRules() {
+    void getRules() {
         assertEquals(Arrays.asList("Initialization", "Add elements of an int list"),
             KieUtils.getRules(container).stream().map(Rule::getName).collect(Collectors.toList()));
     }
 
     @Test
-    public void getRuleNames() {
+    void getRuleNames() {
         assertEquals(Arrays.asList("Initialization", "Add elements of an int list"),
-            KieUtils.getRuleNames(container).stream().collect(Collectors.toList()));
+            new ArrayList<>(KieUtils.getRuleNames(container)));
     }
 
     @Test
-    public void getFacts() {
+    void getFacts() {
         assertEquals(0, KieUtils.getFacts(session).size());
     }
 
     @Test
-    public void testResourceToPackages() {
+    void testResourceToPackages() {
         // Some minimal logging -- it would be nice to verify the 'KieUtils' logger messages
         StringBuffer log;
 
@@ -156,7 +157,7 @@ public class KieUtilsTest {
         @Override
         public Enumeration<URL> getResources(String name) throws IOException {
             if ("BogusUrl".equals(name)) {
-                return new Enumeration<URL>() {
+                return new Enumeration<>() {
                     @Override
                     public boolean hasMoreElements() {
                         return true;

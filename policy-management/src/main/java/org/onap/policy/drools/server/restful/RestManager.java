@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021,2023 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1392,7 +1392,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}")
     public Response commSources(
         @PathParam("comm") String comm) {
         if (!checkValidNameInput(comm)) {
@@ -1407,9 +1407,6 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
                 sources.addAll(TopicEndpointManager.getManager().getUebTopicSources());
-                break;
-            case DMAAP:
-                sources.addAll(TopicEndpointManager.getManager().getDmaapTopicSources());
                 break;
             case NOOP:
                 sources.addAll(TopicEndpointManager.getManager().getNoopTopicSources());
@@ -1430,7 +1427,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}")
     public Response commSinks(
         @PathParam("comm") String comm) {
         if (!checkValidNameInput(comm)) {
@@ -1445,9 +1442,6 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
         switch (CommInfrastructure.valueOf(comm.toUpperCase())) {
             case UEB:
                 sinks.addAll(TopicEndpointManager.getManager().getUebTopicSinks());
-                break;
-            case DMAAP:
-                sinks.addAll(TopicEndpointManager.getManager().getDmaapTopicSinks());
                 break;
             case NOOP:
                 sinks.addAll(TopicEndpointManager.getManager().getNoopTopicSinks());
@@ -1468,7 +1462,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}")
     public Response sourceTopic(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1484,7 +1478,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}")
     public Response sinkTopic(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1500,7 +1494,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/events")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/events")
     public Response sourceEvents(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1516,7 +1510,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/events")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}/events")
     public Response sinkEvents(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1532,7 +1526,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/switches")
     public Response commSourceTopicSwitches(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1544,7 +1538,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @GET
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}/switches")
     public Response commSinkTopicSwitches(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1556,7 +1550,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @PUT
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/switches/lock")
     public Response commSourceTopicLock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1570,7 +1564,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @DELETE
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/switches/lock")
     public Response commSourceTopicUnlock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1584,7 +1578,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @PUT
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/switches/activation")
     public Response commSourceTopicActivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1598,7 +1592,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @DELETE
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/switches/activation")
     public Response commSourceTopicDeactivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1612,7 +1606,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @PUT
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}/switches/lock")
     public Response commSinkTopicLock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1626,7 +1620,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @DELETE
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/lock")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}/switches/lock")
     public Response commSinkTopicUnlock(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1640,7 +1634,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @PUT
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}/switches/activation")
     public Response commSinkTopicActivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1654,7 +1648,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @DELETE
-    @Path("engine/topics/sinks/{comm: ueb|dmaap|noop}/{topic}/switches/activation")
+    @Path("engine/topics/sinks/{comm: ueb|kafka|noop}/{topic}/switches/activation")
     public Response commSinkTopicDeactivation(
         @PathParam("comm") String comm,
         @PathParam("topic") String topic) {
@@ -1682,7 +1676,7 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
      */
     @Override
     @PUT
-    @Path("engine/topics/sources/{comm: ueb|dmaap|noop}/{topic}/events")
+    @Path("engine/topics/sources/{comm: ueb|kafka|noop}/{topic}/events")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response commEventOffer(
         @PathParam("comm") String comm,

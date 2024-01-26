@@ -217,7 +217,7 @@ public abstract class LifecycleStateRunning extends LifecycleStateDefault {
     }
 
     protected List<ToscaPolicy> reApplyNonNativePolicies(Map<String, List<ToscaPolicy>> preActivePoliciesMap) {
-        // only need to re-apply non native policies if there are new native artifact policies
+        // only need to re-apply non-native policies if there are new native artifact policies
 
         Map<String, List<ToscaPolicy>> activePoliciesByType = fsm.groupPoliciesByPolicyType(fsm.getActivePolicies());
         List<ToscaPolicy> activeNativeArtifactPolicies = fsm.getNativeArtifactPolicies(activePoliciesByType);

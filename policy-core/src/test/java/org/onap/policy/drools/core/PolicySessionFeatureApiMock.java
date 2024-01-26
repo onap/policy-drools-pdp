@@ -3,6 +3,7 @@
  * policy-core
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +22,7 @@
 package org.onap.policy.drools.core;
 
 import java.util.ArrayList;
+import lombok.Setter;
 import org.kie.api.runtime.KieSession;
 
 /**
@@ -30,10 +32,11 @@ import org.kie.api.runtime.KieSession;
  */
 public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     // contains the log entries since the most recent 'getLog()' call
-    private static ArrayList<String> log = new ArrayList<>();
+    private static final ArrayList<String> log = new ArrayList<>();
 
     // if 'true', trigger an exception right after doing the log,
     // to verify that exceptions are handled
+    @Setter
     private static boolean exceptionTrigger = false;
 
     /**
@@ -47,17 +50,6 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
             log.clear();
             return rval;
         }
-    }
-
-    /**
-     * This method controls whether these hooks trigger an exception after
-     * being invoked.
-     *
-     * @param indicator if 'true', subsequent hook method calls will trigger
-     *     an exception; if 'false', no exception is triggered
-     */
-    public static void setExceptionTrigger(boolean indicator) {
-        exceptionTrigger = indicator;
     }
 
     /**

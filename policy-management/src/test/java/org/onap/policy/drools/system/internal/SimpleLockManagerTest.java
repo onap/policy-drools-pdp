@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2023 Nordix Foundation.
+ * Modifications Copyright (C) 2023-2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -44,6 +44,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -53,15 +54,17 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.runtime.KieSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.onap.policy.common.utils.time.CurrentTime;
 import org.onap.policy.common.utils.time.TestTime;
 import org.onap.policy.drools.core.PolicySession;
@@ -72,8 +75,8 @@ import org.onap.policy.drools.system.PolicyEngineConstants;
 import org.onap.policy.drools.system.internal.SimpleLockManager.SimpleLock;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
-public class SimpleLockManagerTest {
+@ExtendWith(MockitoExtension.class)
+class SimpleLockManagerTest {
     private static final String POLICY_ENGINE_EXECUTOR_FIELD = "executorService";
     private static final String TIME_FIELD = "currentTime";
     private static final String OWNER_KEY = "my key";
@@ -91,7 +94,6 @@ public class SimpleLockManagerTest {
     private static ScheduledExecutorService saveExec;
     private static ScheduledExecutorService realExec;
 
-    private PolicySession session;
     private TestTime testTime;
     private AtomicInteger nactive;
     private AtomicInteger nsuccesses;
@@ -109,11 +111,13 @@ public class SimpleLockManagerTest {
     @Mock
     private LockCallback callback;
 
+    AutoCloseable closeable;
+
     /**
      * Saves static fields and configures the location of the property files.
      */
-    @BeforeClass
-    public static void setUpBeforeClass() {
+    @BeforeAll
+    static void setUpBeforeClass() {
         saveTime = (CurrentTime) ReflectionTestUtils.getField(SimpleLockManager.class, TIME_FIELD);
         saveExec = (ScheduledExecutorService) ReflectionTestUtils.getField(PolicyEngineConstants.getManager(),
             POLICY_ENGINE_EXECUTOR_FIELD);
@@ -124,8 +128,8 @@ public class SimpleLockManagerTest {
     /**
      * Restores static fields.
      */
-    @AfterClass
-    public static void tearDownAfterClass() {
+    @AfterAll
+    static void tearDownAfterClass() {
         ReflectionTestUtils.setField(SimpleLockManager.class, TIME_FIELD, saveTime);
         ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, saveExec);
 
@@ -136,10 +140,11 @@ public class SimpleLockManagerTest {
      * Initializes the mocks and creates a feature that uses {@link #exsvc} to execute
      * tasks.
      */
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+        closeable = MockitoAnnotations.openMocks(this);
         // grant() and deny() calls will come through here and be immediately executed
-        session = new PolicySession(null, null, kieSess) {
+        PolicySession session = new PolicySession(null, null, kieSess) {
             @Override
             public void insertDrools(Object object) {
                 ((Runnable) object).run();
@@ -160,11 +165,16 @@ public class SimpleLockManagerTest {
         feature.start();
     }
 
+    @AfterEach
+    void closeMocks() throws Exception {
+        closeable.close();
+    }
+
     /**
      * Tests constructor() when properties are invalid.
      */
     @Test
-    public void testSimpleLockManagerInvalidProperties() {
+    void testSimpleLockManagerInvalidProperties() {
         // use properties containing an invalid value
         Properties props = new Properties();
         props.setProperty(SimpleLockProperties.EXPIRE_CHECK_SEC, "abc");
@@ -173,7 +183,7 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testStart() {
+    void testStart() {
         assertTrue(feature.isAlive());
         verify(exsvc).scheduleWithFixedDelay(any(), anyLong(), anyLong(), any());
 
@@ -184,7 +194,7 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testStop() {
+    void testStop() {
         assertTrue(feature.stop());
         assertFalse(feature.isAlive());
         verify(future).cancel(true);
@@ -196,16 +206,16 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testShutdown() {
+    void testShutdown() {
         feature.shutdown();
 
         verify(future).cancel(true);
     }
 
     @Test
-    public void testCreateLock() {
+    void testCreateLock() {
         // this lock should be granted immediately
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
         assertTrue(lock.isActive());
         assertEquals(testTime.getMillis() + HOLD_MS, lock.getHoldUntilMs());
 
@@ -236,7 +246,7 @@ public class SimpleLockManagerTest {
      * Tests createLock() when the feature is not the latest instance.
      */
     @Test
-    public void testCreateLockNotLatestInstance() {
+    void testCreateLockNotLatestInstance() {
         SimpleLockManager.setLatestInstance(null);
 
         Lock lock = feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
@@ -246,10 +256,10 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testCheckExpired() throws InterruptedException {
-        final SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
-        final SimpleLock lock2 = getLock(RESOURCE2, OWNER_KEY, HOLD_SEC, callback, false);
-        final SimpleLock lock3 = getLock(RESOURCE3, OWNER_KEY, HOLD_SEC2, callback, false);
+    void testCheckExpired() throws InterruptedException {
+        final SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
+        final SimpleLock lock2 = getLock(RESOURCE2, HOLD_SEC, callback);
+        final SimpleLock lock3 = getLock(RESOURCE3, HOLD_SEC2, callback);
 
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
         verify(exsvc).scheduleWithFixedDelay(captor.capture(), anyLong(), anyLong(), any());
@@ -292,15 +302,15 @@ public class SimpleLockManagerTest {
      * Tests checkExpired(), where the lock is removed from the map between invoking
      * expired() and compute(). Should cause "null" to be returned by compute().
      *
-     * @throws InterruptedException if the test is interrupted
      */
     @Test
-    public void testCheckExpiredLockDeleted() throws InterruptedException {
+    void testCheckExpiredLockDeleted() {
         feature = new MyLockingFeature() {
             @Override
             protected SimpleLock makeLock(LockState waiting, String resourceId, String ownerKey, int holdSec,
                 LockCallback callback) {
                 return new SimpleLock(waiting, resourceId, ownerKey, holdSec, callback, feature) {
+                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -343,7 +353,7 @@ public class SimpleLockManagerTest {
      * @throws InterruptedException if the test is interrupted
      */
     @Test
-    public void testCheckExpiredLockReplaced() throws InterruptedException {
+    void testCheckExpiredLockReplaced() throws InterruptedException {
         feature = new MyLockingFeature() {
             private boolean madeLock = false;
 
@@ -357,6 +367,7 @@ public class SimpleLockManagerTest {
                 madeLock = true;
 
                 return new SimpleLock(waiting, resourceId, ownerKey, holdSec, callback, feature) {
+                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -388,7 +399,7 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testGetThreadPool() {
+    void testGetThreadPool() {
         // use a real feature
         feature = new SimpleLockManager(null, new Properties());
 
@@ -403,7 +414,7 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockNoArgs() {
+    void testSimpleLockNoArgs() {
         SimpleLock lock = new SimpleLock();
         assertNull(lock.getResourceId());
         assertNull(lock.getOwnerKey());
@@ -414,8 +425,8 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockSimpleLock() {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockSimpleLock() {
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
         assertEquals(RESOURCE, lock.getResourceId());
         assertEquals(OWNER_KEY, lock.getOwnerKey());
         assertSame(callback, lock.getCallback());
@@ -427,8 +438,8 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockSerializable() throws Exception {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockSerializable() throws Exception {
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
         lock = roundTrip(lock);
 
         assertTrue(lock.isActive());
@@ -440,8 +451,8 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockExpired() {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockExpired() {
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
         lock.grant();
 
         assertFalse(lock.expired(testTime.getMillis()));
@@ -450,11 +461,11 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockFree() {
-        final SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockFree() {
+        final SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
 
         // lock2 should be denied
-        SimpleLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        SimpleLock lock2 = getLock(RESOURCE, HOLD_SEC, callback);
         verify(callback, never()).lockAvailable(lock2);
         verify(callback).lockUnavailable(lock2);
 
@@ -470,7 +481,7 @@ public class SimpleLockManagerTest {
         assertEquals(LockState.UNAVAILABLE, lock.getState());
 
         // should be able to get the lock now
-        SimpleLock lock3 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        SimpleLock lock3 = getLock(RESOURCE, HOLD_SEC, callback);
         assertTrue(lock3.isActive());
 
         verify(callback).lockAvailable(lock3);
@@ -483,8 +494,8 @@ public class SimpleLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testSimpleLockFreeSerialized() throws Exception {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockFreeSerialized() throws Exception {
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
 
         feature = new MyLockingFeature();
         feature.start();
@@ -495,11 +506,11 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockExtend() {
-        final SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockExtend() {
+        final SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
 
         // lock2 should be denied
-        SimpleLock lock2 = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+        SimpleLock lock2 = getLock(RESOURCE, HOLD_SEC, callback);
         verify(callback, never()).lockAvailable(lock2);
         verify(callback).lockUnavailable(lock2);
 
@@ -529,8 +540,8 @@ public class SimpleLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testSimpleLockExtendSerialized() throws Exception {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockExtendSerialized() throws Exception {
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
 
         feature = new MyLockingFeature();
         feature.start();
@@ -551,8 +562,8 @@ public class SimpleLockManagerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testSimpleLockExtendNoFeature() throws Exception {
-        SimpleLock lock = getLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false);
+    void testSimpleLockExtendNoFeature() throws Exception {
+        SimpleLock lock = getLock(RESOURCE, HOLD_SEC, callback);
 
         SimpleLockManager.setLatestInstance(null);
 
@@ -567,7 +578,7 @@ public class SimpleLockManagerTest {
     }
 
     @Test
-    public void testSimpleLockToString() {
+    void testSimpleLockToString() {
         String text = feature.createLock(RESOURCE, OWNER_KEY, HOLD_SEC, callback, false).toString();
         assertNotNull(text);
         assertThat(text).contains("holdUntil").doesNotContain("ownerInfo").doesNotContain("callback");
@@ -580,7 +591,7 @@ public class SimpleLockManagerTest {
      *         the background threads to complete
      */
     @Test
-    public void testMultiThreaded() throws InterruptedException {
+    void testMultiThreaded() throws InterruptedException {
         ReflectionTestUtils.setField(SimpleLockManager.class, TIME_FIELD, testTime);
         ReflectionTestUtils.setField(PolicyEngineConstants.getManager(), POLICY_ENGINE_EXECUTOR_FIELD, realExec);
         feature = new SimpleLockManager(null, new Properties());
@@ -607,9 +618,8 @@ public class SimpleLockManagerTest {
         assertTrue(nsuccesses.get() > 0);
     }
 
-    private SimpleLock getLock(String resource, String ownerKey, int holdSec, LockCallback callback,
-        boolean waitForLock) {
-        return (SimpleLock) feature.createLock(resource, ownerKey, holdSec, callback, waitForLock);
+    private SimpleLock getLock(String resource, int holdSec, LockCallback callback) {
+        return (SimpleLock) feature.createLock(resource, SimpleLockManagerTest.OWNER_KEY, holdSec, callback, false);
     }
 
     private SimpleLock roundTrip(SimpleLock lock) throws Exception {
@@ -646,7 +656,7 @@ public class SimpleLockManagerTest {
     }
 
     /**
-     * Thread used with the multi-threaded test. It repeatedly attempts to get a lock,
+     * Thread used with the multithreaded test. It repeatedly attempts to get a lock,
      * extend it, and then unlock it.
      */
     private class MyThread extends Thread {

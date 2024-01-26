@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,12 +47,12 @@ import org.slf4j.LoggerFactory;
  */
 public class PolicyContainer implements Startable {
     // get an instance of logger
-    private static Logger logger = LoggerFactory.getLogger(PolicyContainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(PolicyContainer.class);
     // 'KieServices' singleton
     private static KieServices kieServices = KieServices.Factory.get();
 
     // set of all 'PolicyContainer' instances
-    private static HashSet<PolicyContainer> containers = new HashSet<>();
+    private static final HashSet<PolicyContainer> containers = new HashSet<>();
 
     // maps feature objects to per-PolicyContainer data
     private ConcurrentHashMap<Object, Object> adjuncts = new ConcurrentHashMap<>();
@@ -65,7 +66,7 @@ public class PolicyContainer implements Startable {
     private volatile boolean isStarted = false;
 
     // maps session name into the associated 'PolicySession' instance
-    private HashMap<String, PolicySession> sessions = new HashMap<>();
+    private final HashMap<String, PolicySession> sessions = new HashMap<>();
 
     // if not null, this is a 'KieScanner' looking for updates
     private KieScanner scanner = null;
@@ -171,7 +172,7 @@ public class PolicyContainer implements Startable {
             }
         }
         if (exception != null) {
-            // all of the 'newKieContainer' invocations failed -- throw the
+            // all the 'newKieContainer' invocations failed -- throw the
             // most recent exception
             throw exception;
         }
@@ -263,7 +264,7 @@ public class PolicyContainer implements Startable {
         PolicySession session = null;
         KieSession kieSession = null;
 
-        // loop through all of the features, and give each one
+        // loop through all the features, and give each one
         // a chance to create the 'KieSession'
         for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
             try {
@@ -432,7 +433,7 @@ public class PolicyContainer implements Startable {
     /**
      * Get policy sessions.
      *
-     * @return all of the 'PolicySession' instances
+     * @return all the 'PolicySession' instances
      */
     public Collection<PolicySession> getPolicySessions() {
         // KLUDGE WARNING: this is a temporary workaround -- if there are
@@ -703,7 +704,7 @@ public class PolicyContainer implements Startable {
         var configDir = "config";
         logger.info("PolicyContainer.main: configDir={}", configDir);
 
-        // invoke 'globalInit' on all of the features
+        // invoke 'globalInit' on all the features
         for (PolicySessionFeatureApi feature : PolicySessionFeatureApiConstants.getImpl().getList()) {
             try {
                 feature.globalInit(args, configDir);

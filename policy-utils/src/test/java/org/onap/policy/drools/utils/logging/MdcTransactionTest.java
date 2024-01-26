@@ -3,6 +3,7 @@
  * policy-utils
  * ================================================================================
  * Copyright (C) 2018-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +20,20 @@
 
 package org.onap.policy.drools.utils.logging;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.Duration;
 import java.time.Instant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
-public class MdcTransactionTest {
+class MdcTransactionTest {
 
     @Test
-    public void testResetSubTransaction() {
+    void testResetSubTransaction() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, null).resetSubTransaction();
 
@@ -88,7 +89,7 @@ public class MdcTransactionTest {
 
     private void assertNullKeys(String... nullKeys) {
         for (String key: nullKeys) {
-            assertNull(key, MDC.get(key));
+            assertNull(MDC.get(key));
         }
     }
 
@@ -126,7 +127,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void testFlush() {
+    void testFlush() {
         MdcTransaction trans =
                         MdcTransaction.newTransaction()
                 .setRequestId(null)
@@ -198,12 +199,12 @@ public class MdcTransactionTest {
     }
 
     private void assertKeyEquals(String expected, String transValue, String mdcKey) {
-        assertEquals("trans." + expected, expected, transValue);
-        assertEquals("mdc." + expected, expected, MDC.get(mdcKey));
+        assertEquals(expected, transValue, "trans." + expected);
+        assertEquals(expected, MDC.get(mdcKey), "mdc." + expected);
     }
 
     @Test
-    public void testMetric() {
+    void testMetric() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, null).metric();
 
@@ -211,7 +212,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void testTransaction() {
+    void testTransaction() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, null).transaction();
 
@@ -219,7 +220,7 @@ public class MdcTransactionTest {
     }
 
     @Test
-    public void testSubTransaction() {
+    void testSubTransaction() {
         MdcTransaction trans =
             MdcTransaction.newTransaction(null, "partner");
 

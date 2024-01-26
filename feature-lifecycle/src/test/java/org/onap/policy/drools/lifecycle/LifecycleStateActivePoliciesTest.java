@@ -22,20 +22,20 @@
 package org.onap.policy.drools.lifecycle;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.TopicEndpointManager;
 import org.onap.policy.common.endpoints.properties.PolicyEndPointProperties;
 import org.onap.policy.common.utils.coder.CoderException;
@@ -51,7 +51,7 @@ import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
 /**
  * Lifecycle State Active Test.
  */
-public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest {
+class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest {
 
     private static final String EXAMPLE_NATIVE_DROOLS_CONTROLLER_POLICY_NAME = "example.controller";
     private static final String EXAMPLE_NATIVE_DROOLS_ARTIFACT_POLICY_NAME = "example.artifact";
@@ -67,7 +67,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
     /**
      * Start tests in the Active state.
      */
-    @Before
+    @BeforeEach
     public void startActive() throws CoderException {
         fsm = makeFsmWithPseudoTime();
 
@@ -86,7 +86,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
     }
 
     @Test
-    public void testMandatoryPolicyTypes() {
+    void testMandatoryPolicyTypes() {
         assertEquals(Set.of("onap.policies.native.drools.Artifact", "onap.policies.native.drools.Controller"),
             fsm.getMandatoryPolicyTypes());
         assertEquals(fsm.getMandatoryPolicyTypes(), fsm.getCurrentPolicyTypes());
@@ -102,7 +102,7 @@ public class LifecycleStateActivePoliciesTest extends LifecycleStateRunningTest 
     }
 
     @Test
-    public void testUpdatePolicies() throws IOException, CoderException {
+    void testUpdatePolicies() throws IOException, CoderException {
         assertEquals(2, fsm.policyTypesMap.size());
         assertNotNull(fsm.getPolicyTypesMap().get(
                 new ToscaConceptIdentifier("onap.policies.native.drools.Controller", "1.0.0")));

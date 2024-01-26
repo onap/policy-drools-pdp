@@ -119,8 +119,6 @@ public class MavenDroolsController implements DroolsController {
 
     /**
      * original Drools Model/Rules classloader hash.
-     * -- GETTER --
-     *  Get model class loader hash.
      */
     @Getter
     protected int modelClassLoaderHash;
@@ -208,7 +206,7 @@ public class MavenDroolsController implements DroolsController {
         logger.warn("{} UPGRADE results: {}", this, messages);
 
         /*
-         * If all sucessful (can load new container), now we can remove all coders from previous sessions
+         * If all successful (can load new container), now we can remove all coders from previous sessions
          */
         this.removeCoders();
 
@@ -533,7 +531,7 @@ public class MavenDroolsController implements DroolsController {
             this.recentSourceEvents.add(event);
         }
 
-        PdpJmx.getInstance().updateOccured();
+        PdpJmx.getInstance().updateOccurred();
 
         // Broadcast
 

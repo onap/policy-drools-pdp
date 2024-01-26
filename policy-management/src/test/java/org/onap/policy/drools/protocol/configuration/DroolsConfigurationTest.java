@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +22,15 @@
 package org.onap.policy.drools.protocol.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.utils.gson.GsonTestUtils;
 
-public class DroolsConfigurationTest {
+class DroolsConfigurationTest {
     private static final String ARTIFACT_ID_STRING = "artifactId";
     private static final String GROUP_ID_STRING = "groupId";
     private static final String VERSION_STRING = "version";
@@ -51,7 +52,7 @@ public class DroolsConfigurationTest {
     private static final String ADDITIONAL_PROPERTY_VALUE2 = "world";
 
     @Test
-    public void test() {
+    void test() {
         final Properties additionalProperties = new Properties();
         additionalProperties.put(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
 
@@ -96,7 +97,7 @@ public class DroolsConfigurationTest {
     }
 
     @Test
-    public void testSerialize() {
+    void testSerialize() {
         final DroolsConfiguration droolsConfig = new DroolsConfiguration(ARTIFACT, GROUPID, VERSION);
         droolsConfig.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY, ADDITIONAL_PROPERTY_VALUE);
         droolsConfig.setAdditionalProperty(ADDITIONAL_PROPERTY_KEY2, ADDITIONAL_PROPERTY_VALUE2);

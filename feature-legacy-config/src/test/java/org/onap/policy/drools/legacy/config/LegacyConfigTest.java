@@ -22,26 +22,26 @@
 package org.onap.policy.drools.legacy.config;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.bus.NoopTopicFactories;
 import org.onap.policy.drools.persistence.SystemPersistenceConstants;
 
-public class LegacyConfigTest {
+class LegacyConfigTest {
 
     private static final String PDPD_CONFIGURATION_TOPIC = "pdpd-configuration";
 
     /**
      * Set up.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         SystemPersistenceConstants.getManager().setConfigurationDir("target/test-classes");
     }
@@ -49,7 +49,7 @@ public class LegacyConfigTest {
     /**
      * Tear down.
      */
-    @After
+    @AfterEach
     public void tearDown() {
         NoopTopicFactories.getSourceFactory().destroy();
         NoopTopicFactories.getSinkFactory().destroy();
@@ -57,7 +57,7 @@ public class LegacyConfigTest {
     }
 
     @Test
-    public void testStartStop() {
+    void testStartStop() {
         LegacyConfig config = new LegacyConfig();
         assertFalse(config.isAlive());
 
@@ -75,7 +75,7 @@ public class LegacyConfigTest {
     }
 
     @Test
-    public void testConstructors() {
+    void testConstructors() {
         LegacyConfig config = new LegacyConfig();
         assertNotNull(config.getProperties());
         assertEquals(PDPD_CONFIGURATION_TOPIC, config.getSource().getTopic());
