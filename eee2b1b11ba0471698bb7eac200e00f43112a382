@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a9e0ee93_4da91ea5",
+        "filename": "feature-legacy-config/src/main/feature/config/feature-legacy-config.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2024-02-09T10:09:32Z",
+      "side": 1,
+      "message": "May be we can remove this comment?",
+      "range": {
+        "startLine": 20,
+        "startChar": 1,
+        "endLine": 20,
+        "endChar": 23
+      },
+      "revId": "eee2b1b11ba0471698bb7eac200e00f43112a382",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "87cbd0e1_4219f2f0",
+        "filename": "feature-lifecycle/src/main/feature/config/feature-lifecycle.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2024-02-09T10:09:32Z",
+      "side": 1,
+      "message": "Do we require to update lowercase here? I guess, we are converting to lowercase in the code. Just double checking. In csits, they are provided in lowercase.",
+      "range": {
+        "startLine": 26,
+        "startChar": 20,
+        "endLine": 26,
+        "endChar": 34
+      },
+      "revId": "eee2b1b11ba0471698bb7eac200e00f43112a382",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ca4ec9bf_8db21c8c",
+        "filename": "feature-pooling-messages/src/main/feature/config/feature-pooling-messages.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2024-02-09T10:09:32Z",
+      "side": 1,
+      "message": "This property name is lowercase in the env file?",
+      "range": {
+        "startLine": 81,
+        "startChar": 48,
+        "endLine": 81,
+        "endChar": 61
+      },
+      "revId": "eee2b1b11ba0471698bb7eac200e00f43112a382",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
