@@ -24,6 +24,30 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0a38c4f2_f577c44a",
+        "filename": "feature-legacy-config/src/main/feature/config/feature-legacy-config.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-02-09T10:32:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a9e0ee93_4da91ea5",
+      "range": {
+        "startLine": 20,
+        "startChar": 1,
+        "endLine": 20,
+        "endChar": 23
+      },
+      "revId": "eee2b1b11ba0471698bb7eac200e00f43112a382",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "87cbd0e1_4219f2f0",
@@ -47,6 +71,30 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "7edf5216_744729c6",
+        "filename": "feature-lifecycle/src/main/feature/config/feature-lifecycle.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-02-09T10:32:02Z",
+      "side": 1,
+      "message": "no, we don\u0027t need to update to lower as code itself does it.",
+      "parentUuid": "87cbd0e1_4219f2f0",
+      "range": {
+        "startLine": 26,
+        "startChar": 20,
+        "endLine": 26,
+        "endChar": 34
+      },
+      "revId": "eee2b1b11ba0471698bb7eac200e00f43112a382",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ca4ec9bf_8db21c8c",
@@ -60,6 +108,30 @@
       "writtenOn": "2024-02-09T10:09:32Z",
       "side": 1,
       "message": "This property name is lowercase in the env file?",
+      "range": {
+        "startLine": 81,
+        "startChar": 48,
+        "endLine": 81,
+        "endChar": 61
+      },
+      "revId": "eee2b1b11ba0471698bb7eac200e00f43112a382",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "70f27160_b16dcf6b",
+        "filename": "feature-pooling-messages/src/main/feature/config/feature-pooling-messages.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-02-09T10:32:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca4ec9bf_8db21c8c",
       "range": {
         "startLine": 81,
         "startChar": 48,
