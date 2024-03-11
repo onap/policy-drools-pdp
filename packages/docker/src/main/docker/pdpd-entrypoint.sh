@@ -155,7 +155,16 @@ function db {
     echo "Waiting for ${SQL_HOST}:${SQL_PORT} ..."
     timeout 120 sh -c 'until nc -vz -w 20 "${SQL_HOST}" "${SQL_PORT}"; do echo -n "."; sleep 1; done'
 
-    "${POLICY_HOME}"/bin/db-migrator -s ALL -o upgrade
+    if [ "$DB_TYPE" = "postgres" ]; then
+        # Execute the script for PostgreSQL
+        echo "Starting postgres db-migrator..."
+        "${POLICY_HOME}"/bin/db-pg-migrator.sh -s ALL -o upgrade
+    else
+        echo "Starting mariadb db-migrator..."
+        # Execute the script for MariaDB
+        "${POLICY_HOME}"/bin/db-migrator -s ALL -o upgrade
+        # Handle the case where DB_TYPE is not recognized
+    fi
 }
 
 function inspect {
