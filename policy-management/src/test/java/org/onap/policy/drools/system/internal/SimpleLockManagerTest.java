@@ -44,7 +44,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -310,7 +309,6 @@ class SimpleLockManagerTest {
             protected SimpleLock makeLock(LockState waiting, String resourceId, String ownerKey, int holdSec,
                 LockCallback callback) {
                 return new SimpleLock(waiting, resourceId, ownerKey, holdSec, callback, feature) {
-                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -367,7 +365,6 @@ class SimpleLockManagerTest {
                 madeLock = true;
 
                 return new SimpleLock(waiting, resourceId, ownerKey, holdSec, callback, feature) {
-                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     @Override

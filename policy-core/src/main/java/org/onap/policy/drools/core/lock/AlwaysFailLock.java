@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.core.lock;
 
-import java.io.Serial;
 import lombok.NoArgsConstructor;
 
 /**
@@ -29,7 +28,6 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class AlwaysFailLock extends LockImpl {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

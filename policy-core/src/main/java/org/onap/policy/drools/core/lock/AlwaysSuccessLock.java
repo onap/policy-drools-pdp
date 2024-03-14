@@ -21,14 +21,12 @@
 
 package org.onap.policy.drools.core.lock;
 
-import java.io.Serial;
 import lombok.NonNull;
 
 /**
  * Lock implementation whose operations always succeed.
  */
 public class AlwaysSuccessLock extends LockImpl {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

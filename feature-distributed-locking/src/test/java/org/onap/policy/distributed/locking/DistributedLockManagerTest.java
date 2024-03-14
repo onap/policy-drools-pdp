@@ -48,7 +48,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serial;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -967,7 +966,6 @@ class DistributedLockManagerTest {
             protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
                 LockCallback callback) {
                 return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
-                    @Serial
                     private static final long serialVersionUID = 1L;
 
                     @Override
@@ -1352,7 +1350,6 @@ class DistributedLockManagerTest {
             protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
                 LockCallback callback) {
                 return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
-                    @Serial
                     private static final long serialVersionUID = 1L;
                     private int ntimes = 0;
 
@@ -1721,7 +1718,6 @@ class DistributedLockManagerTest {
             LockCallback callback) {
 
             return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, feature) {
-                @Serial
                 private static final long serialVersionUID = 1L;
                 private boolean checked = false;
 

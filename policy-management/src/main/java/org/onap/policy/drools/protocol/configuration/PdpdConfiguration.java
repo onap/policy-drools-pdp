@@ -165,30 +165,32 @@ public class PdpdConfiguration {
     }
 
     protected boolean declaredProperty(String name, Object value) {
-        return switch (name) {
-            case "requestID" -> {
+        switch (name) {
+            case "requestID":
                 callSetRequestId(value);
-                yield true;
-            }
-            case "entity" -> {
+                return true;
+            case "entity":
                 callSetEntity(value);
-                yield true;
-            }
-            case "controllers" -> {
+                return true;
+            case "controllers":
                 callSetControllers(value);
-                yield true;
-            }
-            default -> false;
-        };
+                return true;
+            default:
+                return false;
+        }
     }
 
     protected Object declaredPropertyOrNotFound(String name, Object notFoundValue) {
-        return switch (name) {
-            case "requestID" -> getRequestId();
-            case "entity" -> getEntity();
-            case "controllers" -> getControllers();
-            default -> notFoundValue;
-        };
+        switch (name) {
+            case "requestID":
+                return getRequestId();
+            case "entity":
+                return getEntity();
+            case "controllers":
+                return getControllers();
+            default:
+                return notFoundValue;
+        }
     }
 
     /**

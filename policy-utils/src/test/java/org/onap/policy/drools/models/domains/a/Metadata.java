@@ -22,7 +22,6 @@
 package org.onap.policy.drools.models.domains.a;
 
 import com.google.gson.annotations.SerializedName;
-import java.io.Serial;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
@@ -30,7 +29,6 @@ import lombok.Data;
 @Data
 @Builder
 public class Metadata implements Serializable {
-    @Serial
     private static final long serialVersionUID = 476541531265304644L;
 
     @SerializedName("policy-id")

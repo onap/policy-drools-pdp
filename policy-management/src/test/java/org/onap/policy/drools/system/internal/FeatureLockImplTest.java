@@ -40,7 +40,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serial;
 import java.util.concurrent.ScheduledExecutorService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -189,7 +188,6 @@ class FeatureLockImplTest {
         PolicySession session = mock(PolicySession.class);
 
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback) {
-            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -397,7 +395,6 @@ class FeatureLockImplTest {
      * Lock that inherits the normal getSession() method.
      */
     public static class MyLockStdSession extends FeatureLockImpl {
-        @Serial
         private static final long serialVersionUID = 1L;
         protected int nupdates = 0;
 
@@ -433,7 +430,6 @@ class FeatureLockImplTest {
     }
 
     public static class MyLock extends MyLockStdSession {
-        @Serial
         private static final long serialVersionUID = 1L;
 
         public MyLock() {
@@ -451,7 +447,6 @@ class FeatureLockImplTest {
     }
 
     public static class MyLockNoFeature extends MyLock {
-        @Serial
         private static final long serialVersionUID = 1L;
 
         public MyLockNoFeature() {

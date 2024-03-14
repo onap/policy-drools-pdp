@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
-import java.io.Serial;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,8 +35,6 @@ import org.onap.policy.drools.domain.models.DroolsPolicy;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class ControllerPolicy extends DroolsPolicy implements Serializable {
-
-    @Serial
     private static final long serialVersionUID = -8171337852833516581L;
 
     private ControllerProperties properties;

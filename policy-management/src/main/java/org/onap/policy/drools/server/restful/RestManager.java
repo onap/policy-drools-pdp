@@ -1722,11 +1722,12 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/loggers")
     public Response loggers() {
         final List<String> names = new ArrayList<>();
-        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext context)) {
+        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
             logger.warn("The SLF4J logger factory is not configured for logback");
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(names).build();
         }
 
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         for (final Logger lgr : context.getLoggerList()) {
             names.add(lgr.getName());
         }
@@ -1744,11 +1745,12 @@ public class RestManager implements SwaggerApi, DefaultApi, FeaturesApi, InputsA
     @Path("engine/tools/loggers/{logger}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response loggerName1(@PathParam("logger") String loggerName) {
-        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext context)) {
+        if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
             logger.warn("The SLF4J logger factory is not configured for logback");
             return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
 
+        final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         var lgr = context.getLogger(loggerName);
         if (lgr == null) {
             return Response.status(Status.NOT_FOUND).build();

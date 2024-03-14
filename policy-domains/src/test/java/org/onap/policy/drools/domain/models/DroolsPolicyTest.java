@@ -30,7 +30,6 @@ import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import lombok.Data;
@@ -46,7 +45,6 @@ class DroolsPolicyTest {
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class DerivedDomainPolicy extends DroolsPolicy implements Serializable {
-        @Serial
         private static final long serialVersionUID = -1027974819756498893L;
     }
 

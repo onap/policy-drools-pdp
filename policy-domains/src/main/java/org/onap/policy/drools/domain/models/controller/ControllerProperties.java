@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ControllerProperties implements Serializable {
-    @Serial
     private static final long serialVersionUID = 1259434187110418986L;
 
     private String controllerName;

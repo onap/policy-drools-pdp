@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.domain.models.controller;
 
-import java.io.Serial;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,7 +35,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class ControllerSinkTopic extends ControllerTopic implements Serializable {
-    @Serial
     private static final long serialVersionUID = 8770353732981476267L;
 
     @Override

@@ -21,13 +21,10 @@
 
 package org.onap.policy.drools.pooling;
 
-import java.io.Serial;
-
 /**
  * A runtime exception thrown by the pooling feature.
  */
 public class PoolingFeatureRtException extends RuntimeException {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     public PoolingFeatureRtException() {

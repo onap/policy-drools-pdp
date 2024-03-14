@@ -33,7 +33,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.Serial;
 import java.util.concurrent.ScheduledExecutorService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -225,7 +224,6 @@ class LockManagerTest {
     }
 
     private class MyLock extends FeatureLockImpl {
-        @Serial
         private static final long serialVersionUID = 1L;
 
         public MyLock(LockState waiting, String resourceId, String ownerKey, int holdSec, LockCallback callback) {
