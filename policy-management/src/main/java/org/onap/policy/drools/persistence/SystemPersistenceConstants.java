@@ -32,7 +32,7 @@ public final class SystemPersistenceConstants {
     public static final String DEFAULT_CONFIGURATION_DIR = "config";
 
     /**
-     * Persistence Manager. For now it is a file-based properties management, In the future, it will
+     * Persistence Manager. For now, it is a file-based properties management, In the future, it will
      * probably be DB based, so manager implementation will change.
      */
     @Getter

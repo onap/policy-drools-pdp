@@ -51,20 +51,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>2.5.2.Final</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
-            <!--
-            Issue: 2 of 2
-            Excluding these 2 dependencies in order to force upgrade security fixes
-            identified. As declared above. Any changes here should be reflected above
-            and vice versa.
-            -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.ant</groupId>
-                    <artifactId>ant</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

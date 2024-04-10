@@ -3,7 +3,7 @@
   ONAP
   ================================================================================
   Copyright (C) 2020 AT&T Intellectual Property. All rights reserved.
-  Modifications Copyright (C) 2023 Nordix Foundation.
+  Modifications Copyright (C) 2023-2024 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@
     <description>domain policies</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -45,27 +44,28 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.openpojo</groupId>
             <artifactId>openpojo</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.onap.policy.common</groupId>
             <artifactId>utils</artifactId>
             <version>${policy.common.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.onap.policy.drools-pdp</groupId>
             <artifactId>policy-utils</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.onap.policy.models</groupId>
+            <artifactId>policy-models-examples</artifactId>
+            <version>${policy.models.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -794,7 +794,7 @@ class FeatureTest {
                 if (msg == null) {
                     return;
                 }
-                listener.onTopicEvent(CommInfrastructure.UEB, topic, msg);
+                listener.onTopicEvent(CommInfrastructure.KAFKA, topic, msg);
             }
         }
     }

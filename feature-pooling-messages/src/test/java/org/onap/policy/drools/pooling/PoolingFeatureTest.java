@@ -298,7 +298,7 @@ class PoolingFeatureTest {
 
     @Test
     void testBeforeOffer() {
-        assertFalse(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1));
+        assertFalse(pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1));
         verify(mgr1).beforeOffer(TOPIC1, EVENT1);
 
         // ensure that the args were captured
@@ -307,7 +307,7 @@ class PoolingFeatureTest {
 
 
         // ensure it's still in the map by re-invoking
-        assertFalse(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2));
+        assertFalse(pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC2, EVENT2));
         verify(mgr1).beforeOffer(TOPIC2, EVENT2);
 
         // ensure that the new args were captured
@@ -315,12 +315,12 @@ class PoolingFeatureTest {
         verify(mgr1).beforeInsert(TOPIC2, OBJECT2);
 
 
-        assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC1, EVENT1));
+        assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.KAFKA, TOPIC1, EVENT1));
     }
 
     @Test
     void testBeforeOffer_NotFound() {
-        assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC1, EVENT1));
+        assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.KAFKA, TOPIC1, EVENT1));
     }
 
     @Test
@@ -329,28 +329,28 @@ class PoolingFeatureTest {
         // manager will return true
         when(mgr1.beforeOffer(any(), any())).thenReturn(true);
 
-        assertTrue(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1));
+        assertTrue(pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1));
         verify(mgr1).beforeOffer(TOPIC1, EVENT1);
 
         // ensure it's still in the map by re-invoking
-        assertTrue(pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2));
+        assertTrue(pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC2, EVENT2));
         verify(mgr1).beforeOffer(TOPIC2, EVENT2);
 
-        assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC1, EVENT1));
+        assertFalse(pool.beforeOffer(controllerDisabled, CommInfrastructure.KAFKA, TOPIC1, EVENT1));
     }
 
     @Test
     void testBeforeInsert() {
-        pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
+        pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
         verify(mgr1).beforeInsert(TOPIC1, OBJECT1);
 
         // ensure it's still in the map by re-invoking
-        pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2);
+        pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC2, EVENT2);
         assertFalse(pool.beforeInsert(drools1, OBJECT2));
         verify(mgr1).beforeInsert(TOPIC2, OBJECT2);
 
-        pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC2, EVENT2);
+        pool.beforeOffer(controllerDisabled, CommInfrastructure.KAFKA, TOPIC2, EVENT2);
         assertFalse(pool.beforeInsert(droolsDisabled, OBJECT1));
     }
 
@@ -375,7 +375,7 @@ class PoolingFeatureTest {
             }
         };
 
-        pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
+        pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
         verify(mgr1, never()).beforeInsert(any(), any());
     }
@@ -390,7 +390,7 @@ class PoolingFeatureTest {
             }
         };
 
-        pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
+        pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
         verify(mgr1, never()).beforeInsert(any(), any());
     }
@@ -406,7 +406,7 @@ class PoolingFeatureTest {
             }
         };
 
-        pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
+        pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1);
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
         verify(mgr1, never()).beforeInsert(any(), any());
     }
@@ -414,17 +414,17 @@ class PoolingFeatureTest {
     @Test
     void testBeforeInsert_NotFound() {
 
-        pool.beforeOffer(controllerDisabled, CommInfrastructure.UEB, TOPIC2, EVENT2);
+        pool.beforeOffer(controllerDisabled, CommInfrastructure.KAFKA, TOPIC2, EVENT2);
         assertFalse(pool.beforeInsert(droolsDisabled, OBJECT1));
     }
 
     @Test
     void testAfterOffer() {
         // this will create OfferArgs
-        pool.beforeOffer(controller1, CommInfrastructure.UEB, TOPIC1, EVENT1);
+        pool.beforeOffer(controller1, CommInfrastructure.KAFKA, TOPIC1, EVENT1);
 
         // this should clear them
-        assertFalse(pool.afterOffer(controller1, CommInfrastructure.UEB, TOPIC2, EVENT2, true));
+        assertFalse(pool.afterOffer(controller1, CommInfrastructure.KAFKA, TOPIC2, EVENT2, true));
 
         assertFalse(pool.beforeInsert(drools1, OBJECT1));
         verify(mgr1, never()).beforeInsert(any(), any());

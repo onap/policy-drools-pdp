@@ -69,26 +69,18 @@ public class RestManagerTest {
     private static final String TELEMETRY_USER = "x";
     private static final String TELEMETRY_PASSWORD = "y";
     private static final String FOO_CONTROLLER = "foo";
-
-    private static final String UEB_TOPIC = "ueb-topic-test";
     private static final String KAFKA_TOPIC = "kafka-topic-test";
     private static final String NOOP_TOPIC = "noop_topic";
-
-    private static final String UEB_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + "."
-            + UEB_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
-    private static final String UEB_SINK_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + "."
-            + UEB_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
     private static final String KAFKA_SOURCE_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS
-            + "." + KAFKA_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
+        + "." + KAFKA_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
     private static final String KAFKA_SINK_SERVER_PROPERTY = PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS + "."
-            + KAFKA_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
-    private static final String UEB_SERVER = "localhost";
+        + KAFKA_TOPIC + PolicyEndPointProperties.PROPERTY_TOPIC_SERVERS_SUFFIX;
     private static final String KAFKA_SERVER = "localhost:9092";
 
     private static final String FOO_CONTROLLER_FILE = FOO_CONTROLLER + "-controller.properties";
     private static final String FOO_CONTROLLER_FILE_BAK = FOO_CONTROLLER_FILE + ".bak";
     private static final String PDP_CONFIGURATION_JSON =
-            "src/test/resources/org/onap/policy/drools/server/restful/PdpConfiguration.json";
+        "src/test/resources/org/onap/policy/drools/server/restful/PdpConfiguration.json";
 
     private static CloseableHttpClient client;
 
@@ -108,28 +100,24 @@ public class RestManagerTest {
         /* override default port */
         final Properties engineProps = PolicyEngineConstants.getManager().defaultTelemetryConfig();
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
-                        + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
-                        + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
+            + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
+            + PolicyEndPointProperties.PROPERTY_HTTP_PORT_SUFFIX, "" + DEFAULT_TELEMETRY_PORT);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_USERNAME_SUFFIX,
-                TELEMETRY_USER);
+            TELEMETRY_USER);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_AUTH_PASSWORD_SUFFIX,
-                TELEMETRY_PASSWORD);
+            TELEMETRY_PASSWORD);
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."
                 + PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME
                 + PolicyEndPointProperties.PROPERTY_HTTP_SERIALIZATION_PROVIDER,
-                String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
+            String.join(",", JacksonHandler.class.getName(), YamlJacksonHandler.class.getName()));
 
         /* other properties */
-        engineProps.put(PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS, UEB_TOPIC);
-        engineProps.put(PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS, UEB_TOPIC);
         engineProps.put(PolicyEndPointProperties.PROPERTY_KAFKA_SOURCE_TOPICS, KAFKA_TOPIC);
         engineProps.put(PolicyEndPointProperties.PROPERTY_KAFKA_SINK_TOPICS, KAFKA_TOPIC);
-        engineProps.put(UEB_SOURCE_SERVER_PROPERTY, UEB_SERVER);
-        engineProps.put(UEB_SINK_SERVER_PROPERTY, UEB_SERVER);
         engineProps.put(KAFKA_SOURCE_SERVER_PROPERTY, KAFKA_SERVER);
         engineProps.put(KAFKA_SINK_SERVER_PROPERTY, KAFKA_SERVER);
 
@@ -197,41 +185,30 @@ public class RestManagerTest {
     }
 
     private void putDeleteTopicSwitches() throws IOException {
-        putDeleteSwitch("/engine/topics/sources/ueb/", UEB_TOPIC, "lock");
         putDeleteSwitch("/engine/topics/sources/kafka/", KAFKA_TOPIC, "lock");
         putDeleteSwitch("/engine/topics/sources/noop/", NOOP_TOPIC, "lock");
-        putDeleteSwitch("/engine/topics/sinks/ueb/", UEB_TOPIC, "lock");
         putDeleteSwitch("/engine/topics/sinks/kafka/", KAFKA_TOPIC, "lock");
         putDeleteSwitch("/engine/topics/sinks/noop/", NOOP_TOPIC, "lock");
 
-        putDeleteSwitch("/engine/topics/sources/ueb/", UEB_TOPIC, "activation");
         putDeleteSwitch("/engine/topics/sources/kafka/", KAFKA_TOPIC, "activation");
         putDeleteSwitch("/engine/topics/sources/noop/", NOOP_TOPIC, "activation");
-        putDeleteSwitch("/engine/topics/sinks/ueb/", UEB_TOPIC, "activation");
         putDeleteSwitch("/engine/topics/sinks/kafka/", KAFKA_TOPIC, "activation");
         putDeleteSwitch("/engine/topics/sinks/noop/", NOOP_TOPIC, "activation");
 
-        putSwitch("/engine/topics/sources/ueb/", UEB_TOPIC, "activation");
         putSwitch("/engine/topics/sources/kafka/", KAFKA_TOPIC, "activation");
         putSwitch("/engine/topics/sources/noop/", NOOP_TOPIC, "activation");
-        putSwitch("/engine/topics/sinks/ueb/", UEB_TOPIC, "activation");
         putSwitch("/engine/topics/sinks/kafka/", KAFKA_TOPIC, "activation");
         putSwitch("/engine/topics/sinks/noop/", NOOP_TOPIC, "activation");
     }
 
     private void putDeleteTopicsSources() throws IOException {
-        putTest(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events", 200,
-                "{x:y}", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/sources/noop/" + NOOP_TOPIC + "/events", 200,
             "{x:y}", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/sources/kafka/" + KAFKA_TOPIC + "/events", 200,
                 "FOOOO", ContentType.TEXT_PLAIN);
-        putTest(HOST_URL + "/engine/topics/sources/ueb/fiznits/events", 406, "FOOOO", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/sources/kafka/fiznits/events", 406,
                 "FOOOO", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/switches/lock", 200);
-        putTest(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events",
-                406, "FOOOO", ContentType.TEXT_PLAIN);
         putTest(HOST_URL + "/engine/topics/sources/kafka/" + KAFKA_TOPIC + "/events",
                 406, "FOOOO", ContentType.TEXT_PLAIN);
         deleteTest(HOST_URL + "/engine/topics/switches/lock", 200);
@@ -246,10 +223,10 @@ public class RestManagerTest {
         deleteTest(HOST_URL + "/engine/controllers/" + FOO_CONTROLLER, 200);
     }
 
-    private void postTest(String uri, int statusCode, String payload, ContentType contentType) throws IOException {
+    private void postTest(String uri, int statusCode, String payload) throws IOException {
         HttpPost post = new HttpPost(uri);
-        if (contentType != null) {
-            post.setEntity(new StringEntity(payload, contentType));
+        if (ContentType.APPLICATION_JSON != null) {
+            post.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
         }
         requestTest(post, statusCode);
     }
@@ -293,28 +270,19 @@ public class RestManagerTest {
     @Test
     void testPost() throws IOException {
         postTest(HOST_URL + "/engine/inputs/configuration", 406,
-                Files.readString(Paths.get(PDP_CONFIGURATION_JSON)),
-                ContentType.APPLICATION_JSON);
+            Files.readString(Paths.get(PDP_CONFIGURATION_JSON)));
 
-        postTest(HOST_URL + "/engine/controllers", 400,
-                "{}",
-                ContentType.APPLICATION_JSON);
+        postTest(HOST_URL + "/engine/controllers", 400, "{}");
 
-        postTest(HOST_URL + "/engine/controllers", 304,
-                "{controller.name : foo}",
-                ContentType.APPLICATION_JSON);
+        postTest(HOST_URL + "/engine/controllers", 304, "{controller.name : foo}");
 
-        postTest(HOST_URL + "/engine/controllers", 206,
-                "{controller.name : new}",
-                ContentType.APPLICATION_JSON);
+        postTest(HOST_URL + "/engine/controllers", 206, "{controller.name : new}");
 
         deleteTest(HOST_URL + "/engine/controllers/new", 200);
 
-        postTest(HOST_URL + "/engine/controllers/foo/drools/facts/session1/query1/entity1", 200,
-                "[{f:v}]", ContentType.APPLICATION_JSON);
+        postTest(HOST_URL + "/engine/controllers/foo/drools/facts/session1/query1/entity1", 200, "[{f:v}]");
 
-        postTest(HOST_URL + "/engine/controllers/new/drools/facts/session1/query1/entity1", 404,
-                "[{f:v}]", ContentType.APPLICATION_JSON);
+        postTest(HOST_URL + "/engine/controllers/new/drools/facts/session1/query1/entity1", 404, "[{f:v}]");
     }
 
     @Test
@@ -491,6 +459,18 @@ public class RestManagerTest {
         assertEquals(404, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
 
+        testGetDroolsControllers();
+
+        testGetControllersDecoders();
+
+        testGetTopics();
+
+        testGetEngineTools();
+    }
+
+    private static void testGetDroolsControllers() throws IOException {
+        CloseableHttpResponse response;
+        HttpGet httpGet;
         /*
          * GET: /engine/controllers/controllerName/drools/facts
          * /engine/controllers/controllerName/drools/facts/session
@@ -523,7 +503,7 @@ public class RestManagerTest {
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(
-                HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session/query/queriedEntity");
+            HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/drools/facts/session/query/queriedEntity");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -534,8 +514,36 @@ public class RestManagerTest {
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(404, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
+    }
 
+    private static void testGetEngineTools() throws IOException {
+        CloseableHttpResponse response;
+        HttpGet httpGet;
+        /*
+         * GET: /engine/tools/uuid /engine/tools/loggers /engine/tools/loggers/loggerName
+         */
+        httpGet = new HttpGet(HOST_URL + "/engine/tools/uuid");
+        response = client.execute(httpGet);
+        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
 
+        httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers");
+        response = client.execute(httpGet);
+        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+
+        httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers/ROOT");
+        response = client.execute(httpGet);
+        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
+        assertEquals(200, response.getStatusLine().getStatusCode());
+        httpGet.releaseConnection();
+    }
+
+    private static void testGetControllersDecoders() throws IOException {
+        HttpGet httpGet;
+        CloseableHttpResponse response;
         /*
          * GET: /engine/controllers/controllerName/decoders
          * /engine/controllers/controllerName/decoders/filters
@@ -589,14 +597,14 @@ public class RestManagerTest {
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(
-                HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic/filters/factType/rules");
+            HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic/filters/factType/rules");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(404, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(
-                HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic/filters/factType/rules/ruleName");
+            HOST_URL + "/engine/controllers/" + FOO_CONTROLLER + "/decoders/topic/filters/factType/rules/ruleName");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(404, response.getStatusLine().getStatusCode());
@@ -607,15 +615,22 @@ public class RestManagerTest {
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
+    }
 
+    private static void testGetTopics() throws IOException {
+        CloseableHttpResponse response;
+        HttpGet httpGet;
         /*
-         * GET: /engine/topics /engine/topics/switches /engine/topics/sources /engine/topics/sinks
-         * /engine/topics/sinks/ueb /engine/topics/sources/ueb /engine/topics/sinks/kafka
-         * /engine/topics/sources/kafka /engine/topics/sinks/ueb/topic
-         * /engine/topics/sources/ueb/topic /engine/topics/sinks/kafka/topic
-         * /engine/topics/sources/kafka/topic /engine/topics/sinks/ueb/topic/events
-         * /engine/topics/sources/ueb/topic/events /engine/topics/sinks/kafka/topic/events
-         * /engine/topics/sources/kafka/topic/events /engine/topics/sources/ueb/topic/switches
+         * GET: /engine/topics
+         * /engine/topics/switches
+         * /engine/topics/sources
+         * /engine/topics/sinks
+         * /engine/topics/sinks/kafka
+         * /engine/topics/sources/kafka
+         * /engine/topics/sinks/kafka/topic
+         * /engine/topics/sources/kafka/topic
+         * /engine/topics/sinks/kafka/topic/events
+         * /engine/topics/sources/kafka/topic/events
          * /engine/topics/sources/kafka/topic/switches
          */
         httpGet = new HttpGet(HOST_URL + "/engine/topics");
@@ -637,18 +652,6 @@ public class RestManagerTest {
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -676,30 +679,6 @@ public class RestManagerTest {
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC);
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/foobar");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(500, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC);
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/foobar");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(500, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/kafka/" + KAFKA_TOPIC);
@@ -745,30 +724,6 @@ public class RestManagerTest {
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/foobar");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(500, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/events");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/foobar/events");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(500, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC + "/events");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/foobar/events");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(500, response.getStatusLine().getStatusCode());
@@ -822,12 +777,6 @@ public class RestManagerTest {
         assertEquals(500, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
 
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/ueb/" + UEB_TOPIC + "/switches");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
         httpGet = new HttpGet(HOST_URL + "/engine/topics/sources/kafka/" + KAFKA_TOPIC + "/switches");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
@@ -840,12 +789,6 @@ public class RestManagerTest {
         assertEquals(200, response.getStatusLine().getStatusCode());
         httpGet.releaseConnection();
 
-        httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/ueb/" + UEB_TOPIC + "/switches");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
         httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/kafka/" + KAFKA_TOPIC + "/switches");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
@@ -853,27 +796,6 @@ public class RestManagerTest {
         httpGet.releaseConnection();
 
         httpGet = new HttpGet(HOST_URL + "/engine/topics/sinks/noop/" + NOOP_TOPIC + "/switches");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        /*
-         * GET: /engine/tools/uuid /engine/tools/loggers /engine/tools/loggers/loggerName
-         */
-        httpGet = new HttpGet(HOST_URL + "/engine/tools/uuid");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers");
-        response = client.execute(httpGet);
-        logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
-        assertEquals(200, response.getStatusLine().getStatusCode());
-        httpGet.releaseConnection();
-
-        httpGet = new HttpGet(HOST_URL + "/engine/tools/loggers/ROOT");
         response = client.execute(httpGet);
         logger.info(httpGet.getRequestLine() + " response code: {}", response.getStatusLine().getStatusCode());
         assertEquals(200, response.getStatusLine().getStatusCode());
@@ -902,10 +824,10 @@ public class RestManagerTest {
 
     private static void cleanUpWorkingDirs() throws IOException {
         final Path testControllerPath = Paths.get(
-                        SystemPersistenceConstants.getManager().getConfigurationPath().toString(), FOO_CONTROLLER_FILE);
+            SystemPersistenceConstants.getManager().getConfigurationPath().toString(), FOO_CONTROLLER_FILE);
         final Path testControllerBakPath =
-                        Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
-                                        FOO_CONTROLLER_FILE_BAK);
+            Paths.get(SystemPersistenceConstants.getManager().getConfigurationPath().toString(),
+                FOO_CONTROLLER_FILE_BAK);
 
         Files.deleteIfExists(testControllerPath);
         Files.deleteIfExists(testControllerBakPath);

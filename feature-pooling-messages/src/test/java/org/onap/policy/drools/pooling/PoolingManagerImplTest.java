@@ -37,6 +37,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
@@ -504,7 +505,7 @@ class PoolingManagerImplTest {
     }
 
     @Test
-    void testOnTopicEvent() throws Exception {
+    void testOnTopicEvent() {
         startMgr();
 
         StartState st = (StartState) mgr.getCurrent();
@@ -517,16 +518,16 @@ class PoolingManagerImplTest {
 
         String msg = ser.encodeMsg(hb);
 
-        mgr.onTopicEvent(CommInfrastructure.UEB, MY_TOPIC, msg);
+        mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, msg);
 
         assertInstanceOf(QueryState.class, mgr.getCurrent());
     }
 
     @Test
-    void testOnTopicEvent_NullEvent() throws Exception {
+    void testOnTopicEvent_NullEvent() {
         startMgr();
 
-        assertThatCode(() -> mgr.onTopicEvent(CommInfrastructure.UEB, TOPIC2, null)).doesNotThrowAnyException();
+        assertThatCode(() -> mgr.onTopicEvent(CommInfrastructure.KAFKA, TOPIC2, null)).doesNotThrowAnyException();
     }
 
     @Test
@@ -563,12 +564,12 @@ class PoolingManagerImplTest {
 
     @Test
     void testHandleExternalCommInfrastructureStringStringString_NullReqId() throws Exception {
-        validateHandleReqId(null);
+        validateHandleReqId();
     }
 
     @Test
     void testHandleExternalCommInfrastructureStringStringString_EmptyReqId() throws Exception {
-        validateHandleReqId("");
+        validateHandleReqId();
     }
 
     @Test
@@ -717,7 +718,7 @@ class PoolingManagerImplTest {
 
         String msg = ser.encodeMsg(hb);
 
-        mgr.onTopicEvent(CommInfrastructure.UEB, MY_TOPIC, msg);
+        mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, msg);
 
         assertInstanceOf(QueryState.class, mgr.getCurrent());
     }
@@ -726,7 +727,7 @@ class PoolingManagerImplTest {
     void testHandleInternal_IoEx() throws Exception {
         startMgr();
 
-        mgr.onTopicEvent(CommInfrastructure.UEB, MY_TOPIC, "invalid message");
+        mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, "invalid message");
 
         assertInstanceOf(StartState.class, mgr.getCurrent());
     }
@@ -746,7 +747,7 @@ class PoolingManagerImplTest {
 
         String msg = ser.encodeMsg(hb);
 
-        mgr.onTopicEvent(CommInfrastructure.UEB, MY_TOPIC, msg);
+        mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, msg);
 
         assertInstanceOf(StartState.class, mgr.getCurrent());
     }
@@ -859,7 +860,7 @@ class PoolingManagerImplTest {
 
         String msg = ser.encodeMsg(hb);
 
-        mgr.onTopicEvent(CommInfrastructure.UEB, MY_TOPIC, msg);
+        mgr.onTopicEvent(CommInfrastructure.KAFKA, MY_TOPIC, msg);
 
         assertInstanceOf(QueryState.class, mgr.getCurrent());
 
@@ -870,7 +871,7 @@ class PoolingManagerImplTest {
         assertEquals(1, latch.getCount());
     }
 
-    private void validateHandleReqId(String requestId) throws PoolingFeatureException {
+    private void validateHandleReqId() {
         startMgr();
 
         assertFalse(mgr.beforeInsert(TOPIC2, DECODED_EVENT));
@@ -887,7 +888,7 @@ class PoolingManagerImplTest {
         verify(topicMessageManager, times(START_PUB)).publish(any());
     }
 
-    private void validateUnhandled() throws PoolingFeatureException {
+    private void validateUnhandled() {
         startMgr();
         assertFalse(mgr.beforeInsert(TOPIC2, DECODED_EVENT));
     }
@@ -985,7 +986,7 @@ class PoolingManagerImplTest {
 
         @Override
         protected Object decodeEventWrapper(DroolsController drools2, String topic2, String event) {
-            if (drools2 == drools && TOPIC2.equals(topic2) && event == THE_EVENT) {
+            if (drools2 == drools && TOPIC2.equals(topic2) && Objects.equals(event, THE_EVENT)) {
                 return DECODED_EVENT;
             } else {
                 return null;

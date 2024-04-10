@@ -258,13 +258,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     private String getPropertyTopicPrefix(Topic topic) {
         boolean isSource = topic instanceof TopicSource;
         var commInfra = topic.getTopicCommInfrastructure();
-        if (commInfra == CommInfrastructure.UEB) {
-            if (isSource) {
-                return PolicyEndPointProperties.PROPERTY_UEB_SOURCE_TOPICS + ".";
-            } else {
-                return PolicyEndPointProperties.PROPERTY_UEB_SINK_TOPICS + ".";
-            }
-        } else if (commInfra == CommInfrastructure.NOOP) {
+        if (commInfra == CommInfrastructure.NOOP) {
             if (isSource) {
                 return PolicyEndPointProperties.PROPERTY_NOOP_SOURCE_TOPICS + ".";
             } else {

@@ -2238,7 +2238,7 @@ paths:
       tags:
         - pdp-d-telemetry
       summary: Retrieves the managed topic sources
-      description: Network Topic Sources Agregation
+      description: Network Topic Sources Aggregation
       operationId: sources
       responses:
         200:
@@ -2255,7 +2255,7 @@ paths:
       tags:
         - pdp-d-telemetry
       summary: Retrieves the managed topic sinks
-      description: Network Topic Sinks Agregation
+      description: Network Topic Sinks Aggregation
       operationId: sinks
       responses:
         200:
@@ -2338,7 +2338,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       responses:
         200:
@@ -2363,7 +2363,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       responses:
         200:
@@ -2389,7 +2389,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2412,7 +2412,7 @@ paths:
       tags:
         - pdp-d-telemetry
       summary: Retrieves a managed topic sink
-      description: This is a Network Communicaton Endpoint destination of messages
+      description: This is a Network Communication Endpoint destination of messages
         from the Engine
       operationId: sinkTopic
       parameters:
@@ -2421,7 +2421,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2453,7 +2453,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2483,7 +2483,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2524,7 +2524,7 @@ paths:
       tags:
         - pdp-d-telemetry
       summary: Retrieves the latest events received by an UEB topic
-      description: This is a Network Communicaton Endpoint source of messages for
+      description: This is a Network Communication Endpoint source of messages for
         the Engine
       operationId: sinkEvents
       parameters:
@@ -2533,7 +2533,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2563,7 +2563,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2596,7 +2596,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2631,7 +2631,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2662,7 +2662,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2692,7 +2692,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2725,7 +2725,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2759,7 +2759,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2792,7 +2792,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2826,7 +2826,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2859,7 +2859,7 @@ paths:
         description: Communication Mechanism
         required: true
         schema:
-          pattern: ueb|dmaap|noop
+          pattern: kafka|noop
           type: string
       - name: topic
         in: path
@@ -2886,7 +2886,7 @@ paths:
       tags:
         - pdp-d-legacy
       summary: Legacy Engine Configuration Properties
-      description: Used for booststrapping the engine
+      description: Used for bootstrapping the engine
       operationId: properties
       responses:
         200:
@@ -3822,80 +3822,6 @@ components:
             $ref: '#/components/schemas/CoderFilters'
         customCoder:
           $ref: '#/components/schemas/CustomCoder'
-    DmaapTopicSink:
-      type: object
-      properties:
-        partitionKey:
-          type: string
-        apiKey:
-          type: string
-        apiSecret:
-          type: string
-        effectiveTopic:
-          type: string
-        recentEvents:
-          type: array
-          items:
-            type: string
-        topic:
-          type: string
-        servers:
-          type: array
-          items:
-            type: string
-        topicCommInfrastructure:
-          type: string
-          enum:
-          - UEB
-          - DMAAP
-          - KAFKA
-          - NOOP
-          - REST
-        alive:
-          type: boolean
-        locked:
-          type: boolean
-    DmaapTopicSource:
-      type: object
-      properties:
-        consumerInstance:
-          type: string
-        consumerGroup:
-          type: string
-        fetchTimeout:
-          type: integer
-          format: int32
-        fetchLimit:
-          type: integer
-          format: int32
-        apiKey:
-          type: string
-        apiSecret:
-          type: string
-        effectiveTopic:
-          type: string
-        recentEvents:
-          type: array
-          items:
-            type: string
-        topic:
-          type: string
-        servers:
-          type: array
-          items:
-            type: string
-        topicCommInfrastructure:
-          type: string
-          enum:
-          - UEB
-          - DMAAP
-          - KAFKA
-          - NOOP
-          - REST
-        alive:
-          type: boolean
-        locked:
-          type: boolean
     KafkaTopicSink:
       type: object
       properties:
@@ -3920,8 +3846,6 @@ components:
         topicCommInfrastructure:
           type: string
           enum:
-          - UEB
-          - DMAAP
           - KAFKA
           - NOOP
           - REST
@@ -3992,8 +3916,6 @@ components:
         topicCommInfrastructure:
           type: string
           enum:
-          - UEB
-          - DMAAP
           - KAFKA
           - NOOP
           - REST
@@ -4019,26 +3941,12 @@ components:
         topicCommInfrastructure:
           type: string
           enum:
-          - UEB
-          - DMAAP
           - KAFKA
           - NOOP
           - REST
     TopicEndpoint:
       type: object
       properties:
-        uebTopicSources:
-          type: array
-          items:
-            $ref: '#/components/schemas/UebTopicSource'
-        uebTopicSinks:
-          type: array
-          items:
-            $ref: '#/components/schemas/UebTopicSink'
-        dmaapTopicSinks:
-          type: array
-          items:
-            $ref: '#/components/schemas/DmaapTopicSink'
         kafkaTopicSinks:
           type: array
           items:
@@ -4047,10 +3955,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NoopTopicSink'
-        dmaapTopicSources:
-          type: array
-          items:
-            $ref: '#/components/schemas/DmaapTopicSource'
         kafkaTopicSources:
           type: array
           items:
@@ -4067,80 +3971,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TopicSink'
-        alive:
-          type: boolean
-        locked:
-          type: boolean
-    UebTopicSink:
-      type: object
-      properties:
-        partitionKey:
-          type: string
-        apiKey:
-          type: string
-        apiSecret:
-          type: string
-        effectiveTopic:
-          type: string
-        recentEvents:
-          type: array
-          items:
-            type: string
-        topic:
-          type: string
-        servers:
-          type: array
-          items:
-            type: string
-        topicCommInfrastructure:
-          type: string
-          enum:
-          - UEB
-          - DMAAP
-          - KAFKA
-          - NOOP
-          - REST
-        alive:
-          type: boolean
-        locked:
-          type: boolean
-    UebTopicSource:
-      type: object
-      properties:
-        consumerInstance:
-          type: string
-        consumerGroup:
-          type: string
-        fetchTimeout:
-          type: integer
-          format: int32
-        fetchLimit:
-          type: integer
-          format: int32
-        apiKey:
-          type: string
-        apiSecret:
-          type: string
-        effectiveTopic:
-          type: string
-        recentEvents:
-          type: array
-          items:
-            type: string
-        topic:
-          type: string
-        servers:
-          type: array
-          items:
-            type: string
-        topicCommInfrastructure:
-          type: string
-          enum:
-          - UEB
-          - DMAAP
-          - KAFKA
-          - NOOP
-          - REST
         alive:
           type: boolean
         locked:
