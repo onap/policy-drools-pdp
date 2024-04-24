@@ -25,6 +25,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.onap.policy.drools.system.PolicyEngineConstants.TELEMETRY_SERVER_DEFAULT_NAME;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,7 @@ import org.onap.policy.drools.protocol.coders.EventProtocolCoderConstants;
 import org.onap.policy.drools.protocol.coders.EventProtocolParams;
 import org.onap.policy.drools.protocol.coders.JsonProtocolFilter;
 import org.onap.policy.drools.protocol.configuration.DroolsConfiguration;
+import org.onap.policy.drools.server.restful.RestManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,6 +153,8 @@ class PolicyEngineTest {
     void test100Configure() {
         var manager = (PolicyEngineManager) PolicyEngineConstants.getManager();
         var engineProps = manager.defaultTelemetryConfig();
+        engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "." + TELEMETRY_SERVER_DEFAULT_NAME
+                + PolicyEndPointProperties.PROPERTY_HTTP_REST_CLASSES_SUFFIX, RestManager.class.getName());
 
         /* override default port */
         engineProps.put(PolicyEndPointProperties.PROPERTY_HTTP_SERVER_SERVICES + "."

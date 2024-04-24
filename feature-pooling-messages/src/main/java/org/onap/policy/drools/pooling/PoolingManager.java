@@ -46,10 +46,10 @@ public interface PoolingManager {
     String getHost();
 
     /**
-     * Gets the name of the internal DMaaP topic used by this manager to communicate with
+     * Gets the name of the internal topic used by this manager to communicate with
      * its other hosts.
      *
-     * @return the name of the internal DMaaP topic
+     * @return the name of the internal topic
      */
     String getTopic();
 

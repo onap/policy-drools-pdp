@@ -72,7 +72,7 @@ until [ -z "$1" ]; do
 done
 
 if [ -z "${BUS_HOST}" ]; then
-    echo "An UEB/KAFKA server must be provided."
+    echo "A KAFKA server must be provided."
     echo
     usage
     exit 1

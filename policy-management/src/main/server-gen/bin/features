@@ -773,7 +773,7 @@ function disableFeatureDeps()
                 rm -f "${LIB}"/"${depJarName}"
                 
                 # case there were multiple features using this library
-                # re-enable link fron an enabled feature
+                # re-enable link from an enabled feature
                 for aDepsEnabledMap in ${xDepsEnabledMap}; do
                    if [ $(basename "${aDepsEnabledMap}") = ${depJarName} ]; then
                       ln -s -f "${aDepsEnabledMap}" "${LIB}/"

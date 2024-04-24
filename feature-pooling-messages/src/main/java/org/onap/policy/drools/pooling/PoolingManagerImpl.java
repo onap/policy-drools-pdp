@@ -91,13 +91,13 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     private final Serializer serializer;
 
     /**
-     * Internal DMaaP topic used by this controller.
+     * Internal topic used by this controller.
      */
     @Getter
     private final String topic;
 
     /**
-     * Manager for the internal DMaaP topic.
+     * Manager for the internal topic.
      */
     private final TopicMessageManager topicMessageManager;
 
@@ -157,7 +157,7 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
             throw new PoolingFeatureRtException(e);
 
         } catch (PoolingFeatureException e) {
-            logger.error("failed to attach internal DMaaP topic to controller {}", controller.getName());
+            logger.error("failed to attach internal topic to controller {}", controller.getName());
             throw new PoolingFeatureRtException(e);
         }
     }
@@ -598,9 +598,9 @@ public class PoolingManagerImpl implements PoolingManager, TopicListener {
     }
 
     /**
-     * Creates a DMaaP manager.
+     * Creates a topic manager.
      *
-     * @param topic name of the internal DMaaP topic
+     * @param topic name of the internal topic
      * @return a new topic messages manager
      * @throws PoolingFeatureException if an error occurs
      */

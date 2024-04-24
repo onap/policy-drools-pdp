@@ -68,7 +68,6 @@ import org.slf4j.LoggerFactory;
  * End-to-end tests of the pooling feature. Launches one or more "hosts", each one having
  * its own feature object. Uses real feature objects. However, the following are not:
  * <dl>
- * <dt>DMaaP sources and sinks</dt>
  * <dd>simulated using queues. There is one queue for the external topic, and one queue
  * for each host's internal topic. Messages published to the "admin" channel are simply
  * sent to all of the hosts' internal topic queues</dd>
@@ -430,13 +429,13 @@ class FeatureTest {
         private final AtomicBoolean sawMsg = new AtomicBoolean(false);
 
         /**
-         * This host's internal "DMaaP" topic.
+         * This host's internal topic.
          */
 
         private final BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>();
 
         /**
-         * Queue for the external "DMaaP" topic.
+         * Queue for the external topic.
          */
         @Getter
         private final BlockingQueue<String> externalTopic = new LinkedBlockingQueue<String>();
@@ -486,7 +485,7 @@ class FeatureTest {
 
         /**
          * Starts threads for the host so that it begins consuming from both the external
-         * "DMaaP" topic and its own internal "DMaaP" topic.
+         * topic and its own internal topic.
          */
 
         public void start() {
@@ -987,7 +986,7 @@ class FeatureTest {
     }
 
     /**
-     * DMaaP Manager with overrides.
+     * TopicManager with overrides.
      */
 
     private static class TopicMessageManagerImpl extends TopicMessageManager {

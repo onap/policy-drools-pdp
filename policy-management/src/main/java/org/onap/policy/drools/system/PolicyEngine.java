@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +42,10 @@ import org.onap.policy.drools.stats.PolicyStatsManager;
 
 /**
  * Policy Engine, the top abstraction for the Drools PDP Policy Engine. It abstracts away a Drools
- * PDP Engine from management purposes. This is the best place to looking at the code from a top
- * down approach. Other managed entities can be obtained from the PolicyEngine, hierarchically. <br>
+ * PDP Engine from management purposes. This is the best place to looking at the code from a top-down
+ * approach. Other managed entities can be obtained from the PolicyEngine, hierarchically. <br>
  * PolicyEngine 1 --- * PolicyController 1 --- 1 DroolsController 1 --- 1 PolicyContainer 1 --- *
  * PolicySession <br> PolicyEngine 1 --- 1 TopicEndpointManager 1 -- * TopicReader 1 --- 1
- * UebTopicReader <br> PolicyEngine 1 --- 1 TopicEndpointManager 1 -- * TopicReader 1 --- 1
- * DmaapTopicReader <br> PolicyEngine 1 --- 1 TopicEndpointManager 1 -- * TopicWriter 1 --- 1
- * DmaapTopicWriter <br> PolicyEngine 1 --- 1 TopicEndpointManager 1 -- * TopicReader 1 --- 1
  * RestTopicReader <br> PolicyEngine 1 --- 1 TopicEndpointManager 1 -- * TopicWriter 1 --- 1
  * RestTopicWriter <br> PolicyEngine 1 --- 1 ManagementServer
  */

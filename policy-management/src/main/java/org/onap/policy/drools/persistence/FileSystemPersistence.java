@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,13 +153,13 @@ public class FileSystemPersistence implements SystemPersistence {
 
     protected Properties getProperties(Path propertiesPath) {
         if (!Files.exists(propertiesPath)) {
-            throw new IllegalArgumentException("properties for " + propertiesPath.toString() + " are not persisted.");
+            throw new IllegalArgumentException("properties for " + propertiesPath + " are not persisted.");
         }
 
         try {
             return PropertyUtil.getProperties(propertiesPath.toFile());
         } catch (final Exception e) {
-            throw new IllegalArgumentException("can't read properties for " + propertiesPath.toString(), e);
+            throw new IllegalArgumentException("can't read properties for " + propertiesPath, e);
         }
     }
 

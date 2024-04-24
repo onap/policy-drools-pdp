@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * hosts, instead of all running on a single, active host.
  *
  * <p>With each controller, there is an
- * associated DMaaP topic that is used for internal communication between the different hosts
+ * associated topic that is used for internal communication between the different hosts
  * serving the controller.
  */
 public class PoolingFeature implements PolicyEngineFeatureApi, PolicyControllerFeatureApi, DroolsControllerFeatureApi {

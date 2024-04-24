@@ -3,7 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,9 +140,9 @@ public class AggregatedPolicyController implements PolicyController, TopicListen
         this.name = name;
 
         /*
-         * 1. Register read topics with network infrastructure (ueb, dmaap, rest) 2. Register write
-         * topics with network infrastructure (ueb, dmaap, rest) 3. Register with drools
-         * infrastructure
+         * 1. Register read topics with network infrastructure
+         * 2. Register write topics with network infrastructure
+         * 3. Register with drools infrastructure
          */
 
         // Create/Reuse Readers/Writers for all event sources endpoints

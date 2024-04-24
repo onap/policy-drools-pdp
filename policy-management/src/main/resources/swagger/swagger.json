@@ -3485,8 +3485,8 @@
     "/topics/sources/{comm}/{topic}/events" : {
       "get" : {
         "tags" : [ "pdp-d-telemetry" ],
-        "summary" : "Retrieves the latest events received by an UEB topic",
-        "description" : "This is a Network Communicaton Endpoint source of messages for the Engine",
+        "summary" : "Retrieves the latest events received by a topic",
+        "description" : "This is a Network Communication Endpoint source of messages for the Engine",
         "operationId" : "sourceEvents",
         "parameters" : [ {
           "name" : "comm",
@@ -3601,7 +3601,7 @@
     "/topics/sinks/{comm}/{topic}/events" : {
       "get" : {
         "tags" : [ "pdp-d-telemetry" ],
-        "summary" : "Retrieves the latest events received by an UEB topic",
+        "summary" : "Retrieves the latest events received by a topic",
         "description" : "This is a Network Communication Endpoint source of messages for the Engine",
         "operationId" : "sinkEvents",
         "parameters" : [ {
@@ -4207,7 +4207,7 @@
           },
           "topicCommInfrastructure" : {
             "type" : "string",
-            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+            "enum" : [ "KAFKA", "NOOP", "REST" ]
           },
           "alive" : {
             "type" : "boolean"
@@ -4299,7 +4299,7 @@
           },
           "topicCommInfrastructure" : {
             "type" : "string",
-            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+            "enum" : [ "KAFKA", "NOOP", "REST" ]
           },
           "alive" : {
             "type" : "boolean"
@@ -5571,7 +5571,7 @@
           },
           "topicCommInfrastructure" : {
             "type" : "string",
-            "enum" : [ "UEB", "DMAAP", "KAFKA", "NOOP", "REST" ]
+            "enum" : [ "KAFKA", "NOOP", "REST" ]
           },
           "alive" : {
             "type" : "boolean"

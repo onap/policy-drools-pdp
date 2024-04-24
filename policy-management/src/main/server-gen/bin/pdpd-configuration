@@ -38,9 +38,10 @@ function usage() {
     echo ""
 }
 
-BUS_PORT=9092
+BUS_PORT=29092
+BUS_HOST=kafka
 REQUEST_ID="7f5474ca-16a9-42ac-abc0-d86f62296fbc"
-TOPIC="PDPD-CONFIGURATION"
+TOPIC="pdpd-configuration"
 
 # command line options parsing
 until [ -z "$1" ]; do
@@ -88,7 +89,7 @@ until [ -z "$1" ]; do
 done
 
 if [ -z "${BUS_HOST}" ]; then
-    echo "An UEB/KAFKA server must be provided."
+    echo "A KAFKA server must be provided."
     echo
     usage
     exit 1

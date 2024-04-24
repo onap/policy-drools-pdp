@@ -242,7 +242,7 @@ public class PdpdConfiguration {
         } else {
             throw new IllegalArgumentException(
                     "property \"requestID\" is of type \"java.lang.String\", but got "
-                            + value.getClass().toString());
+                            + value.getClass());
         }
     }
 
@@ -257,7 +257,7 @@ public class PdpdConfiguration {
         } else {
             throw new IllegalArgumentException(
                     "property \"entity\" is of type \"java.lang.String\", but got "
-                            + value.getClass().toString());
+                            + value.getClass());
         }
     }
 

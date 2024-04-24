@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * This class is a wrapper around 'KieSession', which adds the following:
  *
  * <p>1) A thread running 'KieSession.fireUntilHalt()'
- * 2) Access to UEB
+ * 2) Access to topic
  * 3) Logging of events
  */
 public class PolicySession implements AgendaEventListener, RuleRuntimeEventListener {

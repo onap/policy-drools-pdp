@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2019 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -232,7 +233,7 @@ public interface PolicyEngineFeatureApi extends OrderedService {
     }
 
     /**
-     * Intercept an event from UEB/DMaaP before the PolicyEngine processes it.
+     * Intercept an event from Bus before the PolicyEngine processes it.
      *
      * @return True if this feature intercepts and takes ownership of the operation
      *         preventing the invocation of lower priority features. False, otherwise.
