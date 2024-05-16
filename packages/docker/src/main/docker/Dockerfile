@@ -19,7 +19,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # ============LICENSE_END=========================================================
 #-------------------------------------------------------------------------------
-FROM onap/policy-jdk-alpine:3.1.3-SNAPSHOT
+FROM onap/policy-jdk-alpine:3.1.3
 
 LABEL maintainer="Policy Team"
 LABEL org.opencontainers.image.title="Policy Drools PDP"
