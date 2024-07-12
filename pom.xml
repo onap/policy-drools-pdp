@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.onap.policy.parent</groupId>
         <artifactId>integration</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>5.0.0</version>
         <relativePath />
     </parent>
 
@@ -51,8 +51,8 @@
         <json.path.version>2.9.0</json.path.version>
         <hibernate.commons.annotations.version>6.0.6.Final</hibernate.commons.annotations.version>
         <xml.apis.version>1.4.01</xml.apis.version>
-        <policy.common.version>3.0.0-SNAPSHOT</policy.common.version>
-        <policy.models.version>4.0.0-SNAPSHOT</policy.models.version>
+        <policy.common.version>3.0.0</policy.common.version>
+        <policy.models.version>4.0.0</policy.models.version>
     </properties>
 
     <modules>
