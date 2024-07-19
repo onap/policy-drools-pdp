@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.worldturner.medeia.api.ValidationFailedException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -53,12 +52,12 @@ class DomainPolicyTypesTest {
     // Native Drools Policy
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_NATIVE_DROOLS_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-artifact-example.json";
+        "src/test/resources/tosca-policy-native-artifact-example.json";
 
     // Controller Drools Policy
     private static final String EXAMPLE_CONTROLLER_DROOLS_POLICY_NAME = "example";
     private static final String EXAMPLE_CONTROLLER_DROOLS_POLICY_JSON =
-            "src/test/resources/tosca-policy-native-controller-example.json";
+        "src/test/resources/tosca-policy-native-controller-example.json";
 
     private DomainMaker domainMaker;
     private StandardCoder nonValCoder;
@@ -71,8 +70,7 @@ class DomainPolicyTypesTest {
 
     @Test
     void testToscaNativeDroolsPolicy() throws CoderException, IOException {
-        String rawNativeDroolsPolicy =
-            getPolicyFromFileString();
+        String rawNativeDroolsPolicy = getPolicyFromFileString();
         ToscaPolicy toscaPolicy =
             getExamplesPolicy(EXAMPLE_NATIVE_DROOLS_POLICY_JSON, EXAMPLE_NATIVE_DROOLS_POLICY_NAME);
 
@@ -88,7 +86,7 @@ class DomainPolicyTypesTest {
 
         String policyId = "" + toscaPolicy.getMetadata().remove("policy-id");
         assertThatThrownBy(() -> domainMaker.convertTo(toscaPolicy, NativeArtifactPolicy.class))
-                .isInstanceOf(CoderException.class).hasCauseInstanceOf(ValidationFailedException.class);
+            .isInstanceOf(CoderException.class);
 
         toscaPolicy.getMetadata().put("policy-id", policyId);
 
@@ -97,9 +95,7 @@ class DomainPolicyTypesTest {
 
         domainDroolsPolicy.setName("");
         assertFalse(domainMaker.isDomainConformant(policyTypeId, domainDroolsPolicy));
-        assertThatThrownBy(() -> domainMaker.conformance(policyTypeId, domainDroolsPolicy))
-                .isInstanceOf(ValidationFailedException.class)
-                .hasMessageContaining("Pattern ^(.+)$ is not contained in text");
+        assertFalse(domainMaker.conformance(policyTypeId, domainDroolsPolicy));
 
         // @formatter:off
         NativeArtifactPolicy domainDroolsPolicy2 =
@@ -115,16 +111,14 @@ class DomainPolicyTypesTest {
             .typeVersion("1.0.0").build();
         // @formatter:on
 
-        assertTrue(domainMaker
-            .isDomainConformant(
-                    new ToscaConceptIdentifier(domainDroolsPolicy2.getType(), domainDroolsPolicy2.getTypeVersion()),
-                    domainDroolsPolicy2));
+        var toscaId = new ToscaConceptIdentifier(domainDroolsPolicy2.getType(), domainDroolsPolicy2.getTypeVersion());
+        assertTrue(domainMaker.isDomainConformant(toscaId, domainDroolsPolicy2));
     }
 
     @Test
     void testToscaControllerPolicy() throws CoderException {
         ToscaPolicy toscaPolicy =
-                getExamplesPolicy(EXAMPLE_CONTROLLER_DROOLS_POLICY_JSON, EXAMPLE_CONTROLLER_DROOLS_POLICY_NAME);
+            getExamplesPolicy(EXAMPLE_CONTROLLER_DROOLS_POLICY_JSON, EXAMPLE_CONTROLLER_DROOLS_POLICY_NAME);
 
         assertTrue(domainMaker.isConformant(toscaPolicy));
         ControllerPolicy controllerPolicy = domainMaker.convertTo(toscaPolicy, ControllerPolicy.class);
@@ -139,24 +133,24 @@ class DomainPolicyTypesTest {
         assertEquals("org.onap.policy.controlloop.CanonicalOnset",
             controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0).getEventClass());
         assertEquals("[?($.closedLoopEventStatus == 'ONSET')]",
-                controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0).getEventFilter());
+            controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0).getEventFilter());
         assertEquals("org.onap.policy.controlloop.util.Serialization",
-                controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
-                        .getCustomSerialization().getCustomSerializerClass());
+            controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
+                .getCustomSerialization().getCustomSerializerClass());
         assertEquals("gson",
-                controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
-                        .getCustomSerialization().getJsonParser());
+            controllerPolicy.getProperties().getSourceTopics().get(0).getEvents().get(0)
+                .getCustomSerialization().getJsonParser());
         assertEquals("appc-cl", controllerPolicy.getProperties().getSinkTopics().get(0).getTopicName());
         assertEquals("org.onap.policy.appc.Response",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventClass());
+            controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventClass());
         assertEquals("[?($.CommonHeader && $.Status)]",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventFilter());
+            controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0).getEventFilter());
         assertEquals("org.onap.policy.appc.util.Serialization",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0)
-                        .getCustomSerialization().getCustomSerializerClass());
+            controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0)
+                .getCustomSerialization().getCustomSerializerClass());
         assertEquals("gsonPretty",
-                controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0)
-                        .getCustomSerialization().getJsonParser());
+            controllerPolicy.getProperties().getSinkTopics().get(0).getEvents().get(0)
+                .getCustomSerialization().getJsonParser());
         assertEquals("value1", controllerPolicy.getProperties().getCustomConfig().get("field1"));
     }
 

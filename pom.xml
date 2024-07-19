@@ -48,7 +48,6 @@
         <staging.path>content/repositories/staging/</staging.path>
 
         <!-- Project common dependency versions -->
-        <json.path.version>2.9.0</json.path.version>
         <hibernate.commons.annotations.version>6.0.6.Final</hibernate.commons.annotations.version>
         <xml.apis.version>1.4.01</xml.apis.version>
         <policy.common.version>3.0.1-SNAPSHOT</policy.common.version>
@@ -133,7 +132,7 @@
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
-                <version>${json.path.version}</version>
+                <version>${version.json-path}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.common</groupId>

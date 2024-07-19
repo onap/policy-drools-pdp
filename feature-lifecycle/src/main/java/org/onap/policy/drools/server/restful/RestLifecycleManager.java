@@ -1,7 +1,7 @@
 /*-
  * ============LICENSE_START=======================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
- * Modifications Copyright (C) 2021,2023 Nordix Foundation.
+ * Modifications Copyright (C) 2021, 2023-2023 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 
 package org.onap.policy.drools.server.restful;
 
-import com.worldturner.medeia.api.ValidationFailedException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -365,14 +364,13 @@ public class RestLifecycleManager implements LifecycleApi {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
 
-        try {
-            LifecycleFeature.getFsm().getDomainMaker().conformance(toscaPolicy);
-        } catch (ValidationFailedException v) {
-            logger.trace("policy {} validation errors: {}", toscaPolicy, v.getMessage(), v);
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(v.getFailures()).build();
+        var isOk = LifecycleFeature.getFsm().getDomainMaker().conformance(toscaPolicy);
+        if (isOk) {
+            return Response.status(Response.Status.OK).entity(Collections.emptyList()).build();
+        } else {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(Collections.emptyList()).build();
         }
 
-        return Response.status(Response.Status.OK).entity(Collections.emptyList()).build();
     }
 
     private Response deployUndeployOperation(String policy, boolean deploy) {

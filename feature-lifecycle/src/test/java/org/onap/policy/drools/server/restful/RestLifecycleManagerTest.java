@@ -75,10 +75,6 @@ public class RestLifecycleManagerTest {
     private static final String EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON =
         "src/test/resources/tosca-policy-native-artifact-example.json";
 
-    private static final String EXAMPLE_OTHER_UNVAL_POLICY_NAME = "other-unvalidated";
-    private static final String EXAMPLE_OTHER_UNVAL_POLICY_JSON =
-        "src/test/resources/tosca-policy-other-unvalidated.json";
-
     private static final String EXAMPLE_OTHER_VAL_POLICY_NAME = "other-validated";
     private static final String EXAMPLE_OTHER_VAL_POLICY_JSON =
         "src/test/resources/tosca-policy-other-validated.json";
@@ -257,10 +253,6 @@ public class RestLifecycleManagerTest {
         }
         testNotNativePolicy(opPolicy);
 
-        /* add tosca policy "other-unvalidated" of policy type "type1.type2" with no attached type schema */
-
-        testNotNativePolicy(getPolicyFromFile(EXAMPLE_OTHER_UNVAL_POLICY_JSON, EXAMPLE_OTHER_UNVAL_POLICY_NAME));
-
         /* add tosca policy "other-validated" of policy type "typeA" with an attached type schema */
 
         testNotNativePolicy(getPolicyFromFile(EXAMPLE_OTHER_VAL_POLICY_JSON, EXAMPLE_OTHER_VAL_POLICY_NAME));
@@ -269,9 +261,7 @@ public class RestLifecycleManagerTest {
 
         ToscaPolicy toscaPolicyValError =
             getPolicyFromFile(EXAMPLE_OTHER_VAL_ERROR_POLICY_JSON, EXAMPLE_OTHER_VAL_ERROR_POLICY_NAME);
-        assertThat(
-            listPost(toString(toscaPolicyValError),
-                Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
+        assertThat(listPost(toString(toscaPolicyValError), Status.NOT_ACCEPTABLE.getStatusCode())).isEmpty();
 
         booleanPost("policies", toString(toscaPolicyValError),
             Status.NOT_ACCEPTABLE.getStatusCode(), Boolean.FALSE);
@@ -303,7 +293,7 @@ public class RestLifecycleManagerTest {
 
         /* delete native artifact policy */
 
-        booleanDelete("policies/example.artifact/1.0.0", Status.OK.getStatusCode(), Boolean.TRUE);
+        booleanDelete("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
 
@@ -321,7 +311,7 @@ public class RestLifecycleManagerTest {
 
         /* delete native controller policy */
 
-        booleanDelete("policies/example.controller/1.0.0", Status.OK.getStatusCode(), Boolean.TRUE);
+        booleanDelete("policies/example.controller/1.0.0", Status.OK.getStatusCode());
 
         resourceLists("policyTypes", 2);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
@@ -337,9 +327,7 @@ public class RestLifecycleManagerTest {
 
         assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
         opPolicy.getMetadata().remove("policy-id");
-        assertThat(
-            listPost(toString(opPolicy),
-                Status.NOT_ACCEPTABLE.getStatusCode())).isNotEmpty();
+        assertThat(listPost(toString(opPolicy), Status.NOT_ACCEPTABLE.getStatusCode())).isEmpty();
 
         metrics();
     }
@@ -362,7 +350,7 @@ public class RestLifecycleManagerTest {
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
 
         booleanDelete("policies/" + toscaPolicy.getName() + "/" + toscaPolicy.getVersion(),
-            Status.OK.getStatusCode(), Boolean.TRUE);
+            Status.OK.getStatusCode());
         assertEquals(0,
             PolicyControllerConstants
                 .getFactory().get("lifecycle").getDrools().facts("junits", ToscaPolicy.class).size());
@@ -400,9 +388,9 @@ public class RestLifecycleManagerTest {
         booleanResponse(response, statusCode, bool);
     }
 
-    private void booleanDelete(String contextPath, int statusCode, Boolean bool) {
+    private void booleanDelete(String contextPath, int statusCode) {
         Response response = client.delete(contextPath, Collections.emptyMap());
-        booleanResponse(response, statusCode, bool);
+        booleanResponse(response, statusCode, Boolean.TRUE);
     }
 
     private void resourceLists(String resource, int size) {
@@ -462,9 +450,9 @@ public class RestLifecycleManagerTest {
     }
 
     private LifecycleFsm newFsmInstance() throws NoSuchFieldException, IllegalAccessException {
-        LifecycleFsm fsm = new LifecycleFsm();
-        ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", fsm);
-        return fsm;
+        LifecycleFsm lifecycleFsm = new LifecycleFsm();
+        ControllerSupport.setStaticField(LifecycleFeature.class, "fsm", lifecycleFsm);
+        return lifecycleFsm;
     }
 
     protected ToscaPolicy getPolicyFromFile(String filePath, String policyName) throws CoderException, IOException {

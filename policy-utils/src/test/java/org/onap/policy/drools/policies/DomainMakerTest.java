@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.worldturner.medeia.api.ValidationFailedException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,7 +47,7 @@ class DomainMakerTest {
     private DomainMaker domainMaker;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         domainMaker = new DomainMaker();
     }
 
@@ -77,7 +76,7 @@ class DomainMakerTest {
     @Test
     void testIsDomainConformant() {
         ToscaConceptIdentifier policyTypeId =
-                new ToscaConceptIdentifier("policy.type.A", "1.0.0");
+            new ToscaConceptIdentifier("policy.type.A", "1.0.0");
 
         DomainAPolicy domainAPolicy = createDomainPolicy();
 
@@ -86,7 +85,7 @@ class DomainMakerTest {
         // integer exceeding max. value
         domainAPolicy.getProperties().getNested().setNested3(999);
         assertFalse(domainMaker.isDomainConformant(policyTypeId, domainAPolicy));
-        domainAPolicy.getProperties().getNested().setNested3(33); // restore good valude
+        domainAPolicy.getProperties().getNested().setNested3(33); // restore good value
 
         // not registered schema for policy type
         policyTypeId.setVersion("2.0.0");
@@ -100,9 +99,7 @@ class DomainMakerTest {
         assertTrue(domainMaker.conformance(policy1));
 
         policy1.getProperties().remove("nested");
-        assertThatThrownBy(() -> domainMaker.conformance(policy1))
-                .isInstanceOf(ValidationFailedException.class)
-                .hasMessageContaining("Required property nested is missing from object");
+        assertFalse(domainMaker.conformance(policy1));
 
         DomainAPolicy domainAPolicy = createDomainPolicy();
         assertTrue(domainMaker.conformance(policy1.getTypeIdentifier(), domainAPolicy));
@@ -110,15 +107,13 @@ class DomainMakerTest {
 
         domainAPolicy.getProperties().getNested().setNested1("");
         ToscaConceptIdentifier ident1 = policy1.getTypeIdentifier();
-        assertThatThrownBy(() -> domainMaker.conformance(ident1, domainAPolicy))
-                .isInstanceOf(ValidationFailedException.class)
-                .hasMessageContaining("Pattern ^(.+)$ is not contained in text");
+        assertFalse(domainMaker.conformance(ident1, domainAPolicy));
     }
 
     @Test
     void testRegisterValidator() throws IOException, CoderException {
         ToscaConceptIdentifier policyTypeId =
-                new ToscaConceptIdentifier("policy.type.external", "9.9.9");
+            new ToscaConceptIdentifier("policy.type.external", "9.9.9");
 
         assertTrue(domainMaker.registerValidator(policyTypeId,
             getJsonFromFile("src/test/resources/policy.type.external-9.9.9.schema.json")));
@@ -135,11 +130,11 @@ class DomainMakerTest {
     @Test
     void testConvertToDomainPolicy() throws IOException, CoderException {
         DomainAPolicy domainAPolicy =
-                domainMaker.convertTo(getToscaPolicy("src/test/resources/policyA.json"), DomainAPolicy.class);
+            domainMaker.convertTo(getToscaPolicy("src/test/resources/policyA.json"), DomainAPolicy.class);
         assertDomainPolicy(domainAPolicy);
 
         assertNotNull(domainMaker.convertTo(getToscaPolicy("src/test/resources/policyA-no-policy-type.json"),
-                DomainAPolicy.class));
+            DomainAPolicy.class));
     }
 
     @Test
@@ -153,11 +148,11 @@ class DomainMakerTest {
     @Test
     void testIsRegistered() {
         ToscaConceptIdentifier policyTypeId1 =
-                new ToscaConceptIdentifier("policy.type.A", "1.0.0");
+            new ToscaConceptIdentifier("policy.type.A", "1.0.0");
         assertTrue(domainMaker.isRegistered(policyTypeId1));
 
         ToscaConceptIdentifier policyTypeId2 =
-                new ToscaConceptIdentifier("policy.type.external", "7.7.9");
+            new ToscaConceptIdentifier("policy.type.external", "7.7.9");
         assertFalse(domainMaker.isRegistered(policyTypeId2));
 
     }
@@ -173,13 +168,13 @@ class DomainMakerTest {
 
     private DomainAPolicy createDomainPolicy() {
         return DomainAPolicy.builder().metadata(Metadata.builder().policyId("A").build())
-                       .name("A")
-                       .version("1.0.0")
-                       .type("policy.type.A")
-                       .typeVersion("1.0.0")
-                       .properties(Properties.builder()
-                           .nested(Nested.builder().nested1("nested1").nested2(true).nested3(50).build())
-                           .build()).build();
+            .name("A")
+            .version("1.0.0")
+            .type("policy.type.A")
+            .typeVersion("1.0.0")
+            .properties(Properties.builder()
+                .nested(Nested.builder().nested1("nested1").nested2(true).nested3(50).build())
+                .build()).build();
     }
 
     private void assertDomainPolicy(DomainAPolicy domainAPolicy) {

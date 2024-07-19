@@ -1,7 +1,7 @@
 /*
  * ============LICENSE_START=======================================================
  *  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
- *  Modifications Copyright (C) 2021 Nordix Foundation.
+ *  Modifications Copyright (C) 2021, 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 
 package org.onap.policy.drools.policies;
 
-import com.worldturner.medeia.api.ValidationFailedException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NoArgsConstructor;
@@ -120,11 +119,8 @@ public class DomainMaker {
         try {
             validators.get(policy.getTypeIdentifier()).conformance(rawPolicy);
         } catch (CoderException e) {
-            logger.info("policy {}:{}:{} is not conformant",
-                    policy.getTypeIdentifier(), policy.getName(), policy.getVersion(), e);
-            if (e.getCause() instanceof ValidationFailedException) {
-                throw (ValidationFailedException) e.getCause();
-            }
+            logger.error("policy {}:{}:{} is not conformant",
+                policy.getTypeIdentifier(), policy.getName(), policy.getVersion(), e);
             return false;
         }
 
@@ -144,10 +140,7 @@ public class DomainMaker {
         try {
             validators.get(policyType).encode(domainPolicy);
         } catch (CoderException e) {
-            logger.info("policy {}:{} is not conformant", policyType, domainPolicy.getClass().getName(), e);
-            if (e.getCause() instanceof ValidationFailedException) {
-                throw (ValidationFailedException) e.getCause();
-            }
+            logger.error("policy {}:{} is not conformant", policyType, domainPolicy.getClass().getName(), e);
             return false;
         }
 
@@ -162,11 +155,10 @@ public class DomainMaker {
         // A known schema is one that embedded in a .jar in the classpath as a resource
         // matching the following syntax: <policy-type-name>-<policy-type-version>.schema.json.
         //
-        var schema =
-                ResourceUtils
-                        .getResourceAsString("schemas/"
-                            + policyType.getName() + "-" + policyType.getVersion() + ".schema.json");
+        var schemaPath = "schemas/" + policyType.getName() + "-" + policyType.getVersion() + ".schema.json";
+        var schema = ResourceUtils.getResourceAsString(schemaPath);
         if (schema == null) {
+            logger.error("Couldn't find a matching schema for type {}", policyType);
             return false;
         }
 
@@ -178,9 +170,9 @@ public class DomainMaker {
      */
     public boolean registerValidator(@NonNull ToscaConceptIdentifier policyType, @NonNull String schema) {
         try {
-            validators.put(policyType, new StandardValCoder(schema, policyType.toString()));
+            validators.put(policyType, new StandardValCoder(schema));
         } catch (RuntimeException r) {
-            logger.info("schema for {} is not valid", policyType, r);
+            logger.error("schema for {} is not valid", policyType, r);
             return false;
         }
         return true;
@@ -197,7 +189,7 @@ public class DomainMaker {
      * Converts a JSON policy into a Domain Policy.
      */
     public <T> T convertTo(@NonNull ToscaConceptIdentifier policyType, @NonNull String json, @NonNull Class<T> clazz)
-            throws CoderException {
+        throws CoderException {
         if (isRegistered(policyType)) {
             return validators.get(policyType).decode(json, clazz);
         } else {
