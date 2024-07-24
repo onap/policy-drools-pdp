@@ -1,0 +1,71 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://onap.org/policy/common/coders/root.json",
+  "type": "object",
+  "title": "Test Schema",
+  "required": [
+    "aaString",
+    "anInteger",
+    "aaBoolean",
+    "aaCollection"
+  ],
+  "properties": {
+    "aaString": {
+      "$id": "#/properties/aaString",
+      "type": "string",
+      "title": "an alphabetical string",
+      "default": "",
+      "examples": [
+        "abcdef"
+      ],
+      "pattern": "^([a-z]*)$"
+    },
+    "anInteger": {
+      "$id": "#/properties/anInteger",
+      "type": "integer",
+      "title": "a bounded integer",
+      "default": 5,
+      "examples": [
+        98
+      ],
+      "minimum": 10,
+      "maximum": 100
+    },
+    "aaBoolean": {
+      "$id": "#/properties/aaBoolean",
+      "type": "boolean",
+      "title": "a boolean",
+      "default": false,
+      "examples": [
+        true
+      ]
+    },
+    "aaCollection": {
+      "$id": "#/properties/aaCollection",
+      "type": "array",
+      "title": "a collection",
+      "items": {
+        "$id": "#/properties/aaCollection/items",
+        "type": "object",
+        "title": "the collection items",
+        "required": [
+          "subItemString"
+        ],
+        "properties": {
+          "subItemString": {
+            "$id": "#/properties/aaCollection/items/properties/subItemString",
+            "type": "string",
+            "title": "the subitem string",
+            "default": "blah",
+            "pattern": "^(.*)$"
+          },
+          "subItemInteger": {
+            "$id": "#/properties/aaCollection/items/properties/subItemInteger",
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

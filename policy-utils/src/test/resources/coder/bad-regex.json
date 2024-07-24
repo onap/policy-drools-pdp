@@ -1,0 +1,9 @@
+{
+    "aaString": "abc123",
+    "anInteger": 90,
+    "aaBoolean": true,
+    "aaCollection": [ {
+        "subItemString": "defg",
+        "subItemInteger": 1200
+    }]
+}
