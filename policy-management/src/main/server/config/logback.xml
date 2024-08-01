@@ -3,6 +3,7 @@
   policy-management
   ================================================================================
   Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+  Modifications Copyright (C) 2024 Nordix Foundation.
   ================================================================================
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -137,11 +138,18 @@
         <appender-ref ref="AsyncNetworkOut" />
     </logger>
 
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${debugPattern}</pattern>
+        </encoder>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="AsyncDebugOut" />
         <appender-ref ref="AsyncErrorOut" />
         <appender-ref ref="AsyncMetricOut" />
         <appender-ref ref="AsyncTransactionOut" />
+        <appender-ref ref="STDOUT" />
     </root>
 
 </configuration>

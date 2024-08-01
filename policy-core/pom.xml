@@ -105,7 +105,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Provided dependencies -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
@@ -132,7 +131,7 @@
         </dependency>
         <dependency>
             <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>javax.inject</artifactId>
+            <artifactId>jakarta.inject</artifactId>
         </dependency>
     </dependencies>
 

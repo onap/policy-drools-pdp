@@ -71,6 +71,9 @@ class DomainMakerTest {
 
         policy.setType("policy.type.Z");
         assertFalse(domainMaker.isConformant(policy));
+
+        assertThatThrownBy(() -> domainMaker.isConformant(null))
+            .hasMessageContaining("policy is marked non-null but is null");
     }
 
     @Test
@@ -108,6 +111,12 @@ class DomainMakerTest {
         domainAPolicy.getProperties().getNested().setNested1("");
         ToscaConceptIdentifier ident1 = policy1.getTypeIdentifier();
         assertFalse(domainMaker.conformance(ident1, domainAPolicy));
+
+        var policy2 = getToscaPolicy("src/test/resources/policyA.json");
+        policy2.setType("not.registered.type");
+        policy2.setTypeVersion("4.2.5");
+        assertFalse(domainMaker.conformance(policy2));
+        assertFalse(domainMaker.conformance(policy2.getTypeIdentifier(), domainAPolicy));
     }
 
     @Test
@@ -125,6 +134,8 @@ class DomainMakerTest {
 
         policy.setTypeVersion("1.0.0");
         assertFalse(domainMaker.isConformant(policy));
+
+        assertFalse(domainMaker.registerValidator(policy.getTypeIdentifier(), "$schema"));
     }
 
     @Test
