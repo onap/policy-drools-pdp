@@ -2,7 +2,7 @@
 # Dockerfile
 # ============LICENSE_START=======================================================
 #  Copyright (C) 2020-2021 AT&T Intellectual Property. All rights reserved.
-#  Modifications Copyright (C) 2022-2023 Nordix Foundation.
+#  Modifications Copyright (C) 2022-2024 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,9 +52,7 @@ ENV http_proxy $http_proxy
 
 USER root
 RUN apk update && \
-    apk add --no-cache mariadb-client \
-    file \
-    maven \
+    apk add --no-cache file maven \
     net-tools netcat-openbsd sudo less vim openssl \
     && python3 -m pip install --no-cache-dir --upgrade setuptools http-prompt \
     && python3 -m pip install --no-cache-dir httpie

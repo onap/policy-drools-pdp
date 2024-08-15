@@ -182,7 +182,7 @@ public interface PolicyEngineFeatureApi extends OrderedService {
      *
      * @return true if this feature intercepts and takes ownership
      *     of the operation preventing the invocation of
-     *     lower priority features.   False, otherwise..
+     *     lower priority features.   False, otherwise.
      */
     default boolean afterLock(PolicyEngine engine) {
         return false;
@@ -281,7 +281,7 @@ public interface PolicyEngineFeatureApi extends OrderedService {
      *         operation preventing the invocation of lower priority features. Null,
      *         otherwise
      */
-    default PolicyResourceLockManager beforeCreateLockManager(PolicyEngine engine, Properties properties) {
+    default PolicyResourceLockManager beforeCreateLockManager() {
         return null;
     }
 

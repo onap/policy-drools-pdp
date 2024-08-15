@@ -5,6 +5,7 @@
 # ONAP POLICY
 # ================================================================================
 # Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+# Modifications Copyright (C) 2024 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,10 +36,6 @@
 #            |   |   L─ <dependent-jar>+
 #            │   L─ feature/
 #            │       L─ <feature-jar>
-#            L─ [db]/
-#            │   L─ <db-name>/+
-#            │       L─ sql/
-#            │           L─ <sql-scripts>*
 #            L─ [artifacts]/
 #                L─ <artifact>+
 #            L─ [install]
@@ -60,16 +57,6 @@
 #                  of pdp-d that are necessary for <feature-name> to operate
 #                  correctly.
 #   lib/feature    the single feature jar that implements the feature.
-#   [db]           database directory, if the feature contains sql.
-#   [db]/<db-name> database to which underlying sql scripts should be applied against.
-#                  ideally, <db-name> = <feature-name> so it is easily to associate
-#                  the db data with a feature itself.   Ideally, since a feature is
-#                  a somewhat independent isolated unit of functionality,the <db-name>
-#                  database ideally isolates all its data.
-#   [db]/<db-name>/sql  directory with all the sql scripts.
-#   [db]/<db-name>/sql/<sql-scripts>  for this feature sql scripts
-#                  upgrade scripts should be suffixed with ".upgrade.sql"
-#                  downgrade scripts should be suffixed with ".downgrade.sql"
 #   [artifacts]    maven artifacts to be deployed in a maven repository.
 #   [artifacts]/<artifact>  maven artifact with identifiable maven coordinates embedded
 #                  in the artifact.
@@ -87,10 +74,10 @@
 # Operations:
 #   install: installs a feature
 #   uninstall: uninstalls a feature
-#   enable : enables 1) dependencies, 2) configuration, 3) binaries 4) database, 5) artifacts,
-#                    6) feature, 7) customization.
-#   disable: disables 1) dependencies, 2) configuration, 3) binaries, 4) database, 5) feature,
-#                     6) customization
+#   enable : enables 1) dependencies, 2) configuration, 3) binaries 4) artifacts,
+#                    5) feature, 6) customization.
+#   disable: disables 1) dependencies, 2) configuration, 3) binaries, 4) feature,
+#                     5) customization
 #   status : status of a feature
 #
 # 'enable' operation details:
@@ -99,10 +86,8 @@
 #  2. sets symbolic links to feature dependencies in pdp-d classpath ($POLICY_HOME/lib)
 #  3. sets symbolic links to feature configuration in pdp-d configuration directory ($POLICY_HOME/config)
 #  4. sets symbolic links to feature executables in pdp-d bin directory ($POLICY_HOME/bin)
-#  5. sets symbolic links to feature upgrade scripts and removes links to downgrade scripts (if any)
-#     in the pdp-d migration directory ($POLICY_HOME/etc/db/migration).
-#  6. deploys any maven artifacts in the maven repositories in use (if any)
-#  7. cd to the feature 'install' directory an executes (if exists) the 'enable' script to allow for specific
+#  5. deploys any maven artifacts in the maven repositories in use (if any)
+#  6. cd to the feature 'install' directory an executes (if exists) the 'enable' script to allow for specific
 #     customizations for this feature.
 #
 # 'disable' operation details:
@@ -111,15 +96,8 @@
 #  2. removes symbolic links to feature dependencies in pdp-d classpath ($POLICY_HOME/lib)
 #  3. removes symbolic links to feature configuration in pdp-d configuration directory ($POLICY_HOME/config)
 #  4. removes symbolic links to feature executables in pdp-d bin directory ($POLICY_HOME/bin)
-#  5. removes symbolic links to feature upgrade scripts and sets links to downgrade scripts (if any)
-#     in the pdp-d migration directory ($POLICY_HOME/etc/db/migration).
-#  6. cd to the feature 'install' directory an executes (if exists) the 'disable' script to allow for specific
+#  5. cd to the feature 'install' directory an executes (if exists) the 'disable' script to allow for specific
 #     customizations for this feature.
-#
-# Notes for DB enabled features:
-#     A. Upgrade/Downgrade SQL File Name Format:
-#             <VERSION>-<pdp|feature-name>[-description](.upgrade|.downgrade).sql
-#   B. See related tooling: db-migrator, deploy-artifact, and policy
 #
 # Example:
 #
@@ -155,7 +133,6 @@ fi
 LIB=${POLICY_HOME}/lib
 CONFIG=${POLICY_HOME}/config
 BIN=${POLICY_HOME}/bin
-DB=${POLICY_HOME}/etc/db/migration
 FEATURES=${POLICY_HOME}/features
 
 if [ ! -d "${LIB}" ]; then
@@ -171,10 +148,6 @@ fi
 # ensure that the directory exists
 mkdir -p "${FEATURES}" 2> /dev/null
 
-if [ ! -d "${DB}" ]; then
-    mkdir -p "${DB}"
-fi
-
 # relative per Feature Directory Paths
 
 FEATURE_DEPS="lib/dependencies"
@@ -183,11 +156,6 @@ FEATURE_CONFIG="config"
 FEATURE_BIN="bin"
 FEATURE_INSTALL="install"
 FEATURE_ARTIFACTS="artifacts"
-FEATURE_DB="db"
-FEATURE_SQL="sql"
-
-UPGRADE_SQL_SUFFIX=".upgrade.sql"
-DOWNGRADE_SQL_SUFFIX=".downgrade.sql"
 
 featureJars=$(find "${FEATURES}" -name "feature-*.jar" -type f -exec basename {} \; 2> /dev/null)
 
@@ -386,39 +354,6 @@ function enableBinAnalysis ()
 }
 
 # ##########################################################
-# enableDbAnalysis (featureName):
-#                   reports on potential db access problems
-#   featureName: name of the feature
-# ##########################################################
-function enableDbAnalysis()
-{
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- enableDbAnalysis $* --"
-        set -x
-    fi
-    
-    local featureName="$1"
-    local featureSqls
-    
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    featureSqls=$(ls "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/${FEATURE_SQL}/*${UPGRADE_SQL_SUFFIX} 2> /dev/null)
-    if [ -z "${featureSqls}" ]; then
-        return 0
-    fi
-    
-    source "${POLICY_HOME}"/etc/profile.d/env.sh
-    if [ -z "${SQL_HOST}" ] || [ -z "${SQL_USER}" ] || [ -z "${SQL_PASSWORD}" ]; then
-        echo "warning: DB server is not configured"
-    fi
-
-    return 0
-}
-
-# ##########################################################
 # enableFeatureDeps(featureName):
 #                               enables feature dependencies
 #   featureName: name of the feature
@@ -496,95 +431,6 @@ function enableFeatureBin()
     for featureBinPath in ${featureBins}; do
         chmod u+x "${featureBinPath}"
         ln -s -f "${featureBinPath}" "${BIN}/"
-    done
-}
-
-# ##########################################################
-# enableFeatureDbSchema(featureName):
-#        enables feature DB Schema configuration
-#   featureName: name of the feature
-# ##########################################################
-function enableFeatureDbSchema()
-{
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- enableFeatureDbSchema $* --"
-        set -x
-    fi
-    
-    local featureName="$1"
-    local featureDbPath="$2"
-    local schemaName="$3"
-
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    if [ -z "${featureDbPath}" ]; then
-        echo "warning: ${featureName} contains no DB path"
-        return 2
-    fi
-    
-    if [ -z "${schemaName}" ]; then
-        echo "warning: feature ${featureName} contains no schema name"
-        return 3
-    fi
-    
-    rc=0
-    sqlUpgradeScripts=$(ls "${featureDbPath%/}"/${FEATURE_SQL}/*${UPGRADE_SQL_SUFFIX} 2> /dev/null)
-    for sqlUpgradeScript in ${sqlUpgradeScripts}; do
-        if [ ! -d "${DB}"/"${schemaName}"/${FEATURE_SQL} ]; then
-            mkdir -p "${DB}"/"${schemaName}"/${FEATURE_SQL} 2> /dev/null
-        fi        
-        ln -s -f "${sqlUpgradeScript}" "${DB}"/"${schemaName}"/${FEATURE_SQL}/
-    done
-    
-    sqlDowngradeScripts=$(ls "${featureDbPath%/}"/${FEATURE_SQL}/*${DOWNGRADE_SQL_SUFFIX} 2> /dev/null)
-    for sqlDowngradeScript in ${sqlDowngradeScripts}; do
-        if [ -d "${DB}"/"${schemaName}"/${FEATURE_SQL} ]; then
-            sqlName=$(basename "${sqlDowngradeScript}")
-            rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
-        else
-            echo "warning: feature ${featureName} only contains downgrade scripts"
-            rc=4
-            break
-        fi
-    done
-    
-    if [ -n "${sqlUpgradeScripts}" ] || [ -n "${sqlDowngradeScripts}" ]; then
-        DEBUG=${DEBUG} db-migrator -s "${schemaName}" -o ok
-    fi
-    
-    return ${rc}
-}
-
-# ##########################################################
-# enableFeatureDb(featureName):
-#       enables DB feature configuration
-#   featureName: name of the feature
-# ##########################################################
-function enableFeatureDb()
-{
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- enableFeatureDb $* --"
-        set -x
-    fi
-    
-    local featureName="$1" 
-    local featureDbs featureDbPath schemaName sqls 
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    featureDbs=$(ls -d "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/ 2> /dev/null)
-    for featureDbPath in ${featureDbs}; do
-        sqls=$(ls "${featureDbPath%/}"/"${FEATURE_SQL}"/*.sql 2> /dev/null)
-        if [ -z "${sqls}" ]; then
-            continue
-        fi
-        schemaName=$(basename "${featureDbPath%/}")
-        enableFeatureDbSchema "${featureName}" "${featureDbPath%/}" "${schemaName}"
     done
 }
 
@@ -686,10 +532,6 @@ function enableFeature()
     if ! enableBinAnalysis  "${featureName}"; then
         return "$?"
     fi
-
-    if ! enableDbAnalysis "${featureName}"; then
-        return "$?"
-    fi
     
     # enable feature itself
 
@@ -706,10 +548,6 @@ function enableFeature()
     # enable binaries
 
     enableFeatureBin "${featureName}"
-
-    # enable db
-
-    enableFeatureDb "${featureName}"
 
     # enable feature artifacts
 
@@ -839,97 +677,6 @@ function disableFeatureBin()
 }
 
 # ##########################################################
-# disableFeatureDbSchema(featureName, featureDbPath, schemaName):
-#                 disables feature db configuration for a schema
-#   featureName: name of the feature
-# ##########################################################
-function disableFeatureDbSchema()
-{
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- disableFeatureDbSchema $* --"
-        set -x
-    fi
-    
-    local featureName="$1" featureDbPath="$2" schemaName="$3"
-    local upgradeFeatureSqls downgradeFeatureSqls featureSql sqlDir sqlName schemaDir schemaName
-    
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    if [ -z "${featureDbPath}" ]; then
-        echo "warning: ${featureName} contains no DB path"
-        return 2
-    fi
-    
-    if [ -z "${schemaName}" ]; then
-        echo "warning: feature ${featureName} contains no schema name"
-        return 3
-    fi
-    
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    upgradeFeatureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/"${schemaName}"/"${FEATURE_SQL}"/*"${UPGRADE_SQL_SUFFIX}" -type f -maxdepth 1 2> /dev/null)
-    for featureSql in ${upgradeFeatureSqls}; do
-        sqlName=$(basename "${featureSql}")
-        sqlDir=$(dirname "${featureSql}")
-        schemaDir=$(dirname "${sqlDir}")
-        schemaName=$(basename "${schemaDir}")
-        rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
-    done
-    
-    downgradeFeatureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/"${schemaName}"/"${FEATURE_SQL}"/*"${DOWNGRADE_SQL_SUFFIX}" -type f -maxdepth 1 2> /dev/null)
-    for featureSql in ${downgradeFeatureSqls}; do
-        sqlName=$(basename "${featureSql}")
-        sqlDir=$(dirname "${featureSql}")
-        schemaDir=$(dirname "${sqlDir}")
-        schemaName=$(basename "${schemaDir}")
-        if [ ! -d "${DB}"/"${schemaName}"/${FEATURE_SQL} ]; then
-            mkdir -p "${DB}"/"${schemaName}"/${FEATURE_SQL} 2> /dev/null
-        fi        
-        ln -s -f "${featureSql}" "${DB}"/"${schemaName}"/${FEATURE_SQL}/
-    done
-    
-    if [ -n "${sqlUpgradeScripts}" ] || [ -n "${sqlDowngradeScripts}" ]; then
-        DEBUG=${DEBUG} db-migrator -s "${schemaName}" -o ok
-    fi
-}
-
-# ##########################################################
-# disableFeatureDb(featureName):
-#                 disables feature db configuration
-#   featureName: name of the feature
-# ##########################################################
-function disableFeatureDb()
-{
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- disableFeatureDb $* --"
-        set -x
-    fi
-
-    local featureName="$1"
-    local featureDbPath featureDbs schemaName
-    
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    featureDbs=$(ls -d "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/ 2> /dev/null)
-    for featureDbPath in ${featureDbs}; do
-        if [ -z "$(ls "${featureDbPath%/}"/"${FEATURE_SQL}"/*${UPGRADE_SQL_SUFFIX} 2> /dev/null)" ]; then
-            continue
-        fi
-        schemaName=$(basename "${featureDbPath%/}")
-        disableFeatureDbSchema "${featureName}" "${featureDbPath%/}" "${schemaName}"
-    done
-}
-
-# ##########################################################
 # disableFeature(featureName):  disables a feature
 #   featureName: name of the feature
 # ##########################################################
@@ -965,10 +712,6 @@ function disableFeature()
     # disable binaries if any
 
     disableFeatureBin "${featureName}"
-
-    # disable DB SQL scripts if any
-
-    disableFeatureDb "${featureName}"
 
     # run custom disable if any
 
@@ -1080,47 +823,6 @@ function installFeatures
     fi
 }
 
-# ##########################################################
-# uninstallFeatureDb(featureName):
-#                 uninstalls the feature db configuration
-#   featureName: name of the feature
-# ##########################################################
-function uninstallFeatureDb()
-{
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- uninstallFeatureDb $* --"
-        set -x
-    fi
-
-    local featureName="$1"
-    local featureSqls sqlDir sqlName schemaDir schemaName schemaNames leftSqls
-    
-    if [ -z "${featureName}" ]; then
-        echo "warning: no feature name"
-        return 1
-    fi
-    
-    featureSqls=$(find "${FEATURES}"/"${featureName}"/"${FEATURE_DB}"/*/${FEATURE_SQL}/*.sql -type f -maxdepth 1 2> /dev/null)
-    for featureSql in ${featureSqls}; do
-        sqlName=$(basename "${featureSql}")
-        sqlDir=$(dirname "${featureSql}")
-        schemaDir=$(dirname "${sqlDir}")
-        schemaName=$(basename "${schemaDir}")
-        schemaNames="${schemaNames} ${schemaName}"
-        rm -f "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/"${sqlName}" 2> /dev/null
-    done
-    for schemaName in ${schemaNames};
-    do
-        leftSqls=$(ls "${DB}"/"${schemaName}"/"${FEATURE_SQL}"/*.sql 2> /dev/null)
-        if [ -n "${leftSqls}" ]; then
-            if ! DEBUG=${DEBUG} db-migrator -s "${schemaName}" -o ok; then
-                echo -n "warning: ${featureName}: ${schemaName}: database data is leftover. "
-                echo -n "Consider cleaning left over data with 'db-migrator'."
-            fi
-        fi        
-    done
-}
-
 ############################################################
 # uninstallFeature <feature-name> ...
 ############################################################
@@ -1138,7 +840,6 @@ function uninstallFeature
         return
     fi
     disableFeature "${featureName}"
-    uninstallFeatureDb "${featureName}"
     customOpScript "${featureName}" "uninstall"
     
     if [ -n "${FEATURES}" ] && [ -n "${featureName}" ]; then

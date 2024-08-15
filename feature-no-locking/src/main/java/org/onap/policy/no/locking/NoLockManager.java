@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,6 @@
 
 package org.onap.policy.no.locking;
 
-import java.util.Properties;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.onap.policy.drools.core.lock.AlwaysSuccessLock;
@@ -28,7 +28,6 @@ import org.onap.policy.drools.core.lock.Lock;
 import org.onap.policy.drools.core.lock.LockCallback;
 import org.onap.policy.drools.core.lock.PolicyResourceLockManager;
 import org.onap.policy.drools.features.PolicyEngineFeatureApi;
-import org.onap.policy.drools.system.PolicyEngine;
 
 /**
  * In contrast with other implementations the no-lock manager provides non-synchronized access
@@ -43,8 +42,8 @@ public class NoLockManager implements PolicyResourceLockManager, PolicyEngineFea
 
     @Override
     public Lock createLock(String resourceId, String ownerKey, int holdSec,
-            LockCallback callback, boolean waitForLock) {
-        var successLock =  new AlwaysSuccessLock(resourceId, ownerKey, holdSec, callback);
+                           LockCallback callback, boolean waitForLock) {
+        var successLock = new AlwaysSuccessLock(resourceId, ownerKey, holdSec, callback);
         successLock.notifyAvailable();
         return successLock;
     }
@@ -90,7 +89,7 @@ public class NoLockManager implements PolicyResourceLockManager, PolicyEngineFea
     }
 
     @Override
-    public PolicyResourceLockManager beforeCreateLockManager(PolicyEngine engine, Properties properties) {
+    public PolicyResourceLockManager beforeCreateLockManager() {
         return this;
     }
 }

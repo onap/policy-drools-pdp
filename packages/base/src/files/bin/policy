@@ -4,6 +4,7 @@
 # ONAP
 # ================================================================================
 # Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+# Modifications Copyright (C) 2024 Nordix Foundation.
 # ================================================================================
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -72,13 +73,6 @@ function policy_status() {
     echo
     echo "[features]"
     features status
-
-    local databases=$(ls -d "${POLICY_HOME}"/etc/db/migration/*/ 2>/dev/null)
-    if [ -n "${databases}" ]; then
-        echo "[migration]"
-        db-migrator -s ALL -o ok
-    fi
-
 }
 
 function policy_start() {

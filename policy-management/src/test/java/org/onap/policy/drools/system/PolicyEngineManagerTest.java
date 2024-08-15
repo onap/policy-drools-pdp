@@ -217,7 +217,7 @@ class PolicyEngineManagerTest {
         when(lockmgr.lock()).thenReturn(true);
         when(lockmgr.unlock()).thenReturn(true);
 
-        when(prov2.beforeCreateLockManager(any(), any())).thenReturn(lockmgr);
+        when(prov2.beforeCreateLockManager()).thenReturn(lockmgr);
 
         when(prov1.getName()).thenReturn(FEATURE1);
         when(prov2.getName()).thenReturn(FEATURE2);
@@ -524,7 +524,7 @@ class PolicyEngineManagerTest {
     @Test
     void testCreateLockManagerHaveProvider() {
         // first provider throws an exception
-        when(prov1.beforeCreateLockManager(any(), any())).thenThrow(new RuntimeException(EXPECTED));
+        when(prov1.beforeCreateLockManager()).thenThrow(new RuntimeException(EXPECTED));
 
         mgr.configure(properties);
         assertSame(lockmgr, mgr.getLockManager());
@@ -535,7 +535,7 @@ class PolicyEngineManagerTest {
      */
     @Test
     void testCreateLockManagerSimpleEx() {
-        when(prov2.beforeCreateLockManager(any(), any())).thenReturn(null);
+        when(prov2.beforeCreateLockManager()).thenReturn(null);
 
         // invalid property for SimpleLockManager
         properties.setProperty(SimpleLockProperties.EXPIRE_CHECK_SEC, "abc");
@@ -550,7 +550,7 @@ class PolicyEngineManagerTest {
      */
     @Test
     void testCreateLockManagerSimple() {
-        when(prov2.beforeCreateLockManager(any(), any())).thenReturn(null);
+        when(prov2.beforeCreateLockManager()).thenReturn(null);
 
         mgr.configure(properties);
         assertInstanceOf(SimpleLockManager.class, mgr.getLockManager());
@@ -2086,8 +2086,8 @@ class PolicyEngineManagerTest {
         private class MyShutdown extends ShutdownThread {
 
             @Override
-            protected void doSleep(long sleepMs) throws InterruptedException {
-                threadSleepMs = sleepMs;
+            protected void doSleep() throws InterruptedException {
+                threadSleepMs = 300L;
 
                 if (shouldInterrupt) {
                     throw new InterruptedException(EXPECTED);
@@ -2095,8 +2095,8 @@ class PolicyEngineManagerTest {
             }
 
             @Override
-            protected void doExit(int code) {
-                threadExitCode = code;
+            protected void doExit() {
+                threadExitCode = 0;
             }
 
             @Override

@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019-2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLTransientException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -57,11 +61,8 @@ import org.slf4j.LoggerFactory;
  * Distributed implementation of the Lock Feature. Maintains locks across servers using a
  * shared DB.
  *
- * <p/>
- * Note: this implementation does <i>not</i> honor the waitForLocks={@code true}
- * parameter.
- *
- * <p/>
+ * <p>Note: this implementation does <i>not</i> honor the waitForLocks={@code true}
+ * parameter.<p/>
  * Additional Notes:
  * <dl>
  * <li>The <i>owner</i> field in the DB is not derived from the lock's owner info, but is
@@ -77,7 +78,7 @@ import org.slf4j.LoggerFactory;
  * </dl>
  */
 public class DistributedLockManager extends LockManager<DistributedLockManager.DistributedLock>
-                implements PolicyEngineFeatureApi {
+    implements PolicyEngineFeatureApi {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributedLockManager.class);
 
@@ -141,11 +142,11 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
     }
 
     @Override
-    public PolicyResourceLockManager beforeCreateLockManager(PolicyEngine engine, Properties properties) {
+    public PolicyResourceLockManager beforeCreateLockManager() {
 
         try {
             this.pdpName = PolicyEngineConstants.getManager().getPdpName();
-            this.featProps = new DistributedLockProperties(getProperties(CONFIGURATION_PROPERTIES_NAME));
+            this.featProps = new DistributedLockProperties(getProperties());
             this.dataSource = makeDataSource();
 
             return this;
@@ -176,9 +177,9 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
      * Make data source.
      *
      * @return a new, pooled data source
-     * @throws Exception exception
+     * @throws SQLException exception
      */
-    protected BasicDataSource makeDataSource() throws Exception {
+    protected BasicDataSource makeDataSource() throws SQLException {
         var props = new Properties();
         props.put("driverClassName", featProps.getDbDriver());
         props.put("url", featProps.getDbUrl());
@@ -199,7 +200,7 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
         logger.info("deleting all expired locks from the DB");
 
         try (var conn = dataSource.getConnection();
-                var stmt = conn.prepareStatement("DELETE FROM pooling.locks WHERE expirationTime <= now()")) {
+             var stmt = conn.prepareStatement("DELETE FROM pooling.locks WHERE expirationTime <= now()")) {
 
             int ndel = stmt.executeUpdate();
             logger.info("deleted {} expired locks from the DB", ndel);
@@ -398,17 +399,17 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
         /**
          * Constructs the object.
          *
-         * @param state initial state of the lock
+         * @param state      initial state of the lock
          * @param resourceId identifier of the resource to be locked
-         * @param ownerKey information identifying the owner requesting the lock
-         * @param holdSec amount of time, in seconds, for which the lock should be held,
-         *        after which it will automatically be released
-         * @param callback callback to be invoked once the lock is granted, or
-         *        subsequently lost; must not be {@code null}
-         * @param feature feature containing this lock
+         * @param ownerKey   information identifying the owner requesting the lock
+         * @param holdSec    amount of time, in seconds, for which the lock should be held,
+         *                   after which it will automatically be released
+         * @param callback   callback to be invoked once the lock is granted, or
+         *                   subsequently lost; must not be {@code null}
+         * @param feature    feature containing this lock
          */
         public DistributedLock(LockState state, String resourceId, String ownerKey, int holdSec, LockCallback callback,
-                        DistributedLockManager feature) {
+                               DistributedLockManager feature) {
             super(state, resourceId, ownerKey, holdSec, callback);
 
             this.feature = feature;
@@ -531,7 +532,6 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * there are no more requests in the queue.
          *
          * @param prevReq the previous request that was just run
-         *
          * @return the next request, or {@code null} if the queue is empty
          */
         private synchronized RunnableWithEx getNextRequest(RunnableWithEx prevReq) {
@@ -699,19 +699,19 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * Inserts the lock into the DB.
          *
          * @param conn DB connection
-         * @return {@code true} if a record was successfully inserted, {@code false}
-         *         otherwise
+         * @return {@code true} if a record was successfully inserted, {@code false}otherwise
          * @throws SQLException if a DB error occurs
          */
         protected boolean doDbInsert(Connection conn) throws SQLException {
             logger.info("insert lock record {}", this);
-            try (var stmt = conn.prepareStatement("INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) "
-                                            + "values (?, ?, ?, timestampadd(second, ?, now()))")) {
+            var time = Instant.now().plus(getHoldSec(), ChronoUnit.SECONDS);
+            String sql = "INSERT INTO pooling.locks (resourceId, host, owner, expirationTime) values (?, ?, ?, ?)";
+            try (var stmt = conn.prepareStatement(sql)) {
 
                 stmt.setString(1, getResourceId());
                 stmt.setString(2, feature.pdpName);
                 stmt.setString(3, feature.uuidString);
-                stmt.setInt(4, getHoldSec());
+                stmt.setTimestamp(4, new Timestamp(time.toEpochMilli()));
 
                 stmt.executeUpdate();
 
@@ -726,20 +726,21 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          * Updates the lock in the DB.
          *
          * @param conn DB connection
-         * @return {@code true} if a record was successfully updated, {@code false}
-         *         otherwise
+         * @return {@code true} if a record was successfully updated, {@code false} otherwise
          * @throws SQLException if a DB error occurs
          */
         protected boolean doDbUpdate(Connection conn) throws SQLException {
             logger.info("update lock record {}", this);
-            try (var stmt = conn.prepareStatement("UPDATE pooling.locks SET resourceId=?, host=?, owner=?,"
-                                            + " expirationTime=timestampadd(second, ?, now()) WHERE resourceId=?"
-                                            + " AND ((host=? AND owner=?) OR expirationTime < now())")) {
+            var time = Instant.now().plus(getHoldSec(), ChronoUnit.SECONDS);
+            var query = "UPDATE pooling.locks SET resourceId=?, host=?, owner=?,"
+                    + " expirationTime=? WHERE resourceId=?"
+                    + " AND ((host=? AND owner=?) OR expirationTime < now())";
+            try (var stmt = conn.prepareStatement(query)) {
 
                 stmt.setString(1, getResourceId());
                 stmt.setString(2, feature.pdpName);
                 stmt.setString(3, feature.uuidString);
-                stmt.setInt(4, getHoldSec());
+                stmt.setTimestamp(4, new Timestamp(time.toEpochMilli()));
 
                 stmt.setString(5, getResourceId());
                 stmt.setString(6, this.hostName);
@@ -764,8 +765,8 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
          */
         protected void doDbDelete(Connection conn) throws SQLException {
             logger.info("delete lock record {}", this);
-            try (var stmt = conn
-                            .prepareStatement("DELETE FROM pooling.locks WHERE resourceId=? AND host=? AND owner=?")) {
+            var query = "DELETE FROM pooling.locks WHERE resourceId=? AND host=? AND owner=?";
+            try (var stmt = conn.prepareStatement(query)) {
 
                 stmt.setString(1, getResourceId());
                 stmt.setString(2, this.hostName);
@@ -793,8 +794,8 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
         @Override
         public String toString() {
             return "DistributedLock [state=" + getState() + ", resourceId=" + getResourceId() + ", ownerKey="
-                            + getOwnerKey() + ", holdSec=" + getHoldSec() + ", hostName=" + hostName + ", uuidString="
-                            + uuidString + "]";
+                + getOwnerKey() + ", holdSec=" + getHoldSec() + ", hostName=" + hostName + ", uuidString="
+                + uuidString + "]";
         }
     }
 
@@ -811,12 +812,13 @@ public class DistributedLockManager extends LockManager<DistributedLockManager.D
 
     // these may be overridden by junit tests
 
-    protected Properties getProperties(String fileName) {
-        return SystemPersistenceConstants.getManager().getProperties(fileName);
+    protected Properties getProperties() {
+        return SystemPersistenceConstants.getManager().getProperties(
+            DistributedLockManager.CONFIGURATION_PROPERTIES_NAME);
     }
 
     protected DistributedLock makeLock(LockState state, String resourceId, String ownerKey, int holdSec,
-                    LockCallback callback) {
+                                       LockCallback callback) {
         return new DistributedLock(state, resourceId, ownerKey, holdSec, callback, this);
     }
 }

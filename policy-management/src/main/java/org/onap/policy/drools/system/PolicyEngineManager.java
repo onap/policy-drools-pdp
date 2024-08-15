@@ -342,7 +342,7 @@ class PolicyEngineManager implements PolicyEngine {
     private void createLockManager(Properties properties) {
         for (PolicyEngineFeatureApi feature : getEngineProviders()) {
             try {
-                this.lockManager = feature.beforeCreateLockManager(this, properties);
+                this.lockManager = feature.beforeCreateLockManager();
                 if (this.lockManager != null) {
                     logger.info("overridden lock manager is {}", this.lockManager);
                     return;
@@ -941,7 +941,7 @@ class PolicyEngineManager implements PolicyEngine {
         @Override
         public void run() {
             try {
-                doSleep(SHUTDOWN_MAX_GRACE_TIME);
+                doSleep();
                 logger.warn("{}: abnormal termination - shutdown graceful time period expiration",
                         PolicyEngineManager.this);
             } catch (final InterruptedException e) {
@@ -960,18 +960,18 @@ class PolicyEngineManager implements PolicyEngine {
                                     ex.getMessage(), ex));
 
                 logger.info("{}: exit", PolicyEngineManager.this);
-                doExit(0);
+                doExit();
             }
         }
 
         // these may be overridden by junit tests
 
-        protected void doSleep(long sleepMs) throws InterruptedException {
-            Thread.sleep(sleepMs);
+        protected void doSleep() throws InterruptedException {
+            Thread.sleep(ShutdownThread.SHUTDOWN_MAX_GRACE_TIME);
         }
 
-        protected void doExit(int code) {
-            System.exit(code);
+        protected void doExit() {
+            System.exit(0);
         }
     }
 

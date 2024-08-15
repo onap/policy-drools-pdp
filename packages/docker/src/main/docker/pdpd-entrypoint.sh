@@ -138,26 +138,6 @@ function serverConfig {
     done
 }
 
-function db {
-    if [ "${DEBUG}" = "y" ]; then
-        echo "-- db --"
-        set -x
-    fi
-
-    if [ -z "${SQL_HOST}" ]; then
-        return 0
-    fi
-
-    if [ -z "${SQL_PORT}" ]; then
-        export SQL_PORT=3306
-    fi
-
-    echo "Waiting for ${SQL_HOST}:${SQL_PORT} ..."
-    timeout 120 sh -c 'until nc -vz -w 20 "${SQL_HOST}" "${SQL_PORT}"; do echo -n "."; sleep 1; done'
-
-    "${POLICY_HOME}"/bin/db-migrator -s ALL -o upgrade
-}
-
 function inspect {
     if [ "${DEBUG}" = "y" ]; then
         echo "-- inspect --"
@@ -209,7 +189,6 @@ function configure {
     fi
 
     reload
-    db
 }
 
 function vmBoot {
@@ -219,7 +198,6 @@ function vmBoot {
     fi
 
     reload
-    db
     start
     scripts "post.sh"
 }

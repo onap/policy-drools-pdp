@@ -93,7 +93,7 @@ public class NoLockManagerTest {
 
     @Test
     void testBeforeCreateLockManager() {
-        assertEquals(nlm, nlm.beforeCreateLockManager(null, null));
+        assertEquals(nlm, nlm.beforeCreateLockManager());
     }
 
     @Test
