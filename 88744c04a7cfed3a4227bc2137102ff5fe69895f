@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "3cdbe34e_f9d9ee3e",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 768,
+      "author": {
+        "id": 7603
+      },
+      "writtenOn": "2024-08-16T11:41:05Z",
+      "side": 1,
+      "message": "Will these work with either mariadb or postgres?",
+      "range": {
+        "startLine": 768,
+        "startChar": 25,
+        "endLine": 768,
+        "endChar": 94
+      },
+      "revId": "88744c04a7cfed3a4227bc2137102ff5fe69895f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "08aa71df_3af5cab7",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/DistributedLockManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1568,
+      "author": {
+        "id": 7603
+      },
+      "writtenOn": "2024-08-16T11:41:05Z",
+      "side": 1,
+      "message": "Same question as previous file really. Will these statements do what they are supposed to do with both mariadb and postgres (depending on which is being used)",
+      "range": {
+        "startLine": 1567,
+        "startChar": 40,
+        "endLine": 1568,
+        "endChar": 66
+      },
+      "revId": "88744c04a7cfed3a4227bc2137102ff5fe69895f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
