@@ -26,6 +26,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "80455480_a1e86b3f",
+        "filename": "feature-distributed-locking/src/main/java/org/onap/policy/distributed/locking/DistributedLockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 768,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-08-19T08:19:58Z",
+      "side": 1,
+      "message": "I tested with both databases, it works fine.",
+      "parentUuid": "3cdbe34e_f9d9ee3e",
+      "range": {
+        "startLine": 768,
+        "startChar": 25,
+        "endLine": 768,
+        "endChar": 94
+      },
+      "revId": "88744c04a7cfed3a4227bc2137102ff5fe69895f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "08aa71df_3af5cab7",
         "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/DistributedLockManagerTest.java",
         "patchSetId": 1
@@ -37,6 +61,30 @@
       "writtenOn": "2024-08-16T11:41:05Z",
       "side": 1,
       "message": "Same question as previous file really. Will these statements do what they are supposed to do with both mariadb and postgres (depending on which is being used)",
+      "range": {
+        "startLine": 1567,
+        "startChar": 40,
+        "endLine": 1568,
+        "endChar": 66
+      },
+      "revId": "88744c04a7cfed3a4227bc2137102ff5fe69895f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8b9dcf61_7149b8a5",
+        "filename": "feature-distributed-locking/src/test/java/org/onap/policy/distributed/locking/DistributedLockManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1568,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-08-19T08:19:58Z",
+      "side": 1,
+      "message": "this is test, H2 database is being used.",
+      "parentUuid": "08aa71df_3af5cab7",
       "range": {
         "startLine": 1567,
         "startChar": 40,
