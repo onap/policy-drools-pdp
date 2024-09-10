@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.common.endpoints.event.comm.Topic;
 import org.onap.policy.common.endpoints.event.comm.Topic.CommInfrastructure;
 import org.onap.policy.common.endpoints.event.comm.TopicSink;
@@ -62,7 +63,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     /**
      * Null Drools Controller.
      */
-    protected NullDroolsController nullDroolsController = new NullDroolsController();
+    protected NullDroolsController nullDroolsController;
 
     /**
      * Constructs the object.
@@ -71,11 +72,11 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
 
         /* Add a NULL controller which will always be present in the hash */
 
-        DroolsController controller = new NullDroolsController();
-        String controllerId = controller.getGroupId() + ":" + controller.getArtifactId();
+        nullDroolsController = new NullDroolsController();
+        String controllerId = nullDroolsController.getGroupId() + ":" + nullDroolsController.getArtifactId();
 
         synchronized (this) {
-            droolsControllers.put(controllerId, controller);
+            droolsControllers.put(controllerId, nullDroolsController);
         }
     }
 
@@ -84,17 +85,17 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             List<? extends TopicSink> eventSinks) throws LinkageError {
 
         String groupId = properties.getProperty(DroolsPropertyConstants.RULES_GROUPID);
-        if (groupId == null || groupId.isEmpty()) {
+        if (StringUtils.isBlank(groupId)) {
             groupId = DroolsControllerConstants.NO_GROUP_ID;
         }
 
         String artifactId = properties.getProperty(DroolsPropertyConstants.RULES_ARTIFACTID);
-        if (artifactId == null || artifactId.isEmpty()) {
+        if (StringUtils.isBlank(artifactId)) {
             artifactId = DroolsControllerConstants.NO_ARTIFACT_ID;
         }
 
         String version = properties.getProperty(DroolsPropertyConstants.RULES_VERSION);
-        if (version == null || version.isEmpty()) {
+        if (StringUtils.isBlank(version)) {
             version = DroolsControllerConstants.NO_VERSION;
         }
 
@@ -110,15 +111,15 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             List<TopicCoderFilterConfiguration> decoderConfigurations,
             List<TopicCoderFilterConfiguration> encoderConfigurations) throws LinkageError {
 
-        if (newGroupId == null || newGroupId.isEmpty()) {
+        if (StringUtils.isBlank(newGroupId)) {
             throw new IllegalArgumentException("Missing maven group-id coordinate");
         }
 
-        if (newArtifactId == null || newArtifactId.isEmpty()) {
+        if (StringUtils.isBlank(newArtifactId)) {
             throw new IllegalArgumentException("Missing maven artifact-id coordinate");
         }
 
-        if (newVersion == null || newVersion.isEmpty()) {
+        if (StringUtils.isBlank(newVersion)) {
             throw new IllegalArgumentException("Missing maven version coordinate");
         }
 
@@ -240,7 +241,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
             String eventClasses = properties
                     .getProperty(propertyTopicEntityPrefix + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX);
 
-            if (eventClasses == null || eventClasses.isEmpty()) {
+            if (StringUtils.isBlank(eventClasses)) {
                 logger.warn("There are no event classes for topic {}", firstTopic);
                 continue;
             }
@@ -280,7 +281,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
                 + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_CUSTOM_MODEL_CODER_GSON_SUFFIX);
 
         CustomGsonCoder customGsonCoder = null;
-        if (customGson != null && !customGson.isEmpty()) {
+        if (StringUtils.isNotBlank(customGson)) {
             try {
                 customGsonCoder = new CustomGsonCoder(customGson);
             } catch (IllegalArgumentException e) {
@@ -375,7 +376,7 @@ class IndexedDroolsControllerFactory implements DroolsControllerFactory {
     @Override
     public DroolsController get(String groupId, String artifactId, String version) {
 
-        if (groupId == null || artifactId == null || groupId.isEmpty() || artifactId.isEmpty()) {
+        if (StringUtils.isBlank(groupId) || StringUtils.isBlank(artifactId)) {
             throw new IllegalArgumentException("Missing maven coordinates: " + groupId + ":" + artifactId);
         }
 

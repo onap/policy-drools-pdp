@@ -3,6 +3,7 @@
  * policy-management
  * ================================================================================
  * Copyright (C) 2017-2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @ToString
@@ -51,19 +53,21 @@ public class TopicCoderFilterConfiguration {
          * @param rawCustomCoder with format: &lt;class-containing-custom-coder&gt;,&lt;static-coder-field&gt.
          */
         protected CustomCoder(String rawCustomCoder) {
-            if (rawCustomCoder != null && !rawCustomCoder.isEmpty()) {
+            if (StringUtils.isBlank(rawCustomCoder)) {
+                throw new IllegalArgumentException("Constructor argument cannot be empty. "
+                    + "Use format \"customCoderClass,staticCoderField\"");
+            }
 
-                this.classContainer = rawCustomCoder.substring(0, rawCustomCoder.indexOf(','));
-                if (this.classContainer == null || this.classContainer.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "No classname to create CustomCoder cannot be created");
-                }
+            this.classContainer = rawCustomCoder.substring(0, rawCustomCoder.indexOf(','));
+            if (StringUtils.isBlank(this.classContainer)) {
+                throw new IllegalArgumentException(
+                    "No classname to create CustomCoder cannot be created");
+            }
 
-                this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(',') + 1);
-                if (this.staticCoderField == null || this.staticCoderField.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "No staticCoderField to create CustomCoder cannot be created for class " + classContainer);
-                }
+            this.staticCoderField = rawCustomCoder.substring(rawCustomCoder.indexOf(',') + 1);
+            if (StringUtils.isBlank(this.staticCoderField)) {
+                throw new IllegalArgumentException(
+                    "No staticCoderField to create CustomCoder cannot be created for class " + classContainer);
             }
         }
 
@@ -74,11 +78,11 @@ public class TopicCoderFilterConfiguration {
          * @param staticCoderField static coder field
          */
         protected CustomCoder(String className, String staticCoderField) {
-            if (className == null || className.isEmpty()) {
+            if (StringUtils.isBlank(className)) {
                 throw new IllegalArgumentException("No classname to create CustomCoder cannot be created");
             }
 
-            if (staticCoderField == null || staticCoderField.isEmpty()) {
+            if (StringUtils.isBlank(staticCoderField)) {
                 throw new IllegalArgumentException(
                         "No staticCoderField to create CustomCoder cannot be created for class " + className);
             }
