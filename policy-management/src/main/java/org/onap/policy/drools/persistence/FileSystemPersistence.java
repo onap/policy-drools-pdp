@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.BiPredicate;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import org.onap.policy.drools.properties.DroolsPropertyConstants;
 import org.onap.policy.drools.utils.PropertyUtil;
@@ -151,7 +152,7 @@ public class FileSystemPersistence implements SystemPersistence {
         }
     }
 
-    protected Properties getProperties(Path propertiesPath) {
+    protected Properties getProperties(@NonNull Path propertiesPath) {
         if (!Files.exists(propertiesPath)) {
             throw new IllegalArgumentException("properties for " + propertiesPath + " are not persisted.");
         }

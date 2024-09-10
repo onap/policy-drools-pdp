@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017-2019,2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright(C) 2018 Samsung Electronics Co., Ltd.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +36,7 @@ public interface EventProtocolCoder {
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class CoderFilters {
+    class CoderFilters {
 
         /**
          * coder class.
@@ -54,13 +55,9 @@ public interface EventProtocolCoder {
 
         @Override
         public String toString() {
-            return "CoderFilters [factClass="
-                           + factClass
-                           + ", filter="
-                           + filter
-                           + ", modelClassLoaderHash="
-                           + modelClassLoaderHash
-                           + "]";
+            return "CoderFilters [factClass=" + factClass
+                + ", filter=" + filter
+                + ", modelClassLoaderHash=" + modelClassLoaderHash + "]";
         }
     }
 

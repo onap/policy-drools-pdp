@@ -21,6 +21,7 @@
 
 package org.onap.policy.drools.stats;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -41,5 +42,18 @@ class PolicyStatsManagerTest {
 
         assertEquals(1, stats.getSubgroupStats().get("foo").getPolicyExecutedFailCount());
         assertEquals(2, stats.getSubgroupStats().get("blah").getPolicyExecutedFailCount());
+    }
+
+    @Test
+    void test_Exceptions() {
+        PolicyStatsManager stats = new PolicyStatsManager();
+        assertThatThrownBy(() -> stats.stat("foo", null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("transaction is marked non-null but is nul");
+
+        Metric trans = new Metric();
+        assertThatThrownBy(() -> stats.stat(null, trans))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("subGroupName is marked non-null but is null");
     }
 }

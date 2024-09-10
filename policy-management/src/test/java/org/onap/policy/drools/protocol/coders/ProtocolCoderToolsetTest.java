@@ -22,11 +22,19 @@
 package org.onap.policy.drools.protocol.coders;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,6 +61,7 @@ import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.Cust
 import org.onap.policy.drools.util.KieUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * ProtocolCoder Toolset Junits.
@@ -62,12 +71,12 @@ public class ProtocolCoderToolsetTest {
     private static final String JUNIT_PROTOCOL_CODER_TOPIC = JUNIT_PROTOCOL_CODER_ARTIFACT_ID;
     private static final String CONTROLLER_ID = "blah";
 
-    private static final Logger logger = LoggerFactory.getLogger(ProtocolCoderToolset.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProtocolCoderToolsetTest.class);
 
     private static volatile ReleaseId releaseId;
 
     // customCoder has to be public to be accessed in tests below
-    public static final Gson customCoder = new GsonBuilder().create();
+    public static final Gson customCoder = new GsonBuilder().create(); // NOSONAR actually being used in the test
 
     private DroolsController controller;
 
@@ -77,9 +86,9 @@ public class ProtocolCoderToolsetTest {
     @BeforeAll
     public static void setUpClass() throws IOException {
         releaseId = KieUtils.installArtifact(Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_PATH).toFile(),
-                        Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
-                        MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH,
-                        Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
+            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_POM_PATH).toFile(),
+            MavenDroolsControllerTest.JUNIT_ECHO_KJAR_DRL_PATH,
+            Paths.get(MavenDroolsControllerTest.JUNIT_ECHO_KMODULE_DRL_PATH).toFile());
     }
 
     /**
@@ -105,6 +114,55 @@ public class ProtocolCoderToolsetTest {
         testGsonToolset(createFilterSet());
     }
 
+    @Test
+    void testExceptions() {
+        // should fail without params
+        assertThrows(IllegalArgumentException.class,
+            () -> new GsonProtocolCoderToolset(null, "controller"));
+
+        // should fail without controller ID
+        assertThrows(IllegalArgumentException.class,
+            () -> new GsonProtocolCoderToolset(mock(EventProtocolParams.class), ""));
+
+        // set mock under test - always call real method under test
+        var toolset = mock(GsonProtocolCoderToolset.class);
+        when(toolset.getCoder("")).thenCallRealMethod();
+
+        // should fail calling with empty classname
+        assertThatThrownBy(() -> toolset.getCoder(""))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("no classname provided");
+
+        // should fail when trying to add coder with empty event class
+        doCallRealMethod().when(toolset).addCoder(anyString(), any(JsonProtocolFilter.class), anyInt());
+        assertThatThrownBy(() -> toolset.addCoder("", mock(JsonProtocolFilter.class), 1))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("no event class provided");
+
+        // should fail when trying to remove coder with empty event
+        doCallRealMethod().when(toolset).removeCoders(anyString());
+        assertThatThrownBy(() -> toolset.removeCoders(""))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("no event class provided");
+
+        // set coders to empty list
+        when(toolset.filter(anyString())).thenCallRealMethod();
+        ReflectionTestUtils.setField(toolset, "coders", List.of());
+
+        // should fail when trying to find a filter from an empty list
+        assertThatThrownBy(() -> toolset.filter(""))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("No coders available");
+
+        // there is a coder in the list, but can't check if accepts json when coder doesn't have filter
+        var mockCoderFilter = mock(CoderFilters.class);
+        when(mockCoderFilter.getFilter()).thenReturn(null);
+        ReflectionTestUtils.setField(toolset, "coders", List.of(mockCoderFilter));
+
+        assertNull(toolset.filter("json"));
+
+    }
+
     /**
      * Test the Gson toolset.
      *
@@ -112,10 +170,10 @@ public class ProtocolCoderToolsetTest {
      */
     private void testGsonToolset(JsonProtocolFilter protocolFilter) {
         GsonProtocolCoderToolset gsonToolset =
-                        new GsonProtocolCoderToolset(EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
-                                        .groupId(releaseId.getGroupId()).artifactId(releaseId.getArtifactId())
-                                        .eventClass(ThreeStrings.class.getName()).protocolFilter(protocolFilter)
-                                        .customGsonCoder(null).modelClassLoaderHash(12345678).build(), CONTROLLER_ID);
+            new GsonProtocolCoderToolset(EventProtocolParams.builder().topic(JUNIT_PROTOCOL_CODER_TOPIC)
+                .groupId(releaseId.getGroupId()).artifactId(releaseId.getArtifactId())
+                .eventClass(ThreeStrings.class.getName()).protocolFilter(protocolFilter)
+                .customGsonCoder(null).modelClassLoaderHash(12345678).build(), CONTROLLER_ID);
 
         assertNotNull(gsonToolset.getEncoder());
         assertNotNull(gsonToolset.getDecoder());
@@ -154,7 +212,7 @@ public class ProtocolCoderToolsetTest {
     }
 
     private void decode(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset,
-                    ThreeStrings triple, String tripleEncoded) {
+                        ThreeStrings triple, String tripleEncoded) {
 
         try {
             coderToolset.decode(tripleEncoded);
@@ -212,7 +270,7 @@ public class ProtocolCoderToolsetTest {
         assertNotNull(coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
 
         assertEquals("[?($.third =~ /.*/)]",
-                        coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
+            coderToolset.getCoder(ThreeStrings.class.getName()).getFilter().getRule());
     }
 
     private void validateInitialization(JsonProtocolFilter protocolFilter, ProtocolCoderToolset coderToolset) {
@@ -241,16 +299,21 @@ public class ProtocolCoderToolsetTest {
         sinkConfig.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, JUNIT_PROTOCOL_CODER_TOPIC);
         final List<TopicSink> noopTopics = TopicEndpointManager.getManager().addTopicSinks(sinkConfig);
 
+        Properties droolsControllerConfig = getDroolsControllerConfig();
+
+        return DroolsControllerConstants.getFactory().build(droolsControllerConfig, null, noopTopics);
+    }
+
+    private static Properties getDroolsControllerConfig() {
         Properties droolsControllerConfig = new Properties();
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_GROUPID, releaseId.getGroupId());
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_ARTIFACTID, releaseId.getArtifactId());
         droolsControllerConfig.put(DroolsPropertyConstants.RULES_VERSION, releaseId.getVersion());
         droolsControllerConfig.put(
-                        PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
-                                        + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX,
-                        ThreeStrings.class.getName());
-
-        return DroolsControllerConstants.getFactory().build(droolsControllerConfig, null, noopTopics);
+            PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS + "." + JUNIT_PROTOCOL_CODER_TOPIC
+                + PolicyEndPointProperties.PROPERTY_TOPIC_EVENTS_SUFFIX,
+            ThreeStrings.class.getName());
+        return droolsControllerConfig;
     }
 
     private JsonProtocolFilter createFilterSet() {

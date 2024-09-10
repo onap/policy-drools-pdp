@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright (C) 2017-2022 AT&T Intellectual Property. All rights reserved.
  * Modifications Copyright (C) 2018 Samsung Electronics Co., Ltd.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.onap.policy.drools.protocol.coders.EventProtocolCoder.CoderFilters;
 import org.onap.policy.drools.protocol.coders.TopicCoderFilterConfiguration.CustomCoder;
 import org.slf4j.Logger;
@@ -82,7 +84,7 @@ public abstract class ProtocolCoderToolset {
      */
     protected ProtocolCoderToolset(EventProtocolParams eventProtocolParams, String controllerId) {
 
-        if (eventProtocolParams == null || controllerId == null) {
+        if (eventProtocolParams == null || StringUtils.isBlank(controllerId)) {
             throw new IllegalArgumentException("Invalid input");
         }
 
@@ -104,7 +106,7 @@ public abstract class ProtocolCoderToolset {
      * @return the decoder filters or null if not found
      */
     public CoderFilters getCoder(String classname) {
-        if (classname == null || classname.isEmpty()) {
+        if (StringUtils.isBlank(classname)) {
             throw new IllegalArgumentException("no classname provided");
         }
 
@@ -132,7 +134,7 @@ public abstract class ProtocolCoderToolset {
      * @param filter filter
      */
     public void addCoder(String eventClass, JsonProtocolFilter filter, int modelClassLoaderHash) {
-        if (eventClass == null || eventClass.isEmpty()) {
+        if (StringUtils.isBlank(eventClass)) {
             throw new IllegalArgumentException("no event class provided");
         }
 
@@ -152,7 +154,7 @@ public abstract class ProtocolCoderToolset {
      * @param eventClass event class
      */
     public void removeCoders(String eventClass) {
-        if (eventClass == null || eventClass.isEmpty()) {
+        if (StringUtils.isBlank(eventClass)) {
             throw new IllegalArgumentException("no event class provided");
         }
 
