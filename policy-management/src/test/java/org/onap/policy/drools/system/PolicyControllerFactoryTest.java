@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
 import static org.onap.policy.drools.properties.DroolsPropertyConstants.PROPERTY_CONTROLLER_TYPE;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
@@ -504,9 +503,9 @@ class PolicyControllerFactoryTest {
 
         @Override
         public DroolsController beforeInstance(Properties properties,
-                String groupId, String artifactId, String version,
-                List<TopicCoderFilterConfiguration> decoderConfigurations,
-                List<TopicCoderFilterConfiguration> encoderConfigurations) {
+                                               String groupId, String artifactId, String version,
+                                               List<TopicCoderFilterConfiguration> decoderConfigurations,
+                                               List<TopicCoderFilterConfiguration> encoderConfigurations) {
 
             if (POLICY_CONTROLLER_BUILDER_TAG.equals(properties.getProperty(PROPERTY_CONTROLLER_TYPE))) {
                 return new NullDroolsController();

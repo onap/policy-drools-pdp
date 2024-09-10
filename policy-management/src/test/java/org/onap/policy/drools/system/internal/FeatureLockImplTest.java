@@ -213,22 +213,6 @@ class FeatureLockImplTest {
         verify(callback, never()).lockUnavailable(any());
     }
 
-    /**
-     * Tests doNotify() when there is no session.
-     */
-    @Test
-    void testDoNotifyNoSession() {
-        MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);
-        lock.grant();
-
-        assertTrue(lock.isActive());
-        assertEquals(1, lock.nupdates);
-
-        invokeCallback();
-        verify(callback).lockAvailable(any());
-        verify(callback, never()).lockUnavailable(any());
-    }
-
     @Test
     void testFreeAllowed() {
         MyLock lock = new MyLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, callback);

@@ -731,7 +731,7 @@ class PolicyEngineManagerTest {
     }
 
     @Test
-    void testUpdatePolicyController() throws Exception {
+    void testUpdatePolicyController_Exceptions() throws Exception {
         assertEquals(controller3, mgr.updatePolicyController(config3));
         verify(engine).createPolicyController(CONTROLLER3, properties);
 
@@ -775,7 +775,10 @@ class PolicyEngineManagerTest {
         setUp();
         when(persist.getControllerProperties(CONTROLLER3)).thenThrow(new LinkageError(EXPECTED));
         assertThatIllegalStateException().isThrownBy(() -> mgr.updatePolicyController(config3));
+    }
 
+    @Test
+    void testUpdatePolicyController() throws Exception {
         /*
          * For remaining tests, the factory will return the controller instead of creating
          * one.
@@ -954,14 +957,7 @@ class PolicyEngineManagerTest {
         assertTrue(mgr.stop());
         verify(prov1).beforeStop(mgr);
         verify(prov2).beforeStop(mgr);
-        verify(controller, never()).stop();
-        verify(source1, never()).stop();
-        verify(sink1, never()).stop();
-        verify(endpoint, never()).stop();
-        verify(server1, never()).stop();
-        verify(client1, never()).stop();
-        verify(prov1, never()).afterStop(mgr);
-        verify(prov2, never()).afterStop(mgr);
+        verifyNeverCalled();
 
         // controller fails to stop - still does everything
         testStop(false, () -> when(controller.stop()).thenReturn(false));
@@ -1997,6 +1993,17 @@ class PolicyEngineManagerTest {
 
         assertThatThrownBy(() -> verifyAfter.accept(prov1)).isInstanceOf(AssertionError.class);
         assertThatThrownBy(() -> verifyAfter.accept(prov2)).isInstanceOf(AssertionError.class);
+    }
+
+    private void verifyNeverCalled() {
+        verify(controller, never()).stop();
+        verify(source1, never()).stop();
+        verify(sink1, never()).stop();
+        verify(endpoint, never()).stop();
+        verify(server1, never()).stop();
+        verify(client1, never()).stop();
+        verify(prov1, never()).afterStop(mgr);
+        verify(prov2, never()).afterStop(mgr);
     }
 
     /**

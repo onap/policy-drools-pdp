@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2020 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +33,7 @@ public interface PolicyControllerFeatureApi extends OrderedService {
      * called before creating a controller with name 'name' and
      * properties 'properties'.
      *
-     * @param name name of the the controller
+     * @param name name of the controller
      * @param properties configuration properties
      *
      * @return a policy controller.   A take over of the creation operation
