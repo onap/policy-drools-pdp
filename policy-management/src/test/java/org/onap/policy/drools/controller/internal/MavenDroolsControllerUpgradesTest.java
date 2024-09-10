@@ -88,7 +88,7 @@ public class MavenDroolsControllerUpgradesTest {
             KieUtils.installArtifact(
                 Paths.get(DROOLS_RESOURCES_DIR + RULES_BASE + KMODULE_EXT).toFile(),
                 Paths.get(DROOLS_RESOURCES_DIR + name + POM_EXT).toFile(),
-               DROOLS_KJAR_RESOURCES_DIR + KBNAME_RULES + "/" + KBPACKAGE_RULES + "/",
+                DROOLS_KJAR_RESOURCES_DIR + KBNAME_RULES + "/" + KBPACKAGE_RULES + "/",
                 drls);
     }
 
@@ -105,8 +105,8 @@ public class MavenDroolsControllerUpgradesTest {
         rulesDescriptor2 =
             install("rules2",
                 Stream.of(path.toFile(),
-                          Paths.get(DROOLS_RESOURCES_DIR + "rules2" + DRL_EXT).toFile())
-                      .collect(Collectors.toList()));
+                        Paths.get(DROOLS_RESOURCES_DIR + "rules2" + DRL_EXT).toFile())
+                    .collect(Collectors.toList()));
 
         LoggerUtils.setLevel("ROOT", "WARN");
         LoggerUtils.setLevel("org.onap.policy.drools.controller.internal", "INFO");
@@ -169,13 +169,13 @@ public class MavenDroolsControllerUpgradesTest {
 
     private void summary() {
         logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        logger.info("Controller: " + controller.getGroupId() + ":" + controller.getArtifactId()
-            + ":" + controller.getVersion());
+        logger.info("Controller: {}:{}:{}", controller.getGroupId(), controller.getArtifactId(),
+            controller.getVersion());
         logger.info(".....................................................................");
-        logger.info("KIE-BASES: " + KieUtils.getBases(controller.getContainer().getKieContainer()));
-        logger.info("KIE-PACKAGE-NAMES: " + KieUtils.getPackageNames(controller.getContainer().getKieContainer()));
-        logger.info("KIE-RULE-NAMES: " + KieUtils.getRuleNames(controller.getContainer().getKieContainer()));
-        logger.info("FACTS: " + controller.facts(KBSESSION_RULES, Object.class));
+        logger.info("KIE-BASES: {}", KieUtils.getBases(controller.getContainer().getKieContainer()));
+        logger.info("KIE-PACKAGE-NAMES: {}", KieUtils.getPackageNames(controller.getContainer().getKieContainer()));
+        logger.info("KIE-RULE-NAMES: {}", KieUtils.getRuleNames(controller.getContainer().getKieContainer()));
+        logger.info("FACTS: {}", controller.facts(KBSESSION_RULES, Object.class));
         logger.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
@@ -190,25 +190,25 @@ public class MavenDroolsControllerUpgradesTest {
         controller.getContainer()
             .getPolicySession(KBSESSION_RULES)
             .getKieSession()
-                .addEventListener(new RuleRuntimeEventListener() {
-                    @Override
-                    public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
-                        logger.info("RULE {}: inserting {}",
-                            objectInsertedEvent.getRule().getName(), objectInsertedEvent.getObject());
-                    }
+            .addEventListener(new RuleRuntimeEventListener() {
+                @Override
+                public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
+                    logger.info("RULE {}: inserting {}",
+                        objectInsertedEvent.getRule().getName(), objectInsertedEvent.getObject());
+                }
 
-                    @Override
-                    public void objectUpdated(ObjectUpdatedEvent objectUpdatedEvent) {
-                        logger.info("RULE {}: updating {}",
-                            objectUpdatedEvent.getRule().getName(), objectUpdatedEvent.getObject());
-                    }
+                @Override
+                public void objectUpdated(ObjectUpdatedEvent objectUpdatedEvent) {
+                    logger.info("RULE {}: updating {}",
+                        objectUpdatedEvent.getRule().getName(), objectUpdatedEvent.getObject());
+                }
 
-                    @Override
-                    public void objectDeleted(ObjectDeletedEvent objectDeletedEvent) {
-                        logger.info("RULE {}: deleting {}",
-                            objectDeletedEvent.getRule().getName(), objectDeletedEvent.getOldObject());
-                    }
-                });
+                @Override
+                public void objectDeleted(ObjectDeletedEvent objectDeletedEvent) {
+                    logger.info("RULE {}: deleting {}",
+                        objectDeletedEvent.getRule().getName(), objectDeletedEvent.getOldObject());
+                }
+            });
 
         controller.getContainer()
             .getPolicySession(KBSESSION_RULES)

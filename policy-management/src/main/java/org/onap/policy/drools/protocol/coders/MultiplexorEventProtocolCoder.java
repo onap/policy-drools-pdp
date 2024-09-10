@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,6 @@
 
 package org.onap.policy.drools.protocol.coders;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.ToString;
 import org.onap.policy.drools.controller.DroolsController;
@@ -126,19 +126,7 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public Object decode(String groupId, String artifactId, String topic, String json) {
-        logger.debug("{}: decode {}:{}:{}:{}", this, groupId, artifactId, topic, json);  // NOSONAR
-
-        /*
-         * It seems that sonar declares the previous logging line as a security vulnerability
-         * when logging the topic variable.   The static code analysis indicates that
-         * the path starts in org.onap.policy.drools.server.restful.RestManager::decode(),
-         * but the request is rejected if the topic contains invalid characters (the sonar description
-         * mentions "/r/n/t" characters) which are validated against in the checkValidNameInput(topic).
-         * Furthermore production instances are assumed not to have debug enabled, nor the REST telemetry API
-         * should be published externally.  An additional note is that Path URLs containing spaces and newlines
-         * will be failed earlier at the HTTP protocol libraries (jetty, etc ..) so an URL of the form
-         * "https://../to\npic" won't even make it here.
-         */
+        logger.debug("{}: decode {}:{}:{}:{}", this, groupId, artifactId, topic, json);
         return this.decoders.decode(groupId, artifactId, topic, json);
     }
 
@@ -156,13 +144,7 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public String encode(String topic, Object event) {
-        logger.debug("{}: encode {}:{}", this, topic, event);  // NOSONAR
-
-        /*
-         * See explanation for decode(String groupId, String artifactId, String topic, String json).
-         * The same applies here as it is called from
-         * org.onap.policy.drools.server.restful.RestManager::encode(),
-         */
+        logger.debug("{}: encode {}:{}", this, topic, event);
         return this.encoders.encode(topic, event);
     }
 
@@ -187,8 +169,7 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      * {@inheritDoc}.
      */
     @Override
-    public CoderFilters getDecoderFilters(
-            String groupId, String artifactId, String topic, String classname) {
+    public CoderFilters getDecoderFilters(String groupId, String artifactId, String topic, String classname) {
         return this.decoders.getFilters(groupId, artifactId, topic, classname);
     }
 
@@ -205,18 +186,11 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public ProtocolCoderToolset getDecoders(String groupId, String artifactId, String topic) {
-        ProtocolCoderToolset decoderToolsets =
-                this.decoders.getCoders(groupId, artifactId, topic);
-        if (decoderToolsets == null) {
-            throw new IllegalArgumentException(
-                    "Decoders not found for " + groupId + ":" + artifactId + ":" + topic);
-        }
-
-        return decoderToolsets;
+        return this.decoders.getCoders(groupId, artifactId, topic);
     }
 
     /**
-     * get all deocders by maven coordinates and topic.
+     * get all decoders by maven coordinates and topic.
      *
      * @param groupId    group id
      * @param artifactId artifact id
@@ -225,14 +199,7 @@ class MultiplexorEventProtocolCoder implements EventProtocolCoder {
      */
     @Override
     public List<ProtocolCoderToolset> getDecoders(String groupId, String artifactId) {
-
-        List<ProtocolCoderToolset> decoderToolsets =
-                this.decoders.getCoders(groupId, artifactId);
-        if (decoderToolsets == null) {
-            throw new IllegalArgumentException("Decoders not found for " + groupId + ":" + artifactId);
-        }
-
-        return new ArrayList<>(decoderToolsets);
+        return this.decoders.getCoders(groupId, artifactId);
     }
 
     /**

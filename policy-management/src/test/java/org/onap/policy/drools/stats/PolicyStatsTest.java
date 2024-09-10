@@ -22,6 +22,7 @@
 package org.onap.policy.drools.stats;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,14 @@ class PolicyStatsTest {
         assertEquals(2, stats.getPolicyExecutedFailCount());
         assertEquals(1, stats.getPolicyExecutedSuccessCount());
         assertThat(stats.getBirthTime()).isLessThanOrEqualTo(trans2.getStartTime().toEpochMilli());
+    }
+
+    @Test
+    void test_Exception() {
+        PolicyStats stats = new PolicyStats();
+        assertThatThrownBy(() -> stats.stat(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("trans is marked non-null but is null");
     }
 
     private Metric createTrans() {

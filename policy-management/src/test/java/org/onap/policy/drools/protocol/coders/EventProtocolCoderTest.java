@@ -22,6 +22,7 @@
 
 package org.onap.policy.drools.protocol.coders;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
@@ -87,5 +88,31 @@ class EventProtocolCoderTest {
         assertTrue(json.contains(ENCODER_ARTIFACT));
 
         EventProtocolCoderConstants.getManager().removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
+    }
+
+    @Test
+    void test_extra() {
+        final Properties noopSinkProperties = new Properties();
+        noopSinkProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, NOOP_TOPIC);
+
+        TopicEndpointManager.getManager().addTopicSinks(noopSinkProperties);
+
+        var encoder = EventProtocolParams.builder().groupId(ENCODER_GROUP).artifactId(ENCODER_ARTIFACT)
+            .topic(NOOP_TOPIC).eventClass(DroolsConfiguration.class.getName())
+            .protocolFilter(new JsonProtocolFilter()).customGsonCoder(null)
+            .modelClassLoaderHash(DroolsConfiguration.class.getName().hashCode()).build();
+
+        EventProtocolCoderConstants.getManager().addEncoder(encoder);
+
+        final String json = EventProtocolCoderConstants.getManager().encode(NOOP_TOPIC,
+            new DroolsConfiguration(ENCODER_ARTIFACT, ENCODER_GROUP, ENCODER_VERSION));
+
+        assertTrue(json.contains(ENCODER_GROUP));
+        assertTrue(json.contains(ENCODER_ARTIFACT));
+
+        // check if adding same encoder doesn't throw any exceptions as expected
+        assertDoesNotThrow(() -> EventProtocolCoderConstants.getManager().addEncoder(encoder));
+        EventProtocolCoderConstants.getManager().removeEncoders(ENCODER_GROUP, ENCODER_ARTIFACT, NOOP_TOPIC);
+        EventProtocolCoderConstants.getManager().removeEncoders("NotExistentGroup", ENCODER_ARTIFACT, NOOP_TOPIC);
     }
 }
