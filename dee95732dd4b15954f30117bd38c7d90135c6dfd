@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "bcd11a53_41412d0d",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/GenericEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2024-09-10T15:39:03Z",
+      "side": 1,
+      "message": "May be we can also pass the error message as an argument, so that we can have one single method to check for topic, groupId and artifactId. ? \n\nprivate static void checkForNullOrEmpty(String value, String errorMsg) {\n        if (StringUtils.isBlank(value)) {\n            throw new IllegalArgumentException(errorMsg);\n        }\n    }",
+      "range": {
+        "startLine": 623,
+        "startChar": 24,
+        "endLine": 623,
+        "endChar": 53
+      },
+      "revId": "dee95732dd4b15954f30117bd38c7d90135c6dfd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a05ba56e_c2af7606",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6070
+      },
+      "writtenOn": "2024-09-10T15:39:03Z",
+      "side": 1,
+      "message": "May be directly the assertThatThrownBy method?",
+      "range": {
+        "startLine": 26,
+        "startChar": 28,
+        "endLine": 26,
+        "endChar": 38
+      },
+      "revId": "dee95732dd4b15954f30117bd38c7d90135c6dfd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
