@@ -24,6 +24,30 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "53463d53_ad173460",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/GenericEventProtocolCoder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-09-11T09:55:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bcd11a53_41412d0d",
+      "range": {
+        "startLine": 623,
+        "startChar": 24,
+        "endLine": 623,
+        "endChar": 53
+      },
+      "revId": "dee95732dd4b15954f30117bd38c7d90135c6dfd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "a05ba56e_c2af7606",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-09-10T15:39:03Z",
       "side": 1,
       "message": "May be directly the assertThatThrownBy method?",
+      "range": {
+        "startLine": 26,
+        "startChar": 28,
+        "endLine": 26,
+        "endChar": 38
+      },
+      "revId": "dee95732dd4b15954f30117bd38c7d90135c6dfd",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1d9bb7d_cc14c88c",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/stats/PolicyStatsManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-09-11T09:55:01Z",
+      "side": 1,
+      "message": "does not make any difference, as the jar is already loaded for tests; changed.",
+      "parentUuid": "a05ba56e_c2af7606",
       "range": {
         "startLine": 26,
         "startChar": 28,
