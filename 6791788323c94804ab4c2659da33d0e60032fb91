@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d8057694_92ae4c94",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 7603
+      },
+      "writtenOn": "2024-09-12T10:28:18Z",
+      "side": 1,
+      "message": "This should be \"throws\"",
+      "range": {
+        "startLine": 98,
+        "startChar": 7,
+        "endLine": 98,
+        "endChar": 13
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "32fc315a_52fa908e",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7603
+      },
+      "writtenOn": "2024-09-12T10:28:18Z",
+      "side": 1,
+      "message": "not used",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 44
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "fd9a95e4_a2e5a36c",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7603
+      },
+      "writtenOn": "2024-09-12T10:28:18Z",
+      "side": 1,
+      "message": "not used",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 27
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56f601d6_1e86a17f",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7603
+      },
+      "writtenOn": "2024-09-12T10:28:18Z",
+      "side": 1,
+      "message": "not used",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 27
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    }
+  ]
+}
