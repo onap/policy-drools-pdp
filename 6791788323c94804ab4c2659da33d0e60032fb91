@@ -24,6 +24,30 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0dc96b2d_5c488616",
+        "filename": "policy-management/src/main/java/org/onap/policy/drools/protocol/coders/EventProtocolCoder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-09-12T10:52:14Z",
+      "side": 1,
+      "message": "Ack - does not show as an issue in onap sonar, local sonar or onap sonarlint.",
+      "parentUuid": "d8057694_92ae4c94",
+      "range": {
+        "startLine": 98,
+        "startChar": 7,
+        "endLine": 98,
+        "endChar": 13
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "32fc315a_52fa908e",
@@ -37,6 +61,30 @@
       "writtenOn": "2024-09-12T10:28:18Z",
       "side": 1,
       "message": "not used",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 44
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "05b80f0f_d43833b9",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-09-12T10:52:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "32fc315a_52fa908e",
       "range": {
         "startLine": 36,
         "startChar": 0,
@@ -70,6 +118,30 @@
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "007711c0_9b7ab9ad",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-09-12T10:52:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd9a95e4_a2e5a36c",
+      "range": {
+        "startLine": 44,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 27
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "56f601d6_1e86a17f",
@@ -83,6 +155,30 @@
       "writtenOn": "2024-09-12T10:28:18Z",
       "side": 1,
       "message": "not used",
+      "range": {
+        "startLine": 54,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 27
+      },
+      "revId": "6791788323c94804ab4c2659da33d0e60032fb91",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "0ac3e753_7765dd13",
+        "filename": "policy-management/src/test/java/org/onap/policy/drools/protocol/coders/ProtocolCoderToolsetTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 7625
+      },
+      "writtenOn": "2024-09-12T10:52:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56f601d6_1e86a17f",
       "range": {
         "startLine": 54,
         "startChar": 0,
