@@ -22,6 +22,7 @@
 package org.onap.policy.drools.core.lock;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -51,5 +52,10 @@ class AlwaysFailLockTest extends AlwaysLockBaseTest<AlwaysFailLock> {
     void testFree() {
         assertFalse(lock.free());
         assertTrue(lock.isUnavailable());
+    }
+
+    @Test
+    void testExtend() {
+        assertDoesNotThrow(() -> lock.extend(10, callback));
     }
 }

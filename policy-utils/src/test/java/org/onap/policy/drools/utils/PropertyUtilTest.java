@@ -22,6 +22,8 @@
 package org.onap.policy.drools.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -93,7 +95,8 @@ public class PropertyUtilTest {
 
         // create a directory for temporary files
         directory = new File(UUID.randomUUID().toString());
-        directory.mkdir();
+        var isDirCreated = directory.mkdir();
+        logger.info("directory created: {}", isDirCreated);
     }
 
     /**
@@ -141,8 +144,7 @@ public class PropertyUtilTest {
             public void propertiesChanged(Properties properties, Set<String> changedKeys) {
                 // When a notification is received, store the values in the
                 // 'returns' array, and signal using the same array.
-                logger.info("Listener invoked: properties=" + properties
-                        + ", changedKeys=" + changedKeys);
+                logger.info("Listener invoked: properties={}, changedKeys={}", properties, changedKeys);
                 returns[0] = properties;
                 returns[1] = changedKeys;
                 synchronized (returns) {
@@ -179,6 +181,73 @@ public class PropertyUtilTest {
         testGetCryptoArgSystemProps();
         testGetDefaultCryptoSystemProps();
 
+    }
+
+    /**
+     * This tests the 'PropertyUtil.Listener' interface.
+     */
+    @Test
+    void testListenerInterface() throws Exception {
+        logger.info("testListenerInterface: test receipt of dynamic updates");
+
+        // create initial property file
+        Properties prop1 = new Properties();
+        prop1.setProperty("p1", "p1 value");
+        prop1.setProperty("p2", "p2 value");
+        prop1.setProperty("p3", "p3 value");
+        logger.info("Create initial properties file: {}", prop1);
+        File file1 = createFile("createAndReadPropertyFile-2", prop1);
+
+        // create a listener for the notification interface
+        Object[] returns = new Object[2];
+        PropertyUtil.Listener listener = createListenerThread(returns);
+
+        // read it in, and do a comparison
+        Properties prop2 = PropertyUtil.getProperties(file1, listener);
+        logger.info("Read in properties: {}", prop2);
+        assertEquals(prop1, prop2);
+        assertEquals("p1 value", prop2.getProperty("p1"));
+        assertEquals("p2 value", prop2.getProperty("p2"));
+        assertEquals("p3 value", prop2.getProperty("p3"));
+
+        // make some changes, and update the file (p3 is left unchanged)
+        prop2.remove("p1"); // remove one property
+        prop2.setProperty("p2", "new p2 value");    // change one property
+        prop2.setProperty("p4", "p4 value");        // add a new property
+        logger.info("Modified properties: {}", prop2);
+
+        // now, update the file, and wait for notification
+        synchronized (returns) {
+            createFile("createAndReadPropertyFile-2", prop2);
+
+            // wait up to 60 seconds, although we should receive notification
+            // in 10 seconds or less (if things are working)
+            returns.wait(60000L);
+        }
+
+        // verify we have the updates
+        assertEquals(prop2, returns[0]);
+
+        // verify that we have the expected set of keys
+        assertEquals(new TreeSet<>(Arrays.asList("p1", "p2", "p4")), returns[1]);
+
+        String filePath = file1.getAbsolutePath();
+        PropertyUtil.stopListening(filePath, listener);
+    }
+
+    @Test
+    void testGetProperties_ListenerNull() throws IOException {
+        String filepath = "src/test/resources/interpolation.properties";
+        File propertiesFile = new File(filepath);
+        assertNotNull(propertiesFile);
+        PropertyUtil.Listener listener = null;
+        var result = PropertyUtil.getProperties(propertiesFile, listener);
+        assertNotNull(result);
+        assertInstanceOf(Properties.class, result);
+
+        var anotherResult = PropertyUtil.getProperties(filepath, listener);
+        assertNotNull(anotherResult);
+        assertInstanceOf(Properties.class, anotherResult);
     }
 
     private void testGetDefaultCryptoSystemProps() throws IOException {
@@ -250,55 +319,5 @@ public class PropertyUtilTest {
         assertEquals(LoggerUtils.ROOT_LOGGER, props.getProperty(INTERPOLATION_CONST));
         assertEquals(System.getProperty("user.home"), props.getProperty(INTERPOLATION_SYS));
         assertEquals(INTERPOLATION_ENVD_DEFAULT_VALUE, props.getProperty(INTERPOLATION_ENVD_DEFAULT));
-    }
-
-    /**
-     * This tests the 'PropertyUtil.Listener' interface.
-     */
-    @Test
-    void testListenerInterface() throws Exception {
-        logger.info("testListenerInterface: test receipt of dynamic updates");
-
-        // create initial property file
-        Properties prop1 = new Properties();
-        prop1.setProperty("p1", "p1 value");
-        prop1.setProperty("p2", "p2 value");
-        prop1.setProperty("p3", "p3 value");
-        logger.info("Create initial properties file: " + prop1);
-        File file1 = createFile("createAndReadPropertyFile-2", prop1);
-
-        // create a listener for the notification interface
-        Object[] returns = new Object[2];
-        PropertyUtil.Listener listener = createListenerThread(returns);
-
-        // read it in, and do a comparison
-        Properties prop2 = PropertyUtil.getProperties(file1, listener);
-        logger.info("Read in properties: " + prop2);
-        assertEquals(prop1, prop2);
-        assertEquals("p1 value", prop2.getProperty("p1"));
-        assertEquals("p2 value", prop2.getProperty("p2"));
-        assertEquals("p3 value", prop2.getProperty("p3"));
-
-        // make some changes, and update the file (p3 is left unchanged)
-        prop2.remove("p1"); // remove one property
-        prop2.setProperty("p2", "new p2 value");    // change one property
-        prop2.setProperty("p4", "p4 value");        // add a new property
-        logger.info("Modified properties: " + prop2);
-
-        // now, update the file, and wait for notification
-        synchronized (returns) {
-            createFile("createAndReadPropertyFile-2", prop2);
-
-            // wait up to 60 seconds, although we should receive notification
-            // in 10 seconds or less (if things are working)
-            returns.wait(60000L);
-        }
-
-        // verify we have the updates
-        assertEquals(prop2, returns[0]);
-
-        // verify that we have the expected set of keys
-        assertEquals(new TreeSet<String>(Arrays.asList(new String[]{"p1", "p2", "p4"})),
-                returns[1]);
     }
 }

@@ -86,6 +86,7 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void globalInit(String[] args, String configDir) {
         addLog("globalInit");
     }
@@ -93,6 +94,7 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public KieSession activatePolicySession(PolicyContainer policyContainer, String name, String kieBaseName) {
         addLog("activatePolicySession");
         return null;
@@ -101,6 +103,7 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void newPolicySession(PolicySession policySession) {
         addLog("newPolicySession");
     }
@@ -108,6 +111,7 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public PolicySession.ThreadModel selectThreadModel(PolicySession session) {
         addLog("selectThreadModel");
         return null;
@@ -116,6 +120,7 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void disposeKieSession(PolicySession policySession) {
         addLog("disposeKieSession");
     }
@@ -123,6 +128,7 @@ public class PolicySessionFeatureApiMock implements PolicySessionFeatureApi {
     /**
      * {@inheritDoc}.
      */
+    @Override
     public void destroyKieSession(PolicySession policySession) {
         addLog("destroyKieSession");
     }

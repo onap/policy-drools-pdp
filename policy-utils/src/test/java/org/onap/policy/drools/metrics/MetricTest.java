@@ -48,12 +48,12 @@ class MetricTest {
     void testPojo() {
         PojoClass metric = PojoClassFactory.getPojoClass(Metric.class);
         Validator val = ValidatorBuilder
-                .create()
-                .with(new SetterMustExistRule())
-                .with(new GetterMustExistRule())
-                .with(new SetterTester())
-                .with(new GetterTester())
-                .build();
+            .create()
+            .with(new SetterMustExistRule())
+            .with(new GetterMustExistRule())
+            .with(new SetterTester())
+            .with(new GetterTester())
+            .build();
         val.validate(metric);
     }
 
@@ -189,5 +189,25 @@ class MetricTest {
     void testToTimestamp() {
         Instant now = Instant.now();
         assertEquals(new SimpleDateFormat(Metric.DATE_FORMAT).format(Date.from(now)), Metric.toTimestamp(now));
+    }
+
+    @Test
+    void testElapsedTime_EndTimeStartTimeNullValues() {
+        // test seems unnecessary, but when setElapsedTime receives null,
+        // the method tries to calculate elapsed time between start and end time,
+        // which only having the values was covered.
+        Metric metric = new Metric();
+
+        metric.setElapsedTime(null);
+        assertNull(metric.getElapsedTime());
+
+        metric.setEndTime(Instant.now());
+        metric.setElapsedTime(null);
+        assertNull(metric.getElapsedTime());
+
+        metric = new Metric();
+        metric.setStartTime(Instant.now());
+        metric.setElapsedTime(null);
+        assertNull(metric.getElapsedTime());
     }
 }

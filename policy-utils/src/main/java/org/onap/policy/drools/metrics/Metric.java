@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,8 +135,7 @@ public class Metric {
         }
 
         if (endTime != null && startTime != null) {
-            this.elapsedTime =
-                    Duration.between(startTime, endTime).toMillis();
+            this.elapsedTime = Duration.between(startTime, endTime).toMillis();
             return;
         }
 
