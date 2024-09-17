@@ -31,7 +31,6 @@ import org.onap.policy.common.utils.coder.StandardCoder;
 import org.onap.policy.common.utils.resources.ResourceUtils;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,7 @@ public class DomainMaker {
             return false;
         }
 
-        return validators.get(policyType).isConformant(json);
+        return getValidator(policyType).isConformant(json);
     }
 
     /**
@@ -94,7 +93,7 @@ public class DomainMaker {
         }
 
         try {
-            return validators.get(policyType).encode(domainPolicy) != null;
+            return getValidator(policyType).encode(domainPolicy) != null;
         } catch (CoderException e) {
             logger.info("policy {}:{} is not conformant", policyType, domainPolicy.getClass().getName(), e);
             return false;
@@ -116,7 +115,7 @@ public class DomainMaker {
         }
 
         try {
-            validators.get(policy.getTypeIdentifier()).conformance(rawPolicy);
+            getValidator(policy.getTypeIdentifier()).conformance(rawPolicy);
         } catch (CoderException e) {
             logger.error("policy {}:{}:{} is not conformant",
                 policy.getTypeIdentifier(), policy.getName(), policy.getVersion(), e);
@@ -137,7 +136,7 @@ public class DomainMaker {
         }
 
         try {
-            validators.get(policyType).encode(domainPolicy);
+            getValidator(policyType).encode(domainPolicy);
         } catch (CoderException e) {
             logger.error("policy {}:{} is not conformant", policyType, domainPolicy.getClass().getName(), e);
             return false;
@@ -190,29 +189,21 @@ public class DomainMaker {
     public <T> T convertTo(@NonNull ToscaConceptIdentifier policyType, @NonNull String json, @NonNull Class<T> clazz)
         throws CoderException {
         if (isRegistered(policyType)) {
-            return validators.get(policyType).decode(json, clazz);
+            return getValidator(policyType).decode(json, clazz);
         } else {
             return nonValCoder.decode(json, clazz);
         }
-    }
-
-    /**
-     * Converts a Tosca Policy Type specification to a domain-specific json specification.
-     */
-    public String convertToSchema(@NonNull ToscaPolicyType policyType) {
-        //
-        // TODO:   // NOSONAR
-        // 1. Convert Tosca Policy Type definition schema to suitable json schema.
-        // 2. Call registerValidator to register
-        throw new UnsupportedOperationException("schema generation from policy type is not supported");
     }
 
     public boolean isRegistered(@NonNull ToscaConceptIdentifier policyType) {
         return validators.containsKey(policyType) || registerValidator(policyType);
     }
 
+    private StandardValCoder getValidator(ToscaConceptIdentifier policyType) {
+        return validators.get(policyType);
+    }
 
-    private String serialize(@NonNull ToscaPolicy policy) {
+    private String serialize(ToscaPolicy policy) {
         String rawPolicy = null;
         try {
             rawPolicy = nonValCoder.encode(policy);

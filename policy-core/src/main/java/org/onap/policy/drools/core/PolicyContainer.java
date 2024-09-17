@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
@@ -49,13 +51,13 @@ public class PolicyContainer implements Startable {
     // get an instance of logger
     private static final Logger logger = LoggerFactory.getLogger(PolicyContainer.class);
     // 'KieServices' singleton
-    private static KieServices kieServices = KieServices.Factory.get();
+    private static final KieServices kieServices = KieServices.Factory.get();
 
     // set of all 'PolicyContainer' instances
     private static final HashSet<PolicyContainer> containers = new HashSet<>();
 
     // maps feature objects to per-PolicyContainer data
-    private ConcurrentHashMap<Object, Object> adjuncts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Object, Object> adjuncts = new ConcurrentHashMap<>();
 
     // 'KieContainer' associated with this 'PolicyContainer'
     @Getter
@@ -90,9 +92,9 @@ public class PolicyContainer implements Startable {
      *
      * <p>An exception occurs if the creation of the 'KieContainer' fails.
      *
-     * @param groupId the 'groupId' associated with the artifact
+     * @param groupId    the 'groupId' associated with the artifact
      * @param artifactId the artifact name
-     * @param version a comma-separated list of possible versions
+     * @param version    a comma-separated list of possible versions
      */
     public PolicyContainer(String groupId, String artifactId, String version) {
         this(kieServices.newReleaseId(groupId, artifactId, version));
@@ -112,7 +114,7 @@ public class PolicyContainer implements Startable {
         if (newReleaseId.getVersion().contains(",")) {
             // this is actually a comma-separated list of release ids
             newReleaseId =
-                    loadArtifact(newReleaseId.getGroupId(), newReleaseId.getArtifactId(), newReleaseId.getVersion());
+                loadArtifact(newReleaseId.getGroupId(), newReleaseId.getArtifactId(), newReleaseId.getVersion());
         } else {
             kieContainer = kieServices.newKieContainer(newReleaseId);
         }
@@ -138,9 +140,9 @@ public class PolicyContainer implements Startable {
      * Load an artifact into a new KieContainer. This method handles the case where the 'version' is
      * actually a comma-separated list of versions.
      *
-     * @param groupId the 'groupId' associated with the artifact
+     * @param groupId    the 'groupId' associated with the artifact
      * @param artifactId the artifact name
-     * @param version a comma-separated list of possible versions
+     * @param version    a comma-separated list of possible versions
      */
     private ReleaseId loadArtifact(String groupId, String artifactId, String version) {
         String[] versions = version.split(",");
@@ -180,15 +182,11 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * Get name.
+     * Get name in the form of (groupId + ":" + artifactId + ":" + version)
+     * Note that the name changes after a successful call to 'updateToVersion', although
+     * typically only the 'version' part changes.
      *
-     * @return the name of the container, which is the String equivalent of the 'ReleaseId'. It has
-     *         the form:
-     *
-     *         (groupId + ":" + artifactId + ":" + version)
-     *
-     *         Note that the name changes after a successful call to 'updateToVersion', although
-     *         typically only the 'version' part changes.
+     * @return the name of the container, which is the String equivalent of the 'ReleaseId'.
      */
     public String getName() {
         return kieContainer.getReleaseId().toString();
@@ -204,7 +202,7 @@ public class PolicyContainer implements Startable {
     }
 
     /**
-     * Get group Id.
+     * Get group id.
      *
      * @return the Maven GroupId of the top-level artifact wrapped by the container.
      */
@@ -235,7 +233,7 @@ public class PolicyContainer implements Startable {
      * Fetch the named 'PolicySession'.
      *
      * @param name the name of the KieSession (which is also the name of the associated
-     *        PolicySession)
+     *             PolicySession)
      * @return a PolicySession if found, 'null' if not
      */
     public PolicySession getPolicySession(String name) {
@@ -245,7 +243,7 @@ public class PolicyContainer implements Startable {
     /**
      * Internal method to create a PolicySession, possibly restoring it from persistent storage.
      *
-     * @param name of the KieSession and PolicySession
+     * @param name        of the KieSession and PolicySession
      * @param kieBaseName name of the associated 'KieBase' instance
      * @return a new or existing PolicySession, or 'null' if not found
      */
@@ -255,7 +253,7 @@ public class PolicyContainer implements Startable {
             PolicySession session = sessions.computeIfAbsent(name, key -> makeSession(name, kieBaseName));
 
             logger.info("activatePolicySession:session - {} is returned.",
-                            session == null ? "null" : session.getFullName());
+                session == null ? "null" : session.getFullName());
             return session;
         }
     }
@@ -307,30 +305,32 @@ public class PolicyContainer implements Startable {
      * provides a way for 'KieSession' instances that are created programmatically to fit into this
      * framework.
      *
-     * @param name the name for the new 'PolicySession'
+     * @param name       the name for the new 'PolicySession'
      * @param kieSession a 'KieSession' instance, that will be included in this infrastructure
      * @return the new 'PolicySession'
      * @throws IllegalArgumentException if 'kieSession' does not reside within this container
-     * @throws IllegalStateException if a 'PolicySession' already exists with this name
+     * @throws IllegalStateException    if a 'PolicySession' already exists with this name
      */
     public PolicySession adoptKieSession(String name, KieSession kieSession) {
 
-        if (name == null) {
+        if (StringUtils.isBlank(name)) {
             logger.warn("adoptKieSession:input name is null");
             throw new IllegalArgumentException("KieSession input name is null " + getName());
-        } else if (kieSession == null) {
+        }
+
+        if (kieSession == null) {
             logger.warn("adoptKieSession:input kieSession is null");
             throw new IllegalArgumentException("KieSession '" + name + "' is null " + getName());
-        } else {
-            logger.info("adoptKieSession:name: {} kieSession: {}", name, kieSession);
         }
+
+        logger.info("adoptKieSession:name: {} kieSession: {}", name, kieSession);
         // fetch KieBase, and verify it belongs to this KieContainer
         var match = false;
         var kieBase = kieSession.getKieBase();
         logger.info("adoptKieSession:kieBase: {}", kieBase);
         for (String kieBaseName : kieContainer.getKieBaseNames()) {
             logger.info("adoptKieSession:kieBaseName: {}", kieBaseName);
-            if (kieBase == kieContainer.getKieBase(kieBaseName)) {
+            if (kieBase.equals(kieContainer.getKieBase(kieBaseName))) {
                 match = true;
                 break;
             }
@@ -338,9 +338,9 @@ public class PolicyContainer implements Startable {
         logger.info("adoptKieSession:match {}", match);
         // if we don't have a match yet, the last chance is to look at the
         // default KieBase, if it exists
-        if (!match && kieBase != kieContainer.getKieBase()) {
+        if (!match && !kieBase.equals(kieContainer.getKieBase())) {
             throw new IllegalArgumentException(
-                    "KieSession '" + name + "' does not reside within container " + getName());
+                "KieSession '" + name + "' does not reside within container " + getName());
         }
 
         synchronized (sessions) {
@@ -370,15 +370,13 @@ public class PolicyContainer implements Startable {
      * This call 'KieContainer.updateToVersion()', and returns the associated response as a String.
      * If successful, the name of this 'PolicyContainer' changes to match the new version.
      *
-     * @param newVersion this is the version to update to (the 'groupId' and 'artifactId' remain the
-     *        same)
-     * @return the list of messages associated with the update (not sure if this can be 'null', or
-     *         how to determine success/failure)
+     * @param newVersion this is the version to update to ('groupId' and 'artifactId' remain the same)
+     * @return the list of messages associated with the update
      */
     public String updateToVersion(String newVersion) {
         var releaseId = kieContainer.getReleaseId();
-        var results = this.updateToVersion(
-                kieServices.newReleaseId(releaseId.getGroupId(), releaseId.getArtifactId(), newVersion));
+        var results = this.updateToVersion(kieServices.newReleaseId(releaseId.getGroupId(),
+            releaseId.getArtifactId(), newVersion));
 
         List<Message> messages = results == null ? null : results.getMessages();
         return messages == null ? null : messages.toString();
@@ -455,46 +453,46 @@ public class PolicyContainer implements Startable {
      *
      * @param releaseId the release id used to create the container
      */
-    public synchronized void startScanner(ReleaseId releaseId) {
+    public synchronized void startScanner(@NonNull ReleaseId releaseId) {
         String version = releaseId.getVersion();
 
-        if (scannerStarted || scanner != null || version == null) {
+        if (!isValidVersion(version)) {
+            logger.warn("version is invalid - check if empty or if it's not LATEST, RELEASE or SNAPSHOT");
             return;
         }
 
-        if (!("LATEST".equals(version) || "RELEASE".equals(version) || version.endsWith("-SNAPSHOT"))) {
+        if (isScannerStarted()) {
+            logger.warn("scanner already started");
             return;
         }
 
         // create the scanner, and poll at 60 second intervals
-        try {
-            scannerStarted = true;
 
-            // start this in a separate thread -- it can block for a long time
-            new Thread("Scanner Starter " + getName()) {
-                @Override
-                public void run() {
+        scannerStarted = true;
+
+        // start this in a separate thread -- it can block for a long time
+        new Thread("Scanner Starter " + getName()) {
+            @Override
+            public void run() {
+                try {
                     scanner = kieServices.newKieScanner(kieContainer);
                     scanner.start(60000L);
+                } catch (Exception e) {
+                    // sometimes the scanner initialization fails for some reason
+                    logger.error("startScanner error", e);
                 }
-            }.start();
-        } catch (Exception e) {
-            // sometimes the scanner initialization fails for some reason
-            logger.error("startScanner error", e);
-        }
+            }
+        }.start();
     }
 
     /**
      * Insert a fact into a specific named session.
      *
-     * @param name this is the session name
+     * @param name   this is the session name
      * @param object this is the fact to be inserted into the session
      * @return 'true' if the named session was found, 'false' if not
      */
     public boolean insert(String name, Object object) {
-        // TODO: Should the definition of 'name' be expanded to include an
-        // alternate entry point as well? For example, 'name.entryPoint' (or
-        // something other than '.' if that is a problem).
         synchronized (sessions) {
             PolicySession session = sessions.get(name);
             if (session != null) {
@@ -568,7 +566,7 @@ public class PolicyContainer implements Startable {
         Collection<PolicySession> localSessions;
 
         synchronized (sessions) {
-            // local set containing all of the sessions
+            // local set containing all the sessions
             localSessions = new HashSet<>(sessions.values());
 
             // clear the 'name->session' map in 'PolicyContainer'
@@ -631,7 +629,7 @@ public class PolicyContainer implements Startable {
         Collection<PolicySession> localSessions;
 
         synchronized (sessions) {
-            // local set containing all of the sessions
+            // local set containing all the sessions
             localSessions = new HashSet<>(sessions.values());
 
             // clear the 'name->session' map in 'PolicyContainer'
@@ -667,7 +665,7 @@ public class PolicyContainer implements Startable {
      * This method is called when the host goes from the 'standby->active' state.
      */
     public static void activate() {
-        // start all of the 'PolicyContainer' instances
+        // start all the 'PolicyContainer' instances
         for (PolicyContainer container : containers) {
             try {
                 container.start();
@@ -681,7 +679,7 @@ public class PolicyContainer implements Startable {
      * This method is called when the host goes from the 'active->standby' state.
      */
     public static void deactivate() {
-        // deactivate all of the 'PolicyContainer' instances
+        // deactivate all the 'PolicyContainer' instances
         for (PolicyContainer container : containers) {
             try {
                 container.stop();
@@ -694,7 +692,7 @@ public class PolicyContainer implements Startable {
     /**
      * This method does the following:
      *
-     * <p>1) Initializes logging 2) Starts the DroolsPDP Integrity Monitor 3) Initilaizes persistence
+     * <p>1) Initializes logging 2) Starts the DroolsPDP Integrity Monitor 3) Initializes persistence
      *
      * <p>It no longer reads in properties files, o creates 'PolicyContainer' instances.
      *
@@ -718,7 +716,7 @@ public class PolicyContainer implements Startable {
      * Fetch the adjunct object associated with a given feature.
      *
      * @param object this is typically the singleton feature object that is used as a key, but it
-     *        might also be useful to use nested objects within the feature as keys.
+     *               might also be useful to use nested objects within the feature as keys.
      * @return a feature-specific object associated with the key, or 'null' if it is not found.
      */
     public Object getAdjunct(Object object) {
@@ -729,9 +727,9 @@ public class PolicyContainer implements Startable {
      * Store the adjunct object associated with a given feature.
      *
      * @param object this is typically the singleton feature object that is used as a key, but it
-     *        might also be useful to use nested objects within the feature as keys.
-     * @param value a feature-specific object associated with the key, or 'null' if the
-     *        feature-specific object should be removed
+     *               might also be useful to use nested objects within the feature as keys.
+     * @param value  a feature-specific object associated with the key, or 'null' if the
+     *               feature-specific object should be removed
      */
     public void setAdjunct(Object object, Object value) {
         if (value == null) {
@@ -766,6 +764,35 @@ public class PolicyContainer implements Startable {
         // of packages to add
         for (String name : kieContainer.getKieBaseNames()) {
             KieUtils.addKiePackages(kieContainer.getKieBase(name), kiePackages);
+        }
+    }
+
+    /**
+     * Checks if boolean scannerStarted is true and if scanner itself is not null.
+     *
+     * @return true if the above is all true, false otherwise.
+     */
+    public boolean isScannerStarted() {
+        return scannerStarted || scanner != null;
+    }
+
+    /**
+     * Validation of a release version for starting a scanner.
+     * Can be valid if LATEST, RELEASE or SNAPSHOT version.
+     *
+     * @param version release version
+     * @return true if valid based on values above, false otherwise.
+     */
+    protected boolean isValidVersion(String version) {
+        if (StringUtils.isBlank(version)) {
+            logger.warn("version is empty");
+            return false;
+        }
+
+        if (version.toUpperCase().contains("LATEST") || version.toUpperCase().contains("RELEASE")) {
+            return true;
+        } else {
+            return version.toUpperCase().endsWith("-SNAPSHOT");
         }
     }
 }

@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -66,5 +67,29 @@ class AlwaysSuccessLockTest extends AlwaysLockBaseTest<AlwaysSuccessLock> {
 
         assertEquals(HOLD_SEC2, lock.getHoldSec());
         assertSame(callback2, lock.getCallback());
+    }
+
+    @Test
+    void testNullArgs() {
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(null, RESOURCE, OWNER_KEY, HOLD_SEC, callback));
+
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(LockState.WAITING, null, OWNER_KEY, HOLD_SEC, callback));
+
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(LockState.WAITING, RESOURCE, null, HOLD_SEC, callback));
+
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(LockState.WAITING, RESOURCE, OWNER_KEY, HOLD_SEC, null));
+
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(null, OWNER_KEY, HOLD_SEC, callback));
+
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(RESOURCE, null, HOLD_SEC, callback));
+
+        assertThrows(NullPointerException.class,
+            () -> new AlwaysSuccessLock(RESOURCE, OWNER_KEY, HOLD_SEC, null));
     }
 }

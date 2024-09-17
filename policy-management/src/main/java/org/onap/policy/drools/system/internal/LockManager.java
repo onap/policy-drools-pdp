@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2019, 2021 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,7 +123,7 @@ public abstract class LockManager<T extends FeatureLockImpl> implements PolicyRe
     /**
      * After performing checks, this invokes
      * {@link #makeLock(LockState, String, String, int, LockCallback)} to create a lock
-     * object, inserts it into the map, and then invokes {@link #finishLock(MgrLock)}.
+     * object, inserts it into the map, and then invokes {@link #finishLock(FeatureLockImpl)}.
      */
     @Override
     public Lock createLock(String resourceId, String ownerKey, int holdSec, LockCallback callback,

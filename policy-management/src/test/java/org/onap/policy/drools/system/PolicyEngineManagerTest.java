@@ -102,7 +102,7 @@ class PolicyEngineManagerTest {
     private static final Object MY_EVENT = new Object();
 
     private static final GsonTestUtils gson = new GsonMgmtTestBuilder().addTopicSourceMock().addTopicSinkMock()
-                    .addHttpServletServerMock().build();
+        .addHttpServletServerMock().build();
 
     private Properties properties;
     private PolicyEngineFeatureApi prov1;
@@ -579,22 +579,6 @@ class PolicyEngineManagerTest {
         verify(prov1).afterConfigure(mgr);
         verify(prov2).afterConfigure(mgr);
 
-        // middle stuff throws exception - still calls afterXxx
-        setUp();
-        when(endpoint.addTopicSources(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
-        when(endpoint.addTopicSinks(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
-        when(serverFactory.build(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
-        when(clientFactory.build(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
-        mgr.configure(properties);
-        verify(prov2).afterConfigure(mgr);
-
-        // null properties - nothing should be invoked
-        setUp();
-        Properties nullProps = null;
-        assertThatIllegalArgumentException().isThrownBy(() -> mgr.configure(nullProps));
-        verify(prov1, never()).beforeConfigure(mgr, properties);
-        verify(prov1, never()).afterConfigure(mgr);
-
         // other tests
         checkBeforeAfter(
             (prov, flag) -> when(prov.beforeConfigure(mgr, properties)).thenReturn(flag),
@@ -603,6 +587,26 @@ class PolicyEngineManagerTest {
             prov -> verify(prov).beforeConfigure(mgr, properties),
             () -> assertSame(properties, mgr.getProperties()),
             prov -> verify(prov).afterConfigure(mgr));
+    }
+
+    @Test
+    void testConfigureProperties_InvalidProperties() throws Exception {
+        // middle stuff throws exception - still calls afterXxx
+        when(endpoint.addTopicSources(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
+        when(endpoint.addTopicSinks(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
+        when(serverFactory.build(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
+        when(clientFactory.build(properties)).thenThrow(new IllegalArgumentException(EXPECTED));
+        mgr.configure(properties);
+        verify(prov2).afterConfigure(mgr);
+    }
+
+    @Test
+    void testConfigureProperties_NullProperties() {
+        // null properties - nothing should be invoked
+        Properties nullProps = null;
+        assertThatIllegalArgumentException().isThrownBy(() -> mgr.configure(nullProps));
+        verify(prov1, never()).beforeConfigure(mgr, properties);
+        verify(prov1, never()).afterConfigure(mgr);
     }
 
     @Test
@@ -631,17 +635,8 @@ class PolicyEngineManagerTest {
     }
 
     @Test
-    void testCreatePolicyController() throws Exception {
-        assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
-
-        verify(contProv1).beforeCreate(MY_NAME, properties);
-        verify(contProv2).beforeCreate(MY_NAME, properties);
-        verify(controller, never()).lock();
-        verify(contProv1).afterCreate(controller);
-        verify(contProv2).afterCreate(controller);
-
+    void testCreatePolicy_FirstProviderThrowsException() {
         // first provider throws exceptions - same result
-        setUp();
         when(contProv1.beforeCreate(MY_NAME, properties)).thenThrow(new RuntimeException(EXPECTED));
         when(contProv1.afterCreate(controller)).thenThrow(new RuntimeException(EXPECTED));
         assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
@@ -651,17 +646,11 @@ class PolicyEngineManagerTest {
         verify(controller, never()).lock();
         verify(contProv1).afterCreate(controller);
         verify(contProv2).afterCreate(controller);
+    }
 
-        // locked - same result, but engine locked
-        setUp();
-        mgr.lock();
-        assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
-        verify(contProv1).beforeCreate(MY_NAME, properties);
-        verify(controller, times(2)).lock();
-        verify(contProv2).afterCreate(controller);
-
+    @Test
+    void testCreatePolicyController_InvalidProperties() throws Exception {
         // empty name in properties - same result
-        setUp();
         properties.setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, "");
         assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
         verify(contProv1).beforeCreate(MY_NAME, properties);
@@ -677,6 +666,25 @@ class PolicyEngineManagerTest {
         properties.setProperty(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, "mistmatched-name");
         assertThatIllegalStateException().isThrownBy(() -> mgr.createPolicyController(MY_NAME, properties));
         verify(contProv1, never()).beforeCreate(MY_NAME, properties);
+    }
+
+    @Test
+    void testCreatePolicyController() throws Exception {
+        assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
+
+        verify(contProv1).beforeCreate(MY_NAME, properties);
+        verify(contProv2).beforeCreate(MY_NAME, properties);
+        verify(controller, never()).lock();
+        verify(contProv1).afterCreate(controller);
+        verify(contProv2).afterCreate(controller);
+
+        // locked - same result, but engine locked
+        setUp();
+        mgr.lock();
+        assertEquals(controller, mgr.createPolicyController(MY_NAME, properties));
+        verify(contProv1).beforeCreate(MY_NAME, properties);
+        verify(controller, times(2)).lock();
+        verify(contProv2).afterCreate(controller);
 
         // first provider generates controller - stops after first provider
         setUp();
@@ -902,7 +910,7 @@ class PolicyEngineManagerTest {
      * Tests the start() method, after setting some option.
      *
      * @param expectedResult what start() is expected to return
-     * @param setOption function that sets an option
+     * @param setOption      function that sets an option
      * @throws Throwable if an error occurs during setup
      */
     private void testStart(boolean expectedResult, RunnableWithEx setOption) throws Throwable {
@@ -1004,7 +1012,7 @@ class PolicyEngineManagerTest {
      * Tests the stop() method, after setting some option.
      *
      * @param expectedResult what stop() is expected to return
-     * @param setOption function that sets an option
+     * @param setOption      function that sets an option
      * @throws Throwable if an error occurs during setup
      */
     private void testStop(boolean expectedResult, RunnableWithEx setOption) throws Throwable {
@@ -1211,7 +1219,7 @@ class PolicyEngineManagerTest {
      * Tests the lock() method, after setting some option.
      *
      * @param expectedResult what lock() is expected to return
-     * @param setOption function that sets an option
+     * @param setOption      function that sets an option
      * @throws Throwable if an error occurs during setup
      */
     private void testLock(boolean expectedResult, RunnableWithEx setOption) throws Throwable {
@@ -1287,7 +1295,7 @@ class PolicyEngineManagerTest {
      * Tests the unlock() method, after setting some option.
      *
      * @param expectedResult what unlock() is expected to return
-     * @param setOption function that sets an option
+     * @param setOption      function that sets an option
      * @throws Throwable if an error occurs during setup
      */
     private void testUnlock(boolean expectedResult, RunnableWithEx setOption) throws Throwable {
@@ -1411,8 +1419,8 @@ class PolicyEngineManagerTest {
         assertEquals(1, mgr.getStats().getSubgroupStats().get(CONTROLLOOP).getPolicyExecutedFailCount());
 
         Summary.Child.Value summary =
-                PolicyEngineManagerImpl.transLatencySecsSummary
-                        .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
+            PolicyEngineManagerImpl.transLatencySecsSummary
+                .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
 
         assertEquals(0, summary.count, 0.0);
         assertEquals(0, summary.sum, 0.0);
@@ -1423,8 +1431,8 @@ class PolicyEngineManagerTest {
         mgr.transaction(CONTROLLER1, CONTROLLOOP, metric);
 
         summary =
-                PolicyEngineManagerImpl.transLatencySecsSummary
-                        .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
+            PolicyEngineManagerImpl.transLatencySecsSummary
+                .labels(CONTROLLER1, CONTROLLOOP, POLICY, PdpResponseStatus.FAIL.name()).get();
 
         assertEquals(1, summary.count, 0.0);
         assertEquals(5, summary.sum, 0.0);
@@ -1553,7 +1561,7 @@ class PolicyEngineManagerTest {
         mgr.start();
         when(sink1.send(any())).thenThrow(new ArithmeticException(EXPECTED));
         assertThatThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, MY_TOPIC, MY_EVENT))
-                        .isInstanceOf(ArithmeticException.class);
+            .isInstanceOf(ArithmeticException.class);
 
         /*
          * For remaining tests, have the controller handle delivery.
@@ -1610,7 +1618,7 @@ class PolicyEngineManagerTest {
 
         // unknown topic
         assertThatIllegalStateException()
-                        .isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, "unknown-topic", MESSAGE));
+            .isThrownBy(() -> mgr.deliver(CommInfrastructure.NOOP, "unknown-topic", MESSAGE));
 
         // locked
         mgr.lock();
@@ -1737,7 +1745,7 @@ class PolicyEngineManagerTest {
 
         // not configured yet, thus no lock manager
         assertThatIllegalStateException()
-                        .isThrownBy(() -> mgr.createLock(MY_RESOURCE, MY_OWNER, 10, callback, false));
+            .isThrownBy(() -> mgr.createLock(MY_RESOURCE, MY_OWNER, 10, callback, false));
 
         // now configure it and try again
         mgr.configure(properties);
@@ -1745,14 +1753,14 @@ class PolicyEngineManagerTest {
 
         // test illegal args
         assertThatThrownBy(() -> mgr.createLock(null, MY_OWNER, 10, callback, false))
-                        .hasMessageContaining("resourceId");
+            .hasMessageContaining("resourceId");
         assertThatThrownBy(() -> mgr.createLock(MY_RESOURCE, null, 10, callback, false))
-                        .hasMessageContaining("ownerKey");
+            .hasMessageContaining("ownerKey");
         assertThatIllegalArgumentException()
-                        .isThrownBy(() -> mgr.createLock(MY_RESOURCE, MY_OWNER, -1, callback, false))
-                        .withMessageContaining("holdSec");
+            .isThrownBy(() -> mgr.createLock(MY_RESOURCE, MY_OWNER, -1, callback, false))
+            .withMessageContaining("holdSec");
         assertThatThrownBy(() -> mgr.createLock(MY_RESOURCE, MY_OWNER, 10, null, false))
-                        .hasMessageContaining("callback");
+            .hasMessageContaining("callback");
     }
 
     @Test
@@ -1850,19 +1858,19 @@ class PolicyEngineManagerTest {
      * Performs an operation that has a beforeXxx method and an afterXxx method. Tries
      * combinations where beforeXxx and afterXxx return {@code true} and {@code false}.
      *
-     * @param setBefore function to set the return value of a provider's beforeXxx method
-     * @param setAfter function to set the return value of a provider's afterXxx method
-     * @param action invokes the operation
+     * @param setBefore    function to set the return value of a provider's beforeXxx method
+     * @param setAfter     function to set the return value of a provider's afterXxx method
+     * @param action       invokes the operation
      * @param verifyBefore verifies that a provider's beforeXxx method was invoked
      * @param verifyMiddle verifies that the action occurring between the beforeXxx loop
-     *        and the afterXxx loop was invoked
-     * @param verifyAfter verifies that a provider's afterXxx method was invoked
+     *                     and the afterXxx loop was invoked
+     * @param verifyAfter  verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
     private void checkBeforeAfter(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
+                                  BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                                  Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                                  Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         checkBeforeAfter_FalseFalse(setBefore, setAfter, action, verifyBefore, verifyMiddle, verifyAfter);
         checkBeforeAfter_FalseTrue(setBefore, setAfter, action, verifyBefore, verifyMiddle, verifyAfter);
@@ -1875,19 +1883,19 @@ class PolicyEngineManagerTest {
      * Performs an operation that has a beforeXxx method and an afterXxx method. Tries the
      * case where both the beforeXxx and afterXxx methods return {@code false}.
      *
-     * @param setBefore function to set the return value of a provider's beforeXxx method
-     * @param setAfter function to set the return value of a provider's afterXxx method
-     * @param action invokes the operation
+     * @param setBefore    function to set the return value of a provider's beforeXxx method
+     * @param setAfter     function to set the return value of a provider's afterXxx method
+     * @param action       invokes the operation
      * @param verifyBefore verifies that a provider's beforeXxx method was invoked
      * @param verifyMiddle verifies that the action occurring between the beforeXxx loop
-     *        and the afterXxx loop was invoked
-     * @param verifyAfter verifies that a provider's afterXxx method was invoked
+     *                     and the afterXxx loop was invoked
+     * @param verifyAfter  verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
     private void checkBeforeAfter_FalseFalse(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
+                                             BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                                             Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                                             Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         setUp();
 
@@ -1916,19 +1924,19 @@ class PolicyEngineManagerTest {
      * case where the first provider's afterXxx returns {@code true}, while the others
      * return {@code false}.
      *
-     * @param setBefore function to set the return value of a provider's beforeXxx method
-     * @param setAfter function to set the return value of a provider's afterXxx method
-     * @param action invokes the operation
+     * @param setBefore    function to set the return value of a provider's beforeXxx method
+     * @param setAfter     function to set the return value of a provider's afterXxx method
+     * @param action       invokes the operation
      * @param verifyBefore verifies that a provider's beforeXxx method was invoked
      * @param verifyMiddle verifies that the action occurring between the beforeXxx loop
-     *        and the afterXxx loop was invoked
-     * @param verifyAfter verifies that a provider's afterXxx method was invoked
+     *                     and the afterXxx loop was invoked
+     * @param verifyAfter  verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
     private void checkBeforeAfter_FalseTrue(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
+                                            BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                                            Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                                            Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         setUp();
 
@@ -1957,19 +1965,19 @@ class PolicyEngineManagerTest {
      * case where the first provider's beforeXxx returns {@code true}, while the others
      * return {@code false}.
      *
-     * @param setBefore function to set the return value of a provider's beforeXxx method
-     * @param setAfter function to set the return value of a provider's afterXxx method
-     * @param action invokes the operation
+     * @param setBefore    function to set the return value of a provider's beforeXxx method
+     * @param setAfter     function to set the return value of a provider's afterXxx method
+     * @param action       invokes the operation
      * @param verifyBefore verifies that a provider's beforeXxx method was invoked
      * @param verifyMiddle verifies that the action occurring between the beforeXxx loop
-     *        and the afterXxx loop was invoked
-     * @param verifyAfter verifies that a provider's afterXxx method was invoked
+     *                     and the afterXxx loop was invoked
+     * @param verifyAfter  verifies that a provider's afterXxx method was invoked
      * @throws Exception if an error occurs while calling {@link #setUp()}
      */
     private void checkBeforeAfter_TrueFalse(BiConsumer<PolicyEngineFeatureApi, Boolean> setBefore,
-                    BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
-                    Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
-                    Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
+                                            BiConsumer<PolicyEngineFeatureApi, Boolean> setAfter, Runnable action,
+                                            Consumer<PolicyEngineFeatureApi> verifyBefore, Runnable verifyMiddle,
+                                            Consumer<PolicyEngineFeatureApi> verifyAfter) throws Exception {
 
         setUp();
 

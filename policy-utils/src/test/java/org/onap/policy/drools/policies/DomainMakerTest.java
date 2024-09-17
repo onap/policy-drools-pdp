@@ -26,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,7 +42,7 @@ import org.onap.policy.drools.models.domains.a.Nested;
 import org.onap.policy.drools.models.domains.a.Properties;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaConceptIdentifier;
 import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicy;
-import org.onap.policy.models.tosca.authorative.concepts.ToscaPolicyType;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class DomainMakerTest {
 
@@ -62,6 +64,13 @@ class DomainMakerTest {
 
         policyTypeId.setVersion("2.0.0");
         assertFalse(domainMaker.isConformant(policyTypeId, rawJsonPolicyType));
+
+        // for code coverage
+        assertThatThrownBy(() -> domainMaker.isConformant(null, "{\"json\":\"valid\"}"))
+            .hasMessageContaining("policyType is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.isConformant(policyTypeId, null))
+            .hasMessageContaining("json is marked non-null but is null");
     }
 
     @Test
@@ -93,6 +102,12 @@ class DomainMakerTest {
         // not registered schema for policy type
         policyTypeId.setVersion("2.0.0");
         assertFalse(domainMaker.isDomainConformant(policyTypeId, domainAPolicy));
+
+        assertThatThrownBy(() -> domainMaker.isDomainConformant(null, domainAPolicy))
+            .hasMessageContaining("policyType is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.isDomainConformant(policyTypeId, null))
+            .hasMessageContaining("domainPolicy is marked non-null but is null");
     }
 
 
@@ -117,6 +132,12 @@ class DomainMakerTest {
         policy2.setTypeVersion("4.2.5");
         assertFalse(domainMaker.conformance(policy2));
         assertFalse(domainMaker.conformance(policy2.getTypeIdentifier(), domainAPolicy));
+
+        assertThatThrownBy(() -> domainMaker.conformance(null, domainAPolicy))
+            .hasMessageContaining("policyType is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.conformance(null))
+            .hasMessageContaining("policy is marked non-null but is null");
     }
 
     @Test
@@ -136,6 +157,15 @@ class DomainMakerTest {
         assertFalse(domainMaker.isConformant(policy));
 
         assertFalse(domainMaker.registerValidator(policy.getTypeIdentifier(), "$schema"));
+
+        assertThatThrownBy(() -> domainMaker.registerValidator(null))
+            .hasMessageContaining("policyType is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.registerValidator(null, "$schema"))
+            .hasMessageContaining("policyType is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.registerValidator(policy.getTypeIdentifier(), null))
+            .hasMessageContaining("schema is marked non-null but is null");
     }
 
     @Test
@@ -146,14 +176,21 @@ class DomainMakerTest {
 
         assertNotNull(domainMaker.convertTo(getToscaPolicy("src/test/resources/policyA-no-policy-type.json"),
             DomainAPolicy.class));
-    }
 
-    @Test
-    void testConvertToSchema() {
-        ToscaPolicyType type = new ToscaPolicyType();
-        assertThatThrownBy(() -> domainMaker
-            .convertToSchema(type))
-            .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> domainMaker.convertTo(null, DomainAPolicy.class))
+            .hasMessageContaining("toscaPolicy is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.convertTo(mock(ToscaPolicy.class), null))
+            .hasMessageContaining("clazz is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.convertTo(null, "json", DomainAPolicy.class))
+            .hasMessageContaining("policyType is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.convertTo(mock(ToscaConceptIdentifier.class), null, DomainAPolicy.class))
+            .hasMessageContaining("json is marked non-null but is null");
+
+        assertThatThrownBy(() -> domainMaker.convertTo(mock(ToscaConceptIdentifier.class), "json", null))
+            .hasMessageContaining("clazz is marked non-null but is null");
     }
 
     @Test
@@ -166,6 +203,25 @@ class DomainMakerTest {
             new ToscaConceptIdentifier("policy.type.external", "7.7.9");
         assertFalse(domainMaker.isRegistered(policyTypeId2));
 
+        assertThatThrownBy(() -> domainMaker.isRegistered(null))
+            .hasMessageContaining("policyType is marked non-null but is null");
+    }
+
+    @Test
+    void testIsConformant_SerializeReturnsNull() throws CoderException {
+        var mockDomainMaker = mock(DomainMaker.class);
+        var mockToscaPolicy = mock(ToscaPolicy.class);
+        when(mockDomainMaker.isConformant(mockToscaPolicy)).thenCallRealMethod();
+
+        var mockCoder = mock(StandardCoder.class);
+        when(mockCoder.encode(mockToscaPolicy)).thenThrow(new CoderException("error"));
+        ReflectionTestUtils.setField(mockDomainMaker, "nonValCoder", mockCoder);
+
+        assertFalse(mockDomainMaker.isConformant(mockToscaPolicy));
+
+        when(mockDomainMaker.conformance(mockToscaPolicy)).thenCallRealMethod();
+        when(mockDomainMaker.isRegistered(mockToscaPolicy.getTypeIdentifier())).thenReturn(true);
+        assertFalse(mockDomainMaker.conformance(mockToscaPolicy));
     }
 
     private String getJsonFromFile(String filePath) throws IOException {

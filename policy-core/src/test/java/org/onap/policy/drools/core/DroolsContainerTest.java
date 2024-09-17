@@ -79,44 +79,7 @@ public class DroolsContainerTest {
      */
     @Test
     void createAndUpdate() throws Exception {
-        // make sure feature log starts out clean
-        PolicySessionFeatureApiMock.getLog();
-
-        // run 'globalInit', and verify expected feature hook fired
-        PolicyContainer.globalInit(new String[0]);
-        assertEquals(List.of("globalInit"),
-                PolicySessionFeatureApiMock.getLog());
-
-        // initial conditions -- there should be no containers
-        assertEquals(0, PolicyContainer.getPolicyContainers().size());
-
-        // create the container, and start it
-        PolicyContainer container =
-                new PolicyContainer("org.onap.policy.drools-pdp",
-                        "drools-artifact1", "17.1.0-SNAPSHOT");
-        container.start();
-        assertTrue(container.isAlive());
-
-        // verify expected feature hooks fired
-        assertEquals(Arrays.asList("activatePolicySession",
-                "newPolicySession",
-                "selectThreadModel"),
-                PolicySessionFeatureApiMock.getLog());
-
-        // this container should be on the list
-        {
-            Collection<PolicyContainer> containers =
-                    PolicyContainer.getPolicyContainers();
-            assertEquals(1, containers.size());
-            assertTrue(containers.contains(container));
-        }
-
-        // verify initial container attributes
-        assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.1.0-SNAPSHOT",
-                container.getName());
-        assertEquals("org.onap.policy.drools-pdp", container.getGroupId());
-        assertEquals("drools-artifact1", container.getArtifactId());
-        assertEquals("17.1.0-SNAPSHOT", container.getVersion());
+        PolicyContainer container = validateCreatedContainer();
 
         try {
             // fetch the session, and verify that it exists
@@ -225,20 +188,17 @@ public class DroolsContainerTest {
 
         // run 'globalInit', and verify expected feature hook fired
         PolicyContainer.globalInit(new String[0]);
-        assertEquals(List.of("globalInit-exception"),
-                PolicySessionFeatureApiMock.getLog());
+        assertEquals(List.of("globalInit-exception"), PolicySessionFeatureApiMock.getLog());
 
         // initial conditions -- there should be no containers
         assertEquals(0, PolicyContainer.getPolicyContainers().size());
 
-        String versionList =
-                "17.3.0-SNAPSHOT,17.1.0-SNAPSHOT,17.2.0-SNAPSHOT";
+        String versionList = "17.3.0-SNAPSHOT,17.1.0-SNAPSHOT,17.2.0-SNAPSHOT";
 
         // versions should be tried in order -- the 17.1.0-SNAPSHOT should "win",
         // given the fact that '17.3.0-SNAPSHOT' doesn't exist
         PolicyContainer container =
-                new PolicyContainer("org.onap.policy.drools-pdp",
-                        "drools-artifact1", versionList);
+                new PolicyContainer("org.onap.policy.drools-pdp", "drools-artifact1", versionList);
         // the following should be equivalent to 'container.start()'
         PolicyContainer.activate();
         assertTrue(container.isAlive());
@@ -251,15 +211,12 @@ public class DroolsContainerTest {
 
         // this container should be on the list
         {
-            Collection<PolicyContainer> containers =
-                    PolicyContainer.getPolicyContainers();
-            assertEquals(1, containers.size());
-            assertTrue(containers.contains(container));
+            Collection<PolicyContainer> containers = PolicyContainer.getPolicyContainers();
+            assertTrue(containers.contains(container) && (containers.size() == 1));
         }
 
         // verify initial container attributes
-        assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.1.0-SNAPSHOT",
-                container.getName());
+        assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.1.0-SNAPSHOT", container.getName());
         assertEquals("org.onap.policy.drools-pdp", container.getGroupId());
         assertEquals("drools-artifact1", container.getArtifactId());
         assertEquals("17.1.0-SNAPSHOT", container.getVersion());
@@ -288,8 +245,7 @@ public class DroolsContainerTest {
             // get all sessions, and verify that this one is the only one
             {
                 Collection<PolicySession> sessions = container.getPolicySessions();
-                assertEquals(1, sessions.size());
-                assertTrue(sessions.contains(session));
+                assertTrue(sessions.contains(session) && (1 == sessions.size()));
             }
 
             // verify session attributes
@@ -340,5 +296,51 @@ public class DroolsContainerTest {
 
         // final conditions -- there should be no containers
         assertEquals(0, PolicyContainer.getPolicyContainers().size());
+    }
+
+    /**
+     * Creates a policy container.
+     * @return a container used on create and update test
+     */
+    private static PolicyContainer validateCreatedContainer() {
+        // make sure feature log starts out clean
+        PolicySessionFeatureApiMock.getLog();
+
+        // run 'globalInit', and verify expected feature hook fired
+        PolicyContainer.globalInit(new String[0]);
+        assertEquals(List.of("globalInit"),
+            PolicySessionFeatureApiMock.getLog());
+
+        // initial conditions -- there should be no containers
+        assertEquals(0, PolicyContainer.getPolicyContainers().size());
+
+        // create the container, and start it
+        PolicyContainer container =
+            new PolicyContainer("org.onap.policy.drools-pdp",
+                "drools-artifact1", "17.1.0-SNAPSHOT");
+        container.start();
+        assertTrue(container.isAlive());
+
+        // verify expected feature hooks fired
+        assertEquals(Arrays.asList("activatePolicySession",
+                "newPolicySession",
+                "selectThreadModel"),
+            PolicySessionFeatureApiMock.getLog());
+
+        // this container should be on the list
+        {
+            Collection<PolicyContainer> containers =
+                PolicyContainer.getPolicyContainers();
+            assertEquals(1, containers.size());
+            assertTrue(containers.contains(container));
+        }
+
+        // verify initial container attributes
+        assertEquals("org.onap.policy.drools-pdp:drools-artifact1:17.1.0-SNAPSHOT",
+            container.getName());
+        assertEquals("org.onap.policy.drools-pdp", container.getGroupId());
+        assertEquals("drools-artifact1", container.getArtifactId());
+        assertEquals("17.1.0-SNAPSHOT", container.getVersion());
+        return container;
     }
 }
