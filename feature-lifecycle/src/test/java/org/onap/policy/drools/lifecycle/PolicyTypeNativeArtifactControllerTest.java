@@ -114,8 +114,6 @@ class PolicyTypeNativeArtifactControllerTest extends LifecycleStateRunningTest {
         /* idempotence */
         assertTrue(controller.deploy(policy));
         assertDeployed();
-
-        // TODO: test a point version upgrade
     }
 
     private void assertUndeployed() {

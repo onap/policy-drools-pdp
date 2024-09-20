@@ -3,6 +3,7 @@
  * ONAP
  * ================================================================================
  * Copyright (C) 2017-2018,2022 AT&T Intellectual Property. All rights reserved.
+ * Modifications Copyright (C) 2024 Nordix Foundation.
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +37,7 @@ public class RestMockHealthCheck {
 
     protected static final String OK_MESSAGE = "All Alive";
     protected static volatile boolean stuck = false;
-    protected static volatile long WAIT = 15;
+    protected static volatile long wait = 15;
 
     @GET
     @Path("healthcheck/test")
@@ -49,7 +50,7 @@ public class RestMockHealthCheck {
     @Path("healthcheck/stuck")
     @Produces({MediaType.APPLICATION_JSON, YamlMessageBodyHandler.APPLICATION_YAML})
     public Response stuck() {
-        await().atMost(WAIT, TimeUnit.SECONDS).until(() -> !stuck);
+        await().atMost(wait, TimeUnit.SECONDS).until(() -> !stuck);
         return Response.status(Status.OK).entity("I may be stuck: " + stuck).build();
     }
 }

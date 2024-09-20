@@ -186,8 +186,6 @@ class LifecycleStateActiveTest extends LifecycleStateRunningTest {
     @Test
     void testUpdate() throws IOException, CoderException {
 
-        // TODO: extract repeated similar assertion blocks into their own helper methods
-
         PdpUpdate update = new PdpUpdate();
         update.setName(PolicyEngineConstants.getManager().getPdpName());
         update.setPdpGroup("W");
@@ -311,9 +309,9 @@ class LifecycleStateActiveTest extends LifecycleStateRunningTest {
 
         factPolicies = controllerSupport.getFacts(ToscaPolicy.class);
         assertEquals(2, factPolicies.size());
-        assertTrue(factPolicies.stream().noneMatch((ff) -> Objects.equals(toscaPolicyRestartV1, ff)));
-        assertTrue(factPolicies.stream().anyMatch((ff) -> Objects.equals(toscaPolicyRestartV2, ff)));
-        assertTrue(factPolicies.stream().anyMatch((ff) -> Objects.equals(toscaPolicyFirewall, ff)));
+        assertTrue(factPolicies.stream().noneMatch(ff -> Objects.equals(toscaPolicyRestartV1, ff)));
+        assertTrue(factPolicies.stream().anyMatch(ff -> Objects.equals(toscaPolicyRestartV2, ff)));
+        assertTrue(factPolicies.stream().anyMatch(ff -> Objects.equals(toscaPolicyFirewall, ff)));
         assertEquals(2, fsm.policiesMap.size());
 
         long originalInterval = fsm.getStatusTimerSeconds();

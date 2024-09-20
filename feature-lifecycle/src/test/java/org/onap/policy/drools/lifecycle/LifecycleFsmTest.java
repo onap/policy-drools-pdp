@@ -228,6 +228,11 @@ public class LifecycleFsmTest {
                 fsm.getPolicyIds(List.of(opPolicy, controllerPolicy)).toString());
     }
 
+    @Test
+    void testGetSequenceNumber() {
+        assertEquals(1, new LifecycleFeature().getSequenceNumber());
+    }
+
     protected void deployAllPolicies() {
         fsm.deployedPolicyAction(controllerPolicy);
         fsm.deployedPolicyAction(controller2Policy);

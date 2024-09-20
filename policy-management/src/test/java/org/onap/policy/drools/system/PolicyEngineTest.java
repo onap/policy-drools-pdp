@@ -176,7 +176,7 @@ class PolicyEngineTest {
 
     @Test
     void test200Start() {
-        logger.info("enter");
+        logger.info("enter test200Start");
 
         PolicyEngineConstants.getManager().start();
 
@@ -188,7 +188,7 @@ class PolicyEngineTest {
 
     @Test
     void test300Lock() {
-        logger.info("enter");
+        logger.info("enter test300Lock");
 
         PolicyEngineConstants.getManager().lock();
 
@@ -200,7 +200,7 @@ class PolicyEngineTest {
 
     @Test
     void test301Unlock() {
-        logger.info("enter");
+        logger.info("enter test301Unlock");
 
         PolicyEngineConstants.getManager().unlock();
 
@@ -235,7 +235,7 @@ class PolicyEngineTest {
 
     @Test
     void test400ControllerAdd() {
-        logger.info("enter");
+        logger.info("enter test400ControllerAdd");
 
         final Properties controllerProperties = new Properties();
         controllerProperties.put(DroolsPropertyConstants.PROPERTY_CONTROLLER_NAME, TEST_CONTROLLER_NAME);
@@ -250,7 +250,7 @@ class PolicyEngineTest {
 
     @Test
     void test401ControllerVerify() {
-        logger.info("enter");
+        logger.info("enter test401ControllerVerify");
 
         final PolicyController testController = PolicyControllerConstants.getFactory().get(TEST_CONTROLLER_NAME);
 
@@ -265,7 +265,7 @@ class PolicyEngineTest {
 
     @Test
     void test500Deactivate() {
-        logger.info("enter");
+        logger.info("enter test500Deactivate");
 
         PolicyEngineConstants.getManager().deactivate();
 
@@ -278,7 +278,7 @@ class PolicyEngineTest {
 
     @Test
     void test501Activate() {
-        logger.info("enter");
+        logger.info("enter test501Activate");
 
         PolicyEngineConstants.getManager().activate();
 
@@ -291,7 +291,7 @@ class PolicyEngineTest {
 
     @Test
     void test900ControllerRemove() {
-        logger.info("enter");
+        logger.info("enter test900ControllerRemove");
 
         PolicyEngineConstants.getManager().removePolicyController(TEST_CONTROLLER_NAME);
         assertTrue(PolicyControllerConstants.getFactory().inventory().isEmpty());
@@ -299,7 +299,7 @@ class PolicyEngineTest {
 
     @Test
     void test901Stop() {
-        logger.info("enter");
+        logger.info("enter test901Stop");
 
         /* Shutdown managed resources */
         PolicyControllerConstants.getFactory().shutdown();

@@ -187,14 +187,7 @@ public class RestLifecycleManagerTest {
 
         /* start up configuration */
 
-        resourceLists("policyTypes", 2);
-        get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
-
-        resourceLists("policies", 0);
-        get("policies/example.controller/1.0.0", Status.NOT_FOUND.getStatusCode());
-        get("policies/example.artifact/1.0.0", Status.NOT_FOUND.getStatusCode());
+        assertStartup();
 
         /* start lifecycle */
 
@@ -208,35 +201,17 @@ public class RestLifecycleManagerTest {
 
         ToscaPolicy nativeControllerPolicy =
             getPolicyFromFile(EXAMPLE_NATIVE_CONTROLLER_POLICY_JSON, EXAMPLE_NATIVE_CONTROLLER_POLICY_NAME);
-        booleanPost("policies", toString(nativeControllerPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
-
-        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
-        assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
-        assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isAlive());
-
-        get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
-
-        resourceLists("policies", 1);
-        get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
+        assertAddNativeControllerPolicy(nativeControllerPolicy);
 
         /* add native artifact policy */
 
         ToscaPolicy nativeArtifactPolicy =
             getPolicyFromFile(EXAMPLE_NATIVE_ARTIFACT_POLICY_JSON, EXAMPLE_NATIVE_ARTIFACT_POLICY_NAME);
-        booleanPost("policies", toString(nativeArtifactPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
-
-        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
-        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
-        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isAlive());
+        assertAddNativeArtifactPolicy(nativeArtifactPolicy);
 
         /* verify new supported operational policy types */
 
-        resourceLists("policyTypes", 5);
-        get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.type1.type2/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.typeA/1.0.0", Status.OK.getStatusCode());
+        verifySupportedOperationalPolicyTypes(5, Status.OK);
 
         /* verify controller and artifact policies */
 
@@ -268,6 +243,48 @@ public class RestLifecycleManagerTest {
 
         /* individual deploy/undeploy operations */
 
+        assertDeployUndeploy(opPolicy);
+
+        /* delete native artifact policy */
+
+        verifyDeleteNativeArtifactPolicy(opPolicy);
+
+        /* delete native controller policy */
+
+        verifyDeleteNativeControllerPolicy(opPolicy);
+
+        metrics();
+    }
+
+    private void verifyDeleteNativeControllerPolicy(ToscaPolicy opPolicy) throws CoderException {
+        booleanDelete("policies/example.controller/1.0.0", Status.OK.getStatusCode());
+
+        verifySupportedOperationalPolicyTypes(2, Status.NOT_FOUND);
+
+        resourceLists("policies", 0);
+        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
+        get("policies/example.artifact/1.0.0", Status.NOT_FOUND.getStatusCode());
+        get("policies/example.controller/1.0.0", Status.NOT_FOUND.getStatusCode());
+
+        assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
+        opPolicy.getMetadata().remove("policy-id");
+        assertThat(listPost(toString(opPolicy), Status.NOT_ACCEPTABLE.getStatusCode())).isEmpty();
+    }
+
+    private void verifyDeleteNativeArtifactPolicy(ToscaPolicy opPolicy) {
+        booleanDelete("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
+        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
+        assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
+
+        verifySupportedOperationalPolicyTypes(2, Status.NOT_FOUND);
+
+        resourceLists("policies", 1);
+        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
+        get("policies/example.artifact/1.0.0", Status.NOT_FOUND.getStatusCode());
+        get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
+    }
+
+    private void assertDeployUndeploy(ToscaPolicy opPolicy) throws CoderException {
         resourceLists("policies/operations", 3);
 
         booleanPost("policies/operations/deployment", toString(opPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
@@ -290,46 +307,47 @@ public class RestLifecycleManagerTest {
         get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
         get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
         get("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
+    }
 
-        /* delete native artifact policy */
+    private void verifySupportedOperationalPolicyTypes(int size, Status status) {
+        resourceLists("policyTypes", size);
+        get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
+        get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
+        get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", status.getStatusCode());
+        get("policyTypes/onap.policies.type1.type2/1.0.0", status.getStatusCode());
+        get("policyTypes/onap.policies.typeA/1.0.0", status.getStatusCode());
+    }
 
-        booleanDelete("policies/example.artifact/1.0.0", Status.OK.getStatusCode());
+    private void assertAddNativeArtifactPolicy(ToscaPolicy nativeArtifactPolicy) throws CoderException {
+        booleanPost("policies", toString(nativeArtifactPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
+
+        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
+        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
+        assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isAlive());
+    }
+
+    private void assertAddNativeControllerPolicy(ToscaPolicy nativeControllerPolicy) throws CoderException {
+        booleanPost("policies", toString(nativeControllerPolicy), Status.OK.getStatusCode(), Boolean.TRUE);
+
         assertTrue(PolicyControllerConstants.getFactory().get("lifecycle").isAlive());
         assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isBrained());
+        assertFalse(PolicyControllerConstants.getFactory().get("lifecycle").getDrools().isAlive());
 
-        resourceLists("policyTypes", 2);
-        get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
-        get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
-        get("policyTypes/onap.policies.type1.type2/1.0.0", Status.NOT_FOUND.getStatusCode());
-        get("policyTypes/onap.policies.typeA/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         resourceLists("policies", 1);
-        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
-        get("policies/example.artifact/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policies/example.controller/1.0.0", Status.OK.getStatusCode());
+    }
 
-        /* delete native controller policy */
-
-        booleanDelete("policies/example.controller/1.0.0", Status.OK.getStatusCode());
-
+    private void assertStartup() {
         resourceLists("policyTypes", 2);
         get("policyTypes/onap.policies.native.drools.Artifact/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.native.drools.Controller/1.0.0", Status.OK.getStatusCode());
         get("policyTypes/onap.policies.controlloop.operational.common.Drools/1.0.0", Status.NOT_FOUND.getStatusCode());
-        get("policyTypes/onap.policies.type1.type2/1.0.0", Status.NOT_FOUND.getStatusCode());
-        get("policyTypes/onap.policies.typeA/1.0.0", Status.NOT_FOUND.getStatusCode());
 
         resourceLists("policies", 0);
-        get("policies/" + opPolicy.getName() + "/" + opPolicy.getVersion(), Status.NOT_FOUND.getStatusCode());
-        get("policies/example.artifact/1.0.0", Status.NOT_FOUND.getStatusCode());
         get("policies/example.controller/1.0.0", Status.NOT_FOUND.getStatusCode());
-
-        assertThatIllegalArgumentException().isThrownBy(() -> PolicyControllerConstants.getFactory().get("lifecycle"));
-        opPolicy.getMetadata().remove("policy-id");
-        assertThat(listPost(toString(opPolicy), Status.NOT_ACCEPTABLE.getStatusCode())).isEmpty();
-
-        metrics();
+        get("policies/example.artifact/1.0.0", Status.NOT_FOUND.getStatusCode());
     }
 
     private void testNotNativePolicy(ToscaPolicy toscaPolicy) throws CoderException {

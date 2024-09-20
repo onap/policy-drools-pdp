@@ -143,7 +143,7 @@ public class LifecycleFsmUpdateTest {
         noopTopicProperties.put(PolicyEndPointProperties.PROPERTY_NOOP_SINK_TOPICS, TestConstants.APPC_CL_TOPIC);
         TopicEndpointManager.getManager().addTopics(noopTopicProperties);
 
-        savedFsm = LifecycleFeature.fsm;
+        savedFsm = LifecycleFeature.getFsm();
     }
 
     /**
@@ -174,7 +174,7 @@ public class LifecycleFsmUpdateTest {
     public void init() throws CoderException, IOException, NoSuchFieldException, IllegalAccessException {
         fsm = new LifecycleFsm() {
             @Override
-            protected ScheduledExecutorService makeExecutor() { // NOSONAR
+            protected ScheduledExecutorService makeExecutor() {
                 return new PseudoScheduledExecutorService(new TestTimeMulti());
             }
         };
@@ -417,14 +417,14 @@ public class LifecycleFsmUpdateTest {
     protected void verifyNativeArtifactPolicies(List<ToscaPolicy> policies) throws CoderException {
         // check that a brained controller exists for each native artifact policy
         for (ToscaPolicy policy : policies) {
-            NativeArtifactPolicy artifactPolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
-            String controllerName = artifactPolicy.getProperties().getController().getName();
+            NativeArtifactPolicy naPolicy = fsm.getDomainMaker().convertTo(policy, NativeArtifactPolicy.class);
+            String controllerName = naPolicy.getProperties().getController().getName();
             assertTrue(PolicyControllerConstants.getFactory().get(controllerName).getDrools().isBrained());
-            assertEquals(artifactPolicy.getProperties().getRulesArtifact().getGroupId(),
+            assertEquals(naPolicy.getProperties().getRulesArtifact().getGroupId(),
                 PolicyControllerConstants.getFactory().get(controllerName).getDrools().getGroupId());
-            assertEquals(artifactPolicy.getProperties().getRulesArtifact().getArtifactId(),
+            assertEquals(naPolicy.getProperties().getRulesArtifact().getArtifactId(),
                 PolicyControllerConstants.getFactory().get(controllerName).getDrools().getArtifactId());
-            assertEquals(artifactPolicy.getProperties().getRulesArtifact().getVersion(),
+            assertEquals(naPolicy.getProperties().getRulesArtifact().getVersion(),
                 PolicyControllerConstants.getFactory().get(controllerName).getDrools().getVersion());
         }
     }
@@ -446,9 +446,9 @@ public class LifecycleFsmUpdateTest {
             // and there is a controller policy for each controllerName
 
             for (ToscaPolicy nativePolicy : nativeArtifactPolicies) {
-                NativeArtifactPolicy artifactPolicy =
+                NativeArtifactPolicy naPolicy =
                     fsm.getDomainMaker().convertTo(nativePolicy, NativeArtifactPolicy.class);
-                String artifactControllerName = artifactPolicy.getProperties().getController().getName();
+                String artifactControllerName = naPolicy.getProperties().getController().getName();
 
                 // brained controller check
                 assertTrue(PolicyControllerConstants.getFactory().get(artifactControllerName).getDrools().isBrained(),
@@ -545,13 +545,13 @@ public class LifecycleFsmUpdateTest {
 
     protected List<ControllerPolicy> getNativeControllerPolicies(List<ToscaPolicy> nativePolicies,
                                                                  String controllerName) {
-        return nativePolicies.stream().map(controllerPolicy -> {
+        return nativePolicies.stream().map(nativePolicy -> {
             try {
-                return fsm.getDomainMaker().convertTo(controllerPolicy, ControllerPolicy.class);
+                return fsm.getDomainMaker().convertTo(nativePolicy, ControllerPolicy.class);
             } catch (CoderException ex) {
-                throw new RuntimeException(controllerPolicy.getIdentifier().toString(), ex);
+                throw new RuntimeException(nativePolicy.getIdentifier().toString(), ex);
             }
-        }).filter(controllerPolicy -> controllerName.equals(controllerPolicy.getProperties().getControllerName()))
+        }).filter(nativePolicy -> controllerName.equals(nativePolicy.getProperties().getControllerName()))
                 .collect(Collectors.toList());
     }
 

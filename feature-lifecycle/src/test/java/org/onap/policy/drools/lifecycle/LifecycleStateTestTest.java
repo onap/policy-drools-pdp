@@ -36,10 +36,11 @@ class LifecycleStateTestTest extends LifecycleStateUnsupportedTest {
     }
 
     @Override
-    public LifecycleState create(LifecycleFsm fsm) {
-        return new LifecycleStateTest(fsm);
+    public void create(LifecycleFsm fsm) {
+        new LifecycleStateTest(fsm);
     }
 
+    @Override
     @Test
     public void constructor() {
         super.constructor();
